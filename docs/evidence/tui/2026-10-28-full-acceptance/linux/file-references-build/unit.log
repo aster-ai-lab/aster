@@ -1,0 +1,813 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling num-traits v0.2.19
+   Compiling generic-array v0.14.7
+   Compiling ring v0.17.14
+   Compiling serde_core v1.0.229
+   Compiling aws-lc-sys v0.45.0
+   Compiling rustix v1.1.5
+   Compiling zstd-sys v2.0.16+zstd.1.5.7
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling hdrhistogram v7.5.4
+   Compiling chrono v0.4.45
+   Compiling num-integer v0.1.46
+   Compiling digest v0.10.7
+   Compiling tower v0.5.2
+   Compiling aws-smithy-types v1.4.3
+   Compiling sha1 v0.10.6
+   Compiling sha2 v0.10.9
+   Compiling signature v2.2.0
+   Compiling hmac v0.12.1
+   Compiling crossbeam-epoch v0.9.20
+   Compiling num-bigint v0.4.6
+   Compiling serde v1.0.229
+   Compiling semver v1.0.28
+   Compiling serde_json v1.0.154
+   Compiling sha1-checked v0.10.0
+   Compiling schemars v1.2.3
+   Compiling a3s-code-version v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-version)
+   Compiling crossbeam-deque v0.8.6
+   Compiling x509-cert v0.2.5
+   Compiling rustc_version v0.4.1
+   Compiling sec1 v0.7.3
+   Compiling blake3 v1.8.7
+   Compiling hkdf v0.12.4
+   Compiling gix-hash v0.25.1
+   Compiling num-iter v0.1.45
+   Compiling crypto-bigint v0.5.5
+   Compiling tempfile v3.27.0
+   Compiling aws-types v1.3.9
+   Compiling aws-smithy-runtime-api v1.11.3
+   Compiling tower-http v0.6.8
+   Compiling a3s-tool-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-types)
+   Compiling aws-smithy-eventstream v0.60.18
+   Compiling prost-build v0.14.1
+   Compiling which v8.0.0
+   Compiling elliptic-curve v0.13.8
+   Compiling prod-mc-cli-chat-proxy-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/prod/mc/cli-chat-proxy-types)
+   Compiling gix-hashtable v0.15.1
+   Compiling curve25519-dalek v4.1.3
+   Compiling sigstore-types v0.6.6
+   Compiling rfc6979 v0.4.0
+   Compiling schemars v0.8.22
+   Compiling object v0.37.3
+   Compiling num-bigint-dig v0.8.6
+   Compiling typeshare v1.0.4
+   Compiling cms v0.2.3
+   Compiling aws-smithy-json v0.61.6
+   Compiling pxfm v0.1.25
+   Compiling ecdsa v0.16.9
+   Compiling primeorder v0.13.6
+   Compiling slotmap v1.0.7
+   Compiling aws-smithy-http v0.62.6
+   Compiling aws-credential-types v1.2.8
+   Compiling aws-smithy-observability v0.1.4
+   Compiling gix-object v0.60.0
+   Compiling tonic-prost-build v0.14.3
+   Compiling crmf v0.2.0
+   Compiling a3s-tool-protocol v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling moxcms v0.8.1
+   Compiling rayon-core v1.13.0
+   Compiling aws-smithy-runtime v1.9.3
+   Compiling aws-sigv4 v1.3.5
+   Compiling a3s-proto-build v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/build/a3s-proto-build)
+   Compiling gix-tempfile v23.0.1
+   Compiling ed25519 v2.2.3
+   Compiling protobuf v3.7.2
+   Compiling rayon v1.12.0
+   Compiling ignore v0.4.24
+   Compiling rustls v0.23.46
+   Compiling ed25519-dalek v2.2.0
+   Compiling gix-lock v23.0.1
+   Compiling backtrace v0.3.76
+   Compiling rsa v0.9.10
+   Compiling typify-impl v0.6.2
+   Compiling cmpv2 v0.2.0
+   Compiling image v0.25.10
+   Compiling a3s-code-config v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config)
+   Compiling rustls-webpki v0.103.15
+   Compiling p384 v0.13.1
+   Compiling p256 v0.13.2
+   Compiling simple_asn1 v0.6.3
+   Compiling aws-runtime v1.5.12
+   Compiling serde_tokenstream v0.2.3
+   Compiling prometheus v0.14.0
+   Compiling web_atoms v0.2.3
+   Compiling x509-tsp v0.1.0
+   Compiling crc-fast v1.9.0
+   Compiling gix-commitgraph v0.37.1
+   Compiling aws-smithy-query v0.60.8
+   Compiling xattr v1.6.1
+   Compiling serde_urlencoded v0.7.1
+   Compiling md-5 v0.10.6
+   Compiling tar v0.4.46
+   Compiling prometheus-parse v0.2.5
+   Compiling fontdb v0.23.0
+   Compiling reflink-copy v0.1.28
+   Compiling markup5ever v0.38.0
+   Compiling crunchy v0.2.4
+   Compiling pulldown-cmark v0.13.0
+   Compiling findshlibs v0.10.2
+   Compiling libgit2-sys v0.18.2+1.9.1
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling gix-revwalk v0.31.0
+   Compiling html5ever v0.38.0
+   Compiling tokio-rustls v0.26.6
+   Compiling aws-sdk-sts v1.88.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling typify-macro v0.6.2
+   Compiling hyper-rustls v0.27.7
+   Compiling xml5ever v0.38.0
+   Compiling tiny-keccak v2.0.2
+   Compiling a3s-code-image v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-image)
+   Compiling sentry-backtrace v0.42.0
+   Compiling zstd-safe v7.2.4
+   Compiling taffy v0.12.2
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling fast_image_resize v6.1.0
+   Compiling gix-ref v0.63.0
+   Compiling zstd v0.13.3
+   Compiling reqwest v0.12.24
+   Compiling aws-smithy-checksums v0.63.13
+   Compiling jpeg-decoder v0.3.2
+   Compiling waitpid-any v0.3.0
+   Compiling aws-config v1.8.8
+   Compiling async-compression v0.4.19
+   Compiling sentry-contexts v0.42.0
+   Compiling a3s-code-workspace-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-types)
+   Compiling async-lsp v0.2.3
+   Compiling htmd v0.5.4
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling const-random-macro v0.1.16
+   Compiling agent-client-protocol-schema v0.11.4
+   Compiling typify v0.6.2
+   Compiling gix-traverse v0.57.0
+   Compiling a3s-code-feedback v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-feedback)
+   Compiling pdf_oxide v0.3.74
+   Compiling sentry-panic v0.42.0
+   Compiling sentry-tracing v0.42.0
+   Compiling sentry-anyhow v0.42.0
+   Compiling nono v0.53.0
+   Compiling const-random v0.1.18
+   Compiling sentry-debug-images v0.42.0
+   Compiling gix-index v0.51.0
+   Compiling libsqlite3-sys v0.35.0
+   Compiling ahash v0.8.12
+   Compiling a3s-code-session-events v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-events)
+   Compiling gix-filter v0.30.0
+   Compiling gix-discover v0.51.0
+   Compiling gix-revision v0.45.0
+   Compiling gix-pack v0.70.0
+   Compiling async-io v2.6.0
+   Compiling gix-config v0.56.0
+   Compiling gix-shallow v0.12.1
+   Compiling polling v3.11.0
+   Compiling gix-refspec v0.41.0
+   Compiling zvariant_utils v3.3.0
+   Compiling wayland-sys v0.31.8
+   Compiling gix-protocol v0.61.0
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling gix-worktree v0.52.0
+   Compiling gix-odb v0.80.0
+   Compiling rmcp v3.4.0
+   Compiling camino v1.2.1
+   Compiling libmimalloc-sys v0.1.44
+   Compiling zvariant_derive v5.10.0
+   Compiling gix-submodule v0.30.0
+   Compiling rmcp-macros v3.4.0
+   Compiling tree-sitter v0.26.13
+   Compiling wayland-client v0.31.12
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-go v0.25.0
+   Compiling wayland-backend v0.3.12
+   Compiling gix-dir v0.25.0
+   Compiling gix-diff v0.63.0
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling onig_sys v69.9.3
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling crossbeam v0.8.4
+   Compiling enumflags2 v0.7.12
+   Compiling signal-hook v0.3.18
+   Compiling a3s-code-paths v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-paths)
+   Compiling tree-sitter-bash v0.25.0
+   Compiling nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling gix-status v0.30.0
+   Compiling zvariant v5.10.0
+   Compiling mimalloc v0.1.48
+   Compiling a3s-fuzzy-file-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+   Compiling agent-client-protocol v0.10.4
+   Compiling async-signal v0.2.13
+   Compiling signal-hook-mio v0.2.5
+   Compiling rusqlite v0.37.0
+   Compiling async-process v2.5.0
+   Compiling gethostname v1.1.0
+   Compiling wayland-protocols v0.32.10
+   Compiling gix v0.83.0
+   Compiling a3s-acp-lib v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-acp-lib)
+   Compiling zbus_names v4.3.1
+   Compiling a3s-sqlite-journal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-sqlite-journal)
+   Compiling x11rb v0.13.2
+   Compiling instability v0.3.9
+   Compiling crossterm v0.28.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/crossterm)
+   Compiling symbolic-demangle v12.16.3
+   Compiling plist v1.10.0
+   Compiling bincode v1.3.3
+   Compiling zbus_macros v5.14.0
+   Compiling pprof v0.15.0
+   Compiling asn1-rs v0.6.2
+   Compiling sqlite-vec v0.1.7-alpha.10
+   Compiling stop-words v0.9.0
+   Compiling num-rational v0.4.2
+   Compiling wayland-protocols-wlr v0.3.10
+   Compiling num-complex v0.4.6
+   Compiling oid-registry v0.7.1
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+   Compiling moka v0.12.11
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling der-parser v9.0.0
+   Compiling wl-clipboard-rs v0.9.3
+   Compiling ratatui v0.29.0
+   Compiling num v0.4.3
+   Compiling cached v0.56.0
+   Compiling fs-err v3.1.3
+   Compiling rhai v1.25.1
+   Compiling referencing v0.30.0
+   Compiling fraction v0.15.3
+   Compiling async-global-executor v2.4.1
+   Compiling async-net v2.0.0
+   Compiling arboard v3.6.1
+   Compiling a3s-gix-status v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling bm25 v2.3.2
+   Compiling usvg v0.47.0
+   Compiling dark-light v2.0.0
+   Compiling async-std v1.13.2
+   Compiling x509-parser v0.16.0
+   Compiling a3s-fast-worktree v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling a3s-hunk-tracker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling zbus v5.14.0
+   Compiling a3s-code-shared v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling a3s-code-markdown-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-markdown-core)
+   Compiling a3s-code-bundle v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling rcgen v0.13.2
+   Compiling a3s-ratatui-textarea v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+   Compiling resvg v0.47.0
+   Compiling a3s-ratatui-inline v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-ratatui-inline)
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling plotters v0.3.7
+   Compiling a3s-code-gboom v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-gboom)
+   Compiling a3s-acl v0.3.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/acl)
+   Compiling ansi-to-tui v7.0.0
+   Compiling a3s-code-mermaid v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling criterion v0.6.0
+   Compiling a3s-code-dashboard-store v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling a3s-form-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/form-core)
+   Compiling a3s-workflow v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-workflow)
+   Compiling a3s-code-active-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling onig v6.5.2
+   Compiling a3s-system-power v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling ashpd v0.10.3
+   Compiling syntect v5.3.0
+   Compiling a3s-crash-handler v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-crash-handler)
+   Compiling two-face v0.4.5
+   Compiling anstyle-syntect v1.0.4
+   Compiling a3s-code-markdown v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling git2 v0.20.2
+   Compiling a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling a3s-fsnotify v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fsnotify)
+   Compiling a3s-code-foreign-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+   Compiling aws-lc-rs v1.18.1
+   Compiling sigstore-crypto v0.6.6
+   Compiling jsonwebtoken v10.3.0
+   Compiling sigstore-merkle v0.6.6
+   Compiling sigstore-trust-root v0.6.3
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling tungstenite v0.28.0
+   Compiling axum-server v0.8.0
+   Compiling tokio-tungstenite v0.28.0
+   Compiling reqwest v0.13.5
+   Compiling aws-smithy-http-client v1.1.9
+   Compiling axum v0.8.6
+   Compiling opentelemetry-http v0.32.0
+   Compiling gcloud-metadata v1.0.2
+   Compiling sigstore-rekor v0.6.6
+   Compiling reqwest-middleware v0.5.2
+   Compiling sigstore-tsa v0.6.6
+   Compiling reqwest-middleware v0.4.2
+   Compiling a3s-code-extra-ca v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-extra-ca)
+   Compiling reqwest-eventsource v0.6.0
+   Compiling fastrace-reqwest v0.2.0
+   Compiling a3s-mixpanel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-mixpanel)
+   Compiling sentry v0.42.0
+   Compiling oauth2 v5.0.0
+   Compiling jsonschema v0.30.0
+   Compiling tonic v0.14.6
+   Compiling a3s-code-diag-server v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-diag-server)
+   Compiling gcloud-auth v1.3.0
+   Compiling async-openai v0.33.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai)
+   Compiling a3s-code-shell-base v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling a3s-code-voice v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-voice)
+   Compiling a3s-code-auth v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-auth)
+   Compiling sigstore-bundle v0.6.6
+   Compiling tonic-prost v0.14.6
+   Compiling tonic-types v0.14.5
+   Compiling sigstore-verify v0.6.3
+   Compiling gcloud-storage v1.3.0
+   Compiling opentelemetry-proto v0.32.0
+   Compiling a3s-tool-runtime v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-code-sampling-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampling-types)
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling a3s-code-test-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-test-support)
+   Compiling a3s-computer-hub-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-tracing v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tracing)
+   Compiling a3s-code-otel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-otel)
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-code-sampler v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampler)
+   Compiling a3s-compaction-transcript v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling a3s-chat-state v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-chat-state)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-client v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9m 29s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-987099fbdd05f605)
+
+running 3 tests
+test app::agent_view::viewer::tests::file_viewer_refuses_outside_reference ... ok
+test app::agent_view::viewer::tests::file_viewer_reports_unreadable_reference ... ok
+test app::agent_view::viewer::tests::file_viewer_opens_workspace_file ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 10234 filtered out; finished in 0.31s
+
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling semver v1.0.28
+   Compiling serde_json v1.0.154
+   Compiling rustc_version v0.4.1
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling serde_tokenstream v0.2.3
+   Compiling aws-types v1.3.9
+   Compiling curve25519-dalek v4.1.3
+   Compiling schemars v0.8.22
+   Compiling serde_urlencoded v0.7.1
+   Compiling reqwest v0.12.24
+   Compiling sentry-contexts v0.42.0
+   Compiling typify-impl v0.6.2
+   Compiling zvariant_utils v3.3.0
+   Compiling ed25519-dalek v2.2.0
+   Compiling rmcp-macros v3.4.0
+   Compiling aws-runtime v1.5.12
+   Compiling tree-sitter v0.26.13
+   Compiling enumflags2 v0.7.12
+   Compiling jsonwebtoken v10.3.0
+   Compiling zvariant_derive v5.10.0
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling plist v1.10.0
+   Compiling bincode v1.3.3
+   Compiling stop-words v0.9.0
+   Compiling oid-registry v0.7.1
+   Compiling sentry v0.42.0
+   Compiling syntect v5.3.0
+   Compiling rmcp v3.4.0
+   Compiling x509-parser v0.16.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling aws-sdk-sts v1.88.0
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling a3s-tool-runtime v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling bm25 v2.3.2
+   Compiling gcloud-auth v1.3.0
+   Compiling zvariant v5.10.0
+   Compiling typify-macro v0.6.2
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling rcgen v0.13.2
+   Compiling a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling two-face v0.4.5
+   Compiling a3s-code-test-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-test-support)
+   Compiling aws-config v1.8.8
+   Compiling zbus_names v4.3.1
+   Compiling a3s-code-markdown v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling a3s-computer-hub-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling zbus_macros v5.14.0
+   Compiling typify v0.6.2
+   Compiling gcloud-storage v1.3.0
+   Compiling nono v0.53.0
+   Compiling a3s-computer-hub-sdk v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling zbus v5.14.0
+   Compiling a3s-code-workspace-client v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-system-power v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling ashpd v0.10.3
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling dark-light v2.0.0
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6m 45s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-987099fbdd05f605)
+
+running 1 test
+test app::agent_view::key_owner::tests::a_card_under_any_open_line_viewer_does_not_take_the_bar ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10236 filtered out; finished in 0.39s
+
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling aws-types v1.3.9
+   Compiling curve25519-dalek v4.1.3
+   Compiling aws-runtime v1.5.12
+   Compiling ed25519-dalek v2.2.0
+   Compiling jsonwebtoken v10.3.0
+   Compiling nono v0.53.0
+   Compiling sentry-contexts v0.42.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling aws-sdk-sts v1.88.0
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling sentry v0.42.0
+   Compiling tree-sitter v0.26.13
+   Compiling gcloud-auth v1.3.0
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling stop-words v0.9.0
+   Compiling aws-config v1.8.8
+   Compiling bm25 v2.3.2
+   Compiling a3s-code-markdown v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling gcloud-storage v1.3.0
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6m 19s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-987099fbdd05f605)
+
+running 1 test
+test app::dispatch::tests::notes::feedback_modal_open_refuses_visibly_under_every_input_owner ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10236 filtered out; finished in 0.45s
+

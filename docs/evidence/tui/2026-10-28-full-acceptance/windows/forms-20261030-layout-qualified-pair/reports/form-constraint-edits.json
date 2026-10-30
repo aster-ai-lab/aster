@@ -1,0 +1,367 @@
+{
+  "assertions_finished": true,
+  "case": "form-constraint-edits",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "constraint-form.json"
+          },
+          "id": "call_8c753faff2344ba98352b7be46482438",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13335,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+            "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_8c753faff2344ba98352b7be46482438",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+            "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_8c753faff2344ba98352b7be46482438",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"choice\\\":{\\\"props\\\":{\\\"label\\\":\\\"Choice\\\",\\\"options\\\":[\\\"alpha\\\",\\\"beta\\\"],\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/choice\\\"}},\\\"type\\\":\\\"Select\\\"},\\\"count\\\":{\\\"props\\\":{\\\"label\\\":\\\"Count\\\",\\\"max\\\":5,\\\"min\\\":1,\\\"required\\\":true,\\\"type\\\":\\\"number\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/count\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"enabled\\\":{\\\"props\\\":{\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/enabled\\\"},\\\"label\\\":\\\"Enabled\\\",\\\"required\\\":true},\\\"type\\\":\\\"Checkbox\\\"},\\\"root\\\":{\\\"children\\\":[\\\"count\\\",\\\"choice\\\",\\\"enabled\\\",\\\"submit\\\"],\\\"props\\\":{\\\"title\\\":\\\"Constraint form\\\"},\\\"type\\\":\\\"Card\\\"},\\\"submit\\\":{\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"},\\\"type\\\":\\\"Button\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"choice\\\":\\\"alpha\\\",\\\"count\\\":2,\\\"enabled\\\":true}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"constraint-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":698},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":698,\"projected_bytes\":698,\"original_estimated_tokens\":175,\"projected_estimated_tokens\":175,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"projected_digest\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"repeat_key\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"content_ref\":\"inline:sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6f4386d327c7a1c4da5739346b5ac317c1328a9fc4ec8ab337edd4e8acf157e9\"}",
+        "prepared_digest": "sha256:8c15629c841b71080501c4cb8c548c96055e8629c3c9e150c9782cb6f1d8547b",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"choice\":{\"props\":{\"label\":\"Choice\",\"options\":[\"alpha\",\"beta\"],\"required\":true,\"value\":{\"$bindState\":\"/form/choice\"}},\"type\":\"Select\"},\"count\":{\"props\":{\"label\":\"Count\",\"max\":5,\"min\":1,\"required\":true,\"type\":\"number\",\"value\":{\"$bindState\":\"/form/count\"}},\"type\":\"Input\"},\"enabled\":{\"props\":{\"checked\":{\"$bindState\":\"/form/enabled\"},\"label\":\"Enabled\",\"required\":true},\"type\":\"Checkbox\"},\"root\":{\"children\":[\"count\",\"choice\",\"enabled\",\"submit\"],\"props\":{\"title\":\"Constraint form\"},\"type\":\"Card\"},\"submit\":{\"props\":{\"action\":\"submit\",\"label\":\"Continue\"},\"type\":\"Button\"}},\"root\":\"root\",\"state\":{\"form\":{\"choice\":\"alpha\",\"count\":2,\"enabled\":true}}}",
+            "prompt": "Constraint acceptance"
+          },
+          "id": "call_c3b088fdd0ea484db8efef96a080fc20",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 13649,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+            "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_c3b088fdd0ea484db8efef96a080fc20",
+          "turn": 1
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+            "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_c3b088fdd0ea484db8efef96a080fc20",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-50c23875-927f-4908-afa3-47cd204e2bf9-run-b19d522c-74a6-430c-a970-f66797f69d56-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"count\\\":4.0,\\\"choice\\\":\\\"beta\\\",\\\"enabled\\\":true},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":238,\"projected_bytes\":238,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"projected_digest\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"repeat_key\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"content_ref\":\"inline:sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3ad002d7c307647fd8e7e5613c3750b2bbdb13e07687a1df29cf8be136fff101\"}",
+        "prepared_digest": "sha256:8d4761b97c8b2e2d12908f3fc7f7445f30a4c4484179ef15ef9fd54115d5b3c5",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14016,
+        "text": "Returned values:\n\n```json\n{\n  \"count\": 4.0,\n  \"choice\": \"beta\",\n  \"enabled\": true\n}\n```",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "712e9f871c0ad3a9d3c5880cd76e38be5309c8c6fd2ca64e6a4bad9ba3dfa2e8",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:7f76037f90bbca6d2553b471bde12f6e43b8a4cd2715625e42cd417c43c26896",
+          "sha256:b10773bda4f2e3be843d0e750fcdb48541266d4c24b6ddc6b9b84ae0e363464b"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "the actual field error rejects submission without closing the form or replacing the editable draft",
+      "name": "constraint-required",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 1.0s                                                                         30s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Constraint acceptance · Constraint form                                                                              │                                                                                                                       │  1 Count (required)                                                                                                   │        required                                                                                                       │  2 Choice (required)   alpha                                                                                          │  3 Enabled (required)  [x]                                                                                            │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual field error rejects submission without closing the form or replacing the editable draft",
+      "name": "constraint-invalid number",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 2.3s                                                                         31s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Constraint acceptance · Constraint form                                                                              │                                                                                                                       │  1 Count (required)    oops                                                                                           │        invalid number                                                                                                 │  2 Choice (required)   alpha                                                                                          │  3 Enabled (required)  [x]                                                                                            │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual field error rejects submission without closing the form or replacing the editable draft",
+      "name": "constraint-min 1",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 3.5s                                                                         33s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Constraint acceptance · Constraint form                                                                              │                                                                                                                       │  1 Count (required)    0                                                                                              │        min 1                                                                                                          │  2 Choice (required)   alpha                                                                                          │  3 Enabled (required)  [x]                                                                                            │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual field error rejects submission without closing the form or replacing the editable draft",
+      "name": "constraint-max 5",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 4.8s                                                                         34s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Constraint acceptance · Constraint form                                                                              │                                                                                                                       │  1 Count (required)    6                                                                                              │        max 5                                                                                                          │  2 Choice (required)   alpha                                                                                          │  3 Enabled (required)  [x]                                                                                            │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=41000",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 2.3s                                                                                                                                                                                                                              Returned values:                                                                                       11:20 AM                                                                                                                                 {                                                                                                                         \"count\": 4.0,                                                                                                           \"choice\": \"beta\",                                                                                                       \"enabled\": true                                                                                                       }                                                                                                                                                                                                                                               Worked for 41s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "after all rejected drafts, the exact numeric value, constrained enum and required boolean reach the actual tool receipt; forward and reverse Tab keep edits on their fields",
+      "name": "constraints-typed-submission",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9oxvq1\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:19 AM           and prompt 'Constraint acceptance'. After the user submits, report the returned values without                          calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 2.3s                                                                                                                                                                                                                              Returned values:                                                                                       11:20 AM                                                                                                                                 {                                                                                                                         \"count\": 4.0,                                                                                                           \"choice\": \"beta\",                                                                                                       \"enabled\": true                                                                                                       }                                                                                                                                                                                                                                               Worked for 41s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "form-constraint-edits",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "constraint-form.json"
+              },
+              "id": "call_8c753faff2344ba98352b7be46482438",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13335,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+                "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_8c753faff2344ba98352b7be46482438",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+                "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_8c753faff2344ba98352b7be46482438",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"choice\\\":{\\\"props\\\":{\\\"label\\\":\\\"Choice\\\",\\\"options\\\":[\\\"alpha\\\",\\\"beta\\\"],\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/choice\\\"}},\\\"type\\\":\\\"Select\\\"},\\\"count\\\":{\\\"props\\\":{\\\"label\\\":\\\"Count\\\",\\\"max\\\":5,\\\"min\\\":1,\\\"required\\\":true,\\\"type\\\":\\\"number\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/count\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"enabled\\\":{\\\"props\\\":{\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/enabled\\\"},\\\"label\\\":\\\"Enabled\\\",\\\"required\\\":true},\\\"type\\\":\\\"Checkbox\\\"},\\\"root\\\":{\\\"children\\\":[\\\"count\\\",\\\"choice\\\",\\\"enabled\\\",\\\"submit\\\"],\\\"props\\\":{\\\"title\\\":\\\"Constraint form\\\"},\\\"type\\\":\\\"Card\\\"},\\\"submit\\\":{\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"},\\\"type\\\":\\\"Button\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"choice\\\":\\\"alpha\\\",\\\"count\\\":2,\\\"enabled\\\":true}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"constraint-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":698},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":698,\"projected_bytes\":698,\"original_estimated_tokens\":175,\"projected_estimated_tokens\":175,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"projected_digest\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"repeat_key\":\"sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"content_ref\":\"inline:sha256:7465ade939d191d923ee08640a7a6d72d35c320729f581e71426bf37aec17a80\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6f4386d327c7a1c4da5739346b5ac317c1328a9fc4ec8ab337edd4e8acf157e9\"}",
+            "prepared_digest": "sha256:8c15629c841b71080501c4cb8c548c96055e8629c3c9e150c9782cb6f1d8547b",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"choice\":{\"props\":{\"label\":\"Choice\",\"options\":[\"alpha\",\"beta\"],\"required\":true,\"value\":{\"$bindState\":\"/form/choice\"}},\"type\":\"Select\"},\"count\":{\"props\":{\"label\":\"Count\",\"max\":5,\"min\":1,\"required\":true,\"type\":\"number\",\"value\":{\"$bindState\":\"/form/count\"}},\"type\":\"Input\"},\"enabled\":{\"props\":{\"checked\":{\"$bindState\":\"/form/enabled\"},\"label\":\"Enabled\",\"required\":true},\"type\":\"Checkbox\"},\"root\":{\"children\":[\"count\",\"choice\",\"enabled\",\"submit\"],\"props\":{\"title\":\"Constraint form\"},\"type\":\"Card\"},\"submit\":{\"props\":{\"action\":\"submit\",\"label\":\"Continue\"},\"type\":\"Button\"}},\"root\":\"root\",\"state\":{\"form\":{\"choice\":\"alpha\",\"count\":2,\"enabled\":true}}}",
+                "prompt": "Constraint acceptance"
+              },
+              "id": "call_c3b088fdd0ea484db8efef96a080fc20",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 13649,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+                "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_c3b088fdd0ea484db8efef96a080fc20",
+              "turn": 1
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b19d522c-74a6-430c-a970-f66797f69d56",
+                "thread_id": "50c23875-927f-4908-afa3-47cd204e2bf9"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_c3b088fdd0ea484db8efef96a080fc20",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-50c23875-927f-4908-afa3-47cd204e2bf9-run-b19d522c-74a6-430c-a970-f66797f69d56-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"count\\\":4.0,\\\"choice\\\":\\\"beta\\\",\\\"enabled\\\":true},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":238,\"projected_bytes\":238,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"projected_digest\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"repeat_key\":\"sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"content_ref\":\"inline:sha256:4d422ea8e6eb5bb3986ec0d6d6e18a265df4eecb049f3bba6c0e968d2bdd749f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3ad002d7c307647fd8e7e5613c3750b2bbdb13e07687a1df29cf8be136fff101\"}",
+            "prepared_digest": "sha256:8d4761b97c8b2e2d12908f3fc7f7445f30a4c4484179ef15ef9fd54115d5b3c5",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14016,
+            "text": "Returned values:\n\n```json\n{\n  \"count\": 4.0,\n  \"choice\": \"beta\",\n  \"enabled\": true\n}\n```",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "712e9f871c0ad3a9d3c5880cd76e38be5309c8c6fd2ca64e6a4bad9ba3dfa2e8",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:7f76037f90bbca6d2553b471bde12f6e43b8a4cd2715625e42cd417c43c26896",
+              "sha256:b10773bda4f2e3be843d0e750fcdb48541266d4c24b6ddc6b9b84ae0e363464b"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "50c23875-927f-4908-afa3-47cd204e2bf9"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,237 @@
+{
+  "case": "copy-export-contract",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26562",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read first.txt and reply with its exact contents. Do not call other tools   6:08 PM    \n       or modify any file.                                                                                              \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     导出-5c3074a4-f875-4e24-82e5-cd04bf58b02c                                                               6:08 PM    \n                                                                                                                        \n     Worked for 13s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=27059",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read second.txt and reply with its exact contents. Do not call other        6:08 PM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f                                                               6:08 PM    \n                                                                                                                       █\n     Worked for 17s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "copy-1",
+      "detail": "requested assistant response exported with exact UTF-8 bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read second.txt and reply with its exact contents. Do not call other        6:08 PM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f                                                               6:08 PM    \n                                                                                                                       █\n     Worked for 17s                                                                                                    █\n                                                                                                                       █\n     Copied to /tmp/aster-kimi-mb2LcV/workspace/第 1 条.txt (43 chars, 1 line)                                         █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "copy-2",
+      "detail": "requested assistant response exported with exact UTF-8 bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read second.txt and reply with its exact contents. Do not call other        6:08 PM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f                                                               6:08 PM    \n                                                                                                                       █\n     Worked for 17s                                                                                                    █\n                                                                                                                       █\n     Copied to /tmp/aster-kimi-mb2LcV/workspace/第 1 条.txt (43 chars, 1 line)                                         █\n                                                                                                                       █\n     Copied to /tmp/aster-kimi-mb2LcV/workspace/第 2 条.txt (43 chars, 1 line)                                         █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "export-order",
+      "detail": "full transcript contains both prompts and replies in order",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read second.txt and reply with its exact contents. Do not call other        6:08 PM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f                                                               6:08 PM    \n                                                                                                                       █\n     Worked for 17s                                                                                                    █\n                                                                                                                       █\n     Copied to /tmp/aster-kimi-mb2LcV/workspace/第 1 条.txt (43 chars, 1 line)                                         █\n                                                                                                                       █\n     Copied to /tmp/aster-kimi-mb2LcV/workspace/第 2 条.txt (43 chars, 1 line)                                         █\n                                                                                                                       █\n     Conversation exported to /tmp/aster-kimi-mb2LcV/workspace/完整 会话.md                                            █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "export-refusal",
+      "detail": "directory write and invalid response index fail explicitly without model work",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-mb2LcV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read second.txt and reply with its exact contents. Do not call other        6:08 PM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                            ▲                                                           \n     Usage: /copy [N] [file] where N is 1 (latest), 2, 3, ...                                                           \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13197,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_0d34743fb8c644bcbdd9d46b48154c4b",
+          "name": "read",
+          "args": {
+            "file_path": "first.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_0d34743fb8c644bcbdd9d46b48154c4b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-f97ce81c-56cd-40bd-88c6-2bd9a968e309",
+            "thread_id": "0f32eb1b-5a40-49b4-9e63-37e8b6223be9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_0d34743fb8c644bcbdd9d46b48154c4b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-f97ce81c-56cd-40bd-88c6-2bd9a968e309",
+            "thread_id": "0f32eb1b-5a40-49b4-9e63-37e8b6223be9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:2be72a9fb18441da7abb00a4317c0a39b526a81ffacd073bdc6317d3f7cce3a4",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t导出-5c3074a4-f875-4e24-82e5-cd04bf58b02c\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"first.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":84},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":84,\"projected_bytes\":84,\"original_estimated_tokens\":21,\"projected_estimated_tokens\":21,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:2ba9cb9fd56a02945b3ffc7ba5a2c1ab930729f7c8a8bcb9d773010d67389b1c\",\"projected_digest\":\"sha256:2ba9cb9fd56a02945b3ffc7ba5a2c1ab930729f7c8a8bcb9d773010d67389b1c\",\"repeat_key\":\"sha256:2ba9cb9fd56a02945b3ffc7ba5a2c1ab930729f7c8a8bcb9d773010d67389b1c\",\"content_ref\":\"inline:sha256:2ba9cb9fd56a02945b3ffc7ba5a2c1ab930729f7c8a8bcb9d773010d67389b1c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:20ecef0af6e3521d72855b022b12253c03651c459ac0154dc8c6872444a8c36d\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13365,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "导出-5c3074a4-f875-4e24-82e5-cd04bf58b02c"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:f20d4489f76dff0845e1e72968751616e0ae5d16883ecf6b28efccaba0635d0f"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "31daa15de73cc0dce0833bedfb9f65c4168a442cdff28d276f951ea94284d0bc"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13451,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_5415cead4e2f4fea9af0e1f179196b71",
+          "name": "read",
+          "args": {
+            "file_path": "second.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_5415cead4e2f4fea9af0e1f179196b71",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-c42c16c7-0e38-475f-a063-d75df500d71e",
+            "thread_id": "0f32eb1b-5a40-49b4-9e63-37e8b6223be9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_5415cead4e2f4fea9af0e1f179196b71",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-c42c16c7-0e38-475f-a063-d75df500d71e",
+            "thread_id": "0f32eb1b-5a40-49b4-9e63-37e8b6223be9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:a098194c10747ebaa0600c822e11a983e9d0ea9fb2cb925bb740302c4c6533c5",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"second.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":84},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":84,\"projected_bytes\":84,\"original_estimated_tokens\":21,\"projected_estimated_tokens\":21,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:55af5db960e6bd6e47da3381a8013565861a7cc5d30ea6ccdd1b68e7b123b4b4\",\"projected_digest\":\"sha256:55af5db960e6bd6e47da3381a8013565861a7cc5d30ea6ccdd1b68e7b123b4b4\",\"repeat_key\":\"sha256:55af5db960e6bd6e47da3381a8013565861a7cc5d30ea6ccdd1b68e7b123b4b4\",\"content_ref\":\"inline:sha256:55af5db960e6bd6e47da3381a8013565861a7cc5d30ea6ccdd1b68e7b123b4b4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b2865c92b342f4a5ff3a5aa8f5e6caa06d78af5a54da00edd8155008eac98621\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13608,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "导出-9a51d5dc-ddcc-4892-90ae-2949a8308a4f"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:2ffa3e77da28837237142097b93ac596342ae495df2322ff485778ac3a39a5ef"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 16,
+          "digest": "0860b69aafed853f66b8b4b74e56f95247704fa759c7e1033a1c6a75338a81cf"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

@@ -1,0 +1,6 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/work/issue-205/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/work/issue-205/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/work/issue-205/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/work/issue-205/aster/Cargo.toml

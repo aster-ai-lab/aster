@@ -1,0 +1,30 @@
+
+running 1 test
+test forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel ... ORACLE case=form-long-small-window name=source-pair result=pass detail=aster-cli-pair-v1:70f49387956f5bba7ade5552b9ca82291464886f:x86_64-unknown-linux-gnu
+
+thread 'forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel' (12247) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:367:9:
+timeout waiting for "Required 01"
+ /t/aster-kimi-Iap1CR/workspace                      15K / 128K 
+    document and prompt 'Long form acceptance'. …               
+                                                               █
+    ◈ Read 2 files                                             █
+    ◆ ask_user_form                                            █
+                                                               █
+                                                                
+   ◆ Run ask_user_form 8.7s                  1m6s ⇣15.0k [stop] 
+ ┃                                                              
+ ┃  MCP “Aster” requests your input                             
+ ┃                                                              
+ ┃  Long form acceptance · Long form 24                         
+ ┃  ↓ more                                                      
+ Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab: 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 63 filtered out; finished in 73.33s
+

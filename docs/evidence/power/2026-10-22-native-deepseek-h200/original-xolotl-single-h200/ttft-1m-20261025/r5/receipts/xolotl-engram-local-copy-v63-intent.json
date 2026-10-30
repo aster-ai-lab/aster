@@ -1,0 +1,49 @@
+{
+  "unix": 1792878872.1494398,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/engram-local-copy-v63",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "replica": "aster-xolotl-1mc7-79269eb61f30-62523144-h4rkr",
+  "replica_uid": "7bbf9c96-01c8-4f71-8eae-62bd9b967f97",
+  "gpu_executed": false,
+  "live_service_changed": false,
+  "plan": {
+    "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+    "local_root": "/var/tmp/aster-h200-engram-v63-08538623",
+    "source_index": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-b345/engram/model.safetensors.index.json",
+    "blobs": [
+      {
+        "physical_file": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5",
+        "bytes": 101535150936,
+        "expected_sha256": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5"
+      },
+      {
+        "physical_file": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd",
+        "bytes": 101537926640,
+        "expected_sha256": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd"
+      }
+    ],
+    "copy_bytes_per_second_per_file": 268435456,
+    "verify_bytes_per_second_per_file": 536870912
+  },
+  "files": [
+    {
+      "file": "copy-plan.json",
+      "bytes": 1071,
+      "sha256": "3137f15e3cc6cc63b05284099b56a49620b396d7fa961f00b5d8a080a7878cf6"
+    },
+    {
+      "file": "copy-worker.py",
+      "bytes": 7021,
+      "sha256": "a9bad5133c93f002f8dcfc98ec16282e28e1ad87a1e2bb7e290c15e18ae78899"
+    }
+  ],
+  "process": {
+    "pid": 7646,
+    "start_ticks": 315835781,
+    "uid": 10250,
+    "unix": 1792878881.9234197,
+    "budget_seconds": 1800,
+    "namespace": "optimization pod"
+  }
+}

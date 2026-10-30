@@ -1,0 +1,12 @@
+@keyframes a3s-chart-heatmap-cell-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.a3s-chart-heatmap-cell {
+  animation: a3s-chart-heatmap-cell-enter 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-chart-heatmap-cell { animation: none; }
+}

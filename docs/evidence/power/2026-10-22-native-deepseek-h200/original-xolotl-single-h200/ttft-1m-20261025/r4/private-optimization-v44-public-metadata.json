@@ -1,0 +1,30 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-indexer-mask-v44",
+  "allocation_job": "aster-xolotl-1mc7-79269eb61f30-62523144",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "replica": "aster-xolotl-1mc7-79269eb61f30-62523144-h4rkr",
+  "replica_uid": "7bbf9c96-01c8-4f71-8eae-62bd9b967f97",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "pod_ip": "100.97.210.241",
+  "host_ip": "10.102.217.46",
+  "process": {
+    "pid": 2961,
+    "start_ticks": 314862247,
+    "uid": 10250,
+    "unix": 1792869146.5926323,
+    "deadline_seconds": 15439
+  },
+  "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "context_tokens": 1048576,
+  "prefill_batch_tokens": 8192,
+  "attention_sub_batch_tokens": 128,
+  "parallel": 2,
+  "exact_mask_skip": true,
+  "cpu_token_memo_enabled": false,
+  "strict_json_overlay_enabled": false,
+  "formal_promoted": false,
+  "basic28_passed": true,
+  "full1m_qualified": false,
+  "full1m_current_stage": "fullwindow",
+  "lease_ends_unix": 1792884595.778009
+}

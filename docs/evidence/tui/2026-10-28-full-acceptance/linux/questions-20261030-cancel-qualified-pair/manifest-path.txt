@@ -1,0 +1,1 @@
+/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/questions-20261030-cancel-qualified-pair-20261030025620177038/pair.json

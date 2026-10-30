@@ -1,0 +1,25 @@
+
+running 3 tests
+test functional::kimi_plan_ceiling_remains_binding_with_yolo ... ORACLE case=plan-yolo-ceiling name=source-pair result=pass detail=aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-pc-windows-msvc
+ORACLE case=plan-yolo-ceiling name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26799
+ORACLE case=plan-yolo-ceiling name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27413
+ORACLE case=plan-yolo-ceiling name=plan-ceiling result=pass detail=YOLO retains Plan ceiling: actual write denied, no mutation
+ORACLE case=plan-yolo-ceiling name=quit result=pass detail=exit 0
+ok
+test functional::kimi_plan_read_then_yolo_verified_write ... ORACLE case=plan-read-write name=source-pair result=pass detail=aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-pc-windows-msvc
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26826
+ORACLE case=plan-read-write name=plan-read result=pass detail=explicit plan launch, actual read receipt and unchanged source bytes
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=56007
+ORACLE case=plan-read-write name=plan-exit-write result=pass detail=same session switches from plan to execution and finishes a real byte-verified mutation
+ORACLE case=plan-read-write name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_explicit_deny_survives_yolo_and_next_read ... ORACLE case=yolo-explicit-deny name=source-pair result=pass detail=aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-pc-windows-msvc
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26801
+ORACLE case=yolo-explicit-deny name=explicit-deny result=pass detail=actual write denied under YOLO; exact original bytes retained
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27287
+ORACLE case=yolo-explicit-deny name=usable-after-denial result=pass detail=subsequent actual Kimi read completes in the same session
+ORACLE case=yolo-explicit-deny name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 47 filtered out; finished in 169.49s
+

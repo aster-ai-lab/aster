@@ -1,0 +1,117 @@
+{
+  "schema": "aster-native-serve-profiler-v168",
+  "link_cwd": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build",
+  "control_link": [
+    "/usr/bin/c++",
+    "-O3",
+    "-DNDEBUG",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_cuda_policy.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_pipeline.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_conversation.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_dspark.cpp.o",
+    "-o",
+    "ds41_generate",
+    "-L/usr/local/cuda/targets/x86_64-linux/lib",
+    "-Wl,-rpath,/usr/local/cuda-12.6/targets/x86_64-linux/lib",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/libds41_dense.a",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_moe.cpp.o",
+    "libds41_moe_cuda.a",
+    "libds41_conv_pool.a",
+    "ggml/src/libggml.a",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/lightning-indexer.cu.o",
+    "ggml/src/ggml-cuda/libggml-cuda.a",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublas.so",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libculibos.a",
+    "/usr/lib/x86_64-linux-gnu/libnccl.so",
+    "libds41_transcode.a",
+    "libstrata_engine.a",
+    "libstrata_kernels.a",
+    "libstrata_core.a",
+    "libstrata_kernels_cpu.a",
+    "ggml/src/libggml-cpu.a",
+    "libstrata_mmq.a",
+    "/usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so",
+    "libstrata_mmq_w4a4.a",
+    "ggml/src/libggml-base.a",
+    "-lm",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcudart.so",
+    "-ldl",
+    "/usr/lib/x86_64-linux-gnu/librt.a",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-lrt",
+    "-lpthread",
+    "-ldl"
+  ],
+  "original_generator": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+  "control_binary_sha256": "99f3eee8c7eeee54c304120db50e8e632a7c001f9ac90fadf0983040fef92c25",
+  "profile_cpu_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-serve-profile-v167",
+  "inputs": [
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp.o",
+      "bytes": 527888,
+      "sha256": "5b0ec921f27513053f5b5ab38d7aa056bd5cfebebf1fe4198182191a4e8dc771"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/ds41_generate",
+      "bytes": 253077656,
+      "sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/libds41_dense.a",
+      "bytes": 777218,
+      "sha256": "5209a3cf0a35bb3b44cc99e239bb1e72a6f9beab00f9f7debda4c38c7fde9724"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/lightning-indexer.cu.o",
+      "bytes": 2559016,
+      "sha256": "230d706e6e3111786b97fb5e1c408418b3116d512f8fbf142df6029fd6f54349"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+      "bytes": 529632,
+      "sha256": "aac14c316ecaccbb3294de23927bcbc713264fa1263c99e037b82db6b5bc1a3b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc9-e81ede480e07/admission-seed-cpu-v94/generator-candidate.o",
+      "bytes": 529944,
+      "sha256": "71e8e29a993328327a9b3189acffd5ef7cec4cb1a3b6e1782d0c80a9224358dd"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc9-e81ede480e07/admission-seed-cpu-v94/build-result.json",
+      "bytes": 4444,
+      "sha256": "f6c8913e54ff122e8ea25d49498b0b912001cb336aad550a458ed538f0654698"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-candidate.o",
+      "bytes": 535384,
+      "sha256": "4894588c1cd86d1207045f57c358dc5e23c1b61302d623a73ccdc82a6454dd22"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/build-result.json",
+      "bytes": 4774,
+      "sha256": "58800f08abcfb750d3b58c063d4096fd7fad501628aa44f1d43879a555ce7f7c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+      "bytes": 538968,
+      "sha256": "8ab829c4157968935bb4f95b31b73ebd1b60c6fb3fa6e6db144c30fc496c3715"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-enabled1/ds41_engram.cpp.o",
+      "bytes": 154912,
+      "sha256": "cf4769ab22eb4167222a202810f5a23c874e1cdad8f29484e14efeb92de8ad62"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-serve-profile-v167/generator-candidate.o",
+      "bytes": 540672,
+      "sha256": "f4e8cb33857d9ee6175b54a9949120eb8bf91cc85dbf515b0b97f667aca3b419"
+    }
+  ],
+  "prior_service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-literal-v149-literal",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "formal_gpu_uuid": "GPU-ae6ae91f-8d9b-abc1-f7d4-7077c20fcc97"
+}

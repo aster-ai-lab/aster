@@ -1,0 +1,31 @@
+{
+  "unix": 1792878694.6005552,
+  "local_parent": "/var/tmp",
+  "writable": true,
+  "free_bytes": 901753872384,
+  "filesystem": [
+    1,
+    "/",
+    "overlay"
+  ],
+  "index": {
+    "weight_map": {
+      "layers.1.engram.embed.weight": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5.safetensors",
+      "layers.1.engram.embed.scale": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5.safetensors",
+      "layers.14.engram.embed.weight": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd.safetensors",
+      "layers.14.engram.embed.scale": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd.safetensors"
+    }
+  },
+  "targets": [
+    {
+      "name": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5.safetensors",
+      "target": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5",
+      "bytes": 101535150936
+    },
+    {
+      "name": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd.safetensors",
+      "target": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd",
+      "bytes": 101537926640
+    }
+  ]
+}

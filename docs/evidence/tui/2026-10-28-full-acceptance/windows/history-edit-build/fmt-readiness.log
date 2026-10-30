@@ -1,0 +1,10 @@
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp\tests\aster_tui_live_e2e\functional.rs:102:
+         let recalled = tui.pump(80);
+         if recalled.lines().any(|line| {
+             let row = line.trim_start();
+-            (row.starts_with("│ ❯") || row.starts_with("│ >"))
+-                && row.contains("Do not call tools.")
++            (row.starts_with("│ ❯") || row.starts_with("│ >")) && row.contains("Do not call tools.")
+         }) {
+             break;
+         }

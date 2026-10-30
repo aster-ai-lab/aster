@@ -1,0 +1,117 @@
+
+running 3 tests
+test questions_and_forms::kimi_ask_user_cancel_has_no_default_answer_and_session_recovers ... ORACLE case=question-cancel-recovery name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+
+thread 'questions_and_forms::kimi_ask_user_cancel_has_no_default_answer_and_session_recovers' (2752) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:537:13:
+missing fact turn.complete
+                                                                                                                        
+  /t/aster-kimi-6Qm12A/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Call ask_user exactly once with question 'Cancel this question', options ['KEEP-DEFAULT','CHANGE-    10:22 AM    
+       DEFAULT'] and allow_free_text=true. If the question is cancelled, report cancellation without                    
+       retrying. Do not call other tools or modify files.                                                               
+                                                                                                                        
+                                                                                                                        
+  ┃  ◆ Thinking…                                                                                                        
+  ┃                                                                                                                     
+  ┃  I need comply exact tool call once no other. Call the tool ask_user with question exact options and allow free     
+  ┃  text true. Then depending result report cancellation no retry. Do it.                                              
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+    ⠙ Thinking… 1m32s                                                                              1m41s ⇣13.2k [stop]  
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                 
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question ... ORACLE case=question-choice-free-text name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=question-choice-free-text name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=26544
+ORACLE case=question-choice-free-text name=question-selected-answer result=pass detail=the second real choice is persisted under its exact pending question id and reaches the next model response without granting permission
+
+thread 'questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question' (6584) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:367:9:
+timeout waiting for "Tab:next option"
+                                                                                                                        
+  /t/aster-kimi-sxTzN6/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Call ask_user exactly once with question 'Enter a route note', options ['USE-DEFAULT','USE-          10:24 AM    
+       ALTERNATE'] and allow_free_text=true. After the user answers, reply with the exact answer text. Do               
+       not call other tools or modify files.                                                                            
+                                                                                                                        
+                                                                                                                        
+     Enter a route note                                                                                     10:24 AM    
+                                                                                                                        
+     Worked for 22s                                                                                                     
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+FAILED
+test questions_and_forms::kimi_unsupported_form_documents_return_real_errors_without_blank_cards ... ORACLE case=form-schema-refusals name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=form-schema-refusals name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40193
+ORACLE case=form-schema-refusals name=unknown-component result=pass detail=the real ask_user_form receipt refuses unknown-component with its explicit reason, leaves no native form card, and preserves the source bytes
+ORACLE case=form-schema-refusals name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=41480
+ORACLE case=form-schema-refusals name=unknown-schema result=pass detail=the real ask_user_form receipt refuses unknown-schema with its explicit reason, leaves no native form card, and preserves the source bytes
+ORACLE case=form-schema-refusals name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=42717
+ORACLE case=form-schema-refusals name=cyclic-document result=pass detail=the real ask_user_form receipt refuses cyclic-document with its explicit reason, leaves no native form card, and preserves the source bytes
+ORACLE case=form-schema-refusals name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=44086
+ORACLE case=form-schema-refusals name=no-editable-fields result=pass detail=the real ask_user_form receipt refuses no-editable-fields with its explicit reason, leaves no native form card, and preserves the source bytes
+ORACLE case=form-schema-refusals name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=14945
+ORACLE case=form-schema-refusals name=form-refusal-recovery result=pass detail=the same session completes a fresh real model turn after all four schema refusals
+ORACLE case=form-schema-refusals name=quit result=pass detail=exit 0
+ok
+
+failures:
+
+failures:
+    questions_and_forms::kimi_ask_user_cancel_has_no_default_answer_and_session_recovers
+    questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 58 filtered out; finished in 467.92s
+

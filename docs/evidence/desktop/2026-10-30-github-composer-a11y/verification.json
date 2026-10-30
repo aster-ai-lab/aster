@@ -1,0 +1,39 @@
+{
+  "unmodifiedMainSingleCase": "fails with missing i18n.language in existing locale mock",
+  "baselineWithCorrectedLocaleFixture": [
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > renders context usage for the selected Gateway model but hides a different model cache",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > does not open workspace files from a typed trigger on the workbench composer",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends a draft that only contains a skill token",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends workspace resource file references with their original workspace path",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends Windows drive-slash workspace resource file references without internalizing them",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > bridges file tokens into the existing agent session message text protocol",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > opens the attachment picker from a cold home without a prior session"
+  ],
+  "modifiedWithCorrectedLocaleFixture": [
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > renders context usage for the selected Gateway model but hides a different model cache",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > does not open workspace files from a typed trigger on the workbench composer",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends a draft that only contains a skill token",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends workspace resource file references with their original workspace path",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > sends Windows drive-slash workspace resource file references without internalizing them",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > bridges file tokens into the existing agent session message text protocol",
+    "FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > opens the attachment picker from a cold home without a prior session"
+  ],
+  "newFailures": [],
+  "regressionCounts": {
+    "passed": 258,
+    "failed": 7,
+    "total": 265
+  },
+  "browser": [
+    {
+      "engine": "chromium",
+      "passed": 12,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "passed": 12,
+      "pageErrors": []
+    }
+  ]
+}

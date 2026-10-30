@@ -1,0 +1,23 @@
+
+running 1 test
+test workspace_trust::kimi_read_rejects_escapes_links_and_preserves_bounded_pages ... ORACLE case=path-absolute-escape name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc
+ORACLE case=path-absolute-escape name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26921
+ORACLE case=path-absolute-escape name=path-absolute-escape result=pass detail=the actual read receipt fails closed and never exposes the outside secret
+ORACLE case=path-absolute-escape name=quit result=pass detail=exit 0
+ORACLE case=path-relative-escape name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc
+ORACLE case=path-relative-escape name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26876
+ORACLE case=path-relative-escape name=path-relative-escape result=pass detail=the actual read receipt fails closed and never exposes the outside secret
+ORACLE case=path-relative-escape name=quit result=pass detail=exit 0
+ORACLE case=path-link-escape name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc
+为 C:\Windows\Temp\aster-kimi-wSHIl6\workspace\outside-junction <<===>> C:\Windows\Temp\aster-kimi-wSHIl6\outside-directory 创建的联接
+ORACLE case=path-link-escape name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26856
+ORACLE case=path-link-escape name=link-escape result=pass detail=a symlink/junction cannot expose the outside secret through the real read path
+ORACLE case=path-link-escape name=quit result=pass detail=exit 0
+ORACLE case=path-bounded-read name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc
+ORACLE case=path-bounded-read name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26997
+ORACLE case=path-bounded-read name=bounded-read result=pass detail=the large file returns exactly twenty lines with next_offset=20 and no later secret
+ORACLE case=path-bounded-read name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 62.16s
+

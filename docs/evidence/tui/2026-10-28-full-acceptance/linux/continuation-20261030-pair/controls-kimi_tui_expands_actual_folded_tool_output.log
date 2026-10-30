@@ -1,0 +1,10 @@
+
+running 1 test
+test kimi_tui_expands_actual_folded_tool_output ... ORACLE case=expand name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=expand name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27995
+ORACLE case=expand name=expand-content result=pass detail=unseen last tool-output line appears only after /expand
+ORACLE case=expand name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 57 filtered out; finished in 18.40s
+

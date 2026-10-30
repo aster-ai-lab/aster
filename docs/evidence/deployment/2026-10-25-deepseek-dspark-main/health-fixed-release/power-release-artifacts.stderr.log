@@ -1,0 +1,38 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+   Compiling a3s-power v0.10.0 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/power)
+warning: unused import: `SystemOneState`
+  --> crates/power/src/api/openai/systemone.rs:12:24
+   |
+12 |     SystemOneQuestion, SystemOneState, SystemOneUsage,
+   |                        ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `choice_label`, `distribution_confidence`, and `subset_softmax`
+  --> crates/power/src/api/systemone_types.rs:10:41
+   |
+10 | use crate::backend::systemone_scoring::{choice_label, distribution_confidence, subset_softmax};
+   |                                         ^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: `a3s-power` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-power` to apply 3 suggestions)
+    Finished `release` profile [optimized] target(s) in 1m 38s

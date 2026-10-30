@@ -1,0 +1,19 @@
+{
+  "unix": 1792871827.3498101,
+  "commit": "3fb0375b227119289acbef1190a92fc1f0a3c5be",
+  "date": "2026-10-24T19:43:37Z",
+  "files": [
+    {
+      "sha": "a1094c85a4778a0fe51abe5c0675a216e2053cd1",
+      "filename": "tools/v41/engine/ds41_generate.cpp",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 0,
+      "changes": 16,
+      "blob_url": "https://github.com/Indras-Mirror/Xolotl/blob/3fb0375b227119289acbef1190a92fc1f0a3c5be/tools%2Fv41%2Fengine%2Fds41_generate.cpp",
+      "raw_url": "https://github.com/Indras-Mirror/Xolotl/raw/3fb0375b227119289acbef1190a92fc1f0a3c5be/tools%2Fv41%2Fengine%2Fds41_generate.cpp",
+      "contents_url": "https://api.github.com/repos/Indras-Mirror/Xolotl/contents/tools%2Fv41%2Fengine%2Fds41_generate.cpp?ref=3fb0375b227119289acbef1190a92fc1f0a3c5be",
+      "patch": "@@ -2873,6 +2873,15 @@ int main(int argc, char ** argv) {\n                         while (kk < k && 1.0f / (1.0f + std::exp(-sp_conf[kk])) >= conf_tau_s) ++kk;\n                         k = kk;\n                     }\n+                    // STRATA_DSPARK_CUM=<c> (after upstream Strata f73ae5a6): also stop where the product of the leading\n+                    // drafts' confidences - the chance they all survive - falls below c.  Lossless, as the cut above.\n+                    static const float cum_s = std::getenv(\"STRATA_DSPARK_CUM\") ? (float) std::atof(std::getenv(\"STRATA_DSPARK_CUM\")) : -1.0f;\n+                    if (cum_s > 0) {\n+                        float pc = 1.0f;\n+                        int kk = 0;\n+                        while (kk < k && (pc *= 1.0f / (1.0f + std::exp(-sp_conf[kk]))) >= cum_s) ++kk;\n+                        k = kk;\n+                    }\n                     const bool refeed = dirty && ((P + 1) & 1);\n                     for (int i = 0; i < k; ++i) dr[i] = sp_ids[i];\n                     bool is_lk = false;\n@@ -3208,6 +3217,13 @@ int main(int argc, char ** argv) {\n                 while (kk < k && sig(sp_conf[kk]) >= conf_tau) ++kk;\n                 k = kk;\n             }\n+            static const float cum = std::getenv(\"STRATA_DSPARK_CUM\") ? (float) std::atof(std::getenv(\"STRATA_DSPARK_CUM\")) : -1.0f;\n+            if (cum > 0) {   // STRATA_DSPARK_CUM=<c>: as the serve loop\n+                float pc = 1.0f;\n+                int kk = 0;\n+                while (kk < k && (pc *= sig(sp_conf[kk])) >= cum) ++kk;\n+                k = kk;\n+            }\n             const bool refeed = dirty && ((P + 1) & 1);\n             vt.clear();\n             if (refeed) vt.push_back(prev);"
+    }
+  ]
+}

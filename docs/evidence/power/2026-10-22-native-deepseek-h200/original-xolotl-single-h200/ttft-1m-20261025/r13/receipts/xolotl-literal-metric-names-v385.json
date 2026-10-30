@@ -1,0 +1,216 @@
+{
+  "source": "actual CUDA smoke317r1",
+  "literal_metadata": [
+    [
+      281479271677952,
+      0,
+      281479271677952,
+      "",
+      "GPC Clock Frequency [MHz]"
+    ],
+    [
+      281479271677952,
+      1,
+      281479271677952,
+      "",
+      "SYS Clock Frequency [MHz]"
+    ],
+    [
+      281479271677952,
+      2,
+      281479271677952,
+      "",
+      "GR Active [Throughput %]"
+    ],
+    [
+      281479271677952,
+      3,
+      281479271677952,
+      "",
+      "SMs Active [Throughput %]"
+    ],
+    [
+      281479271677952,
+      4,
+      281479271677952,
+      "",
+      "SM Issue [Throughput %]"
+    ],
+    [
+      281479271677952,
+      5,
+      281479271677952,
+      "",
+      "Tensor Active [Throughput %]"
+    ],
+    [
+      281479271677952,
+      6,
+      281479271677952,
+      "",
+      "Vertex/Tess/Geometry Warps in Flight [Throughput %]"
+    ],
+    [
+      281479271677952,
+      7,
+      281479271677952,
+      "",
+      "Vertex/Tess/Geometry Warps in Flight [Avg]"
+    ],
+    [
+      281479271677952,
+      8,
+      281479271677952,
+      "",
+      "Vertex/Tess/Geometry Warps in Flight [Avg Warps per Cycle]"
+    ],
+    [
+      281479271677952,
+      9,
+      281479271677952,
+      "",
+      "Pixel Warps in Flight [Throughput %]"
+    ],
+    [
+      281479271677952,
+      10,
+      281479271677952,
+      "",
+      "Pixel Warps in Flight [Avg]"
+    ],
+    [
+      281479271677952,
+      11,
+      281479271677952,
+      "",
+      "Pixel Warps in Flight [Avg Warps per Cycle]"
+    ],
+    [
+      281479271677952,
+      12,
+      281479271677952,
+      "",
+      "Compute Warps in Flight [Throughput %]"
+    ],
+    [
+      281479271677952,
+      13,
+      281479271677952,
+      "",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      281479271677952,
+      14,
+      281479271677952,
+      "",
+      "Compute Warps in Flight [Avg Warps per Cycle]"
+    ],
+    [
+      281479271677952,
+      15,
+      281479271677952,
+      "",
+      "Unallocated Warps in Active SMs [Throughput %]"
+    ],
+    [
+      281479271677952,
+      16,
+      281479271677952,
+      "",
+      "Unallocated Warps in Active SMs [Avg]"
+    ],
+    [
+      281479271677952,
+      17,
+      281479271677952,
+      "",
+      "Unallocated Warps in Active SMs [Avg Warps per Cycle]"
+    ],
+    [
+      281479271677952,
+      18,
+      281479271677952,
+      "",
+      "DRAM Read Bandwidth [Throughput %]"
+    ],
+    [
+      281479271677952,
+      19,
+      281479271677952,
+      "",
+      "DRAM Write Bandwidth [Throughput %]"
+    ],
+    [
+      281479271677952,
+      20,
+      281479271677952,
+      "",
+      "NVLink RX Requests Protocol Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      21,
+      281479271677952,
+      "",
+      "NVLink RX Requests User Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      22,
+      281479271677952,
+      "",
+      "NVLink RX Responses Protocol Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      23,
+      281479271677952,
+      "",
+      "NVLink RX Responses User Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      24,
+      281479271677952,
+      "",
+      "NVLink TX Requests Protocol Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      25,
+      281479271677952,
+      "",
+      "NVLink TX Requests User Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      26,
+      281479271677952,
+      "",
+      "NVLink TX Responses Protocol Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      27,
+      281479271677952,
+      "",
+      "NVLink TX Responses User Data [Throughput %]"
+    ],
+    [
+      281479271677952,
+      28,
+      281479271677952,
+      "",
+      "PCIe RX Throughput [Throughput %]"
+    ],
+    [
+      281479271677952,
+      29,
+      281479271677952,
+      "",
+      "PCIe TX Throughput [Throughput %]"
+    ]
+  ],
+  "GPU_executed": false
+}

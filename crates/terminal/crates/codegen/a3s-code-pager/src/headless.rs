@@ -4,6 +4,7 @@
 //! (init, auth, session, prompt). Streams to stdout and exits via `CancellationToken`.
 use crate::acp::model_state::{EffortTokenError, ModelState};
 use crate::acp::spawn::{AgentShutdownGuard, SpawnedAgent};
+use crate::app::effects::acp_send_bounded;
 use crate::app::prompt_ack::{PromptAckDeadlines, PromptAckWatch};
 use crate::app::subagent::{
     SubagentLifecycleEffect, SubagentLifecycleReduction, SubagentLifecycleState,
@@ -475,10 +476,11 @@ async fn authenticate(
         anyhow::bail!("{}", auth_required_message(interactive));
     }
     let is_api_key_auth = kind.is_api_key();
-    let _resp: acp::AuthenticateResponse = acp_send(
+    let _resp: acp::AuthenticateResponse = acp_send_bounded(
         acp::AuthenticateRequest::new(method_id)
             .meta(serde_json::json!({"headless": true}).as_object().cloned()),
         acp_tx,
+        "ACP authenticate",
     )
     .await?;
     Ok(is_api_key_auth)
@@ -486,6 +488,8 @@ async fn authenticate(
 fn build_headless_init_request(
     rules: Option<&str>,
     system_prompt_override: Option<&str>,
+    allow: &[String],
+    deny: &[String],
 ) -> acp::InitializeRequest {
     let mut meta = serde_json::json!({
         "clientType": HEADLESS_CLIENT_TYPE,
@@ -500,6 +504,9 @@ fn build_headless_init_request(
                 "systemPromptOverride".into(),
                 serde_json::json!(system_prompt_override),
             );
+        }
+        if let Some(rules) = crate::acp::cli_permission_rules_meta(allow, deny) {
+            obj.insert("permissionRules".into(), rules);
         }
         obj.insert(
             "startupHints".into(),
@@ -532,7 +539,7 @@ async fn open_session(
     let mcp_servers =
         cli_config::load_mcp_servers(cwd, &a3s_code_tools::types::compat::CompatConfig::default());
     if let Some(sid) = session_id_flag {
-        let try_load: Result<acp::LoadSessionResponse, _> = acp_send(
+        let resp: acp::LoadSessionResponse = acp_send_bounded(
             acp::LoadSessionRequest::new(acp::SessionId::new(sid.to_string()), cwd.to_path_buf())
                 .mcp_servers(mcp_servers.clone())
                 .meta({
@@ -544,26 +551,25 @@ async fn open_session(
                     Some(m)
                 }),
             acp_tx,
+            "session/load",
         )
-        .await;
-        if let Ok(resp) = try_load {
-            return Ok(OpenedSession {
-                session_id: acp::SessionId::new(sid.to_string()),
-                models: ModelState::from(resp.models),
-                cwd: cwd.to_path_buf(),
-            });
-        }
-        anyhow::bail!("Session does not exist");
+        .await?;
+        return Ok(OpenedSession {
+            session_id: acp::SessionId::new(sid.to_string()),
+            models: ModelState::from(resp.models),
+            cwd: cwd.to_path_buf(),
+        });
     }
     let mut meta = serde_json::json!({ "sessionKind": "headless" })
         .as_object()
         .cloned();
     crate::app::session_startup::stamp_phase_traceparent(&mut meta);
-    let new_resp: acp::NewSessionResponse = acp_send(
+    let new_resp: acp::NewSessionResponse = acp_send_bounded(
         acp::NewSessionRequest::new(cwd.to_path_buf())
             .mcp_servers(mcp_servers)
             .meta(meta),
         acp_tx,
+        "session/new",
     )
     .await?;
     Ok(OpenedSession {
@@ -585,11 +591,12 @@ async fn open_session_with_id(
         .as_object()
         .cloned();
     crate::app::session_startup::stamp_phase_traceparent(&mut meta);
-    let new_resp: acp::NewSessionResponse = acp_send(
+    let new_resp: acp::NewSessionResponse = acp_send_bounded(
         acp::NewSessionRequest::new(cwd.to_path_buf())
             .mcp_servers(mcp_servers)
             .meta(meta),
         acp_tx,
+        "session/new",
     )
     .await?;
     Ok(OpenedSession {
@@ -638,7 +645,7 @@ async fn fork_then_open(
     let fork_params = serde_json::value::to_raw_value(&payload)
         .map_err(|e| anyhow::anyhow!("serialize fork params: {e}"))?;
     let req = acp::ExtRequest::new("a3s/session/fork", fork_params.into());
-    let resp = acp_send(req, acp_tx).await?;
+    let resp = acp_send_bounded(req, acp_tx, "session/fork").await?;
     if let Some(err) = fork_response_error(resp.0.get()) {
         anyhow::bail!("fork failed: {err}");
     }
@@ -787,9 +794,10 @@ async fn apply_headless_model_and_effort(
         );
         m
     });
-    acp_send(
+    acp_send_bounded(
         acp::SetSessionModelRequest::new(session_id.clone(), model_id.clone()).meta(meta),
         acp_tx,
+        "session/set_model",
     )
     .await
     .map_err(|e| {
@@ -948,17 +956,20 @@ pub async fn run_single_turn(
     let init_req = build_headless_init_request(
         options.rules.as_deref(),
         options.system_prompt_override.as_deref(),
+        &options.allow_rules,
+        &options.deny_rules,
     );
     a3s_code_telemetry::startup::enter(crate::acp::StartupPhase::AcpInitialize);
-    let init_resp: acp::InitializeResponse = match acp_send(init_req, &acp_tx).await {
-        Ok(r) => r,
-        Err(e) => {
-            report_startup_failure(&timer);
-            let msg = format!("Couldn't initialize: {e}");
-            emitter.on_error(&msg, None);
-            anyhow::bail!("{msg}");
-        }
-    };
+    let init_resp: acp::InitializeResponse =
+        match acp_send_bounded(init_req, &acp_tx, "ACP initialize").await {
+            Ok(r) => r,
+            Err(e) => {
+                report_startup_failure(&timer);
+                let msg = format!("Couldn't initialize: {e}");
+                emitter.on_error(&msg, None);
+                anyhow::bail!("{msg}");
+            }
+        };
     tracing::debug!(
         elapsed_ms = t_spawn.elapsed().as_millis() as u64,
         "headless: spawn + initialize complete"
@@ -1968,6 +1979,9 @@ mod background_lifecycle_tests;
 #[cfg(test)]
 #[path = "headless/missing_sidecar_tests.rs"]
 mod missing_sidecar_tests;
+#[cfg(test)]
+#[path = "headless/permission_rules_tests.rs"]
+mod permission_rules_tests;
 #[cfg(test)]
 #[path = "headless_tests.rs"]
 mod tests;

@@ -1,0 +1,71 @@
+{
+  "status": "passed",
+  "content_commit": "e011dc3ab113663bf929eb80a5097178993cbc4d",
+  "url": "https://aster-ai-lab.github.io/aster/",
+  "verified_files": 9,
+  "checks": [
+    {
+      "route": "",
+      "status": 200,
+      "expected_sha256": "f2b8eef0f4ff747f57c5d27250ceeefe4891980a09af5c4fbf43a2d86f62e697",
+      "actual_sha256": "f2b8eef0f4ff747f57c5d27250ceeefe4891980a09af5c4fbf43a2d86f62e697",
+      "matches": true
+    },
+    {
+      "route": "docs/",
+      "status": 200,
+      "expected_sha256": "71bb6e988f59fa6c0db85d2f363ab524b8408b221d7b834651e4fd02ea332f6c",
+      "actual_sha256": "71bb6e988f59fa6c0db85d2f363ab524b8408b221d7b834651e4fd02ea332f6c",
+      "matches": true
+    },
+    {
+      "route": "docs/navigation.js",
+      "status": 200,
+      "expected_sha256": "1f6965cce7e5db22c3ee8e85382e9460d40b37ad4d2ca65dde72ae9abe2bce42",
+      "actual_sha256": "1f6965cce7e5db22c3ee8e85382e9460d40b37ad4d2ca65dde72ae9abe2bce42",
+      "matches": true
+    },
+    {
+      "route": "docs/generated.css",
+      "status": 200,
+      "expected_sha256": "38a0a48f17c9b9055d9562137060ad9d8ac5097ae32f34befd098518744bd41b",
+      "actual_sha256": "38a0a48f17c9b9055d9562137060ad9d8ac5097ae32f34befd098518744bd41b",
+      "matches": true
+    },
+    {
+      "route": "docs/code/9.1.6/tutorial/permissions/",
+      "status": 200,
+      "expected_sha256": "512d4195c87122bd99b0d55f072862a5e038b4bf6d4b9c567ed75e3bbb775021",
+      "actual_sha256": "512d4195c87122bd99b0d55f072862a5e038b4bf6d4b9c567ed75e3bbb775021",
+      "matches": true
+    },
+    {
+      "route": "docs/acp/9.1.6/reference/",
+      "status": 200,
+      "expected_sha256": "43256017fb6fa0201257232f82788b5301e39e0450194ea20c8f8b1dbf9dc8ed",
+      "actual_sha256": "43256017fb6fa0201257232f82788b5301e39e0450194ea20c8f8b1dbf9dc8ed",
+      "matches": true
+    },
+    {
+      "route": "docs/acp/9.1.6/sessions/",
+      "status": 200,
+      "expected_sha256": "b588831cabf3ae43f1a3dd70730ba18d3700fe4ce3013a2e654857d7bec839ce",
+      "actual_sha256": "b588831cabf3ae43f1a3dd70730ba18d3700fe4ce3013a2e654857d7bec839ce",
+      "matches": true
+    },
+    {
+      "route": "docs/code/9.1.5/",
+      "status": 200,
+      "expected_sha256": "c8e19ef769d0fbcdb42ae5b13cd188b869a26c14b9223b8768c52fd031db9f27",
+      "actual_sha256": "c8e19ef769d0fbcdb42ae5b13cd188b869a26c14b9223b8768c52fd031db9f27",
+      "matches": true
+    },
+    {
+      "route": "docs/acp/9.1.6/client/",
+      "status": 200,
+      "expected_sha256": "bd5be035cf203c2cae55ad8ed95cd670f72e44c97d594437a8d7254ea3b07547",
+      "actual_sha256": "bd5be035cf203c2cae55ad8ed95cd670f72e44c97d594437a8d7254ea3b07547",
+      "matches": true
+    }
+  ]
+}

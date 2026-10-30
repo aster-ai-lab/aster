@@ -1,0 +1,303 @@
+{
+  "unix": 1792896224.861024,
+  "exact_cpu_process_alive": false,
+  "cpu-result.json": {
+    "unix": 1792896159.972527,
+    "phase": "compiled",
+    "tests": [
+      {
+        "mode": "control0",
+        "command": [
+          "/usr/bin/c++",
+          "-std=c++20",
+          "-frounding-math",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O3",
+          "-DASTER_XQ_ENGRAM_FP8_SIMD=0",
+          "fp8_simd_exact_test.cpp",
+          "-o",
+          "control0"
+        ],
+        "result": {
+          "phase": "passed",
+          "scaled_value_cases": 786432,
+          "normal_vector_cases": 0,
+          "scalar_fallback_cases": 786432,
+          "rounding_modes": 4,
+          "input_output_offsets": 3,
+          "bitwise_equal": true,
+          "avx2_enabled": false,
+          "model_executed": false,
+          "benchmark_values_per_round": 2097152,
+          "checksum": 0,
+          "rounds": [
+            {
+              "reference_seconds": 0.027923924,
+              "candidate_seconds": 0.028019529
+            },
+            {
+              "reference_seconds": 0.028095784,
+              "candidate_seconds": 0.027634765
+            },
+            {
+              "reference_seconds": 0.027855113,
+              "candidate_seconds": 0.027995841
+            },
+            {
+              "reference_seconds": 0.028472281,
+              "candidate_seconds": 0.027908335
+            },
+            {
+              "reference_seconds": 0.027773447,
+              "candidate_seconds": 0.027730152
+            },
+            {
+              "reference_seconds": 0.028004922,
+              "candidate_seconds": 0.028103461
+            },
+            {
+              "reference_seconds": 0.027855224,
+              "candidate_seconds": 0.027774313
+            }
+          ]
+        },
+        "stderr_empty": true
+      },
+      {
+        "mode": "enabled1",
+        "command": [
+          "/usr/bin/c++",
+          "-std=c++20",
+          "-frounding-math",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O3",
+          "-DASTER_XQ_ENGRAM_FP8_SIMD=1",
+          "fp8_simd_exact_test.cpp",
+          "-o",
+          "enabled1"
+        ],
+        "result": {
+          "phase": "passed",
+          "scaled_value_cases": 786432,
+          "normal_vector_cases": 728064,
+          "scalar_fallback_cases": 58368,
+          "rounding_modes": 4,
+          "input_output_offsets": 3,
+          "bitwise_equal": true,
+          "avx2_enabled": true,
+          "model_executed": false,
+          "benchmark_values_per_round": 2097152,
+          "checksum": 0,
+          "rounds": [
+            {
+              "reference_seconds": 0.026951585,
+              "candidate_seconds": 0.000787178
+            },
+            {
+              "reference_seconds": 0.027055826,
+              "candidate_seconds": 0.000703915
+            },
+            {
+              "reference_seconds": 0.027167089,
+              "candidate_seconds": 0.000720547
+            },
+            {
+              "reference_seconds": 0.02721872,
+              "candidate_seconds": 0.000688492
+            },
+            {
+              "reference_seconds": 0.026991544,
+              "candidate_seconds": 0.000756868
+            },
+            {
+              "reference_seconds": 0.027104349,
+              "candidate_seconds": 0.000689434
+            },
+            {
+              "reference_seconds": 0.026945312,
+              "candidate_seconds": 0.000695323
+            }
+          ]
+        },
+        "stderr_empty": true
+      },
+      {
+        "mode": "sanitized1",
+        "command": [
+          "/usr/bin/c++",
+          "-std=c++20",
+          "-frounding-math",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-DASTER_XQ_ENGRAM_FP8_SIMD=1",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "fp8_simd_exact_test.cpp",
+          "-o",
+          "sanitized1"
+        ],
+        "result": {
+          "phase": "passed",
+          "scaled_value_cases": 786432,
+          "normal_vector_cases": 728064,
+          "scalar_fallback_cases": 58368,
+          "rounding_modes": 4,
+          "input_output_offsets": 3,
+          "bitwise_equal": true,
+          "avx2_enabled": true,
+          "model_executed": false,
+          "benchmark_values_per_round": 2097152,
+          "checksum": 0,
+          "rounds": [
+            {
+              "reference_seconds": 0.037928251,
+              "candidate_seconds": 0.001789806
+            },
+            {
+              "reference_seconds": 0.037809759,
+              "candidate_seconds": 0.001803786
+            },
+            {
+              "reference_seconds": 0.037986517,
+              "candidate_seconds": 0.001836616
+            },
+            {
+              "reference_seconds": 0.03820633,
+              "candidate_seconds": 0.001784547
+            },
+            {
+              "reference_seconds": 0.037744979,
+              "candidate_seconds": 0.001781227
+            },
+            {
+              "reference_seconds": 0.037824611,
+              "candidate_seconds": 0.001775812
+            },
+            {
+              "reference_seconds": 0.038103566,
+              "candidate_seconds": 0.001794186
+            }
+          ]
+        },
+        "stderr_empty": true
+      }
+    ],
+    "runs": [
+      {
+        "mode": "original",
+        "command": [
+          "/usr/bin/c++",
+          "-DDS41_HAVE_CUDA",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_DSV41_HC_MIX",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-original/ds41_engram.cpp.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-original/ds41_engram.cpp.o",
+          "bytes": 150984,
+          "sha256": "235a321d32f24b5807d7dab2f92b81651b12203ea476a55bd5ff69536fc5dfb6"
+        }
+      },
+      {
+        "mode": "default0",
+        "command": [
+          "/usr/bin/c++",
+          "-DDS41_HAVE_CUDA",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_DSV41_HC_MIX",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-default0/ds41_engram.cpp.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/ds41_engram.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-default0/ds41_engram.cpp.o",
+          "bytes": 150984,
+          "sha256": "235a321d32f24b5807d7dab2f92b81651b12203ea476a55bd5ff69536fc5dfb6"
+        }
+      },
+      {
+        "mode": "enabled1",
+        "command": [
+          "/usr/bin/c++",
+          "-DDS41_HAVE_CUDA",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_DSV41_HC_MIX",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-DASTER_XQ_ENGRAM_FP8_SIMD=1",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-enabled1/ds41_engram.cpp.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/ds41_engram.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-enabled1/ds41_engram.cpp.o",
+          "bytes": 154912,
+          "sha256": "cf4769ab22eb4167222a202810f5a23c874e1cdad8f29484e14efeb92de8ad62"
+        }
+      }
+    ],
+    "gpu_executed": false,
+    "model_executed": false,
+    "model_speed_claimed": false,
+    "cpu_model": "INTEL(R) XEON(R) GOLD 6530",
+    "current": "model-enabled1-compile",
+    "invalid_mode_refused": true,
+    "original_object_byte_equal": true,
+    "default0_object_byte_equal": true,
+    "bitwise_decoder_qualified": true,
+    "candidate_object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-enabled1/ds41_engram.cpp.o",
+      "bytes": 154912,
+      "sha256": "cf4769ab22eb4167222a202810f5a23c874e1cdad8f29484e14efeb92de8ad62"
+    },
+    "cpu_only_microbenchmark_ratio": 37.573097037401844,
+    "cpu_only_microbenchmark_reduction_percent": 97.33852123234729,
+    "native_linked": false,
+    "gpu_qualified": false,
+    "finished_unix": 1792896178.872628
+  },
+  "worker.log": ""
+}

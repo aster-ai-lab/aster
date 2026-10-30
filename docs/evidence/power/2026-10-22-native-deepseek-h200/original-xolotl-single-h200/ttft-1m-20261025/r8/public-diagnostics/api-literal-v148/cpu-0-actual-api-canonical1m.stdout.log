@@ -1,0 +1,1 @@
+{"phase": "passed", "mode": "0", "actual_service_encode_seconds": 9.359623746015131, "prompt_tokens": 1047544, "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4", "memo": {"entries": 0, "accounted_bytes": 0, "hits": 0, "misses": 0, "admissions": 0}, "scanner": null, "gpu_executed": false, "model_requests_sent": 0}

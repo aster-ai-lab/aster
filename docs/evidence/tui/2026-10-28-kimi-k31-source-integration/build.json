@@ -1,0 +1,67 @@
+{
+  "recorded_at": "2026-10-28T17:11:17.1295964+08:00",
+  "head": "017d2c65f100140ed868323a2129376c8cd94ee2",
+  "target": "x86_64-pc-windows-msvc",
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "tui_version": "aster 0.1.4 (017d2c65f100)",
+  "core_version": "9.1.6",
+  "acp_version": "9.1.6",
+  "tui_build_id": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+  "acp_build_id": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+  "tui_sha256": "e5bfd455fe3f1c19bbbfbe882e8fb5ae1780db381d99d64c484c53a133fa2e2e",
+  "acp_sha256": "d6114e485677b7ca3dfa41a6cb0a517a2c466839d676510fc3edfa06e6ac1c0d",
+  "model": "kimi/k3.1-pro",
+  "config_path": "./.a3s/config.acl",
+  "config_copied": false,
+  "public_code_main": {
+    "disposition": "keep newer maintained local Core/ACP 9.1.6",
+    "revision": "cfaa22e8f1fca7ad1bfe132ac97ce7be930071f2",
+    "version": "9.1.4"
+  },
+  "sources": [
+    {
+      "sha256": "acf334cac9f2696ca4f5cec3387e6f857d87e8e090e729e2101f371104c15bf3",
+      "path": "crates/code/core/src/porcelain.rs"
+    },
+    {
+      "sha256": "90fd4962abaffbd872352e2846431635436e95f3252c5cb916f37c0b17f1b075",
+      "path": "crates/code/core/src/porcelain/windows.rs"
+    },
+    {
+      "sha256": "e1d4f99c3e3d413d177a1f521e8b54a706e1ece4235f7e6d8d7f480d0d35f8f9",
+      "path": "crates/code/core/src/porcelain/windows_tests.rs"
+    },
+    {
+      "sha256": "07cf960f07dab55eaf0d75b13831f70e26b420e8d8a578fe0983037377b6909e",
+      "path": "crates/code/core/src/verification.rs"
+    },
+    {
+      "sha256": "bcabe5fa5dbff04363f2f2d1b611e00c2c9e2673f25e852fa6272fc7aacb5fa2",
+      "path": "crates/code/core/src/verification/tests.rs"
+    },
+    {
+      "sha256": "ce951f1af4c795c760613f2a6d2665496d99ef3b0fbb537b12ca7df65490661c",
+      "path": "crates/code/core/prompts/common/repository_tool_contract.md"
+    },
+    {
+      "sha256": "a814ca2f70eebe5633101a6904bfdabb2154e31f45bf0cd195d98617a6983cba",
+      "path": "crates/code/acp/tests/aster_tui_live_e2e.rs"
+    },
+    {
+      "sha256": "c31c2d70fa262b8f5eeef1b525f78a76778c34dac2844ce54bd01894d3d2aa38",
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs"
+    },
+    {
+      "sha256": "e38c1e68ef4f00ba649f231b50c9d3a271c8819bc6ecbe9d742c53c9f2ba53ba",
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/surface.rs"
+    },
+    {
+      "sha256": "8046cf11ed5112e28c6c6a9ad4c4a41a3e13ef3e59f79dccab021040920295f0",
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/workflows.rs"
+    },
+    {
+      "sha256": "e63ceaa71e6752060077b7f2dffdd0483d60777db91cb2a80c58f96d705f7cd9",
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/forms.rs"
+    }
+  ]
+}

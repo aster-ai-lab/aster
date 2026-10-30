@@ -1,0 +1,10 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/core/src/agent_api/tests/fact_log.rs:15:
+ 
+ mod child_policy;
+ mod confirmation_snapshot;
+[31m-mod durable_source;
+(B[m mod durable_read;
+[32m+mod durable_source;
+(B[m mod execution_target;
+ mod final_delivery;
+ mod fork_admission;

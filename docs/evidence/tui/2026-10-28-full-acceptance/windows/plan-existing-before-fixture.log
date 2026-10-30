@@ -1,0 +1,44 @@
+
+running 25 tests
+test app::acp_handler::tests::plan_mode::agent_plan_entry_pushes_scrollback_row_once ... ok
+test app::acp_handler::tests::plan_mode::default_confirm_does_not_cancel_in_turn_review ... ok
+test app::acp_handler::tests::plan_mode::default_confirm_still_dismisses_post_turn_review ... ok
+test app::acp_handler::tests::plan_mode::detect_plan_mode_change_classifies_transitions ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_keeps_inline_plan_preview_available ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_auto_opens_inline_cursor_plan_preview ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_dismisses_open_block_viewer ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_dismisses_open_modal ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_empty_opens_placeholder_preview ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_routes_to_background_session_not_active_view ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_shows_overlay ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_mode_shows_overlay_even_in_yolo ... ok
+test app::acp_handler::tests::plan_mode::exit_plan_without_inline_content_uses_file_backed_source ... ok
+test app::acp_handler::tests::plan_mode::handle_end_turn_then_plan_kept_opens_post_turn_review ... ok
+test app::acp_handler::tests::plan_mode::handle_plan_kept_then_end_turn_opens_post_turn_review ... ok
+test app::acp_handler::tests::plan_mode::later_empty_exit_plan_request_clears_stale_inline_plan ... ok
+test app::acp_handler::tests::plan_mode::later_oversized_exit_plan_request_clears_stale_inline_plan ... ok
+test app::acp_handler::tests::plan_mode::plan_cleared_during_staged_reentry_keeps_the_review ... ok
+test app::acp_handler::tests::plan_mode::plan_cleared_forgets_the_keep ... ok
+test app::acp_handler::tests::plan_mode::plan_executing_commits_approved ... ok
+test app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review ... FAILED
+test app::acp_handler::tests::plan_mode::replayed_plan_kept_does_not_set_a_keep ... ok
+test app::acp_handler::tests::plan_mode::tool_call_create_plan_does_not_become_a_keep ... ok
+test app::acp_handler::tests::plan_mode::tool_call_with_enter_plan_mode_substring_does_not_activate_plan_mode ... ok
+test app::acp_handler::tests::plan_mode::tool_call_with_exit_plan_mode_substring_does_not_deactivate_plan_mode ... ok
+
+failures:
+
+---- app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review stdout ----
+
+thread 'app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review' (47696) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\acp_handler\tests\plan_mode.rs:674:9:
+assertion `left == right` failed
+  left: None
+ right: Some("/tmp/second.plan.md")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review
+
+test result: FAILED. 24 passed; 1 failed; 0 ignored; 0 measured; 10139 filtered out; finished in 0.29s
+

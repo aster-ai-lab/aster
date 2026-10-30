@@ -1,0 +1,49 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Checking tokio v1.53.3
+    Checking either v1.15.0
+    Checking a3s-tool-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-types)
+   Compiling a3s-code-version v9.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-version)
+    Checking a3s-dirs v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-dirs)
+    Checking prod-mc-cli-chat-proxy-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\prod\mc\cli-chat-proxy-types)
+   Compiling a3s-proto-build v0.0.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\build\a3s-proto-build)
+    Checking a3s-code-env v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-env)
+    Checking windows-sys v0.59.0
+   Compiling async-openai-macros v0.1.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\third-party\async-openai-macros)
+    Checking a3s-circuit-breaker v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-circuit-breaker)
+    Checking sentry-types v0.42.0
+    Checking jsonwebtoken v10.3.0
+    Checking a3s-code-secrets v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-secrets)
+    Checking a3s-token-estimation v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-token-estimation)
+    Checking a3s-code-image v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-image)
+    Checking lsp-types v0.95.1
+   Compiling a3s-code-tools v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools)
+    Checking a3s-code-workspace-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-types)
+    Checking a3s-code-feedback v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-feedback)
+    Checking bytes-utils v0.1.4
+    Checking tokio-util v0.7.19
+    Checking tokio-rustls v0.26.6
+    Checking async-compression v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking aws-smithy-async v1.2.14
+    Checking a3s-tty-utils v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-tty-utils)
+    Checking a3s-tool-protocol v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-protocol)
+    Checking backoff v0.4.0
+    Checking itertools v0.12.1
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools-api)
+    Checking tokio-tungstenite v0.28.0
+    Checking rayon v1.12.0
+    Checking a3s-code-compaction v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-code-compaction)
+    Checking opentelemetry_sdk v0.32.1
+    Checking a3s-interjection-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-interjection-core)
+    Checking h2 v0.4.19
+    Checking tower v0.5.2
+crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36: error: unused import: `AsRawHandle`
+    Checking aws-smithy-types v1.4.3
+    Checking a3s-message-delivery-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-message-delivery-core)
+error: could not compile `a3s-tty-utils` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

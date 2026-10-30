@@ -1,0 +1,11 @@
+
+running 1 test
+test input_controls::kimi_external_editor_cancel_without_save_preserves_draft_and_terminal ... ORACLE case=editor-cancel name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-pc-windows-msvc
+ORACLE case=editor-cancel name=editor-exit-no-save result=pass detail=the external editor exited successfully without changing the draft file
+ORACLE case=editor-cancel name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13313
+ORACLE case=editor-cancel name=editor-cancel result=pass detail=normal editor exit without save preserves the exact original draft and restores terminal control
+ORACLE case=editor-cancel name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 48 filtered out; finished in 18.21s
+

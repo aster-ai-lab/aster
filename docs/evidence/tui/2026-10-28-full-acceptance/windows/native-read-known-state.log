@@ -1,0 +1,6 @@
+
+running 1 test
+test porcelain::windows::tests::native_sandbox_read_has_no_completion_debt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5302 filtered out; finished in 3.48s
+

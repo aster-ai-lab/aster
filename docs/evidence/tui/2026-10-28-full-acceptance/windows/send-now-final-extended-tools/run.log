@@ -1,0 +1,47 @@
+
+running 4 tests
+ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27108
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27785
+ORACLE case=ls-search-contracts name=search-unsupported-combination result=pass detail=the original content-plus-pagination request is explicitly refused according to the published search contract
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=28492
+ORACLE case=ls-search-contracts name=search-context result=pass detail=one scoped content search returns both unknown context tokens and excludes outside content
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=29477
+ORACLE case=ls-search-contracts name=search-bounded-page result=pass detail=files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30190
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30928
+ORACLE case=ls-search-contracts name=search-no-match result=pass detail=the actual scoped no-match receipt succeeds without returning fixture contents or changing their bytes
+ORACLE case=ls-search-contracts name=quit result=pass detail=exit 0
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... ok
+ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27152
+
+thread 'tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers' (46252) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:171:5:
+assertion failed: reply.contains(&stdout) && reply.contains(&stderr) && reply.contains('7')
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... FAILED
+ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations' (55904) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:246:5:
+assertion `left == right` failed
+  left: ["Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED. Do not call any other tool.", "Reply only SEND-NOW-OWNED. Do not call any tool.\n\n[owed work] Earlier turns left workspace mutations that are not verified yet: started.txt. A narrative claim of completion will be refused —re-run the project's verification before answering."]
+ right: ["Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED. Do not call any other tool.", "Reply only SEND-NOW-OWNED. Do not call any tool."]
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... FAILED
+ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once' (23792) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:330:5:
+assertion `left == right` failed
+  left: 2
+ right: 1
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers
+    tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations
+    tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 31 filtered out; finished in 244.76s
+

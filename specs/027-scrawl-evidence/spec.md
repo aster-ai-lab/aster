@@ -1,4 +1,4 @@
-# Feature Specification: Aster native recording and Scrawl evidence
+# Feature Specification: Aster native recording and Capture evidence
 
 **Feature Branch**: current checkout (no branch requested)
 
@@ -56,7 +56,7 @@ The user annotates or redacts individual frames, exports a shareable video with 
 
 ### User Story 4 - Capture from apps and route explicitly (Priority: P2)
 
-An iOS developer embeds ScrawlKit, records app frames or ReplayKit video with touches, events and context, and delivers the recording through pairing, USB, import or a durable HTTPS outbox. A local page can register its Aster destination, while explicit user choices remain authoritative.
+An iOS developer embeds CaptureKit, records app frames or ReplayKit video with touches, events and context, and delivers the recording through pairing, USB, import or a durable HTTPS outbox. A local page can register its Aster destination, while explicit user choices remain authoritative.
 
 **Why this priority**: The complete Scrawl capability inventory includes mobile capture and delivery, not only desktop recording.
 
@@ -109,7 +109,7 @@ Users on macOS and Windows use their native capture, input and transcription ada
 - **FR-012**: Support configurable media/bundle retention, pin/unpin, safe cleanup and compatible video shrinking without deleting active, copying, recovering or recently changed bundles.
 - **FR-013**: Support recovery of interrupted captures, reprocess of existing bundles, and import of compatible video/timeline pairs without duplicate delivery.
 - **FR-014**: Route to Aster sessions by explicit recorded destination, page registration or bounded localhost project matching. Refuse unauthenticated non-loopback registration and ambiguous recipients.
-- **FR-015**: Preserve the ScrawlKit iOS package, app-frame and ReplayKit capture, touches, markers, app events, screen/context changes, pairing, USB import and durable HTTPS outbox behavior.
+- **FR-015**: Preserve the CaptureKit iOS package, app-frame and ReplayKit capture, touches, markers, app events, screen/context changes, pairing, USB import and durable HTTPS outbox behavior.
 - **FR-016**: Provide equivalent native operations for the complete public and diagnostic inventory in `contracts/cli-inventory.md`, including inspect, zoom, frames, export, devices, link, import, retranscribe/reprocess, recover, autocrop, clean, pin, route and headless ingest, without adding Node, Python or Go SDK bindings.
 - **FR-017**: Provide macOS and Windows native adapters and a real Linux adapter or record the feature incomplete. Every unsupported operation must refuse with `desktop-capability-unavailable`; hiding failure must not count as completion.
 - **FR-018**: Provide configurable recording and paste shortcuts with conflict detection and independent enablement. Do not steal the existing screenshot binding.
@@ -142,7 +142,7 @@ Users on macOS and Windows use their native capture, input and transcription ada
 
 ### Measurable Outcomes
 
-- **SC-001**: Focused Rust tests cover every evidence state transition, bundle field/order requirement, refused input, recovery, retention and frame/export contract; focused Swift tests cover ScrawlKit and outbox behavior.
+- **SC-001**: Focused Rust tests cover every evidence state transition, bundle field/order requirement, refused input, recovery, retention and frame/export contract; focused Swift tests cover CaptureKit and outbox behavior.
 - **SC-002**: Focused renderer tests cover the actual record/stop button, owner attachment, draft preservation, review, redaction, cancellation and unsupported states; applicable typecheck, lint and permission ratchets pass.
 - **SC-003**: Native macOS CUA records another app with narration and marks, stops from the native control surface, reviews, attaches, lets the agent zoom into a moment, and exports a playable result.
 - **SC-004**: Generated bundles cross-read with the upstream implementation without changed record counts, timestamps, filenames or units.

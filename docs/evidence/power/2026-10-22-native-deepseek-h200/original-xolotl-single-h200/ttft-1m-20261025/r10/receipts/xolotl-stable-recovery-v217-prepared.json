@@ -1,0 +1,57 @@
+{
+  "unix": 1792911505.5513992,
+  "files": [
+    {
+      "file": "xolotl_recovery_common_v217.py",
+      "bytes": 4772,
+      "sha256": "5e04707544d9ccda6480e31a0784f2606bd42f10d225d84a67a8557a5cf40b78"
+    },
+    {
+      "file": "xolotl_sealed_bootstrap_v217.py",
+      "bytes": 2884,
+      "sha256": "b7cc5b69bcb075030e0050f53243975bd9eed9bccd88dec7520f97c8b1a0b120"
+    },
+    {
+      "file": "launch_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6320,
+      "sha256": "5c6be81b52ca7b6d0833cac95eb03f49ee67de7945cb8a17936f8774e8338ebc"
+    },
+    {
+      "file": "manage_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 7150,
+      "sha256": "8a4acd9e5819987eb9724cbe9985a085d1ec26e53f15dc51c0228c358915f86a"
+    },
+    {
+      "file": "manage_xolotl_stable_extended_v217.frozen.py",
+      "bytes": 7390,
+      "sha256": "341511edacf4a2fdf915a5534960a9477b9d68ca4a9f19cd50363a4c6f803970"
+    },
+    {
+      "file": "manage_xolotl_stable_edge_suite_v217.frozen.py",
+      "bytes": 9033,
+      "sha256": "ae943d0f148830d52149ad20da4330e07810009adcc01b847ab0fe4c6fb8b049"
+    },
+    {
+      "file": "run_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6097,
+      "sha256": "80a1bbb5b07c8dfcbd42c75d1bec58b23cb3bba8672a3e575f53286512f68d26"
+    },
+    {
+      "file": "promote_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 8669,
+      "sha256": "1d6138a58a8e4e4cba2702a7f4e5ea04d286cef33de2908a007202c055070097"
+    },
+    {
+      "file": "finalize_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6082,
+      "sha256": "3db6aca06737876ec64fc481d0e74cf52b216978829a1b1bcac5732df4b6ee55"
+    }
+  ],
+  "maximum_H200": 2,
+  "old_formal_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "new_formal_uid": "e808d0b3-65c6-4a48-b121-220ff6fc5eb2",
+  "independent_optimization_uid": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+  "qualified_profile": "nativefa019/S128/API f062/exact memo1/GPFS cache2M; all existing recovery gates unchanged",
+  "experimental_candidate_promoted": false,
+  "actual1m_new_instance_claimed": false
+}

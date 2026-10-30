@@ -1,0 +1,368 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-program-call-limit",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-max-calls.json"
+          },
+          "id": "call_d9105069709e46aaace0e0e7e4c53093",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13326,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+            "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_d9105069709e46aaace0e0e7e4c53093",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+            "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_d9105069709e46aaace0e0e7e4c53093",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { await ctx.tool('read', {file_path:'proof.txt'}); return await ctx.tool('read', {file_path:'proof.txt'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-max-calls.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":303},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":303,\"projected_bytes\":303,\"original_estimated_tokens\":76,\"projected_estimated_tokens\":76,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"projected_digest\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"repeat_key\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"content_ref\":\"inline:sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3a7d68b86339abf908278ddbe04360dca3863a501db866c848d6f725368f5ac4\"}",
+        "prepared_digest": "sha256:3e30e0313188426e091c630929b8abecc434cb6b1f875f6a2597fc7163934465",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "read"
+            ],
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 1,
+              "timeoutMs": 10000
+            },
+            "source": "async function run(ctx, inputs) { await ctx.tool('read', {file_path:'proof.txt'}); return await ctx.tool('read', {file_path:'proof.txt'}); }",
+            "type": "script"
+          },
+          "id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13626,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+            "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+            "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded maxToolCalls=1\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":77,\"original_output_bytes\":77,\"truncated\":false,\"start_offset_ms\":1,\"duration_ms\":2,\"metadata\":{\"source_anchors\":[\"proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":77},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":77,\"projected_bytes\":77,\"original_estimated_tokens\":20,\"projected_estimated_tokens\":20,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"projected_digest\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"repeat_key\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"content_ref\":\"inline:sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":132,\"projected_bytes\":132,\"original_estimated_tokens\":33,\"projected_estimated_tokens\":33,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"projected_digest\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"repeat_key\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"content_ref\":\"inline:sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e5286d15329d351b9de7e3ce12ea4a997360c219c94920bb852dcdcc1db1ce5d\"}",
+        "prepared_digest": "sha256:3295d110b4e9fe2629e146127bbc3e9d28f0491108ab80a13687c7db76be062f",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13886,
+        "text": "Actual limit error:\n\n```text\nError: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded maxToolCalls=1\n```",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7f0c83f2c516fd25a98b2ff0d28ae3a45d421da5f862d1692d278adfc646c8a4",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:aafea7dee6dd3e05690855ecb5c8280a75ae45da1202593e0d1eec77e3d39a3c",
+          "sha256:a1a9a0cd2200ebebeffc1917df09b6a4836e2547e5f0c7edcc2a4e4f7e19604b"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-Z3maFi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-max-calls.json once. Call program exactly once with its exact JSON object as             1:41 PM           arguments. Report the actual limit error without retrying or calling other tools.                                                                                                                                                                                                                                                                                     ♦ Read 1 file                                                                                                           ♦ program                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ♦ Run program 0.0s                                                                               14s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow program?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40838",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-Z3maFi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-max-calls.json once. Call program exactly once with its exact JSON object as             1:41 PM           arguments. Report the actual limit error without retrying or calling other tools.                                                                                                                                                                                                                                                                                     ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Actual limit error:                                                                                     1:41 PM                                                                                                                                 Error: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded                          maxToolCalls=1                                                                                                                                                                                                                                  Worked for 19s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "a one-call script budget permits the first real read, rejects the second before dispatch and retains the complete first receipt",
+      "name": "program-max-calls",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-Z3maFi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-max-calls.json once. Call program exactly once with its exact JSON object as             1:41 PM           arguments. Report the actual limit error without retrying or calling other tools.                                                                                                                                                                                                                                                                                     ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Actual limit error:                                                                                     1:41 PM                                                                                                                                 Error: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded                          maxToolCalls=1                                                                                                                                                                                                                                  Worked for 19s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-program-call-limit",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-max-calls.json"
+              },
+              "id": "call_d9105069709e46aaace0e0e7e4c53093",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13326,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+                "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_d9105069709e46aaace0e0e7e4c53093",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+                "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_d9105069709e46aaace0e0e7e4c53093",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { await ctx.tool('read', {file_path:'proof.txt'}); return await ctx.tool('read', {file_path:'proof.txt'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-max-calls.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":303},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":303,\"projected_bytes\":303,\"original_estimated_tokens\":76,\"projected_estimated_tokens\":76,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"projected_digest\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"repeat_key\":\"sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"content_ref\":\"inline:sha256:3810a196c67a0b8645da185a665cd20ea8b5cd567a427cc4a32d8fb934164be9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3a7d68b86339abf908278ddbe04360dca3863a501db866c848d6f725368f5ac4\"}",
+            "prepared_digest": "sha256:3e30e0313188426e091c630929b8abecc434cb6b1f875f6a2597fc7163934465",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "read"
+                ],
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 1,
+                  "timeoutMs": 10000
+                },
+                "source": "async function run(ctx, inputs) { await ctx.tool('read', {file_path:'proof.txt'}); return await ctx.tool('read', {file_path:'proof.txt'}); }",
+                "type": "script"
+              },
+              "id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13626,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+                "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c55820d1-3a59-4d5d-a6f1-ee346303fc3f",
+                "thread_id": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_2f4de3bb5b0e4f75b99c9145af8b9857",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded maxToolCalls=1\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":77,\"original_output_bytes\":77,\"truncated\":false,\"start_offset_ms\":1,\"duration_ms\":2,\"metadata\":{\"source_anchors\":[\"proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":77},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":77,\"projected_bytes\":77,\"original_estimated_tokens\":20,\"projected_estimated_tokens\":20,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"projected_digest\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"repeat_key\":\"sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"content_ref\":\"inline:sha256:e526f90f91fefcdf7290b67e66c37682a1081e80bdc012e19fefa9b8ef3a494a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":132,\"projected_bytes\":132,\"original_estimated_tokens\":33,\"projected_estimated_tokens\":33,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"projected_digest\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"repeat_key\":\"sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"content_ref\":\"inline:sha256:c8d2be87e8522f843d4804704d0f49136e4277e226e0577b3c2602cd9c5cd50f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e5286d15329d351b9de7e3ce12ea4a997360c219c94920bb852dcdcc1db1ce5d\"}",
+            "prepared_digest": "sha256:3295d110b4e9fe2629e146127bbc3e9d28f0491108ab80a13687c7db76be062f",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13886,
+            "text": "Actual limit error:\n\n```text\nError: Error converting from js 'tool call' into type 'limited tool call': PTC script exceeded maxToolCalls=1\n```",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "7f0c83f2c516fd25a98b2ff0d28ae3a45d421da5f862d1692d278adfc646c8a4",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:aafea7dee6dd3e05690855ecb5c8280a75ae45da1202593e0d1eec77e3d39a3c",
+              "sha256:a1a9a0cd2200ebebeffc1917df09b6a4836e2547e5f0c7edcc2a4e4f7e19604b"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "bb84d1cd-ece2-43e1-a30e-da22cc180877"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,112 @@
+   Compiling a3s-code-core v9.1.5 (/Users/roylin/code/aster/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 2 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 42.22s
+     Running unittests src/lib.rs (target/qualification/net-progress-build/target/debug/deps/a3s_code_core-e65840cae8dd0e13)
+
+running 84 tests
+test agent::extra_agent_tests::test_agent_event_serialize_confirmation_received ... ok
+test agent::extra_agent_tests::test_agent_event_serialize_confirmation_required ... ok
+test agent::extra_agent_tests::test_agent_event_serialize_confirmation_timeout ... ok
+test agent::tests::confirmation_authority_keeps_tools_visible_without_permission_checker ... ok
+test agent::tests::missing_permission_and_confirmation_authority_hides_tools_from_llm_request ... ok
+test agent::tests::nested_tool_governance_tests::cancelling_one_invocation_settles_only_its_confirmation ... ok
+test agent::tests::test_agent_hitl_confirmation_events ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::automatic_deadline_bounds_a_stalled_confirmation_cancellation ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::automatic_deadline_drops_a_stalled_confirmation_registration ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::an_already_cancelled_call_never_registers_or_cancels_an_existing_request ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::confirmation_backpressure_is_cancellable_without_dropping_the_queued_prefix ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::the_shared_runtime_cancels_both_pending_provider_stages_without_claiming_cleanup ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::a_cancelled_runs_late_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_7f4c90f763a74487b8ac7127076ab112 current_id=call_e89d3f1bf67445789b44450d01974f77 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::a_rejected_runs_late_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_00e421a36def4ff389667d2d3ef9fa3c current_id=call_bdf64f9aa47045a7afab87fd4aba0376 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::an_answered_runs_old_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_6d689b4d312d44a5aeeeb218395052b7 current_id=call_aedee3a7809e4578a8a0d1f9c503a41d late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::unconfirmed_host_cleanup_cannot_let_an_abandoned_approval_authorize_a_new_run ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_0432f9309b8d458691faa3d029848264 current_id=call_12695060938c419fb5a72c023c6e27f0 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_availability ... POLICY_CALLBACK_OBSERVATION stage=Available reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_policy ... POLICY_CALLBACK_OBSERVATION stage=Policy reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_recheck ... POLICY_CALLBACK_OBSERVATION stage=Recheck reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_requirement ... POLICY_CALLBACK_OBSERVATION stage=Requires reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::runtime_events::tests::forwarder_exposes_delegated_confirmation_lifecycle ... ok
+test agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_skill_visibility_keeps_execution_permission_and_confirmation_gates ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_without_permission_or_confirmation_presents_no_tools ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver ... ok
+test agent_api::tests::queue::session_close_rejects_and_clears_every_pending_confirmation ... ok
+test agent_api::tests::queue::session_close_settles_a_stream_blocked_on_confirmation ... ok
+test agent_api::tests::queue::test_session_confirmation_api_resolves_pending_request ... ok
+test agent_api::tests::queue::test_session_confirmation_api_without_manager_is_noop ... ok
+test agent_api::tests::subagent::test_registered_task_fanout_inherits_final_confirmation_manager ... ok
+test agent_api::tests::timeouts::test_session_confirmation_and_tool_timeouts_remain_independent ... ok
+test agent_api::tests::timeouts::test_session_confirmation_timeout_does_not_configure_tool_timeout ... ok
+test child_run::tests::both_confirmation_scopes_must_approve_when_both_prompt ... ok
+test child_run::tests::child_allow_parent_ask_uses_only_parent_confirmation ... ok
+test child_run::tests::child_confirmation_does_not_approve_a_parent_request_it_did_not_open ... ok
+test child_run::tests::delegated_confirmation_requires_confirmation_and_policy_merge ... ok
+test child_run::tests::delegated_confirmation_snapshot_keeps_parent_forward_semantics ... ok
+test child_run::tests::delegated_targeted_settlement_leaves_other_confirmation_pending_in_both_scopes ... ok
+test child_run::tests::tool_owned_confirmation_uses_parent_authority_after_both_allow ... ok
+test event_protocol::tests::envelope_rejects_unsupported_version_and_projects_confirmation_arms ... ok
+test fact_control::approval_identity_tests::owned_consent_ids_are_fresh_without_hiding_same_response_collisions_or_changing_legacy_ids ... ok
+test fact_control::receipts::tests::exact_confirmation_and_budget_refusals_prove_zero_execution ... ok
+test fact_control::receipts::tests::unchanged_ask_obeys_the_frozen_host_confirmation_authority ... ok
+test fact_control::tests::bash_that_cannot_spawn_does_not_park_for_confirmation ... ok
+test fact_control::tests::malformed_batch_does_not_park_for_confirmation ... ok
+test hitl::tests::an_abandoned_receiver_cannot_accept_or_publish_a_late_approval ... ok
+test hitl::tests::auto_approve_confirmation_provider_never_blocks ... ok
+test hitl::tests::cancelling_one_confirmation_leaves_concurrent_confirmation_pending ... ok
+test hitl::tests::expiring_one_confirmation_leaves_concurrent_confirmation_pending ... ok
+test hitl::tests::test_cancel_confirmation ... ok
+test hitl::tests::test_confirmation_flow_approve ... ok
+test hitl::tests::test_confirmation_flow_reject ... ok
+test hitl::tests::test_confirmation_manager_no_hitl ... ok
+test hitl::tests::test_confirmation_manager_policy_update ... ok
+test hitl::tests::test_confirmation_manager_with_hitl ... ok
+test hitl::tests::test_confirmation_manager_with_yolo ... ok
+test hitl::tests::test_confirmation_not_found ... ok
+test hitl::tests::test_confirmation_policy_default ... ok
+test hitl::tests::test_confirmation_policy_disabled_is_always_yolo ... ok
+test hitl::tests::test_confirmation_policy_enabled ... ok
+test hitl::tests::test_confirmation_policy_is_yolo ... ok
+test hitl::tests::test_confirmation_policy_with_timeout ... ok
+test hitl::tests::test_confirmation_policy_yolo_mode ... ok
+test hitl::tests::test_confirmation_policy_yolo_multiple_lanes ... ok
+test hitl::tests::test_multiple_confirmations ... ok
+test hitl::tests::test_pending_confirmations_info ... ok
+test mcp::tools::tests::closed_world_read_only_annotation_does_not_escalate_confirmation ... ok
+test mcp::tools::tests::unknown_open_world_mutating_and_submit_tools_escalate_confirmation ... ok
+test permissions::heredoc_tests::ordinary_python_heredocs_require_confirmation_without_parsing_their_body_as_shell ... ok
+test permissions::tests::test_policy_requires_confirmation ... ok
+test safety_gate::tests::ask_with_confirmation_manager_requests_confirmation ... ok
+test safety_gate::tests::ask_without_confirmation_manager_is_safe_deny ... ok
+test safety_gate::tests::escalated_allow_without_confirmation_manager_fails_closed ... ok
+test safety_gate::tests::tool_requirement_escalates_permission_allow_to_confirmation ... ok
+test safety_gate::tests::yolo_lane_executes_without_confirmation ... ok
+test tool_confirmation::tests::approved_confirmation_returns_approved_and_forwards_events ... ok
+test tool_confirmation::tests::closed_confirmation_channel_is_a_rejection ... ok
+test tool_confirmation::tests::invocation_cancellation_rejects_the_exact_request_and_pairs_events ... ok
+test tool_confirmation::tests::invocation_timeout_expires_only_its_own_confirmation ... ok
+test tool_confirmation::tests::rejected_confirmation_returns_llm_safe_rejection ... ok
+test tool_confirmation::tests::timeout_does_not_approve_or_deny ... ok
+test tools::builtin::bash::tests::test_bash_request_network_grant_requires_confirmation ... ok
+test tools::task::tests::task_child_run_confirmation_auto_approve ... ok
+
+test result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 5371 filtered out; finished in 30.32s

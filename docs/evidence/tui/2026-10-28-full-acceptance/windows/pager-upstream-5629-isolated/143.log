@@ -1,0 +1,24 @@
+
+running 1 test
+
+thread 'views::dock::tests::crowded_dock_keeps_every_header_and_never_grows_past_its_cap' (57048) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dock\mod.rs:1015:9:
+the rows that do not fit are summarized: [
+    " v Tasks 10                                                 ",
+    " ♦ Run task 0                                             1s",
+    " ♦ Run task 1                                             1s",
+    " ♦ Run task 2                                             1s",
+    "   v show 7 more                                            ",
+    " v Watchers 2                                               ",
+    " ♦ Monitor watch 0                                     3m01s",
+    " ♦ Monitor watch 1                                     3m01s",
+]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dock::tests::crowded_dock_keeps_every_header_and_never_grows_past_its_cap ... FAILED
+
+failures:
+
+failures:
+    views::dock::tests::crowded_dock_keeps_every_header_and_never_grows_past_its_cap
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

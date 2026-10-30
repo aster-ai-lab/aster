@@ -1,0 +1,195 @@
+{
+    "at":  "2026-10-25T08:46:21.1718901+00:00",
+    "base_url":  "http://117.162.0.179:8080/v1",
+    "cases":  [
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.8030838,
+                      "result_seconds":  12.9207287,
+                      "tool_call_id":  "call_001a93e8ae384ab79a7c4f02",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-e9d2ffb2c1d74424",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-json-call.json",
+                                             "deepseek-v4.1-flash-auto-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  40,
+                                        "prompt_tokens":  510,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  20,
+                                        "prompt_tokens":  300,
+                                        "total_tokens":  320
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-named-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  23.4829294,
+                      "result_seconds":  12.716408099999999,
+                      "tool_call_id":  "call_50c50f33993a437a89d50a53",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-59f1da92120e4384",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-named-sse-call.sse",
+                                             "deepseek-v4.1-flash-named-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  510,
+                                        "total_tokens":  570
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  300,
+                                        "total_tokens":  310
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-required-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.4282085,
+                      "result_seconds":  12.7068651,
+                      "tool_call_id":  "call_f9fe99147bf549338d96434e",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-72f42618259a41a0",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-required-json-call.json",
+                                             "deepseek-v4.1-flash-required-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  40,
+                                        "prompt_tokens":  510,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  300,
+                                        "total_tokens":  310
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.692148,
+                      "result_seconds":  13.0347721,
+                      "tool_call_id":  "call_f8d773f94b434590bbe8301f",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-5f84abd85f6e4a52",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-sse-call.sse",
+                                             "deepseek-v4.1-flash-auto-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  40,
+                                        "prompt_tokens":  510,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  20,
+                                        "prompt_tokens":  300,
+                                        "total_tokens":  320
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  20.8117195,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  1.0712551,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-sse.sse"
+                  },
+                  {
+                      "case":  "prism-27b-auto-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 500; response retained in prism-27b-auto-json-call.json"
+                  },
+                  {
+                      "case":  "prism-27b-named-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "SSE error: Inference failed: OpenAI upstream returned 500 Internal Server Error"
+                  },
+                  {
+                      "case":  "prism-27b-required-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 500; response retained in prism-27b-required-json-call.json"
+                  },
+                  {
+                      "case":  "prism-27b-auto-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "SSE error: Inference failed: OpenAI upstream returned 500 Internal Server Error"
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  0.8251415,
+                      "response_file":  "prism-27b-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  1.5241696999999998,
+                      "response_file":  "prism-27b-hi-tools-sse.sse"
+                  }
+              ],
+    "all_passed":  false
+}

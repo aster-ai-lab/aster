@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes' (46260) panicked at crates\code\acp\src\office_file_tests.rs:309:13:
+native proof missing: root="\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\.tmp7QjiFy", args={"file_path":"verified.xlsx","kind":"xlsx","sheets":[{"name":"明细","rows":[["编号","值","核对","字面量"],["R01",225,true,"=1+1"],["R02",240,false,null]]},{"name":"汇总","rows":[["合计",465]]}]}, output=ToolOutput { content: "{\"artifact_content_digest\":\"67c6eb00762a2a924dbe5e51b76931a0b5a6b48f185f397688ce67212be457ae\",\"artifact_relative_path\":\"verified.xlsx\",\"artifact_requested_path\":\"verified.xlsx\",\"bytes\":3179,\"file_path\":\"\\\\\\\\?\\\\C:\\\\Users\\\\admin\\\\AppData\\\\Local\\\\Temp\\\\.tmp7QjiFy/verified.xlsx\",\"files\":[\"\\\\\\\\?\\\\C:\\\\Users\\\\admin\\\\AppData\\\\Local\\\\Temp\\\\.tmp7QjiFy/verified.xlsx\"],\"kind\":\"xlsx\",\"readback\":\"/明细/A1=编号\\n/明细/B1=值\\n/明细/C1=核对\\n/明细/D1=字面量\\n/明细/A2=R01\\n/明细/B2=225\\n/明细/C2=true\\n/明细/D2==1+1\\n/明细/A3=R02\\n/明细/B3=240\\n/明细/C3=false\\n/汇总/A1=合计\\n/汇总/B1=465\",\"readback_truncated\":false,\"validated\":true}", success: true, metadata: Some(Object {"artifact_content_digest": String("67c6eb00762a2a924dbe5e51b76931a0b5a6b48f185f397688ce67212be457ae"), "artifact_relative_path": String("verified.xlsx"), "artifact_requested_path": String("verified.xlsx"), "bytes": Number(3179), "file_path": String("\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\.tmp7QjiFy/verified.xlsx"), "files": Array [String("\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\.tmp7QjiFy/verified.xlsx")], "kind": String("xlsx"), "readback": String("/明细/A1=编号\n/明细/B1=值\n/明细/C1=核对\n/明细/D1=字面量\n/明细/A2=R01\n/明细/B2=225\n/明细/C2=true\n/明细/D2==1+1\n/明细/A3=R02\n/明细/B3=240\n/明细/C3=false\n/汇总/A1=合计\n/汇总/B1=465"), "readback_truncated": Bool(false), "validated": Bool(true)}), images: [], error_kind: None, trust: WorkspaceData }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes ... FAILED
+
+failures:
+
+failures:
+    office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.10s
+

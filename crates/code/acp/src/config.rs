@@ -74,8 +74,14 @@ pub fn load_launch_config_with_imports(
                 .iter()
                 .map(|layer| layer.acl.as_str())
                 .collect::<Vec<_>>();
-            let mut config = CodeConfig::from_acl_layers(&layer_acls)
-                .map_err(|error| anyhow!("failed to parse merged A3S ACL: {error}"))?;
+            let mut config = CodeConfig::from_acl_layers(&layer_acls).map_err(|error| {
+                let sources = layers
+                    .iter()
+                    .map(|layer| layer.path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                anyhow!("failed to parse merged A3S ACL from {sources}: {error}")
+            })?;
             // Layered documents may re-declare a provider; the later
             // (workspace) layer must overlay the earlier (user) one instead
             // of shadowing it — otherwise a workspace default_model silently
@@ -106,6 +112,12 @@ pub fn load_launch_config_with_imports(
     let mut selected = config.import_accounts.clone();
     selected.extend(requested.iter().copied());
     merge_account_imports(&mut config, &selected);
+    // The first-run template's key is guidance, not a credential.
+    for provider in &mut config.providers {
+        if provider.api_key.as_deref() == Some("替换为你的密钥") {
+            provider.api_key = None;
+        }
+    }
     apply_default_model_env(&mut config)?;
 
     let model_id = config
@@ -347,9 +359,9 @@ providers \"deepseek\" {
 }
 ";
 
-/// Host home for `~/.a3s`. A non-empty `HOME` wins. Windows leaves `HOME`
+/// Host home for user-owned state. A non-empty `HOME` wins. Windows leaves `HOME`
 /// unset and puts the profile in `USERPROFILE`.
-fn user_home() -> Option<PathBuf> {
+pub(crate) fn user_home() -> Option<PathBuf> {
     for key in ["HOME", "USERPROFILE"] {
         if let Some(value) = std::env::var_os(key).filter(|value| !value.is_empty()) {
             return Some(PathBuf::from(value));
@@ -688,6 +700,7 @@ fn apply_default_model_env(config: &mut CodeConfig) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    mod diagnostics;
     mod execution_capabilities;
     mod goal_control;
     use super::*;
@@ -819,7 +832,41 @@ providers "mock" {
     }
 
     #[test]
-    fn first_run_acl_is_created_once_and_can_open_a_session_model() {
+    fn first_run_placeholder_keys_never_become_runtime_credentials() {
+        env_locked(|| {
+            let home = tempfile::tempdir().unwrap();
+            let workspace = hermetic_workspace();
+            std::env::set_var("HOME", home.path());
+            std::env::remove_var("A3S_DEFAULT_MODEL");
+            assert!(ensure_user_acl().unwrap());
+            let path = home.path().join(".a3s/config.acl");
+            let template = std::fs::read_to_string(&path).unwrap();
+
+            let launch = load_launch_config(workspace.path().into(), None).unwrap();
+            assert!(
+                launch
+                    .config
+                    .llm_config("deepseek", "deepseek-flash")
+                    .is_none(),
+                "a first-run placeholder must not be sent to a provider"
+            );
+            assert_eq!(std::fs::read_to_string(&path).unwrap(), template);
+
+            std::fs::write(
+                &path,
+                template.replace("替换为你的密钥", "fixture-configured-key"),
+            )
+            .unwrap();
+            let configured = load_launch_config(workspace.path().into(), None).unwrap();
+            assert!(configured
+                .config
+                .llm_config("deepseek", "deepseek-flash")
+                .is_some());
+        });
+    }
+
+    #[test]
+    fn first_run_acl_is_created_once_and_lists_unconfigured_models() {
         env_locked(|| {
             let home = tempfile::tempdir().unwrap();
             let workspace = hermetic_workspace();
@@ -842,7 +889,7 @@ providers "mock" {
             assert!(launch
                 .config
                 .llm_config("deepseek", "deepseek-flash")
-                .is_some());
+                .is_none());
             let zhipu = launch
                 .config
                 .find_provider("zhipu")
@@ -853,7 +900,7 @@ providers "mock" {
             );
             assert!(zhipu.find_model("glm-5.3").is_some());
             assert!(zhipu.find_model("glm-5.3-flash").is_some());
-            assert!(launch.config.llm_config("zhipu", "glm-5.3").is_some());
+            assert!(launch.config.llm_config("zhipu", "glm-5.3").is_none());
             #[cfg(unix)]
             {
                 use std::os::unix::fs::PermissionsExt;

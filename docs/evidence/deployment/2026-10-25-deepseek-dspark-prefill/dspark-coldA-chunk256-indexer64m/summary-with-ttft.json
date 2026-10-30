@@ -1,0 +1,14 @@
+{
+  "profile": "DSpark depth4 tier0.25 chunk256 indexer2^26; exact FP4 1M",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 34.8
+  },
+  "prefill_median": 625.9,
+  "full_one_million_completed": false,
+  "prefill_ttft_seconds_median": 27.182995554991066,
+  "draft_tokens_offered": 480,
+  "draft_tokens_accepted": 408,
+  "paired_off_decode_median": 26.0,
+  "speed_ratio": 1.3384615384615384
+}

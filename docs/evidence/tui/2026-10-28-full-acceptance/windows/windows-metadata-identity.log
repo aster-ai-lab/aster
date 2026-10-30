@@ -1,0 +1,190 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling windows-sys v0.61.2
+   Compiling hashbrown v0.17.1
+   Compiling windows-sys v0.60.2
+   Compiling cc v1.9.0
+   Compiling string_cache v0.9.0
+   Compiling indexmap v2.14.0
+   Compiling web_atoms v0.2.3
+   Compiling icu_normalizer v2.0.0
+   Compiling cssparser v0.37.0
+   Compiling markup5ever v0.38.0
+   Compiling markup5ever v0.39.0
+   Compiling string_cache v0.8.9
+   Compiling idna_adapter v1.2.1
+   Compiling cssparser v0.34.0
+   Compiling a3s-acl v0.3.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\acl)
+   Compiling opentelemetry v0.21.0
+   Compiling referencing v0.47.0
+   Compiling dashmap v6.2.1
+   Compiling toml_edit v0.22.27
+   Compiling a3s-vec v0.1.8 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\vec)
+   Compiling lopdf v0.42.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling mio v1.2.1
+   Compiling ring v0.17.14
+   Compiling rquickjs-sys v0.11.0
+   Compiling selectors v0.38.0
+   Compiling socket2 v0.6.4
+   Compiling io-extras v0.19.0
+   Compiling anstyle-wincon v3.0.10
+   Compiling winapi-util v0.1.11
+   Compiling anstyle-query v1.1.4
+   Compiling markup5ever v0.14.1
+   Compiling idna v1.1.0
+   Compiling html5ever v0.39.0
+   Compiling html5ever v0.38.0
+   Compiling cap-primitives v4.0.3
+   Compiling tokio v1.53.3
+   Compiling selectors v0.26.0
+   Compiling anstream v1.0.0
+   Compiling same-file v1.0.6
+   Compiling xml5ever v0.38.0
+   Compiling dirs-sys v0.5.0
+   Compiling url v2.5.8
+   Compiling publicsuffix v2.3.0
+   Compiling clap_builder v4.6.7
+   Compiling cap-std v4.0.2
+   Compiling walkdir v2.5.0
+   Compiling dom_query v0.28.0
+   Compiling html5ever v0.29.1
+   Compiling nu-ansi-term v0.50.3
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling dirs v6.0.0
+   Compiling tempfile v3.27.0
+   Compiling toml v0.8.23
+   Compiling html2text v0.16.7
+   Compiling jsonschema v0.47.0
+   Compiling a3s-form-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\form-core)
+   Compiling tokio-util v0.7.19
+   Compiling tower v0.5.2
+   Compiling cookie_store v0.21.1
+   Compiling async-compression v0.4.19
+   Compiling cap-fs-ext v4.0.2
+   Compiling deadpool v0.12.3
+   Compiling tracing-subscriber v0.3.23
+   Compiling a3s-sandbox v0.2.3 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\sandbox)
+   Compiling htmd v0.5.4
+   Compiling notify v8.2.0
+   Compiling rustls v0.23.46
+   Compiling scraper v0.22.0
+   Compiling dom_smoothie v0.18.2
+   Compiling clap v4.6.7
+   Compiling h2 v0.4.19
+   Compiling tower-http v0.6.8
+   Compiling tokio-stream v0.1.17
+   Compiling a3s-effect v0.2.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\effect)
+   Compiling ignore v0.4.24
+   Compiling sha256 v1.6.0
+   Compiling a3s-memory v0.1.5 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\memory)
+   Compiling a3s-common v0.1.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\common)
+   Compiling rquickjs-core v0.11.0
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling rustls-webpki v0.103.15
+   Compiling rcgen v0.13.2
+   Compiling a3s-lane v0.5.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\lane)
+   Compiling rquickjs v0.11.0
+   Compiling hyper v1.8.1
+   Compiling hyper-util v0.1.20
+   Compiling tokio-rustls v0.26.6
+   Compiling hyper-rustls v0.27.7
+   Compiling wiremock v0.6.5
+   Compiling reqwest v0.12.24
+   Compiling a3s-search v3.4.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\search)
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 48s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_core-b84e9a3e662ce246.exe)
+
+running 33 tests
+test porcelain::tests::a_failed_reread_is_not_an_empty_mutation ... ok
+test porcelain::tests::a_clean_revision_path_is_not_kept_when_git_was_not_invoked ... ok
+test porcelain::tests::a_missed_status_outside_git_is_not_a_git_observation ... ok
+test porcelain::tests::a_revision_path_left_dirty_stays_on_the_command ... ok
+test porcelain::tests::a_missed_status_with_a_known_head_is_not_an_empty_tree ... ok
+test porcelain::receipt_tests::failed_reads_keep_spent_bytes_and_never_produce_a_digest ... ok
+test porcelain::tests::a_renamed_quoted_pair_records_both_paths ... ok
+test porcelain::tests::a_quoted_porcelain_path_is_a_mutation ... ok
+test porcelain::receipt_tests::nul_rename_fields_and_legacy_unicode_renames_keep_exact_paths_without_panicking ... ok
+test porcelain::tests::an_undecodable_quoted_path_is_not_an_empty_mutation ... ok
+test porcelain::receipt_tests::old_stat_only_baselines_remain_readable_without_fabricating_a_hash ... ok
+test porcelain::tests::a_run_level_budget_closes_the_gate_and_a_command_path_list_does_not ... ok
+test porcelain::tests::hidden_index_tags_are_paths_and_ordinary_tags_are_not ... ok
+test porcelain::tests::nul_status_keeps_a_path_with_a_space ... ok
+test porcelain::tests::porcelain_keeps_the_suffix_past_thirty_two_paths ... ok
+test porcelain::receipt_tests::git_output_read_failure_cannot_become_an_empty_success ... ok
+test porcelain::windows::tests::windows_observer_refuses_escapes_and_streams ... ok
+test porcelain::receipt_tests::git_output_stops_at_its_byte_bound_and_never_returns_a_prefix_as_success ... ok
+test porcelain::windows::tests::actual_windows_files_have_bounded_byte_identities ... ok
+test porcelain::windows::tests::actual_windows_walk_detects_changes_without_git ... ok
+test porcelain::receipt_tests::a_rename_cannot_cross_the_path_bound_and_malformed_status_cannot_panic ... ok
+test porcelain::receipt_tests::a_large_status_list_is_a_digest_in_the_prepared_baseline ... ok
+test porcelain::receipt_tests::git_parsers_bound_paths_and_do_not_accept_overflow_as_complete ... ok
+test porcelain::windows::tests::windows_observer_refuses_reparse_point_ancestors ... ok
+test porcelain::windows::tests::actual_powershell_read_keeps_the_observation_stable ... ok
+
+thread 'porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes' (2720) panicked at crates\code\core\src\porcelain\windows_tests.rs:57:5:
+assertion `left != right` failed
+  left: Some("35fed20050b29d48c2c48d24e6ac4b26e3ea5a5b6612c1d1041525310340e7fd")
+ right: Some("35fed20050b29d48c2c48d24e6ac4b26e3ea5a5b6612c1d1041525310340e7fd")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes ... FAILED
+test porcelain::tests::a_status_budget_does_not_diff_a_prefix_or_fail_the_read ... ok
+test porcelain::tests::an_unchanged_git_worktree_is_a_complete_empty_delta ... ok
+
+thread 'porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable' (49948) panicked at crates\code\core\src\porcelain\windows_tests.rs:29:5:
+assertion `left == right` failed: a real sandboxed read must not change the observed file identity
+  left: ContentStamp { path: "proof.txt", present: true, len: 15, modified: 13437694676850622500, changed: 0, node: (1841253919, 4222124651097703), mode: 32, kind: 0, content_digest: Some("624f91b0589750f05423ef87ea193fad7b9745e732da386a4c2971129db734ec"), metadata_digest: Some("2d5b2d43832bd1da68252c7b6ba6b0b3e0fbb627c3c9012cd47e18ab5ab74b9f") }
+ right: ContentStamp { path: "proof.txt", present: true, len: 15, modified: 13437694676850622500, changed: 0, node: (1841253919, 4222124651097703), mode: 32, kind: 0, content_digest: Some("624f91b0589750f05423ef87ea193fad7b9745e732da386a4c2971129db734ec"), metadata_digest: Some("8678ae4627bade232ec0bb2a1026e811793ec4bb041b0d7160764aec3633b86d") }
+test porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable ... FAILED
+test porcelain::tests::a_foreign_commit_is_not_a_command_mutation_unless_this_command_invoked_git ... ok
+test porcelain::tests::an_unstamped_existing_dirty_path_is_an_observation_gap ... ok
+test porcelain::tests::a_status_byte_cap_is_a_budget_and_a_hidden_index_byte_cap_keeps_the_status has been running for over 60 seconds
+test porcelain::tests::a_status_record_cap_is_a_budget_and_drops_the_prefix has been running for over 60 seconds
+test porcelain::tests::a_status_record_cap_is_a_budget_and_drops_the_prefix ... ok
+test porcelain::tests::a_status_byte_cap_is_a_budget_and_a_hidden_index_byte_cap_keeps_the_status ... ok
+
+failures:
+
+failures:
+    porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable
+    porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes
+
+test result: FAILED. 31 passed; 2 failed; 0 ignored; 0 measured; 5264 filtered out; finished in 85.76s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

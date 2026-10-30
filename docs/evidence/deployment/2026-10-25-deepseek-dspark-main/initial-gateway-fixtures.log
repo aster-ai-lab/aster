@@ -1,0 +1,198 @@
+cwd=/code/aster/.wt-deepseek-dspark-main-20261025
+command=['taskset', '-c', '0-23', '/home/user/.cargo/bin/cargo', '+1.97.1', 'test', '--locked', '-p', 'a3s-gateway', '--lib', 'inference::openai_request', '--', '--test-threads=1']
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+   Compiling a3s-use-core v0.2.4 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/use/core)
+   Compiling a3s-apofasi v0.1.1 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/apofasi)
+   Compiling a3s-gateway v1.1.1 (/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway)
+   Compiling a3s-acl v0.3.0 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/acl)
+   Compiling a3s-use-ocr v0.3.2 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/ocr)
+   Compiling a3s-use-bge v0.1.0 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/bge)
+   Compiling a3s-updater v0.3.0 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/updater)
+warning: unused import: `HashMap`
+  --> apps/gateway/src/entrypoint/inference_dispatch.rs:16:24
+   |
+16 | use std::collections::{HashMap, HashSet};
+   |                        ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::collections::BTreeMap`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4488:17
+     |
+4488 |             use std::collections::BTreeMap;
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `hyper::body::Body as _`
+  --> apps/gateway/src/entrypoint/protocol/http_handler.rs:19:5
+   |
+19 | use hyper::body::Body as _;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufferedBody` and `buffer_body_up_to`
+ --> apps/gateway/src/entrypoint/protocol/streaming_handler.rs:9:26
+  |
+9 | use super::body_buffer::{buffer_body_up_to, BufferedBody};
+  |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DECISION_REQUEST_LIMIT_BYTES`, `DecisionContentPart`, `DecisionDefinition`, `DecisionStepPart`, and `DecisionVisibleTurn`
+  --> apps/gateway/src/inference/mod.rs:36:25
+   |
+36 |     DecisionAssessment, DecisionContentPart, DecisionDefinition, DecisionError, DecisionRequest,
+   |                         ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+37 |     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
+   |                                                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^
+38 |     DECISION_REQUEST_LIMIT_BYTES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `ChosenGroup`, `DecisionReason`, `FrozenDecision`, `TurnDecisionCache`, and `TurnIdentity`
+  --> apps/gateway/src/inference/mod.rs:41:5
+   |
+41 |     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
+   |     ^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DecisionInputs`, `RouteDecision`, `decision_inputs`, `evaluate_routing`, and `plan_decision_definition`
+  --> apps/gateway/src/inference/mod.rs:65:29
+   |
+65 |     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
+   |                             ^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^
+66 |     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^                               ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/entrypoint/protocol/http_handler.rs:812:21
+    |
+812 |                 let mut response = track_attributed_token_budget_response(
+    |                     ----^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+error[E0063]: missing fields `allowed_models` and `rpm_limit` in initializer of `PrincipalSubject`
+   --> apps/gateway/src/inference/usage_report.rs:200:22
+    |
+200 |             subject: PrincipalSubject {
+    |                      ^^^^^^^^^^^^^^^^ missing `allowed_models` and `rpm_limit`
+
+error[E0061]: this function takes 6 arguments but 4 arguments were supplied
+   --> apps/gateway/src/inference/usage_report.rs:213:20
+    |
+213 |         let body = usage_fact_body(&attribution(Some("  ")), 12, 200, 1_700_000_000);
+    |                    ^^^^^^^^^^^^^^^-------------------------------------------------- two arguments of type `std::option::Option<u64>` and `std::option::Option<u64>` are missing
+    |
+note: function defined here
+   --> apps/gateway/src/inference/usage_report.rs:82:15
+    |
+ 82 | pub(crate) fn usage_fact_body(
+    |               ^^^^^^^^^^^^^^^
+...
+ 87 |     prompt_tokens: Option<u64>,
+    |     --------------------------
+ 88 |     completion_tokens: Option<u64>,
+    |     ------------------------------
+help: provide the arguments
+    |
+213 |         let body = usage_fact_body(&attribution(Some("  ")), 12, 200, 1_700_000_000, /* std::option::Option<u64> */, /* std::option::Option<u64> */);
+    |                                                                                    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+error[E0061]: this function takes 6 arguments but 4 arguments were supplied
+   --> apps/gateway/src/inference/usage_report.rs:225:20
+    |
+225 |         let body = usage_fact_body(&attribution(Some("org-1")), 0, 500, 1_700_000_000);
+    |                    ^^^^^^^^^^^^^^^---------------------------------------------------- two arguments of type `std::option::Option<u64>` and `std::option::Option<u64>` are missing
+    |
+note: function defined here
+   --> apps/gateway/src/inference/usage_report.rs:82:15
+    |
+ 82 | pub(crate) fn usage_fact_body(
+    |               ^^^^^^^^^^^^^^^
+...
+ 87 |     prompt_tokens: Option<u64>,
+    |     --------------------------
+ 88 |     completion_tokens: Option<u64>,
+    |     ------------------------------
+help: provide the arguments
+    |
+225 |         let body = usage_fact_body(&attribution(Some("org-1")), 0, 500, 1_700_000_000, /* std::option::Option<u64> */, /* std::option::Option<u64> */);
+    |                                                                                      ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+error[E0061]: this function takes 6 arguments but 4 arguments were supplied
+   --> apps/gateway/src/inference/usage_report.rs:268:40
+    |
+268 |         submit_usage_fact("", "token", usage_fact_body(&attribution(None), 1, 200, 1));
+    |                                        ^^^^^^^^^^^^^^^------------------------------- two arguments of type `std::option::Option<u64>` and `std::option::Option<u64>` are missing
+    |
+note: function defined here
+   --> apps/gateway/src/inference/usage_report.rs:82:15
+    |
+ 82 | pub(crate) fn usage_fact_body(
+    |               ^^^^^^^^^^^^^^^
+...
+ 87 |     prompt_tokens: Option<u64>,
+    |     --------------------------
+ 88 |     completion_tokens: Option<u64>,
+    |     ------------------------------
+help: provide the arguments
+    |
+268 |         submit_usage_fact("", "token", usage_fact_body(&attribution(None), 1, 200, 1, /* std::option::Option<u64> */, /* std::option::Option<u64> */));
+    |                                                                                     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+warning: variable does not need to be mutable
+  --> apps/gateway/src/config/acl/inference.rs:37:9
+   |
+37 |     let mut guardrails = HashMap::new();
+   |         ----^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+
+warning: unused variable: `content_length`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4271:25
+     |
+4271 |                     let content_length = loop {
+     |                         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_content_length`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `decider`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4326:9
+     |
+4326 |     let decider = server.clone();
+     |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_decider`
+
+warning: variable does not need to be mutable
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4750:9
+     |
+4750 |     let mut config = routed_config(address, &key);
+     |         ----^^^^^^
+     |         |
+     |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/inference/authorization.rs:863:9
+    |
+863 |         mut service_is_available: F,
+    |         ----^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:354:5
+    |
+354 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:383:5
+    |
+383 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+Some errors have detailed explanations: E0061, E0063.
+For more information about an error, try `rustc --explain E0061`.
+warning: `a3s-gateway` (lib test) generated 15 warnings
+error: could not compile `a3s-gateway` (lib test) due to 4 previous errors; 15 warnings emitted

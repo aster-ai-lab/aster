@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::fact_log::fork_admission::fork_admission_refuses_debt_busy_and_changed_source_without_execution' (53476) panicked at crates\code\core\src\agent_api\tests\fact_log\fork_admission.rs:332:44:
+called `Result::unwrap()` on an `Err` value: Os { code: 32, kind: Uncategorized, message: "另一个程序正在使用此文件，进程无法访问。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::fact_log::fork_admission::fork_admission_refuses_debt_busy_and_changed_source_without_execution ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::fact_log::fork_admission::fork_admission_refuses_debt_busy_and_changed_source_without_execution
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5307 filtered out; finished in 0.07s
+

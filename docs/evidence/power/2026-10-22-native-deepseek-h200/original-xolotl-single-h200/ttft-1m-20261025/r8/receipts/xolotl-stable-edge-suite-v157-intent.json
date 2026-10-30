@@ -1,0 +1,38 @@
+{
+  "unix": 1792900632.5410194,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc11-6ef84ac5b528/serve-stable-recovery-v157/qualification-stable-edge-suite-v157",
+  "allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "gpu_uuid": "GPU-ae6ae91f-8d9b-abc1-f7d4-7077c20fcc97",
+  "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "suite-worker.py",
+      "bytes": 4427,
+      "sha256": "766b18a135af4a9537a049ee23d100be11c4d2ea9fdc4eb03f323ca679e98625"
+    },
+    {
+      "file": "suite-plan.json",
+      "bytes": 286,
+      "sha256": "2f4fa8e1e24b4681a374610bb2530d21e1246e5547248e5fa830a59722847e88"
+    },
+    {
+      "file": "remainder/request-worker.py",
+      "bytes": 5431,
+      "sha256": "2fe3960def466b74740bddd91ec2319e59a3619ae0542d6f17819427dfe48b4b"
+    },
+    {
+      "file": "remainder/request-plan.json",
+      "bytes": 248,
+      "sha256": "01e07db14724d52de053d4b54c2658e5226fa10723f557a6e420291e370b4be9"
+    }
+  ],
+  "process": {
+    "pid": 1258554,
+    "start_ticks": 282742651,
+    "uid": 10250,
+    "unix": 1792900641.5866477,
+    "budget_seconds": 1500
+  }
+}

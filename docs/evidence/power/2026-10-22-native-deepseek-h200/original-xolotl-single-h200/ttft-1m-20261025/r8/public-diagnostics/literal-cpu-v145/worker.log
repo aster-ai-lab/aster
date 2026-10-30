@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-literal-scan-v145/worker.py", line 103, in <module>
+    raise RuntimeError('unchanged upstream frontend acceptance failed with exact scanner enabled')
+RuntimeError: unchanged upstream frontend acceptance failed with exact scanner enabled

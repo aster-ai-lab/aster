@@ -1,0 +1,63 @@
+{
+  "case": "editor-nonzero",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=5 model_turns=1 prompt_tokens=13314",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-Xsz1M9\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 1010a60d-e8a7-45c8-ae84-6e77554a00ed\n  Working directory: C:\\Windows\\Temp\\aster-kimi-Xsz1M9\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor exited unsuccessfully; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 3.5s\n│ I need respond exactly EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT perhaps instruction? User: \"Reply with    \n│ EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\". I should comply no tools respond EDITOR-CONTROL-OK. ORIGINAL-  \n│ DRAFT likely some token? Should infer perhaps User expects only EDITOR-CONTROL-OK, not original draft? The phrase     \n│ appended could be mode instruction? It's user text. Usually these prompts are control tests: reply with EDITOR-       \n│ CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. So respond exactly.\nEDITOR-CONTROL-OK\nWorked for 12s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "name": "editor-roundtrip",
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-Xsz1M9\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 1010a60d-e8a7-45c8-ae84-6e77554a00ed\n  Working directory: C:\\Windows\\Temp\\aster-kimi-Xsz1M9\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor exited unsuccessfully; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 3.5s\n│ I need respond exactly EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT perhaps instruction? User: \"Reply with    \n│ EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\". I should comply no tools respond EDITOR-CONTROL-OK. ORIGINAL-  \n│ DRAFT likely some token? Should infer perhaps User expects only EDITOR-CONTROL-OK, not original draft? The phrase     \n│ appended could be mode instruction? It's user text. Usually these prompts are control tests: reply with EDITOR-       \n│ CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. So respond exactly.\nEDITOR-CONTROL-OK\nWorked for 12s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13314,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "EDITOR-CONTROL-OK"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 6,
+          "digest": "8ea62b8d0707434b22fc7ac468b1723c8d9c7f3e5c2893222f94dc20ce60606a"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

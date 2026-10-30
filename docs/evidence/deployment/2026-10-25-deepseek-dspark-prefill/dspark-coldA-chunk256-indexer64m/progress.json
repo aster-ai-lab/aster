@@ -1,0 +1,11 @@
+{
+  "at_epoch": 1792932680.3683162,
+  "stage": "complete",
+  "profile": "DSpark depth4 tier0.25 chunk256 indexer2^26; exact FP4 1M",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 34.8
+  },
+  "prefill_median": 625.9,
+  "full_one_million_completed": false
+}

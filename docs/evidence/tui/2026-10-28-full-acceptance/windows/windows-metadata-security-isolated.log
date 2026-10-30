@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes' (51984) panicked at crates\code\core\src\porcelain\windows_tests.rs:57:5:
+assertion `left != right` failed
+  left: Some("71928251e81428b8dfd4268668f3bce154d6b03572b50134a4063f35ae690d03")
+ right: Some("71928251e81428b8dfd4268668f3bce154d6b03572b50134a4063f35ae690d03")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes ... FAILED
+
+failures:
+
+failures:
+    porcelain::windows::tests::windows_observation_keeps_real_security_and_link_changes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5296 filtered out; finished in 0.96s
+

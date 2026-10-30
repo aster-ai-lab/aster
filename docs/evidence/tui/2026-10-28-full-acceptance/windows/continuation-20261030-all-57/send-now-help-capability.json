@@ -1,0 +1,27 @@
+{
+  "assertions_finished": true,
+  "case": "send-now-help-capability",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "name": "capability-help",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zZE9Zr\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                      ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                                        │                                                                              │                                        │  Send now while running (cancels the current turn)                           │                                        │  Ctrl+Enter / Ctrl+i                                                         │                                        │                                                                              │                                        │  Cancels the current turn and sends the composer text as the next prompt.    │                                        │                                                                              │                                        │  Plain Enter while running queues a follow-up instead.                       │                                        │                                                                              │                                        │  The previous turn must finish cancellation and release its resources        │                                        │  before the next prompt can start. Existing permissions and verification     │                                        │  rules still apply.                                                          │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                      ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮    │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

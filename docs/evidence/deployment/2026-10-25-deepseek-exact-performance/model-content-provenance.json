@@ -1,0 +1,95 @@
+{
+  "model_id": "f78d6eaa-98f5-4d03-9b26-021d6ce501d4",
+  "repo_id": "IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored",
+  "revision": "7a28b7272c80500bcfe28bba969ef0d239aeefd5",
+  "schema": "a3s.model-content-manifest.v1",
+  "content_digest": "sha256:70bc5d973b7dac25b1b54a02513c162631cd37de8a31ed6551d771d35efe665f",
+  "parts": [
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-01-of-16",
+      "sha256": "3b909e5804f7cee17dff90d834339cc5f2745bf4082e92a54d617e0bc540e07f",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-02-of-16",
+      "sha256": "a98d6fc580aa12ea9b796b89e2aeaa2eb4ad840d9d549a834a119a9887c4bfbe",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-03-of-16",
+      "sha256": "fe1b44c6d753efef260a19faf047f9613da0263d6a176afe1ac4e06e1a172e08",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-04-of-16",
+      "sha256": "b11395be1cffce5e96e24fe56e53cc13ebc246d807b4ecd8bbfedb1c5f6fbae9",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-05-of-16",
+      "sha256": "59d0856bda06f52d9d45a8593ee0eff1cf6bd45d81e9c6f8a7b034ef8c468118",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-06-of-16",
+      "sha256": "8003ba0eeb809fbc53c9781edc564d37b64e8df819614e4c4e85d4686fc939e5",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-07-of-16",
+      "sha256": "81e613b5dba0bb01ec28a727120e1a340fb7c4ee73e19d54d9c681041e4d1a59",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-08-of-16",
+      "sha256": "919e67dae0586e553c7b510fb5405b27540dbe0bb80684f0c0c5b1757d5a0e45",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-09-of-16",
+      "sha256": "154021ddee57736cb4ea2a91b767c3c481bdade5402e88f922b2032fac513288",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-10-of-16",
+      "sha256": "156732d47d6612c2cb2ab2f9b24d76896ba8c0a5d893acb2d15b8b7d2c878b7a",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-11-of-16",
+      "sha256": "4d5cf4f47b1eb6996f028c14bfbaff2ff09d9be1959ed28226ce741983780813",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-12-of-16",
+      "sha256": "11d8ef317984113eb391cc0c91b0b7a513df49bc2a61bd182a79e7816c1d2e69",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-13-of-16",
+      "sha256": "c8eb89c431e8fc38929ff00fb27dcd44fd72c2b455141b815eef2da022f5a4ec",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-14-of-16",
+      "sha256": "77aa8461419c5ccd628e1e8d530e8d84a8e1695b2195cd74b6ee62a4eebd2e93",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-15-of-16",
+      "sha256": "ad0a9e2fb29bdfbf840e9dfff4a9aed5707d2b0c550d3f5a6da5238d9f9ef032",
+      "size_bytes": 10737418240
+    },
+    {
+      "path": "v3/V41-XQ-1017-v3.gguf.part-16-of-16",
+      "sha256": "f18cb36f58df260c4d41b4a9055f827e79814efeb893250baad35a29578baa53",
+      "size_bytes": 1893629952
+    }
+  ],
+  "active_weight": "/data/power/deepseek-v41-gpu6/V41-XQ-1017-v3.gguf",
+  "actual_size_bytes": 162954903552,
+  "expected_assembled_sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389",
+  "checksum_source": "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/v3/SHA256SUMS",
+  "verification_note": "Source import and assembled checksum previously validated; this audit checks pin, expected checksum and size without rehashing 151.8 GiB during the benchmark.",
+  "quantization_description": "Existing XQ mixed ternary/2-bit/3-bit and dense Q8_0; not pure all-ternary"
+}

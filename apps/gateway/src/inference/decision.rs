@@ -3,10 +3,10 @@
 //! refuse), the request is bounded (64 KiB), and the boundary is
 //! model-blind: model ids and routing thresholds never cross it.
 //!
-//! Content flows ONE way — the gateway sends turn content to the
-//! configured decision upstream (an inference upstream like any other)
-//! and persists nothing: no prompt bytes from a decision call enter
-//! the spool, logs, or metrics (invariant 7 applies verbatim).
+//! Content flows ONE way — the gateway sends turn content to the configured
+//! decision implementation and persists nothing: no prompt bytes from a
+//! decision call enter the spool, logs, or metrics (invariant 7 applies
+//! verbatim).
 
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -407,9 +407,8 @@ pub(crate) fn from_categorical(
     })
 }
 
-/// The decision-service port. Implementations call the configured
-/// decision upstream (an inference upstream like any other); content
-/// crossing this port is never persisted by the gateway.
+/// The decision-service port. Content crossing this port is never persisted
+/// by the gateway, whether the implementation is local or remote.
 #[async_trait::async_trait]
 pub(crate) trait DecisionService: Send + Sync {
     /// One decision call for one turn. Implementations bound their

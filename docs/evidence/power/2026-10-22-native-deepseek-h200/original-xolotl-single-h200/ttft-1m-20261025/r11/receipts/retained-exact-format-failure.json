@@ -1,0 +1,41 @@
+{
+  "unix": 1792921727.0424101,
+  "phase": "failed",
+  "candidate": "tool-adapter-v267r2",
+  "formal_service_changed": false,
+  "previous_actual_client_observed_calls": 3,
+  "previous_model_incorrectly_reported_calls": 4,
+  "previous_count_fidelity_passed": false,
+  "candidate_live_prompt_probe": {
+    "reply": "Repeated calls were stopped after three rounds \u2014 the fourth round was never executed.\n\nAll three completed rounds returned the same error: \"Authentication required for web search.\" No search results were obtained, so information about the Rust official website (rust-lang.org) is unavailable.\n\nCOMPLETED=3",
+    "exact_passed": false,
+    "seconds": 3.391000000294298,
+    "usage": {
+      "prompt_tokens": 600,
+      "completion_tokens": 60,
+      "total_tokens": 660,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "tools_actually_executed": false
+  },
+  "candidate_full_client_E2E_passed": false,
+  "files": [
+    {
+      "name": "frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+    },
+    {
+      "name": "serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+    },
+    {
+      "name": "aster_tool_roundtrip.py",
+      "bytes": 6119,
+      "sha256": "b6a567130922e321f38d8d6aeed69f768b47a19d1fc907ecfc649cee5bb6a8f1"
+    }
+  ]
+}

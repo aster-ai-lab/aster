@@ -1,0 +1,122 @@
+{
+  "schema": "aster-h200-resource-validation-intent-v2",
+  "unix": 1792877079.5999722,
+  "purpose": "replace exact terminal formal single-H200 resource; restore same VIP/key; independent optimization355 remains Running; maximum two H200",
+  "showname": "aster-xolotl-1mc8-d1480eb0e2fd",
+  "remote": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc8-d1480eb0e2fd",
+  "expected_gpus": 1,
+  "lease_seconds_after_pass": 21600,
+  "worker_sha256": "30e453c2671d9d8a18b2337a747f2b5f8ae902f3bdee9878e5b764b8a63106db",
+  "bootstrap_uid": 10250,
+  "diagnostic_hold_seconds_on_failure": 600,
+  "attempt": 1,
+  "command": [
+    "rjob",
+    "submit",
+    "--namespace",
+    "ailab-hrprdduanyan",
+    "--name",
+    "aster-xolotl-1mc8-d1480eb0e2fd",
+    "--task-type=normal",
+    "--gpu=1",
+    "--cpu=40",
+    "--memory=450560",
+    "--charged-group=hrprda3s_gpu_pool",
+    "--positive-tags",
+    "H200",
+    "feature/gpfs=yes",
+    "--mount",
+    "gpfs://gpfs1/yangchao:/mnt/shared-storage-user/yangchao",
+    "gpfs://gpfs2/gpfs2-shared-public:/mnt/shared-storage-gpfs2/gpfs2-shared-public",
+    "--private-machine=group",
+    "--preemptible=no",
+    "--image=registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+    "--restart-policy=never",
+    "--backoff_limit=1",
+    "--",
+    "bash",
+    "-lc",
+    "exec timeout --signal=TERM --kill-after=30 21660 python3 -u -c 'import base64;exec(base64.b64decode('\"'\"'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBvcyxzdWJwcm9jZXNzLHN5cyx0aW1lLHRyYWNlYmFjawpyb290PVBhdGgoJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQnKQp0cnk6CiBpZiByb290LnJlc29sdmUoKSE9cm9vdCBvciByb290LnN0YXQoKS5zdF91aWQhPTEwMjUwOnJhaXNlIFJ1bnRpbWVFcnJvcignb3duZWQgcmVzb3VyY2Ugc3RhZ2UgVUlEIGNoYW5nZWQnKQogaWYgb3MuZ2V0dWlkKCk9PTA6CiAgb3Muc2V0Z3JvdXBzKFtdKTtvcy5zZXRnaWQocm9vdC5zdGF0KCkuc3RfZ2lkKTtvcy5zZXR1aWQoMTAyNTApCiBpZiBvcy5nZXR1aWQoKSE9MTAyNTA6cmFpc2UgUnVudGltZUVycm9yKCdwcm9iZSBtdXN0IHJ1biBhcyBpdHMgYXJ0aWZhY3Qgb3duZXInKQogb3MudW1hc2soMG8wNzcpCiB3aXRoIChyb290Lyd3b3JrZXIubG9nJykub3BlbigneGInLGJ1ZmZlcmluZz0wKSBhcyBsb2c6CiAgb3MuZHVwMihsb2cuZmlsZW5vKCksMSk7b3MuZHVwMihsb2cuZmlsZW5vKCksMikKICBwcmludCgnUkVTT1VSQ0VfUFJPQkVfQk9PVFNUUkFQIHVpZD0nK3N0cihvcy5nZXR1aWQoKSksZmx1c2g9VHJ1ZSkKICByZXN1bHQ9c3VicHJvY2Vzcy5ydW4oWydweXRob24zJywgJy11JywgJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQvd29ya2VyLnB5JywgJy0tZXhwZWN0ZWQtZ3B1cycsICcxJywgJy0tbGVhc2Utc2Vjb25kcycsICcyMTYwMCcsICctLXdvcmtlci1zaGEyNTYnLCAnMzBlNDUzYzI2NzFkOWQ4YTE4YjIzMzdhNzQ3ZjJiNWY4YWU5MDJmM2JkZWU5ODc4ZTViNzY0YjhhNjMxMDZkYiddLGN3ZD1yb290LHRpbWVvdXQ9MjE2MjApCiAgaWYgcmVzdWx0LnJldHVybmNvZGU6CiAgIHByaW50KCdSRVNPVVJDRV9QUk9CRV9GQUlMRUQgZGlhZ25vc3RpY19ob2xkX3NlY29uZHM9NjAwJyxmbHVzaD1UcnVlKTt0aW1lLnNsZWVwKDYwMCkKICBzeXMuZXhpdChyZXN1bHQucmV0dXJuY29kZSkKZXhjZXB0IEV4Y2VwdGlvbjoKIHRyYWNlYmFjay5wcmludF9leGMoKTtwcmludCgnUkVTT1VSQ0VfQk9PVFNUUkFQX0ZBSUxFRCBkaWFnbm9zdGljX2hvbGRfc2Vjb25kcz02MDAnLGZsdXNoPVRydWUpO3RpbWUuc2xlZXAoNjAwKTtyYWlzZQo='\"'\"'))'"
+  ],
+  "phase": "submitted",
+  "incorrect_selectors_replaced": true,
+  "previous_terminal": {
+    "stopped_formal": {
+      "rjob": {
+        "uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+        "phase": "Stopped"
+      },
+      "replica": {
+        "uid": "8d111540-5afb-4422-b464-b4bb48635182",
+        "phase": "Stopped"
+      }
+    },
+    "independent_optimization": {
+      "rjob": {
+        "uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+        "phase": "Running"
+      },
+      "replica": {
+        "uid": "7bbf9c96-01c8-4f71-8eae-62bd9b967f97",
+        "phase": "Running"
+      }
+    },
+    "unix": 1792877086.9543564,
+    "maximum_authorized_h200": 2,
+    "purpose": "replace the exact terminal formal resource; optimization355 remains separate"
+  },
+  "stage": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc8-d1480eb0e2fd",
+    "uid": 10250,
+    "worker_sha256": "30e453c2671d9d8a18b2337a747f2b5f8ae902f3bdee9878e5b764b8a63106db",
+    "worker_bytes": 10111
+  },
+  "submitted": {
+    "cli_exit": 0,
+    "rjob": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+    "uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+    "createdAt": "2026-10-24T21:24:51Z",
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-10-24T21:24:51Z",
+          "lastUpdateTime": "2026-10-24T21:24:51Z",
+          "message": "RJob is inqueue",
+          "reason": "StartInqueue",
+          "status": "True",
+          "type": "Inqueue"
+        }
+      ],
+      "message": "RJob is enqueue",
+      "phase": "Inqueue",
+      "reason": "RJobInqueue",
+      "taskStatuses": {
+        "t0": {
+          "pending": 1
+        }
+      }
+    },
+    "positiveTags": [
+      "H200",
+      "feature/gpfs=yes"
+    ],
+    "resources": [
+      {
+        "limits": {
+          "cpu": "20",
+          "memory": "220Gi",
+          "nvidia.com/gpu": "1"
+        },
+        "requests": {
+          "cpu": "20",
+          "memory": "220Gi",
+          "nvidia.com/gpu": "1"
+        }
+      }
+    ],
+    "replicas": 1,
+    "restartPolicy": "Never",
+    "securityContext": {},
+    "observedAtEpoch": 1792877092
+  }
+}

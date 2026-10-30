@@ -1,0 +1,233 @@
+{
+  "assertions_finished": false,
+  "case": "trust-accept",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "trust-proof.txt"
+          },
+          "id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13320,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6e0b4ecb-ab9b-42e0-ae9d-e4feaa572366",
+            "thread_id": "da66288d-5faa-4804-8835-6c9cc25e3769"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6e0b4ecb-ab9b-42e0-ae9d-e4feaa572366",
+            "thread_id": "da66288d-5faa-4804-8835-6c9cc25e3769"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tTRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"trust-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":85},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":85,\"projected_bytes\":85,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"projected_digest\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"repeat_key\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"content_ref\":\"inline:sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0cc91bf5c7d6965bf48eaf8b9e21a476c8731407243011d6147de26ea1981e36\"}",
+        "prepared_digest": "sha256:e61c4bee3042f1f362ec92532dd6184f2d836e3b83ce3a4c6ed4bde909527da2",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13500,
+        "text": "TRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "a1c9e6587049bc950913be36f7b8f0feced8b181a994089171ff761d17310a46",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:e1b4edfeea1c91cc149a5d979e51ed4a59a2d65ba79b5c77c5217be31f04296f"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "\n\n\n\n\n\n\n\n\n\n\nFinishing session…",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "release-stamped trust gate blocks the declared process and all session/model work",
+      "name": "trust-prompt",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DQMQDX\\workspace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        +                                                                                                                      *#       .+#.                                                                                                          *###.......  .*o                                                                                                     .+*#####+        ::                                                                                                  .+*####**####*+   :::                                                                                               ...**#####*  +######*+:                                                                                               ...      *###++###*+:                                                                                                  ..          +####*:                                                                                                     .::  ::::::::+*#+                                                                                                         ::::        *#                                                                                                                       +                                                                                                                                                                                                                                                                                                                                                 Do you trust the contents of this directory?                                                                             C:\\Windows\\Temp\\aster-kimi-DQMQDX\\workspace                                                                                                                                                                                                 Aster may run or modify contents in this directory,                                                                                   posing security risks.                                                                                                                                                                                                                      Yes, proceed                 y                                                                                          No, quit                     n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Aster  0.1.4 (a21925eef70d)                                                                                                                          "
+    },
+    {
+      "detail": "facts=10 model_turns=2 prompt_tokens=26820",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DQMQDX\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other   7:27 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   TRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba                                                            7:27 PM                                                                                                                                 Worked for 16s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the shown workspace grant starts its declared command and permits a real Kimi read",
+      "name": "trust-accept",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DQMQDX\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other   7:27 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   TRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba                                                            7:27 PM                                                                                                                                 Worked for 16s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "accepted",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "trust-proof.txt"
+              },
+              "id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13320,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-6e0b4ecb-ab9b-42e0-ae9d-e4feaa572366",
+                "thread_id": "da66288d-5faa-4804-8835-6c9cc25e3769"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-6e0b4ecb-ab9b-42e0-ae9d-e4feaa572366",
+                "thread_id": "da66288d-5faa-4804-8835-6c9cc25e3769"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ade15a1c533a42ef8aefdc4bf95b49a8",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tTRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"trust-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":85},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":85,\"projected_bytes\":85,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"projected_digest\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"repeat_key\":\"sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"content_ref\":\"inline:sha256:9efa9d7a9ae01502575ae61b7fa1b2cbfdb35b3cec6fb35d751a1ffb09a49faf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0cc91bf5c7d6965bf48eaf8b9e21a476c8731407243011d6147de26ea1981e36\"}",
+            "prepared_digest": "sha256:e61c4bee3042f1f362ec92532dd6184f2d836e3b83ce3a4c6ed4bde909527da2",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13500,
+            "text": "TRUSTED-2fe51dea-4036-43e1-86d0-bae372b7e7ba",
+            "tool": null
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "a1c9e6587049bc950913be36f7b8f0feced8b181a994089171ff761d17310a46",
+              "seq": 9
+            },
+            "receipt_keys": [
+              "sha256:e1b4edfeea1c91cc149a5d979e51ed4a59a2d65ba79b5c77c5217be31f04296f"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 10,
+          "type": "turn.complete"
+        }
+      ],
+      "session": null
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "the original workspace reuses its grant after a real process restart",
+      "name": "trust-restart",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DQMQDX\\workspace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ╭───────────────────────────────────────────────────────────────────────────────────────────────╮                       │                                                                                               │                       │                    +                  Aster  0.1.4 (a21925eef70d)                             │                       │                   *#       .+#.       Thanks for trying Aster, give feedback with /feedback!  │                       │                  *###.......  .*o                                                             │                       │               .+*#####+        ::     New worktree                                    ctrl+w  │                       │            .+*####**####*+   :::      Resume session                                  ctrl+r  │                       │        ...**#####*  +######*+:        Changelog                                               │                       │      ...      *###++###*+:            Quit                                            ctrl+q  │                       │     ..          +####*:                                                                       │                       │     .::  ::::::::+*#+                                                                         │                       │       ::::        *#                                                                          │                       │                    +                                                                          │                       │                                                                                               │                       ╰───────────────────────────────────────────────────────────────────────────────────────────────╯                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    }
+  ],
+  "panicked": true,
+  "raw_terminal_tail": "\u001b[6n\u001b[m\u001b]0;D:/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-windows/a891556b0cee8096b81768f051ce80918e460099-20261029083101354/aster.exe\u0007\u001b[?25h\u001b[?1003;1006h\u001b[?1004h\u001b[?2004h\u001b]12;rgb:27/89/ed\u0007\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\u001b]0;aster\u0007\u001b[?25l\u001b[120C\u001b[?2026h\u001b[?2026l\u001b[48;2;20;20;20m\u001b[H                                                                                                                        \u001b[K  \u001b[38;2;128;128;128mC:\\W\\T\\aster-kimi-DQMQDX\\workspace                                                                                    \u001b[K\u001b[39m                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K            \u001b[12X\u001b[38;2;69;69;69m╭───────────────────────────────────────────────────────────────────────────────────────────────╮           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                                                                                               │           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                    \u001b[20X\u001b[38;2;39;137;237m+                  \u001b[18X\u001b[38;2;226;237;252m\u001b[1mAster  \u001b[38;2;108;108;108m\u001b[22m0.1.4 (a21925eef70d)                             \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                   \u001b[19X\u001b[38;2;39;137;237m*#       \u001b[38;2;203;204;205m.\u001b[38;2;39;137;237m+#\u001b[38;2;205;207;210m.       \u001b[38;2;108;108;108mThanks for trying Aster, give feedback with /feedback!  \u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                  \u001b[18X\u001b[38;2;39;137;237m*###\u001b[38;2;203;204;205m.......  \u001b[38;2;207;210;214m.\u001b[38;2;130;185;244m*\u001b[38;2;225;235;249mo                                                             \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│               \u001b[15X\u001b[38;2;203;204;205m.\u001b[38;2;39;137;237m+*#####+        \u001b[38;2;203;204;205m::     \u001b[38;2;226;237;252m\u001b[1mNew worktree\u001b[39m\u001b[22m                                    \u001b[K\u001b[38;2;120;120;120mctrl+w  \u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│            \u001b[12X\u001b[38;2;203;204;205m.\u001b[38;2;39;137;237m+*####**####*+   \u001b[38;2;203;204;205m:::      \u001b[38;2;226;237;252m\u001b[1mResume session\u001b[39m\u001b[22m                                  \u001b[K\u001b[38;2;120;120;120mctrl+r  \u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│        \u001b[38;2;203;204;205m...\u001b[38;2;39;137;237m**#####*  +######*+\u001b[38;2;203;204;205m:        \u001b[38;2;226;237;252m\u001b[1mChangelog\u001b[39m\u001b[22m                                               \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│      \u001b[38;2;203;204;205m...      \u001b[38;2;39;137;237m*###++###*+\u001b[38;2;203;204;205m:            \u001b[12X\u001b[38;2;226;237;252m\u001b[1mQuit\u001b[39m\u001b[22m                                            \u001b[K\u001b[38;2;120;120;120mctrl+q  \u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│     \u001b[38;2;203;204;205m..          \u001b[10X\u001b[38;2;39;137;237m+####*\u001b[38;2;203;204;205m:                                                                       \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│     \u001b[38;2;203;204;205m.::  ::::::::\u001b[38;2;39;137;237m+*#+                                                                         \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│       \u001b[38;2;203;204;205m::::        \u001b[38;2;39;137;237m*#                                                                          \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                    \u001b[20X\u001b[38;2;39;137;237m+                                                                          \u001b[K\u001b[38;2;69;69;69m│           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m│                                                                                               │           \u001b[K\u001b[39m            \u001b[12X\u001b[38;2;69;69;69m╰───────────────────────────────────────────────────────────────────────────────────────────────╯           \u001b[K\u001b[39m                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K  \u001b[38;2;99;197;255m╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \u001b[39m  \u001b[38;2;99;197;255m│ \u001b[38;2;39;137;237m>                                                                                                                \u001b[K\u001b[38;2;99;197;255m│  \u001b[39m  \u001b[38;2;99;197;255m╰───────────────────────────────────────────────────────────────────────────────────────── \u001b[38;2;128;128;128mkimi/K3.1 Pro (medium) \u001b[38;2;99;197;255m─╯  \u001b[39m                                                                                                                        \u001b[K                                                                                                                        \u001b[K                                                                                                                        \u001b[K\u001b[36;7H\u001b[?25h\u001b[m\u001b[?2026h\u001b[?2026l\u001b[?25l\u001b[38;2;200;200;200m\u001b[48;2;20;20;20m\u001b[2;3HC:\\W\\T\\aster-kimi-DQMQDX\\workspace\u001b[39m\u001b[8;13H\u001b[97X\n \u001b[95C \u001b[10;13H \u001b[20C \u001b[18C\u001b[27X\u001b[56C \u001b[11;13H \u001b[19C  \u001b[7C    \u001b[7C\u001b[54X\u001b[56C \u001b[12;13H \u001b[18C\u001b[11X\u001b[13C   \u001b[61C \u001b[13;13H \u001b[15C\u001b[9X\u001b[17C  \u001b[5C\u001b[12X\u001b[48C      \u001b[2C \u001b[14;13H \u001b[12C\u001b[15X\u001b[18C   \u001b[6C\u001b[14X\u001b[48C      \u001b[2C \u001b[15;13H \u001b[8C\u001b[11X\u001b[13C\u001b[10X\u001b[18C\u001b[9X\u001b[56C \u001b[16;13H \u001b[6C   \u001b[6C\u001b[12X\u001b[24C    \u001b[44C      \u001b[2C \u001b[17;13H \u001b[5C  \u001b[10C       \u001b[71C \u001b[18;13H \u001b[5C   \u001b[2C\u001b[12X\u001b[85C \u001b[19;13H \u001b[7C    \u001b[8C  \u001b[74C \u001b[20;13H \u001b[20C \u001b[74C \u001b[21;13H \u001b[95C \u001b[22;13H\u001b[97X\u001b[38;2;128;128;128m\u001b[33;5H| Starting session… 0.1s\u001b[38;2;226;237;252m\u001b[36;7Hi\u001b[38;2;200;200;200m\u001b[1m\u001b[39;3HEnter\u001b[38;2;108;108;108m\u001b[22m:send\u001b[2m  │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mAlt+Enter\u001b[38;2;108;108;108m\u001b[22m:newline\u001b[2m  │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mShift+Tab\u001b[38;2;108;108;108m\u001b[22m:mode\u001b[2m  │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mCtrl+x\u001b[38;2;108;108;108m\u001b[22m:shortcuts\u001b[44X\u001b[36;8H\u001b[?25h\u001b[m\u001b[?2026h\u001b[?2026l\u001b[?25l\u001b[38;2;226;237;252m\u001b[48;2;20;20;20m\b \u001b[38;2;200;200;200m\u001b[1m\u001b[39;3HShift+Tab\u001b[38;2;108;108;108m\u001b[22m:mode\u001b[2m\u001b[1C │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mCtrl+x\u001b[38;2;108;108;108m\u001b[22m:shortcuts\u001b[37X\u001b[36;7H\u001b]0;grok\u0007\u001b[?25h\u001b[m\u001b[?2026h\u001b[?2026l\u001b[?25l\u001b[38;2;64;64;64m\u001b[48;2;20;20;20m\u001b[25;3H─────────────────────────────────────────────────────────────────────────────────────────────────────────────────\u001b[38;2;108;108;108m28\u001b[38;2;64;64;64m─\u001b[38;2;226;237;252m\u001b[48;2;64;64;64m\u001b[26;3H  \u001b[48;2;70;70;70m\u001b[1m> /quit\u001b[22m\u001b[9X\u001b[38;2;108;108;108m\u001b[9CQuit the application\u001b[76X\u001b[38;2;226;237;252m\u001b[48;2;64;64;64m\u001b[76C \u001b[38;2;128;128;128m\u001b[48;2;128;128;128m█\u001b[38;2;226;237;252m\u001b[48;2;64;64;64m\u001b[27;3H    /settings     \u001b[38;2;108;108;108mOpen the settings modal\u001b[74X\u001b[38;2;128;128;128m\u001b[48;2;128;128;128m\u001b[74C█\u001b[38;2;226;237;252m\u001b[48;2;64;64;64m\u001b[28;3H    /config       \u001b[38;2;108;108;108mAdd and configure providers and models\u001b[59X\u001b[38;2;128;128;128m\u001b[48;2;128;128;128m\u001b[59C█\u001b[38;2;226;237;252m\u001b[48;2;64;64;64m\u001b[29;3H    /new\u001b[10X\u001b[38;2;108;108;108m\u001b[10CStart a new session\u001b[78X\u001b[38;2;226;237;252m\u001b[48;2;44;44;44m\u001b[78C \u001b[48;2;64;64;64m\u001b[30;3H    /effort       \u001b[38;2;108;108;108mSet reasoning effort for the current model\u001b[55X\u001b[38;2;226;237;252m\u001b[48;2;44;44;44m\u001b[55C \u001b[48;2;64;64;64m\u001b[31;3H    /model        \u001b[38;2;108;108;108mSwitch the active model\u001b[74X\u001b[38;2;226;237;252m\u001b[48;2;44;44;44m\u001b[74C \u001b[48;2;64;64;64m\u001b[32;3H    /context      \u001b[38;2;108;108;108mView context usage\u001b[79X\u001b[38;2;226;237;252m\u001b[48;2;44;44;44m\u001b[79C \u001b[48;2;64;64;64m\u001b[33;3H    /compact      \u001b[38;2;108;108;108mCompact conversation history\u001b[69X\u001b[38;2;226;237;252m\u001b[48;2;44;44;44m\u001b[69C \u001b[38;2;64;64;64m\u001b[48;2;20;20;20m\u001b[34;3H────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\u001b[38;2;39;137;237m\u001b[36;7H/\u001b[38;2;200;200;200m\u001b[1m\u001b[39;3HEnter\u001b[38;2;108;108;108m\u001b[22m:send\u001b[2m  │ \u001b[38;2;200;200;200m\u001b[22m\u001b[1m\u001b[1CAlt+Enter\u001b[38;2;108;108;108m\u001b[22m:newline\u001b[2m  │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mShift+Tab\u001b[38;2;108;108;108m\u001b[22m:mode\u001b[2m  │  \u001b[38;2;200;200;200m\u001b[22m\u001b[1mCtrl+x\u001b[38;2;108;108;108m\u001b[22m:shortcuts\u001b[36;8H\u001b[?25h\u001b[m\u001b[?2026h\u001b[?2026l\u001b[?25l\u001b[48;2;20;20;20m\u001b[25;3H\u001b[116X\n\u001b[116X\n\u001b[116X\n\u001b[116X\n\u001b[116X\n\u001b[116X\n\u001b[116X\u001b[38;2;64;64;64m\n──────────────────────────────────────────────────────────────────────────────────────────────────────────────────\u001b[38;2;108;108;108m1\u001b[38;2;64;64;64m─\u001b[38;2;226;237;252m\u001b[48;2;70;70;70m\u001b[1m\u001b[33;5H> /\u001b[38;2;39;137;237mquit\u001b[38;2;226;237;252m\u001b[22m \u001b[38;2;108;108;108mQuit the application\u001b[86X\u001b[38;2;39;137;237m\u001b[48;2;20;20;20m\u001b[36;8Hquit\u001b[?25h\u001b[m\u001b[2J\u001b]9;4;0;0\u0007\u001b[?2026l\u001b[?1015l\u001b[?2004l\u001b[?1003;1006l\u001b[?1004l\u001b[?25l\u001b[H\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\u001b[12;1H\u001b[?25hFinishing session…\r\n"
+}

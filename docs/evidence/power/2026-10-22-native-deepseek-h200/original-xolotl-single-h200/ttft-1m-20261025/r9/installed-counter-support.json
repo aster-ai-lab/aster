@@ -1,0 +1,60 @@
+{
+  "query_returncode": 0,
+  "query_stdout_bytes": 67053,
+  "query_stdout_sha256": "718fbdf1571470e447e28b09cbeed7538a229a2511e28762df07d95320adf225",
+  "confirmed_metrics": [
+    "gpu__time_duration.sum",
+    "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+    "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+    "sm__warps_active.avg.pct_of_peak_sustained_active",
+    "dram__bytes_read.sum",
+    "dram__bytes_write.sum",
+    "smsp__warps_eligible.avg.per_cycle_active",
+    "smsp__issue_active.avg.pct_of_peak_sustained_active"
+  ],
+  "installed_H200_supported_rows": [
+    {
+      "metric": "dram__bytes_read.sum",
+      "unit": "byte",
+      "supported": "1"
+    },
+    {
+      "metric": "dram__bytes_write.sum",
+      "unit": "byte",
+      "supported": "1"
+    },
+    {
+      "metric": "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+      "unit": "%",
+      "supported": "1"
+    },
+    {
+      "metric": "gpu__time_duration.sum",
+      "unit": "ns",
+      "supported": "1"
+    },
+    {
+      "metric": "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+      "unit": "%",
+      "supported": "1"
+    },
+    {
+      "metric": "sm__warps_active.avg.pct_of_peak_sustained_active",
+      "unit": "%",
+      "supported": "1"
+    },
+    {
+      "metric": "smsp__issue_active.avg.pct_of_peak_sustained_active",
+      "unit": "%",
+      "supported": "1"
+    },
+    {
+      "metric": "smsp__warps_eligible.avg.per_cycle_active",
+      "unit": "warp",
+      "supported": "1"
+    }
+  ],
+  "GPU_math_executed": false,
+  "model_touched": false,
+  "hardware_counters_collected": false
+}

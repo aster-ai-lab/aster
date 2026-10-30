@@ -1,0 +1,368 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-program-output-limit",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-output-limit.json"
+          },
+          "id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13326,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+            "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+            "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":256,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return {summary:'UTF8-LIMIT', text:'界'.repeat(600)}; }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-output-limit.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":252},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":252,\"projected_bytes\":252,\"original_estimated_tokens\":63,\"projected_estimated_tokens\":63,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"projected_digest\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"repeat_key\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"content_ref\":\"inline:sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3ff1916ce04b278aa786bce76913dfd7435a360918730d920e19a58834f65a97\"}",
+        "prepared_digest": "sha256:1108d3ee9cba6110dc0e8b18f8d03e3870a3e978e082888261880702119fcf53",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "read"
+            ],
+            "limits": {
+              "maxOutputBytes": 256,
+              "maxToolCalls": 1,
+              "timeoutMs": 10000
+            },
+            "source": "async function run(ctx, inputs) { return {summary:'UTF8-LIMIT', text:'界'.repeat(600)}; }",
+            "type": "script"
+          },
+          "id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13658,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+            "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+            "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nUTF8-LIMIT\\n\\nTool calls: 0\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"UTF8-LIMIT\\\",\\n  \\\"text\\\": \\\"界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界\\n[output truncated]\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[]},\"script_result\":{\"truncated\":true},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":255,\"projected_bytes\":255,\"original_estimated_tokens\":64,\"projected_estimated_tokens\":64,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"projected_digest\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"repeat_key\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"content_ref\":\"inline:sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:681a2a20c19b5970e9a2bedf6c4988af0d2035b7d0c088f66e498a43573a6f0c\"}",
+        "prepared_digest": "sha256:21e5885df0c94536d65f8535bb92ed50be705ba574562aeee507ec0526467692",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13964,
+        "text": "[output truncated]",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4b74fcfaecda041bab6467d72ae55c2c6546be5f5b1451aa9e2c3256c98ff45d",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:0c6814c7430a7505a516cec859525c3806b53bac7bd57368c9a68976a648d8d0",
+          "sha256:f632c25c6695391e7ab5ce6d5f0d32f5b41aca9bdefa4031a294e13d9414aba0"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dhZUDn\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-output-limit.json once. Call program exactly once with its exact JSON object as          1:42 PM           arguments. Report the actual truncation marker without retrying or calling other tools.                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ program                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ♦ Run program 0.0s                                                                               18s ↓13.7k [stop]                                                                                                                            │                                                                                                                       │  Allow program?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40948",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dhZUDn\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-output-limit.json once. Call program exactly once with its exact JSON object as          1:42 PM           arguments. Report the actual truncation marker without retrying or calling other tools.                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 2.2s                                                                                                                                                                                                                              [output truncated]                                                                                      1:43 PM                                                                                                                                 Worked for 28s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the real script's multibyte output fits the 256-byte ceiling including its truncation notice, has no replacement characters and explicitly marks truncated structured output",
+      "name": "program-utf8-output-budget",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dhZUDn\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-output-limit.json once. Call program exactly once with its exact JSON object as          1:42 PM           arguments. Report the actual truncation marker without retrying or calling other tools.                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 2.2s                                                                                                                                                                                                                              [output truncated]                                                                                      1:43 PM                                                                                                                                 Worked for 28s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-program-output-limit",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-output-limit.json"
+              },
+              "id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13326,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+                "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+                "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ddaeb2f24936487caca62a4ecfbacb29",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":256,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return {summary:'UTF8-LIMIT', text:'界'.repeat(600)}; }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-output-limit.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":252},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":252,\"projected_bytes\":252,\"original_estimated_tokens\":63,\"projected_estimated_tokens\":63,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"projected_digest\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"repeat_key\":\"sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"content_ref\":\"inline:sha256:1072ca35e0850e81879186b84972c8f0cf9a85c18aae7fff7090e5bb7e3aa6c4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3ff1916ce04b278aa786bce76913dfd7435a360918730d920e19a58834f65a97\"}",
+            "prepared_digest": "sha256:1108d3ee9cba6110dc0e8b18f8d03e3870a3e978e082888261880702119fcf53",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "read"
+                ],
+                "limits": {
+                  "maxOutputBytes": 256,
+                  "maxToolCalls": 1,
+                  "timeoutMs": 10000
+                },
+                "source": "async function run(ctx, inputs) { return {summary:'UTF8-LIMIT', text:'界'.repeat(600)}; }",
+                "type": "script"
+              },
+              "id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13658,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+                "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-9734a7b6-3364-4125-824e-60d4e734e8ae",
+                "thread_id": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_70c25f9fc0784bc89e5b66844ba35ba5",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nUTF8-LIMIT\\n\\nTool calls: 0\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"UTF8-LIMIT\\\",\\n  \\\"text\\\": \\\"界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界\\n[output truncated]\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[]},\"script_result\":{\"truncated\":true},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":255,\"projected_bytes\":255,\"original_estimated_tokens\":64,\"projected_estimated_tokens\":64,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"projected_digest\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"repeat_key\":\"sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"content_ref\":\"inline:sha256:d17c359d8d9140866765cad127bef1e1e5bd004b28c0d23bda1036b40334bfe3\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:681a2a20c19b5970e9a2bedf6c4988af0d2035b7d0c088f66e498a43573a6f0c\"}",
+            "prepared_digest": "sha256:21e5885df0c94536d65f8535bb92ed50be705ba574562aeee507ec0526467692",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13964,
+            "text": "[output truncated]",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "4b74fcfaecda041bab6467d72ae55c2c6546be5f5b1451aa9e2c3256c98ff45d",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:0c6814c7430a7505a516cec859525c3806b53bac7bd57368c9a68976a648d8d0",
+              "sha256:f632c25c6695391e7ab5ce6d5f0d32f5b41aca9bdefa4031a294e13d9414aba0"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "dfeb371b-5a01-4e39-98d5-9f81966898c3"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

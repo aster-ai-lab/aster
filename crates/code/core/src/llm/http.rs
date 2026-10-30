@@ -2,7 +2,7 @@
 
 use anyhow::{Context, Result};
 use async_trait::async_trait;
-use futures::StreamExt;
+use futures::{FutureExt, StreamExt};
 use std::env;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -451,17 +451,11 @@ impl HttpClient for ReqwestHttpClient {
         request = request.json(body);
 
         let request_timeout = self.request_timeout;
+        let response_cancel = cancel_token.clone();
         let send_and_read = async move {
-            let response = tokio::select! {
-                _ = cancel_token.cancelled() => {
-                    return Err(anyhow::Error::new(HttpClientError::cancelled("HTTP request")));
-                }
-                result = request.send() => {
-                    result.map_err(|error| {
-                        anyhow::Error::new(HttpClientError::from_reqwest("HTTP request", error))
-                    })?
-                }
-            };
+            let response = request.send().await.map_err(|error| {
+                anyhow::Error::new(HttpClientError::from_reqwest("HTTP request", error))
+            })?;
 
             let status = response.status().as_u16();
             let retry_after = response
@@ -469,9 +463,13 @@ impl HttpClient for ReqwestHttpClient {
                 .get("retry-after")
                 .and_then(|value| value.to_str().ok())
                 .map(String::from);
-            let response_body = response.text().await.map_err(|error| {
-                anyhow::Error::new(HttpClientError::from_reqwest("HTTP response body", error))
-            })?;
+            let response_body = if (200..300).contains(&status) {
+                response.text().await.map_err(|error| {
+                    anyhow::Error::new(HttpClientError::from_reqwest("HTTP response body", error))
+                })?
+            } else {
+                self.read_error_body(response, &response_cancel).await?
+            };
             let response_bytes = response_body.len() as u64;
             let duration_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -491,16 +489,25 @@ impl HttpClient for ReqwestHttpClient {
                 retry_after,
             })
         };
-        if let Some(timeout) = request_timeout {
-            match tokio::time::timeout(timeout, send_and_read).await {
-                Ok(result) => result,
-                Err(_elapsed) => Err(anyhow::Error::new(HttpClientError::transport(
-                    "HTTP request",
-                    format!("timed out: no response for {}ms", timeout.as_millis()),
-                ))),
+        let response = async {
+            if let Some(timeout) = request_timeout {
+                match tokio::time::timeout(timeout, send_and_read).await {
+                    Ok(result) => result,
+                    Err(_elapsed) => Err(anyhow::Error::new(HttpClientError::transport(
+                        "HTTP request",
+                        format!("timed out: no response for {}ms", timeout.as_millis()),
+                    ))),
+                }
+            } else {
+                send_and_read.await
             }
-        } else {
-            send_and_read.await
+        };
+        tokio::select! {
+            biased;
+            _ = cancel_token.cancelled() => {
+                Err(anyhow::Error::new(HttpClientError::cancelled("HTTP request")))
+            }
+            result = response => result,
         }
     }
 
@@ -600,7 +607,7 @@ impl HttpClient for ReqwestHttpClient {
                 error_body: String::new(),
             })
         } else {
-            let error_body = response.text().await.unwrap_or_default();
+            let error_body = self.read_error_body(response, &cancel_token).await?;
             // Return an empty stream for error responses
             let empty: futures::stream::Empty<Result<bytes::Bytes>> = futures::stream::empty();
             Ok(StreamingHttpResponse {
@@ -653,6 +660,40 @@ impl HttpClient for ReqwestHttpClient {
 }
 
 impl ReqwestHttpClient {
+    async fn read_error_body(
+        &self,
+        response: reqwest::Response,
+        cancel_token: &CancellationToken,
+    ) -> Result<String> {
+        if cancel_token.is_cancelled() {
+            return Err(anyhow::Error::new(HttpClientError::cancelled(
+                "HTTP error response body",
+            )));
+        }
+        if matches!(response.status().as_u16(), 401 | 403) {
+            // Known authorization failures must surface before a model deadline can turn them into retries.
+            return Ok(response
+                .text()
+                .now_or_never()
+                .and_then(|body| body.ok())
+                .unwrap_or_else(|| "HTTP authorization error body unavailable".into()));
+        }
+        let timeout = self.request_timeout.unwrap_or_else(stream_headers_timeout);
+        tokio::select! {
+            biased;
+            _ = cancel_token.cancelled() => {
+                Err(anyhow::Error::new(HttpClientError::cancelled("HTTP error response body")))
+            }
+            result = tokio::time::timeout(timeout, response.text()) => {
+                Ok(match result {
+                    Ok(Ok(body)) => body,
+                    Ok(Err(error)) => format!("Could not read HTTP error response body: {error}"),
+                    Err(_) => format!("HTTP error response body timed out after {}ms", timeout.as_millis()),
+                })
+            }
+        }
+    }
+
     async fn post_raw_streaming(
         &self,
         url: &str,
@@ -738,7 +779,7 @@ impl ReqwestHttpClient {
                 error_body: String::new(),
             })
         } else {
-            let error_body = response.text().await.unwrap_or_default();
+            let error_body = self.read_error_body(response, &cancel_token).await?;
             let empty: futures::stream::Empty<Result<bytes::Bytes>> = futures::stream::empty();
             Ok(StreamingHttpResponse {
                 status,
@@ -902,6 +943,9 @@ mod transport_error_tests;
 
 #[cfg(test)]
 mod redirect_tests;
+
+#[cfg(test)]
+mod response_lifecycle_tests;
 
 #[cfg(test)]
 mod tests {

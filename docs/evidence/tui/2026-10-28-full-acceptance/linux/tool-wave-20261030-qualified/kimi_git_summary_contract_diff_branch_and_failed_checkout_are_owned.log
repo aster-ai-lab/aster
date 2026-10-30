@@ -1,0 +1,23 @@
+
+running 1 test
+test tool_wave::kimi_git_summary_contract_diff_branch_and_failed_checkout_are_owned ... ORACLE case=tool-wave-git-summary name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=tool-wave-git-summary name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40226
+ORACLE case=tool-wave-git-summary name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=41401
+ORACLE case=tool-wave-git-summary name=fixture-git-read result=pass detail=the actual git tool reports the tracked modification and exact diff in a repo under this workspace's .tmp
+ORACLE case=tool-wave-git-summary name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=tool-wave-git-summary name=settled-turn result=pass detail=facts=14 model_turns=4 prompt_tokens=57654
+
+thread 'tool_wave::kimi_git_summary_contract_diff_branch_and_failed_checkout_are_owned' (8282) panicked at crates/code/acp/tests/aster_tui_live_e2e/tool_wave.rs:161:5:
+assertion `left == right` failed
+  left: "acceptance-b7a46534-d3d5-4ce0-86bf-0bd5b6f56f0f"
+ right: "fixture"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_wave::kimi_git_summary_contract_diff_branch_and_failed_checkout_are_owned
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 81 filtered out; finished in 69.76s
+

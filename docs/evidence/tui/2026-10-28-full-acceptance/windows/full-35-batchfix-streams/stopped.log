@@ -1,0 +1,6 @@
+Candidate superseded by the unchanged prompt-size guard and corrected new SDK fixture. No completed-batch claim.
+2026-10-29T08:25:37.9141360Z
+SUCCESS: The process with PID 40484 (child process of PID 34024) has been terminated.
+SUCCESS: The process with PID 16716 (child process of PID 52944) has been terminated.
+SUCCESS: The process with PID 34024 (child process of PID 52944) has been terminated.
+SUCCESS: The process with PID 52944 (child process of PID 18092) has been terminated.

@@ -1,0 +1,36 @@
+{
+  "unix": 1792883956.2313988,
+  "phase": "passed",
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "original_v82_refusal_retained": true,
+  "service_phase": "serving",
+  "observed_unix": 1792884076.7776208,
+  "client_phase": "passed",
+  "client_tests": 7,
+  "cases": [
+    {
+      "case": "technical8244",
+      "actual_input_tokens": 8244,
+      "prompt_sha256": "d1d63f30becc0b8dbd9a9070dac4d3f561ef64e5a11c72ff33d0af675bacf213",
+      "cold_ttft_seconds": 10.07765819458291,
+      "cold_seconds": 10.323803997598588,
+      "replay_ttft_seconds": 0.024896605871617794,
+      "replay_seconds": 0.20657466910779476,
+      "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+      "exact_output_reference_matched": true
+    },
+    {
+      "case": "technical25671",
+      "actual_input_tokens": 25671,
+      "prompt_sha256": "a070217f21ee1ed53372d13857825825987ec98fa4095a6d86051c35b58b9c44",
+      "cold_ttft_seconds": 20.66170957032591,
+      "cold_seconds": 20.875033997930586,
+      "replay_ttft_seconds": 0.0578465829603374,
+      "replay_seconds": 0.26208168221637607,
+      "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+      "exact_output_reference_matched": true
+    }
+  ],
+  "finished_unix": 1792884076.7776208
+}

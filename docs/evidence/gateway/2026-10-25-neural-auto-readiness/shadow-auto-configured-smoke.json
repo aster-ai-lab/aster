@@ -1,0 +1,268 @@
+[
+  {
+    "case": "simple-first",
+    "http_status": 200,
+    "seconds": 1.5400690030073747,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "a68c2e8112ef082dbc2a4a5ff3d2cb775f506e6f2dd44695af1a427538f517e9"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "9481cca522bdcf7fdc05060d34e776a9743dc90c597abf27116d860b4f60295d",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "READY",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942922,
+      "id": "chatcmpl-902f6e3b-6317-4d17-9a51-ccd9c544cf62",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 22.7,
+          "predicted_n": 2,
+          "predicted_per_second": 44.05286343612335,
+          "predicted_per_token_ms": 22.7,
+          "prompt_ms": 188.152,
+          "prompt_n": 19,
+          "prompt_per_second": 100.98218461669288,
+          "prompt_per_token_ms": 9.902736842105265
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 19,
+          "total_tokens": 21
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 19,
+        "total_tokens": 21
+      }
+    }
+  },
+  {
+    "case": "simple-replay",
+    "http_status": 200,
+    "seconds": 0.1796979650389403,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "a68c2e8112ef082dbc2a4a5ff3d2cb775f506e6f2dd44695af1a427538f517e9"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "9481cca522bdcf7fdc05060d34e776a9743dc90c597abf27116d860b4f60295d",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "READY",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942922,
+      "id": "chatcmpl-41874cb6-967a-46fc-86c9-da5e8cdb088a",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 15,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 22.642,
+          "predicted_n": 2,
+          "predicted_per_second": 44.16570974295557,
+          "predicted_per_token_ms": 22.642,
+          "prompt_ms": 148.555,
+          "prompt_n": 4,
+          "prompt_per_second": 26.926054323314595,
+          "prompt_per_token_ms": 37.13875
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 19,
+          "total_tokens": 21
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 19,
+        "total_tokens": 21
+      }
+    }
+  },
+  {
+    "case": "complex",
+    "http_status": 200,
+    "seconds": 10.830478966003284,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "c488eb3dba8a7db9d613d043748b00b31aadd42f1414d578ccb169df6b5ebf93"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "570b295c5c71cfde58bd779406c37a4b506292c79eda3bf7c0477c40bf724836",
+      "choices": [
+        {
+          "finish_reason": "length",
+          "index": 0,
+          "message": {
+            "content": "",
+            "reasoning_content": "We need answer. Need prove safe failover protocol concurrent financial transfers across asynchronous replicas during network partition. State consistency/idempotency invariants and explain recovery preserves. Give three concise invariants. Need likely design protocol. Need be rigorous but concise. Need mention asynchronous replicas, partition, failover. Financial transfers concurrent. Need safe failover protocol. Need invariants. Need explain recovery preserves. Three concise invariants. Need maybe protocol with quorum? Asynchronous replicas during partition. Need avoid double spend, lost updates, inconsistent balances. Need failover protocol. Could propose \"epoch fencing + transfer IDs + write-ahead intent log + quorum commit + reconciliation\". Need prove safety.\n\nLet's parse: \"Prove a safe failover protocol for concurrent financial transfers across asynchronous replicas during a network partition. State the consistency and idempotency invariants and explain how recovery preserves them. Give three concise invariants.\"\n\nNeed answer likely conceptual. Need define protocol. Need prove. Need three invariants concise. Need consistency and idempotency invariants. Need recovery preserves.\n\nWe need design safe failover protocol. Asynchronous replicas means replicas may lag. Network partition means split. Concurrent transfers. Failover means switch leader. Need safe.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942933,
+      "id": "chatcmpl-87e3982c-35d1-4314-92ed-b56ac396145e",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 260,
+          "prompt_tokens": 70,
+          "total_tokens": 330
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 260,
+        "prompt_tokens": 70,
+        "total_tokens": 330
+      }
+    }
+  }
+]

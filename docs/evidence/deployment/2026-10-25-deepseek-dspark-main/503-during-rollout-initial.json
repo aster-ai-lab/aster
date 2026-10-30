@@ -1,0 +1,14 @@
+{
+  "at_epoch": 1792938549.952922,
+  "request_id": "01a173750a75708e8f4bf4ed91b844ba/cb65ae87-9f9b-4dc6-8ce6-944cfeddb73c",
+  "rollout_pid": 3173535,
+  "rollout_still_loading": true,
+  "power_pid": 3174438,
+  "native_health_connection_refused": true,
+  "snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 48,
+    "snapshot_digest": "sha256:78352ed8c6079b47e0c2c4304bf156701e12bcfd940c4f150ab479f289866c1c"
+  },
+  "snapshot_ready": true
+}

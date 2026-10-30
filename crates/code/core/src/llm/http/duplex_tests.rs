@@ -4,7 +4,12 @@ use super::*;
 use tokio::io::AsyncReadExt;
 
 #[tokio::test]
+#[expect(
+    clippy::await_holding_lock,
+    reason = "Each test owns a separate Tokio runtime; serialize process-global proxy settings"
+)]
 async fn canceling_a_duplex_request_drops_the_open_upload() {
+    let _guard = super::tests::proxy_env_lock().lock().unwrap();
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap();
     let (seen, started) = tokio::sync::oneshot::channel();

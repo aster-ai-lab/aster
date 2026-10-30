@@ -1,0 +1,31 @@
+UPSTREAM_METHODS=25
+test_anthropic_thinking_only_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_empty_user_and_tool_turns_are_kept (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_final_empty_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_image_only_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_openai_empty_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_text_and_tool_calls_are_kept (serve.test_frontend.EmptyAssistantHistory) ... ok
+test_keep_empty_turns_restores_the_old_prompt (serve.test_frontend.EmptyTurnsSwitch) ... ok
+test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) ... ok
+test_off_without_recovery_or_for_an_undeclared_tool (serve.test_frontend.FencedJsonCallInWrapper) ... ok
+test_other_fences_and_prose_stay_text (serve.test_frontend.FencedJsonCallInWrapper) ... ok
+test_required_with_one_tool_names_it (serve.test_frontend.ForcedCallOpening) ... ok
+test_a_user_asking_for_a_closer_verbatim_gets_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_assistant_replay_keeps_every_tool_tag (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_assistant_replay_keeps_its_token (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_every_tool_tag_a_user_quotes_stays_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_template_keeps_seeing_a_tool_result_turn (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_user_text_stays_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_user_tool_result_keeps_its_outer_markers (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_a_system_prompt_with_an_image_part_is_read_as_text_as_before (serve.test_frontend.UnreadContentParts) ... ok
+test_chat_file_and_audio_parts_are_left_out (serve.test_frontend.UnreadContentParts) ... ok
+test_chat_refusal_part_is_read_as_its_text (serve.test_frontend.UnreadContentParts) ... ok
+test_messages_blocks_real_clients_send_are_left_out (serve.test_frontend.UnreadContentParts) ... ok
+test_messages_redacted_thinking_is_dropped (serve.test_frontend.UnreadContentParts) ... ok
+test_messages_tool_reference_in_a_tool_result_is_left_out (serve.test_frontend.UnreadContentParts) ... ok
+test_text_and_image_requests_render_as_before (serve.test_frontend.UnreadContentParts) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.575s
+
+OK

@@ -1,0 +1,107 @@
+{
+  "case": "interrupt",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "interrupt",
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-YfQrM4\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool to run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE        5:46 PM           -NoNewline. Do not run another command. This test will interrupt that operation.                                                                                                                                                                                                                                                                                      ♦ Thought for 3.4s                                                                                                      ♦ Run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE -NoNewline                                                                                                                                                          Turn cancelled in 9.9s.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13338,
+        "has_text": false,
+        "tool": "bash",
+        "call": {
+          "id": "call_66f5a87a5a094d02bdffaf9a170aa1df",
+          "name": "bash",
+          "args": {
+            "command": "Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE -NoNewline"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_66f5a87a5a094d02bdffaf9a170aa1df",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-6164fd81-b0b5-4d1f-8088-afe349c402b7",
+            "thread_id": "c9ae095a-65c0-437f-8af2-4b709c9484f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_66f5a87a5a094d02bdffaf9a170aa1df",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-6164fd81-b0b5-4d1f-8088-afe349c402b7",
+            "thread_id": "c9ae095a-65c0-437f-8af2-4b709c9484f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:c27035967af087a380603101bd21ec5202657aedafe1298b73840f61c6a8f9ac",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:a4888564e5684210bb40badccc1c33f8afffffbc980e586f75cb4dfdfa03cb7d"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "(Response interrupted by the user.)"
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

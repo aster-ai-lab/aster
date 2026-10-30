@@ -1,0 +1,46 @@
+{
+  "unix": 1792929191.9068446,
+  "phase": "source_prepared",
+  "flag": "ASTER_XQ_GRAPH_SOURCE_TYPES",
+  "default": 0,
+  "input_types_compared_before_UID_fast_path": true,
+  "existing_CUDA_archive_ABI_changed": false,
+  "cache_max_entries": 1024,
+  "cache_max_signature_bytes": 33554432,
+  "no_GPU_execution": true,
+  "no_model_execution": true,
+  "no_performance_claim": true,
+  "formal_changed": false,
+  "sources": [
+    {
+      "file": "aster_graph_source_type_v338.hpp",
+      "bytes": 1441,
+      "sha256": "22ca0fe02c44b564774ce2e7e75f522b42ced314da99ca1dffb9ca84248c4ad7"
+    },
+    {
+      "file": "ggml-cuda.candidate.cu",
+      "bytes": 245955,
+      "sha256": "3527ce32fa29b8d496cfa2706f87e336047deb49088c03f7101a94a104f4621d"
+    },
+    {
+      "file": "ggml-cuda.original.cu",
+      "bytes": 238482,
+      "sha256": "7670e6b66530199aef002d7ca4c1895f95764fc54483fcb68fd75696f52e2bbd"
+    },
+    {
+      "file": "graph_source_type_mode_v338.cpp",
+      "bytes": 373,
+      "sha256": "3c5186ff7936ec747cfc08e22de41110919ab9ca609b1be706a9841c4224526b"
+    },
+    {
+      "file": "source-type-guard.patch",
+      "bytes": 2202,
+      "sha256": "47180c73e49cf0c355b78d3b3003c9ef670c7c41fac849e60d25c837336ad5d8"
+    },
+    {
+      "file": "test_graph_source_type_v338.cpp",
+      "bytes": 1738,
+      "sha256": "b522f59da109e1b67d40b71f7f40cb5a27824207aad9b6365b2f49b3e49da126"
+    }
+  ]
+}

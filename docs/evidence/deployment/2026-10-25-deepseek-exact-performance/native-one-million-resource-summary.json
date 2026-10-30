@@ -1,0 +1,17 @@
+{
+  "samples": 397,
+  "unit_memory_gib_peak": 147.3432273864746,
+  "host_available_gib_min": 273.97167587280273,
+  "gpu_util_percent_median": 100.0,
+  "gpu_memory_mib_peak": 23100.0,
+  "gpu_watts_median": 300.86,
+  "throttled_usec_delta": 0,
+  "memory_events_delta": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  }
+}

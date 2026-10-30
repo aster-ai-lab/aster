@@ -1,0 +1,228 @@
+{
+  "case": "yolo-explicit-deny",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26823",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-mS44xh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other         6:07 PM           tools. Report the actual result.                                                                                                                                                                                                                                                                                                                                      ♦ Thought for 3.8s                                                                                                      ♦ Creating protected.txt                                                                                                ♦ Thought for 2.7s                                                                                                                                                                                                                              The write failed: the operation was not approved by the frozen permission policy. protected.txt was     6:07 PM         not replaced.                                                                                                                                                                                                                                   Worked for 15s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "explicit-deny",
+      "detail": "actual write denied under YOLO; exact original bytes retained",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-mS44xh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other         6:07 PM           tools. Report the actual result.                                                                                                                                                                                                                                                                                                                                      ♦ Thought for 3.8s                                                                                                      ♦ Creating protected.txt                                                                                                ♦ Thought for 2.7s                                                                                                                                                                                                                              The write failed: the operation was not approved by the frozen permission policy. protected.txt was     6:07 PM         not replaced.                                                                                                                                                                                                                                   Worked for 15s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=27314",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-mS44xh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read protected.txt and reply with its exact contents. Do not call other     6:07 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   PROTECTED-973f91a6-3f42-4755-9d66-824b88f8a624                                                          6:08 PM                                                                                                                                 Worked for 35s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "usable-after-denial",
+      "detail": "subsequent actual Kimi read completes in the same session",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-mS44xh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read protected.txt and reply with its exact contents. Do not call other     6:07 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   PROTECTED-973f91a6-3f42-4755-9d66-824b88f8a624                                                          6:08 PM                                                                                                                                 Worked for 35s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13320,
+        "has_text": false,
+        "tool": "write",
+        "call": {
+          "id": "call_b8e74c9907fc4aa2873ba6a85ec4218a",
+          "name": "write",
+          "args": {
+            "file_path": "protected.txt",
+            "content": "REPLACED"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_b8e74c9907fc4aa2873ba6a85ec4218a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-1f0af4b2-c8c0-4650-a625-5be00ac3c4de",
+            "thread_id": "2650f5fc-a232-4533-96f9-aae95f293f85",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_b8e74c9907fc4aa2873ba6a85ec4218a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-1f0af4b2-c8c0-4650-a625-5be00ac3c4de",
+            "thread_id": "2650f5fc-a232-4533-96f9-aae95f293f85",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:83cb22bf4529795f3d54832f82831a425de5e72d3668ea72ee82cdf24090dea3",
+        "outcome": "denied",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13503,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "The write failed: the operation was not approved by the frozen permission policy. `protected.txt` was not replaced."
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:4092402ba0775df298038a589704d0deb3a2d7dee6095b150fd91fb8f11008a3"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "0401b256c6ce313db1f5d97623a974ba390f3fceabf460ef426b89a7fd81d89c"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13586,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_ff7557960c964d3781748896bd1c1524",
+          "name": "read",
+          "args": {
+            "file_path": "protected.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_ff7557960c964d3781748896bd1c1524",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-1bfc30e8-eea1-4c6f-8f23-fb1b1ee256fd",
+            "thread_id": "2650f5fc-a232-4533-96f9-aae95f293f85",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_ff7557960c964d3781748896bd1c1524",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-1bfc30e8-eea1-4c6f-8f23-fb1b1ee256fd",
+            "thread_id": "2650f5fc-a232-4533-96f9-aae95f293f85",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:853aad917eb291d61178d0f28b225e7ab3c4c8d3d50fb700c9e02dc20397268e",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPROTECTED-973f91a6-3f42-4755-9d66-824b88f8a624\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"protected.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":87},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":87,\"projected_bytes\":87,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:56faafd54995853fbeb81727ea38bfa726545e8cbbd0d1980aeca1c40afb3041\",\"projected_digest\":\"sha256:56faafd54995853fbeb81727ea38bfa726545e8cbbd0d1980aeca1c40afb3041\",\"repeat_key\":\"sha256:56faafd54995853fbeb81727ea38bfa726545e8cbbd0d1980aeca1c40afb3041\",\"content_ref\":\"inline:sha256:56faafd54995853fbeb81727ea38bfa726545e8cbbd0d1980aeca1c40afb3041\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:fb36f5274a1b171ee6273266642db582ad4d1208358ac7fd383d1d1a5cc02503\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13728,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "PROTECTED-973f91a6-3f42-4755-9d66-824b88f8a624"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:7a36a8e243505ba8043f038bbb4c0f21691e4abdf28540ea6fbc8d4db70ed991"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 16,
+          "digest": "0c6eef06eabedb6838bae7edf80099daedecf3e43db2e08e4ba8aab1297ed872"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

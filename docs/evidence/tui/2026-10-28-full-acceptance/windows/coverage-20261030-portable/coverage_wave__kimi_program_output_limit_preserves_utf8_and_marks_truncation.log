@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_program_output_limit_preserves_utf8_and_marks_truncation ... ORACLE case=coverage-program-output-limit name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=coverage-program-output-limit name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=coverage-program-output-limit name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40948
+ORACLE case=coverage-program-output-limit name=program-utf8-output-budget result=pass detail=the real script's multibyte output fits the 256-byte ceiling including its truncation notice, has no replacement characters and explicitly marks truncated structured output
+ORACLE case=coverage-program-output-limit name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 31.86s
+

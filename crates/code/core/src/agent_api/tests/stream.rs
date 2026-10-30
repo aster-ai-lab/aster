@@ -63,10 +63,12 @@ async fn test_stream_updates_history_and_auto_saves() {
         run_records[0].snapshot.status,
         crate::run::RunStatus::Completed
     );
-    assert!(run_records[0]
-        .events
-        .iter()
-        .any(|record| matches!(record.event, AgentEvent::End { .. })));
+    assert!(
+        run_records[0]
+            .events
+            .iter()
+            .any(|record| matches!(record.event, AgentEvent::End { .. }))
+    );
 }
 
 /// After a completed tool round, `auto_save` must flush `sessions` JSON at the
@@ -114,12 +116,27 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
         .unwrap();
     let mut flushed_before_end = false;
     let mut tool_end_seen = false;
+    let mut write_id = None;
     let mut saw_end = false;
     for _ in 0..100 {
         let event = tokio::time::timeout(std::time::Duration::from_millis(40), rx.recv()).await;
         match event {
             Ok(Some(event)) => match &event {
-                AgentEvent::ToolEnd { name, .. } if name == "write" => {
+                AgentEvent::ToolStart { id, name } if name == "write" => {
+                    assert!(write_id.replace(id.clone()).is_none());
+                }
+                AgentEvent::ToolEnd {
+                    id,
+                    name,
+                    exit_code,
+                    ..
+                } if name == "write" => {
+                    assert_eq!(
+                        Some(id),
+                        write_id.as_ref(),
+                        "settle the announced host invocation"
+                    );
+                    assert_eq!(*exit_code, 0);
                     tool_end_seen = true;
                 }
                 AgentEvent::End { .. } => {
@@ -132,12 +149,10 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
         }
         if tool_end_seen {
             if let Ok(Some(saved)) = store.load("stream-ckpt-flush-test").await {
-                if saved.messages.iter().any(|message| {
-                    message
-                        .content
-                        .iter()
-                        .any(|block| matches!(block, ContentBlock::ToolResult { .. }))
-                }) {
+                let hay = serde_json::to_string(&saved.messages).unwrap_or_default();
+                if write_id.as_ref().is_some_and(|id| hay.contains(id))
+                    && hay.contains("a3s-ckpt-flush.md")
+                {
                     flushed_before_end = true;
                 }
             }
@@ -206,14 +221,29 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
     let mut event_index = 0usize;
     let mut last_subagent_end = None;
     let mut parent_tool_end = None;
+    let mut parent_tool_id = None;
     while let Some(event) = rx.recv().await {
         match event {
+            AgentEvent::ToolStart { id, name } if name == "task" => {
+                assert!(parent_tool_id.replace(id).is_none());
+            }
             AgentEvent::SubagentStart { .. } => subagent_starts += 1,
             AgentEvent::SubagentEnd { .. } => {
                 subagent_ends += 1;
                 last_subagent_end = Some(event_index);
             }
-            AgentEvent::ToolEnd { name, .. } if name == "task" => {
+            AgentEvent::ToolEnd {
+                id,
+                name,
+                exit_code,
+                ..
+            } if name == "task" => {
+                assert_eq!(
+                    Some(id),
+                    parent_tool_id,
+                    "settle the announced parent invocation"
+                );
+                assert_eq!(exit_code, 0);
                 parent_tool_end = Some(event_index);
             }
             AgentEvent::End { .. } => break,
@@ -233,9 +263,11 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
 
     let tasks = session.subagent_tasks().await;
     assert_eq!(tasks.len(), 2);
-    assert!(tasks
-        .iter()
-        .all(|task| task.status == SubagentStatus::Completed));
+    assert!(
+        tasks
+            .iter()
+            .all(|task| task.status == SubagentStatus::Completed)
+    );
 }
 
 #[tokio::test]
@@ -674,10 +706,12 @@ async fn cancelled_fact_stream_settles_without_memory_extraction() {
         extraction_calls.load(std::sync::atomic::Ordering::SeqCst),
         0
     );
-    assert!(session
-        .history()
-        .iter()
-        .any(|message| message.text().contains("interrupted")));
+    assert!(
+        session
+            .history()
+            .iter()
+            .any(|message| message.text().contains("interrupted"))
+    );
 }
 
 struct SlowExtractionClient {

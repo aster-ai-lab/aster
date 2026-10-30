@@ -1,0 +1,76 @@
+{
+  "unix": 1792890344.8033423,
+  "scope": "Finite post-admission serial recovery; API per-request elapsed sums, not a common block wall or full-model speed qualification",
+  "profiles": {
+    "off": {
+      "tests": 10,
+      "phase": "failed",
+      "post_requests": 2,
+      "post_output_tokens": 2048,
+      "post_request_seconds_sum": 36.95725452480838,
+      "post_sum_seconds_output_tok_s": 55.41537179460218,
+      "post_all_qualified_reference_matched": false,
+      "post_requests_detail": [
+        {
+          "name": "serial-post-0",
+          "seconds": 11.27883558999747,
+          "matches_reference": true
+        },
+        {
+          "name": "serial-post-1",
+          "seconds": 25.678418934810907,
+          "matches_reference": false
+        }
+      ]
+    },
+    "on": {
+      "tests": 10,
+      "phase": "failed",
+      "post_requests": 2,
+      "post_output_tokens": 2048,
+      "post_request_seconds_sum": 27.570543223060668,
+      "post_sum_seconds_output_tok_s": 74.28217802712727,
+      "post_all_qualified_reference_matched": true,
+      "post_requests_detail": [
+        {
+          "name": "serial-post-0",
+          "seconds": 11.932663829997182,
+          "matches_reference": true
+        },
+        {
+          "name": "serial-post-1",
+          "seconds": 15.637879393063486,
+          "matches_reference": true
+        }
+      ]
+    },
+    "off_repeat": {
+      "tests": 10,
+      "phase": "failed",
+      "post_requests": 2,
+      "post_output_tokens": 2048,
+      "post_request_seconds_sum": 39.32860446488485,
+      "post_sum_seconds_output_tok_s": 52.07405723812521,
+      "post_all_qualified_reference_matched": false,
+      "post_requests_detail": [
+        {
+          "name": "serial-post-0",
+          "seconds": 23.59776618424803,
+          "matches_reference": false
+        },
+        {
+          "name": "serial-post-1",
+          "seconds": 15.730838280636817,
+          "matches_reference": true
+        }
+      ]
+    }
+  },
+  "formal_adopted": false,
+  "concurrency_identity_fixed": false,
+  "speed_300_qualified": false,
+  "post_elapsed_reduction_vs_controls": {
+    "off": 0.2539883284740936,
+    "off_repeat": 0.2989697041582685
+  }
+}

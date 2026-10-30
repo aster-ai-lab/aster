@@ -1,0 +1,59 @@
+{
+  "integration_base": "3aa265e06ee5aea49f2553d2bace443b3e25fcf7",
+  "release_build_source": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+  "release_run": 40110868267,
+  "platforms": [
+    "macos",
+    "linux",
+    "windows"
+  ],
+  "studio_pin": "a7856a9c759311ded0ae92f76726469262a4a838",
+  "power_pin": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
+  "merge_resolution": "Retain current main Studio and public Power checkouts; trust only the explicit ephemeral CI workspace.",
+  "checks": {
+    "cargo_check_locked_aster_and_acp": {
+      "exit_code": 0,
+      "elapsed": "2m 56s",
+      "profile": "dev",
+      "network": "fetch pinned dependencies missing from local cache"
+    },
+    "product_scoped_format": {
+      "exit_code": 0
+    },
+    "workspace_dependency_boundary": {
+      "passed": 6
+    },
+    "shared_checkout_shell": {
+      "passed": 1,
+      "outputs": [
+        "sha",
+        "power_sha"
+      ]
+    },
+    "workflow_actionlint": {
+      "exit_code": 0,
+      "shellcheck": false,
+      "pyflakes": false
+    },
+    "workspace_format": {
+      "passed": false,
+      "reason": "Pinned Studio app_updater.rs references absent app_updater/os_feed_tests.rs"
+    },
+    "linux_packaging_and_installer": {
+      "passed": 13
+    },
+    "paired_delivery_and_rollback": {
+      "passed": 10
+    },
+    "release_assembly_shell": {
+      "passed": 2
+    }
+  },
+  "not_claimed": [
+    "Public release is not yet published",
+    "Current main integration and release-build source are not byte-identical",
+    "Whole-workspace CI is not green",
+    "Real-model performance or complete long-task termination",
+    "Credential rotation"
+  ]
+}

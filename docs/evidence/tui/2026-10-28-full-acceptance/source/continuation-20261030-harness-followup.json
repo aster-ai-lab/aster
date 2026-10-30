@@ -1,0 +1,35 @@
+{
+  "schema": "aster.tui.harness-followup.v1",
+  "product_pair_digest": "e1a37d311f896ceebb6a7a228a0f6a889f15313b",
+  "product_pair_rebuilt": false,
+  "full_batch_harness_unchanged": true,
+  "followup_harness_changed": true,
+  "fixed_model": "kimi/k3.1-pro",
+  "prompts_timeouts_graders_changed": false,
+  "files": [
+    {
+      "file": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "bytes": 31970,
+      "sha256": "cb80062bbb3fa7dcebb548706b687422e3c693a3b9408ede7702898e169e7500"
+    },
+    {
+      "file": "docs\\evidence\\tui\\2026-10-28-full-acceptance\\source\\acp_trace_proxy.rs",
+      "bytes": 1904,
+      "sha256": "2eb5737861b4d93f81d565e6117c4af4c63851aba211e2e1e3a53c6e5b66bf76"
+    }
+  ],
+  "test_binaries": [
+    {
+      "platform": "windows",
+      "file": ".tmp/continuation-live-composer.exe",
+      "bytes": 6432768,
+      "sha256": "b3f5b2cfe42c9111fc4160cc77155e41eb1248dbab8ff694ae9d073605b8d303"
+    },
+    {
+      "platform": "linux",
+      "file": ".tmp/continuation-live-composer-linux",
+      "bytes": 95685896,
+      "sha256": "bd2cf89da9f568b7c085532c4287d3a38466426bc0cc7afa0fe20e366c5bbb0a"
+    }
+  ]
+}

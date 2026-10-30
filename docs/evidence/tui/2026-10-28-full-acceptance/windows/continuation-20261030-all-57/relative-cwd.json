@@ -1,0 +1,125 @@
+{
+  "assertions_finished": true,
+  "case": "relative-cwd",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "trust-proof.txt"
+          },
+          "id": "call_e550b00c23f64a54922833ad1567d7be",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13322,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9f11e9ac-1bed-4977-895d-e2b090f233e3",
+            "thread_id": "4dbf248d-0e65-42cb-8f65-7124730f0149"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_e550b00c23f64a54922833ad1567d7be",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9f11e9ac-1bed-4977-895d-e2b090f233e3",
+            "thread_id": "4dbf248d-0e65-42cb-8f65-7124730f0149"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_e550b00c23f64a54922833ad1567d7be",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRELATIVE-50f51ed3-aa67-47d3-a1e6-f8088b051b30\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"trust-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":86},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:bb64b31515d90db241fd171ad24bb47d14bf32dbd3492a038a59b08fd5eed7bc\",\"projected_digest\":\"sha256:bb64b31515d90db241fd171ad24bb47d14bf32dbd3492a038a59b08fd5eed7bc\",\"repeat_key\":\"sha256:bb64b31515d90db241fd171ad24bb47d14bf32dbd3492a038a59b08fd5eed7bc\",\"content_ref\":\"inline:sha256:bb64b31515d90db241fd171ad24bb47d14bf32dbd3492a038a59b08fd5eed7bc\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:55e27d3b9bcdf19f90256b9c6311941dc5d0e467ad60c9667e93f6061653fedf\"}",
+        "prepared_digest": "sha256:b9912d928017b580aa21764162e131534c1f73820aead867b133aa2a63f83654",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13483,
+        "text": "RELATIVE-50f51ed3-aa67-47d3-a1e6-f8088b051b30",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "d9baaf1b23c3ae74a9a69975952fe4e442a7dc182cfba7e4198c8f67133ac7c5",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:a9b51e2c81431acb7e5854f09a6e77c5399f7b9de4b7d53c551f265a081b7a91"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=10 model_turns=2 prompt_tokens=26805",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iBEIjR\\工作 空间                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other  10:06 AM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   RELATIVE-50f51ed3-aa67-47d3-a1e6-f8088b051b30                                                          10:06 AM                                                                                                                                 Worked for 20s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "interactive relative --cwd preserves Unicode and spaces in the real tool workspace",
+      "name": "relative-cwd",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iBEIjR\\工作 空间                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other  10:06 AM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   RELATIVE-50f51ed3-aa67-47d3-a1e6-f8088b051b30                                                          10:06 AM                                                                                                                                 Worked for 20s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

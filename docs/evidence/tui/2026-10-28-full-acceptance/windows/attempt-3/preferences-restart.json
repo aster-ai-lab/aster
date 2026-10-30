@@ -1,0 +1,119 @@
+{
+  "assertions_finished": true,
+  "case": "preferences-restart",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13447,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a381518d-b12b-429d-bf7c-5174cbb3a0e3",
+            "thread_id": "18c5cfad-b568-4e44-94ca-904541f047db"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_52baa2351ee747b99d892cc350ddd02d",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a381518d-b12b-429d-bf7c-5174cbb3a0e3",
+            "thread_id": "18c5cfad-b568-4e44-94ca-904541f047db"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_52baa2351ee747b99d892cc350ddd02d",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTART-0700e549-90ef-45f9-94eb-8e224cd80618\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:b2688eefdbe2e229f7b45d269596357b23a1e4b2de4cf5bfb34330c548f8d09a\",\"content_ref\":\"inline:sha256:b2688eefdbe2e229f7b45d269596357b23a1e4b2de4cf5bfb34330c548f8d09a\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":52,\"original_estimated_tokens\":13,\"projected_bytes\":52,\"projected_digest\":\"sha256:b2688eefdbe2e229f7b45d269596357b23a1e4b2de4cf5bfb34330c548f8d09a\",\"projected_estimated_tokens\":13,\"repeat_key\":\"sha256:b2688eefdbe2e229f7b45d269596357b23a1e4b2de4cf5bfb34330c548f8d09a\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":52,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"restart-proof.txt\"]},\"observation_digest\":\"sha256:c6a60a72b5f75acf55771b7b9a7f6fe85d68e526ae198cdf990e8485a756a7e9\"}",
+        "prepared_digest": "sha256:80a7a89747e98215b3158fc6e018c4e10e49cab8e478fb033e9dceda152a2aa9"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13575,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "d2ff470b14003dbf73bb51852e8a1d268ea3baae7c6aadce2440c2c017e04188",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:6f47acf225c4262440548875a28cc82fa9cabfa5b417ed9f348e5d088e64e8dd"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:607f5cc78c810e67a4e95936ce58959c8634389e:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "four persisted settings actually restored before inverse toggles",
+      "name": "preferences-reloaded",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yGiSR2\\workspace                                                                          0 / 128K                                                                                                                               Vim mode: off                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=27022",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yGiSR2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read restart-proof.txt and reply with its exact contents. Do not call       8:46 PM   █       other tools or modify any file.                                                                                 █                                                                                                                       █                                                                                                                       █     ♦ Read 1 file                                                                                                     █                                                                                                                       █     RESTART-0700e549-90ef-45f9-94eb-8e224cd80618                                                            8:46 PM   █                                                                                                                       █     Worked for 7.3s                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "new parent session completes a real Kimi read after preference reload",
+      "name": "restart-kimi",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yGiSR2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read restart-proof.txt and reply with its exact contents. Do not call       8:46 PM   █       other tools or modify any file.                                                                                 █                                                                                                                       █                                                                                                                       █     ♦ Read 1 file                                                                                                     █                                                                                                                       █     RESTART-0700e549-90ef-45f9-94eb-8e224cd80618                                                            8:46 PM   █                                                                                                                       █     Worked for 7.3s                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

@@ -16,10 +16,15 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::{HashMap, HashSet};
-#[cfg(any(unix, test))]
+#[cfg(any(unix, windows, test))]
 use std::io::Read;
 use std::path::Path;
 use std::time::Duration;
+
+#[cfg(windows)]
+mod windows;
+#[cfg(windows)]
+use windows::{directory_entries, node_stamp, observe_identity_windows};
 
 /// `git status -u` on a large worktree takes longer than a few hundred
 /// milliseconds. A shorter budget made porcelain return nothing, and the
@@ -947,7 +952,7 @@ fn node_stamp(relative: &str, stat: &libc::stat) -> Option<NodeStamp> {
     })
 }
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 fn node_stamp(_relative: &str, _stat: &()) -> Option<NodeStamp> {
     None
 }

@@ -2406,7 +2406,7 @@ async fn handle_http_request_inner(
                     // the first attempt (the turn identity, the frozen
                     // cache, and — when a transport resolves — the
                     // decision call carrying the turn's content).
-                    dispatch.resolve_routing(&state).await;
+                    dispatch.resolve_routing(&state, &req_parts.headers).await;
                     let prepared = match dispatch.prepare_next(
                         &state,
                         &mut req_parts.headers,

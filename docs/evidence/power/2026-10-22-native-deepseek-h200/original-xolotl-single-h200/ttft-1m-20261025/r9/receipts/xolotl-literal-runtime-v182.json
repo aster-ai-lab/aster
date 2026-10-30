@@ -1,0 +1,39 @@
+{
+  "unix": 1792904821.7497697,
+  "phase": "serving",
+  "exact_api_alive": true,
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "GPU_executed": false,
+  "model_request_sent": false,
+  "public_startup_flags": {
+    "ASTER_XQ_LITERAL_SCAN": "1",
+    "ASTER_XQ_EXACT_TOKEN_CACHE": "1"
+  },
+  "source_hashes": [
+    {
+      "file": "serve/frontend.py",
+      "bytes": 74956,
+      "sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e"
+    },
+    {
+      "file": "serve/server.py",
+      "bytes": 439846,
+      "sha256": "04abb76be1608b0c718891fb1486f8a05faada618948f963b222b8f60d62417b"
+    },
+    {
+      "file": "tools/v41/serve/serve_ds41.py",
+      "bytes": 29588,
+      "sha256": "6fd2a8b6135fc5e676933f8c729f33dc2bba5849d721cab6d28b6a68a9d43954"
+    },
+    {
+      "file": "tools/v41/serve/aster_literal_scan.py",
+      "bytes": 8920,
+      "sha256": "25587cae9ea90b3155b80d1a02691e4debe7da4f6a95e0f6bd8e44a9dffb86d8"
+    }
+  ],
+  "disabled_warning_counts": {
+    "literal scan disabled: pinned frontend source SHA differs": 0,
+    "literal scan disabled: pinned server source SHA differs": 0,
+    "literal scan disabled: pinned server unmark alias differs": 0
+  }
+}

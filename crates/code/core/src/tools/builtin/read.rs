@@ -283,7 +283,8 @@ impl Tool for ReadTool {
             Ok(p) => p,
             Err(e) => return Ok(ToolOutput::error(format!("Failed to resolve path: {}", e))),
         };
-        let range = match read_range(ctx, &workspace_path, offset, limit).await {
+        let (range, final_line_ending) = match read_range(ctx, &workspace_path, offset, limit).await
+        {
             Ok(range) => range,
             Err(e) => {
                 return Ok(ToolOutput::error(format!(
@@ -305,6 +306,7 @@ impl Tool for ReadTool {
         }
         let page = numbered_page(&range.lines, offset, byte_offset, ctx.result_budget_bytes());
         let budget_cut = page.returned < range.lines.len();
+        let final_line_ending = final_line_ending.filter(|_| !budget_cut);
         let next_offset = if budget_cut {
             Some(offset + page.returned)
         } else {
@@ -322,6 +324,7 @@ impl Tool for ReadTool {
                 "total_lines": range.total_lines,
                 "limit_clamped": requested_limit != limit,
                 "budget_clamped": budget_cut,
+                "final_line_ending": final_line_ending.map(SourceLineEnding::as_str),
             }
         });
         if range.lines.is_empty() && range.eof {
@@ -333,6 +336,10 @@ impl Tool for ReadTool {
         }
 
         let mut output = page.text;
+        if let Some(ending) = final_line_ending {
+            output.push_str(ending.notice());
+            output.push('\n');
+        }
         if let Some(next_offset) = next_offset {
             output.push_str(&format!(
                 "\n... (more lines available; continue with offset={next_offset})\n"
@@ -417,6 +424,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             workspace_path: String,
             display_path: String,
             range: WorkspaceTextRange,
+            final_line_ending: Option<SourceLineEnding>,
         },
         ReadError {
             display_path: String,
@@ -436,10 +444,11 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 let display_path = escape_control_chars_for_display(workspace_path.as_str());
                 let limit = entry.limit.unwrap_or(MAX_READ_LINES);
                 match read_range(ctx, &workspace_path, entry.offset, limit).await {
-                    Ok(range) => EntryFetch::Range {
+                    Ok((range, final_line_ending)) => EntryFetch::Range {
                         workspace_path: workspace_path.as_str().to_string(),
                         display_path,
                         range,
+                        final_line_ending,
                     },
                     Err(error) => EntryFetch::ReadError {
                         display_path,
@@ -456,12 +465,13 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
     .await;
 
     for (index, (entry, fetch)) in entries.iter().zip(fetched).enumerate() {
-        let (workspace_path, display_path, range) = match fetch {
+        let (workspace_path, display_path, range, final_line_ending) = match fetch {
             EntryFetch::Range {
                 workspace_path,
                 display_path,
                 range,
-            } => (workspace_path, display_path, range),
+                final_line_ending,
+            } => (workspace_path, display_path, range, final_line_ending),
             EntryFetch::ResolveError {
                 display_path,
                 error,
@@ -562,11 +572,18 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             .iter()
             .enumerate()
             .map(|(line_index, line)| {
-                format!(
+                let mut text = format!(
                     "{:>6}\t{}",
                     entry.offset + line_index + 1,
                     display_read_line(line, entry.byte_offset)
-                )
+                );
+                if line_index + 1 == range.lines.len() {
+                    if let Some(ending) = final_line_ending {
+                        text.push('\n');
+                        text.push_str(ending.notice());
+                    }
+                }
+                text
             })
             .collect::<Vec<_>>();
         let shown = largest_batch_prefix(
@@ -862,18 +879,70 @@ pub(crate) fn read_image_file(
     .with_metadata(metadata)
 }
 
+#[derive(Clone, Copy)]
+enum SourceLineEnding {
+    Absent,
+    Lf,
+    CrLf,
+}
+
+impl SourceLineEnding {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Absent => "none",
+            Self::Lf => "LF",
+            Self::CrLf => "CRLF",
+        }
+    }
+
+    fn notice(self) -> &'static str {
+        match self {
+            Self::Absent => "[End of file: no final newline.]",
+            Self::Lf => "[End of file: final line ending is LF.]",
+            Self::CrLf => "[End of file: final line ending is CRLF.]",
+        }
+    }
+}
+
+fn display_range(mut range: WorkspaceTextRange) -> (WorkspaceTextRange, Option<SourceLineEnding>) {
+    let ending = range.lines.last().filter(|_| range.eof).map(|line| {
+        if line.ends_with("\r\n") {
+            SourceLineEnding::CrLf
+        } else if line.ends_with('\n') {
+            SourceLineEnding::Lf
+        } else {
+            SourceLineEnding::Absent
+        }
+    });
+    for line in &mut range.lines {
+        if let Some(text) = line.strip_suffix('\n') {
+            line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
+        }
+    }
+    (range, ending)
+}
+
 async fn read_range(
     ctx: &ToolContext,
     path: &crate::workspace::WorkspacePath,
     offset: usize,
     limit: usize,
-) -> crate::workspace::WorkspaceResult<WorkspaceTextRange> {
+) -> crate::workspace::WorkspaceResult<(WorkspaceTextRange, Option<SourceLineEnding>)> {
     if let Some(reader) = ctx.workspace_services.text_reader() {
         let path = path.clone();
         return ctx
             .workspace_services
             .run_with_timeout("read_text_range", async move {
-                reader.read_text_range(&path, offset, limit).await
+                if let Some(range) = reader
+                    .read_text_range_with_terminators(&path, offset, limit)
+                    .await?
+                {
+                    return Ok(display_range(range));
+                }
+                reader
+                    .read_text_range(&path, offset, limit)
+                    .await
+                    .map(|range| (range, None))
             })
             .await;
     }
@@ -884,12 +953,18 @@ async fn read_range(
         .workspace_services
         .run_with_timeout("read_text", async move { fs.read_text(&path).await })
         .await?;
-    Ok(WorkspaceTextRange::from_text(&content, offset, limit))
+    Ok(display_range(
+        WorkspaceTextRange::from_text_with_terminators(&content, offset, limit),
+    ))
 }
 
 #[cfg(test)]
 #[path = "read/batch_tests.rs"]
 mod batch_tests;
+
+#[cfg(test)]
+#[path = "read/line_endings_tests.rs"]
+mod line_endings_tests;
 
 #[cfg(test)]
 mod tests {

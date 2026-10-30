@@ -1,0 +1,174 @@
+{
+  "conclusion": "success",
+  "headSha": "494ae4944374a908b2013dd041f9e70d3984ee01",
+  "jobs": [
+    {
+      "completedAt": "2026-10-28T21:17:18Z",
+      "conclusion": "success",
+      "databaseId": 123104934088,
+      "name": "validate",
+      "startedAt": "2026-10-28T21:13:47Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-28T21:13:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-28T21:13:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:14:09Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v6",
+          "number": 2,
+          "startedAt": "2026-10-28T21:13:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:14:13Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "number": 3,
+          "startedAt": "2026-10-28T21:14:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:14:16Z",
+          "conclusion": "success",
+          "name": "Install isolated MDX build dependencies",
+          "number": 4,
+          "startedAt": "2026-10-28T21:14:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:14:21Z",
+          "conclusion": "success",
+          "name": "Resolve latest published installation packages",
+          "number": 5,
+          "startedAt": "2026-10-28T21:14:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:14:26Z",
+          "conclusion": "success",
+          "name": "Check generated MDX documents",
+          "number": 6,
+          "startedAt": "2026-10-28T21:14:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:16:28Z",
+          "conclusion": "success",
+          "name": "Test and validate the public site",
+          "number": 7,
+          "startedAt": "2026-10-28T21:14:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:16:29Z",
+          "conclusion": "success",
+          "name": "Install isolated public DOM test dependency",
+          "number": 8,
+          "startedAt": "2026-10-28T21:16:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:16:58Z",
+          "conclusion": "success",
+          "name": "Test public site interactions",
+          "number": 9,
+          "startedAt": "2026-10-28T21:16:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:12Z",
+          "conclusion": "success",
+          "name": "Stage only the public deployment files",
+          "number": 10,
+          "startedAt": "2026-10-28T21:16:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:14Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-pages-artifact@v4",
+          "number": 11,
+          "startedAt": "2026-10-28T21:17:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:14Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "number": 21,
+          "startedAt": "2026-10-28T21:17:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:14Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v6",
+          "number": 22,
+          "startedAt": "2026-10-28T21:17:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:14Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-28T21:17:14Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aster-ai-lab/aster/actions/runs/40770177426/job/123104934088"
+    },
+    {
+      "completedAt": "2026-10-28T21:17:55Z",
+      "conclusion": "success",
+      "databaseId": 123106706864,
+      "name": "deploy",
+      "startedAt": "2026-10-28T21:17:22Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-28T21:17:24Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-28T21:17:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:25Z",
+          "conclusion": "success",
+          "name": "Run actions/configure-pages@v5",
+          "number": 2,
+          "startedAt": "2026-10-28T21:17:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:53Z",
+          "conclusion": "success",
+          "name": "Run actions/deploy-pages@v4",
+          "number": 3,
+          "startedAt": "2026-10-28T21:17:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-28T21:17:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 4,
+          "startedAt": "2026-10-28T21:17:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/aster-ai-lab/aster/actions/runs/40770177426/job/123106706864"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/aster-ai-lab/aster/actions/runs/40770177426"
+}

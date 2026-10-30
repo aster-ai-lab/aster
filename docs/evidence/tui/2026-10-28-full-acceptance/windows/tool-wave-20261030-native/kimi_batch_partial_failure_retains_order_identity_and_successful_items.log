@@ -1,0 +1,10 @@
+
+running 1 test
+test tool_wave::kimi_batch_partial_failure_retains_order_identity_and_successful_items ... ORACLE case=tool-wave-batch name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=tool-wave-batch name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40787
+ORACLE case=tool-wave-batch name=batch-three-real-outcomes result=pass detail=three correlated results retain input order, exact success bytes and one missing-file error; successful items are not repeated
+ORACLE case=tool-wave-batch name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 76 filtered out; finished in 23.05s
+

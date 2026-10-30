@@ -882,6 +882,7 @@ mod tests {
         .unwrap();
     }
 
+    #[cfg(unix)]
     fn install_sentinel(bin: &Path, marker: &Path) {
         std::fs::create_dir_all(bin).unwrap();
         let script = bin.join("agent");
@@ -909,6 +910,23 @@ mod tests {
             std::fs::set_permissions(&script, mode.clone()).unwrap();
             std::fs::set_permissions(&other, mode).unwrap();
         }
+    }
+
+    #[cfg(windows)]
+    fn install_sentinel(bin: &Path, marker: &Path) {
+        std::fs::create_dir_all(bin).unwrap();
+        let source = format!(
+            "fn main() {{ std::fs::write({:?}, std::env::args().skip(1).collect::<Vec<_>>().join(\"\\n\")).unwrap(); println!(\"Available models\\n\\ncomposer-2.5 - Composer 2.5\"); }}",
+            marker.to_string_lossy(),
+        );
+        let agent = crate::test_support::native_executable_fixture(bin, "agent", &source);
+        std::fs::copy(agent, bin.join("agent")).unwrap();
+        let source = format!(
+            "fn main() {{ std::fs::write({:?}, \"cursor-agent\").unwrap(); }}",
+            marker.to_string_lossy()
+        );
+        let other = crate::test_support::native_executable_fixture(bin, "cursor_agent", &source);
+        std::fs::copy(other, bin.join("cursor-agent")).unwrap();
     }
 
     #[test]

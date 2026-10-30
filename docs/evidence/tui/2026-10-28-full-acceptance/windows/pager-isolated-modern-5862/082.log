@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::healthy_direct_does_not_suppress_repair_of_noncanonical_managed_item' (56572) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:611:39:
+called `Result::unwrap()` on an `Err` value: TmuxManaged(Read { path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpai9Iup", source: Os { code: 5, kind: PermissionDenied, message: "拒绝访问。" } })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::healthy_direct_does_not_suppress_repair_of_noncanonical_managed_item ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::healthy_direct_does_not_suppress_repair_of_noncanonical_managed_item
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

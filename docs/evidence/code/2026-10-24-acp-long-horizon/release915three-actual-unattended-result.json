@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 90.399,
+  "candidate_unchanged": true,
+  "tester_unchanged": true,
+  "manifest_unchanged": true,
+  "changed_compiled_local_sources": [],
+  "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+  "scope": "actual registered ACP with controlled local model; entire-suite time includes candidate identity verification, not product task latency"
+}

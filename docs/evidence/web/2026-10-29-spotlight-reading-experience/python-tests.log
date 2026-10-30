@@ -1,0 +1,25 @@
+test_documentation_catalog_supports_products_versions_and_closed_routes (test_site.SiteTest.test_documentation_catalog_supports_products_versions_and_closed_routes) ... ok
+test_documentation_refuses_injected_behavior_external_assets_and_broken_navigation (test_site.SiteTest.test_documentation_refuses_injected_behavior_external_assets_and_broken_navigation) ... ok
+test_download_host_path_or_unknown_release_refuses (test_site.SiteTest.test_download_host_path_or_unknown_release_refuses) ... ok
+test_each_screenshot_is_an_explicit_html_image_and_font_assets_are_referenced (test_site.SiteTest.test_each_screenshot_is_an_explicit_html_image_and_font_assets_are_referenced) ... ok
+test_existing_stage_is_preserved_and_bad_source_cannot_activate_output (test_site.SiteTest.test_existing_stage_is_preserved_and_bad_source_cannot_activate_output) ... ok
+test_extra_screenshot_and_symlink_font_are_not_staged (test_site.SiteTest.test_extra_screenshot_and_symlink_font_are_not_staged) ... ok
+test_foreign_brand_or_private_script_import_refuses (test_site.SiteTest.test_foreign_brand_or_private_script_import_refuses) ... ok
+test_four_png_screenshots_and_three_local_fonts_with_license_are_public (test_site.SiteTest.test_four_png_screenshots_and_three_local_fonts_with_license_are_public) ... ok
+test_legal_pages_are_staged_and_refuse_remote_or_injected_resources (test_site.SiteTest.test_legal_pages_are_staged_and_refuse_remote_or_injected_resources) ... ok
+test_missing_asset_fragment_or_duplicate_id_refuses (test_site.SiteTest.test_missing_asset_fragment_or_duplicate_id_refuses) ... ok
+test_missing_invalid_or_oversize_png_screenshot_refuses (test_site.SiteTest.test_missing_invalid_or_oversize_png_screenshot_refuses) ... ok
+test_missing_one_verified_download_refuses (test_site.SiteTest.test_missing_one_verified_download_refuses) ... ok
+test_native_choices_inline_code_and_remote_scripts_refuse (test_site.SiteTest.test_native_choices_inline_code_and_remote_scripts_refuse) ... ok
+test_remote_css_and_escaping_resource_refuse (test_site.SiteTest.test_remote_css_and_escaping_resource_refuse) ... ok
+test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse (test_site.SiteTest.test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse) ... ok
+test_stage_contains_only_public_allowlist_and_project_relative_homepage (test_site.SiteTest.test_stage_contains_only_public_allowlist_and_project_relative_homepage) ... ok
+test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404 (test_site.SiteTest.test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404) ... ok
+test_symlink_source_and_extra_download_file_refuse (test_site.SiteTest.test_symlink_source_and_extra_download_file_refuse) ... ok
+test_unnamed_or_invalid_labelled_control_refuses (test_site.SiteTest.test_unnamed_or_invalid_labelled_control_refuses) ... ok
+test_valid_page_has_named_controls_and_all_six_exact_release_links (test_site.SiteTest.test_valid_page_has_named_controls_and_all_six_exact_release_links) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 596.256s
+
+OK

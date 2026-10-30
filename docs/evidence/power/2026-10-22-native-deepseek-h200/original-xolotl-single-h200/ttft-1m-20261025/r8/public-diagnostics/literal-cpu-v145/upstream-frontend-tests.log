@@ -1,0 +1,566 @@
+test_anthropic_thinking_only_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_empty_user_and_tool_turns_are_kept (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_final_empty_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_image_only_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_openai_empty_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_text_and_tool_calls_are_kept (serve.test_frontend.EmptyAssistantHistory) ... FAIL
+test_keep_empty_turns_restores_the_old_prompt (serve.test_frontend.EmptyTurnsSwitch) ... FAIL
+test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) ... test_off_without_recovery_or_for_an_undeclared_tool (serve.test_frontend.FencedJsonCallInWrapper) ... ok
+test_other_fences_and_prose_stay_text (serve.test_frontend.FencedJsonCallInWrapper) ... ok
+test_required_with_one_tool_names_it (serve.test_frontend.ForcedCallOpening) ... FAIL
+test_a_user_asking_for_a_closer_verbatim_gets_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_assistant_replay_keeps_every_tool_tag (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_assistant_replay_keeps_its_token (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_every_tool_tag_a_user_quotes_stays_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_template_keeps_seeing_a_tool_result_turn (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_user_text_stays_text (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_user_tool_result_keeps_its_outer_markers (serve.test_frontend.QuotedToolCallCloser) ... ok
+test_a_system_prompt_with_an_image_part_is_read_as_text_as_before (serve.test_frontend.UnreadContentParts) ... FAIL
+test_chat_file_and_audio_parts_are_left_out (serve.test_frontend.UnreadContentParts) ... FAIL
+test_chat_refusal_part_is_read_as_its_text (serve.test_frontend.UnreadContentParts) ... FAIL
+test_messages_blocks_real_clients_send_are_left_out (serve.test_frontend.UnreadContentParts) ... FAIL
+test_messages_redacted_thinking_is_dropped (serve.test_frontend.UnreadContentParts) ... FAIL
+test_messages_tool_reference_in_a_tool_result_is_left_out (serve.test_frontend.UnreadContentParts) ... FAIL
+test_text_and_image_requests_render_as_before (serve.test_frontend.UnreadContentParts) ... FAIL
+
+======================================================================
+FAIL: test_anthropic_thinking_only_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_empty_user_and_tool_turns_are_kept (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_final_empty_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_image_only_assistant_turn_is_kept (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_openai_empty_replies_are_not_rendered (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_text_and_tool_calls_are_kept (serve.test_frontend.EmptyAssistantHistory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 14, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_keep_empty_turns_restores_the_old_prompt (serve.test_frontend.EmptyTurnsSwitch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 192, in test_keep_empty_turns_restores_the_old_prompt
+    self.assertEqual(template.render(msgs), clean)
+AssertionError: '<｜be[124 chars]er｜>a<｜Assistant｜></think><｜end▁of▁sentence｜><[24 chars]ink>' != '<｜be[124 chars]er｜>a\n\nb<｜Assistant｜><think>'
+  <｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 75 (range 1-100, the higher the value, the more thorough the reasoning)
+  
+- <｜User｜>a<｜Assistant｜></think><｜end▁of▁sentence｜><｜User｜>b<｜Assistant｜><think>+ <｜User｜>a
++ 
++ b<｜Assistant｜><think>
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=102, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=102, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=1, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=1, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=7, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```json\n', chunk=7, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```json\n{"name": "write[66 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```json\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=98, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=98, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=1, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=1, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=7, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```\n', chunk=7, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```\n{"name": "write_fil[62 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=103, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=103, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=1, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=1, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=7, stream_tools=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_fenced_and_bare_agree (serve.test_frontend.FencedJsonCallInWrapper) (fence='```JSON\r\n', chunk=7, stream_tools=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 327, in test_fenced_and_bare_agree
+    self.assertEqual(self.run_parser(raw, chunk, st), ([{"content": "hello `world`"}], ""))
+AssertionError: Tuples differ: ([], '<tool_call>\n```JSON\r\n{"name": "wri[68 chars]ll>') != ([{'content': 'hello `world`'}], '')
+
+First differing element 0:
+[]
+[{'content': 'hello `world`'}]
+
++ ([{'content': 'hello `world`'}], '')
+- ([],
+-  '<tool_call>\n'
+-  '```JSON\r\n'
+-  '{"name": "write_file", "arguments": {"content": "hello `world`"}}\n'
+-  '```\n'
+-  '</tool_call>')
+
+======================================================================
+FAIL: test_required_with_one_tool_names_it (serve.test_frontend.ForcedCallOpening)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 201, in test_required_with_one_tool_names_it
+    self.assertTrue(forced_call("required", one).endswith("<function=a>\n"))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_a_system_prompt_with_an_image_part_is_read_as_text_as_before (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_chat_file_and_audio_parts_are_left_out (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_chat_refusal_part_is_read_as_its_text (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_messages_blocks_real_clients_send_are_left_out (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_messages_redacted_thinking_is_dropped (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_messages_tool_reference_in_a_tool_result_is_left_out (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+======================================================================
+FAIL: test_text_and_image_requests_render_as_before (serve.test_frontend.UnreadContentParts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/serve/test_frontend.py", line 87, in setUp
+    self.service = Service(MockEngine(tok, "ok"), tok, self.template)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 255, in _svc_init_note
+    _svc_init_routing(self, *a, **k)
+  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py", line 206, in _svc_init_ds41
+    assert len(eos) == 1, eos
+AssertionError: [60, 239, 189, 156, 101, 110, 100, 226, 150, 129, 111, 102, 226, 150, 129, 115, 101, 110, 116, 101, 110, 99, 101, 239, 189, 156, 62]
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.073s
+
+FAILED (failures=33)

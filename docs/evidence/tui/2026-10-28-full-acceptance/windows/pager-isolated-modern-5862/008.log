@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::agent_view::shell_completion::shell_suggestion_key_tests::repeat_tab_fires_single_fetch_while_pending' (51260) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\shell_completion.rs:350:9:
+assertion `left == right` failed: the second Tab must not fire a second RPC
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::shell_completion::shell_suggestion_key_tests::repeat_tab_fires_single_fetch_while_pending ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::shell_completion::shell_suggestion_key_tests::repeat_tab_fires_single_fetch_while_pending
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.02s
+

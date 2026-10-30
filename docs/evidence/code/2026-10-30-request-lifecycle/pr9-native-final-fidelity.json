@@ -1,0 +1,70 @@
+{
+  "original_script_exit_code": 0,
+  "scenario_count": 6,
+  "cases_reopened": [
+    {
+      "case": "acl_only",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true
+    },
+    {
+      "case": "acl_and_api_key",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true
+    },
+    {
+      "case": "rules_cli",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true
+    },
+    {
+      "case": "unsupported_override",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true
+    },
+    {
+      "case": "api_key_without_acl",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true
+    },
+    {
+      "case": "stalled_stream_401",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true
+    }
+  ],
+  "missing_acl_refused_by_session_configuration": true,
+  "binary_hashes_unchanged": true,
+  "source_files_unchanged": true,
+  "probe_unchanged_from_reviewed_pr": true,
+  "owned_process_path_check": "pgrep -fl /target/github-goal-20261030/pr9-pair-final/bin/ returned no matches",
+  "not_claimed": [
+    "packet-level egress trace",
+    "live LLM validation",
+    "native Linux or Windows execution"
+  ]
+}

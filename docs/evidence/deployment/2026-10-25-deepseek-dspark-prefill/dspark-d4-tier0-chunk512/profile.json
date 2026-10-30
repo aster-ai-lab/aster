@@ -1,0 +1,19 @@
+{
+  "out": "/data/deepseek-v41-xq-1017/dspark-d4-tier0-chunk512-benchmark-20261025",
+  "profile": "DSpark depth4 conf0.6 exact FP4; tierbatch0 chunk512 1M",
+  "routes": [
+    "default"
+  ],
+  "decode_trials": 7,
+  "prefill": true,
+  "stream_io": true,
+  "deployment_receipt": "dspark-d4-tier0-chunk512-deployment.json",
+  "power_sha256": "8b14f1067fed2f9b453fdfd533fcf74a4f5838da78a3ae6c5f65e608c2653cc3",
+  "context_tokens": 1048576,
+  "dspark_env": {
+    "STRATA_SERVE_DSPARK": "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/V41-MTP-Vision-1017.Q2_K.gguf",
+    "STRATA_DSPARK_DEPTH": "4",
+    "STRATA_DSPARK_CONF": "0.6000",
+    "STRATA_SERVE_DSPARK_EVICT": "4096"
+  }
+}

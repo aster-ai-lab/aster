@@ -1,0 +1,13 @@
+{
+  "power": "/opt/a3s/releases/deepseek-dspark-b47d78130348a2c0/a3s-power",
+  "power_sha256": "b47d78130348a2c006dc9b3ad1024cb0160f7727bbe9e32caaed85673951e326",
+  "source_fingerprint": "5275dc9d598d3fb8460bd221884cf3e9754bc446e5d0f35bdbab729924d95057",
+  "bridge": "/opt/a3s/releases/deepseek-dspark-b47d78130348a2c0/power_xolotl_bridge.py",
+  "bridge_sha256": "ca4b0f9319df0875e10970b17215e09298be203dc669a8eb3ebce2fb60a57b6e",
+  "engine": "/opt/a3s/releases/deepseek-xolotl-dspark-a99fe7fc22e10081/bin/ds41_generate",
+  "engine_sha256": "a99fe7fc22e10081f67e24a04bb78a3f4d6ea39011951e4f19f52a5bb85cec20",
+  "upstream_pin": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "engine_patch_sha256": "f0db3d6e815d4e34e3a088f7b82bf084adf90768616c44a76aefb465965d41f9",
+  "engine_source_before_sha256": "f21337a48d8d8fafa7408751cc27031dbdef6f30b46770e40b58fdf8d6f2076f",
+  "engine_source_after_sha256": "cc8a236f86a6f01d55e501194d85b414fb44d38a3e3ac63e8fb33d6ecc11ae5d"
+}

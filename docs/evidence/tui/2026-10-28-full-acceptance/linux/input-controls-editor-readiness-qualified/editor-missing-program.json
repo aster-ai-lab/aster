@@ -1,0 +1,57 @@
+{
+  "assertions_finished": true,
+  "case": "editor-missing-program",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13318,
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "94e3cdd0f59acb5594ba2264126a26bc7d9e813fbd8c544f80d102314ffd6638",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13318",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                                      │\n│                                                          +#+ ...++o                                                  │\n│                                                        +*###*+  :::                                                  │\n│                                                    ..+*##* *##*+:                                                    │\n│                                                  ...  ::*#*#+                                                        │\n│                                                  .:::::   #                                                          │\n│                                                                                                                      │\n│ Aster  v9.1.4                                                                                                        │\n│ /tmp/aster-kimi-wrazUu/workspace                                                                                     │\n│ Model · kimi/K3.1 Pro                                                                                                │\n│ /help for commands                                                                                                   │\n│                                                                                                                      │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\nNo active session\n  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 0a1efe11-7aba-40d9-967c-46611287102c\n  Working directory: /tmp/aster-kimi-wrazUu/workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor failed; the original draft was kept.\n\n❯ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n◆ Thought for 1.2s\n┃ I need respond EDITOR-CONTROL-OK no tools. Should understand last line ORIGINAL-DRAFT perhaps request exactly \"Reply\n┃ with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\". I should output just token. Should not have tools.\nEDITOR-CONTROL-OK\nWorked for 5.4s\nminimal · /help                                                                                                         \n❯\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "name": "editor-roundtrip",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                                      │\n│                                                          +#+ ...++o                                                  │\n│                                                        +*###*+  :::                                                  │\n│                                                    ..+*##* *##*+:                                                    │\n│                                                  ...  ::*#*#+                                                        │\n│                                                  .:::::   #                                                          │\n│                                                                                                                      │\n│ Aster  v9.1.4                                                                                                        │\n│ /tmp/aster-kimi-wrazUu/workspace                                                                                     │\n│ Model · kimi/K3.1 Pro                                                                                                │\n│ /help for commands                                                                                                   │\n│                                                                                                                      │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\nNo active session\n  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 0a1efe11-7aba-40d9-967c-46611287102c\n  Working directory: /tmp/aster-kimi-wrazUu/workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor failed; the original draft was kept.\n\n❯ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n◆ Thought for 1.2s\n┃ I need respond EDITOR-CONTROL-OK no tools. Should understand last line ORIGINAL-DRAFT perhaps request exactly \"Reply\n┃ with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\". I should output just token. Should not have tools.\nEDITOR-CONTROL-OK\nWorked for 5.4s\nminimal · /help                                                                                                         \n❯\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

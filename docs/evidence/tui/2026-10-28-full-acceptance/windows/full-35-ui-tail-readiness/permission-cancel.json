@@ -1,0 +1,52 @@
+{
+  "case": "permission-cancel",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "permission-cancel",
+      "detail": "real permission card dismissed; file absent before and after rejection/cancellation",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-W3CDKb\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool once to create side-effect.txt containing 'permission-test'. If the request is     2:30 PM           rejected or cancelled, do not retry and do not use another tool; just report that it was not                            written.                                                                                                                                                                                                                                                                                                                                                              ♦ Thought for 2.8s                                                                                                                                                                                                                           │  ♦ Creating side-effect.txt                                                                                                                                                                                                                      denied                                                                                                  2:30 PM                                                                                                                                 Worked for 9.5s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13462,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 7,
+          "digest": "4fd9d221eef83dc6d1d5fe0f95bcae814878309bb29f98bc8939738a04bf86f6"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

@@ -1,0 +1,27 @@
+{
+  "assertions_finished": true,
+  "case": "sessions-help-capability",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "name": "capability-help",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4iO6Y7\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                      ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                                        │                                                                              │                                        │   search: sessions                                                           │                                        │──────────────────────────────────────────────────────────────────────────────│                                        │  ♦ Session                                                                   │                                        │    ♦ Open sessions                                                  Ctrl+r   │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │  ↑/↓ nav  |  f filter  |  e/Space/→ expand  |  ← collapse  |  Enter details  │                      ╭─────────────────│                            / search  |  Esc close                            │─────────────────╮    │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

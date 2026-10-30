@@ -1,0 +1,42 @@
+{
+  "unix": 1792880226.8860512,
+  "result": {
+    "schema": "aster-xolotl-post-concurrency-single-v66",
+    "unix": 1792880044.3877447,
+    "phase": "passed",
+    "client": "yangchao-dev",
+    "tests": [
+      {
+        "name": "post-concurrent-single-1024",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems: A Technical Chapter\n\nCache consistency is the discipline of ensuring that cached copies of data remain coherent with the authoritative source and with other replicas across a distributed system. It is not a single mechanism but a family of mechanisms whose choice depends on latency budgets, failure modes, data ownership, and the acceptable staleness window. This chapter examines invalidation, TTL, write-through and write-back, replication, failover, race conditions, versioning, concrete timelines, pseudocode, monitoring, and operational trade-offs, with multiple examples for each topic.\n\n## 1. The Consistency Problem and Its Dimensions\n\nA cache is a redundant copy. Consistency defines the relationship between that copy and the origin. Three dimensions matter:\n\n1. **Freshness**: how stale a cached value may be before it is unacceptable.\n2. **Coherence across replicas**: whether two clients hitting different cache nodes see the same value.\n3. **Durability of writes**: whether a write acknowledged to a client survives cache loss and origin failure.\n\nThese dimensions conflict. Strong freshness requires synchronous invalidation or write-through, which raises latency. Coherence across replicas requires either shared state, broadcast invalidation, or version negotiation. Durability requires write-back journaling or write-through to durable storage. A system that optimizes all three simultaneously usually pays in throughput and operational complexity.\n\nA useful taxonomy distinguishes **cache-aside** (application reads origin on miss and populates cache), **read-through** (cache itself fetches from origin on miss), **write-through** (writes go to cache and origin synchronously), and **write-back** (writes land in cache and are flushed later). Consistency behavior differs sharply across these patterns.\n\nExample: a product catalog service with cache-aside and a 60-second TTL tolerates staleness because price changes are batched hourly. A payment ledger with write-through and synchronous invalidation tolerates almost no staleness because a refund must be visible immediately. The same infrastructure can host both, but the consistency contract must be declared per dataset, not per cluster.\n\n## 2. Invalidation\n\nInvalidation is the explicit removal or marking of a cached entry when the origin changes. It is the strongest common mechanism short of synchronous read-through, because it converts staleness from a time-based property into an event-based property.\n\n### 2.1 Invalidation strategies\n\n- **Direct key invalidation**: the writer computes the cache key and deletes it. Simple, but requires the writer to know every derived key (e.g., `product:123`, `product:123:summary`, `category:electronics:top`).\n- **Tag or group invalidation**: entries carry tags; invalidating a tag removes all entries bearing it. Useful when one origin row feeds many derived views.\n- **Namespace invalidation**: bump a namespace generation so all keys under it become logically invalid without deleting them. Cheap, but leaves garbage until eviction.\n- **Broadcast invalidation**: publish invalidation events to all cache nodes via a bus. Necessary when replicas are independent and no shared index exists.\n- **Version-based invalidation**: readers compare a version token and treat older entries as invalid without deletion.\n\n### 2.2 Invalidation timing models\n\n- **Synchronous invalidation**: the write transaction commits only after invalidation is acknowledged. Strongest freshness, highest write latency, and fragile under cache-node failure.\n- **Asynchronous invalidation**: invalidation is queued after commit. Lower write latency, but a window exists where readers see stale data.\n- **Pre-commit invalidation**: invalidate before commit to shrink the stale window, but this risks invalidating for a write that later aborts, causing unnecessary misses.\n- **Post-commit invalidation with retry**: invalidate after commit with durable retry. The common compromise.\n\nExample timeline (asynchronous invalidation):\n\n```\nt0  writer commits origin row (version 41)\nt1  invalidation event enqueued\nt2  reader on cache node A serves stale version 40 (miss window)\nt3  invalidation delivered to node A; entry deleted\nt4  reader on node A misses, reads origin, caches version 41\n```\n\nThe stale window is `t3 - t0`. If the queue is partitioned, the window grows unboundedly, which is why invalidation buses need durability and monitoring.\n\n### 2.3 Invalidation failure modes\n\n- **Lost invalidation**: the event is dropped; stale entries persist until TTL or eviction. Mitigation: durable queue, retry with backoff, and a TTL as a safety net.\n- **Partial invalidation**: only some derived keys are removed. Mitigation: tag-based invalidation and key-derivation registries.\n- **Invalidation storm**: a",
+        "usage": {
+          "prompt_tokens": 1047544,
+          "completion_tokens": 1024,
+          "total_tokens": 1048568,
+          "prompt_tokens_details": {
+            "cached_tokens": 1047544
+          }
+        },
+        "output_sha256": "ddbffff97b07fba6b9220a27607e19e8c9ab34e2d0b2b3e9d775d9c45a12987b",
+        "seconds": 36.10380643000826,
+        "ttft_seconds": 0.755640713032335,
+        "first_to_last_text_seconds": 35.34297893662006,
+        "text_chunks": 1015,
+        "response_bytes": 234216
+      }
+    ],
+    "levels": [],
+    "active_requests": {},
+    "scope": "Actual1047544-token input plus1024 output and8 safety; fixed public fixture; finite cache-hit load.",
+    "full_1m_length_qualified": false,
+    "long_output_qualified": false,
+    "performance_300_claimed": false,
+    "original_suite_failure_retained": true,
+    "post_concurrent_single_matches_cold": true,
+    "finished_unix": 1792880080.5277925
+  },
+  "exact_client_alive": false
+}

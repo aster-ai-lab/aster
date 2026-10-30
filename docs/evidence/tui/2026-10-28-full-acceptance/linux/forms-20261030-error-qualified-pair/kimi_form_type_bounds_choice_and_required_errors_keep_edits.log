@@ -1,0 +1,14 @@
+
+running 1 test
+test forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits ... ORACLE case=form-constraint-edits name=source-pair result=pass detail=aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-unknown-linux-gnu
+ORACLE case=form-constraint-edits name=constraint-required result=pass detail=the actual field error rejects submission without closing the form or replacing the editable draft
+ORACLE case=form-constraint-edits name=constraint-invalid number result=pass detail=the actual field error rejects submission without closing the form or replacing the editable draft
+ORACLE case=form-constraint-edits name=constraint-min 1 result=pass detail=the actual field error rejects submission without closing the form or replacing the editable draft
+ORACLE case=form-constraint-edits name=constraint-max 5 result=pass detail=the actual field error rejects submission without closing the form or replacing the editable draft
+ORACLE case=form-constraint-edits name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40647
+ORACLE case=form-constraint-edits name=constraints-typed-submission result=pass detail=after all rejected drafts, the exact numeric value, constrained enum and required boolean reach the actual tool receipt; forward and reverse Tab keep edits on their fields
+ORACLE case=form-constraint-edits name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 27.62s
+

@@ -1,0 +1,54 @@
+{
+  "assertions_finished": true,
+  "case": "interrupt",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13329,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-767866fd-b145-4d7f-9e1f-f2da5753c1e0",
+            "thread_id": "3227704f-bd7e-4dfd-9080-f5b90de95e05"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_12fde7c59e76455fb003c175cf97d3b3",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "name": "interrupt",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-xA0b9h/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool to run sleep 6; printf LATE > late.txt. Do not run another command. This test       6:25 PM    \n       will interrupt that operation.                                                                                   \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 3.7s                                                                                                 \n     ◆ Run sleep 6; printf LATE > late.txt                                                                              \n                                                                                                                        \n     Turn cancelled in 9.0s.                                                                                            \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

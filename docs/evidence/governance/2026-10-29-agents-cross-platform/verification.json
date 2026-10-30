@@ -1,0 +1,68 @@
+{
+  "host": {
+    "os": "Windows",
+    "release": "11",
+    "architecture": "AMD64",
+    "python": "3.12.14"
+  },
+  "checks": [
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "AGENTS.md",
+        "docs/development-standards.md",
+        ".specify/memory/constitution.md"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "line-endings",
+      "command": [
+        "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "tests/line_endings.py"
+      ],
+      "exit_code": 0,
+      "output": "......\r\n----------------------------------------------------------------------\r\nRan 6 tests in 14.593s\r\n\r\nOK\r\n"
+    },
+    {
+      "name": "governance-regime",
+      "command": [
+        "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "tests/governance_regime.py"
+      ],
+      "exit_code": 1,
+      "output": "..F.\r\n======================================================================\r\nFAIL: test_obligation_regressions_are_rejected (__main__.GovernanceRegimeTest.test_obligation_regressions_are_rejected)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"D:\\code\\aster\\tests\\governance_regime.py\", line 140, in test_obligation_regressions_are_rejected\r\n    with self.assertRaises(RegimeError) as caught:\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: RegimeError not raised\r\n\r\n----------------------------------------------------------------------\r\nRan 4 tests in 0.020s\r\n\r\nFAILED (failures=1)\r\n"
+    }
+  ],
+  "sources": {
+    "AGENTS.md": {
+      "sha256": "eedd1ea062fa788b145767021d58c8c17454a2deffb2da270feafbd8101eb030",
+      "bytes": 10416,
+      "crlf": 0,
+      "utf8_bom": false
+    },
+    "docs/development-standards.md": {
+      "sha256": "b29ff48a75aa449a11392c706b0bc32030e7ea1b0cdc24bb7824d04e932f5239",
+      "bytes": 22231,
+      "crlf": 0,
+      "utf8_bom": false
+    },
+    ".specify/memory/constitution.md": {
+      "sha256": "8c506bb47343e89ae321cb771ddad6e70044b77846a0a9bf0aaf998fbc4bb2d7",
+      "bytes": 10704,
+      "crlf": 0,
+      "utf8_bom": false
+    }
+  }
+}

@@ -216,6 +216,7 @@ export interface SpreadsheetEditorProps {
   content: WorkSpreadsheetContent;
   kernelWasmUrl?: string;
   preview: boolean;
+  /** Empty hides this hint when the host owns save status. */
   saveStatus?: string;
   sortCustomListStore?: SpreadsheetSortCustomListStore;
   fileActions?: readonly WorkOfficeFileAction[];
@@ -2505,7 +2506,7 @@ function SpreadsheetEditorSurface({
               {spreadsheetSelectionSummaryText(selectionSummary)}
             </output>
           )}
-          {!preview && (
+          {!preview && saveStatus && (
             <output
               aria-label={officeMessage(
                 messages,

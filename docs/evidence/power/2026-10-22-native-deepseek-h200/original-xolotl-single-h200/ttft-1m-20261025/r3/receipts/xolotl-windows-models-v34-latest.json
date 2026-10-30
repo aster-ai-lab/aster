@@ -1,0 +1,12 @@
+{
+  "unix": 1792863747.5394816,
+  "http_status": 200,
+  "elapsed_seconds": 0.08204980008304119,
+  "models": [
+    {
+      "id": "deepseek-v4.1-flash-1017-xq",
+      "max_model_len": null
+    }
+  ],
+  "scope": "Windows direct authenticated GET models; availability only, not inference latency or full context execution"
+}

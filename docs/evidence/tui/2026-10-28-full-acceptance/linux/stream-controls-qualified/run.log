@@ -1,0 +1,13 @@
+
+running 2 tests
+test stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing ... ORACLE case=direct-shell-capability name=source-pair result=pass detail=aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-unknown-linux-gnu
+ORACLE case=direct-shell-capability name=direct-shell-refusal result=pass detail=backend explicitly refuses the direct-command surface before any model request or file effect
+ORACLE case=direct-shell-capability name=quit result=pass detail=exit 0
+ok
+test stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order ... ORACLE case=queue-edit-delete-drain name=source-pair result=pass detail=aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-unknown-linux-gnu
+ORACLE case=queue-edit-delete-drain name=queue-effects result=pass detail=three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order
+ORACLE case=queue-edit-delete-drain name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 92.18s
+

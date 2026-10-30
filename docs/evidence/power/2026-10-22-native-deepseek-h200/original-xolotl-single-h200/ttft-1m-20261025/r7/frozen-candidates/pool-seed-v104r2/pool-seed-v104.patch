@@ -1,0 +1,155 @@
+--- a/tools/v41/engine/ds41_conv_reuse.hpp
++++ b/tools/v41/engine/ds41_conv_reuse.hpp
+@@ -87,6 +87,7 @@
+     std::vector<float> logits;  ///< the boundary's last-row logits (empty: none saved)
+     std::vector<int> tokens;    ///< the record's tokens [0, pos)
+     std::vector<uint64_t> ident;///< ... and identities (empty = all text)
++    std::vector<std::vector<uint8_t>> blobs; ///< optional boundary metadata, owned by the same budgeted record
+     bool live_clobbered = false;///< a failure after the device was written: the live state is garbage
+ };
+ 
+@@ -99,7 +100,8 @@
+     /// Save the boundary n (the snapshot tensors hold its state). 0 = not saved (too big for the budget even empty).
+     /// The same tokens + identities again only refresh the LRU; a record whose tokens are a prefix of these goes.
+     int64_t save(Ds41Dense & dense, const int * tokens, const uint64_t * ident, size_t ident_n, int64_t n,
+-                 const float * logits, size_t n_logits, std::string & err) {
++                 const float * logits, size_t n_logits, std::string & err,
++                 const std::vector<std::vector<uint8_t>> & blobs = {}) {
+         if (!enabled() || n < 1) { err = "disabled"; return 0; }
+         for (size_t i = 0; i < recs_.size(); ++i) {
+             Rec & r = recs_[i];
+@@ -120,9 +122,14 @@
+         if (any) { r.ident.assign(ident, ident + std::min<size_t>(ident_n, (size_t) n)); r.ident.resize((size_t) n, 0); }
+         if (logits && n_logits) r.logits.assign(logits, logits + n_logits);
+         size_t need = r.tokens.size() * 4 + r.ident.size() * 8 + r.logits.size() * 4;
++        for (const auto & blob : blobs) {
++            if (blob.size() > budget_ || need > budget_ - blob.size()) { err = "pool metadata exceeds budget"; return 0; }
++            need += blob.size();
++        }
+         const auto regs = dense.state_regions(n);
+         for (const auto & g : regs) need += g.bytes;
+         if (need > budget_) { err = "a " + std::to_string(need >> 20) + " MiB record exceeds the budget"; return 0; }
++        r.blobs = blobs;
+         // supersede: a record this one extends holds nothing it does not (positions [0, its n) are the same)
+         for (size_t i = 0; i < recs_.size();) {
+             const Rec & o = recs_[i];
+@@ -191,6 +198,7 @@
+         out.logits = it->logits;
+         out.tokens = it->tokens;
+         out.ident = it->ident;
++        out.blobs = it->blobs;
+         ++restores_;
+         Rec keep = std::move(*it);   // most recently used last
+         recs_.erase(it);
+@@ -215,6 +223,7 @@
+         std::vector<int> tokens;
+         std::vector<uint64_t> ident;
+         std::vector<float> logits;
++        std::vector<std::vector<uint8_t>> blobs;
+         struct Region { ggml_tensor * t; size_t off; std::vector<uint8_t> b; };
+         std::vector<Region> regions;
+         size_t bytes = 0;
+@@ -242,12 +251,15 @@
+         return pool_.init(lay, c, err);
+     }
+     int64_t save(Ds41Dense & dense, const int * tokens, const uint64_t * ident, size_t ident_n, int64_t n,
+-                 const float * logits, size_t n_logits, std::string & err) {
++                 const float * logits, size_t n_logits, std::string & err,
++                 const std::vector<std::vector<uint8_t>> & blobs = {}) {
+         const uint64_t * ids = pad(ident, ident_n, n);
+         ggml_backend_synchronize(dense.backend());   // the device data is final (the save reads it on the pool's stream)
+         if (!retarget(dense, err)) return 0;
+         static_assert(sizeof(int) == sizeof(int32_t), "token ids are int32");
+-        return (int64_t) pool_.save(snap_, reinterpret_cast<const int32_t *>(tokens), ids, n, logits, n_logits, err);
++        Ds41PoolSaveOpts opts;
++        for (const auto & blob : blobs) opts.blobs.push_back({blob.data(), blob.size()});
++        return (int64_t) pool_.save(snap_, reinterpret_cast<const int32_t *>(tokens), ids, n, logits, n_logits, err, opts);
+     }
+     ConvMatch best_prefix(const int * tokens, const uint64_t * ident, size_t ident_n, int64_t n) {
+         const uint64_t * ids = pad(ident, ident_n, n);
+@@ -289,6 +301,7 @@
+         if (!pool_.wait(rr, &err)) { out.live_clobbered = true; return false; }
+         out.pos = rr.pos;
+         out.logits = std::move(rr.logits);
++        out.blobs = std::move(rr.blobs);
+         return true;
+     }
+     bool fence(std::string * err = nullptr) { return pool_.fence(err); }
+@@ -354,8 +367,9 @@
+ #else
+ #define DS41_STORE_CALL(x) (host_->x)
+ #endif
+-    int64_t save(Ds41Dense & d, const int * t, const uint64_t * id, size_t idn, int64_t n, const float * lg, size_t nl, std::string & err) {
+-        return DS41_STORE_CALL(save(d, t, id, idn, n, lg, nl, err));
++    int64_t save(Ds41Dense & d, const int * t, const uint64_t * id, size_t idn, int64_t n, const float * lg, size_t nl, std::string & err,
++                 const std::vector<std::vector<uint8_t>> & blobs = {}) {
++        return DS41_STORE_CALL(save(d, t, id, idn, n, lg, nl, err, blobs));
+     }
+     ConvMatch best_prefix(const int * t, const uint64_t * id, size_t idn, int64_t n) { return DS41_STORE_CALL(best_prefix(t, id, idn, n)); }
+     bool restore(Ds41Dense & d, const ConvMatch & m, int64_t from, ConvRestore & out, std::string & err) {
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -41,6 +41,7 @@
+ #include "ds41_conversation.hpp"
+ #include "aster_prefill_policy.hpp"
+ #include "aster_draft_cumulative.hpp"
++#include "aster_dspark_seed.hpp"
+ #include "ds41_cuda_policy.hpp"
+ #include "ds41_dense.hpp"
+ #include "ds41_exec.hpp"
+@@ -404,6 +405,10 @@
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_ADMIT_DRAFT_SEED"), admit_draft_seed)) {
+         std::fprintf(stderr, "ASTER_XQ_ADMIT_DRAFT_SEED must be 0 or 1\n"); return 2;
+     }
++    bool pool_draft_seed = false;
++    if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_POOL_DRAFT_SEED"), pool_draft_seed)) {
++        std::fprintf(stderr, "ASTER_XQ_POOL_DRAFT_SEED must be 0 or 1\n"); return 2;
++    }
+     bool prefill_qos = false;
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_QOS"), prefill_qos)) {
+         std::fprintf(stderr, "ASTER_XQ_PREFILL_QOS must be 0 or 1\n"); return 2;
+@@ -1609,13 +1614,19 @@
+             }
+         }
+         std::vector<uint64_t> live_id;   // hist's position identities (its prompt part; past it: text = 0)
++        auto seed_blobs = [&](const std::vector<float> & seed, int rows, int position) {
++            aster_dspark_seed::Blobs blobs;
++            if (pool_draft_seed && rows > 0 && !aster_dspark_seed::encode(seed, rows, (int) n_embd, position, blobs))
++                std::fprintf(stderr, "serve: DSpark seed metadata refused at save; ordinary decode after restore\n");
++            return blobs;
++        };
+         // the live conversation's turn boundary into the pool (logged as serve/server.py ConvCacheLog reads it)
+         auto save_live = [&](const char * why) {
+             if (!pool_on || snap_len < std::max(1, park_min) || hist.size() < (size_t) snap_len) return;
+             const double t0 = now_ms();
+             std::string perr;
+             const int64_t id = pool.save(dense, hist.data(), live_id.data(), live_id.size(), snap_len,
+-                                         snap_logits.empty() ? nullptr : snap_logits.data(), snap_logits.size(), perr);
++                                         snap_logits.empty() ? nullptr : snap_logits.data(), snap_logits.size(), perr, seed_blobs(snap_seed, snap_seed_n, snap_len));
+             std::fprintf(stderr, "strata serve: conversation cache: %s %d tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu (%s%s%s)\n",
+                          id ? "parked" : "skipped", snap_len, now_ms() - t0, pool.size(), pool.bytes(), pool.evictions(), why,
+                          id ? "" : ": ", id ? "" : perr.c_str());
+@@ -1779,7 +1790,7 @@
+             const double t0 = now_ms();
+             std::string perr;
+             const int64_t id = pool.save(dense, c.hist.data(), c.live_id.data(), c.live_id.size(), c.snap_len,
+-                                         c.snap_logits.empty() ? nullptr : c.snap_logits.data(), c.snap_logits.size(), perr);
++                                         c.snap_logits.empty() ? nullptr : c.snap_logits.data(), c.snap_logits.size(), perr, seed_blobs(c.snap_seed, c.snap_seed_n, c.snap_len));
+             std::fprintf(stderr, "strata serve: conversation cache: %s %d tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu (%s, slot %d%s%s)\n",
+                          id ? "parked" : "skipped", c.snap_len, now_ms() - t0, pool.size(), pool.bytes(), pool.evictions(), why,
+                          s, id ? "" : ": ", id ? "" : perr.c_str());
+@@ -2243,7 +2254,13 @@
+                         live_id.assign(rid.begin(), rid.begin() + std::min<size_t>(rid.size(), (size_t) pr));
+                         if (pr == rs.pos) { snap_len = (int) rs.pos; snap_logits = rs.logits; }
+                         else snap_len = -1;
+-                        snap_seed_n = 0;   // no DSpark seed rows in a record: a repeat decodes its first tokens draftless
++                        snap_seed.clear(); snap_seed_n = 0;
++                        if (pool_draft_seed && pr == rs.pos) {
++                            if (!aster_dspark_seed::decode(rs.blobs, (int) n_embd, rs.pos, snap_seed, snap_seed_n))
++                                std::fprintf(stderr, "serve: DSpark seed metadata refused at restore; ordinary decode\n");
++                            else if (snap_seed_n > 0)
++                                std::fprintf(stderr, "serve: conversation cache: DSpark seed restored %d rows at %lld\n", snap_seed_n, (long long) rs.pos);
++                        }
+                         live_dirty = false;
+                         reuse_override = (int) pr;
+                         pool_regen = exact;

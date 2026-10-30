@@ -23,26 +23,33 @@ const FETCH_ATTEMPTS: u32 = 3;
 
 /// Load console supplier keys before an inference snapshot is built.
 ///
-/// An unreachable console or a refused credential leaves the list empty, which
-/// disables keyed targets. There is no environment-variable fallback.
-pub(crate) async fn load_supplier_credentials(config: &GatewayConfig) -> Vec<SupplierCredential> {
-    let Some(origin) = console_api_origin(config) else {
-        tracing::warn!("Inference supplier keys skipped: a3s-api service has no http server");
-        return Vec::new();
-    };
+/// An unreachable console or refused credential rejects activation. The caller
+/// retains the previous valid runtime instead of publishing empty keys.
+/// There is no environment-variable fallback.
+pub(crate) async fn load_supplier_credentials(
+    config: &GatewayConfig,
+) -> Result<Vec<SupplierCredential>, String> {
+    if !config
+        .inference
+        .as_ref()
+        .is_some_and(|policy| policy_targets(policy).any(|target| target.api_key_env.is_some()))
+    {
+        return Ok(Vec::new());
+    }
+    let origin = console_api_origin(config)
+        .ok_or_else(|| "Required inference supplier console origin is unavailable".to_string())?;
     let Some(token) = std::env::var("A3S_GATEWAY_ADMIN_TOKEN")
         .ok()
         .map(|value| value.trim().to_owned())
         .filter(|value| !value.is_empty())
     else {
-        tracing::warn!("Inference supplier keys skipped: A3S_GATEWAY_ADMIN_TOKEN is unset");
-        return Vec::new();
+        return Err("Required inference supplier console credential is unset".to_string());
     };
     for attempt in 1..=FETCH_ATTEMPTS {
         match fetch_supplier_credentials(&origin, &token).await {
             Ok(keys) => {
                 tracing::info!(suppliers = keys.len(), "Loaded console supplier keys");
-                return keys;
+                return Ok(keys);
             }
             Err(error) => {
                 tracing::warn!(attempt, error = %error, "Console supplier keys unavailable");
@@ -52,7 +59,7 @@ pub(crate) async fn load_supplier_credentials(config: &GatewayConfig) -> Vec<Sup
             }
         }
     }
-    Vec::new()
+    Err("Inference supplier credential fetch exhausted its bounded attempts".to_string())
 }
 
 pub(crate) fn console_api_origin(config: &GatewayConfig) -> Option<String> {
@@ -72,10 +79,12 @@ async fn fetch_supplier_credentials(
     token: &str,
 ) -> Result<Vec<SupplierCredential>, String> {
     let client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .connect_timeout(Duration::from_secs(2))
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|error| format!("supplier key client: {error}"))?;
-    let response = client
+    let mut response = client
         .get(format!("{origin}{UPSTREAM_KEYS_PATH}"))
         .bearer_auth(token)
         .send()
@@ -87,10 +96,24 @@ async fn fetch_supplier_credentials(
             response.status()
         ));
     }
-    let body = response
-        .bytes()
+    const LIMIT: usize = 1024 * 1024;
+    if response
+        .content_length()
+        .is_some_and(|length| length > LIMIT as u64)
+    {
+        return Err("supplier key response exceeds the 1 MiB bound".into());
+    }
+    let mut body = Vec::new();
+    while let Some(chunk) = response
+        .chunk()
         .await
-        .map_err(|error| format!("supplier key body: {error}"))?;
+        .map_err(|_| "supplier key response failed or timed out".to_string())?
+    {
+        if chunk.len() > LIMIT.saturating_sub(body.len()) {
+            return Err("supplier key response exceeds the 1 MiB bound".into());
+        }
+        body.extend_from_slice(&chunk);
+    }
     parse_supplier_credentials(&body)
 }
 
@@ -133,20 +156,32 @@ pub(crate) fn resolve_supplier_keys(
     suppliers: &[SupplierCredential],
 ) -> HashMap<Uuid, HeaderValue> {
     let mut keys = HashMap::new();
-    for route in policy.routes.values() {
-        for model in route.models.values() {
-            for target in &model.targets {
-                remember_console_key(&mut keys, suppliers, target);
-            }
-        }
-        if let Some(target) = &route.ocr_supplier {
-            remember_console_key(&mut keys, suppliers, target);
-        }
-        if let Some(target) = &route.decision_supplier {
-            remember_console_key(&mut keys, suppliers, target);
-        }
+    for target in policy_targets(policy) {
+        remember_console_key(&mut keys, suppliers, target);
     }
     keys
+}
+
+/// Every protocol uses the same closed supplier-key binding.
+fn policy_targets(
+    policy: &InferenceConfig,
+) -> impl Iterator<Item = &crate::config::InferenceTargetConfig> {
+    policy.routes.values().flat_map(|route| {
+        route
+            .models
+            .values()
+            .flat_map(|model| model.targets.iter())
+            .chain(
+                [
+                    route.ocr_supplier.as_ref(),
+                    route.decision_supplier.as_ref(),
+                    route.embedding_supplier.as_ref(),
+                    route.rerank_supplier.as_ref(),
+                ]
+                .into_iter()
+                .flatten(),
+            )
+    })
 }
 
 fn remember_console_key(
@@ -283,3 +318,7 @@ mod tests {
         assert!(!resolved.contains_key(&other));
     }
 }
+
+#[cfg(test)]
+#[path = "supplier_keys_activation_tests.rs"]
+mod activation_tests;

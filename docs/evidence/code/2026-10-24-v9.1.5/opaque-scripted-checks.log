@@ -1,0 +1,193 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:28:26
+   |
+28 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:488:21
+    |
+488 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 11 warnings (run `cargo fix --lib -p a3s-code-core` to apply 3 suggestions)
+   Compiling a3s-code-acp v9.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/acp)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:51:12
+   |
+44 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+51 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 2 warnings
+warning: associated function `acp_binary` is never used
+   --> crates/code/acp/tests/long_horizon/candidate.rs:126:12
+    |
+ 98 | impl Candidate {
+    | -------------- associated function in this implementation
+...
+126 |     pub fn acp_binary(default: &str, expected: &str) -> PathBuf {
+    |            ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `Campaign` is never constructed
+  --> crates/code/acp/tests/long_horizon/live.rs:64:12
+   |
+64 | pub struct Campaign {
+   |            ^^^^^^^^
+
+warning: associated items `prepare`, `spawn`, and `identity_unchanged` are never used
+   --> crates/code/acp/tests/long_horizon/live.rs:80:18
+    |
+ 79 | impl Campaign {
+    | ------------- associated items in this implementation
+ 80 |     pub async fn prepare(prefix: &str) -> Self {
+    |                  ^^^^^^^
+...
+145 |     pub fn spawn(
+    |            ^^^^^
+...
+180 |     pub fn identity_unchanged(&self) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^
+
+warning: struct `Capture` is never constructed
+  --> crates/code/acp/tests/long_horizon/upstream.rs:20:8
+   |
+20 | struct Capture {
+   |        ^^^^^^^
+
+warning: function `openai_route` is never used
+  --> crates/code/acp/tests/long_horizon/upstream.rs:71:14
+   |
+71 | pub async fn openai_route(config: LlmConfig) -> Result<Route, String> {
+   |              ^^^^^^^^^^^^
+
+warning: `a3s-code-acp` (test "long_horizon_rust_stdio") generated 5 warnings
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.75s
+     Running tests/long_horizon_rust_stdio.rs (/Users/roylin/code/aster/target/qualification/net-progress-build/target/debug/deps/long_horizon_rust_stdio-6dd2746f825b59d5)
+
+running 2 tests
+test scripted::initial_check_refuses_unbound_foreign_or_masked_result_frames ... ok
+test scripted::initial_check_uses_the_original_pair_with_an_opaque_host_id ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.00s

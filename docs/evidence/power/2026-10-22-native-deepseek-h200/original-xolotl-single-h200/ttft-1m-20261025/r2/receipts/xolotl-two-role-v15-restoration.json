@@ -1,0 +1,49 @@
+{
+  "unix": 1792858103.8867595,
+  "phase": "passed",
+  "maximum_physical_h200": 2,
+  "serving": {
+    "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+    "gpu_uuid": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
+    "intent": "xolotl-stable-service-v15-intent.json",
+    "context_tokens": 1048576,
+    "actual_prompt_tokens_qualified": 1048504,
+    "full_1m_length_qualified": true,
+    "lease_ends_unix": 1792862381.5974355
+  },
+  "optimization": {
+    "allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+    "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+    "no_active_model_worker": true,
+    "lease_ends_unix": 1792859870.529365
+  },
+  "drained_previous_service": {
+    "unix": 1792858108.5330606,
+    "former_service_state": {
+      "schema": "aster-xolotl-stable-service-v1",
+      "phase": "stopped",
+      "unix": 1792848988.185292,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "performance_300_claimed": false,
+      "context_tokens": 1048576,
+      "cpu_api_tests_passed": true,
+      "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+      "lease_ends_unix": 1792859870.529365,
+      "binary_sha256": "e943305094fd8612718cf817985cf232ee457e31d434c0512b32a8097e7f30b8",
+      "api_attempt": 1,
+      "api_process": {
+        "pid": 3943,
+        "start_ticks": 729102841,
+        "uid": 10250
+      },
+      "startup_unix": 1792849000.5652988,
+      "last_health_status": 200,
+      "last_health_unix": 1792858054.7257879,
+      "api_reaped": true,
+      "api_exit": 0,
+      "finished_unix": 1792858067.3574739
+    },
+    "gpu_apps": "",
+    "former_supervisor_gone": true
+  }
+}

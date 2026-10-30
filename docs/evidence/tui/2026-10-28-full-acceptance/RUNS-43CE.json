@@ -1,0 +1,630 @@
+{
+  "schema": "aster.tui.native-final-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_pair_digest": "43ce1a064098dff30e187665d4bcce5ed4cca316",
+  "phase": "full-35-ui-tail-readiness",
+  "all_entrypoints_passed": false,
+  "checkpoint_count": 153,
+  "complete_153": false,
+  "whole_pager_qualified": false,
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-pc-windows-msvc",
+      "binaries": [
+        {
+          "name": "aster.exe",
+          "sha256": "e89f8110f0c67c8c24fd878a433a1fc77bea909b15dc80fce96f73a93df2cd6b",
+          "bytes": 323993600
+        },
+        {
+          "name": "a3s-code-acp.exe",
+          "sha256": "7fb9c19e161c63d99a6b5fa259b9242e02429da9e3f63e65bce487e1d03fa27d",
+          "bytes": 185445888
+        }
+      ],
+      "entrypoints_passed": 34,
+      "entrypoints_failed": 1,
+      "seconds": 1461.98,
+      "run_log_sha256": "8b8f6c34ea7f35ba3becf6f93a719b44d5e4b42e7bc908507c23e15b56c4ee93",
+      "case_reports": [
+        {
+          "case": "allow-once",
+          "file": "windows/full-35-ui-tail-readiness/allow-once.json",
+          "sha256": "2d35278f31362d2e19647c833328974d674237d5a606d2f938e08d9b473fa1d0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "backend-refusal",
+          "file": "windows/full-35-ui-tail-readiness/backend-refusal.json",
+          "sha256": "f2704c824654a0d9fa11151da0a0d4fb9780aba762dcecd161487875856e8ba6",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "coding",
+          "file": "windows/full-35-ui-tail-readiness/coding.json",
+          "sha256": "ac2ebd4fca8b16ad80da0301ea7c149a7a382d215102df75994a757a144f848e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "compact-model-history",
+          "file": "windows/full-35-ui-tail-readiness/compact-model-history.json",
+          "sha256": "ac9a739431e1d2a9231cc1300cb68e9d7839fee9f6e91509bbe8822eb2f5cdfd",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "config-crud-restart",
+          "file": "windows/full-35-ui-tail-readiness/config-crud-restart.json",
+          "sha256": "dea757dd0ca57917124dec168551c5c5432be0e679f747571f58db693201dbd0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "copy-export-contract",
+          "file": "windows/full-35-ui-tail-readiness/copy-export-contract.json",
+          "sha256": "d25646b136ffff2c07c7c88ee60292407c2c01f75977e1397b59027633a8158b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "direct-shell-capability",
+          "file": "windows/full-35-ui-tail-readiness/direct-shell-capability.json",
+          "sha256": "f260b91356b5afc7154adde0ef350f0a9323f8901e41842d7d4b792fa9790850",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "draft-edit-controls",
+          "file": "windows/full-35-ui-tail-readiness/draft-edit-controls.json",
+          "sha256": "29743c37b326c46a82bbef59bd8d2fcf91ee2dd5bde276e1e444dc507cda6765",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-invalid-utf8",
+          "file": "windows/full-35-ui-tail-readiness/editor-invalid-utf8.json",
+          "sha256": "1ed86c11a359836963340b20906c0d43feb2528bd8c984be7ca45a4eff4c3e35",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-missing-program",
+          "file": "windows/full-35-ui-tail-readiness/editor-missing-program.json",
+          "sha256": "799173413ad9eb58c2aaf91cbca361eb824d790c81cec91c60bb28fe28af4ad2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-nonzero",
+          "file": "windows/full-35-ui-tail-readiness/editor-nonzero.json",
+          "sha256": "c806d5e04c01d95144949b2ee23a373e392db16da37145cda10ca631e8985276",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-save",
+          "file": "windows/full-35-ui-tail-readiness/editor-save.json",
+          "sha256": "ac0e7c15a044008541b1dd8bc9ffd84ad0697ba36562b466ed64ae268138a599",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "expand",
+          "file": "windows/full-35-ui-tail-readiness/expand.json",
+          "sha256": "49a5b3742a4cd42c9fe46ec24191b97e20767fa40d16457dbcd91d84d0383587",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-cancel",
+          "file": "windows/full-35-ui-tail-readiness/form-cancel.json",
+          "sha256": "589770e342d1e1802187ed9be4d0794b7d5da07c459979b543d0d66c76add7e9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-submit",
+          "file": "windows/full-35-ui-tail-readiness/form-submit.json",
+          "sha256": "255f27bc26d8a701dbbc760c3c07ae3448edfb8cb480f1f68dbc24f060e164a9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "goal",
+          "file": "windows/full-35-ui-tail-readiness/goal.json",
+          "sha256": "bebb07b4b05e7da7f021c35c3244057c91cb14ad5aec13f76d1f460a287f21cf",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "history-help-capability",
+          "file": "windows/full-35-ui-tail-readiness/history-help-capability.json",
+          "sha256": "ffdda38ae8b898df16e5af0b94c328ff96bb9b43df826ddc35a28254e4e3a687",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "interrupt",
+          "file": "windows/full-35-ui-tail-readiness/interrupt.json",
+          "sha256": "8f8baf317edc6a5b954325961b96afc65c411fb618c675199a9d00f052d6f712",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "learned-approval",
+          "file": "windows/full-35-ui-tail-readiness/learned-approval.json",
+          "sha256": "e610525f827d73b3c86adc83fa162bde1ec3b72c9c2f6e32e8b5e3b730385ab2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "long-unicode-paste",
+          "file": "windows/full-35-ui-tail-readiness/long-unicode-paste.json",
+          "sha256": "74d6fd61057bfe8aee7e7fa747953bd0c050228dfaa6121a2561fdea66cb1cc2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "ls-search-contracts",
+          "file": "windows/full-35-ui-tail-readiness/ls-search-contracts.json",
+          "sha256": "b13203ea5803a34764fac6d22b37d09e9fab73a4cca734d0caeb210d79df2654",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "case": "missing-file",
+          "file": "windows/full-35-ui-tail-readiness/missing-file.json",
+          "sha256": "4f7721279b6d61fafba50df9f0ba4381ace461a54a9e1ad52fed0435d80dff9f",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "multiline-unicode",
+          "file": "windows/full-35-ui-tail-readiness/multiline-unicode.json",
+          "sha256": "105590214e81b48c27148ab53ee1234b5abf946aa4dfb1b5b0de0cd2d10dd90d",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "paste-help-capability",
+          "file": "windows/full-35-ui-tail-readiness/paste-help-capability.json",
+          "sha256": "907c9f0d1a45de3a83b7519b7a8da1f3ef3b2a38189258d0b43a647945c936da",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-cancel",
+          "file": "windows/full-35-ui-tail-readiness/permission-cancel.json",
+          "sha256": "1f98b9d84439c2e5ef027a227279a430ea3019d520cec95dfd40a9071f1ab4db",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-reject",
+          "file": "windows/full-35-ui-tail-readiness/permission-reject.json",
+          "sha256": "c07bd79ef9182c5248b54eaae14c8f7fbf4c88e7f2488d99498e91dfc18bcc0d",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-read-write",
+          "file": "windows/full-35-ui-tail-readiness/plan-read-write.json",
+          "sha256": "eb84194925aca5a482536c50b2e0b87b8d4853e46177aaa3270f1af7ca454595",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-yolo-ceiling",
+          "file": "windows/full-35-ui-tail-readiness/plan-yolo-ceiling.json",
+          "sha256": "9c173ff2e29313bcc589793874c74b32ac5c9e81b9e9c5376f94bc1872f0aae0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "preferences-restart",
+          "file": "windows/full-35-ui-tail-readiness/preferences-restart.json",
+          "sha256": "3597a1727a8bf3312bbb3e04453c4337ef1429b0c16cf2bde06f462a7423dcd5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "queue-edit-delete-drain",
+          "file": "windows/full-35-ui-tail-readiness/queue-edit-delete-drain.json",
+          "sha256": "caf76b39f6ecda35aa1103a07e70d08795381693c28065f6f7b5f2c3c9e31c59",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "read",
+          "file": "windows/full-35-ui-tail-readiness/read.json",
+          "sha256": "5f2e9f2d7d99da848f11cbc26606fc026e59ea7c2f26056a1235a88975ee6ca5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "reading-navigation",
+          "file": "windows/full-35-ui-tail-readiness/reading-navigation.json",
+          "sha256": "de565ff4d4e89b7e548422cb67a8c3773ed22d491c20e1381e70099b40ee3486",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "resume-model-history",
+          "file": "windows/full-35-ui-tail-readiness/resume-model-history.json",
+          "sha256": "c6c61d12efe0511975620702771625f67926825528b34cc640e1a957d30e0904",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-cancel-ownership",
+          "file": "windows/full-35-ui-tail-readiness/send-now-cancel-ownership.json",
+          "sha256": "aa3805320e372a633276b5d1204ffe4c3ec99a3a257dab85c58ed83a223b278f",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-help-capability",
+          "file": "windows/full-35-ui-tail-readiness/send-now-help-capability.json",
+          "sha256": "24df8b6b9791570d99d0543035bb5ffbe72147200d8d3cfaad3c5e982d233f01",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-model-stream",
+          "file": "windows/full-35-ui-tail-readiness/send-now-model-stream.json",
+          "sha256": "de0ee1d8535bca3ae99d8eda7410fd2bac2eb10651be17fee35a33b2f8ac4119",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "sessions-help-capability",
+          "file": "windows/full-35-ui-tail-readiness/sessions-help-capability.json",
+          "sha256": "4934e397e67a97c6a165c9d2905b418c74bd574d46818be67116071ffe2fcaae",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "shell-nonzero-contract",
+          "file": "windows/full-35-ui-tail-readiness/shell-nonzero-contract.json",
+          "sha256": "50e7b9fccf9ae5f02b5c5f7b8feb3cde83ce62347cee7b72815c6dbba2972cd0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "surface",
+          "file": "windows/full-35-ui-tail-readiness/surface.json",
+          "sha256": "e98d74409a23dd36489a584e18cab1ea1f935dc913c9271fc01c39faee167165",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "write-verify",
+          "file": "windows/full-35-ui-tail-readiness/write-verify.json",
+          "sha256": "65f9ff4826aa3264cf029322422b8da65eb200b4d1b52f1054cac5fc3fa3e4b5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "yolo-explicit-deny",
+          "file": "windows/full-35-ui-tail-readiness/yolo-explicit-deny.json",
+          "sha256": "5a72b2680acaeeb196b16ccc41bb051f2995b776661405ff2bd1619eda1bf198",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu",
+      "binaries": [
+        {
+          "name": "aster",
+          "sha256": "c85ea7539c3bdcc6bdbd48dec168ae0b520c0502596bb38519b139ad601dff8d",
+          "bytes": 1115596968
+        },
+        {
+          "name": "a3s-code-acp",
+          "sha256": "f8da7743d85e9be470bd1fd0b89f0a2b1c9d194b3b605d0dec6d1e14c91c295f",
+          "bytes": 415367208
+        }
+      ],
+      "entrypoints_passed": 33,
+      "entrypoints_failed": 2,
+      "seconds": 1589.2,
+      "run_log_sha256": "03efcf9e8fe51d2b414f7a29893472a9e8cd25770cd872df3af27f9dcac970f2",
+      "case_reports": [
+        {
+          "case": "allow-once",
+          "file": "linux/full-35-ui-tail-readiness/allow-once.json",
+          "sha256": "1807bf367cfd081e32f7845f02b364fa62c16c2f678fce03723eb3808eb76318",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "backend-refusal",
+          "file": "linux/full-35-ui-tail-readiness/backend-refusal.json",
+          "sha256": "ec92b0721cd945af4ae845d917ba154323d94a1dcd2a9add2e7d353128882a59",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "coding",
+          "file": "linux/full-35-ui-tail-readiness/coding.json",
+          "sha256": "757748e0f71173cd54f3625eab4703e2e0574c9389f1c125ce8691308a79646e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "compact-model-history",
+          "file": "linux/full-35-ui-tail-readiness/compact-model-history.json",
+          "sha256": "9e75ca3a1bc9665aea12a4a05586e2c190ddf93e0afccdff387a655c7c3839fc",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "config-crud-restart",
+          "file": "linux/full-35-ui-tail-readiness/config-crud-restart.json",
+          "sha256": "77e8fe55152b168344c94c750b064b32b8c3c39c55826732763d89f5007e3ba2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "copy-export-contract",
+          "file": "linux/full-35-ui-tail-readiness/copy-export-contract.json",
+          "sha256": "ee855606b6b1e9bf53967a3d14fe9d8f9c8c1600e7a6704edf02a9712aac0613",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "direct-shell-capability",
+          "file": "linux/full-35-ui-tail-readiness/direct-shell-capability.json",
+          "sha256": "4f6d0ee7cea87309c5e791b8357f03337e10ca7036f99c4937fd09c3e6808e32",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "draft-edit-controls",
+          "file": "linux/full-35-ui-tail-readiness/draft-edit-controls.json",
+          "sha256": "eddf66c85baa6b2023ee72ea88ebfb0875cd76536a0e2be248bbbaa57e740111",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-invalid-utf8",
+          "file": "linux/full-35-ui-tail-readiness/editor-invalid-utf8.json",
+          "sha256": "6fe02d273b1932422bd181ae9319ee4f26a4450ba74ce4ac0869cd7aa6620f47",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-missing-program",
+          "file": "linux/full-35-ui-tail-readiness/editor-missing-program.json",
+          "sha256": "a788233e51e7f471c886a3cc6650817229ef2c0768acd056c93713a89ec2da3f",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-nonzero",
+          "file": "linux/full-35-ui-tail-readiness/editor-nonzero.json",
+          "sha256": "8e7638e22c0395f75b19694051ede3a67ffda39afca0c8f7262e933bc58ce4c1",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-save",
+          "file": "linux/full-35-ui-tail-readiness/editor-save.json",
+          "sha256": "a2ca75433700de2dec37f3db0aa9de0124890f3d2e94cf719b6ada508c9356ac",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "expand",
+          "file": "linux/full-35-ui-tail-readiness/expand.json",
+          "sha256": "c0b73e3645acf3c0487eb3bf43eef1038d7463ac1727098ab95061e1a841555c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-cancel",
+          "file": "linux/full-35-ui-tail-readiness/form-cancel.json",
+          "sha256": "089d3a0ad3e7ab996bf5c64fe9c0529db15490ba7efb170500b884e82c8b2d44",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-submit",
+          "file": "linux/full-35-ui-tail-readiness/form-submit.json",
+          "sha256": "e6c258e07c0decb8fed956e1306f939227356845e283eeed8cbf54ca2779dc9b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "goal",
+          "file": "linux/full-35-ui-tail-readiness/goal.json",
+          "sha256": "bb027fab60d108b432fd460d1eb20c2f1114b30e2178b652acec1ef3e4d17127",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "history-help-capability",
+          "file": "linux/full-35-ui-tail-readiness/history-help-capability.json",
+          "sha256": "0abd810a70e6c45a51db20e91d8d54f2a5aa504f93cbe36eb55dd645fecf8989",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "interrupt",
+          "file": "linux/full-35-ui-tail-readiness/interrupt.json",
+          "sha256": "3d492a70ecee7d62be248a80cf47654dafe614532790734770106427733685ff",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "learned-approval",
+          "file": "linux/full-35-ui-tail-readiness/learned-approval.json",
+          "sha256": "c3a29d35675a902abe5abd6237afcfd3491812fc23335bdb043d89f4e506ebde",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "long-unicode-paste",
+          "file": "linux/full-35-ui-tail-readiness/long-unicode-paste.json",
+          "sha256": "918a2b032547f04ad10fee50642d6db6135bc9cd381dfec000203e9551a44289",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "ls-search-contracts",
+          "file": "linux/full-35-ui-tail-readiness/ls-search-contracts.json",
+          "sha256": "f2f52dd815337cc3bdf862f1fc8ec6dddd363308afff42b7709f557cf08e868c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "missing-file",
+          "file": "linux/full-35-ui-tail-readiness/missing-file.json",
+          "sha256": "d5bae05d011efdf80475fa0cd2d96ade533b1172d515085399bedbff5c5237cf",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "multiline-unicode",
+          "file": "linux/full-35-ui-tail-readiness/multiline-unicode.json",
+          "sha256": "7535af484a3bd516b783c1c5fa15315564d521981041d989a0fcc85f4505c7ea",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "paste-help-capability",
+          "file": "linux/full-35-ui-tail-readiness/paste-help-capability.json",
+          "sha256": "4e5b37d3e24969446c851199255c9afa6deee1fd596216e64dd3ab33eccf485e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-cancel",
+          "file": "linux/full-35-ui-tail-readiness/permission-cancel.json",
+          "sha256": "d3d55f34a85bd64b03704acf28f278e29d90d3c60375408672ee29e9ff4efcdc",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-reject",
+          "file": "linux/full-35-ui-tail-readiness/permission-reject.json",
+          "sha256": "bf6ee4141c49ee9b82a7d376b926ec41b8b783b7b5f25fc77ca3a015d38f0aca",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-read-write",
+          "file": "linux/full-35-ui-tail-readiness/plan-read-write.json",
+          "sha256": "209c53de3e5ae9f3357f7633ba9642d2bd181ad185355bd1c3a23b4acfb8a674",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-yolo-ceiling",
+          "file": "linux/full-35-ui-tail-readiness/plan-yolo-ceiling.json",
+          "sha256": "5213f9c70af11ce50908b406a9c4e099a2af9f2d529699cba857eb705c335c4c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "preferences-restart",
+          "file": "linux/full-35-ui-tail-readiness/preferences-restart.json",
+          "sha256": "9eb6043fbccf212544c7b8600bbf5eaf487e83f3c710c22753d031d933b1bc64",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "queue-edit-delete-drain",
+          "file": "linux/full-35-ui-tail-readiness/queue-edit-delete-drain.json",
+          "sha256": "062fabc5049d87b35c92c9c14484ccffcc34931b6b63eede713cdcf617b34caf",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "read",
+          "file": "linux/full-35-ui-tail-readiness/read.json",
+          "sha256": "728d8aec4efa67fba85c3975d17074ba7f5b615c9cfad37903c4685cfc1cfc27",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "reading-navigation",
+          "file": "linux/full-35-ui-tail-readiness/reading-navigation.json",
+          "sha256": "a554afac9fc0b7ea131d93bd72de3d47d62bb389a0324893240ed325f1764915",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "resume-model-history",
+          "file": "linux/full-35-ui-tail-readiness/resume-model-history.json",
+          "sha256": "c6cb276e360ce1f6e87e550f2eb37a1fd27a9dcea4c7a61d654a41353c1d8af4",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-cancel-ownership",
+          "file": "linux/full-35-ui-tail-readiness/send-now-cancel-ownership.json",
+          "sha256": "db2db6f756612762cb4eed78a9dd3cd29bfe7d0a7a245ace00f4beff128f2815",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-help-capability",
+          "file": "linux/full-35-ui-tail-readiness/send-now-help-capability.json",
+          "sha256": "6902e439dcd644406b5c1b75d7345012af910bfbd1bd004fd264075e6bedd294",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-model-stream",
+          "file": "linux/full-35-ui-tail-readiness/send-now-model-stream.json",
+          "sha256": "df3d14409f2e6cb8fe38ac095a2220e919c6c49a547ee9c6d37282e3cedcc723",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "sessions-help-capability",
+          "file": "linux/full-35-ui-tail-readiness/sessions-help-capability.json",
+          "sha256": "5a91d09b986887fe6210a751ebf6d1c98f00683fec44ce4507a12f5bf9fe2f43",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "shell-nonzero-contract",
+          "file": "linux/full-35-ui-tail-readiness/shell-nonzero-contract.json",
+          "sha256": "5e6237d0b4dcdb0d78dbff639708136612114bde724b57eafe89d5879f5de4b7",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "case": "surface",
+          "file": "linux/full-35-ui-tail-readiness/surface.json",
+          "sha256": "5775cbdc352652a38ee7667e639311055d1cddc0f8bd6f42e74884e2aa8cc945",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "write-verify",
+          "file": "linux/full-35-ui-tail-readiness/write-verify.json",
+          "sha256": "32054703c6659765a4d0c0c23f768066a0522c043f2732f6d2acf7b8a23be2c5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "yolo-explicit-deny",
+          "file": "linux/full-35-ui-tail-readiness/yolo-explicit-deny.json",
+          "sha256": "ea94099243b57686f92c01c2fcdba747aa294eb4df897a274fb66321e93e2cb0",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    }
+  ]
+}

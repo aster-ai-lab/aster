@@ -222,7 +222,11 @@ impl InferenceDispatchState {
     /// (the turn's content against the plan's rubric, over the
     /// decision model's resolved backend), and the effective target
     /// list. Fail-closed throughout: any failure resolves primary.
-    pub(crate) async fn resolve_routing(&mut self, state: &GatewayState) {
+    pub(crate) async fn resolve_routing(
+        &mut self,
+        state: &GatewayState,
+        _req_headers: &http::HeaderMap,
+    ) {
         if self.effective_targets.is_some() {
             return;
         }
@@ -255,13 +259,10 @@ impl InferenceDispatchState {
             None
         };
         let transport = match (request.as_ref(), plan.decision_model.as_deref()) {
-            (Some(_request), Some(alias)) => self
-                .resolve_decision_transport(state, alias, now)
-                .await
-                .map(|transport| {
-                    std::sync::Arc::new(transport)
-                        as std::sync::Arc<dyn crate::inference::DecisionService>
-                }),
+            (Some(_request), Some(alias)) => {
+                self.resolve_decision_service(state, alias, plan.decision_protocol, now)
+                    .await
+            }
             _ => None,
         };
         let (decision, _frozen, frozen_hit) = state
@@ -287,16 +288,21 @@ impl InferenceDispatchState {
         self.routing_facts.clone()
     }
 
-    /// HR3c: resolves the decision model's serving backend — the same
-    /// target selection and backend picker the main dispatch uses, over
-    /// the decision model's own alias. No Cloud calls; a failure to
-    /// resolve returns None (the plane fails closed).
-    async fn resolve_decision_transport(
+    /// HR3c: resolves the configured local or upstream decision service.
+    /// No Cloud calls; a failure to resolve returns None (the plane fails
+    /// closed).
+    async fn resolve_decision_service(
         &self,
         state: &GatewayState,
         decision_alias: &str,
+        protocol: crate::config::InferenceDecisionProtocol,
         now: chrono::DateTime<chrono::Utc>,
-    ) -> Option<crate::inference::HttpDecisionTransport> {
+    ) -> Option<Arc<dyn crate::inference::DecisionService>> {
+        if protocol == crate::config::InferenceDecisionProtocol::Apofasi {
+            return (decision_alias == crate::inference::PLATFORM_APOFASI_ALIAS)
+                .then(|| state.decision_plane.apofasi())
+                .flatten();
+        }
         let target = self
             .authorizer
             .select_protocol_target_from_priority(
@@ -313,10 +319,23 @@ impl InferenceDispatchState {
             .authorizer
             .upstream_authorization(target.target_id)
             .and_then(|value| value.to_str().ok().map(str::to_owned));
-        Some(crate::inference::HttpDecisionTransport::new(
-            selected.backend.url.clone(),
-            authorization,
-        ))
+        let transport = match protocol {
+            crate::config::InferenceDecisionProtocol::Decisions => {
+                crate::inference::HttpDecisionTransport::new(
+                    selected.backend.url.clone(),
+                    authorization,
+                )
+            }
+            crate::config::InferenceDecisionProtocol::OpenaiChat => {
+                crate::inference::HttpDecisionTransport::new_chat(
+                    selected.backend.url.clone(),
+                    authorization,
+                    target.upstream_model.clone(),
+                )
+            }
+            crate::config::InferenceDecisionProtocol::Apofasi => return None,
+        };
+        Some(Arc::new(transport))
     }
 
     pub(crate) fn prepare_next(

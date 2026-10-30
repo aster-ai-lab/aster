@@ -1,0 +1,17 @@
+
+running 1 test
+test views::announcements::tests::render_promo_row_button_and_hide_affordances ... 
+thread 'views::announcements::tests::render_promo_row_button_and_hide_affordances' (36770) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/views/announcements.rs:1471:9:
+assertion `left == right` failed: [Label] hit rect
+  left: Some(Rect { x: 0, y: 0, width: 14, height: 1 })
+ right: Some(Rect { x: 0, y: 0, width: 15, height: 1 })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    views::announcements::tests::render_promo_row_button_and_hide_affordances
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.15s
+

@@ -1,0 +1,33 @@
+{
+  "at_epoch": 1792927501.4973743,
+  "model": {
+    "id": "deepseek-v4.1-flash",
+    "name": "DeepSeek V4.1 Flash 1017 XQ",
+    "state": "published",
+    "contextWindow": 1048576,
+    "outputLimit": null,
+    "capabilities": [],
+    "unavailableReason": null,
+    "routes": [
+      {
+        "priority": 0,
+        "supplierId": "c3b37832-2dd9-4931-93dc-6f4626ee0baf",
+        "upstreamModel": "deepseek-v41-flash-1017-xq-1m",
+        "weight": 1
+      }
+    ]
+  },
+  "supplier": {
+    "id": "c3b37832-2dd9-4931-93dc-6f4626ee0baf",
+    "name": "power-gpu-6-deepseek",
+    "baseUrl": "http://127.0.0.1:18206/v1",
+    "enabled": true,
+    "hasKey": true,
+    "kind": "self_hosted",
+    "protocol": "openai",
+    "routable": true,
+    "models": [
+      "deepseek-v41-flash-1017-xq-1m"
+    ]
+  }
+}

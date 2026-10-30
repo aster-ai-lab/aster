@@ -1,0 +1,104 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-markdown-last-match",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13226,
+        "text": "# Viewer heading\n\n**RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec**\n\n- alpha\n- beta",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "796001e55396c0a18864b1e8f1802f2b2489ac6fb23257e4391b93d1e0073409",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13226",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-sjCfcM/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.      1:52 PM    \n       # Viewer heading                                                                                                 \n        …                                                                                                               \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.1s                                                                                                 \n                                                                                                                        \n     Viewer heading                                                                                          1:52 PM    \n                                                                                                                        \n     RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec                                                                           \n                                                                                                                        \n     • alpha                                                                                                            \n     • beta                                                                                                             \n                                                                                                                        \n     Worked for 6.3s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the last real search match selects the terminal assistant answer even when Thinking adds a middle match; the actual Markdown viewer toggles into literal source",
+      "name": "markdown-last-match-raw",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-sjCfcM/workspace                                                                            13K / 128K  \n   ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮   \n   │                                                                                                            [x] │   \n   │  # Viewer heading                                                                                              │   \n   │                                                                                                                │   \n   │  **RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec**                                                                  │   \n   │                                                                                                                │   \n   │  - alpha                                                                                                       │   \n   │  - beta                                                                                                        │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n ┌ │                                                                                                                │ ┐ \n │ │                                                                                                                │ │ \n │ │                                                                                                                │ │ \n │ │                                                                                                                │ │ \n │ │                                                                                                                │ │ \n │ │                                                                                                                │ │ \n │ │                                                                                                                │ │ \n └ │                                                                                                                │ ┘ \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n   │                                                                                                                │   \n  ╭│                                                                                                                │╮  \n  │╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯│  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Esc:close  │  Enter:quote  │  /:search  │  f:filter  │  v:select  │  w:wrap  │  r:raw                                 \n                                                                                                                        "
+    },
+    {
+      "detail": "formatting and raw toggles leave canonical assistant UTF-8 export bytes and backend facts unchanged",
+      "name": "markdown-last-match-exact-export",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-sjCfcM/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.      1:52 PM    \n       # Viewer heading                                                                                                 \n                                                                                                                        \n       **RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec**                                                                     \n                                                                                                                        \n       - alpha                                                                                                          \n       - beta                                                                                                           \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.1s                                                                                                 \n                                                                                                                        \n     Viewer heading                                                                                          1:52 PM    \n                                                                                                                        \n     RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec                                                                           \n                                                                                                                        \n     • alpha                                                                                                            \n     • beta                                                                                                             \n                                                                                                                        \n     Worked for 6.3s                                                                                                    \n                                                                                                                        \n     Copied to /tmp/aster-kimi-sjCfcM/workspace/raw-export.txt (78 chars, 6 lines)                                      \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "coverage-markdown-last-match",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13226,
+            "text": "# Viewer heading\n\n**RAW-9df02c3d-27b1-4213-aa0d-d3745c37feec**\n\n- alpha\n- beta",
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "796001e55396c0a18864b1e8f1802f2b2489ac6fb23257e4391b93d1e0073409",
+              "seq": 6
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 7,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "af8d26f5-9c06-4dad-8c47-5b71afd81da0"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

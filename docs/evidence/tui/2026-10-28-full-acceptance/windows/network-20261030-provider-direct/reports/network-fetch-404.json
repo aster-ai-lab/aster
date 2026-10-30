@@ -1,0 +1,419 @@
+{
+  "assertions_finished": true,
+  "case": "network-fetch-404",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-error.json"
+          },
+          "id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13333,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+            "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+            "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/missing\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":120},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":120,\"projected_bytes\":120,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"projected_digest\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"repeat_key\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"content_ref\":\"inline:sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e3d3d893ca102b0ff0f386f9a476c41c20758b5027fe0248d685cfb6d1a1c385\"}",
+        "prepared_digest": "sha256:8c4147034b8f4c246ae681817cdef401101e74f21a2f1a114f2abec65293931b",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "format": "text",
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/missing"
+          },
+          "id": "call_85d13891b9804481a8b0085f7ffe7c32",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13553,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+            "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_85d13891b9804481a8b0085f7ffe7c32",
+          "turn": 1
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+            "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_85d13891b9804481a8b0085f7ffe7c32",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"HTTP 404 Not Found for URL: http://aster-fixture.example.test/missing\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":69,\"projected_bytes\":69,\"original_estimated_tokens\":18,\"projected_estimated_tokens\":18,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"projected_digest\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"repeat_key\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"content_ref\":\"inline:sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5b40f51afa8b769432a6b7eb399671dc70887ef5dda072d62d94c98d462f0f07\"}",
+        "prepared_digest": "sha256:9370864abe49c404de0b93eb13d628590d3e4f967b85ccc6658336bcebd94e03",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13718,
+        "text": "Tool exit code: 1  \nHTTP 404 Not Found for URL: http://aster-fixture.example.test/missing",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "e08395a4887c35679ea703d2f1b8a9039ba6262c9832d5ba72cfae266b2273a2",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:f97cc630ffe86556e4a9a578a26a45110fcdcc31fc290fe5fc853aa78e017936",
+          "sha256:cebc6fff9b364ab122f29a73cd4922349b14b5e73c41801f95ebc3993b046bd3"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13790,
+        "text": "FETCH-ERROR-RECOVERY",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7122c47a5cdd02f97528a11d550da10a8a32a350d21276d54ae5461efd13b102",
+          "seq": 16
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40604",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgMVLx\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-fetch-error.json once. Call web_fetch exactly once with its exact JSON object as         2:21 PM           arguments. Report the exact failure without retrying, switching source, inventing content or                            calling other tools.                                                                                                                                                                                                                                                                                                                                                  ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:21 PM         HTTP 404 Not Found for URL: http://aster-fixture.example.test/missing                                                                                                                                                                           Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the real web_fetch failure preserves its actual status or timeout reason; the controlled endpoint confirms whether network dispatch occurred",
+      "name": "web-fetch-controlled-error",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgMVLx\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-fetch-error.json once. Call web_fetch exactly once with its exact JSON object as         2:21 PM           arguments. Report the exact failure without retrying, switching source, inventing content or                            calling other tools.                                                                                                                                                                                                                                                                                                                                                  ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:21 PM         HTTP 404 Not Found for URL: http://aster-fixture.example.test/missing                                                                                                                                                                           Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13790",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgMVLx\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only FETCH-ERROR-RECOVERY. Do not call tools.                                                   2:21 PM                                                                                                                                                                                                                                                         ♦ Thought for 0.8s                                                                                                                                                                                                                              FETCH-ERROR-RECOVERY                                                                                    2:21 PM                                                                                                                                 Worked for 12s                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the same session completes a fresh model turn after the real fetch failure",
+      "name": "web-fetch-error-recovery",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgMVLx\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only FETCH-ERROR-RECOVERY. Do not call tools.                                                   2:21 PM                                                                                                                                                                                                                                                         ♦ Thought for 0.8s                                                                                                                                                                                                                              FETCH-ERROR-RECOVERY                                                                                    2:21 PM                                                                                                                                 Worked for 12s                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "network-fetch-404",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-error.json"
+              },
+              "id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13333,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+                "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+                "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b365a6e9d1f34adeb2f80eca2b27a511",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/missing\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":120},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":120,\"projected_bytes\":120,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"projected_digest\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"repeat_key\":\"sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"content_ref\":\"inline:sha256:888cbc955786277b7d545181fb95bc50c5a586243a0ebf57edeac879dbd282cc\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e3d3d893ca102b0ff0f386f9a476c41c20758b5027fe0248d685cfb6d1a1c385\"}",
+            "prepared_digest": "sha256:8c4147034b8f4c246ae681817cdef401101e74f21a2f1a114f2abec65293931b",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "format": "text",
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/missing"
+              },
+              "id": "call_85d13891b9804481a8b0085f7ffe7c32",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13553,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+                "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_85d13891b9804481a8b0085f7ffe7c32",
+              "turn": 1
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-ead51bf2-fe95-4467-9213-aadbac5f9429",
+                "thread_id": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_85d13891b9804481a8b0085f7ffe7c32",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"HTTP 404 Not Found for URL: http://aster-fixture.example.test/missing\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":69,\"projected_bytes\":69,\"original_estimated_tokens\":18,\"projected_estimated_tokens\":18,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"projected_digest\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"repeat_key\":\"sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"content_ref\":\"inline:sha256:c0f77389851d69abd700a80d214f56cb135f705cd3075458c1fe219cf2216459\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5b40f51afa8b769432a6b7eb399671dc70887ef5dda072d62d94c98d462f0f07\"}",
+            "prepared_digest": "sha256:9370864abe49c404de0b93eb13d628590d3e4f967b85ccc6658336bcebd94e03",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13718,
+            "text": "Tool exit code: 1  \nHTTP 404 Not Found for URL: http://aster-fixture.example.test/missing",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "e08395a4887c35679ea703d2f1b8a9039ba6262c9832d5ba72cfae266b2273a2",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:f97cc630ffe86556e4a9a578a26a45110fcdcc31fc290fe5fc853aa78e017936",
+              "sha256:cebc6fff9b364ab122f29a73cd4922349b14b5e73c41801f95ebc3993b046bd3"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13790,
+            "text": "FETCH-ERROR-RECOVERY",
+            "tool": null
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "7122c47a5cdd02f97528a11d550da10a8a32a350d21276d54ae5461efd13b102",
+              "seq": 16
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 17,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "83545f5d-b6cd-453e-bcf5-d57d5437a435"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

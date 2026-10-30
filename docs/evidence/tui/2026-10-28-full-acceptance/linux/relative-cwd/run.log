@@ -1,0 +1,21 @@
+
+running 1 test
+test workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace ... ORACLE case=relative-cwd name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+
+thread 'workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace' (3504) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:365:13:
+TUI exited Some(ExitStatus { code: 2, signal: None })
+error: the argument '--cwd <CWD>' cannot be used multiple times
+
+Usage: aster [OPTIONS] [PROMPT] [COMMAND]
+
+For more information, try '--help'.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 39 filtered out; finished in 1.02s
+

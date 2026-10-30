@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::workspace_overlay_cycle_reaches_provisional_but_not_hidden_live_agents' (18732) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2871:5:
+assertion `left == right` failed
+  left: Agent(AgentId(0))
+ right: Agent(AgentId(1))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::workspace_overlay_cycle_reaches_provisional_but_not_hidden_live_agents ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::workspace_overlay_cycle_reaches_provisional_but_not_hidden_live_agents
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

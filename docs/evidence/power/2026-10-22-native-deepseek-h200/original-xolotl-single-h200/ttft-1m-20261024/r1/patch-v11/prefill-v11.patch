@@ -1,0 +1,106 @@
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -39,6 +39,7 @@
+ //
+ // Load the real model only through tools/ds4/memguard.sh (RAM cap + the shared GPU lock).
+ #include "ds41_conversation.hpp"
++#include "aster_prefill_policy.hpp"
+ #include "ds41_cuda_policy.hpp"
+ #include "ds41_dense.hpp"
+ #include "ds41_exec.hpp"
+@@ -1220,8 +1221,30 @@
+         if (!head_logits(dense_row0 + (lo - row0), hi - lo, tail_logits.data() + (size_t) (lo - t0) * nv)) return false;
+         return true;
+     };
++    int bcap_have[3] = {0, 0, 0};
+     int bcap_n = 0, bcap_got = 0;  // serve DSpark seed captured from a layer-major batch (see the layer loop below)
+     std::vector<float> bcap_vh;    // [bcap_n][3 * n_embd], as pass_v's vh
++    // Capture the complete last seed window across batch boundaries, including the
++    // sequential one-token remainder. All three hidden taps must cover every row.
++    auto capture_seed = [&](Ds41Dense & current, int layer, int total, int begin, int width) -> bool {
++        if (bcap_n <= 0) return true;
++        int j = 0; while (j < 3 && layer != dm_layers[j]) ++j;
++        if (j == 3) return true;
++        const auto slice = aster_prefill::tail_slice(total, bcap_n, begin, width);
++        if (slice.count == 0) return true;
++        if (!current.read_state_cols(slice.column, slice.count, vx)) { ferr = current.last_error(); return false; }
++        const size_t HC = vx.size() / ((size_t) slice.count * n_embd);
++        for (int t = 0; t < slice.count; ++t) {
++            float * dst = bcap_vh.data() + (size_t) (slice.destination + t) * 3 * n_embd + (size_t) j * n_embd;
++            for (size_t h = 0; h < HC; ++h) {
++                const float * xs = vx.data() + ((size_t) t * HC + h) * n_embd;
++                for (int64_t d = 0; d < n_embd; ++d) dst[d] += xs[d] / (float) HC;
++            }
++        }
++        bcap_have[j] += slice.count;
++        bcap_got = std::min({bcap_have[0], bcap_have[1], bcap_have[2]});
++        return true;
++    };
+     // the layer-major batch width for THIS turn: PB, clamped per request by the VRAM actually free (the --serve loop
+     // sets it; a one-shot run keeps PB)
+     int pb_cap = PB;
+@@ -1371,24 +1394,7 @@
+                         const int sn = std::min(SB, B - s);
+                         if (!cur_dense->finish_span(l, s, sn)) { ferr = cur_dense->last_error(); return false; }
+                     }
+-                    // serve DSpark seed (bcap_n > 0): the main_hidden rows of the batch's last bcap_n tokens - pass_v's
+-                    // HC-mean of the state leaving dm_layers[j] - read here, so the tail need not re-run as passes
+-                    if (bcap_n > 0 && c0 + B == n) {
+-                        for (int j = 0; j < 3; ++j) {
+-                            if (l != dm_layers[j]) continue;
+-                            const int cn = std::min(bcap_n, B);
+-                            bcap_got = cn;
+-                            if (!cur_dense->read_state_cols(B - cn, cn, vx)) { ferr = cur_dense->last_error(); return false; }
+-                            const size_t HC = vx.size() / ((size_t) cn * n_embd);
+-                            for (int t = 0; t < cn; ++t) {
+-                                float * dst = bcap_vh.data() + (size_t) (bcap_n - cn + t) * 3 * n_embd + (size_t) j * n_embd;
+-                                for (size_t h = 0; h < HC; ++h) {
+-                                    const float * xs = vx.data() + ((size_t) t * HC + h) * n_embd;
+-                                    for (int64_t d = 0; d < n_embd; ++d) dst[d] += xs[d] / (float) HC;
+-                                }
+-                            }
+-                        }
+-                    }
++                    if (!capture_seed(*cur_dense, l, n, c0, B)) return false;
+                 }
+                 fd_dense += now_ms() - t0;
+                 const double tl = now_ms();
+@@ -1453,6 +1459,7 @@
+                     t0 = now_ms();
+                     fd_tier += t0 - t1;
+                     if (!cur_dense->finish(l, crouted.data())) { ferr = cur_dense->last_error(); return false; }
++                    if (!capture_seed(*cur_dense, l, n, c0, m)) return false;
+                 }
+                 fd_dense += now_ms() - t0;
+                 const double tl = now_ms();
+@@ -2418,8 +2425,11 @@
+             if (!by_step && defer_vram && cache_open && dh >= 2) {
+                 static const int keep_max = std::getenv("STRATA_SERVE_KEEP_MAX") ? std::atoi(std::getenv("STRATA_SERVE_KEEP_MAX")) : 4096;
+                 if (Ds41MoeTier::keep_cache_mode() && dh <= keep_max && !mc.cpu_only) {
+-                    const double need = (4.3 * 1073741824.0 + 0.95 * 1048576.0 * (double) std::min(dh, PB)) +
+-                                        a.vram_margin_gib * 1073741824.0;
++                    const double need = aster_prefill::reservation_bytes(std::min(dh, PB),
++                                        (double) dense.span_graph_bytes(total, SB), a.vram_margin_gib);
++                    if (!std::isfinite(need)) {
++                        std::printf("ERR prefill graph reservation is invalid\n"); std::fflush(stdout); continue;
++                    }
+                     std::string kerr;
+                     int64_t g = 0; bool shrink_ok = true;
+                     for (int st = 0; st < pipe.n_stages(); ++st) {
+@@ -2554,6 +2564,7 @@
+             const double tph0 = now_ms();
+             const double fd0[3] = { fd_dense, fd_tier, fd_logits };   // this request's batch split (stderr)
+             bcap_n = bcap; bcap_got = 0;
++            std::fill_n(bcap_have, 3, 0);
+             if (bcap > 0) bcap_vh.assign((size_t) bcap * 3 * n_embd, 0.0f);
+             auto feed_mixed = [&]() -> bool {   // the read's rows go into the windows, up to 16 - the decoding rows each
+                 Mix mx;
+@@ -2682,7 +2693,7 @@
+                             ferr = "DSpark step: " + dsp->last_error(); ok = false; break;
+                         }
+                     }
+-                    if (bcap_got < 1) { ferr = "DSpark batch seed captured nothing"; ok = false; }
++                    if (bcap_got != bcap) { ferr = "DSpark batch seed window is incomplete"; ok = false; }
+                 }
+                 for (int i0 = total - sp_tail; ok && bcap == 0 && i0 < total; i0 += 16) {
+                         if (stop_prefill()) { ok = false; break; }

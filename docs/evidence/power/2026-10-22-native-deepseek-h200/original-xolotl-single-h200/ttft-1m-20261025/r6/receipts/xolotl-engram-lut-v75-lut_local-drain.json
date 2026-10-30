@@ -1,0 +1,19 @@
+{
+  "signal_sent": true,
+  "pid": 9748,
+  "unix": 1792883840.542211,
+  "health_before_stop": [
+    {
+      "id": 0,
+      "n_ctx": 1048576,
+      "is_processing": false,
+      "n_prompt_tokens": 0
+    },
+    {
+      "id": 1,
+      "n_ctx": 1048576,
+      "is_processing": false,
+      "n_prompt_tokens": 0
+    }
+  ]
+}

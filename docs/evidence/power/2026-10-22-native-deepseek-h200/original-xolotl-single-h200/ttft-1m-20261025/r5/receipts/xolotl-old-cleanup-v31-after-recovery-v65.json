@@ -1,0 +1,23 @@
+{
+  "unix": 1792880760.0365176,
+  "old_cleanup": {
+    "phase": "reassigned_service_preserved",
+    "unix": 1792862517.7531624,
+    "deadline_unix": 1792880432.7702465,
+    "finished_unix": 1792880438.0204113
+  },
+  "old_cleanup_exact_process_alive": false,
+  "current_watch": {
+    "schema": "aster-xolotl-readiness-watch-v65",
+    "unix": 1792880753.3889618,
+    "phase": "ready",
+    "allocation_uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+    "observation_only": true,
+    "failures": [],
+    "job_phase": "Running",
+    "last_ready_unix": 1792880753.6632078,
+    "health_status": 200,
+    "scope": "jump host direct to the owned VIP; no inference request"
+  },
+  "current_watch_exact_process_alive": true
+}

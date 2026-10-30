@@ -1585,16 +1585,24 @@ struct WikiInvoker {
     output: String,
     exit_code: i32,
     calls: Arc<std::sync::atomic::AtomicUsize>,
+    scopes: Arc<std::sync::Mutex<Vec<String>>>,
 }
 
 #[async_trait]
 impl crate::tools::ToolInvoker for WikiInvoker {
     async fn invoke(
         &self,
-        _invocation: crate::tools::ToolInvocation,
+        invocation: crate::tools::ToolInvocation,
         _ctx: &ToolContext,
     ) -> crate::tools::ToolResult {
         self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        if let Some(scope) = invocation
+            .args
+            .get("scope")
+            .and_then(|value| value.as_str())
+        {
+            self.scopes.lock().unwrap().push(scope.to_string());
+        }
         if self.exit_code == 0 {
             crate::tools::ToolResult::success("search_wiki", self.output.clone())
         } else {
@@ -1640,6 +1648,7 @@ fn saved_notes_decide_whether_the_web_runs() {
 #[tokio::test]
 async fn web_search_returns_saved_notes_without_searching_the_web() {
     let calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let scopes = Arc::new(std::sync::Mutex::new(Vec::new()));
     let session = "local-first-execute";
     let query = "谁是林夏";
     let _ = claim_web_escalation(session, query);
@@ -1649,6 +1658,7 @@ async fn web_search_returns_saved_notes_without_searching_the_web() {
             output: "林夏只在本地笔记".to_string(),
             exit_code: 0,
             calls: Arc::clone(&calls),
+            scopes: Arc::clone(&scopes),
         }));
     let output = WebSearchTool::new()
         .execute(&serde_json::json!({ "query": query }), &ctx)
@@ -1658,6 +1668,7 @@ async fn web_search_returns_saved_notes_without_searching_the_web() {
     assert!(output.content.contains("林夏只在本地笔记"));
     assert!(output.content.contains("local-knowledge"));
     assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 1);
+    assert_eq!(*scopes.lock().unwrap(), ["current"]);
 }
 
 #[cfg(feature = "headless-search")]

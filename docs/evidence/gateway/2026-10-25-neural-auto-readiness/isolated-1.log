@@ -1,0 +1,18 @@
+
+running 1 test
+test entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts ... FAILED
+
+failures:
+
+---- entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts stdout ----
+
+thread 'entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts' (3320083) panicked at apps/gateway/src/entrypoint/inference_tests.rs:4775:5:
+the broken stream surfaces to the client
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2123 filtered out; finished in 1.26s
+

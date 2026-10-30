@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::tmux_truecolor_fix_appends_alongside_existing_terminal_features' (52492) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:1239:35:
+called `Result::unwrap()` on an `Err` value: TmuxManaged(Read { path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmplYlZUv", source: Os { code: 5, kind: PermissionDenied, message: "拒绝访问。" } })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::tmux_truecolor_fix_appends_alongside_existing_terminal_features ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::tmux_truecolor_fix_appends_alongside_existing_terminal_features
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

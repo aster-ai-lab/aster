@@ -1,0 +1,56 @@
+
+running 1 test
+test file_references::kimi_outside_file_reference_is_refused_without_model_work ... ORACLE case=file-ref-outside name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+
+thread 'file_references::kimi_outside_file_reference_is_refused_without_model_work' (3490) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:363:9:
+timeout waiting for "linked/ref-target.txt"
+                                                                                                                        
+  /t/aster-kimi-cb63tU/workspace                                                                              0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ @linked ref-target                                                                                             │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    file_references::kimi_outside_file_reference_is_refused_without_model_work
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 42 filtered out; finished in 21.28s
+

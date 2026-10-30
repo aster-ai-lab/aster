@@ -1,0 +1,38 @@
+{
+  "source_root": "/code/aster/.wt-deepseek-dspark-main-20261025/crates/power",
+  "parent_root": "/code/aster/.wt-deepseek-dspark-main-20261025",
+  "root_base": "57cc7f7be6d10e1b7b884718f0c118eddbc81430",
+  "power_parent": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
+  "merged_upstream_main": "d9f6acfba5221f1db3fde378b4b6fd26ec7fbf50",
+  "features": [
+    "server"
+  ],
+  "toolchain": "1.97.1",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "a3s-power",
+    "--no-default-features",
+    "--features",
+    "server",
+    "--bin",
+    "a3s-power"
+  ],
+  "exit_code": 0,
+  "captured_artifact_receipt": "captured-power-release.json",
+  "power_sha256": "de631f93da0831144ada8855e0ee1d2020ef9a2e8271376ff9204e9b928fd0b3",
+  "bridge_sha256": "ca4b0f9319df0875e10970b17215e09298be203dc669a8eb3ebce2fb60a57b6e",
+  "engine_sha256": "a99fe7fc22e10081f67e24a04bb78a3f4d6ea39011951e4f19f52a5bb85cec20",
+  "install_directory": "/opt/a3s/releases/deepseek-dspark-main-de631f93da083114",
+  "cargo_lock_sha256": "9fc8ed570852242bea90b34b67aee840a8a81a11a56ae2075e1a9fad874e8448",
+  "root_lockfile_changed": false,
+  "source_fingerprint_algorithm": "sha256(canonical JSON sorted relative path to SHA256 map; *.rs and Cargo.toml)",
+  "source_fingerprint": "8498e21102952ab731a3491d8118795e31995813f2576dad45fcba891fc639a0"
+}

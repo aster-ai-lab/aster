@@ -1,0 +1,374 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-program-typed-error",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-template-typed.json"
+          },
+          "id": "call_1dc2544b15a346178847acafe53a5898",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13207,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+            "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1dc2544b15a346178847acafe53a5898",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+            "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1dc2544b15a346178847acafe53a5898",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"search\\\"],\\\"inputs\\\":{\\\"query\\\":1},\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"name\\\":\\\"program_code_search\\\",\\\"type\\\":\\\"template\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-template-typed.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":205},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":205,\"projected_bytes\":205,\"original_estimated_tokens\":52,\"projected_estimated_tokens\":52,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"projected_digest\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"repeat_key\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"content_ref\":\"inline:sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0800611dbd2c39bdbe7ae659c4232a7d15a5cabf4ecba782ad22ca5574485e6f\"}",
+        "prepared_digest": "sha256:6801a15f4bc05969ae2ba173e6907da30ae4f142c4ea9077381ab1d831014315",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "search"
+            ],
+            "inputs": {
+              "query": 1
+            },
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 2,
+              "timeoutMs": 10000
+            },
+            "name": "program_code_search",
+            "type": "template"
+          },
+          "id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13454,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+            "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+            "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type \\\"string\\\" [permanent - change the arguments before retrying]\\n    at run (eval_script:59:79)\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"program_code_search\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"search\",\"success\":false,\"exit_code\":1,\"output_bytes\":121,\"original_output_bytes\":121,\"truncated\":false,\"start_offset_ms\":14,\"duration_ms\":2,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":121,\"projected_bytes\":121,\"original_estimated_tokens\":31,\"projected_estimated_tokens\":31,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"projected_digest\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"repeat_key\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"content_ref\":\"inline:sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0}}}],\"type\":\"template\"},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":211,\"projected_bytes\":211,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"projected_digest\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"repeat_key\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"content_ref\":\"inline:sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e42a6d50050318599045335c5175e7cc0728aa72e58b04ace90e8f2c2cc095d9\"}",
+        "prepared_digest": "sha256:7d39d48803d04c56358f6d4a4504ca5b3ecbd78e748055a4958156ac7ca36b5c",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13706,
+        "text": "Error: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type \"string\" [permanent - change the arguments before retrying]",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "a1e50d79234923109e86fcd1b16f73093eba485d258adec78ffc7d641f6ebc9b",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:1dc87a71556c6a3a04d7eae5d90a7e17165cacecb6d3133d2c2521510b781dff",
+          "sha256:f61894ebc0f4769bf64b4d28491d2d0779381b0a9b7c986d8a3b947b9910befa"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-HDYo6h/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-typed.json once. Call program exactly once with its exact JSON object as        1:42 PM    \n       arguments. Report the exact parameter error without retrying, correcting arguments or calling other              \n       tools.                                                                                                           \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run program 0.0s                                                                               14s ⇣13.5k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow program?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40367",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-HDYo6h/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-typed.json once. Call program exactly once with its exact JSON object as        1:42 PM    \n       arguments. Report the exact parameter error without retrying, correcting arguments or calling other              \n       tools.                                                                                                           \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n     ◈ Searched 1 pattern · 1 failed                                                                                    \n                                                                                                                        \n     Error: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type       1:43 PM    \n     \"string\" [permanent - change the arguments before retrying]                                                        \n                                                                                                                        \n     Worked for 22s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "a numeric template query is preserved to the real nested search boundary and returns one failed complete receipt without retries",
+      "name": "template-typed-parameter-error",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-HDYo6h/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-typed.json once. Call program exactly once with its exact JSON object as        1:42 PM    \n       arguments. Report the exact parameter error without retrying, correcting arguments or calling other              \n       tools.                                                                                                           \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n     ◈ Searched 1 pattern · 1 failed                                                                                    \n                                                                                                                        \n     Error: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type       1:43 PM    \n     \"string\" [permanent - change the arguments before retrying]                                                        \n                                                                                                                        \n     Worked for 22s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "coverage-program-typed-error",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-template-typed.json"
+              },
+              "id": "call_1dc2544b15a346178847acafe53a5898",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13207,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+                "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_1dc2544b15a346178847acafe53a5898",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+                "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_1dc2544b15a346178847acafe53a5898",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"search\\\"],\\\"inputs\\\":{\\\"query\\\":1},\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"name\\\":\\\"program_code_search\\\",\\\"type\\\":\\\"template\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-template-typed.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":205},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":205,\"projected_bytes\":205,\"original_estimated_tokens\":52,\"projected_estimated_tokens\":52,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"projected_digest\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"repeat_key\":\"sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"content_ref\":\"inline:sha256:4d903393ebb6ff5fc0c7903cb04dc55a0423d9cd54740cb3f7af8a7208181f58\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0800611dbd2c39bdbe7ae659c4232a7d15a5cabf4ecba782ad22ca5574485e6f\"}",
+            "prepared_digest": "sha256:6801a15f4bc05969ae2ba173e6907da30ae4f142c4ea9077381ab1d831014315",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "search"
+                ],
+                "inputs": {
+                  "query": 1
+                },
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 2,
+                  "timeoutMs": 10000
+                },
+                "name": "program_code_search",
+                "type": "template"
+              },
+              "id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13454,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+                "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e294cac9-0e98-4091-8bec-f61a195f4f5f",
+                "thread_id": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_9baaad7b40ac4bf3a99ae70d2bb59db7",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type \\\"string\\\" [permanent - change the arguments before retrying]\\n    at run (eval_script:59:79)\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"program_code_search\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"search\",\"success\":false,\"exit_code\":1,\"output_bytes\":121,\"original_output_bytes\":121,\"truncated\":false,\"start_offset_ms\":14,\"duration_ms\":2,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":121,\"projected_bytes\":121,\"original_estimated_tokens\":31,\"projected_estimated_tokens\":31,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"projected_digest\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"repeat_key\":\"sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"content_ref\":\"inline:sha256:955255a4e08c636d0ff3fbf1b1361340c71880ec52a865f4b7702c5ca82c2ac8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0}}}],\"type\":\"template\"},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":211,\"projected_bytes\":211,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"projected_digest\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"repeat_key\":\"sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"content_ref\":\"inline:sha256:4fc3ef945897aa266b9599ae8f4c873eeb3d0699306248013c3090099a6266fb\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e42a6d50050318599045335c5175e7cc0728aa72e58b04ace90e8f2c2cc095d9\"}",
+            "prepared_digest": "sha256:7d39d48803d04c56358f6d4a4504ca5b3ecbd78e748055a4958156ac7ca36b5c",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13706,
+            "text": "Error: Template step search failed: Invalid arguments for tool 'search': /query: 1 is not of type \"string\" [permanent - change the arguments before retrying]",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "a1e50d79234923109e86fcd1b16f73093eba485d258adec78ffc7d641f6ebc9b",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:1dc87a71556c6a3a04d7eae5d90a7e17165cacecb6d3133d2c2521510b781dff",
+              "sha256:f61894ebc0f4769bf64b4d28491d2d0779381b0a9b7c986d8a3b947b9910befa"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "3eed390c-ddf4-46e7-9f0a-7a240b918c55"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

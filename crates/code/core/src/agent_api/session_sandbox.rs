@@ -135,11 +135,18 @@ pub(crate) fn select_default_local_sandbox(
             }
         },
         Err(error) => {
+            let hint = if matches!(requested, crate::sandbox::SandboxNetworkMode::Deny) {
+                format!(
+                    "; if an outer container already isolates this job, set {ALLOW_PROCESS_HOST_SANDBOX_ENV}=1 to allow the process-host Bash fallback (network posture: deny)"
+                )
+            } else {
+                String::new()
+            };
             let message = format!(
-                "the default A3S native sandbox is unavailable for '{}': {error:#}",
+                "the default A3S native sandbox is unavailable for '{}': {error:#}{hint}",
                 local_root.display()
             );
-            tracing::warn!(workspace = %local_root.display(), error = %error, "default native Bash sandbox is unavailable; Bash remains denied");
+            tracing::warn!(workspace = %local_root.display(), error = %error, hint = %hint, "default native Bash sandbox is unavailable; Bash remains denied");
             Arc::new(UnavailableDefaultSandbox { message })
         }
     }
@@ -333,9 +340,11 @@ mod tests {
             Ok(_) => panic!("without opt-in the default remains unavailable"),
             Err(error) => error,
         };
-        assert!(error
-            .to_string()
-            .contains("the default A3S native sandbox is unavailable"));
+        let message = error.to_string();
+        assert!(message.contains("the default A3S native sandbox is unavailable"));
+        assert!(message.contains(ALLOW_PROCESS_HOST_SANDBOX_ENV));
+        assert!(message.contains("outer container"));
+        assert!(message.contains("network posture: deny"));
     }
 
     #[test]

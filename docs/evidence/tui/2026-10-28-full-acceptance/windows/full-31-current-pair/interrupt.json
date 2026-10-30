@@ -1,0 +1,55 @@
+{
+  "case": "interrupt",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "interrupt",
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-8GasYN\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool to run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE       10:41 AM           -NoNewline. Do not run another command. This test will interrupt that operation.                                                                                                                                                                                                                                                                                      ♦ Thought for 4.0s                                                                                                      ♦ Run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE -NoNewline                                                                                                                                                          Turn cancelled in 9.0s.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13465,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_227c496f1a4b488abe462e69c449a09d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-5df5bede-37ea-4cbb-98d9-43946fc9c75f",
+            "thread_id": "7aaf01a3-d362-4233-958f-3fa2023ab00e",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

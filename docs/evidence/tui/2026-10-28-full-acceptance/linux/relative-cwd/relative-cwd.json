@@ -1,0 +1,17 @@
+{
+  "assertions_finished": false,
+  "case": "relative-cwd",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "error: the argument '--cwd <CWD>' cannot be used multiple times\n\nUsage: aster [OPTIONS] [PROMPT] [COMMAND]\n\nFor more information, try '--help'.",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    }
+  ],
+  "panicked": true,
+  "raw_terminal_tail": "\u001b[1m\u001b[31merror:\u001b[0m the argument '\u001b[33m--cwd <CWD>\u001b[0m' cannot be used multiple times\r\n\r\n\u001b[1m\u001b[4mUsage:\u001b[0m \u001b[1master\u001b[0m [OPTIONS] [PROMPT] [COMMAND]\r\n\r\nFor more information, try '\u001b[1m--help\u001b[0m'.\r\n"
+}

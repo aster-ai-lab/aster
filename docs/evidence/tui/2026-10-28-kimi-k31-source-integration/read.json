@@ -1,0 +1,109 @@
+{
+  "assertions_finished": true,
+  "case": "read",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13446,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1de1bcc-9171-445c-b556-fe31b8575da3",
+            "thread_id": "76fd2120-e923-4b17-9cf8-a7e3598312c7"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cba5069241054e2fa4ef5802a34b7392",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1de1bcc-9171-445c-b556-fe31b8575da3",
+            "thread_id": "76fd2120-e923-4b17-9cf8-a7e3598312c7"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cba5069241054e2fa4ef5802a34b7392",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-READ-f2fad352-e48b-4b7b-a574-3030a5d7e058\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:e9d52d524fdbdf0c05e52ac545ad8ebdc2eb28f14074b948a81484d98acc19b9\",\"content_ref\":\"inline:sha256:e9d52d524fdbdf0c05e52ac545ad8ebdc2eb28f14074b948a81484d98acc19b9\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":54,\"original_estimated_tokens\":14,\"projected_bytes\":54,\"projected_digest\":\"sha256:e9d52d524fdbdf0c05e52ac545ad8ebdc2eb28f14074b948a81484d98acc19b9\",\"projected_estimated_tokens\":14,\"repeat_key\":\"sha256:e9d52d524fdbdf0c05e52ac545ad8ebdc2eb28f14074b948a81484d98acc19b9\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":54,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"read-proof.txt\"]},\"observation_digest\":\"sha256:9bc777e09143dd9a9e1de00e93d3381d39a460562bb37ebb2db4d03f662f3d1c\"}",
+        "prepared_digest": "sha256:d1fb81700bc675fff25f11d013541cfd4fa45adbc48bd7bbc4a812ade92139ff"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13633,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "ec259e2ead7d849e5e10840f99021bc385f780554a28521324260af6831717d9",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:2b3ea8a683b76c89dc61bcb33af9e294bb5dd96a83a0bbd3e3f2acd7e739b29a"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=27079",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-st3bIC\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool to read read-proof.txt. Reply with its exact contents. Do not modify any file or    5:20 PM           call other tools.                                                                                                                                                                                                                                                                                                                                                     ♦ Read 1 file                                                                                                                                                                                                                                   KIMI-READ-f2fad352-e48b-4b7b-a574-3030a5d7e058                                                          5:20 PM                                                                                                                                 Worked for 13s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "actual read receipt and unseen file token in settled assistant reply",
+      "name": "live-read",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-st3bIC\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool to read read-proof.txt. Reply with its exact contents. Do not modify any file or    5:20 PM           call other tools.                                                                                                                                                                                                                                                                                                                                                     ♦ Read 1 file                                                                                                                                                                                                                                   KIMI-READ-f2fad352-e48b-4b7b-a574-3030a5d7e058                                                          5:20 PM                                                                                                                                 Worked for 13s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

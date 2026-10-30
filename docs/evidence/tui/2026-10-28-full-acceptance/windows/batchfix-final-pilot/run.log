@@ -1,0 +1,17 @@
+
+running 1 test
+ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:cb4a4958569c8de75d8114a543c902eab70737f3:x86_64-pc-windows-msvc
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27504
+
+thread 'tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers' (35920) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:171:5:
+assertion failed: reply.contains(&stdout) && reply.contains(&stderr) && reply.contains('7')
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 34 filtered out; finished in 30.36s
+

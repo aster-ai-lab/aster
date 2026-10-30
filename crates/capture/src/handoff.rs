@@ -130,7 +130,10 @@ pub fn resolve_bundle_dir(path_or_id: &Path) -> Result<PathBuf> {
         return newest_bundle(&default_captures_dir());
     }
     let mut path = path_or_id.to_owned();
-    if path.file_name().is_some_and(|name| name == "capture.json") {
+    if path
+        .file_name()
+        .is_some_and(|name| name == "capture.json" || name == "scrawl.json")
+    {
         path = path
             .parent()
             .context("Missing bundle directory")?
@@ -144,6 +147,9 @@ pub fn resolve_bundle_dir(path_or_id: &Path) -> Result<PathBuf> {
         if path.extension().is_none() {
             path.set_extension("capture");
         }
+        if !path.exists() {
+            path.set_extension("scrawl");
+        }
     }
     ensure!(
         path.is_dir(),
@@ -155,8 +161,9 @@ pub fn resolve_bundle_dir(path_or_id: &Path) -> Result<PathBuf> {
             .with_context(|| format!("Could not resolve {}", path.display()))?,
     );
     ensure!(
-        path.extension().is_some_and(|ext| ext == "capture"),
-        "Expected a .capture directory: {}",
+        path.extension()
+            .is_some_and(|ext| ext == "capture" || ext == "scrawl"),
+        "Expected a .capture or .scrawl directory: {}",
         path.display()
     );
     Ok(path)
@@ -169,7 +176,11 @@ fn newest_bundle(captures: &Path) -> Result<PathBuf> {
     {
         let entry = entry?;
         let path = entry.path();
-        if path.extension().is_some_and(|ext| ext == "capture") && path.is_dir() {
+        if path
+            .extension()
+            .is_some_and(|ext| ext == "capture" || ext == "scrawl")
+            && path.is_dir()
+        {
             // Bundle creation time is stable even after later zoom-frame extraction.
             let created = fs::read(manifest_path(&path))
                 .ok()
@@ -189,7 +200,7 @@ fn newest_bundle(captures: &Path) -> Result<PathBuf> {
     candidates.sort_unstable();
     candidates
         .pop()
-        .context("No .capture captures found")?
+        .context("No .capture or .scrawl captures found")?
         .1
         .canonicalize()
         .map(plain_path)
@@ -205,7 +216,11 @@ fn plain_path(path: PathBuf) -> PathBuf {
 }
 
 fn manifest_path(directory: &Path) -> PathBuf {
-    directory.join("capture.json")
+    if directory.join("capture.json").is_file() {
+        directory.join("capture.json")
+    } else {
+        directory.join("scrawl.json")
+    }
 }
 
 pub fn load_bundle(bundle_dir: &Path) -> Result<(PathBuf, CaptureBundle)> {
@@ -1447,6 +1462,7 @@ pub fn recorded_destination(bundle_dir: &Path) -> Option<String> {
     read("timeline.json")
         .and_then(|timeline| session(timeline.get("session")))
         .or_else(|| read("capture.json").and_then(|b| session(b.pointer("/destination/session"))))
+        .or_else(|| read("scrawl.json").and_then(|b| session(b.pointer("/destination/session"))))
 }
 
 fn choose_destination<'a>(
@@ -1842,18 +1858,19 @@ mod tests {
     }
 
     #[test]
-    fn legacy_bundle_paths_and_manifests_are_rejected() {
+    fn legacy_bundles_keep_their_original_paths() {
         let fixture = Fixture::new();
         let current = fixture.bundle("legacy", 123);
         let legacy = current.with_extension("scrawl");
         fs::rename(&current, &legacy).unwrap();
         fs::rename(legacy.join("capture.json"), legacy.join("scrawl.json")).unwrap();
-        assert!(resolve_bundle_dir(&legacy.join("scrawl.json")).is_err());
-        assert!(load_bundle(&legacy).is_err());
-        assert!(newest_bundle(&fixture.0).is_err());
-
-        fs::rename(&legacy, &current).unwrap();
-        assert!(load_bundle(&current).is_err());
+        assert!(resolve_bundle_dir(&legacy.join("scrawl.json")).is_ok());
+        let (_, bundle) = load_bundle(&legacy).unwrap();
+        assert_eq!(bundle.id, "legacy");
+        assert_eq!(
+            newest_bundle(&fixture.0).unwrap(),
+            legacy.canonicalize().unwrap()
+        );
     }
 
     #[test]

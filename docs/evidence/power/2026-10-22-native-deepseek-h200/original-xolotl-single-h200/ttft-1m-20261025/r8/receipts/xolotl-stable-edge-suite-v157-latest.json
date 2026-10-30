@@ -1,0 +1,76 @@
+{
+  "unix": 1792900788.361218,
+  "suite-result.json": {
+    "schema": "aster-xolotl-stable-edge-suite-v59",
+    "unix": 1792900641.6310382,
+    "phase": "passed",
+    "stages": [
+      {
+        "name": "remainder",
+        "phase": "passed",
+        "finished_unix": 1792900783.703705
+      }
+    ],
+    "formal_promoted": false,
+    "current_stage": "remainder",
+    "stage_started_unix": 1792900641.6351273,
+    "stage_process": {
+      "pid": 1258556,
+      "start_ticks": 282742657,
+      "uid": 10250,
+      "budget_seconds": 1100
+    },
+    "finished_unix": 1792900783.7054482
+  },
+  "remainder/request-result.json": {
+    "schema": "aster-xolotl-qos-one-token-remainder-v15",
+    "phase": "passed",
+    "unix": 1792900641.7159002,
+    "source_hostname": "yangchao-dev",
+    "destination": "http://100.104.93.236:30003/v1",
+    "performance_300_claimed": false,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "short_control": {
+      "passed": true,
+      "content": "42",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 2,
+        "total_tokens": 20,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    "prompt_tokens_verified": 132097,
+    "prompt_sha256": "0f1676d8729e7dd8557cc65369f70040d7e74f1ad10eb0a2e4023be04a682edc",
+    "prompt_characters": 528383,
+    "max_new_tokens": 64,
+    "context_tokens": 1048576,
+    "request_started_unix": 1792900643.1134026,
+    "http_status": 200,
+    "headers_received_unix": 1792900643.2804463,
+    "events": 3,
+    "first_content_unix": 1792900783.572733,
+    "last_event_unix": 1792900783.6301157,
+    "done": true,
+    "finish_reason": "stop",
+    "content": "42",
+    "reasoning_characters": 0,
+    "usage": {
+      "prompt_tokens": 132097,
+      "completion_tokens": 2,
+      "total_tokens": 132099,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "elapsed_seconds": 140.52044987678528,
+    "time_to_first_content_seconds": 140.45933032035828,
+    "finished_unix": 1792900783.63386
+  },
+  "exact_client_alive": false
+}

@@ -1,0 +1,423 @@
+{
+  "assertions_finished": true,
+  "case": "plan-search-exec-deny",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "context": 1,
+            "mode": "grep",
+            "path": "planning-search.txt",
+            "query": "PLAN-ANCHOR"
+          },
+          "id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+          "name": "search"
+        },
+        "has_text": false,
+        "prompt_tokens": 13349,
+        "text": null,
+        "tool": "search"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-1b6a2e6f-b8f5-41b6-abbf-173422eaffc1",
+            "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+          "turn": 1
+        },
+        "tool": "search"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-1b6a2e6f-b8f5-41b6-abbf-173422eaffc1",
+            "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\">planning-search.txt:1: PLAN-ANCHOR\\n planning-search.txt:2: PLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59\\n--\\n\\n1 match(es) in 1 file(s)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"planning-search.txt\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":137,\"projected_bytes\":137,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"projected_digest\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"repeat_key\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"content_ref\":\"inline:sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:057b539e770398a9ed19a7f0a38d53ca1fc7246f3ab435f714856d8e6c9c8734\"}",
+        "prepared_digest": "sha256:6cf0acf90e8f571faf059ff457a4976ff8c5c136d2346adfd669a969317ede30",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13576,
+        "text": "PLAN-ANCHOR\nPLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "10a1b6debf91eec8e6aa70da677e4e9553f248b52fae8a4cb8a8f2ff5e255020",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:01b8d8aeda4d84c67516d8144b31c82468c8ef78879fe4e9cee43ff389b8f58c"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "[IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-EXIST')"
+          },
+          "id": "call_801d578d305b4340b3d34a07186e092d",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13692,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-507fc304-40b2-47ba-9824-9ef005f07b60",
+            "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_801d578d305b4340b3d34a07186e092d",
+          "turn": 2
+        },
+        "tool": "bash"
+      },
+      "seq": 14,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-507fc304-40b2-47ba-9824-9ef005f07b60",
+            "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_801d578d305b4340b3d34a07186e092d",
+          "turn": 2
+        },
+        "outcome": "denied",
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "prepared_digest": "sha256:8b519e42967851860143eed3346c1760bc1691ba3deb548691301041780067bc",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 15,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13835,
+        "text": "Access denied: `tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy`",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "92b76ce10bf0b0a2c595983a2ccf31579d978050d4df135da9ddb829b306dcf4",
+          "seq": 16
+        },
+        "receipt_keys": [
+          "sha256:539c6c725edd6c37cc743d89155d7d8bbd3e80cae1570537efdd80a15749f3a5"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=26925",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-z17yGm\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='PLAN-ANCHOR', path='planning-search.txt' and        9:56 AM           context=1. Omit limit and cursor. Reply with the exact matching line and its following context                          line. Do not call any other tool or modify files.                                                                                                                                                                                                                                                                                                                     ♦ Searched 1 pattern                                                                                                                                                                                                                            PLAN-ANCHOR PLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59                                            9:57 AM                                                                                                                                 Worked for 37s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "explicit Plan admits one actual search and returns the unseen context token without changing the fixture",
+      "name": "plan-actual-search",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-z17yGm\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='PLAN-ANCHOR', path='planning-search.txt' and        9:56 AM           context=1. Omit limit and cursor. Reply with the exact matching line and its following context                          line. Do not call any other tool or modify files.                                                                                                                                                                                                                                                                                                                     ♦ Searched 1 pattern                                                                                                                                                                                                                            PLAN-ANCHOR PLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59                                            9:57 AM                                                                                                                                 Worked for 37s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=7 model_turns=2 prompt_tokens=27527",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-z17yGm\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool exactly once to run [IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-    9:57 AM           EXIST'). If access is denied, report the actual error without retrying. Do not call any other tool.                                                                                                                                                                                                                                                                   ♦ Thought for 2.0s                                                                                                      ♦ Run [IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-EXIST')                                               ♦ Thought for 1.9s                                                                                                                                                                                                                        █     Access denied: tool_effect_effective_arguments_unapproved: resolved input is not approved by the        9:57 AM   █     frozen permission policy                                                                                          █                                                                                                                       █     Worked for 35s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the real bash admission is denied in Plan, creates no output file, and preserves the exact source bytes",
+      "name": "plan-side-effect-exec-denied",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-z17yGm\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool exactly once to run [IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-    9:57 AM           EXIST'). If access is denied, report the actual error without retrying. Do not call any other tool.                                                                                                                                                                                                                                                                   ♦ Thought for 2.0s                                                                                                      ♦ Run [IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-EXIST')                                               ♦ Thought for 1.9s                                                                                                                                                                                                                        █     Access denied: tool_effect_effective_arguments_unapproved: resolved input is not approved by the        9:57 AM   █     frozen permission policy                                                                                          █                                                                                                                       █     Worked for 35s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "plan-search-exec-deny",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "context": 1,
+                "mode": "grep",
+                "path": "planning-search.txt",
+                "query": "PLAN-ANCHOR"
+              },
+              "id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+              "name": "search"
+            },
+            "has_text": false,
+            "prompt_tokens": 13349,
+            "text": null,
+            "tool": "search"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-1b6a2e6f-b8f5-41b6-abbf-173422eaffc1",
+                "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+              "turn": 1
+            },
+            "tool": "search"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-1b6a2e6f-b8f5-41b6-abbf-173422eaffc1",
+                "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b6cd671c59d6453bb7b616a8051f5dde",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\">planning-search.txt:1: PLAN-ANCHOR\\n planning-search.txt:2: PLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59\\n--\\n\\n1 match(es) in 1 file(s)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"planning-search.txt\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":137,\"projected_bytes\":137,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"projected_digest\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"repeat_key\":\"sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"content_ref\":\"inline:sha256:119875b45719005c3b3b84de719cdc419db5447413c901f48d2a71f6fcc694d9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:057b539e770398a9ed19a7f0a38d53ca1fc7246f3ab435f714856d8e6c9c8734\"}",
+            "prepared_digest": "sha256:6cf0acf90e8f571faf059ff457a4976ff8c5c136d2346adfd669a969317ede30",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13576,
+            "text": "PLAN-ANCHOR\nPLAN-SEARCH-eba61406-0307-4884-9af5-5c6963794d59",
+            "tool": null
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "10a1b6debf91eec8e6aa70da677e4e9553f248b52fae8a4cb8a8f2ff5e255020",
+              "seq": 9
+            },
+            "receipt_keys": [
+              "sha256:01b8d8aeda4d84c67516d8144b31c82468c8ef78879fe4e9cee43ff389b8f58c"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 10,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "[IO.File]::WriteAllText('plan-exec-result.txt', 'SHOULD-NOT-EXIST')"
+              },
+              "id": "call_801d578d305b4340b3d34a07186e092d",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 13692,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-507fc304-40b2-47ba-9824-9ef005f07b60",
+                "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_801d578d305b4340b3d34a07186e092d",
+              "turn": 2
+            },
+            "tool": "bash"
+          },
+          "seq": 14,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-507fc304-40b2-47ba-9824-9ef005f07b60",
+                "thread_id": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_801d578d305b4340b3d34a07186e092d",
+              "turn": 2
+            },
+            "outcome": "denied",
+            "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+            "prepared_digest": "sha256:8b519e42967851860143eed3346c1760bc1691ba3deb548691301041780067bc",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 15,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13835,
+            "text": "Access denied: `tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy`",
+            "tool": null
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "92b76ce10bf0b0a2c595983a2ccf31579d978050d4df135da9ddb829b306dcf4",
+              "seq": 16
+            },
+            "receipt_keys": [
+              "sha256:539c6c725edd6c37cc743d89155d7d8bbd3e80cae1570537efdd80a15749f3a5"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 17,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "3eb47fc1-1104-459c-b4f1-e65f57366aac"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

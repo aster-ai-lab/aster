@@ -1,0 +1,32 @@
+{
+  "unix": 1792868113.5360463,
+  "phase": "drain_requested",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "clients": [
+    {
+      "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-resident-compare-v37-v35_packed/qualification-v38-fullwindow",
+      "phase": "passed",
+      "exact_client_alive": false,
+      "observed_unix": 1792868120.8637488
+    },
+    {
+      "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-resident-compare-v37-v35_packed/qualification-fullwindow-load-v41",
+      "phase": "passed",
+      "exact_client_alive": false,
+      "observed_unix": 1792868120.8647032
+    }
+  ],
+  "signal": {
+    "unix": 1792868123.2686884,
+    "signal": "SIGTERM",
+    "exact_supervisor": {
+      "pid": 1224,
+      "start_ticks": 314468712,
+      "uid": 10250,
+      "unix": 1792865211.235464,
+      "deadline_seconds": 19374
+    },
+    "idle_slots": 2
+  }
+}

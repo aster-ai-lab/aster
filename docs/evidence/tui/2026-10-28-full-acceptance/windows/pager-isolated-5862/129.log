@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::markdown_wrapped_project_media_path_fully_linkified' (56028) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:1660:55:
+called `Result::unwrap()` on an `Err` value: ()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::markdown_wrapped_project_media_path_fully_linkified ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::markdown_wrapped_project_media_path_fully_linkified
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.07s
+

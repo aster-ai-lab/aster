@@ -1,0 +1,62 @@
+ok   template chat0 thinking == encode_messages
+ok   template chat0 thinking no-gen is a prefix
+ok   template chat0 chat == encode_messages
+ok   template chat0 chat no-gen is a prefix
+ok   template chat1 thinking == encode_messages
+ok   template chat1 thinking no-gen is a prefix
+ok   template chat1 chat == encode_messages
+ok   template chat1 chat no-gen is a prefix
+ok   template chat2 thinking flat tools == OpenAI tools
+ok   template chat2 thinking == encode_messages
+ok   template chat2 thinking no-gen is a prefix
+ok   template chat2 chat flat tools == OpenAI tools
+ok   template chat2 chat == encode_messages
+ok   template chat2 chat no-gen is a prefix
+ok   template content parts joined
+ok   effort 'max' -> 100
+ok   effort 30 -> 30
+ok   effort 'low' -> 50
+ok   effort 'high' -> 75
+ok   effort 'xhigh' -> 75
+ok   effort default -> 75
+ok   effort_kwargs('high')
+ok   effort_kwargs('max')
+ok   effort_kwargs('25')
+ok   effort_kwargs('none')
+ok   effort_kwargs('0')
+ok   effort_kwargs(False)
+ok   effort_kwargs('medium')
+ok   effort_kwargs(None)
+ok   effort_kwargs rejects unknown
+ok   DSML parse == DeepSeek's parser at every split 1..39 (thinking=True)
+ok   DSML parse == DeepSeek's parser at every split 1..39 (thinking=False)
+ok   non-DSML text passes through
+ok   DwarfStar escape undone
+ok   parallel: the server calls the ds41 version
+ok   parallel 4 -> --batch 4
+ok   parallel beside the expert --slots
+ok   parallel 1 / absent: nothing
+[strata] "parallel": 40 - the DeepSeek-V4.1 engine runs at most 16 requests together (a batch window is 16 rows); it will use 16
+[strata] "parallel": 40 - the DeepSeek-V4.1 engine runs at most 16 requests together (a batch window is 16 rows); it will use 16
+ok   parallel 40 -> 16
+ok   parallel: an explicit --batch-slots wins
+[strata] "parallel" must be a whole number of requests (2..16), not '4': ignored
+[strata] "parallel" must be a whole number of requests (2..16), not True: ignored
+ok   parallel not a number: ignored
+[strata] "parallel": 4 ignored: the DeepSeek-V4.1 engine's batch slots need its conversation pool (--conversation-cache-mib 0 turns it off); one request at a time
+ok   parallel without the pool: off
+[strata] "parallel": 4 ignored: the DeepSeek-V4.1 engine's batch slots are turned off (STRATA_DS41_PARALLEL=0); one request at a time
+ok   parallel with STRATA_DS41_PARALLEL=0: off
+ok   engine_args: parallel reaches the ds41 engine
+ok   tokenizer: specials are single tokens
+ok   tokenizer round trip
+ok   stop ids = <｜end▁of▁sentence｜> only
+ok   vision: only actual image blocks become markers
+ok   vision: adjacent images expand to all encoder rows
+ok   vision: source order and sampling room preserved
+ok   vision: combined records keep prompt order
+ok   vision: rejects image-count mismatch
+ok   HTTP OpenAI tool call
+ok   HTTP Anthropic tool_use
+ok   HTTP plain answer after the scripted call
+all passed

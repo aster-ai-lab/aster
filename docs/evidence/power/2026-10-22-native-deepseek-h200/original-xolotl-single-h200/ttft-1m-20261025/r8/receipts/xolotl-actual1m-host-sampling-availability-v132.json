@@ -1,0 +1,136 @@
+{
+  "unix": 1792895152.146271,
+  "perf": null,
+  "perf_event_paranoid": "4",
+  "file_descriptors": [
+    {
+      "fd": 2,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-code-v118-full1m_code/engine.log"
+    },
+    {
+      "fd": 8,
+      "path": "/dev/nvidiactl"
+    },
+    {
+      "fd": 9,
+      "path": "/dev/nvidia-uvm"
+    },
+    {
+      "fd": 10,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 11,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 12,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 13,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 15,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf"
+    },
+    {
+      "fd": 16,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf"
+    },
+    {
+      "fd": 17,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf"
+    },
+    {
+      "fd": 19,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 20,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 21,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 22,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 23,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 24,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 25,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 26,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 28,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 29,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 30,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 31,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 32,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 33,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 34,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 35,
+      "path": "/dev/nvidia4"
+    },
+    {
+      "fd": 41,
+      "path": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5"
+    },
+    {
+      "fd": 42,
+      "path": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5"
+    },
+    {
+      "fd": 43,
+      "path": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd"
+    },
+    {
+      "fd": 44,
+      "path": "/mnt/shared-storage-gpfs2/gpfs2-shared-public/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash-1017/blobs/9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd"
+    },
+    {
+      "fd": 45,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf"
+    },
+    {
+      "fd": 46,
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf"
+    }
+  ],
+  "native_state": "R"
+}

@@ -498,6 +498,18 @@ pub trait WorkspaceTextReader: Send + Sync {
         offset: usize,
         limit: usize,
     ) -> WorkspaceResult<WorkspaceTextRange>;
+
+    /// Read the same bounded range with each source line's LF/CRLF retained.
+    /// `None` means this backend cannot report source terminators; callers
+    /// must not infer them from the display-only lines above.
+    async fn read_text_range_with_terminators(
+        &self,
+        _path: &WorkspacePath,
+        _offset: usize,
+        _limit: usize,
+    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
+        Ok(None)
+    }
 }
 
 /// Error returned by [`WorkspaceFileSystemExt::write_text_if_version`] when

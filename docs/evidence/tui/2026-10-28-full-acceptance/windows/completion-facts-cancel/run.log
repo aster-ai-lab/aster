@@ -1,0 +1,13 @@
+
+running 2 tests
+ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc
+ORACLE case=send-now-cancel-ownership name=send-now-owner result=pass detail=the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal
+ORACLE case=send-now-cancel-ownership name=quit result=pass detail=exit 0
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... ok
+ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc
+ORACLE case=send-now-model-stream name=send-now-model-owner result=pass detail=an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools
+ORACLE case=send-now-model-stream name=quit result=pass detail=exit 0
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 42.34s
+

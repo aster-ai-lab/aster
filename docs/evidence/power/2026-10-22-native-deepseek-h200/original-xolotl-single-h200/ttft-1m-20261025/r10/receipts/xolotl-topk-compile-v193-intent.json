@@ -1,0 +1,41 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu",
+  "headers": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu/headers",
+  "phase": "launched",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "GPU_executed": false,
+  "files": [
+    {
+      "file": "aster_topk_order_v192.hpp",
+      "bytes": 747,
+      "sha256": "d9b192ccf8a21ba7931365d96983b445f6be617d34f7e00d3fdc5d5bbfc8ac57"
+    },
+    {
+      "file": "test_topk_order_v192.cpp",
+      "bytes": 1227,
+      "sha256": "a06285f5a3ae179a933facbb9725cf8c83e0bab3b088a3a1620b8e6a60dc14e7"
+    },
+    {
+      "file": "aster_topk35_api_v192.hpp",
+      "bytes": 385,
+      "sha256": "e91db284b98a94db766415d5f439f6211c994e75b4aa6d31d7217cc2ecb85b8e"
+    },
+    {
+      "file": "aster_topk_cccl35_v192.cu",
+      "bytes": 3272,
+      "sha256": "6e18ac89d94faf1ded9558bd06f70b5d9cc52673e18dd749fb42368ef6ef3d7e"
+    }
+  ],
+  "stage": {
+    "staged": true,
+    "worker_sha256": "4873d7e1df56fee773193b8e47b7000bde5d1d6530706669255564fdbc668c9f"
+  },
+  "process": {
+    "pid": 8382,
+    "start_ticks": 713634121,
+    "uid": 10250,
+    "unix": 1792907070.2197793,
+    "namespace": "optimization pod",
+    "budget_seconds": 240
+  }
+}

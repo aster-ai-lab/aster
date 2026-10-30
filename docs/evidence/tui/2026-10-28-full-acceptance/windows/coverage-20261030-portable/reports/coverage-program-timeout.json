@@ -1,0 +1,433 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-program-timeout",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-timeout.json"
+          },
+          "id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13323,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+            "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+            "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":100},\\\"source\\\":\\\"async function run(ctx, inputs) { while (true) {} }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-timeout.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":212},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":212,\"projected_bytes\":212,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"projected_digest\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"repeat_key\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"content_ref\":\"inline:sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:225df701657d70f0bb82e73f614823fba381fb53e987f557be080d778e6e7d9e\"}",
+        "prepared_digest": "sha256:bf98abb2feef55217a6d1b863db36f8c0f915822434cc18a2a3b70253d7f6192",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "read"
+            ],
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 1,
+              "timeoutMs": 100
+            },
+            "source": "async function run(ctx, inputs) { while (true) {} }",
+            "type": "script"
+          },
+          "id": "call_a36e73bc49e24529898b135870a5cc91",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13575,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+            "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a36e73bc49e24529898b135870a5cc91",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+            "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a36e73bc49e24529898b135870a5cc91",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script timed out after 100 ms\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":37,\"projected_bytes\":37,\"original_estimated_tokens\":10,\"projected_estimated_tokens\":10,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"projected_digest\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"repeat_key\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"content_ref\":\"inline:sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:be69a4f0212dce6b21c2e35e9c8d3693a0439fa68a4fb6aa36773a2eafbc0493\"}",
+        "prepared_digest": "sha256:3881c461c8dec4f8ce2f49ef5a9800d2fe3586d0a33d240001bdd3aaeed53d7a",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13786,
+        "text": "The program timed out after **100 ms**.",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "eee6fb2f58f01f9e9aa6e62a291089e547eb7c55ff47c6d50b4e297583e31738",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:653207fb261d587e7e9aa540c47ed39a806cb752a93e14513d4cdc1b62252d25",
+          "sha256:f25a5394ad7eda001821773d5f39983a1fb4318658577b08cba94fc1ddb6d7df"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13842,
+        "text": "TIMEOUT-RECOVERY",
+        "tool": null
+      },
+      "seq": 17,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "ec4caf74704a0452a70da82cf69c525fe3b529925300f3163bbd3e00886c5856",
+          "seq": 17
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 18,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-rAPBYs\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-timeout.json once. Call program exactly once with its exact JSON object as arguments.    1:41 PM           Report the actual timeout without retrying or calling other tools.                                                                                                                                                                                                                                                                                                    ♦ Read 1 file                                                                                                           ♦ program                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ♦ Run program 0.0s                                                                               19s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow program?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40684",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-rAPBYs\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-timeout.json once. Call program exactly once with its exact JSON object as arguments.    1:41 PM           Report the actual timeout without retrying or calling other tools.                                                                                                                                                                                                                                                                                                    ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 1.9s                                                                                                                                                                                                                              The program timed out after 100 ms.                                                                     1:42 PM                                                                                                                                 Worked for 39s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13842",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-rAPBYs\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only TIMEOUT-RECOVERY. Do not call tools.                                                       1:42 PM                                                                                                                                                                                                                                                         ♦ Thought for 0.5s                                                                                                                                                                                                                              TIMEOUT-RECOVERY                                                                                        1:42 PM                                                                                                                                 Worked for 11s                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the real embedded VM times out with zero nested dispatches and the same session completes a fresh model turn",
+      "name": "program-timeout-and-recovery",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-rAPBYs\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only TIMEOUT-RECOVERY. Do not call tools.                                                       1:42 PM                                                                                                                                                                                                                                                         ♦ Thought for 0.5s                                                                                                                                                                                                                              TIMEOUT-RECOVERY                                                                                        1:42 PM                                                                                                                                 Worked for 11s                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-program-timeout",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-timeout.json"
+              },
+              "id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13323,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+                "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+                "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_9a7102abf6864c6eb5bd4a035d062a31",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":1,\\\"timeoutMs\\\":100},\\\"source\\\":\\\"async function run(ctx, inputs) { while (true) {} }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-timeout.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":212},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":212,\"projected_bytes\":212,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"projected_digest\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"repeat_key\":\"sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"content_ref\":\"inline:sha256:9bf820f320ce8d4d4378376a5c6bb45c10b2c450b8831fd638098b0bc6b41647\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:225df701657d70f0bb82e73f614823fba381fb53e987f557be080d778e6e7d9e\"}",
+            "prepared_digest": "sha256:bf98abb2feef55217a6d1b863db36f8c0f915822434cc18a2a3b70253d7f6192",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "read"
+                ],
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 1,
+                  "timeoutMs": 100
+                },
+                "source": "async function run(ctx, inputs) { while (true) {} }",
+                "type": "script"
+              },
+              "id": "call_a36e73bc49e24529898b135870a5cc91",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13575,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+                "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a36e73bc49e24529898b135870a5cc91",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-e16b4b0f-495c-4e60-b4c4-8e3d0fae5ea3",
+                "thread_id": "76ccde06-58ce-47f4-88db-52a431ec635c"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a36e73bc49e24529898b135870a5cc91",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script timed out after 100 ms\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":37,\"projected_bytes\":37,\"original_estimated_tokens\":10,\"projected_estimated_tokens\":10,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"projected_digest\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"repeat_key\":\"sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"content_ref\":\"inline:sha256:f0d2b2684965449c01e182388f7b786e0da1ef5437271952cf40b36bb1470a62\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:be69a4f0212dce6b21c2e35e9c8d3693a0439fa68a4fb6aa36773a2eafbc0493\"}",
+            "prepared_digest": "sha256:3881c461c8dec4f8ce2f49ef5a9800d2fe3586d0a33d240001bdd3aaeed53d7a",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13786,
+            "text": "The program timed out after **100 ms**.",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "eee6fb2f58f01f9e9aa6e62a291089e547eb7c55ff47c6d50b4e297583e31738",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:653207fb261d587e7e9aa540c47ed39a806cb752a93e14513d4cdc1b62252d25",
+              "sha256:f25a5394ad7eda001821773d5f39983a1fb4318658577b08cba94fc1ddb6d7df"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13842,
+            "text": "TIMEOUT-RECOVERY",
+            "tool": null
+          },
+          "seq": 17,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "ec4caf74704a0452a70da82cf69c525fe3b529925300f3163bbd3e00886c5856",
+              "seq": 17
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 18,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "76ccde06-58ce-47f4-88db-52a431ec635c"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

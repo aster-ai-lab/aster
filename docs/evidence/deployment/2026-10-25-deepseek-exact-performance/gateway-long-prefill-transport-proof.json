@@ -1,0 +1,27 @@
+{
+  "at_epoch": 1792923337.5965056,
+  "snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620"
+  },
+  "node_ready": true,
+  "gateway_pid": 2011098,
+  "model_alias": "deepseek-v4.1-flash",
+  "resolved_service": "power-gpu-6-deepseek",
+  "resolved_upstream_model": "deepseek-v41-flash-1017-xq-1m",
+  "request_headers_timeout_seconds": 7200,
+  "stream_idle_timeout_seconds": 300,
+  "stream_total_timeout_seconds": 21600,
+  "power_upstream_total_timeout_seconds": 7200,
+  "power_sse_keepalive": "KeepAlive::default, implementation and observed comments checked",
+  "public_sse_keepalive_comment_counts": {
+    "deepseek-v4.1-flash-named-sse-call.sse": 1,
+    "deepseek-v4.1-flash-auto-sse-call.sse": 1
+  },
+  "timeout_values_source": "active-gateway-deepseek-timeouts.txt",
+  "power_axum_version": "0.7.9",
+  "keepalive_source_sha256": "7c8b04e72079b7c7b67f1d8d02ff29e40d925863c83f09277b07cc7676aaa1ee",
+  "power_keepalive_interval_seconds": 15,
+  "applies_to_exact_active_model_target": true
+}

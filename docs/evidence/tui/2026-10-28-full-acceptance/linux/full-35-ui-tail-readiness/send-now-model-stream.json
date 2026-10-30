@@ -1,0 +1,61 @@
+{
+  "case": "send-now-model-stream",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "send-now-model-owner",
+      "detail": "an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-zPywWc/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Produce exactly two thousand lines. Each line consists of the uppercase label ITEM, a space, and a    2:46 PM    \n       four digit decimal counter starting at one and increasing by one. Do not call any tool.                          \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 12.3s                                                                                                \n                                                                                                                        \n     ITEM 0001 ITEM 0002 ITEM 0003 ITEM 0004 ITEM 0005 ITEM 0006 ITEM 0007 ITEM                              2:46 PM    \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only MODEL-CANCEL-NEXT. Do not call any tool.                                                   2:46 PM    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13390,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "edf354b9842b55a47f137591f13740af4898e479ab70095909065408317122de"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

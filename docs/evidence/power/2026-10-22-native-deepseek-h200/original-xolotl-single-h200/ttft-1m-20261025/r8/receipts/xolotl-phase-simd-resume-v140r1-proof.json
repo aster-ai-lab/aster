@@ -1,0 +1,13 @@
+{
+  "unix": 1792898212.0010235,
+  "original_controller_sha256": "6170ea7f56b9b9378acd20a5519f97db29833d08f1cf4cb8c54f59800781932d",
+  "original_script_sha256": "e09bad1f3562403e46a5ff85490a3d982c0861bb11e4c2358e8bd2cf4af5d971",
+  "resumed_script_sha256": "83ca7ad2e15fbe530b24e86a8b4e8717735b8517f237ff93fc613a512cbdaa72",
+  "original_unified_session": 7098,
+  "original_observer_terminal_exit": 1,
+  "exact_existing_simd_basic_passed": true,
+  "original_model_client_restarted": false,
+  "original_basic_replayed": false,
+  "readonly_observation_subprocess_budget_seconds": 200,
+  "goal_complete": false
+}

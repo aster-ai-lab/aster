@@ -1,0 +1,47 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.99s
+     Running unittests src/lib.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/a3s_code_core-840c28faad4accf0)
+
+running 25 tests
+test tools::builtin::read::batch_tests::continuation_is_bounded_and_lossless ... ok
+test tools::builtin::read::batch_tests::escapes_control_characters_in_batch_headers ... ok
+test tools::builtin::read::batch_tests::preserves_order_and_isolates_file_errors ... ok
+test tools::builtin::read::batch_tests::rejects_duplicate_paths ... ok
+test tools::builtin::read::line_endings_tests::actual_file_reads_distinguish_absent_lf_and_crlf_endings ... ok
+test tools::builtin::read::line_endings_tests::batch_read_keeps_each_files_ending_with_its_own_segment ... ok
+test tools::builtin::read::line_endings_tests::overlay_ending_is_authoritative_over_saved_disk_bytes ... ok
+test tools::builtin::read::line_endings_tests::partial_page_does_not_claim_to_know_the_file_ending ... ok
+test tools::builtin::read::tests::a_truncated_line_can_be_continued_by_byte_offset ... ok
+test tools::builtin::read::tests::batch_read_prefetch_overlaps_per_file_latency ... ok
+test tools::builtin::read::tests::test_read_at_eof_is_successful_empty_tail ... ok
+test tools::builtin::read::tests::test_read_clamps_oversized_limit_and_reports_metadata ... ok
+test tools::builtin::read::tests::test_read_file ... ok
+test tools::builtin::read::tests::test_read_image_media_types_follow_extension_and_text_stays_text ... ok
+test tools::builtin::read::tests::test_read_image_rejects_text_range_args ... ok
+test tools::builtin::read::tests::test_read_image_returns_attachment ... ok
+test tools::builtin::read::tests::test_read_missing_file ... ok
+test tools::builtin::read::tests::test_read_missing_param ... ok
+test tools::builtin::read::tests::test_read_model_definition_has_no_top_level_union ... ok
+test tools::builtin::read::tests::test_read_rejects_parent_directory_escape ... ok
+test tools::builtin::read::tests::test_read_schema_accepts_exactly_one_input_shape ... ok
+test tools::builtin::read::tests::test_read_schema_is_canonical ... ok
+test tools::builtin::read::tests::test_read_truncation_at_utf8_boundary ... ok
+test tools::builtin::read::tests::test_read_uses_streaming_range_capability_without_whole_file_read ... ok
+test tools::builtin::read::tests::test_read_with_offset_and_limit ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 5413 filtered out; finished in 0.48s
+

@@ -1,0 +1,87 @@
+{
+  "schema": "aster.tui.native-cli-boundaries.v1",
+  "platform": "linux",
+  "model": "kimi/k3.1-pro",
+  "source_pair": "aster-cli-pair-v1:cce6babdd0286057a56ad1677bb6154237444994:x86_64-unknown-linux-gnu",
+  "cases": [
+    {
+      "case": "headless-json",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 9.114,
+      "stdout_sha256": "b525b75c6a6e15f76afe4b0ffcafb119c12bf7c0fefad9f0240386a793bf5123",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": 0,
+      "model_turns": 1,
+      "checks": {
+        "exit_zero": true,
+        "exact_text": true,
+        "end_turn": true,
+        "session_id_nonempty": true,
+        "request_id_is_string": true
+      },
+      "exact_user_message": true,
+      "exact_json_response": true,
+      "result": "pass"
+    },
+    {
+      "case": "headless-relative-cwd",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 15.154,
+      "stdout_sha256": "bc276d3ebcede30a45a4a7d2c715e19ae79484006b255bdf60a7ffcf6c2601ae",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": 0,
+      "model_turns": 1,
+      "checks": {
+        "exit_zero": true,
+        "exact_text": true,
+        "end_turn": true,
+        "session_id_nonempty": true,
+        "request_id_is_string": true
+      },
+      "exact_user_message": true,
+      "exact_json_response": true,
+      "result": "pass"
+    },
+    {
+      "case": "missing-companion",
+      "exit_code": 1,
+      "timed_out": false,
+      "seconds": 1.443,
+      "stdout_sha256": "0325a342f019d745fa445b0e76e10194205e5f3fb5177815c967084b80882c69",
+      "stderr_sha256": "d8c464e14ddd6e3573dcfa06474f1657de536adbde79e90be17597a406322ef5",
+      "tool_calls": 0,
+      "model_turns": 0,
+      "explicit_refusal": true,
+      "result": "pass"
+    },
+    {
+      "case": "mismatched-companion",
+      "exit_code": 1,
+      "timed_out": false,
+      "seconds": 2.947,
+      "stdout_sha256": "4fa500c7723ebd4bfb29416a994b1b0b33b9fde66cac84bbd3f46c3827b6ea01",
+      "stderr_sha256": "9c5dca3e1c7222d415a81c59c05a3575e76f045d2e2027b6904b1ef655ca12be",
+      "tool_calls": 0,
+      "model_turns": 0,
+      "explicit_refusal": true,
+      "result": "pass"
+    },
+    {
+      "case": "unexecutable-companion",
+      "exit_code": 1,
+      "timed_out": false,
+      "seconds": 1.414,
+      "stdout_sha256": "26ba26ca350f314e78ab8742c39d3f0616f1822368d1adfc5ce770532133c4cc",
+      "stderr_sha256": "f0261d1e764d531080ce7bcb4f1baa8fca4d091fad90fe3c528a94fba7d50dd0",
+      "tool_calls": 0,
+      "model_turns": 0,
+      "explicit_refusal": true,
+      "result": "pass"
+    }
+  ],
+  "script_sha256": "bd5584fd409b3f41288f6e293e6395e12da3a93b70aed58a6731e81d70d04f85",
+  "config_unchanged": true,
+  "all_passed": true
+}

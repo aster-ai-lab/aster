@@ -1,0 +1,10 @@
+{
+  "parent": "xolotl_nsys_protocol_worker_v2.frozen.py",
+  "parent_sha256": "158dd8e57594bb13833ca0ec2c621098141cd264704893c0d5d8bc34d90a10f2",
+  "candidate": "xolotl_native_profile_worker_v117.frozen.py",
+  "candidate_sha256": "09a0457fdf19f5f7696baab8e73120bc2f7040d8b9dde8ebf1653d245c2f0aab",
+  "current_context": 1048576,
+  "prefill_chunk": 512,
+  "credentials_copied": false,
+  "profile_executed": false
+}

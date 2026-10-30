@@ -1,0 +1,58 @@
+{
+  "schema": "aster.tui.controls-harness-followup.v1",
+  "product_pair_rebuilt": false,
+  "product_pair_digest": "e1a37d311f896ceebb6a7a228a0f6a889f15313b",
+  "existing_prompts_timeouts_graders_changed": false,
+  "driver": {
+    "file": "crates\\code\\acp\\tests\\aster_tui_live_e2e\\driver.rs",
+    "archive": "source/continuation-20261030-harness-controls/driver.rs",
+    "sha256": "eb635ac0fa7d69fbf34ace5bd617d6e97134bff33109cfb319b5ec997762fea2"
+  },
+  "platforms": [
+    {
+      "platform": "windows",
+      "test_binary": {
+        "file": ".tmp\\continuation-live-controls.exe",
+        "bytes": 6443008,
+        "sha256": "08bfa202e858f1efe79b449c098e5f020dfcbf9cf33e2b8d5bc4356e328a57ba"
+      },
+      "reports": [
+        {
+          "case": "expand",
+          "file": "windows/continuation-20261030-controls-draft/expand.json",
+          "sha256": "9ff158256b6ae0d3c2b369eadc5cb2450e3448b8628aa4122ef48d2a4ea4f707",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc"
+        },
+        {
+          "case": "surface",
+          "file": "windows/continuation-20261030-controls-draft/surface.json",
+          "sha256": "f17b7f6ac010d780ca9ee2bb118bc2645797a7d7dad8caefa25b3d6bbb49eeda",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc"
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "test_binary": {
+        "file": ".tmp\\continuation-live-controls-linux",
+        "bytes": 95716952,
+        "sha256": "5d9cf087ddb027e62ae06be5bbb2cbdfe6df75c2a21c0c95b06cb9e7debc3b65"
+      },
+      "reports": [
+        {
+          "case": "expand",
+          "file": "linux/continuation-20261030-controls-draft/expand.json",
+          "sha256": "dab51a524fee3f100772c0f73feee92521a4aeb6ad3fa71a681fe49706d84b54",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu"
+        },
+        {
+          "case": "surface",
+          "file": "linux/continuation-20261030-controls-draft/surface.json",
+          "sha256": "2efec538cd73fca5cc81952db0bec1998ffc00d213c393f04ec1ab0d99b69298",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu"
+        }
+      ]
+    }
+  ],
+  "full_acceptance_complete": false
+}

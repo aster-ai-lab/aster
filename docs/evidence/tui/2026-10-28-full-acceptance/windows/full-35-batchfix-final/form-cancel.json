@@ -1,0 +1,179 @@
+{
+  "case": "form-cancel",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:cb4a4958569c8de75d8114a543c902eab70737f3:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "form-cancel",
+      "detail": "actual tool result carries the cancelled outcome",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-ONuzTr\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with its exact JSON Render document. If the user      4:11 PM           cancels, do not retry; report the cancellation without calling other tools.                                                                                                                                                                                                                                                                                           ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 0.7s                                                                                                                                                                                                                              The form was cancelled. No further action was taken.                                                    4:11 PM                                                                                                                                 Worked for 20s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13633,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_2fa9379255e141409c3eacf2d32725e3",
+          "name": "read",
+          "args": {
+            "file_path": "form.json"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2fa9379255e141409c3eacf2d32725e3",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ae39d591-80aa-418c-b77c-acaf5d4bbdf5",
+            "thread_id": "fb0235b3-4f36-418a-bb78-fc18f42d5f5f",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2fa9379255e141409c3eacf2d32725e3",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ae39d591-80aa-418c-b77c-acaf5d4bbdf5",
+            "thread_id": "fb0235b3-4f36-418a-bb78-fc18f42d5f5f",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:9dfdeda1e79f268a8a3e1baefcce6a23b56d80ee3be661c12c6a2a74d7e484d8",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"root\\\":\\\"root\\\",\\\"elements\\\":{\\\"root\\\":{\\\"type\\\":\\\"Card\\\",\\\"props\\\":{\\\"title\\\":\\\"Aster form\\\"},\\\"children\\\":[\\\"name\\\",\\\"amount\\\",\\\"ready\\\",\\\"submit\\\"]},\\\"name\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"type\\\":\\\"text\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}}},\\\"amount\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Amount\\\",\\\"type\\\":\\\"number\\\",\\\"min\\\":1,\\\"max\\\":5,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/amount\\\"}}},\\\"ready\\\":{\\\"type\\\":\\\"Checkbox\\\",\\\"props\\\":{\\\"label\\\":\\\"Ready\\\",\\\"required\\\":true,\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/ready\\\"}}},\\\"submit\\\":{\\\"type\\\":\\\"Button\\\",\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"}}},\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\",\\\"amount\\\":3,\\\"ready\\\":false}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":644},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":644,\"projected_bytes\":644,\"original_estimated_tokens\":161,\"projected_estimated_tokens\":161,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:792acacf7db20f280754471bbaf7196692954ebb2f9fca8f036d2f184576db37\",\"projected_digest\":\"sha256:792acacf7db20f280754471bbaf7196692954ebb2f9fca8f036d2f184576db37\",\"repeat_key\":\"sha256:792acacf7db20f280754471bbaf7196692954ebb2f9fca8f036d2f184576db37\",\"content_ref\":\"inline:sha256:792acacf7db20f280754471bbaf7196692954ebb2f9fca8f036d2f184576db37\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5cb877691841ad60e9acb6c71cfc65c6d99c864046dacfb76b391f9cb34fd5ba\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13963,
+        "has_text": false,
+        "tool": "ask_user_form",
+        "call": {
+          "id": "call_8e8a0504563449cca7b1adcc5d09c46f",
+          "name": "ask_user_form",
+          "args": {
+            "form": "{\"root\":\"root\",\"elements\":{\"root\":{\"type\":\"Card\",\"props\":{\"title\":\"Aster form\"},\"children\":[\"name\",\"amount\",\"ready\",\"submit\"]},\"name\":{\"type\":\"Input\",\"props\":{\"label\":\"Name\",\"type\":\"text\",\"required\":true,\"value\":{\"$bindState\":\"/form/name\"}}},\"amount\":{\"type\":\"Input\",\"props\":{\"label\":\"Amount\",\"type\":\"number\",\"min\":1,\"max\":5,\"value\":{\"$bindState\":\"/form/amount\"}}},\"ready\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"Ready\",\"required\":true,\"checked\":{\"$bindState\":\"/form/ready\"}}},\"submit\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"Continue\"}}},\"state\":{\"form\":{\"name\":\"\",\"amount\":3,\"ready\":false}}}"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_8e8a0504563449cca7b1adcc5d09c46f",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ae39d591-80aa-418c-b77c-acaf5d4bbdf5",
+            "thread_id": "fb0235b3-4f36-418a-bb78-fc18f42d5f5f",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "ask_user_form"
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_8e8a0504563449cca7b1adcc5d09c46f",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ae39d591-80aa-418c-b77c-acaf5d4bbdf5",
+            "thread_id": "fb0235b3-4f36-418a-bb78-fc18f42d5f5f",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:6da56b823be3d52d08c9b1d420e84664c8ac7f632b5d1aa719442aac8bbf7c5b",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"form was cancelled by the user\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":30,\"projected_bytes\":30,\"original_estimated_tokens\":8,\"projected_estimated_tokens\":8,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"projected_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"repeat_key\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"content_ref\":\"inline:sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4a1878772b698d27256cceb613430578f7e4d0332b310919afa7902894ce7807\"}"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14228,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "The form was cancelled. No further action was taken."
+      }
+    },
+    {
+      "seq": 13,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:f570ae999f0fdf315b5f592d8272580087a6f442f82997885b057b081d89d294",
+          "sha256:18c9f544505ef5ac1b05776312524e16513d0a57a412c50a83a1dd91d5330a4c"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 12,
+          "digest": "488aa4e6e8909ad35c2a9cca56b0fd8fe9fead9d6b7b7eea7b5aeb3059394065"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

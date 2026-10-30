@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::render_editing_value_cursor_pans_to_right_on_overflow_at_end' (55312) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:1726:32:
+cursor must render
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::render_editing_value_cursor_pans_to_right_on_overflow_at_end ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::render_editing_value_cursor_pans_to_right_on_overflow_at_end
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

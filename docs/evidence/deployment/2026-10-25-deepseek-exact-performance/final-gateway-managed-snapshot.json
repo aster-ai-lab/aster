@@ -1,0 +1,21 @@
+{
+  "schema": "a3s.gateway.managed-snapshot-status.v1",
+  "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+  "requested": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620"
+  },
+  "state": "applied",
+  "ready": true,
+  "replayed": false,
+  "applied": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "expected_revision": 46,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620",
+    "issued_at": "2026-10-25T05:47:52Z",
+    "expires_at": "2026-10-25T17:47:52Z",
+    "applied_at": "2026-10-25T05:47:52.632538435Z"
+  }
+}

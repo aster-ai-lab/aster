@@ -1,0 +1,19 @@
+
+running 1 test
+test tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned ... ORACLE case=tool-wave-git name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=tool-wave-git name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40426
+
+thread 'tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned' (57016) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_wave.rs:107:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 76 filtered out; finished in 47.56s
+

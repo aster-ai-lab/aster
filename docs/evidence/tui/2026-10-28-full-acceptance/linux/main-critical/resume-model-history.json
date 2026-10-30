@@ -1,0 +1,503 @@
+{
+  "case": "resume-model-history",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26811",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Dg3rYt/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read session-proof.txt and reply with its exact contents. Do not call       5:55 AM    \n       other tools or modify any file.                                                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     RESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9                                                           5:55 AM    \n                                                                                                                        \n     Worked for 14s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "original",
+      "session": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13326,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:6dbbe6ff1df68ab6c040d7ec09c78553b708fef411b45296d69a67375588201f",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":53},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":53,\"projected_bytes\":53,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"projected_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"repeat_key\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"content_ref\":\"inline:sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9acc46d541d22cfdef1e908d881ac89d7ddc708b9c3ab78d301a64ee860d54b2\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13485,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:d32a010a99f9942e567db62ebeffdbf1e6a9cc51132364434103879c8b5ea053"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "55bba5e0f47501b43331db71da019fd4ee4bd996fb939fc0217090cbb0b88005"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13569",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Dg3rYt/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     5:55 AM    \n       not call any tools.                                                                                              \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.1s                                                                                                 \n                                                                                                                        \n     RESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9                                                           5:55 AM    \n                                                                                                                        \n     Worked for 6.8s                                                                                                    \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "--resume",
+      "detail": "same parent identity; Kimi recalls unseen token from restored conversation without tools",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Dg3rYt/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     5:55 AM    \n       not call any tools.                                                                                              \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.1s                                                                                                 \n                                                                                                                        \n     RESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9                                                           5:55 AM    \n                                                                                                                        \n     Worked for 6.8s                                                                                                    \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "--resume",
+      "session": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13326,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:6dbbe6ff1df68ab6c040d7ec09c78553b708fef411b45296d69a67375588201f",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":53},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":53,\"projected_bytes\":53,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"projected_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"repeat_key\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"content_ref\":\"inline:sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9acc46d541d22cfdef1e908d881ac89d7ddc708b9c3ab78d301a64ee860d54b2\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13485,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:d32a010a99f9942e567db62ebeffdbf1e6a9cc51132364434103879c8b5ea053"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "55bba5e0f47501b43331db71da019fd4ee4bd996fb939fc0217090cbb0b88005"
+            }
+          }
+        },
+        {
+          "seq": 13,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13569,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 14,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 13,
+              "digest": "8f450dfa17e3c531e263ed1c0ae92eb291b46d7d1eebba148ffe50ec6d30ed23"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13653",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Dg3rYt/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     5:55 AM    \n       not call any tools.                                                                                              \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.1s                                                                                                 \n                                                                                                                        \n     RESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9                                                           5:56 AM    \n                                                                                                                        \n     Worked for 9.5s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "--continue",
+      "detail": "same parent identity; Kimi recalls unseen token from restored conversation without tools",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Dg3rYt/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     5:55 AM    \n       not call any tools.                                                                                              \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.1s                                                                                                 \n                                                                                                                        \n     RESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9                                                           5:56 AM    \n                                                                                                                        \n     Worked for 9.5s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "--continue",
+      "session": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13326,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+                "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:6dbbe6ff1df68ab6c040d7ec09c78553b708fef411b45296d69a67375588201f",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":53},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":53,\"projected_bytes\":53,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"projected_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"repeat_key\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"content_ref\":\"inline:sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9acc46d541d22cfdef1e908d881ac89d7ddc708b9c3ab78d301a64ee860d54b2\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13485,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:d32a010a99f9942e567db62ebeffdbf1e6a9cc51132364434103879c8b5ea053"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "55bba5e0f47501b43331db71da019fd4ee4bd996fb939fc0217090cbb0b88005"
+            }
+          }
+        },
+        {
+          "seq": 13,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13569,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 14,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 13,
+              "digest": "8f450dfa17e3c531e263ed1c0ae92eb291b46d7d1eebba148ffe50ec6d30ed23"
+            }
+          }
+        },
+        {
+          "seq": 17,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13653,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 18,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 17,
+              "digest": "2d241daf85730b3c8ec086e3c9ef3c5dda8a745f440a15bf07ae0b949d7bbe4b"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13326,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+            "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_1be7808550c34d08b98f18c3608e7c85",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-6cac3c29-82f8-4728-9a2f-18f5334fd8bd",
+            "thread_id": "86e4bcc9-fec8-4e1b-9a14-d10bb76cda7d",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:6dbbe6ff1df68ab6c040d7ec09c78553b708fef411b45296d69a67375588201f",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-5cf43ac8-5378-4ed1-b03a-07f0dae41ba9\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":53},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":53,\"projected_bytes\":53,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"projected_digest\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"repeat_key\":\"sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"content_ref\":\"inline:sha256:b8f97fcb9cc3f5178f675c0d65c8c971f92888cb0c4f973fcedf16c354c9ea9a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9acc46d541d22cfdef1e908d881ac89d7ddc708b9c3ab78d301a64ee860d54b2\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13485,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:d32a010a99f9942e567db62ebeffdbf1e6a9cc51132364434103879c8b5ea053"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "55bba5e0f47501b43331db71da019fd4ee4bd996fb939fc0217090cbb0b88005"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13569,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 13,
+          "digest": "8f450dfa17e3c531e263ed1c0ae92eb291b46d7d1eebba148ffe50ec6d30ed23"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13653,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 18,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 17,
+          "digest": "2d241daf85730b3c8ec086e3c9ef3c5dda8a745f440a15bf07ae0b949d7bbe4b"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

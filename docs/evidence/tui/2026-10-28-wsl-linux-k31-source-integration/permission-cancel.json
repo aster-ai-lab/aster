@@ -1,0 +1,51 @@
+{
+  "assertions_finished": true,
+  "case": "permission-cancel",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13339,
+        "tool": "write"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "c1c9393080bd96de516405f651c56dd15365fb90fe907130498fe86dc79e31dd",
+          "seq": 7
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 8,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "real permission card dismissed; file absent before and after rejection/cancellation",
+      "name": "permission-cancel",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J7Vs3I/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool once to create side-effect.txt containing 'permission-test'. If the request is     6:31 PM    \n       rejected or cancelled, do not retry and do not use another tool; just report that it was not                     \n       written.                                                                                                         \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.4s                                                                                                 \n                                                                                                                        \n     ◆ Creating side-effect.txt                                                                                         \n                                                                                                                        \n     denied                                                                                                  6:31 PM    \n                                                                                                                        \n     Worked for 5.9s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

@@ -1,0 +1,291 @@
+{
+    "at":  "2026-10-25T08:50:55.2005083+00:00",
+    "base_url":  "http://117.162.0.179:8080/v1",
+    "cases":  [
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  21.9131261,
+                      "result_seconds":  12.1400787,
+                      "tool_call_id":  "call_058cd55f2b874dce8f02effc",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-c9cfe8bd01b04de1",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-json-call.json",
+                                             "deepseek-v4.1-flash-auto-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  40,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  530
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  290,
+                                        "total_tokens":  300
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-named-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.6784985,
+                      "result_seconds":  11.7389648,
+                      "tool_call_id":  "call_3fe043ad80294cdabd23ea03",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-e419c649534742fb",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-named-sse-call.sse",
+                                             "deepseek-v4.1-flash-named-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  280,
+                                        "total_tokens":  290
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-required-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.5181337,
+                      "result_seconds":  11.9727629,
+                      "tool_call_id":  "call_56b51270113b44b8ac6ccf5c",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-e5d541056b194f36",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-required-json-call.json",
+                                             "deepseek-v4.1-flash-required-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  280,
+                                        "total_tokens":  290
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  22.7545605,
+                      "result_seconds":  11.883968099999999,
+                      "tool_call_id":  "call_27a2c1b5e6474c14bc0879cc",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-23abe6907e894231",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-sse-call.sse",
+                                             "deepseek-v4.1-flash-auto-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  280,
+                                        "total_tokens":  290
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  20.4240097,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  1.0704936,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-sse.sse"
+                  },
+                  {
+                      "case":  "prism-27b-auto-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  0.9580295,
+                      "result_seconds":  0.92051699999999992,
+                      "tool_call_id":  "X6B9bWYI3wzWjJAlGcP7MajWt54cQXxr",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-ac8decb6ffe9434f",
+                      "response_files":  [
+                                             "prism-27b-auto-json-call.json",
+                                             "prism-27b-auto-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  28,
+                                        "prompt_tokens":  565,
+                                        "total_tokens":  593
+                                    },
+                                    {
+                                        "completion_tokens":  13,
+                                        "prompt_tokens":  626,
+                                        "total_tokens":  639
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "prism-27b-named-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  1.2212467999999999,
+                      "result_seconds":  0.8485499,
+                      "tool_call_id":  "xUwG56jCy8suJ5GF9Z0kAMFPxDleW5Qi",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-d10890d099544f17",
+                      "response_files":  [
+                                             "prism-27b-named-sse-call.sse",
+                                             "prism-27b-named-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  28,
+                                        "prompt_tokens":  565,
+                                        "total_tokens":  593
+                                    },
+                                    {
+                                        "completion_tokens":  18,
+                                        "prompt_tokens":  631,
+                                        "total_tokens":  649
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "prism-27b-required-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  1.5485887999999999,
+                      "result_seconds":  1.608754,
+                      "tool_call_id":  "VD4c6a4qpj1lXo7xo65pectsgN5dYt42",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-eff8861f0b0a4e45",
+                      "response_files":  [
+                                             "prism-27b-required-json-call.json",
+                                             "prism-27b-required-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  28,
+                                        "prompt_tokens":  565,
+                                        "total_tokens":  593
+                                    },
+                                    {
+                                        "completion_tokens":  16,
+                                        "prompt_tokens":  629,
+                                        "total_tokens":  645
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "prism-27b-auto-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  0.678844,
+                      "result_seconds":  0.5282983,
+                      "tool_call_id":  "7jQpbGhAuiIr90MtOkREdkxFXebP812f",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-323b8211e47249a9",
+                      "response_files":  [
+                                             "prism-27b-auto-sse-call.sse",
+                                             "prism-27b-auto-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  28,
+                                        "prompt_tokens":  565,
+                                        "total_tokens":  593
+                                    },
+                                    {
+                                        "completion_tokens":  19,
+                                        "prompt_tokens":  632,
+                                        "total_tokens":  651
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  1.2449495,
+                      "response_file":  "prism-27b-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  1.387247,
+                      "response_file":  "prism-27b-hi-tools-sse.sse"
+                  }
+              ],
+    "all_passed":  true
+}

@@ -1,0 +1,94 @@
+--- a/tools/v41/serve/serve_ds41.py
++++ b/tools/v41/serve/serve_ds41.py
+@@ -21,6 +21,7 @@
+ import re
+ import sys
+ from pathlib import Path
++from aster_token_cache import ExactEncodeCache
+ 
+ HERE = Path(__file__).resolve().parent
+ V41 = HERE.parent
+@@ -41,10 +42,24 @@
+ _Tok = ST.Tokenizer
+ 
+ 
++def _aster_exact_memo_enabled():
++    mode = os.environ.get("ASTER_XQ_EXACT_TOKEN_CACHE", "0")
++    if mode not in ("0", "1"):
++        raise ValueError("ASTER_XQ_EXACT_TOKEN_CACHE must be 0 or 1")
++    return mode == "1"
++
++
+ class Ds41Tokenizer(_Tok):
+     def __init__(self, tokens, merges, token_types=None, pre="joyai-llm", **k):
+         super().__init__(tokens, merges, token_types, pre="joyai-llm", **k)
+         self._literal = {i: t.encode("utf-8") for t, i in self.special_tokens.items()}
++        self._aster_encode_memo = ExactEncodeCache(super().encode) if _aster_exact_memo_enabled() else None
++
++    def encode(self, text: str, parse_special: bool = False, plain=()) -> list[int]:
++        memo = getattr(self, "_aster_encode_memo", None)
++        if memo is None:
++            return super().encode(text, parse_special=parse_special, plain=plain)
++        return memo.encode(text, parse_special=parse_special, plain=plain)
+ 
+     def token_bytes(self, i: int) -> bytes:
+         # V4.1's special tokens (<｜User｜>, <｜end▁of▁sentence｜>, ...) are not in the byte alphabet: they decode to
+@@ -325,17 +340,48 @@
+     m = re.match(r'\s*name="(.*?)">', body, re.DOTALL)
+     if not m:
+         raise ValueError("malformed tool call: " + body[:80])
+-    args = {}
+-    for key, is_str, value in _P_RE.findall(body[m.end():]):
+-        value = unescape(value)
+-        if is_str == "true":
+-            args[key] = value
+-        else:
+-            try:
+-                args[key] = json.loads(value)
+-            except ValueError:
+-                args[key] = value
++    def pairs(items):
++        result = {}
++        for key, value in items:
++            if key in result:
++                raise ValueError("duplicate JSON tool argument: " + key)
++            result[key] = value
++        return result
++    def reject_constant(value):
++        raise ValueError("non-finite JSON tool argument: " + value)
++    def finite_float(text):
++        value = float(text)
++        if value in (float("inf"), -float("inf")):
++            raise ValueError("non-finite JSON tool argument")
++        return value
++    def load(text):
++        return json.loads(text, object_pairs_hook=pairs, parse_constant=reject_constant, parse_float=finite_float)
++    raw = body[m.end():].strip()
++    if raw.startswith(("{", "[")):
++        args = load(raw)
++        if not isinstance(args, dict):
++            raise ValueError("JSON tool arguments must be one complete object")
++    else:
++        args = {}
++        pos = 0
++        while pos < len(raw):
++            while pos < len(raw) and raw[pos].isspace():
++                pos += 1
++            if pos == len(raw):
++                break
++            if not raw.startswith(P_OPEN, pos):
++                raise ValueError("unsupported native tool argument grammar")
++            parameter = _P_RE.match(raw, pos + len(P_OPEN))
++            if parameter is None:
++                raise ValueError("malformed native tool parameter")
++            key, is_str, value = parameter.groups()
++            if key in args:
++                raise ValueError("duplicate native tool argument: " + key)
++            value = unescape(value)
++            args[key] = value if is_str == "true" else load(value)
++            pos = parameter.end()
+     return F.ToolCall(name=m.group(1), arguments=args)
++
+ 
+ 
+ F.CALL_START, F.CALL_END = INVOKE_OPEN, INVOKE_CLOSE

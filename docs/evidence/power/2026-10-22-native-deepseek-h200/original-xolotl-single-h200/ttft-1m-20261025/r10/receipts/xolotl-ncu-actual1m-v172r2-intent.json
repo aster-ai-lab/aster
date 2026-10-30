@@ -1,0 +1,68 @@
+{
+  "unix": 1792907835.8433216,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-hardware-actual1m-v172r2",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "binary_sha256": "a6a222e67b2a59741098576e135c58def919979ad5b9dc039c9254a939bdf42c",
+  "actual_input_tokens": 1047544,
+  "profile_output_tokens": 128,
+  "diagnostic_only": true,
+  "credentials_copied": false,
+  "api_started": false,
+  "files": [
+    {
+      "file": "worker.py",
+      "bytes": 16331,
+      "sha256": "8ee413409531fa35b46931d9e572a4a121fcf96d5967fe9bfb8a2acd14809e85"
+    },
+    {
+      "file": "aster_ncu_metrics_v171.py",
+      "bytes": 3047,
+      "sha256": "01d6074e2b039050cf5c04a989d245326e569e6be3ff86646485d42353f4d2aa"
+    },
+    {
+      "file": "test_ncu_metrics_v171.py",
+      "bytes": 2127,
+      "sha256": "ca8bb771ae79f9ee95785459a8d900fb0fda1e53c019d53b6c4378ebb2a5ce5b"
+    },
+    {
+      "file": "aster_ncu_query_v178.py",
+      "bytes": 1281,
+      "sha256": "6939a3be6799e50142aa05b5b917976b65115c7d6161d8b366ef89fecedd1733"
+    },
+    {
+      "file": "test_ncu_query_v178.py",
+      "bytes": 2012,
+      "sha256": "8aaeceff9016c31e66f6d7469779c941ae5feeab9880b363dd836fbc7c5816d0"
+    },
+    {
+      "file": "aster_native_resume_v197.py",
+      "bytes": 814,
+      "sha256": "95c5089a0e2b78d8c2083c4818dfbf0858e1dfaba98bf503c70979021a96a0ab"
+    },
+    {
+      "file": "test_native_resume_v197.py",
+      "bytes": 1445,
+      "sha256": "9ab98a984f5b0b00ceee5456866311ca32386a321e285ad30dcd46966a9b7dff"
+    },
+    {
+      "file": "xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 5715,
+      "sha256": "921561a3cbfffba14bc67242f2703726e692b8bcd4d427feb8b0975cce594af7"
+    },
+    {
+      "file": "plan.json",
+      "bytes": 26869,
+      "sha256": "99dfd30eb1f3a24008ba9b71462b2e05b32139a95ebfd239ba484345c12f2997"
+    }
+  ],
+  "process": {
+    "pid": 8504,
+    "start_ticks": 713712066,
+    "uid": 10250,
+    "unix": 1792907849.6749432,
+    "budget_seconds": 2600,
+    "namespace": "optimization pod"
+  }
+}

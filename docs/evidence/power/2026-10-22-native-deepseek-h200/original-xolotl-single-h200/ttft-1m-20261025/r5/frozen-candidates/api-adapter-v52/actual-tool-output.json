@@ -1,0 +1,13 @@
+{
+  "public_fixture_only": true,
+  "source": "xolotl-tool-raw-probe-v51-latest.json",
+  "raw_generated_text": "{\"a\": 17, \"b\": 25}</｜DSML｜ parameter>\n</｜DSML｜ invoke>\n",
+  "forced_prefix": "<｜DSML｜ invoke name=\"add_numbers\">",
+  "expected_name": "add_numbers",
+  "expected_arguments": {
+    "a": 17,
+    "b": 25
+  },
+  "raw_sha256": "1d84c57ba951683e71f27b61c94442d1ef514bdc87488a9f7e8b06d1fdb57d4b",
+  "actual_model_binary_sha256": "34f3c963304445e50c4ae398194f4b4745a0b1868a6b4a1d6668068aebcf96e6"
+}

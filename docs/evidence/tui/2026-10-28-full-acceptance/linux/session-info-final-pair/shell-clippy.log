@@ -1,0 +1,531 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+    Checking value-bag v1.12.0
+    Checking hashbrown v0.17.1
+    Checking lock_api v0.4.14
+    Checking subtle v2.6.1
+    Checking serde_core v1.0.229
+    Checking foldhash v0.2.0
+    Checking const-oid v0.9.6
+    Checking once_cell v1.21.4
+    Checking typenum v1.19.0
+    Checking num-traits v0.2.19
+    Checking zeroize v1.8.2
+    Checking log v0.4.32
+    Checking tracing-core v0.1.36
+    Checking untrusted v0.7.1
+    Checking rustls-pki-types v1.14.0
+    Checking ring v0.17.14
+    Checking bstr v1.12.1
+    Checking aws-lc-sys v0.45.0
+    Checking openssl-probe v0.1.6
+    Checking mio v1.2.1
+    Checking mime v0.3.17
+    Checking linux-raw-sys v0.12.1
+    Checking sha1_smol v1.0.1
+    Checking generic-array v0.14.7
+    Checking hdrhistogram v7.5.4
+    Checking tracing v0.1.44
+    Checking zstd-sys v2.0.16+zstd.1.5.7
+    Checking serde v1.0.229
+    Checking indexmap v2.14.0
+    Checking deranged v0.5.5
+    Checking spin v0.9.9
+    Checking rustls-native-certs v0.8.2
+    Checking webpki-roots v1.0.9
+    Checking num-integer v0.1.46
+    Checking base64ct v1.8.0
+    Checking aws-lc-rs v1.18.1
+    Checking mime_guess v2.0.5
+    Checking gix-trace v0.1.20
+    Checking gix-validate v0.11.2
+    Checking uuid v1.26.1
+    Checking gix-utils v0.3.3
+    Checking zstd-safe v7.2.4
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.6
+    Checking rustix v1.1.5
+    Checking zlib-rs v0.6.6
+    Checking pem-rfc7468 v0.7.0
+    Checking lazy_static v1.5.0
+    Checking smallvec v1.16.3
+    Checking bytes v1.12.1
+    Checking serde_urlencoded v0.7.1
+    Checking chrono v0.4.45
+    Checking gix-error v0.2.4
+    Checking webpki-roots v0.26.11
+    Checking serde_json v1.0.154
+    Checking time v0.3.47
+    Checking gix-path v0.12.1
+    Checking zstd v0.13.3
+    Checking base64 v0.23.1
+    Checking pin-project v1.1.11
+    Checking strum v0.27.2
+    Checking digest v0.10.7
+    Checking rustls-webpki v0.103.15
+    Checking der v0.7.10
+    Checking base64-simd v0.8.0
+    Checking hash32 v0.3.1
+    Checking serde_path_to_error v0.1.20
+    Checking parking_lot_core v0.9.12
+    Checking icu_normalizer v2.0.0
+    Checking matchit v0.8.4
+    Checking http v1.4.0
+    Checking http v0.2.12
+    Checking bytes-utils v0.1.4
+    Checking heapless v0.8.0
+    Checking rand v0.8.8
+    Checking prost v0.14.4
+    Checking sha1 v0.10.6
+    Checking sha2 v0.10.9
+    Checking signature v2.2.0
+    Checking hmac v0.12.1
+    Checking sharded-slab v0.1.7
+    Checking tracing-serde v0.2.0
+    Checking rustls v0.23.46
+    Checking tracing-log v0.2.0
+    Checking schemars v1.2.3
+    Checking sha1-checked v0.10.0
+    Checking crossbeam-epoch v0.9.20
+    Checking parking_lot v0.12.5
+    Checking spki v0.7.3
+    Checking dashmap v6.2.1
+    Checking gix-date v0.15.5
+    Checking opentelemetry v0.32.0
+    Checking faster-hex v0.10.0
+    Checking http-body v0.4.6
+    Checking tls_codec v0.4.2
+    Checking bytemuck v1.25.2
+    Checking http-body v1.0.1
+    Checking multer v3.1.0
+    Checking tempfile v3.27.0
+    Checking tracing-subscriber v0.3.23
+   Compiling regex-syntax v0.8.11
+    Checking dunce v1.0.5
+    Checking crossbeam-deque v0.8.6
+    Checking hashbrown v0.16.1
+    Checking idna_adapter v1.2.1
+    Checking pkcs8 v0.10.2
+    Checking tokio v1.53.3
+    Checking prodash v31.0.0
+    Checking hybrid-array v0.4.10
+    Checking gix-actor v0.41.1
+    Checking http-body-util v0.1.3
+    Checking x509-cert v0.2.5
+    Checking debugid v0.8.0
+    Checking ff v0.13.1
+    Checking filetime v0.2.29
+   Compiling a3s-code-version v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-version)
+    Checking web-time v1.1.0
+   Compiling regex-automata v0.4.18
+    Checking base16ct v0.2.0
+    Checking group v0.13.0
+    Checking prost-types v0.14.3
+    Checking hkdf v0.12.4
+    Checking num-iter v0.1.45
+    Checking num-bigint v0.4.6
+    Checking crypto-bigint v0.5.5
+    Checking a3s-tool-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-types)
+    Checking axum-core v0.5.5
+    Checking gix-features v0.48.1
+    Checking concurrent-queue v2.5.0
+    Checking const-hex v1.18.1
+    Checking sec1 v0.7.3
+    Checking rustls-platform-verifier v0.6.2
+    Checking tungstenite v0.28.0
+    Checking winnow v1.0.4
+    Checking idna v1.1.0
+    Checking a3s-dirs v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-dirs)
+    Checking serde_spanned v1.1.2
+    Checking toml_datetime v0.7.5+spec-1.1.0
+   Compiling regex v1.12.4
+    Checking toml_writer v1.1.3+spec-1.1.0
+    Checking fastant v0.1.10
+    Checking tracing-opentelemetry v0.33.0
+    Checking crypto-common v0.2.2
+    Checking toml_parser v1.1.5+spec-1.1.0
+    Checking sigstore-types v0.6.6
+    Checking rfc6979 v0.4.0
+    Checking gix-chunk v0.7.2
+    Checking elliptic-curve v0.13.8
+   Compiling prost-build v0.14.1
+    Checking nonempty v0.12.0
+    Checking constant_time_eq v0.4.2
+    Checking rtrb v0.3.5
+    Checking typeshare v1.0.4
+    Checking eventsource-stream v0.2.3
+    Checking gix-hash v0.25.1
+    Checking gix-fs v0.21.2
+    Checking toml v0.9.12+spec-1.1.0
+    Checking cms v0.2.3
+    Checking gix-quote v0.7.2
+    Checking tokio-util v0.7.19
+    Checking tokio-rustls v0.26.6
+    Checking async-compression v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking aws-smithy-async v1.2.14
+    Checking a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+    Checking fastrace v0.7.18
+    Checking url v2.5.8
+    Checking sigstore-crypto v0.6.6
+    Checking blake3 v1.8.7
+    Checking spin v0.10.1
+    Checking instant v0.1.12
+    Checking primeorder v0.13.6
+    Checking ecdsa v0.16.9
+    Checking quick-error v2.0.1
+    Checking tokio-tungstenite v0.28.0
+    Checking regex-lite v0.1.8
+    Checking prod-mc-cli-chat-proxy-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/prod/mc/cli-chat-proxy-types)
+    Checking opentelemetry_sdk v0.32.1
+    Checking gix-hashtable v0.15.1
+    Checking gix-tempfile v23.0.1
+    Checking futures-timer v3.0.3
+    Checking h2 v0.4.19
+    Checking tower v0.5.2
+    Checking aws-smithy-types v1.4.3
+    Checking gimli v0.32.3
+   Compiling rustix v0.38.44
+    Checking rustc-demangle v0.1.26
+    Checking zune-core v0.5.1
+    Checking which v8.0.0
+    Checking backoff v0.4.0
+    Checking crmf v0.2.0
+    Checking curve25519-dalek v4.1.3
+    Checking zune-jpeg v0.5.15
+    Checking fax v0.2.6
+    Checking a3s-tool-protocol v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-protocol)
+    Checking gix-glob v0.26.1
+    Checking object v0.37.3
+   Compiling tonic-prost-build v0.14.3
+    Checking gix-object v0.60.0
+    Checking addr2line v0.25.1
+    Checking sentry-types v0.42.0
+    Checking a3s-code-env v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-env)
+    Checking num-bigint-dig v0.8.6
+    Checking shellexpand v3.1.2
+    Checking event-listener v5.4.1
+    Checking gix-lock v23.0.1
+    Checking pkcs1 v0.7.5
+    Checking ed25519 v2.2.3
+    Checking enumflags2 v0.7.12
+    Checking tower-http v0.6.8
+    Checking secrecy v0.10.3
+    Checking globset v0.4.18
+    Checking pxfm v0.1.25
+    Checking aws-smithy-runtime-api v1.11.3
+    Checking aws-smithy-eventstream v0.60.18
+   Compiling a3s-proto-build v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/build/a3s-proto-build)
+    Checking aws-smithy-json v0.61.6
+    Checking a3s-circuit-breaker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-circuit-breaker)
+   Compiling async-openai-macros v0.1.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai-macros)
+    Checking crc-catalog v2.4.0
+    Checking linux-raw-sys v0.4.15
+    Checking xmlparser v0.13.6
+    Checking color_quant v1.1.0
+    Checking byteorder-lite v0.1.0
+    Checking rsa v0.9.10
+    Checking crc v3.3.0
+    Checking backtrace v0.3.76
+    Checking hyper v1.8.1
+    Checking aws-smithy-xml v0.60.11
+    Checking tiff v0.11.3
+    Checking gif v0.14.1
+    Checking ignore v0.4.24
+    Checking ed25519-dalek v2.2.0
+    Checking event-listener-strategy v0.5.4
+    Checking moxcms v0.8.1
+    Checking phf v0.13.1
+    Checking image-webp v0.2.4
+    Checking cmpv2 v0.2.0
+    Checking aws-smithy-http v0.62.6
+    Checking aws-credential-types v1.2.8
+    Checking aws-smithy-observability v0.1.4
+    Checking p256 v0.13.2
+    Checking a3s-code-config v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config)
+    Checking p384 v0.13.1
+    Checking rayon-core v1.13.0
+    Checking gix-commitgraph v0.37.1
+    Checking string_cache v0.9.0
+    Checking simple_asn1 v0.6.3
+    Checking block-buffer v0.12.0
+    Checking protobuf-support v3.7.2
+    Checking procfs-core v0.17.0
+    Checking aws-types v1.3.9
+    Checking const-oid v0.10.2
+    Checking unicode-bom v2.0.3
+    Checking sentry-core v0.42.0
+    Checking pollster v0.4.0
+    Checking rayon v1.12.0
+    Checking aws-sigv4 v1.3.5
+    Checking aws-smithy-runtime v1.9.3
+    Checking x509-tsp v0.1.0
+    Checking jsonwebtoken v10.3.0
+    Checking image v0.25.10
+    Checking digest v0.11.2
+    Checking crc-fast v1.9.0
+    Checking protobuf v3.7.2
+    Checking hyper-util v0.1.20
+    Checking web_atoms v0.2.3
+    Checking fastrace-opentelemetry v0.18.1
+    Checking procfs v0.17.0
+    Checking derive_more v2.1.1
+    Checking aws-smithy-query v0.60.8
+    Checking a3s-code-secrets v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-secrets)
+    Checking sigstore-merkle v0.6.6
+    Checking fastrace-tonic v0.1.1
+    Checking gix-revwalk v0.31.0
+    Checking block-padding v0.4.2
+    Checking font-types v0.10.1
+    Checking md-5 v0.10.6
+    Checking itertools v0.12.1
+    Checking token-source v1.0.0
+    Checking home v0.5.12
+    Checking path-clean v1.0.1
+   Compiling flate2 v1.1.5
+    Checking inout v0.2.2
+    Checking aws-smithy-checksums v0.63.13
+    Checking prometheus v0.14.0
+    Checking read-fonts v0.35.0
+    Checking markup5ever v0.38.0
+    Checking libz-sys v1.1.22
+    Checking kstring v2.0.2
+    Checking hyper-rustls v0.27.7
+    Checking axum v0.8.6
+    Checking hyper-timeout v0.5.2
+    Checking aws-runtime v1.5.12
+    Checking prometheus-parse v0.2.5
+    Checking reflink-copy v0.1.28
+    Checking lru v0.12.5
+    Checking zopfli v0.8.3
+    Checking serde_json_canonicalizer v0.3.2
+    Checking ttf-parser v0.25.1
+    Checking gix-attributes v0.33.2
+    Checking libgit2-sys v0.18.2+1.9.1
+    Checking cipher v0.5.2
+    Checking findshlibs v0.10.2
+    Checking slotmap v1.0.7
+    Checking sentry-backtrace v0.42.0
+    Checking sha2 v0.11.0
+    Checking string_cache v0.8.9
+    Checking sigstore-trust-root v0.6.3
+    Checking a3s-code-compaction v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-code-compaction)
+    Checking xattr v1.6.1
+    Checking kurbo v0.12.0
+    Checking gix-sec v0.14.1
+    Checking strict-num v0.1.1
+    Checking debug_unsafe v0.1.3
+    Checking reqwest v0.12.24
+    Checking reqwest v0.13.5
+    Checking aws-smithy-http-client v1.1.9
+    Checking a3s-token-estimation v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-token-estimation)
+    Checking zip v8.6.0
+    Checking tiny-skia-path v0.12.0
+    Checking atoi_simd v0.18.1
+    Checking git2 v0.20.2
+    Checking cssparser v0.34.0
+    Checking tar v0.4.46
+    Checking markup5ever v0.14.1
+    Checking xml5ever v0.38.0
+    Checking html5ever v0.38.0
+    Checking skrifa v0.37.0
+    Checking aws-sdk-ssooidc v1.89.0
+    Checking aws-sdk-sso v1.86.0
+    Checking aws-sdk-sts v1.88.0
+    Checking aws-sdk-s3 v1.109.0
+    Checking write-fonts v0.43.0
+    Checking nix v0.31.3
+    Checking a3s-code-image v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-image)
+    Checking gix-ref v0.63.0
+    Checking landlock v0.4.4
+    Checking regress v0.11.1
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools-api)
+    Checking gix-config-value v0.18.1
+    Checking phf_shared v0.14.0
+    Checking cfb v0.7.3
+    Checking opentelemetry-http v0.32.0
+    Checking gcloud-metadata v1.0.2
+    Checking sigstore-rekor v0.6.6
+    Checking reqwest-middleware v0.4.2
+    Checking reqwest-eventsource v0.6.0
+    Checking a3s-code-extra-ca v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-extra-ca)
+    Checking fastrace-reqwest v0.2.0
+    Checking reqwest-middleware v0.5.2
+    Checking sigstore-tsa v0.6.6
+    Checking quick-xml v0.41.0
+    Checking env_filter v0.1.4
+    Checking brotli-decompressor v5.0.0
+    Checking hayro-ccitt v0.3.0
+    Checking aws-config v1.8.8
+    Checking grid v1.0.1
+    Checking gcloud-auth v1.3.0
+    Checking fast-float2 v0.2.3
+    Checking cpubits v0.1.1
+    Checking rustybuzz v0.20.1
+    Checking hayro-jbig2 v0.3.0
+    Checking env_logger v0.11.8
+    Checking tonic v0.14.6
+    Checking selectors v0.26.0
+    Checking async-openai v0.33.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai)
+    Checking a3s-code-auth v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-auth)
+    Checking brotli v8.0.2
+    Checking html5ever v0.29.1
+    Checking phf v0.14.0
+    Checking taffy v0.12.2
+    Checking subsetter v0.2.3
+    Checking office_oxide v0.1.9
+    Checking aes v0.9.3
+    Checking markup5ever_rcdom v0.38.0+unofficial
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+    Checking tiny-skia v0.12.0
+    Checking fast_image_resize v6.1.0
+    Checking fontdb v0.23.0
+    Checking sigstore-bundle v0.6.6
+    Checking gix-command v0.9.1
+    Checking cbc v0.2.0
+    Checking gix-traverse v0.57.0
+    Checking lsp-types v0.95.1
+    Checking jpeg-decoder v0.3.2
+    Checking md-5 v0.11.0
+    Checking gix-packetline v0.21.5
+    Checking waitpid-any v0.3.0
+    Checking a3s-code-workspace-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-types)
+    Checking gix-bitmap v0.3.2
+    Checking sigstore-verify v0.6.3
+    Checking hostname v0.4.1
+    Checking uname v0.1.1
+    Checking vte v0.14.1
+    Checking hayro-jpeg2000 v0.4.0
+    Checking pulldown-cmark-escape v0.11.0
+    Checking memo-map v0.3.3
+    Checking weezl v0.2.1
+    Checking unicode-linebreak v0.1.5
+    Checking qcms v0.3.0
+    Checking serde_yaml v0.9.34+deprecated
+    Checking sentry-contexts v0.42.0
+    Checking tonic-prost v0.14.6
+    Checking tonic-types v0.14.5
+    Checking pulldown-cmark v0.13.0
+    Checking minijinja v2.21.0
+    Checking strip-ansi-escapes v0.2.1
+    Checking scraper v0.23.1
+    Checking gcloud-storage v1.3.0
+    Checking gix-index v0.51.0
+    Checking strum v0.26.3
+    Checking htmd v0.5.4
+    Checking const-random v0.1.18
+    Checking pdf_oxide v0.3.74
+    Checking infer v0.19.0
+    Checking gix-pathspec v0.18.1
+    Checking sentry-anyhow v0.42.0
+    Checking sentry-tracing v0.42.0
+    Checking sentry-panic v0.42.0
+    Checking a3s-code-feedback v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-feedback)
+    Checking opentelemetry-proto v0.32.0
+    Checking sentry-debug-images v0.42.0
+    Checking nono v0.53.0
+    Checking gix-ignore v0.21.1
+    Checking async-broadcast v0.7.2
+    Checking command-fds v0.3.2
+    Checking zip v3.0.0
+    Checking a3s-interjection-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-interjection-core)
+    Checking hmac-sha256 v1.1.12
+    Checking a3s-message-delivery-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-message-delivery-core)
+    Checking tree-sitter-language v0.1.5
+    Checking wildmatch v2.6.0
+    Checking mid v4.0.0
+    Checking sentry v0.42.0
+    Checking ahash v0.8.12
+    Checking a3s-mixpanel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-mixpanel)
+    Checking gix-worktree v0.52.0
+    Checking tracing-appender v0.2.4
+    Checking tracing-chrome v0.7.2
+    Checking a3s-code-session-events v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-events)
+    Checking gix-url v0.36.1
+    Checking whoami v1.6.1
+    Checking agent-client-protocol-schema v0.11.4
+    Checking gix-filter v0.30.0
+    Checking gix-discover v0.51.0
+    Checking gix-revision v0.45.0
+    Checking gix-imara-diff v0.2.3
+    Checking clru v0.6.2
+    Checking gix-transport v0.57.2
+    Checking libsqlite3-sys v0.35.0
+    Checking gix-pack v0.70.0
+    Checking gix-config v0.56.0
+    Checking gix-shallow v0.12.1
+    Checking gix-refspec v0.41.0
+    Checking clap_builder v4.6.7
+    Checking gix-dir v0.25.0
+    Checking gix-diff v0.63.0
+    Checking rusqlite v0.37.0
+    Checking notify v8.2.0
+    Checking wayland-sys v0.31.8
+    Checking gix-protocol v0.61.0
+    Checking opentelemetry-otlp v0.32.0
+    Checking oauth2 v5.0.0
+    Checking sse-stream v0.2.5
+    Checking crossbeam-queue v0.3.12
+    Checking a3s-sqlite-journal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-sqlite-journal)
+    Checking proc-macro2 v1.0.106
+    Checking gix-odb v0.80.0
+    Checking gix-submodule v0.30.0
+    Checking wayland-backend v0.3.12
+    Checking libmimalloc-sys v0.1.44
+error: redundant reference in `format!` argument
+  --> crates/third-party/async-openai/src/responses/conversation_items.rs:35:53
+   |
+35 |                 &format!("/conversations/{}/items", &self.conversation_id),
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^ help: remove the redundant `&`: `self.conversation_id`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+   = note: `-D clippy::useless-borrows-in-formatting` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::useless_borrows_in_formatting)]`
+
+error: redundant reference in `format!` argument
+  --> crates/third-party/async-openai/src/responses/conversation_items.rs:47:53
+   |
+47 |                 &format!("/conversations/{}/items", &self.conversation_id),
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^ help: remove the redundant `&`: `self.conversation_id`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: redundant reference in `format!` argument
+  --> crates/third-party/async-openai/src/responses/conversation_items.rs:58:63
+   |
+58 |                 &format!("/conversations/{}/items/{item_id}", &self.conversation_id),
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^ help: remove the redundant `&`: `self.conversation_id`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: redundant reference in `format!` argument
+  --> crates/third-party/async-openai/src/responses/conversation_items.rs:69:63
+   |
+69 |                 &format!("/conversations/{}/items/{item_id}", &self.conversation_id),
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^ help: remove the redundant `&`: `self.conversation_id`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+    Checking gix-status v0.30.0
+    Checking crossbeam v0.8.4
+    Checking camino v1.2.1
+    Checking clap v4.6.7
+    Checking nucleo-matcher v0.3.1 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+    Checking webbrowser v1.2.4
+    Checking futures-lite v2.6.1
+    Checking a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+    Checking file-id v0.2.3
+    Checking async-lsp v0.2.3
+    Checking streaming-iterator v0.1.9
+    Checking fixedbitset v0.4.2
+    Checking nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+    Checking notify-debouncer-full v0.5.0
+    Checking a3s-code-paths v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-paths)
+    Checking wayland-client v0.31.12
+    Checking rmcp v3.4.0
+error: could not compile `async-openai` (lib) due to 4 previous errors
+warning: build failed, waiting for other jobs to finish...

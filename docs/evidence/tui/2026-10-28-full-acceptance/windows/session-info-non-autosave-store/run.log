@@ -1,0 +1,18 @@
+
+running 1 test
+test functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage ... ORACLE case=session-info-contract name=source-pair result=pass detail=aster-cli-pair-v1:a6d8f6a3949c46780a7f7a3965298b283971f40a:x86_64-pc-windows-msvc
+ORACLE case=session-info-contract name=session-info-empty result=pass detail=persisted identity/cwd, configured model, default mode and zero turn/context match
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13305
+
+thread 'functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage' (57100) panicked at crates\code\acp\tests\aster_tui_live_e2e\driver.rs:607:17:
+session usage was not persisted for 5f57bff2-2254-4fcb-93d7-06d5728a7a0f
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 51 filtered out; finished in 26.98s
+

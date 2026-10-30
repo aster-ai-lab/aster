@@ -1,0 +1,13 @@
+
+running 8 tests
+test agent_api::tests::compact::compact_conversation_writes_a_summary_fact ... ok
+test agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input ... ok
+test agent_api::tests::compact::source_carry::compact_twice_reopens_file_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_carry::compact_twice_reopens_memory_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_guard::compact_append_refuses_foreign_writer_and_changed_source ... ok
+test agent_api::tests::compact::source_guard::compact_bad_policy_source_refuses_before_summary_provider ... ok
+test agent_api::tests::compact::source_guard::compact_budget_refusal_does_not_call_summary_provider_or_append ... ok
+test agent_api::tests::compact::source_guard::compact_close_cancels_budget_wait_and_retains_original_writer ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 5300 filtered out; finished in 4.20s
+

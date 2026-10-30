@@ -1,0 +1,6 @@
+{"platform": "linux", "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu", "cases": [{"case": "unexecutable-companion", "exit_code": 1, "timed_out": false, "seconds": 1.499, "stdout_sha256": "fd704aa915b02b1b2bad3e1ec58d24493ab79d965bbb8d078142d739345c32f0", "stderr_sha256": "4c13ba4139752b870a04b4fcf588656dde2ff14f6f832e54cd4732dfeb5bfa58", "tool_calls": 0, "model_turns": 0, "result": "fail", "redacted_diagnostic": "Error: Couldn't start session: Exec format error (os error 8)\n"}]}
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/source/native_cli_boundary_probe.py", line 172, in <module>
+    assert report['all_passed'], 'retained native CLI boundary failure'
+           ~~~~~~^^^^^^^^^^^^^^
+AssertionError: retained native CLI boundary failure

@@ -1,0 +1,22 @@
+{
+  "reference": "e2beb284d3fe99a1fd8b4ad78f13a9988187c9f9",
+  "products": 16,
+  "versions": 17,
+  "source_pages": 134,
+  "documentation_urls": 242,
+  "previous_urls_retained": 130,
+  "http_verified": 242,
+  "homepage_assets_unchanged": [
+    "apps/web/public/cosmic.js",
+    "apps/web/public/home.css",
+    "apps/web/public/home.js",
+    "apps/web/tests/cosmic.test.cjs"
+  ],
+  "index_unchanged": true,
+  "staged_files": 294,
+  "staged_files_match_dist": true,
+  "python_tests": 20,
+  "javascript_tests": 129,
+  "total_tests": 149,
+  "preexisting_brand_assets_unchanged": true
+}

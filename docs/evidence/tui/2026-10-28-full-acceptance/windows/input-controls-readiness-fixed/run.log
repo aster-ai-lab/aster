@@ -1,0 +1,169 @@
+
+running 5 tests
+ORACLE case=draft-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=draft-edit-controls name=undo-redo result=pass detail=word deletion and actual undo/redo restore the intended draft
+ORACLE case=draft-edit-controls name=stash-pop result=pass detail=Ctrl+S clears and restores the Unicode draft without submitting it
+ORACLE case=draft-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13443
+ORACLE case=draft-edit-controls name=exact-edited-prompt result=pass detail=cursor/line deletion, clear and undo retain exact UTF-8 bytes in one real model request
+ORACLE case=draft-edit-controls name=quit result=pass detail=exit 0
+test input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text ... ok
+ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-save name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13442
+ORACLE case=editor-save name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-save name=quit result=pass detail=exit 0
+ORACLE case=editor-nonzero name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-nonzero name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13444
+ORACLE case=editor-nonzero name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-nonzero name=quit result=pass detail=exit 0
+ORACLE case=editor-invalid-utf8 name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-invalid-utf8 name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13443
+ORACLE case=editor-invalid-utf8 name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-invalid-utf8 name=quit result=pass detail=exit 0
+ORACLE case=editor-missing-program name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-missing-program name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13443
+ORACLE case=editor-missing-program name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-missing-program name=quit result=pass detail=exit 0
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ok
+ORACLE case=history-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_history_help_uses_reachable_entry' (46140) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:172:9:
+Code shortcut help advertises unsupported "/history":                                                                                                                         
+  C:\W\T\aster-kimi-6NAIIx\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Prompt history                                                              │                    
+                    │  ↑                                                                           │                    
+                    │                                                                              │                    
+                    │  Recalls previously sent prompts.                                            │                    
+                    │                                                                              │                    
+                    │  Press Up on an empty prompt to browse earlier prompts, newest first; each   │                    
+                    │  move live-populates the composer so you can edit and resend.                │                    
+                    │                                                                              │                    
+                    │  With prompts queued, Up moves focus into the queue pane on the last row     │                    
+                    │  instead.                                                                    │                    
+                    │                                                                              │                    
+                    │  Run /history to open a searchable history panel and filter by text.         │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test input_controls::kimi_history_help_uses_reachable_entry ... FAILED
+ORACLE case=paste-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_paste_help_matches_text_only_backend' (53968) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:172:9:
+Code shortcut help advertises unsupported "clipboard images":                                                                                                                         
+  C:\W\T\aster-kimi-U7Xpgc\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Paste images (and text) from the clipboard                                  │                    
+                    │  Ctrl+v / Alt+v                                                              │                    
+                    │                                                                              │                    
+                    │  Pastes clipboard images into the prompt as chips, and plain text as typed.  │                    
+                    │                                                                              │                    
+                    │  Prefer Ctrl+V. Use Alt+V as a fallback when Ctrl+V fails (some terminals    │                    
+                    │  or configs drop image clipboards; older Windows Terminal versions only      │                    
+                    │  pasted text).                                                               │                    
+                    │                                                                              │                    
+                    │  You can also drag an image file from Explorer into the prompt.              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+test input_controls::kimi_paste_help_matches_text_only_backend ... FAILED
+ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_sessions_help_uses_reachable_entry' (54324) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:172:9:
+Code shortcut help advertises unsupported "/resume":                                                                                                                         
+  C:\W\T\aster-kimi-l637Tu\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Open sessions                                                               │                    
+                    │  Ctrl+r                                                                      │                    
+                    │                                                                              │                    
+                    │  Opens the session browser to resume or switch between past conversations.   │                    
+                    │                                                                              │                    
+                    │  Select one to reattach to its full history. `/resume` does the same.        │                    
+                    │                                                                              │                    
+                    │  Separate from the Agent Dashboard (Ctrl+\), which manages many live agents  │                    
+                    │  at once.                                                                    │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+test input_controls::kimi_sessions_help_uses_reachable_entry ... FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_history_help_uses_reachable_entry
+    input_controls::kimi_paste_help_matches_text_only_backend
+    input_controls::kimi_sessions_help_uses_reachable_entry
+
+test result: FAILED. 2 passed; 3 failed; 0 ignored; 0 measured; 23 filtered out; finished in 54.32s
+

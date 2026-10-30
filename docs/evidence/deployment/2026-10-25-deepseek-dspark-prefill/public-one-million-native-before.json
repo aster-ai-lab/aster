@@ -1,0 +1,26 @@
+{
+  "model": "deepseek-v41-flash-1017-xq-1m",
+  "context": {
+    "native": 1048576,
+    "max_positions": 1048576
+  },
+  "last_timings": {
+    "cache_n": 0,
+    "prompt_n": 1000123,
+    "prompt_ms": 2865006.7,
+    "prompt_per_token_ms": 2.865,
+    "prompt_per_second": 349.1,
+    "predicted_n": 101,
+    "predicted_ms": 4882.2,
+    "predicted_per_token_ms": 48.339,
+    "predicted_per_second": 20.7,
+    "draft_n": 83,
+    "draft_n_accepted": 75,
+    "at": 1792935904
+  },
+  "activity": {
+    "requests": 21,
+    "in_flight": 0,
+    "last_request_at": 1792935904
+  }
+}

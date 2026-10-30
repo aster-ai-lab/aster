@@ -1,0 +1,957 @@
+validate	Set up job	﻿2026-10-28T22:52:08.6172694Z Current runner version: '2.338.0'
+validate	Set up job	2026-10-28T22:52:08.6200501Z ##[group]Runner Image Provisioner
+validate	Set up job	2026-10-28T22:52:08.6201387Z Hosted Compute Agent
+validate	Set up job	2026-10-28T22:52:08.6202092Z Version: 20261021.618
+validate	Set up job	2026-10-28T22:52:08.6202822Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+validate	Set up job	2026-10-28T22:52:08.6203537Z Build Date: 2026-10-21T00:45:21Z
+validate	Set up job	2026-10-28T22:52:08.6204304Z Worker ID: {e6fecf78-1b1a-4b61-a84d-b8abe2dbb50f}
+validate	Set up job	2026-10-28T22:52:08.6205020Z Region: eastus
+validate	Set up job	2026-10-28T22:52:08.6205970Z Cloud: Azure
+validate	Set up job	2026-10-28T22:52:08.6206634Z ##[endgroup]
+validate	Set up job	2026-10-28T22:52:08.6208190Z ##[group]Operating System
+validate	Set up job	2026-10-28T22:52:08.6208944Z Ubuntu
+validate	Set up job	2026-10-28T22:52:08.6209482Z 24.04.5
+validate	Set up job	2026-10-28T22:52:08.6210304Z LTS
+validate	Set up job	2026-10-28T22:52:08.6210891Z ##[endgroup]
+validate	Set up job	2026-10-28T22:52:08.6211454Z ##[group]Runner Image
+validate	Set up job	2026-10-28T22:52:08.6212118Z Image: ubuntu-24.04
+validate	Set up job	2026-10-28T22:52:08.6212705Z Version: 20261025.353.1
+validate	Set up job	2026-10-28T22:52:08.6213819Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+validate	Set up job	2026-10-28T22:52:08.6215688Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+validate	Set up job	2026-10-28T22:52:08.6216749Z ##[endgroup]
+validate	Set up job	2026-10-28T22:52:08.6217881Z ##[group]GITHUB_TOKEN Permissions
+validate	Set up job	2026-10-28T22:52:08.6220483Z Contents: read
+validate	Set up job	2026-10-28T22:52:08.6221140Z Metadata: read
+validate	Set up job	2026-10-28T22:52:08.6221787Z ##[endgroup]
+validate	Set up job	2026-10-28T22:52:08.6223976Z Secret source: Actions
+validate	Set up job	2026-10-28T22:52:08.6225134Z Cache mode: write
+validate	Set up job	2026-10-28T22:52:08.6226107Z Prepare workflow directory
+validate	Set up job	2026-10-28T22:52:08.6573454Z Prepare all required actions
+validate	Set up job	2026-10-28T22:52:08.6638831Z Getting action download info
+validate	Set up job	2026-10-28T22:52:08.8957382Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+validate	Set up job	2026-10-28T22:52:09.0243314Z Download action repository 'actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+validate	Set up job	2026-10-28T22:52:09.2252876Z Download action repository 'actions/upload-pages-artifact@v4' (SHA:7b1f4a764d45c48632c6b24a0339c27f5614fb0b)
+validate	Set up job	2026-10-28T22:52:09.4445535Z Getting action download info
+validate	Set up job	2026-10-28T22:52:09.5274681Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+validate	Set up job	2026-10-28T22:52:09.6627018Z Complete job name: validate
+validate	Run actions/checkout@v6	﻿2026-10-28T22:52:09.8335501Z ##[group]Run actions/checkout@v6
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8336507Z with:
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8337006Z   ref: refs/heads/main
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8337521Z   fetch-depth: 0
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8338005Z   submodules: false
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8338517Z   persist-credentials: false
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8339096Z   repository: aster-ai-lab/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8343352Z   token: ***
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8343848Z   ssh-strict: true
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8344319Z   ssh-user: git
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8344791Z   clean: true
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8345277Z   sparse-checkout-cone-mode: true
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8345853Z   fetch-tags: false
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8346364Z   show-progress: true
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8346878Z   lfs: false
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8347350Z   set-safe-directory: true
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8347915Z   allow-unsafe-pr-checkout: false
+validate	Run actions/checkout@v6	2026-10-28T22:52:09.8348773Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.2914784Z Syncing repository: aster-ai-lab/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.2918816Z ##[group]Getting Git version info
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.2921156Z Working directory is '/home/runner/work/aster/aster'
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.2924173Z [command]/usr/bin/git version
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3122691Z git version 2.56.0
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3137198Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3157735Z Temporarily overriding HOME='/home/runner/work/_temp/63255631-3b64-4afa-8549-8ccd1b3a953b' before making global git config changes
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3163185Z Adding repository directory to the temporary git global config as a safe directory
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3169410Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/aster/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3231753Z Deleting the contents of '/home/runner/work/aster/aster'
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.3243093Z ##[group]Determining repository object format
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5231294Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5235478Z ##[group]Initializing the repository
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5238095Z [command]/usr/bin/git init /home/runner/work/aster/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5382159Z hint: Using 'master' as the name for the initial branch. This default branch name
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5386516Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5392437Z hint: to use in all of your new repositories, which will suppress this warning,
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5395562Z hint: call:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5397232Z hint:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5399321Z hint: 	git config --global init.defaultBranch <name>
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5402237Z hint:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5412469Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5416560Z hint: 'development'. The just-created branch can be renamed via this command:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5420258Z hint:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5421937Z hint: 	git branch -m <name>
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5431019Z hint:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5433567Z hint: Disable this message with "git config set advice.defaultBranchName false"
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5437466Z Initialized empty Git repository in /home/runner/work/aster/aster/.git/
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5454537Z [command]/usr/bin/git remote add origin https://github.com/aster-ai-lab/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5504049Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5507584Z ##[group]Disabling automatic garbage collection
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5510506Z [command]/usr/bin/git config --local gc.auto 0
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5566168Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5569336Z ##[group]Setting up auth
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5572155Z Removing SSH command configuration
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5576093Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.5655999Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6203591Z Removing HTTP extra header
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6214075Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6276945Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6552319Z Removing includeIf entries pointing to credentials config files
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6559405Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6625945Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6978038Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.6990734Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/aster/aster/.git.path /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7204143Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/aster/aster/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7261694Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7313930Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7357490Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7360566Z ##[group]Fetching the repository
+validate	Run actions/checkout@v6	2026-10-28T22:52:10.7370072Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7249484Z From https://github.com/aster-ai-lab/aster
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7250578Z  * [new branch]        ci/release-speed        -> origin/ci/release-speed
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7251615Z  * [new branch]        ci/release-speed-main   -> origin/ci/release-speed-main
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7252411Z  * [new branch]        codex/h200-native-ready-20261024 -> origin/codex/h200-native-ready-20261024
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7253016Z  * [new branch]        fix/about-legal-pages   -> origin/fix/about-legal-pages
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7253556Z  * [new branch]        fix/core-open-issues    -> origin/fix/core-open-issues
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7254035Z  * [new branch]        fix/home-legal-links    -> origin/fix/home-legal-links
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7254557Z  * [new branch]        fix/issue-followups-20261021 -> origin/fix/issue-followups-20261021
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7255312Z  * [new branch]        fix/issues-1-7-20261021 -> origin/fix/issues-1-7-20261021
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7256090Z  * [new branch]        main                    -> origin/main
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7256768Z  * [new branch]        release/9.1.6           -> origin/release/9.1.6
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7257596Z  * [new branch]        release/aster-cli-v0.1.3 -> origin/release/aster-cli-v0.1.3
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7258706Z  * [new tag]           archive/codex-power-serving-gpu-20261021 -> archive/codex-power-serving-gpu-20261021
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7259910Z  * [new tag]           aster-cli-v0.1.0        -> aster-cli-v0.1.0
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7260601Z  * [new tag]           aster-cli-v0.1.1        -> aster-cli-v0.1.1
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7261310Z  * [new tag]           aster-cli-v0.1.3        -> aster-cli-v0.1.3
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7261978Z  * [new tag]           aster-cli-v0.1.4        -> aster-cli-v0.1.4
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7262646Z  * [new tag]           desktop-stable          -> desktop-stable
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7263283Z  * [new tag]           latest                  -> latest
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7263755Z  * [new tag]           v0.1.0                  -> v0.1.0
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7264084Z  * [new tag]           v0.1.1                  -> v0.1.1
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7264409Z  * [new tag]           v0.1.2                  -> v0.1.2
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7265524Z  * [new tag]           v0.1.3                  -> v0.1.3
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7266180Z  * [new tag]           v0.1.4                  -> v0.1.4
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7266886Z  * [new tag]           v9.1.6                  -> v9.1.6
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7268465Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7269100Z ##[group]Determining the checkout info
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7270101Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7270507Z [command]/usr/bin/git sparse-checkout disable
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7339532Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7387567Z ##[group]Checking out the ref
+validate	Run actions/checkout@v6	2026-10-28T22:52:20.7392907Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.7758493Z Updating files:  20% (5517/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.8062031Z Updating files:  21% (5598/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.8720597Z Updating files:  22% (5864/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.8943879Z Updating files:  23% (6131/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.9141801Z Updating files:  24% (6397/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.9311970Z Updating files:  25% (6664/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.9503362Z Updating files:  26% (6931/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.9746402Z Updating files:  27% (7197/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:21.9931192Z Updating files:  28% (7464/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.0160871Z Updating files:  29% (7730/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.0421063Z Updating files:  30% (7997/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.0642834Z Updating files:  31% (8263/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.0828471Z Updating files:  32% (8530/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.1255023Z Updating files:  33% (8796/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.1498288Z Updating files:  34% (9063/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.1855810Z Updating files:  35% (9329/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.2013192Z Updating files:  36% (9596/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.2252835Z Updating files:  37% (9862/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.2577470Z Updating files:  38% (10129/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.2851412Z Updating files:  39% (10396/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.3052684Z Updating files:  40% (10662/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.3340207Z Updating files:  41% (10929/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.3662420Z Updating files:  42% (11195/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.3965391Z Updating files:  43% (11462/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.4170458Z Updating files:  44% (11728/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.4405622Z Updating files:  45% (11995/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.4553343Z Updating files:  46% (12261/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.4681790Z Updating files:  47% (12528/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.4851126Z Updating files:  48% (12794/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.5075451Z Updating files:  49% (13061/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.5285620Z Updating files:  50% (13327/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.5533032Z Updating files:  51% (13594/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.5840348Z Updating files:  52% (13861/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.6406381Z Updating files:  53% (14127/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.6705474Z Updating files:  54% (14394/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.6887127Z Updating files:  55% (14660/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.7052046Z Updating files:  56% (14927/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.7189772Z Updating files:  57% (15193/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.7534197Z Updating files:  58% (15460/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.7753102Z Updating files:  59% (15726/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.8330508Z Updating files:  59% (15825/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.8495384Z Updating files:  60% (15993/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.8790948Z Updating files:  61% (16259/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.8975965Z Updating files:  62% (16526/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:22.9106172Z Updating files:  63% (16793/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.0244977Z Updating files:  64% (17059/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.0508022Z Updating files:  65% (17326/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.0788518Z Updating files:  66% (17592/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.0907296Z Updating files:  67% (17859/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1087789Z Updating files:  68% (18125/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1260956Z Updating files:  69% (18392/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1451300Z Updating files:  70% (18658/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1583432Z Updating files:  71% (18925/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1718734Z Updating files:  72% (19191/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.1890774Z Updating files:  73% (19458/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.2058734Z Updating files:  74% (19724/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.2205157Z Updating files:  75% (19991/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.2403259Z Updating files:  76% (20258/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.2557730Z Updating files:  77% (20524/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.2712867Z Updating files:  78% (20791/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.3070284Z Updating files:  79% (21057/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.3276281Z Updating files:  80% (21324/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.3781490Z Updating files:  81% (21590/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.3935046Z Updating files:  82% (21857/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.4203239Z Updating files:  83% (22123/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.4646757Z Updating files:  84% (22390/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.5058734Z Updating files:  85% (22656/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.5455369Z Updating files:  86% (22923/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.5652901Z Updating files:  87% (23189/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.5868187Z Updating files:  88% (23456/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.6070753Z Updating files:  89% (23723/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.6450726Z Updating files:  90% (23989/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.6672371Z Updating files:  91% (24256/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.6882231Z Updating files:  92% (24522/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7084928Z Updating files:  93% (24789/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7264533Z Updating files:  94% (25055/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7393205Z Updating files:  95% (25322/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7575076Z Updating files:  96% (25588/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7701092Z Updating files:  97% (25855/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7710750Z Updating files:  97% (26102/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.7867505Z Updating files:  98% (26121/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8049115Z Updating files:  99% (26388/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8050066Z Updating files: 100% (26654/26654)
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8050665Z Updating files: 100% (26654/26654), done.
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8375409Z Switched to a new branch 'main'
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8380123Z branch 'main' set up to track 'origin/main'.
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8508923Z ##[endgroup]
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8575910Z [command]/usr/bin/git log -1 --format=%H
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8624415Z 3a8b8235c59e554dab3a9d98906e35ad872c7697
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8637269Z ##[group]Removing auth
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8637761Z Removing SSH command configuration
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8642601Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.8696388Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9011621Z Removing HTTP extra header
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9017282Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9073127Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9395949Z Removing includeIf entries pointing to credentials config files
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9400427Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9448463Z includeif.gitdir:/home/runner/work/aster/aster/.git.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9449280Z includeif.gitdir:/home/runner/work/aster/aster/.git/worktrees/*.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9450075Z includeif.gitdir:/github/workspace/.git.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9450464Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9461369Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/aster/aster/.git.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9504985Z /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9519041Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/aster/aster/.git.path /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9580136Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/aster/aster/.git/worktrees/*.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9622039Z /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9635391Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/aster/aster/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9704774Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9739513Z /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9749532Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9811540Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9853268Z /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9864982Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config
+validate	Run actions/checkout@v6	2026-10-28T22:52:23.9924786Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+validate	Run actions/checkout@v6	2026-10-28T22:52:24.0230325Z Removing credentials config '/home/runner/work/_temp/git-credentials-5b3ea32d-9eea-4ec7-b3b1-377332912fe1.config'
+validate	Run actions/checkout@v6	2026-10-28T22:52:24.0241292Z ##[endgroup]
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	﻿2026-10-28T22:52:24.0515821Z ##[group]Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0516267Z with:
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0516490Z   node-version: 24.12.0
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0516732Z   check-latest: false
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0519190Z   token: ***
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0519437Z   package-manager-cache: true
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.0520070Z ##[endgroup]
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.2006814Z Attempting to download 24.12.0...
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:24.8579457Z Acquiring 24.12.0 - x64 from https://github.com/actions/node-versions/releases/download/24.12.0-20140960970/node-24.12.0-linux-x64.tar.gz
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:25.2936022Z Extracting ...
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:25.3081101Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/dc792e21-291f-4857-849c-460f1ab6404a -f /home/runner/work/_temp/53bb6fae-8578-4057-9112-f82357a41607
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:26.5228236Z Adding to the cache ...
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:28.2986897Z ##[group]Environment details
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:28.5741513Z node: v24.12.0
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:28.5742050Z npm: 11.6.2
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:28.5742387Z yarn: 1.22.22
+validate	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-28T22:52:28.5743079Z ##[endgroup]
+validate	Install isolated MDX build dependencies	﻿2026-10-28T22:52:28.5932263Z ##[group]Run npm --prefix apps/web ci --workspaces=false --ignore-scripts --no-audit --no-fund
+validate	Install isolated MDX build dependencies	2026-10-28T22:52:28.5933030Z ^[[36;1mnpm --prefix apps/web ci --workspaces=false --ignore-scripts --no-audit --no-fund^[[0m
+validate	Install isolated MDX build dependencies	2026-10-28T22:52:28.5958724Z shell: /usr/bin/bash -e {0}
+validate	Install isolated MDX build dependencies	2026-10-28T22:52:28.5959012Z ##[endgroup]
+validate	Install isolated MDX build dependencies	2026-10-28T22:52:31.0102356Z 
+validate	Install isolated MDX build dependencies	2026-10-28T22:52:31.0112514Z added 168 packages in 2s
+validate	Resolve latest published installation packages	﻿2026-10-28T22:52:31.0661543Z ##[group]Run node apps/web/scripts/build_releases.mjs --refresh
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0662055Z ^[[36;1mnode apps/web/scripts/build_releases.mjs --refresh^[[0m
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0662427Z ^[[36;1mnpm --prefix apps/web run build^[[0m
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0682950Z shell: /usr/bin/bash -e {0}
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0683213Z env:
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0685524Z   GH_TOKEN: ***
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.0685736Z ##[endgroup]
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.6045374Z [{"key":"desktop.macos","version":"0.1.4","tag":"v0.1.4"},{"key":"desktop.windows","version":"0.1.1","tag":"v0.1.1"},{"key":"desktop.kylin","version":"0.1.2","tag":"v0.1.2"},{"key":"cli.macos","version":"0.1.4","tag":"aster-cli-v0.1.4"},{"key":"cli.linux","version":"0.1.4","tag":"aster-cli-v0.1.4"},{"key":"cli.windows","version":"0.1.4","tag":"aster-cli-v0.1.4"}]
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.6992060Z 
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.6992908Z > build
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.6993469Z > node scripts/build_docs.mjs
+validate	Resolve latest published installation packages	2026-10-28T22:52:31.6993838Z 
+validate	Resolve latest published installation packages	2026-10-28T22:52:36.4113866Z Built 89 MDX documents (150 routes) and generated CSS.
+validate	Check generated MDX documents	﻿2026-10-28T22:52:36.4742297Z ##[group]Run npm --prefix apps/web run check
+validate	Check generated MDX documents	2026-10-28T22:52:36.4742890Z ^[[36;1mnpm --prefix apps/web run check^[[0m
+validate	Check generated MDX documents	2026-10-28T22:52:36.4768436Z shell: /usr/bin/bash -e {0}
+validate	Check generated MDX documents	2026-10-28T22:52:36.4768830Z ##[endgroup]
+validate	Check generated MDX documents	2026-10-28T22:52:36.5846120Z 
+validate	Check generated MDX documents	2026-10-28T22:52:36.5846659Z > check
+validate	Check generated MDX documents	2026-10-28T22:52:36.5847185Z > node scripts/build_docs.mjs --check
+validate	Check generated MDX documents	2026-10-28T22:52:36.5847792Z 
+validate	Check generated MDX documents	2026-10-28T22:52:41.3707415Z Checked 89 MDX documents (150 routes) and generated CSS.
+validate	Test and validate the public site	﻿2026-10-28T22:52:41.4349454Z ##[group]Run python3 -m unittest discover -s apps/web/tests -p 'test_*.py' -v
+validate	Test and validate the public site	2026-10-28T22:52:41.4350887Z ^[[36;1mpython3 -m unittest discover -s apps/web/tests -p 'test_*.py' -v^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4351704Z ^[[36;1mpython3 apps/web/scripts/check_site.py^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4352381Z ^[[36;1mnode --check apps/web/public/download/app.js^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4353094Z ^[[36;1mnode --check apps/web/public/download/canvas.js^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4353760Z ^[[36;1mnode --check apps/web/public/home.js^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4354371Z ^[[36;1mnode --check apps/web/public/cosmic.js^[[0m
+validate	Test and validate the public site	2026-10-28T22:52:41.4384902Z shell: /usr/bin/bash -e {0}
+validate	Test and validate the public site	2026-10-28T22:52:41.4385388Z ##[endgroup]
+validate	Test and validate the public site	2026-10-28T22:52:41.5958900Z test_documentation_catalog_supports_products_versions_and_closed_routes (test_site.SiteTest.test_documentation_catalog_supports_products_versions_and_closed_routes) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:04.5990929Z test_documentation_refuses_injected_behavior_external_assets_and_broken_navigation (test_site.SiteTest.test_documentation_refuses_injected_behavior_external_assets_and_broken_navigation) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:04.6574670Z test_download_host_path_or_unknown_release_refuses (test_site.SiteTest.test_download_host_path_or_unknown_release_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:04.7170764Z test_each_screenshot_is_an_explicit_html_image_and_font_assets_are_referenced (test_site.SiteTest.test_each_screenshot_is_an_explicit_html_image_and_font_assets_are_referenced) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:10.1305057Z test_existing_stage_is_preserved_and_bad_source_cannot_activate_output (test_site.SiteTest.test_existing_stage_is_preserved_and_bad_source_cannot_activate_output) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:10.1786569Z test_extra_screenshot_and_symlink_font_are_not_staged (test_site.SiteTest.test_extra_screenshot_and_symlink_font_are_not_staged) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:10.2508180Z test_foreign_brand_or_private_script_import_refuses (test_site.SiteTest.test_foreign_brand_or_private_script_import_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:26.7365370Z test_four_png_screenshots_and_three_local_fonts_with_license_are_public (test_site.SiteTest.test_four_png_screenshots_and_three_local_fonts_with_license_are_public) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:53.8730082Z test_legal_pages_are_staged_and_refuse_remote_or_injected_resources (test_site.SiteTest.test_legal_pages_are_staged_and_refuse_remote_or_injected_resources) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:53.9270233Z test_missing_asset_fragment_or_duplicate_id_refuses (test_site.SiteTest.test_missing_asset_fragment_or_duplicate_id_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:53.9797318Z test_missing_invalid_or_oversize_png_screenshot_refuses (test_site.SiteTest.test_missing_invalid_or_oversize_png_screenshot_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:54.0296139Z test_missing_one_verified_download_refuses (test_site.SiteTest.test_missing_one_verified_download_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:54.1032300Z test_native_choices_inline_code_and_remote_scripts_refuse (test_site.SiteTest.test_native_choices_inline_code_and_remote_scripts_refuse) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:54.1623147Z test_remote_css_and_escaping_resource_refuse (test_site.SiteTest.test_remote_css_and_escaping_resource_refuse) ... ok
+validate	Test and validate the public site	2026-10-28T22:53:59.5862014Z test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse (test_site.SiteTest.test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:16.0727477Z test_stage_contains_only_public_allowlist_and_project_relative_homepage (test_site.SiteTest.test_stage_contains_only_public_allowlist_and_project_relative_homepage) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:27.8555476Z test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404 (test_site.SiteTest.test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:27.9022754Z test_symlink_source_and_extra_download_file_refuse (test_site.SiteTest.test_symlink_source_and_extra_download_file_refuse) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:27.9531102Z test_unnamed_or_invalid_labelled_control_refuses (test_site.SiteTest.test_unnamed_or_invalid_labelled_control_refuses) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:33.3268829Z test_valid_page_has_named_controls_and_all_six_exact_release_links (test_site.SiteTest.test_valid_page_has_named_controls_and_all_six_exact_release_links) ... ok
+validate	Test and validate the public site	2026-10-28T22:54:33.3270212Z 
+validate	Test and validate the public site	2026-10-28T22:54:33.3270660Z ----------------------------------------------------------------------
+validate	Test and validate the public site	2026-10-28T22:54:33.3271281Z Ran 20 tests in 111.787s
+validate	Test and validate the public site	2026-10-28T22:54:33.3271457Z 
+validate	Test and validate the public site	2026-10-28T22:54:33.3273495Z OK
+validate	Test and validate the public site	2026-10-28T22:54:40.0402496Z {"status": "passed", "files": 198, "download_links": 6, "named_buttons": 12, "home_tabs": 4, "docs_pages": 150, "legal_pages": 2, "private_sources_required": false}
+validate	Install isolated public DOM test dependency	﻿2026-10-28T22:54:40.1369903Z ##[group]Run npm install --prefix "$RUNNER_TEMP/download-test-deps" --ignore-scripts --no-save --package-lock=false jsdom@26.1.0
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:40.1371105Z ^[[36;1mnpm install --prefix "$RUNNER_TEMP/download-test-deps" --ignore-scripts --no-save --package-lock=false jsdom@26.1.0^[[0m
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:40.1391655Z shell: /usr/bin/bash -e {0}
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:40.1391923Z ##[endgroup]
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:41.8668627Z npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:42.2940382Z 
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:42.2941412Z added 39 packages in 2s
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:42.2941765Z 
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:42.2959994Z 7 packages are looking for funding
+validate	Install isolated public DOM test dependency	2026-10-28T22:54:42.2960634Z   run `npm fund` for details
+validate	Test public site interactions	﻿2026-10-28T22:54:42.3116690Z ##[group]Run JS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" node --test apps/web/tests/download.test.cjs apps/web/tests/canvas.test.cjs apps/web/tests/cosmic.test.cjs apps/web/tests/home.test.cjs apps/web/tests/docs.test.mjs apps/web/tests/atlas.test.mjs apps/web/tests/releases.test.mjs
+validate	Test public site interactions	2026-10-28T22:54:42.3121178Z ^[[36;1mJS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" node --test apps/web/tests/download.test.cjs apps/web/tests/canvas.test.cjs apps/web/tests/cosmic.test.cjs apps/web/tests/home.test.cjs apps/web/tests/docs.test.mjs apps/web/tests/atlas.test.mjs apps/web/tests/releases.test.mjs^[[0m
+validate	Test public site interactions	2026-10-28T22:54:42.3152095Z shell: /usr/bin/bash -e {0}
+validate	Test public site interactions	2026-10-28T22:54:42.3152574Z ##[endgroup]
+validate	Test public site interactions	2026-10-28T22:54:44.1662319Z ✔ every migrated Pele diagram preserves original labels, node identities, relationships and explanation sources (1122.98685ms)
+validate	Test public site interactions	2026-10-28T22:54:44.1674942Z ✔ Pele guide refuses missing explanations, invalid Mermaid and references to missing nodes (2.045087ms)
+validate	Test public site interactions	2026-10-28T22:54:44.6790144Z ✔ prose export reads the Pele guide schema and retains every authored prose unit (510.921234ms)
+validate	Test public site interactions	2026-10-28T22:54:44.9341154Z ✔ diagram stepping, keyboard bounds and complete view do not start animation timers (256.817472ms)
+validate	Test public site interactions	2026-10-28T22:54:45.2578067Z ✔ requested narration is finite and reduced motion keeps manual controls (324.26858ms)
+validate	Test public site interactions	2026-10-28T22:54:45.2942022Z ✔ responsibility blocks remain separate concepts and stepping does not change other figures (35.423153ms)
+validate	Test public site interactions	2026-10-28T22:54:45.3542031Z ✔ diagram nodes have working pointer and keyboard explanations (59.666089ms)
+validate	Test public site interactions	2026-10-28T22:54:45.3551458Z ✔ Code Hike token colors remain readable on both code backgrounds (2.156555ms)
+validate	Test public site interactions	2026-10-28T22:54:45.5872118Z ✔ source walkthrough works without IntersectionObserver and exposes full reading mode (230.591039ms)
+validate	Test public site interactions	2026-10-28T22:54:45.7517473Z ✔ Spotlight preserves explicit selection while the document scrolls (160.905458ms)
+validate	Test public site interactions	2026-10-28T22:54:46.5847397Z ✔ static source walks retain every explanation and original code line without JavaScript (811.470254ms)
+validate	Test public site interactions	2026-10-28T22:54:46.5985500Z ✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (39.818255ms)
+validate	Test public site interactions	2026-10-28T22:54:47.2876763Z ✔ new internal reading paths retain explicit product versions rather than default aliases (687.601259ms)
+validate	Test public site interactions	2026-10-28T22:54:47.4352151Z ✔ published documents, diagram assets and README exports contain Pele with no retired renderer resources (146.450459ms)
+validate	Test public site interactions	2026-10-28T22:54:47.6601942Z ✔ Spotlight focus, wrapping and source range controls remain local to each code panel (219.064159ms)
+validate	Test public site interactions	2026-10-28T22:54:47.8166557Z ✔ clipboard boundary receives the exact source text and reports denied access inline (163.910382ms)
+validate	Test public site interactions	2026-10-28T22:54:47.8937097Z ✔ compact page-source disclosure retains every pinned reference in first-use order (77.724736ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9684105Z ✔ missing or unavailable canvas keeps the existing fallback without scheduling work (4.680402ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9689323Z ✔ DPR is clamped at two and unchanged resize observations do not reset the backing store (2.876054ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9691506Z ✔ reduced motion draws a static frame and never starts an animation loop (3.284734ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9693331Z ✔ painting is limited to thirty FPS and pauses for both visibility and intersection (2.696209ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9695322Z ✔ page cache lifecycle stops work and resumes without requiring a size change (1.15474ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9696886Z ✔ pointer response stays small, passive and does not intercept touch or scroll (2.725683ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9698628Z ✔ older browsers without intersection observation keep a static fallback (1.342018ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9700941Z ✔ missing or unavailable cosmic canvas keeps the fallback without scheduling work (9.0637ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9702690Z ✔ cosmic DPR is clamped at two and unchanged resize does not reset the canvas (3.294632ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9704287Z ✔ reduced motion draws a static cosmos and never starts an animation loop (4.240266ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9706467Z ✔ cosmic painting is capped at thirty FPS and pauses for visibility and intersection (3.022662ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9708172Z ✔ cosmic page cache lifecycle stops and resumes without a size change (2.220764ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9710036Z ✔ cosmic pointer parallax is small and touch does not move the star field (9.427426ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9711640Z ✔ older browsers without intersection observation keep a static cosmos (3.465149ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9713285Z ✔ WebGL supplies three-dimensional star layers and a galaxy with clamped DPR (10.982712ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9714859Z ✔ WebGL reduced motion renders once and toggles the animation lifecycle (8.398392ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9716438Z ✔ WebGL camera parallax changes with mouse input while touch stays neutral (43.00149ms)
+validate	Test public site interactions	2026-10-28T22:54:47.9717990Z ✔ unavailable WebGL shaders retain the existing Canvas fallback (2.690943ms)
+validate	Test public site interactions	2026-10-28T22:54:55.3446515Z ✔ the product catalog refuses unsafe paths, duplicate versions and invalid defaults (5.568055ms)
+validate	Test public site interactions	2026-10-28T22:54:55.3448184Z ✔ two products and two versions keep content, navigation, source refs and defaults isolated (869.112681ms)
+validate	Test public site interactions	2026-10-28T22:54:55.3449272Z ✔ section navigation and chapter cards keep introductory and Meta Harness guides separate (77.263251ms)
+validate	Test public site interactions	2026-10-28T22:54:55.3450512Z ✔ MDX builds deterministically and refuses stale generated pages (10967.495209ms)
+validate	Test public site interactions	2026-10-28T22:54:58.8707377Z ✔ highlighted code preserves every authored character and remains labelled and keyboard-scrollable (3526.057849ms)
+validate	Test public site interactions	2026-10-28T22:54:58.8797184Z ✔ the generated syntax palette meets 4.5:1 text contrast against its light background (9.143833ms)
+validate	Test public site interactions	2026-10-28T22:54:59.2063365Z ✔ Pele renders current architecture figures with labels and extracted styles (298.453977ms)
+validate	Test public site interactions	2026-10-28T22:54:59.2065483Z ✔ source citations resolve exact lines from the registered Git snapshot and refuse drift (27.417733ms)
+validate	Test public site interactions	2026-10-28T22:54:59.6031809Z ✔ current reading paths expose ordered page sources at fixed revisions in canonical and alias routes (396.510299ms)
+validate	Test public site interactions	2026-10-28T22:54:59.8906493Z ✔ the terminal-agent tutorial has twelve ordered chapters and project-local neighboring pages (287.253453ms)
+validate	Test public site interactions	2026-10-28T22:55:09.5108460Z ✔ generated documents preserve project URLs, active navigation and accessible diagrams without JavaScript (9620.364054ms)
+validate	Test public site interactions	2026-10-28T22:55:09.5231222Z ✔ current Core and ACP coverage indexes match the authoritative public contract sets (12.736462ms)
+validate	Test public site interactions	2026-10-28T22:55:09.5917554Z ✔ default aliases resolve cross-product and version links from their pinned source location (68.256412ms)
+validate	Test public site interactions	2026-10-28T22:55:11.5466613Z ✔ every Markdown table renders as an accessible table instead of pipe-delimited prose (1954.834744ms)
+validate	Test public site interactions	2026-10-28T22:55:11.5732033Z ✔ GFM supports table alignment, escaped pipes, task lists, deletion, links and footnotes (26.610402ms)
+validate	Test public site interactions	2026-10-28T22:55:11.7432948Z ✔ chapter navigation retains its scroll across page loads and isolates product/version state (169.934124ms)
+validate	Test public site interactions	2026-10-28T22:55:11.8274709Z ✔ navigation remains usable when session storage is unavailable or corrupt (84.258568ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0255073Z ✔ public assets exist, four screenshot PNGs have dimensions, and project Pages paths resolve (223.270772ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0257666Z ✔ no-JS release links and labelled screenshots remain; retired simulated Office controls are absent (141.431118ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0258941Z ✔ four feature tabs switch whole panels, wrap left/right, support Home/End and rove one tab stop (155.290582ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0260675Z ✔ every screenshot and enlarge opener selects its own PNG, original URL, alt, title and disclosure (242.57233ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0261758Z ✔ download-dialog: close button waits for its close animation and restores the opener (279.072351ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0262610Z ✔ download-dialog: cancel waits for its close animation and restores the opener (300.319032ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0263435Z ✔ download-dialog: backdrop waits for its close animation and restores the opener (302.455791ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0264462Z ✔ download-dialog: reopening cancels the prior close timer (506.89229ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0265176Z ✔ download-dialog: reduced motion cancels immediately without a delayed close (96.453255ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0266015Z ✔ screenshot-dialog: close button waits for its close animation and restores the opener (314.659176ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0266884Z ✔ screenshot-dialog: cancel waits for its close animation and restores the opener (295.474053ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0267790Z ✔ screenshot-dialog: backdrop waits for its close animation and restores the opener (297.532194ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0268562Z ✔ screenshot-dialog: reopening cancels the prior close timer (510.172533ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0269338Z ✔ screenshot-dialog: reduced motion cancels immediately without a delayed close (61.147791ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0270546Z ✔ mobile navigation closes on Escape, destination selection and desktop resize (78.701469ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0271429Z ✔ back-to-top visibility, scroll intent and brand focus (reduced motion: false) (86.737427ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0272276Z ✔ back-to-top visibility, scroll intent and brand focus (reduced motion: true) (47.777688ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0273221Z ✔ the real-screenshot FAQ is an ordinary disclosure and states the fixture boundary (71.663401ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0274098Z ✔ homepage assets resolve under project Pages and no-JS content stays available (254.060797ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0274919Z ✔ scenario tabs switch panels and support arrow, Home and End keys (178.786476ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0275695Z ✔ scenario selection carries a sliding indicator and directional panel motion (99.551523ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0276470Z ✔ scenario replay starts only on request and settles at a replay action (53.922711ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0277284Z ✔ scenario steps stop playback and changing panels or hiding the page pauses it (57.432722ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0278051Z ✔ reduced motion changes replay to immediate next-step navigation (44.904664ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0278798Z ✔ mobile navigation closes on selection, Escape and desktop resize (67.756758ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0279945Z ✔ download disclosures switch, support keyboard focus and close outside or on Escape (48.612115ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0280954Z ✔ download disclosures open on hover, close after leaving and stay pinned after click (65.635315ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0281783Z ✔ current desktop platform is labelled and the quickstart command can be copied (83.795509ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0282571Z ✔ hero title types every character in place and retires the cursor (53.628674ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0283266Z ✔ reduced motion preserves the original hero title without typing (47.625528ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0284365Z ✔ back to top respects reduced motion and uses the recorded scroll position (56.035103ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0285765Z ✔ download links support arrow navigation and close when focus leaves (66.740383ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0287359Z ✔ surface feedback coalesces pointer input, stays bounded and resets on reduced motion (42.551874ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0288298Z ✔ coarse pointers keep the surface interactions at their original static state (32.436566ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0289088Z ✔ copy feedback distinguishes success and failure and restores its original icon (58.506561ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0290464Z ✔ replay feedback announces real step changes and cancels superseded transitions (146.578556ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0291199Z ✔ hero alternates both exact taglines and returns to the first (50.694819ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0291948Z ✔ hero stops its rotation when the page leaves and reduced motion starts no rotation (90.03612ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0292885Z ✔ latest downloads follow numeric versions per product/platform and exclude SDK, draft and prerelease assets (4.175714ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0293771Z ✔ the existing desktop-stable ZIP publisher is supported only after publication (0.447032ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0294596Z ✔ missing or malformed installation assets refuse rather than selecting another product (1.046358ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0295704Z ✔ real template generation keeps versions, formats and direct URLs aligned and detects stale output (41.667238ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0296649Z ✔ published page snapshots expose exactly the six selected stable URLs without browser API requests (3.381976ms)
+validate	Test public site interactions	2026-10-28T22:55:12.0297195Z ℹ tests 95
+validate	Test public site interactions	2026-10-28T22:55:12.0297399Z ℹ suites 0
+validate	Test public site interactions	2026-10-28T22:55:12.0297596Z ℹ pass 95
+validate	Test public site interactions	2026-10-28T22:55:12.0297801Z ℹ fail 0
+validate	Test public site interactions	2026-10-28T22:55:12.0298040Z ℹ cancelled 0
+validate	Test public site interactions	2026-10-28T22:55:12.0298252Z ℹ skipped 0
+validate	Test public site interactions	2026-10-28T22:55:12.0298451Z ℹ todo 0
+validate	Test public site interactions	2026-10-28T22:55:12.0298686Z ℹ duration_ms 29678.458423
+validate	Stage only the public deployment files	﻿2026-10-28T22:55:12.0340257Z ##[group]Run python3 apps/web/scripts/stage_site.py _aster_site
+validate	Stage only the public deployment files	2026-10-28T22:55:12.0340787Z ^[[36;1mpython3 apps/web/scripts/stage_site.py _aster_site^[[0m
+validate	Stage only the public deployment files	2026-10-28T22:55:12.0361119Z shell: /usr/bin/bash -e {0}
+validate	Stage only the public deployment files	2026-10-28T22:55:12.0361388Z ##[endgroup]
+validate	Stage only the public deployment files	2026-10-28T22:55:25.1472595Z {"files": {"cosmic.js": "6033052a8bf8c4ebaefd548fa8d0ef3944e308f605bf919195663be42ebf9f01", "docs/acp/9.1.6/client/index.html": "87a11f81916b6f1c77e3d37f3d97d32395a1c3ac01e412d3da049cff6d8eabd5", "docs/acp/9.1.6/documents/index.html": "bf73ba52e6edfcf038e857f42fec2bab707d66216ebecc9711ed532a18946de4", "docs/acp/9.1.6/events/index.html": "cb4168f528c686f9460f77e55a2849604fffa8c7c1a2f1e8956d317432852dbd", "docs/acp/9.1.6/goals/index.html": "38727a8bd5d1904de6766838210917e12bc315f2bf2a69f9e928188bf0224c62", "docs/acp/9.1.6/index.html": "be0dfbeef82a6d0031a22a24c52ee0d66839a8133a803be5a876c8b7cb368027", "docs/acp/9.1.6/internals/events/index.html": "b260d5419dbfdabf61039381864aa1fe1fd19698b82f7726ac275fac5bb2c7d9", "docs/acp/9.1.6/internals/goals/index.html": "87fffcf1bbe09c0cde6928c4f313466e25e18ed197e13b35445661fbf205200f", "docs/acp/9.1.6/internals/index.html": "5da36368440d5e907b2bb7ecec9bbb8872ab3151dd73c69d4c7e4ed2d5c36de2", "docs/acp/9.1.6/launch/index.html": "cbf1d88c29fdab8897f9ab22142d7fa98335b51ebd3f3925efaa84e8359507e9", "docs/acp/9.1.6/memory/index.html": "45415fb60d7b951fa7abab7f43dac5c8ea4120a8c5f4c46122c63988c72e5c3a", "docs/acp/9.1.6/models/index.html": "244a2030389bacfc5838cde80a6184eeb5d2038eee4c67912d279a05d492fdfe", "docs/acp/9.1.6/permissions/index.html": "141544d27dbd780c26e4908d86db46aa41660bbee229eaa6530e78d547318682", "docs/acp/9.1.6/plugins/index.html": "3b1b1bced31a99fb5e0d0f98cccbabd6ae2c975f129fbe187da33e7cd2daf641", "docs/acp/9.1.6/protocol/index.html": "dc6d8ddb5c796f65629a1c7d496b32f5203fde02802186f8468663fad9843ce4", "docs/acp/9.1.6/reference/index.html": "7bcd4a048aff9af8955054924d410cbcd21abe50df5d8eb08fcff8ea870844fd", "docs/acp/9.1.6/sessions/index.html": "ea778f35b5f1d3b027836dda2ff539f290f358d757a8ab1434b1c635c4ad234d", "docs/acp/9.1.6/unattended/index.html": "585f2fe2b896fa32f5fb992906bd9b447b0069f8166e4893ebd0c8d3c529df77", "docs/acp/client/index.html": "f8675bd1ba3b07020585bfd8cde46bcc1077e5bf765fcbc782bb0158f356abf0", "docs/acp/documents/index.html": "181a4d345340887f2a32757d2e811d9aa5634c333931795f8942a3b8c8ad833f", "docs/acp/events/index.html": "82e44441ad0284341ea42c241caebb44f04eed93cf025ae4d7f4b1ba1086ff38", "docs/acp/goals/index.html": "a9071c0783e8cc8c50d463808aef780c5981687a6361748faa0d0a44cc304d84", "docs/acp/index.html": "d3cb0e7cf7addbb4ccd2d9f2eb9e54fd09704c4ce43dc58ddc57666b8de7a912", "docs/acp/internals/events/index.html": "ca475027b440f9af570d424579c96c8ea769f7bb66802f49172af507c2e0be83", "docs/acp/internals/goals/index.html": "88cf9fe72cf72b170c375beb1b10c80cb2fa77e65f30fa866c80fcb20cc3feb7", "docs/acp/internals/index.html": "ff68dc790d159528c46f5293f0733931119f9426470e883ec963a4b0c46f55f5", "docs/acp/launch/index.html": "0f5abc31f6765c7349259c1e9a559ca56de480ffef0d5e20cc8dc8fce84fed7c", "docs/acp/memory/index.html": "7f33a1692da95203142891c3c08d344e8f65d47c892790c6701a248424ca354d", "docs/acp/models/index.html": "7998f8973abf655139f04ccd00498e9e326866f8e5d883e47d2d61a337159b20", "docs/acp/permissions/index.html": "699c696c7ce8ee74a856007d910dfa4fce65e31a6c8f74df3cab2eb5b1af1286", "docs/acp/plugins/index.html": "990eaea9a44b296116183367ae930fb2fcd1b05784d3f59bd668550aca8800ba", "docs/acp/protocol/index.html": "df961d2fb0fce0085f352f7388fe149a62af656ddff29e0c2f6183a3b6f79e0d", "docs/acp/reference/index.html": "e631897cafacd513c8366616e068cc4a7ba89b2fdeba055581bd36b2a52b2a10", "docs/acp/sessions/index.html": "f0c9fc3d0f00b7d300ba64c45809283042d77111abcfd68573950c6c7856b95b", "docs/acp/unattended/index.html": "92565217c9374945a56bf3c06f130a75bb8bdcf97146a4d2ec3e906eb9b7334c", "docs/atlas/acp-acp-boundary.svg": "8698d2dcb9edb10b676f111979e3888a3277f78db4d046151480d0c6e5d136ed", "docs/atlas/acp-architecture.svg": "13a89c71ae4e65ad1fb0674f55da23c9f0adb21ee9f4c2d9872dbdfd5a8492e2", "docs/atlas/acp-event-routing.svg": "f673ccda7f5924034a4ed2ff096581cb7114f8e1d5c04e4dfd0b835bad90e19f", "docs/atlas/acp-permission-roundtrip.svg": "800c861d13649cd1d6ccd9455140f64d8379783343fa345c559712f1285b54a4", "docs/atlas/acp-protocol-lifecycle.svg": "9a860cf7d24ceb8dc9c2da2fb28db7ce1b1dac5b2d442753e8964d619fb4fef3", "docs/atlas/acp-unattended.svg": "6578db02f03603b5a668ea1d6e7ab7a5c47c5721b64155ee3c561dca07a29f17", "docs/atlas/code-architecture.svg": "6e963efb7faec45ffaf8bc262d944ac0bcf897767ca735d4479fd9267c6cb4d5", "docs/atlas/code-completion-gate.svg": "bb248a2c52ae7adeed4c245b092e0ac363e462e1f573afeef8226dc2e46da07a", "docs/atlas/code-context-assembly.svg": "ac198aaa5b8dd0dae92a221bf87c7a1305443b58357446cad7b9cc268148cf7c", "docs/atlas/code-extension-surfaces.svg": "73f33a920711dc7c5c3dcc3c06042d034b035eb160622ec63a859bd49ee087f4", "docs/atlas/code-framework-layers.svg": "ccffeba428ede81102b9687e55737a096bccd347725e52f4aad61bda680ffcf6", "docs/atlas/code-goal-decisions.svg": "a0f7047f855dadd5aad46332dd66f9835dc4a637af041701dc524fd61602789f", "docs/atlas/code-goal-lifecycle.svg": "7b841614f873158bff90112eb0829a187445fb7f76b000392334e3dcaf615aa7", "docs/atlas/code-memory-lifecycle.svg": "5105cf678133fcc4c23c50a2ed72afae6c812cd153142f6fdad82ebc4fe8ee01", "docs/atlas/code-meta-harness.svg": "9da73498f2432ee38918a77673ad71d02fcc4c2ca4f6018c66ad1ccce1b72a73", "docs/atlas/code-prompt-stack.svg": "9428c30200250fa44fea88fb0ae856803e09578ec4618533a09ca5bc664d044b", "docs/atlas/code-recovery.svg": "15960dd4a82570cedcc7bbd224d00f7352899c2f7bd3ef7d2a0076d4b55a2256", "docs/atlas/code-rsi-cycle.svg": "9cc1d2c89d7306ebe217c04c74880cb864af0a76c99ac2de4c797dd6f8f0f09a", "docs/atlas/code-run-control.svg": "e8190226397b03d38c977422961babcd03d615eae44f7c338af70e0536e2d94f", "docs/atlas/code-tutorial-architecture.svg": "c0283a07abdae54c41e19352e9165c51701b8fd312f5fc286160d94e5b8f6651", "docs/atlas/code-tutorial-permissions.svg": "a6943fa86f0a9c9d9512190c7f3d06c946571b183bc2a64aa39f1bf2407c3ee4", "docs/atlas/code-verification-revision.svg": "f9d766b97a9a0a88b06999da19a76161b7993328a537f8ccc38fa76007849615", "docs/atlas/code-workflow.svg": "78dc7fda860c4517138b8a640f7f29926521e9d5838d723f2b76c33f195c98e2", "docs/code/9.1.5/comparison/index.html": "54c77ff7e08a8973c28cb1c9f3a9d36d110dcafb71e6a4c2bc8a16ff36ed61dd", "docs/code/9.1.5/design/philosophy/index.html": "85c6a665ae81459c89bf5403bd75785b2defdca73ef17af2f11177d699e02e32", "docs/code/9.1.5/design/rsi/index.html": "948f484111df2e43086461ee1671647e3010d825ecbc95f99157a2fcfcb2a64a", "docs/code/9.1.5/index.html": "3eff7bae4f74dbb6940de636e93199c242dae1ee74ce4c5db534152f6a4039dc", "docs/code/9.1.5/integration/index.html": "ac8f4eabe5403c2c80b60de0bf3427d629fe586175cd9f5500409b628a49a615", "docs/code/9.1.5/meta-harness/agent-directory/index.html": "e329dcc79693381a4ffedfd61c7d3511df0fedd3af03a8e954580cb780c2f4f4", "docs/code/9.1.5/meta-harness/composition/index.html": "128b4560090a48b5996d1dbd2d26ed4191d2c1e68194b519eeda57faae99b297", "docs/code/9.1.5/meta-harness/context-tools/index.html": "ad02662b5913e22ce93b8ec279d4276f0a387d8cf0d934aac0d848a874a1cc0e", "docs/code/9.1.5/meta-harness/durable-work/index.html": "588983a92025d7d412d9dc27b2a3bbd612dccfee18c8b3e1779880d7e981b582", "docs/code/9.1.5/meta-harness/extensions/index.html": "cd56e267e6f44521b79ab6e87054a153c356032cc5034298dfb13a70819151ff", "docs/code/9.1.5/meta-harness/index.html": "e3df3e41c319971c2fb7b3aa3cd18c60b7d7fd62825f0228f3d7fa4a5f8a0dc9", "docs/code/9.1.5/meta-harness/recovery/index.html": "87bcdef47c62fdb91c268b7c000e95b0854e269b7a4316bcc414f74e0e334b4d", "docs/code/9.1.5/meta-harness/verification-resources/index.html": "04f287bbd88542405e60fc3733a85a3c3ff4e1b50476758ca061865831227036", "docs/code/9.1.5/tutorial/context/index.html": "3d6d25db0efdd03c188599943a83d36ac49bd3c9a8de291456509874ec6c28b5", "docs/code/9.1.5/tutorial/delivery/index.html": "d728e8c3ae00059e1ab2a4376b75c3bb8eda707399091e8371c6d9d43e002b7c", "docs/code/9.1.5/tutorial/goals/index.html": "d6935844a4156d3198deae4a37a65369142f54c421a732aa33e37aeae33992ec", "docs/code/9.1.5/tutorial/harness/index.html": "b864790dd04026caa04d2dddf2a39ffa42713e3973192fab1708a71d42fae169", "docs/code/9.1.5/tutorial/index.html": "c89f202e57f2773a976874d49e708c74b50a42cc9eb5453fd1182ecb4de403ae", "docs/code/9.1.5/tutorial/memory/index.html": "6cc88f1f44b16bfca47c17b76d0c03f7a296e7a97dbd489e27c92200398642f1", "docs/code/9.1.5/tutorial/permissions/index.html": "af7c7d3af7fdb8e194f0f62706167db21c04c6d6590b2bc662ebe2218a93f3cb", "docs/code/9.1.5/tutorial/persistence/index.html": "d4e17512af65d0e0b7a7d17f7478e137472379bc038515fb1434ea259f611030", "docs/code/9.1.5/tutorial/setup/index.html": "cc3bbbd3e67a6f9416c3bce711ead2bdb57d1ea5e1e3563cf88b53c5d5108a0b", "docs/code/9.1.5/tutorial/streaming/index.html": "ff120d46b4371d86ae3a2981ca3bab3e6ef7d2f57ac0a64e30f9628ebabc4412", "docs/code/9.1.5/tutorial/tools/index.html": "026db954a04daa6bf725f660517a8e2f362d743398bbbe90e550a51afe2262fd", "docs/code/9.1.5/tutorial/tui/index.html": "739a53d0f5ea7b3a2f7f252eb3640510bf156f3eb8ae9cecda2df53b98ebc87d", "docs/code/9.1.5/tutorial/verification/index.html": "53ba84953be7d28d83f2acd5c67a4db50d02937ba60edb4da16f1879532741e5", "docs/code/9.1.5/workflow/index.html": "507dc88072a8e365adc08ecd708dc272f63f7f1fa8853cb69e8c02afb23afc65", "docs/code/9.1.6/comparison/index.html": "0ecb40bb68bec4144fea0e7c37072c6fc9ab324b32e390a847ef739ce1d08d47", "docs/code/9.1.6/design/philosophy/index.html": "ce8a890c8a34298f538a104c1b9b34b591a959c95057fdac817f0b022b1d6850", "docs/code/9.1.6/design/rsi/index.html": "28d9fd02915d6e91da83fe4cc408326974ee8e0287eab4aaa790c4b07856d990", "docs/code/9.1.6/index.html": "f5cd11426728b0bf07d268d87ae7b82163993ae48b1f7bec57062a1a377eded3", "docs/code/9.1.6/integration/index.html": "e5c8dc0cd4d1f7c9fbf758b89d492e1f4abb626ad78a208a45d85614a36f9f5a", "docs/code/9.1.6/internals/completion/index.html": "23608f7d901f2f56270e526defd08554b8388b596033fd253d56a592b370d2c0", "docs/code/9.1.6/internals/context/index.html": "2e967d04d4b08e928a93b489bc0d0cfb53840761bf6387a0e7469cce457110ad", "docs/code/9.1.6/internals/execution/index.html": "78f10a6f342a590c0011c55395468f796e169996ec37415caa98f85bfbe60799", "docs/code/9.1.6/internals/index.html": "9f8b93753c68e0ad57cd38dd43d517b74b54532021c018aeaa7542b9acf9ac8c", "docs/code/9.1.6/internals/long-running/index.html": "b9b647c963aa2833aad0e7ddb6e29d10abf8daea76422dade4af7a5b083b04d8", "docs/code/9.1.6/internals/recovery/index.html": "f45855d450a981cf9098dd00b5d74f0d70acdfd1d9ad18a008fb97de7c1387be", "docs/code/9.1.6/internals/system-prompts/index.html": "265e3c7ffe4c558d56a9aacafbd6720306c9a40ba076057e57bfe1a6c12121e8", "docs/code/9.1.6/meta-harness/agent-directory/index.html": "595849d2ddd8e520e9b4233b6eb521a303aad1e946b3ba6195549f3a6edd72a8", "docs/code/9.1.6/meta-harness/composition/index.html": "a688edfc1054bf705457c8654ea07cf5088d2399518a6e75e6b949bc4c377611", "docs/code/9.1.6/meta-harness/context-tools/index.html": "87563f5304c07bb5a535e02ace61eddf54a33e2b7b370b7cbbe6435e6c193df3", "docs/code/9.1.6/meta-harness/durable-work/index.html": "de1db5739ff4d45dc0acb454472d6d95af5fc92169a0d24140d370690ce528fb", "docs/code/9.1.6/meta-harness/extensions/index.html": "d9af6c36abd2ad2e322b49823563775ee1cc386b7d85b615740ee3c6fe81d323", "docs/code/9.1.6/meta-harness/index.html": "fe2b214d866eba2f0cb5560d94495276a15fa6e1beff33ed74cf024807753e16", "docs/code/9.1.6/meta-harness/recovery/index.html": "9191687e9f88e0b7cdf39bff60535ef31ec89ed1bf43a52396310a7fd39d6686", "docs/code/9.1.6/meta-harness/verification-resources/index.html": "d74b6f76379260fa616d9c5b34e1f2463f29e80b07294d511aea76f38eec7bfb", "docs/code/9.1.6/reference/advanced/index.html": "fc236f02f4ce500910cd302adff3ac0652ede8da6bcf481bc897df7561a4ab6b", "docs/code/9.1.6/reference/configuration/index.html": "6aa3812e3cf87b30cc548bcabece4001d1e837556f144a5396e0928a2217561d", "docs/code/9.1.6/reference/governance/index.html": "75a21e5b12e53d82eeafa366eefc3aeaca5746ae0a55518b9a47fc000981e982", "docs/code/9.1.6/reference/index.html": "8a68d22f3369685020962ebbb2c338259cef80357a0bf36ff711b9546f95913a", "docs/code/9.1.6/reference/memory/index.html": "8bb09c914ce83430a2f6c6c8f9e359a668bfde531afb75e9109fd5d8d657e085", "docs/code/9.1.6/reference/operations/index.html": "eab4449b742c1c341c3d77cf9ce3f14e09de443c28c79feea0d3e8268e39173e", "docs/code/9.1.6/reference/orchestration/index.html": "dd1bd0db450f8770a213f3262e70f43bc93c75ced7f8861d1f8fcf85d29af601", "docs/code/9.1.6/reference/retrieval/index.html": "b8987c8547a138aec08b50972dc16db7206db3bda18b41eac220e05dcebffd0d", "docs/code/9.1.6/reference/run-control/index.html": "96daba1b1b3d9842a4295871487c55cd126cfc9cfa547bd1c1780802bb293b7e", "docs/code/9.1.6/reference/workspace-tools/index.html": "c75b7746677dee68cf74d24fd2625c90c6add001a8dd290fb624d53e415dc24f", "docs/code/9.1.6/tutorial/context/index.html": "21a4fc10a385df7ed7ed8d87a95e51eaa435a7fc36c78efc123d3ad3adb2f644", "docs/code/9.1.6/tutorial/delivery/index.html": "c69af9ebdd68f0f2639a5d8c74f4adf33dbef991d9f3b266cbbb8c5f27659b7c", "docs/code/9.1.6/tutorial/goals/index.html": "6e88b5abeda8223120202083d3144f56acd9e19eaf0148c81d908c9771aeb6a4", "docs/code/9.1.6/tutorial/harness/index.html": "4db2bedbbd6be6cff5335f185c0823f829efb44777daf75dead47ac553b9eae8", "docs/code/9.1.6/tutorial/index.html": "0ba3bfd448884611b1824bb2aa9acdb886dc3adeb023ae9a3b23523613dbb9a6", "docs/code/9.1.6/tutorial/memory/index.html": "f68b2fc349851da6f44e5c2b337577740b97b7116ad1f19a1184f5b57383553b", "docs/code/9.1.6/tutorial/permissions/index.html": "a416ba43dfc972267da7f1e71fe24427a855d2873d010d2eda5c9bef9a958168", "docs/code/9.1.6/tutorial/persistence/index.html": "870ea08f63e98963fa5db7521be9676bd5f4957867a27f0b5e680b32908614ff", "docs/code/9.1.6/tutorial/setup/index.html": "089a6d20a20826dbabac91e60f3f9153854e0b06d297de5e2a95e0013366e457", "docs/code/9.1.6/tutorial/streaming/index.html": "7a1d01308e66c958545c862bd67d5f253e174bbb9012346fcbdd63158ba0bffa", "docs/code/9.1.6/tutorial/tools/index.html": "533fe2d675a5215e0677983c5ccc322b075c7c2cdaa0816e25474bcaf8c2bba3", "docs/code/9.1.6/tutorial/tui/index.html": "83a486c8654722b4318c504af52feed38902eedfa597076d75298563a5982815", "docs/code/9.1.6/tutorial/verification/index.html": "0274d27f67675e1f395781692471f2ccc55206f56cf09660e00014ca459cdfe0", "docs/code/9.1.6/workflow/index.html": "be6ad4f55224e923d1121ea44e4a1ba0be774fb4f4ad3cff4cde0b3223f9e937", "docs/code/comparison/index.html": "289943ca13d42d75a056ee1cc3f50989d93b1232f2364a72488b2997384b65ba", "docs/code/design/philosophy/index.html": "b9f4b9352a9d99b6d19d03d8089b18534fe64401bc9990d8e6552ae01d272ee2", "docs/code/design/rsi/index.html": "6c584e6b5cf91449c23f22776f16a2cf47ea3e51ec442078fd8372a6602e3acb", "docs/code/index.html": "642233d5ff5fd221771f031a33b08d78c5eb2da038765afa179853f4c698384c", "docs/code/integration/index.html": "5e353b3148ef32a102882e705cdb5f2f2e120889731955858b9141bfc2005e6b", "docs/code/internals/completion/index.html": "a154042292e4f4378b5e42885805245fc8edb2a41079d191c3f2ded8ab9b6ca2", "docs/code/internals/context/index.html": "185d3ea0a0bdf0a45a4e2f117de761bb5a402d5e2ed95b78996ded1e0de882f3", "docs/code/internals/execution/index.html": "e3d3241a5716f51206d6d2b9734a38a88ca64cb8458984a9dc5aa42591942fb0", "docs/code/internals/index.html": "7b9d58bfefaf2a37f24b35ae6e4fe99eeed32993f49db53f62ff42f92722e9c1", "docs/code/internals/long-running/index.html": "251d7ddaf9775db4f29280b70d460067c7c597b554c8218b578abfb607ec4f16", "docs/code/internals/recovery/index.html": "24b9cbbd5ff0966b8f021a88f8338cf72ee8fcbe0c7c670a7d2f514521e4b6bd", "docs/code/internals/system-prompts/index.html": "23e8235747f2652db95ca658b6c4ea8b76df0efc4f31db42502bce942e38a480", "docs/code/meta-harness/agent-directory/index.html": "452830345d83d8cd5ccbec58c7a4ee4d4b33f9fb075d4cd1c9d437b024b7efb7", "docs/code/meta-harness/composition/index.html": "0ef3a314d0a980669b74abbb8603350df3b1f968cbe83d62fe3abe8f816dfeb1", "docs/code/meta-harness/context-tools/index.html": "c2210aad93e9c2614980de951077f185a3a9c1f9ffea5ec1f26a5629b97095ec", "docs/code/meta-harness/durable-work/index.html": "37b6af69f7cc58d97a42270e85506e73b7274ee55e3f9b8383a1b3364ada2d73", "docs/code/meta-harness/extensions/index.html": "a8aac2aebed0c93a1532fd7eb4d196d64efbb4b53477a453304e64a7a05e3a2d", "docs/code/meta-harness/index.html": "afe0299bd354860b1e74e5016d21cf52dfc6820c350d6ddba8df3e9806bf8128", "docs/code/meta-harness/recovery/index.html": "cab45908a079758fbd753d3475378c3c506900ab4988d3697a87212bd9eadda5", "docs/code/meta-harness/verification-resources/index.html": "785bbe330ddef526cbf3f9e8454e1baa6cff50e5dfb8275a0886da96aeb0b7a4", "docs/code/reference/advanced/index.html": "116fcacca4c799b3aef33e41332693ff09f565d4ee9325b11618185caf9ccce6", "docs/code/reference/configuration/index.html": "f806bf20e9fe619bf6628f8944c949063376ac5fceeb47d43d5f4cfc04fd2c78", "docs/code/reference/governance/index.html": "f4a2bb549beacfdef14ab99dcdfe092eab9950a99e65f9ed16e483cb9fcf66e3", "docs/code/reference/index.html": "23b25e74bbf68104666ec4761caa5e0912d6642527b36ecec5b911f7b900ca5e", "docs/code/reference/memory/index.html": "bae94609c8ccf68606728d0b8cc42d1b0e244de7652d63eed26583de1fe48322", "docs/code/reference/operations/index.html": "29602cde8739c43e9c841237c29a3783cd810cc617cbe9eabe86ff74d3e6b814", "docs/code/reference/orchestration/index.html": "a096030b07a6517f6a93c6be6bee90155a84eddaa7d65ce7f93e4d77b381cbd7", "docs/code/reference/retrieval/index.html": "286a1e6d42c7d56c89d1511815bfa0e0f7cae95683ff79b86140da1a97d9a4b4", "docs/code/reference/run-control/index.html": "be0527038699cab2f047ad2ae3b64b2a166bac44c1d9c0f04ee55d977f95d230", "docs/code/reference/workspace-tools/index.html": "1503c93fde268d63ea40066e6e07062418e73d9b27e9a02d67164642ca200bbe", "docs/code/tutorial/context/index.html": "c4b846ce62b590b4c55e0fa09e7af29f86b485dc87a5823f5b2333d59103faff", "docs/code/tutorial/delivery/index.html": "c2e5018431819096e2750a13c961ade87add7bd670098ae33fc8f7b6e09f5f93", "docs/code/tutorial/goals/index.html": "7d7c6a03a5e0a847d86f870bbacba7bde0999572b8ceb9ffa7fab2aab824db82", "docs/code/tutorial/harness/index.html": "43911c85d665b37891908834102b208c7553d95eb37f6b352fe52b27f8af5d0b", "docs/code/tutorial/index.html": "fe83ed2d96a093e113eea8ff12a3cd42cdedba9febdf4675b39bbeebbed8717a", "docs/code/tutorial/memory/index.html": "ee298f468f288a12451c56b6861d6751a03f05d8b9447d42d21e8a394071fd75", "docs/code/tutorial/permissions/index.html": "79a8e36701663e24f6ec0475b5b805b66475ce601ddc4dd6916c473feb92bae7", "docs/code/tutorial/persistence/index.html": "400592ed3d4202f3c30b9e74b7c3dcd2b289ab498f9d2c162afa5ec6208ed4b4", "docs/code/tutorial/setup/index.html": "85d4b55b1e300daeda2d4b00e3bbf1f47b032429f1872601fcf29f2984f91c4f", "docs/code/tutorial/streaming/index.html": "36a27b1b4697955391d40dd845723819766bc82416d4c5c403241e6e6055f348", "docs/code/tutorial/tools/index.html": "a051802b7a3cf5345153721b71db74898959d9ad2747aa310b9747d61c1adfd5", "docs/code/tutorial/tui/index.html": "9e5d40a5173ce5d67414236da54f623ed02dc09fee0b69f01200f94b2ead2310", "docs/code/tutorial/verification/index.html": "683be9c89db438142fa6a394cd4d51794bce26d70c8b4e8c818e5d9408569c85", "docs/code/workflow/index.html": "5fc5d1b2863dc3884ca101219ea208882f92a3630d496c44a7106d0bdd13fd59", "docs/generated.css": "905c56ecb08cdda9f3259756a4a7583205115f5388cdbd5226c1105037160e3d", "docs/index.html": "704313fa746df90545f763693ff805de4f073d6e02028d4365befc28fb6be4ee", "docs/navigation.js": "c6a004f9b3252f5c9bd2090f2daa2c86d7cae5084b46e50414ed66b9e6e4b7b9", "docs/styles.css": "8934027e7034c4a238234b8865bba0ea15fbf3dac572bd4fad217f5aa8e93bdf", "download/app.js": "6ef73e942cf257a2c506f32ba957e47895036925d2ec324a627c6c4d27bdb703", "download/canvas.js": "ba445d251471ded23ed06ffd3e1266b556da86064832ea4ffca21112e6f31d3e", "download/fonts/Ubuntu-LICENSE.txt": "52fdffecb23a020de527f68c516cac16dbbaf2dbb73fd9e29e2149703b881c82", "download/fonts/ubuntu-latin-400-normal.woff2": "dabae363ac0ae6c3b2a137a32f7132b42520a8af252f87aa6c2198f2a79cf91c", "download/fonts/ubuntu-latin-500-normal.woff2": "428ec293d3b79af16abdca704f630c6c951744f572eddbc80e970bc9a94a33d2", "download/fonts/ubuntu-latin-700-normal.woff2": "3658a0717e347c1db8d80dd565584b9dc56769fbf87909c50a4a7740206ec5f7", "download/index.html": "1d3d523dccd4890e1b57fe74598e18cffa61578618da16fc49a2c7d64b4b20a4", "download/screenshots/lineage.png": "2e991cdbae0e1f545f5a835edd1a724026fb958d1ed90a0c904ff901d2ca7e97", "download/screenshots/office.png": "c71cbffd33d53d06600633b9be853d2941d78e09880034b8737e595699c15818", "download/screenshots/review.png": "8631bf9d07edcda9429e68b8325231407134535f290b6ff732e121ade10f08b3", "download/screenshots/workspace.png": "91810a348aded85d28e9a6c9ff57ebc4992ddfc0c9bb25a383cb9c1ffc404545", "download/styles.css": "8c56ec8e72e92178d48982a2a14174770f9dc30aca431e8f4e1cd514ed2157fd", "home.css": "92b7df80d2c0566c3fbde37f4c973ad4a1e463c829d11e9b9e3eb9d74a24db21", "home.js": "1a4f4ddfa9586560bd7175d520cb8214bd1e6389e3003ef90ca0cc160e31f5b5", "index.html": "e7ba485ef97344df4c0ee582108539d031351d50c3825b0983314115c8138705", "legal/styles.css": "ad02c62b541db46fd562d9a171846883d712194f75906170e6585401bf5018f0", "privacy/index.html": "3e96fc5ad54f091ad3bedc014089fab3c27e241b20a0633acef329b78d59ec34", "tenant/aster/favicon.png": "49b76478cc48ea0c8d77eb2d2d4d3f164686710dc5e9f47a87e2fa52e09ede1c", "tenant/aster/logo.svg": "153830278f9f5deae8bd962918e019a01394623843853a811d02ed6d0892267f", "tenant/aster/mark-light.png": "49b76478cc48ea0c8d77eb2d2d4d3f164686710dc5e9f47a87e2fa52e09ede1c", "terms/index.html": "1d701ba16b2ffac2cf1f0b9d9c26085b174e8ddd49bb0d36ac38450b0d6ffa9d"}, "private_sources_required": false, "status": "staged"}
+validate	Run actions/upload-pages-artifact@v4	﻿2026-10-28T22:55:25.1643116Z ##[group]Run actions/upload-pages-artifact@v4
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1643571Z with:
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1644004Z   path: _aster_site
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1644326Z   name: github-pages
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1644734Z   retention-days: 1
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1645065Z ##[endgroup]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1727613Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1755053Z ##[group]Run echo ::group::Archive artifact
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1755413Z ^[[36;1mecho ::group::Archive artifact^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1755692Z ^[[36;1mtar \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1755942Z ^[[36;1m  --dereference --hard-dereference \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1756264Z ^[[36;1m  --directory "$INPUT_PATH" \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1756583Z ^[[36;1m  -cvf "$RUNNER_TEMP/artifact.tar" \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1756883Z ^[[36;1m  --exclude=.git \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1757138Z ^[[36;1m  --exclude=.github \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1757392Z ^[[36;1m  --exclude=".[^/]*" \^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1757639Z ^[[36;1m  .^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1757893Z ^[[36;1mecho ::endgroup::^[[0m
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1878052Z shell: /usr/bin/sh -e {0}
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1878322Z env:
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1878701Z   INPUT_PATH: _aster_site
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1878951Z ##[endgroup]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1939454Z ##[group]Archive artifact
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1953415Z ./
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1953795Z ./docs/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1954198Z ./docs/atlas/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1954604Z ./docs/atlas/code-architecture.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1955200Z ./docs/atlas/acp-acp-boundary.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1957788Z ./docs/atlas/acp-unattended.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1958783Z ./docs/atlas/code-verification-revision.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1959421Z ./docs/atlas/code-rsi-cycle.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1960270Z ./docs/atlas/code-tutorial-architecture.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1960914Z ./docs/atlas/code-context-assembly.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1961333Z ./docs/atlas/code-completion-gate.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1961676Z ./docs/atlas/acp-architecture.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1962046Z ./docs/atlas/code-tutorial-permissions.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1962610Z ./docs/atlas/code-run-control.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1962977Z ./docs/atlas/acp-protocol-lifecycle.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1963452Z ./docs/atlas/code-meta-harness.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1963870Z ./docs/atlas/code-memory-lifecycle.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1964220Z ./docs/atlas/acp-event-routing.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1964559Z ./docs/atlas/code-framework-layers.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1965073Z ./docs/atlas/acp-permission-roundtrip.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1965434Z ./docs/atlas/code-recovery.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1965750Z ./docs/atlas/code-goal-lifecycle.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1966190Z ./docs/atlas/code-extension-surfaces.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1966534Z ./docs/atlas/code-workflow.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1967007Z ./docs/atlas/code-goal-decisions.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1967337Z ./docs/atlas/code-prompt-stack.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1967610Z ./docs/code/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1967837Z ./docs/code/internals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1968130Z ./docs/code/internals/long-running/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1968648Z ./docs/code/internals/long-running/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1969012Z ./docs/code/internals/context/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1969333Z ./docs/code/internals/context/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1969995Z ./docs/code/internals/execution/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1970336Z ./docs/code/internals/execution/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1970673Z ./docs/code/internals/recovery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1971291Z ./docs/code/internals/recovery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1971635Z ./docs/code/internals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1972087Z ./docs/code/internals/system-prompts/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1972490Z ./docs/code/internals/system-prompts/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1973044Z ./docs/code/internals/completion/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1973406Z ./docs/code/internals/completion/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1973916Z ./docs/code/workflow/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1974328Z ./docs/code/workflow/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1974618Z ./docs/code/meta-harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1975350Z ./docs/code/meta-harness/extensions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1975848Z ./docs/code/meta-harness/extensions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1976416Z ./docs/code/meta-harness/context-tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1976905Z ./docs/code/meta-harness/context-tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1977622Z ./docs/code/meta-harness/agent-directory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1978031Z ./docs/code/meta-harness/agent-directory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1978415Z ./docs/code/meta-harness/composition/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1978796Z ./docs/code/meta-harness/composition/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1979164Z ./docs/code/meta-harness/recovery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1979545Z ./docs/code/meta-harness/recovery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1980306Z ./docs/code/meta-harness/durable-work/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1980676Z ./docs/code/meta-harness/durable-work/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1981110Z ./docs/code/meta-harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1981591Z ./docs/code/meta-harness/verification-resources/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1982045Z ./docs/code/meta-harness/verification-resources/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1982400Z ./docs/code/9.1.6/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1982836Z ./docs/code/9.1.6/internals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1983426Z ./docs/code/9.1.6/internals/long-running/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1983970Z ./docs/code/9.1.6/internals/long-running/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1984517Z ./docs/code/9.1.6/internals/context/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1984919Z ./docs/code/9.1.6/internals/context/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1985284Z ./docs/code/9.1.6/internals/execution/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1985640Z ./docs/code/9.1.6/internals/execution/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1986034Z ./docs/code/9.1.6/internals/recovery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1986518Z ./docs/code/9.1.6/internals/recovery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1986869Z ./docs/code/9.1.6/internals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1987260Z ./docs/code/9.1.6/internals/system-prompts/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1987760Z ./docs/code/9.1.6/internals/system-prompts/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1988223Z ./docs/code/9.1.6/internals/completion/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1988807Z ./docs/code/9.1.6/internals/completion/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1989150Z ./docs/code/9.1.6/workflow/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1989743Z ./docs/code/9.1.6/workflow/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1990197Z ./docs/code/9.1.6/meta-harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1990602Z ./docs/code/9.1.6/meta-harness/extensions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1991117Z ./docs/code/9.1.6/meta-harness/extensions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1991687Z ./docs/code/9.1.6/meta-harness/context-tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1992112Z ./docs/code/9.1.6/meta-harness/context-tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1992702Z ./docs/code/9.1.6/meta-harness/agent-directory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1993158Z ./docs/code/9.1.6/meta-harness/agent-directory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1993756Z ./docs/code/9.1.6/meta-harness/composition/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1994282Z ./docs/code/9.1.6/meta-harness/composition/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1994869Z ./docs/code/9.1.6/meta-harness/recovery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1995296Z ./docs/code/9.1.6/meta-harness/recovery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1995804Z ./docs/code/9.1.6/meta-harness/durable-work/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1996478Z ./docs/code/9.1.6/meta-harness/durable-work/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1996977Z ./docs/code/9.1.6/meta-harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1997426Z ./docs/code/9.1.6/meta-harness/verification-resources/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1998109Z ./docs/code/9.1.6/meta-harness/verification-resources/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1998566Z ./docs/code/9.1.6/integration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1999007Z ./docs/code/9.1.6/integration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.1999448Z ./docs/code/9.1.6/reference/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2000075Z ./docs/code/9.1.6/reference/configuration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2000621Z ./docs/code/9.1.6/reference/configuration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2001016Z ./docs/code/9.1.6/reference/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2001529Z ./docs/code/9.1.6/reference/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2001999Z ./docs/code/9.1.6/reference/run-control/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2002793Z ./docs/code/9.1.6/reference/run-control/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2003333Z ./docs/code/9.1.6/reference/retrieval/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2003776Z ./docs/code/9.1.6/reference/retrieval/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2004252Z ./docs/code/9.1.6/reference/governance/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2004739Z ./docs/code/9.1.6/reference/governance/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2005357Z ./docs/code/9.1.6/reference/workspace-tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2005829Z ./docs/code/9.1.6/reference/workspace-tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2006404Z ./docs/code/9.1.6/reference/advanced/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2006773Z ./docs/code/9.1.6/reference/advanced/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2007299Z ./docs/code/9.1.6/reference/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2007737Z ./docs/code/9.1.6/reference/operations/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2008161Z ./docs/code/9.1.6/reference/operations/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2008714Z ./docs/code/9.1.6/reference/orchestration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2009216Z ./docs/code/9.1.6/reference/orchestration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2009924Z ./docs/code/9.1.6/comparison/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2010407Z ./docs/code/9.1.6/comparison/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2010895Z ./docs/code/9.1.6/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2011234Z ./docs/code/9.1.6/tutorial/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2011643Z ./docs/code/9.1.6/tutorial/tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2012041Z ./docs/code/9.1.6/tutorial/tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2012522Z ./docs/code/9.1.6/tutorial/delivery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2013066Z ./docs/code/9.1.6/tutorial/delivery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2013431Z ./docs/code/9.1.6/tutorial/setup/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2013761Z ./docs/code/9.1.6/tutorial/setup/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2014289Z ./docs/code/9.1.6/tutorial/context/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2014658Z ./docs/code/9.1.6/tutorial/context/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2015107Z ./docs/code/9.1.6/tutorial/persistence/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2015562Z ./docs/code/9.1.6/tutorial/persistence/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2016030Z ./docs/code/9.1.6/tutorial/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2016596Z ./docs/code/9.1.6/tutorial/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2016957Z ./docs/code/9.1.6/tutorial/permissions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2017499Z ./docs/code/9.1.6/tutorial/permissions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2017986Z ./docs/code/9.1.6/tutorial/streaming/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2018415Z ./docs/code/9.1.6/tutorial/streaming/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2018932Z ./docs/code/9.1.6/tutorial/harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2019376Z ./docs/code/9.1.6/tutorial/harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2020064Z ./docs/code/9.1.6/tutorial/tui/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2020398Z ./docs/code/9.1.6/tutorial/tui/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2020916Z ./docs/code/9.1.6/tutorial/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2021248Z ./docs/code/9.1.6/tutorial/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2021751Z ./docs/code/9.1.6/tutorial/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2022190Z ./docs/code/9.1.6/tutorial/verification/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2022650Z ./docs/code/9.1.6/tutorial/verification/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2023148Z ./docs/code/9.1.6/design/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2023425Z ./docs/code/9.1.6/design/rsi/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2023907Z ./docs/code/9.1.6/design/rsi/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2024294Z ./docs/code/9.1.6/design/philosophy/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2024714Z ./docs/code/9.1.6/design/philosophy/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2025184Z ./docs/code/integration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2025486Z ./docs/code/integration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2025900Z ./docs/code/reference/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2026210Z ./docs/code/reference/configuration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2026724Z ./docs/code/reference/configuration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2027174Z ./docs/code/reference/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2027496Z ./docs/code/reference/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2028011Z ./docs/code/reference/run-control/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2028449Z ./docs/code/reference/run-control/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2029005Z ./docs/code/reference/retrieval/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2029384Z ./docs/code/reference/retrieval/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2030649Z ./docs/code/reference/governance/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2031008Z ./docs/code/reference/governance/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2031372Z ./docs/code/reference/workspace-tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2031748Z ./docs/code/reference/workspace-tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2032103Z ./docs/code/reference/advanced/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2032418Z ./docs/code/reference/advanced/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2032742Z ./docs/code/reference/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2033041Z ./docs/code/reference/operations/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2033369Z ./docs/code/reference/operations/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2033701Z ./docs/code/reference/orchestration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2034081Z ./docs/code/reference/orchestration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2034406Z ./docs/code/comparison/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2034682Z ./docs/code/comparison/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2034947Z ./docs/code/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2035193Z ./docs/code/9.1.5/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2035417Z ./docs/code/9.1.5/workflow/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2035714Z ./docs/code/9.1.5/workflow/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2036021Z ./docs/code/9.1.5/meta-harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2036331Z ./docs/code/9.1.5/meta-harness/extensions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2036859Z ./docs/code/9.1.5/meta-harness/extensions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2037566Z ./docs/code/9.1.5/meta-harness/context-tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2038381Z ./docs/code/9.1.5/meta-harness/context-tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2039169Z ./docs/code/9.1.5/meta-harness/agent-directory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2040197Z ./docs/code/9.1.5/meta-harness/agent-directory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2040942Z ./docs/code/9.1.5/meta-harness/composition/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2041645Z ./docs/code/9.1.5/meta-harness/composition/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2042312Z ./docs/code/9.1.5/meta-harness/recovery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2042975Z ./docs/code/9.1.5/meta-harness/recovery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2043650Z ./docs/code/9.1.5/meta-harness/durable-work/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2044374Z ./docs/code/9.1.5/meta-harness/durable-work/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2045061Z ./docs/code/9.1.5/meta-harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2045781Z ./docs/code/9.1.5/meta-harness/verification-resources/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2046659Z ./docs/code/9.1.5/meta-harness/verification-resources/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2047376Z ./docs/code/9.1.5/integration/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2047936Z ./docs/code/9.1.5/integration/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2048487Z ./docs/code/9.1.5/comparison/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2049037Z ./docs/code/9.1.5/comparison/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2049541Z ./docs/code/9.1.5/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2050207Z ./docs/code/9.1.5/tutorial/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2050744Z ./docs/code/9.1.5/tutorial/tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2051335Z ./docs/code/9.1.5/tutorial/tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2051947Z ./docs/code/9.1.5/tutorial/delivery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2052567Z ./docs/code/9.1.5/tutorial/delivery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2053184Z ./docs/code/9.1.5/tutorial/setup/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2053775Z ./docs/code/9.1.5/tutorial/setup/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2054385Z ./docs/code/9.1.5/tutorial/context/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2055021Z ./docs/code/9.1.5/tutorial/context/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2055659Z ./docs/code/9.1.5/tutorial/persistence/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2056329Z ./docs/code/9.1.5/tutorial/persistence/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2056962Z ./docs/code/9.1.5/tutorial/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2057555Z ./docs/code/9.1.5/tutorial/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2058161Z ./docs/code/9.1.5/tutorial/permissions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2058820Z ./docs/code/9.1.5/tutorial/permissions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2059458Z ./docs/code/9.1.5/tutorial/streaming/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2060288Z ./docs/code/9.1.5/tutorial/streaming/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2060915Z ./docs/code/9.1.5/tutorial/harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2061520Z ./docs/code/9.1.5/tutorial/harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2062119Z ./docs/code/9.1.5/tutorial/tui/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2062680Z ./docs/code/9.1.5/tutorial/tui/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2063480Z ./docs/code/9.1.5/tutorial/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2064062Z ./docs/code/9.1.5/tutorial/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2064676Z ./docs/code/9.1.5/tutorial/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2065265Z ./docs/code/9.1.5/tutorial/verification/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2065931Z ./docs/code/9.1.5/tutorial/verification/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2066515Z ./docs/code/9.1.5/design/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2066962Z ./docs/code/9.1.5/design/rsi/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2067499Z ./docs/code/9.1.5/design/rsi/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2068088Z ./docs/code/9.1.5/design/philosophy/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2068706Z ./docs/code/9.1.5/design/philosophy/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2069260Z ./docs/code/tutorial/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2069916Z ./docs/code/tutorial/tools/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2070465Z ./docs/code/tutorial/tools/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2071026Z ./docs/code/tutorial/delivery/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2071586Z ./docs/code/tutorial/delivery/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2072116Z ./docs/code/tutorial/setup/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2072667Z ./docs/code/tutorial/setup/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2073193Z ./docs/code/tutorial/context/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2073963Z ./docs/code/tutorial/context/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2074561Z ./docs/code/tutorial/persistence/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2075187Z ./docs/code/tutorial/persistence/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2075769Z ./docs/code/tutorial/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2076336Z ./docs/code/tutorial/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2076934Z ./docs/code/tutorial/permissions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2077550Z ./docs/code/tutorial/permissions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2078158Z ./docs/code/tutorial/streaming/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2078734Z ./docs/code/tutorial/streaming/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2079315Z ./docs/code/tutorial/harness/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2080086Z ./docs/code/tutorial/harness/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2080625Z ./docs/code/tutorial/tui/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2081148Z ./docs/code/tutorial/tui/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2081667Z ./docs/code/tutorial/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2082220Z ./docs/code/tutorial/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2082791Z ./docs/code/tutorial/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2083349Z ./docs/code/tutorial/verification/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2083991Z ./docs/code/tutorial/verification/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2084546Z ./docs/code/design/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2084969Z ./docs/code/design/rsi/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2085479Z ./docs/code/design/rsi/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2086016Z ./docs/code/design/philosophy/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2086575Z ./docs/code/design/philosophy/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2087074Z ./docs/acp/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2087446Z ./docs/acp/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2087873Z ./docs/acp/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2088347Z ./docs/acp/internals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2088782Z ./docs/acp/internals/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2089319Z ./docs/acp/internals/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2090116Z ./docs/acp/internals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2090615Z ./docs/acp/internals/events/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2091181Z ./docs/acp/internals/events/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2091684Z ./docs/acp/models/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2092167Z ./docs/acp/models/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2092649Z ./docs/acp/permissions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2093162Z ./docs/acp/permissions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2093653Z ./docs/acp/9.1.6/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2094074Z ./docs/acp/9.1.6/memory/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2094580Z ./docs/acp/9.1.6/memory/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2094987Z ./docs/acp/9.1.6/internals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2095393Z ./docs/acp/9.1.6/internals/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2095892Z ./docs/acp/9.1.6/internals/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2096504Z ./docs/acp/9.1.6/internals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2097066Z ./docs/acp/9.1.6/internals/events/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2097670Z ./docs/acp/9.1.6/internals/events/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2098220Z ./docs/acp/9.1.6/models/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2098707Z ./docs/acp/9.1.6/models/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2099212Z ./docs/acp/9.1.6/permissions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2100208Z ./docs/acp/9.1.6/permissions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2100748Z ./docs/acp/9.1.6/launch/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2101263Z ./docs/acp/9.1.6/launch/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2101774Z ./docs/acp/9.1.6/reference/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2102306Z ./docs/acp/9.1.6/reference/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2102821Z ./docs/acp/9.1.6/unattended/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2103375Z ./docs/acp/9.1.6/unattended/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2103900Z ./docs/acp/9.1.6/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2104404Z ./docs/acp/9.1.6/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2104884Z ./docs/acp/9.1.6/client/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2105394Z ./docs/acp/9.1.6/client/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2105843Z ./docs/acp/9.1.6/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2106251Z ./docs/acp/9.1.6/protocol/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2106764Z ./docs/acp/9.1.6/protocol/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2107257Z ./docs/acp/9.1.6/sessions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2107717Z ./docs/acp/9.1.6/sessions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2108181Z ./docs/acp/9.1.6/documents/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2108648Z ./docs/acp/9.1.6/documents/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2109057Z ./docs/acp/9.1.6/events/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2109881Z ./docs/acp/9.1.6/events/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2110384Z ./docs/acp/9.1.6/plugins/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2110874Z ./docs/acp/9.1.6/plugins/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2111365Z ./docs/acp/launch/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2111734Z ./docs/acp/launch/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2112165Z ./docs/acp/reference/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2112483Z ./docs/acp/reference/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2112778Z ./docs/acp/unattended/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2113313Z ./docs/acp/unattended/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2113767Z ./docs/acp/goals/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2114056Z ./docs/acp/goals/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2114296Z ./docs/acp/client/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2114527Z ./docs/acp/client/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2114770Z ./docs/acp/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2114994Z ./docs/acp/protocol/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2115245Z ./docs/acp/protocol/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2115500Z ./docs/acp/sessions/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2115742Z ./docs/acp/sessions/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2115993Z ./docs/acp/documents/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2116247Z ./docs/acp/documents/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2116492Z ./docs/acp/events/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2116710Z ./docs/acp/events/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2116950Z ./docs/acp/plugins/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2117180Z ./docs/acp/plugins/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2117435Z ./docs/navigation.js
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2117662Z ./docs/styles.css
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2117872Z ./docs/generated.css
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2118085Z ./docs/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2118274Z ./tenant/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2118462Z ./tenant/aster/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2118684Z ./tenant/aster/favicon.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2118942Z ./tenant/aster/mark-light.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2119202Z ./tenant/aster/logo.svg
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2119411Z ./home.css
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2119846Z ./terms/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2120077Z ./terms/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2120280Z ./legal/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2120468Z ./legal/styles.css
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2120664Z ./privacy/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2120860Z ./privacy/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2121062Z ./download/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2121251Z ./download/fonts/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2121537Z ./download/fonts/ubuntu-latin-400-normal.woff2
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2121888Z ./download/fonts/Ubuntu-LICENSE.txt
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2122222Z ./download/fonts/ubuntu-latin-500-normal.woff2
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2122589Z ./download/fonts/ubuntu-latin-700-normal.woff2
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2122881Z ./download/styles.css
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2123110Z ./download/screenshots/
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2123381Z ./download/screenshots/lineage.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2123683Z ./download/screenshots/review.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2123986Z ./download/screenshots/workspace.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2124293Z ./download/screenshots/office.png
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2124546Z ./download/canvas.js
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2124773Z ./download/index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2125184Z ./download/app.js
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2125379Z ./index.html
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2125562Z ./cosmic.js
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2125752Z ./home.js
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2126164Z ##[endgroup]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2138602Z ##[end-action id=__actions_upload-pages-artifact.__run;outcome=success;conclusion=success;duration_ms=40]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2143118Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run_2]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2148209Z ##[end-action id=__actions_upload-pages-artifact.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2151306Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run_3]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2154968Z ##[end-action id=__actions_upload-pages-artifact.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2156963Z ##[start-action display=Upload artifact;id=__actions_upload-pages-artifact.upload-artifact]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2213890Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2214331Z with:
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2214528Z   name: github-pages
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2214785Z   path: /home/runner/work/_temp/artifact.tar
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2215282Z   retention-days: 1
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2215505Z   if-no-files-found: error
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2215742Z   compression-level: 6
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2215952Z   overwrite: false
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2216165Z   include-hidden-files: false
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.2216406Z ##[endgroup]
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.4020879Z (node:3255) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.4022646Z (Use `node --trace-deprecation ...` to show where the warning was created)
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.4070594Z With the provided path, there will be 1 file uploaded
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.4098876Z Artifact name is valid!
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.4101628Z Root directory input is valid!
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.6044678Z Beginning upload of artifact content to blob storage
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.7366406Z (node:3255) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.8650285Z Uploaded bytes 1470246
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.8848524Z Finished uploading artifact content to blob storage!
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.8850106Z SHA256 digest of uploaded artifact zip is 84c06cefa915c78abd1b946cbc5ce6448425889606cff2c581d872bbd009de9d
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:25.8852234Z Finalizing artifact upload
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:26.2990690Z Artifact github-pages.zip successfully finalized. Artifact ID 12858720296
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:26.2992326Z Artifact github-pages has been successfully uploaded! Final size is 1470246 bytes. Artifact ID is 12858720296
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:26.2998104Z Artifact download URL: https://github.com/aster-ai-lab/aster/actions/runs/40783193490/artifacts/12858720296
+validate	Run actions/upload-pages-artifact@v4	2026-10-28T22:55:26.3149467Z ##[end-action id=__actions_upload-pages-artifact.upload-artifact;outcome=success;conclusion=success;duration_ms=1099]
+validate	Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	﻿2026-10-28T22:55:26.3252029Z Post job cleanup.
+validate	Post Run actions/checkout@v6	﻿2026-10-28T22:55:26.4674430Z Post job cleanup.
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5631973Z [command]/usr/bin/git version
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5685432Z git version 2.56.0
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5730432Z Temporarily overriding HOME='/home/runner/work/_temp/b945b8e6-ef8e-4283-89c1-6d2cdad059c6' before making global git config changes
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5732106Z Adding repository directory to the temporary git global config as a safe directory
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5735889Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/aster/aster
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5780274Z Removing SSH command configuration
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5805130Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.5849895Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6190792Z Removing HTTP extra header
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6199485Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6268844Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6667554Z Removing includeIf entries pointing to credentials config files
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6675164Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+validate	Post Run actions/checkout@v6	2026-10-28T22:55:26.6758225Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+validate	Complete job	﻿2026-10-28T22:55:26.7206530Z Cleaning up orphan processes
+validate	Complete job	2026-10-28T22:55:26.7589336Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	Set up job	﻿2026-10-28T22:55:32.4946071Z Current runner version: '2.338.0'
+deploy	Set up job	2026-10-28T22:55:32.4985518Z ##[group]Runner Image Provisioner
+deploy	Set up job	2026-10-28T22:55:32.4987113Z Hosted Compute Agent
+deploy	Set up job	2026-10-28T22:55:32.4988233Z Version: 20261021.618
+deploy	Set up job	2026-10-28T22:55:32.4989436Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+deploy	Set up job	2026-10-28T22:55:32.4991100Z Build Date: 2026-10-21T00:45:21Z
+deploy	Set up job	2026-10-28T22:55:32.4992265Z Worker ID: {b305c06d-2930-44b1-a1db-40841fcb42d6}
+deploy	Set up job	2026-10-28T22:55:32.4993706Z Region: eastus2
+deploy	Set up job	2026-10-28T22:55:32.4994706Z Cloud: Azure
+deploy	Set up job	2026-10-28T22:55:32.4995808Z ##[endgroup]
+deploy	Set up job	2026-10-28T22:55:32.4998330Z ##[group]Operating System
+deploy	Set up job	2026-10-28T22:55:32.4999576Z Ubuntu
+deploy	Set up job	2026-10-28T22:55:32.5000951Z 24.04.5
+deploy	Set up job	2026-10-28T22:55:32.5001876Z LTS
+deploy	Set up job	2026-10-28T22:55:32.5002899Z ##[endgroup]
+deploy	Set up job	2026-10-28T22:55:32.5004628Z ##[group]Runner Image
+deploy	Set up job	2026-10-28T22:55:32.5005807Z Image: ubuntu-24.04
+deploy	Set up job	2026-10-28T22:55:32.5006897Z Version: 20261025.353.1
+deploy	Set up job	2026-10-28T22:55:32.5008882Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+deploy	Set up job	2026-10-28T22:55:32.5012459Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+deploy	Set up job	2026-10-28T22:55:32.5014218Z ##[endgroup]
+deploy	Set up job	2026-10-28T22:55:32.5016408Z ##[group]GITHUB_TOKEN Permissions
+deploy	Set up job	2026-10-28T22:55:32.5019694Z Contents: read
+deploy	Set up job	2026-10-28T22:55:32.5021207Z Metadata: read
+deploy	Set up job	2026-10-28T22:55:32.5022266Z Pages: write
+deploy	Set up job	2026-10-28T22:55:32.5023269Z ##[endgroup]
+deploy	Set up job	2026-10-28T22:55:32.5026637Z Secret source: Actions
+deploy	Set up job	2026-10-28T22:55:32.5028471Z Cache mode: write
+deploy	Set up job	2026-10-28T22:55:32.5030541Z Prepare workflow directory
+deploy	Set up job	2026-10-28T22:55:32.5436511Z Prepare all required actions
+deploy	Set up job	2026-10-28T22:55:32.5485191Z Getting action download info
+deploy	Set up job	2026-10-28T22:55:32.7055987Z Download action repository 'actions/configure-pages@v5' (SHA:983d7736d9b0ae728b81ab479565c72886d7745b)
+deploy	Set up job	2026-10-28T22:55:32.9335204Z Download action repository 'actions/deploy-pages@v4' (SHA:d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e)
+deploy	Set up job	2026-10-28T22:55:33.2174910Z Complete job name: deploy
+deploy	Run actions/configure-pages@v5	﻿2026-10-28T22:55:33.2986125Z ##[group]Run actions/configure-pages@v5
+deploy	Run actions/configure-pages@v5	2026-10-28T22:55:33.2987091Z with:
+deploy	Run actions/configure-pages@v5	2026-10-28T22:55:33.2991295Z   token: ***
+deploy	Run actions/configure-pages@v5	2026-10-28T22:55:33.2991784Z   enablement: false
+deploy	Run actions/configure-pages@v5	2026-10-28T22:55:33.2992598Z ##[endgroup]
+deploy	Run actions/deploy-pages@v4	﻿2026-10-28T22:55:34.1418047Z ##[group]Run actions/deploy-pages@v4
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1419431Z with:
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1431071Z   token: ***
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1432187Z   timeout: 600000
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1433424Z   error_count: 10
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1434476Z   reporting_interval: 5000
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1435647Z   artifact_name: github-pages
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1436844Z   preview: false
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1437838Z env:
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1438765Z   GITHUB_PAGES: true
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.1439938Z ##[endgroup]
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.3509209Z (node:2145) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.3510877Z (Use `node --trace-deprecation ...` to show where the warning was created)
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.4471474Z Fetching artifact metadata for "github-pages" in this workflow run
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5574166Z Found 1 artifact(s)
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5653508Z Creating Pages deployment with payload:
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5654396Z {
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5654819Z 	"artifact_id": 12858720296,
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5655498Z 	"pages_build_version": "3a8b8235c59e554dab3a9d98906e35ad872c7697",
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5686057Z 	"oidc_token": "***"
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:34.5686369Z }
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:36.1140534Z Created deployment for 3a8b8235c59e554dab3a9d98906e35ad872c7697, ID: 3a8b8235c59e554dab3a9d98906e35ad872c7697
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:41.1152773Z Getting Pages deployment status...
+deploy	Run actions/deploy-pages@v4	2026-10-28T22:55:41.2450656Z Reported success!
+deploy	Complete job	﻿2026-10-28T22:55:41.2745427Z Evaluate and set environment url
+deploy	Complete job	2026-10-28T22:55:41.2750112Z Evaluated environment url: https://aster-ai-lab.github.io/aster/
+deploy	Complete job	2026-10-28T22:55:41.2751092Z Cleaning up orphan processes
+deploy	Complete job	2026-10-28T22:55:41.3170283Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/configure-pages@v5, actions/deploy-pages@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

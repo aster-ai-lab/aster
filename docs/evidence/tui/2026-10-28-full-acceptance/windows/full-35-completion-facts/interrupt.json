@@ -1,0 +1,92 @@
+{
+  "case": "interrupt",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "interrupt",
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-GHene3\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool to run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE       12:55 PM           -NoNewline. Do not run another command. This test will interrupt that operation.                                                                                                                                                                                                                                                                                      ♦ Thought for 4.4s                                                                                                                                                                                                                              I’ll run the requested command only.                                                                   12:55 PM                                                                                                                                 ♦ Run Start-Sleep -Seconds 6; Set-Content -LiteralPath late.txt -Value LATE -NoNewline                                                                                                                                                          Turn cancelled in 9.6s.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13465,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_fe1f366f5ad145e88d99734278cd3e92",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-404dcd97-4c70-40ef-a8b3-7afccbc008fe",
+            "thread_id": "c9418753-0336-4207-9f45-bd68687b144a",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_fe1f366f5ad145e88d99734278cd3e92",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-404dcd97-4c70-40ef-a8b3-7afccbc008fe",
+            "thread_id": "c9418753-0336-4207-9f45-bd68687b144a",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:0b30636a93904d8119299f8cd6bad33a7b4790629dc391217d02d9802e485303",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:14d85acc290b5f91d4d6a6232e305c6701be8c7ba8a7edd8af639a82b26e9dd0"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

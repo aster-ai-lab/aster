@@ -1,0 +1,57 @@
+{
+  "schema": "aster-indexer-exact-mask-v40-sources",
+  "flag": "ASTER_XQ_INDEXER_MASK_SKIP=0|1",
+  "new_weight_precision": false,
+  "approximate_topk": false,
+  "block_skip_only_for_exact_negative_infinity": true,
+  "bounded_qkw_max_abs": 1024,
+  "compiled": false,
+  "gpu_qualified": false,
+  "source_files": [
+    {
+      "file": "aster_indexer_mask_policy.hpp",
+      "bytes": 702,
+      "sha256": "0602f6542abae57ff45b56be411576d168e4a7705d632a870952c888e3bf1773"
+    },
+    {
+      "file": "aster_indexer_mask_skip.cuh",
+      "bytes": 3238,
+      "sha256": "c722c721193fd40a26a35b904d9d4dba752630405829849407a3561af41a3e10"
+    },
+    {
+      "file": "dense-mask-first-v40.patch",
+      "bytes": 5752,
+      "sha256": "f9b92a71f2d6bd9c816bd618b60d74eb9a035e480761f7dfec5e05045b11828e"
+    },
+    {
+      "file": "ds41_dense.cpp",
+      "bytes": 194566,
+      "sha256": "bd67c02e7f0c096471b057915e73d54955df8cb45a9ffe245406a835d7ebc51f"
+    },
+    {
+      "file": "ds41_dense.original.cpp",
+      "bytes": 193588,
+      "sha256": "8fcccf32e5162be88862469eb69421da6d988d9ffc37a542a4982887bfad0c19"
+    },
+    {
+      "file": "indexer-mask-skip-v40.patch",
+      "bytes": 5928,
+      "sha256": "9acb6f44127677099c2c7864031f9193f0530883b8ba2b0dfc8ff3129516fe55"
+    },
+    {
+      "file": "indexer_mask_policy_test.cpp",
+      "bytes": 1536,
+      "sha256": "a8895052ddca06537037e1846b3b4e9cf3214c006f3e5237808271d70e3e2c1e"
+    },
+    {
+      "file": "lightning-indexer.cu",
+      "bytes": 25445,
+      "sha256": "0aa1b8d40beb39ccfe1cb199a6bd9a682973ffc4fd903baf09831f3a255160ad"
+    },
+    {
+      "file": "lightning-indexer.original.cu",
+      "bytes": 24750,
+      "sha256": "957dea8b4e66a1c9c63058a546f0eeb716a64c388f81e8aca7cf2bcf1b661aac"
+    }
+  ]
+}

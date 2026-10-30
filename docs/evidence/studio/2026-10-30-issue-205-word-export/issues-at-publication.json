@@ -1,0 +1,17 @@
+[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOVOBXFs8AAAAC9xyKKw",
+        "name": "bug",
+        "description": "Something isn't working",
+        "color": "d73a4a"
+      }
+    ],
+    "number": 205,
+    "state": "OPEN",
+    "title": "消息“更多 → 导出为 Word”未转换有效 Markdown，标题、列表和粗体标记原样进入 DOCX",
+    "updatedAt": "2026-10-30T03:07:02Z",
+    "url": "https://github.com/aster-ai-lab/aster/issues/205"
+  }
+]

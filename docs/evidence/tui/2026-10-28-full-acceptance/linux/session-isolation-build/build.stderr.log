@@ -1,0 +1,411 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling libc v0.2.186
+   Compiling rustix v1.1.5
+   Compiling parking_lot_core v0.9.12
+   Compiling getrandom v0.2.16
+   Compiling errno v0.3.14
+   Compiling mio v1.2.1
+   Compiling socket2 v0.6.4
+   Compiling getrandom v0.3.4
+   Compiling getrandom v0.4.1
+   Compiling socket2 v0.5.10
+   Compiling memmap2 v0.9.11
+   Compiling rand_core v0.6.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling ring v0.17.14
+   Compiling uuid v1.26.1
+   Compiling rand_core v0.9.3
+   Compiling rand v0.10.3
+   Compiling parking_lot v0.12.5
+   Compiling dashmap v6.2.1
+   Compiling nix v0.30.1
+   Compiling crypto-common v0.1.6
+   Compiling rand_chacha v0.9.0
+   Compiling rand_chacha v0.3.1
+   Compiling dirs-sys v0.5.0
+   Compiling tokio v1.53.3
+   Compiling prodash v31.0.0
+   Compiling string_cache v0.9.0
+   Compiling dirs v6.0.0
+   Compiling digest v0.10.7
+   Compiling rand v0.9.5
+   Compiling rand v0.8.8
+   Compiling rustls-webpki v0.103.15
+   Compiling gix-features v0.48.1
+   Compiling fs2 v0.4.3
+   Compiling web_atoms v0.2.3
+   Compiling sha1 v0.10.6
+   Compiling sha2 v0.10.9
+   Compiling tempfile v3.27.0
+   Compiling signature v2.2.0
+   Compiling hmac v0.12.1
+   Compiling which v8.0.0
+   Compiling md-5 v0.10.6
+   Compiling ff v0.13.1
+   Compiling filetime v0.2.29
+   Compiling rustls v0.23.46
+   Compiling group v0.13.0
+   Compiling debugid v0.8.0
+   Compiling crypto-bigint v0.5.5
+   Compiling hkdf v0.12.4
+   Compiling sha1-checked v0.10.0
+   Compiling x509-cert v0.2.5
+   Compiling markup5ever v0.38.0
+   Compiling rfc6979 v0.4.0
+   Compiling shellexpand v3.1.2
+   Compiling string_cache v0.8.9
+   Compiling dirs-sys v0.4.1
+   Compiling gix-hash v0.25.1
+   Compiling gix-fs v0.21.2
+   Compiling fastrace v0.7.18
+   Compiling elliptic-curve v0.13.8
+   Compiling dirs v5.0.1
+   Compiling tokio-util v0.7.19
+   Compiling async-compression v0.4.19
+   Compiling aws-smithy-async v1.2.14
+   Compiling a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+   Compiling markup5ever v0.14.1
+   Compiling html5ever v0.38.0
+   Compiling backoff v0.4.0
+   Compiling sigstore-crypto v0.6.6
+   Compiling cms v0.2.3
+   Compiling curve25519-dalek v4.1.3
+   Compiling a3s-tool-protocol v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling num-bigint-dig v0.8.6
+   Compiling ed25519 v2.2.3
+   Compiling gix-hashtable v0.15.1
+   Compiling ecdsa v0.16.9
+   Compiling primeorder v0.13.6
+   Compiling gix-tempfile v23.0.1
+   Compiling h2 v0.4.19
+   Compiling tokio-rustls v0.26.6
+   Compiling tower v0.5.2
+   Compiling tokio-stream v0.1.17
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling aws-smithy-types v1.4.3
+   Compiling tungstenite v0.28.0
+   Compiling a3s-code-config v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config)
+   Compiling html5ever v0.29.1
+   Compiling crmf v0.2.0
+   Compiling p384 v0.13.1
+   Compiling p256 v0.13.2
+   Compiling rsa v0.9.10
+   Compiling ed25519-dalek v2.2.0
+   Compiling backtrace v0.3.76
+   Compiling gix-object v0.60.0
+   Compiling opentelemetry_sdk v0.32.1
+   Compiling gix-lock v23.0.1
+   Compiling ahash v0.8.12
+   Compiling fontdb v0.23.0
+   Compiling cmpv2 v0.2.0
+   Compiling xml5ever v0.38.0
+   Compiling gix-glob v0.26.1
+   Compiling sentry-types v0.42.0
+   Compiling tower-http v0.6.8
+   Compiling tokio-tungstenite v0.28.0
+   Compiling aws-smithy-runtime-api v1.11.3
+   Compiling aws-smithy-eventstream v0.60.18
+   Compiling aws-smithy-json v0.61.6
+   Compiling hyper v1.8.1
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling jsonwebtoken v10.3.0
+   Compiling aws-smithy-query v0.60.8
+   Compiling x509-tsp v0.1.0
+   Compiling crc-fast v1.9.0
+   Compiling sigstore-merkle v0.6.6
+   Compiling fastrace-tonic v0.1.1
+   Compiling gix-commitgraph v0.37.1
+   Compiling fastrace-opentelemetry v0.18.1
+   Compiling aws-smithy-http v0.62.6
+   Compiling aws-credential-types v1.2.8
+   Compiling aws-smithy-observability v0.1.4
+   Compiling htmd v0.5.4
+   Compiling prometheus v0.14.0
+   Compiling reflink-copy v0.1.28
+   Compiling hyper-util v0.1.20
+   Compiling libz-sys v1.1.22
+   Compiling sigstore-trust-root v0.6.3
+   Compiling xattr v1.6.1
+   Compiling gix-revwalk v0.31.0
+   Compiling sentry-core v0.42.0
+   Compiling tar v0.4.46
+   Compiling gix-attributes v0.33.2
+   Compiling libgit2-sys v0.18.2+1.9.1
+   Compiling nix v0.31.3
+   Compiling findshlibs v0.10.2
+   Compiling aws-types v1.3.9
+   Compiling aws-sigv4 v1.3.5
+   Compiling aws-smithy-runtime v1.9.3
+   Compiling a3s-code-compaction v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-code-compaction)
+   Compiling landlock v0.4.4
+   Compiling cfb v0.7.3
+   Compiling gix-sec v0.14.1
+   Compiling sentry-backtrace v0.42.0
+   Compiling hyper-rustls v0.27.7
+   Compiling axum v0.8.6
+   Compiling hyper-timeout v0.5.2
+   Compiling office_oxide v0.1.9
+   Compiling git2 v0.20.2
+   Compiling gix-ref v0.63.0
+   Compiling waitpid-any v0.3.0
+   Compiling gix-config-value v0.18.1
+   Compiling gix-traverse v0.57.0
+   Compiling infer v0.19.0
+   Compiling a3s-code-feedback v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-feedback)
+   Compiling scraper v0.23.1
+   Compiling command-fds v0.3.2
+   Compiling aws-smithy-checksums v0.63.13
+   Compiling hostname v0.4.1
+   Compiling async-lsp v0.2.3
+   Compiling uname v0.1.1
+   Compiling inotify-sys v0.1.5
+   Compiling aws-runtime v1.5.12
+   Compiling reqwest v0.12.24
+   Compiling reqwest v0.13.5
+   Compiling aws-smithy-http-client v1.1.9
+   Compiling num_cpus v1.17.0
+   Compiling inotify v0.11.0
+   Compiling sentry-contexts v0.42.0
+   Compiling sentry-tracing v0.42.0
+   Compiling sentry-anyhow v0.42.0
+   Compiling sentry-panic v0.42.0
+   Compiling gix-index v0.51.0
+   Compiling gix-pathspec v0.18.1
+   Compiling sentry-debug-images v0.42.0
+   Compiling gix-ignore v0.21.1
+   Compiling notify v8.2.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sts v1.88.0
+   Compiling opentelemetry-http v0.32.0
+   Compiling gcloud-metadata v1.0.2
+   Compiling tonic v0.14.6
+   Compiling reqwest-middleware v0.5.2
+   Compiling sigstore-tsa v0.6.6
+   Compiling sigstore-rekor v0.6.6
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling reqwest-middleware v0.4.2
+   Compiling reqwest-eventsource v0.6.0
+   Compiling a3s-code-extra-ca v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-extra-ca)
+   Compiling fastrace-reqwest v0.2.0
+   Compiling gcloud-auth v1.3.0
+   Compiling gix-worktree v0.52.0
+   Compiling a3s-mixpanel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-mixpanel)
+   Compiling sentry v0.42.0
+   Compiling aws-config v1.8.8
+   Compiling gix-discover v0.51.0
+   Compiling a3s-code-auth v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-auth)
+   Compiling gix-filter v0.30.0
+   Compiling gix-revision v0.45.0
+   Compiling async-openai v0.33.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai)
+   Compiling gix-pack v0.70.0
+   Compiling gix-transport v0.57.2
+   Compiling sigstore-bundle v0.6.6
+   Compiling gix-config v0.56.0
+   Compiling tonic-prost v0.14.6
+   Compiling tonic-types v0.14.5
+   Compiling gix-shallow v0.12.1
+   Compiling gix-refspec v0.41.0
+   Compiling gix-diff v0.63.0
+   Compiling gix-dir v0.25.0
+   Compiling polling v3.11.0
+   Compiling gix-odb v0.80.0
+   Compiling a3s-sqlite-journal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-sqlite-journal)
+   Compiling gix-protocol v0.61.0
+   Compiling opentelemetry-proto v0.32.0
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling sigstore-verify v0.6.3
+   Compiling async-io v2.6.0
+   Compiling oauth2 v5.0.0
+   Compiling gix-submodule v0.30.0
+   Compiling pdf_oxide v0.3.74
+   Compiling wait-timeout v0.2.1
+   Compiling gcloud-storage v1.3.0
+   Compiling gix-status v0.30.0
+   Compiling wayland-backend v0.3.12
+   Compiling libmimalloc-sys v0.1.44
+   Compiling notify-debouncer-full v0.5.0
+   Compiling nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling mimalloc v0.1.48
+   Compiling cipher v0.4.4
+   Compiling signal-hook v0.3.18
+   Compiling async-signal v0.2.13
+   Compiling a3s-code-diag-server v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-diag-server)
+   Compiling wayland-client v0.31.12
+   Compiling a3s-fsnotify v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fsnotify)
+   Compiling a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling a3s-acp-lib v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-acp-lib)
+   Compiling a3s-fuzzy-file-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+   Compiling async-process v2.5.0
+   Compiling rmcp v3.4.0
+   Compiling signal-hook-mio v0.2.5
+   Compiling gethostname v1.1.0
+   Compiling uuid-simd v0.8.0
+   Compiling os_pipe v1.2.3
+   Compiling nono v0.53.0
+   Compiling a3s-tool-runtime v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling gix v0.83.0
+   Compiling wayland-protocols v0.32.10
+   Compiling zbus v5.14.0
+   Compiling x11rb v0.13.2
+   Compiling crossterm v0.28.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/crossterm)
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling a3s-code-sampling-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampling-types)
+   Compiling symbolic-common v12.16.3
+   Compiling a3s-acl v0.3.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/acl)
+   Compiling a3s-computer-hub-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-tracing v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tracing)
+   Compiling a3s-code-otel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-otel)
+   Compiling wayland-protocols-wlr v0.3.10
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-gix-status v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling ratatui v0.29.0
+   Compiling selectors v0.38.0
+   Compiling symbolic-demangle v12.16.3
+   Compiling a3s-code-sampler v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampler)
+   Compiling a3s-fast-worktree v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling a3s-hunk-tracker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling wl-clipboard-rs v0.9.3
+   Compiling a3s-computer-hub-sdk v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling fs-set-times v0.20.3
+   Compiling aes v0.8.4
+   Compiling markup5ever v0.39.0
+   Compiling arboard v3.6.1
+   Compiling nix v0.26.4
+   Compiling rustix-linux-procfs v0.1.1
+   Compiling usvg v0.47.0
+   Compiling html5ever v0.39.0
+   Compiling rquickjs-sys v0.11.0
+   Compiling a3s-form-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/form-core)
+   Compiling pprof v0.15.0
+   Compiling cap-primitives v4.0.3
+   Compiling nix v0.28.0
+   Compiling a3s-code-shared v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling ecb v0.1.2
+   Compiling cbc v0.1.2
+   Compiling universal-hash v0.5.1
+   Compiling filedescriptor v0.8.3
+   Compiling console v0.15.11
+   Compiling serial2 v0.2.34
+   Compiling lopdf v0.42.0
+   Compiling cached v0.56.0
+   Compiling polyval v0.6.2
+   Compiling rhai v1.25.1
+   Compiling indicatif v0.17.11
+   Compiling portable-pty v0.9.0
+   Compiling esaxx-rs v0.1.10
+   Compiling dom_query v0.28.0
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-client v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling resvg v0.47.0
+   Compiling referencing v0.30.0
+   Compiling cap-std v4.0.2
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-system-power v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling a3s-code-shell-base v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling a3s-compaction-transcript v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling async-global-executor v2.4.1
+   Compiling async-net v2.0.0
+   Compiling process-wrap v9.0.0
+   Compiling backon v1.6.0
+   Compiling rand_xoshiro v0.6.0
+   Compiling socks v0.3.4
+   Compiling dom_smoothie v0.18.2
+   Compiling bm25 v2.3.2
+   Compiling rquickjs-core v0.11.0
+   Compiling ureq v2.12.1
+   Compiling imbl v3.0.0
+   Compiling moka v0.12.11
+   Compiling referencing v0.47.0
+   Compiling async-std v1.13.2
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling sysctl v0.6.0
+   Compiling a3s-chat-state v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-chat-state)
+   Compiling a3s-use-core v0.2.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/use/core)
+   Compiling a3s-workflow v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-workflow)
+   Compiling ashpd v0.10.3
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling jsonschema v0.30.0
+   Compiling a3s-code-mermaid v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling cap-fs-ext v4.0.2
+   Compiling ghash v0.5.1
+   Compiling ctr v0.9.2
+   Compiling a3s-code-foreign-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling infer v0.15.0
+   Compiling a3s-code-bundle v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling scraper v0.22.0
+   Compiling tokio-retry v0.3.0
+   Compiling aead v0.5.2
+   Compiling a3s-code-file-lock v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-file-lock)
+   Compiling console v0.16.1
+   Compiling cpu-time v1.0.0
+   Compiling a3s-code-markdown v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling tokenizers v0.21.4
+   Compiling aes-gcm v0.10.3
+   Compiling anndists v0.1.5
+   Compiling jsonschema v0.47.0
+   Compiling indicatif v0.18.3
+   Compiling mmap-rs v0.7.0
+   Compiling a3s-vec v0.1.8 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/vec)
+   Compiling a3s-search v3.4.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/search)
+   Compiling a3s-lane v0.5.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/lane)
+   Compiling dark-light v2.0.0
+   Compiling a3s-effect v0.2.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/effect)
+   Compiling a3s-ratatui-textarea v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+   Compiling rquickjs v0.11.0
+   Compiling hf-hub v0.4.3
+   Compiling a3s-ratatui-inline v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-ratatui-inline)
+   Compiling a3s-code-gboom v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-gboom)
+   Compiling html2text v0.16.7
+   Compiling a3s-sandbox v0.2.3 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/sandbox)
+   Compiling a3s-common v0.1.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/common)
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+   Compiling a3s-memory v0.1.5 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/memory)
+   Compiling sha256 v1.6.0
+   Compiling model2vec-rs v0.3.0
+   Compiling ansi-to-tui v7.0.0
+   Compiling yrs v0.27.3
+   Compiling hnsw_rs v0.3.5
+   Compiling tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+   Compiling pdf-inspector v1.17.0
+   Compiling a3s-code-dashboard-store v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling a3s-code-voice v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-voice)
+   Compiling a3s-code-active-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling a3s-crash-handler v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-crash-handler)
+   Compiling a3s-code-core v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/core)
+   Compiling a3s-office v0.45.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/office/crates/core)
+   Compiling a3s-use-reconcile v0.2.10 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/use/reconcile)
+   Compiling aster v0.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/aster)
+   Compiling tikv-jemalloc-ctl v0.7.0
+   Compiling tikv-jemallocator v0.7.0
+   Compiling a3s-okf v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/okf)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-embedding v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/embedding)
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+   Compiling a3s-code-pager-minimal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-minimal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8m 11s

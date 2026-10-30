@@ -1,0 +1,15 @@
+{
+  "schema": "aster-literal-scan-v144-cpu-v145",
+  "frozen_sources": [
+    {
+      "file": "literal_scan_cpu_worker_v145.frozen.py",
+      "bytes": 9583,
+      "sha256": "bef6a3c2c0c1197171f4146258225a01a191f4d51c80e3c48376cfc1fb7f58ec"
+    },
+    {
+      "file": "manage_literal_scan_cpu_v145.py",
+      "bytes": 5062,
+      "sha256": "600104878820c667a1fd0ee7b2624fc105e076780b8ad497873511434aef405f"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "unix": 1792892413.1173878,
+  "phase": "recovered",
+  "proof": {
+    "unix": 1792892420.5011325,
+    "exact_supervisor_alive": true,
+    "phase": "loading"
+  },
+  "process": {
+    "pid": 2458,
+    "start_ticks": 712164516,
+    "uid": 10250,
+    "unix": 1792892374.174955,
+    "deadline_seconds": 18289
+  },
+  "same_native_and_bootstrap_inputs": true,
+  "changed_transport": "owner/hash-checked file execution instead of long inline exec argument",
+  "cause": "long inline exec transport suspected from paired failures and same-payload file-execution success; server reason not captured",
+  "new_gpu_allocated": false,
+  "formal_service_unchanged": true
+}

@@ -4,6 +4,39 @@ use super::receipts::{runner_interrupted_value, runner_result_value};
 use super::*;
 
 #[test]
+fn folded_command_results_label_only_digest_bound_retained_streams() {
+    let stdout = "actual 中文 output\nCWD=/workspace\n";
+    let stderr = "actual error without newline";
+    let body = format!("{stdout}{stderr}");
+    let metadata = serde_json::json!({"shell_output_streams":crate::tools::builtin::bash::output_streams::capture(stdout, stderr)});
+    let receipt = runner_result_value(&body, true, &[], 7, Some(&metadata), None);
+    let original = receipt.clone();
+    let message = message_from_folded_tool("failed-command", receipt.as_str().unwrap(), false);
+    let crate::llm::ContentBlock::ToolResult {
+        tool_use_id,
+        content,
+        is_error,
+        trust,
+        ..
+    } = &message.content[0]
+    else {
+        panic!("expected original tool result");
+    };
+    assert_eq!(tool_use_id, "failed-command");
+    assert_eq!(*is_error, Some(true));
+    assert_eq!(*trust, crate::llm::ToolResultTrustV1::WorkspaceData);
+    assert_eq!(content.as_text(), format!("Tool exit code: 7\nCaptured stdout ({} UTF-8 bytes):\n{stdout}\nCaptured stderr ({} UTF-8 bytes):\n{stderr}", stdout.len(), stderr.len()));
+    assert_eq!(receipt, original);
+
+    let redacted = runner_result_value("[redacted]\n", true, &[], 7, Some(&metadata), None);
+    let message = message_from_folded_tool("redacted-command", redacted.as_str().unwrap(), false);
+    let crate::llm::ContentBlock::ToolResult { content, .. } = &message.content[0] else {
+        panic!("expected redacted result");
+    };
+    assert_eq!(content.as_text(), "Tool exit code: 7\n[redacted]\n");
+}
+
+#[test]
 fn folded_tool_messages_preserve_typed_exit_codes_without_changing_original_receipts() {
     for code in [0, 7, 137] {
         let receipt = runner_result_value("original stdout", code != 0, &[], code, None, None);

@@ -1,0 +1,41 @@
+
+running 15 tests
+
+thread 'tokio-rt-worker' (41528) panicked at crates\code\core\src\agent_api\tests\stream.rs:998:9:
+only pre-analysis may call complete: You extract durable, reusable memory for a coding agent.
+Return JSON only. Do not include markdown.
+Keep only facts, preferences, decisions, workflows, and failure lessons that are likely useful in future sessions.
+Do not store transient progress, generic praise, raw logs, secrets, credentials, or information that only matters inside the current answer.
+Never narrate what the user or assistant did in this turn.
+Each memory must be standalone, concise, scoped, and justified.
+Write user-facing memory and learning text in plain language without internal orchestration terms.
+Return an empty items array when nothing qualifies.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tokio-rt-worker' (40464) panicked at crates\code\core\src\agent_api\tests\stream.rs:998:9:
+only pre-analysis may call complete: You extract durable, reusable memory for a coding agent.
+Return JSON only. Do not include markdown.
+Keep only facts, preferences, decisions, workflows, and failure lessons that are likely useful in future sessions.
+Do not store transient progress, generic praise, raw logs, secrets, credentials, or information that only matters inside the current answer.
+Never narrate what the user or assistant did in this turn.
+Each memory must be standalone, concise, scoped, and justified.
+Write user-facing memory and learning text in plain language without internal orchestration terms.
+Return an empty items array when nothing qualifies.
+test agent_api::tests::stream::auto_planning_on_the_fact_path_follows_the_pre_analysis_decision ... ok
+test agent_api::tests::stream::cancelled_fact_stream_settles_without_memory_extraction ... ok
+test agent_api::tests::stream::test_cancel_run_only_cancels_matching_current_run ... ok
+test agent_api::tests::stream::test_history_empty_on_new_session ... ok
+test agent_api::tests::stream::test_non_retryable_pre_analysis_stops_before_main_turn ... ok
+test agent_api::tests::stream::test_non_retryable_stream_error_skips_fallback_and_circuit_retries ... ok
+test agent_api::tests::stream::test_run_handle_cancels_send_with_attachments ... ok
+test agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events ... ok
+test agent_api::tests::stream::test_stream_cancel_records_interrupted_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_error_does_not_update_history_or_auto_save ... ok
+test agent_api::tests::stream::test_stream_tool_round_checkpoint_flushes_session_before_end ... ok
+test agent_api::tests::stream::test_stream_updates_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_with_attachments_cancel_records_interrupted_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_with_custom_history_does_not_update_session_history ... ok
+test agent_api::tests::stream::v912_stream_end_waiver_and_cancel ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 5293 filtered out; finished in 7.10s
+

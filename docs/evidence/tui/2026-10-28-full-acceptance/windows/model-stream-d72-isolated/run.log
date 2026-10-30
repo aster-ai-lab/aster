@@ -1,0 +1,18 @@
+
+running 1 test
+ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once' (56768) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:330:5:
+assertion `left == right` failed
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 34 filtered out; finished in 10.64s
+

@@ -1,0 +1,39 @@
+
+running 25 tests
+test config::tests::explicit_config_keeps_sandbox_authority ... ok
+test config::tests::layered_home_and_workspace_config_overlay_instead_of_shadow ... ok
+test config::tests::no_config_anywhere_starts_without_writing_a_file ... ok
+test config::tests::trusted_declared_default_survives_a_withheld_workspace_default ... ok
+test config::tests::userprofile_supplies_home_when_home_is_unset ... ok
+test config::tests::workspace_layer_cannot_narrow_the_host_sandbox_posture ... ok
+test config::tests::goal_control::goal_control_actual_workspace_layer_cannot_activate_or_override_host ... ok
+test config::tests::diagnostics::malformed_explicit_acl_identifies_its_actual_source_without_configuration_text ... ok
+test config::tests::the_host_opts_in_through_trusted_acl_or_the_launcher_list ... ok
+test config::tests::goal_control::goal_control_explicit_host_file_retains_authority ... ok
+test config::tests::execution_capabilities::capability_settings_are_host_owned_in_actual_layer_loading ... ok
+test config::tests::diagnostics::malformed_merged_acl_identifies_both_participating_sources ... ok
+test config::tests::execution_capabilities::invalid_capability_config_refuses_instead_of_falling_back ... ok
+test config::tests::a_logged_in_account_is_not_imported_without_a_host_opt_in ... ok
+
+thread 'config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback' (9059) panicked at crates/code/acp/src/config/tests/goal_control.rs:80:17:
+failed to parse merged A3S ACL from /tmp/.tmpM3hbDU/.a3s/config.acl, /tmp/.tmpPmX8cy/.a3s/config.acl
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback ... FAILED
+test config::tests::execution_capabilities::explicit_capability_config_does_not_merge_user_or_workspace_defaults ... ok
+test config::tests::a_workspace_layer_cannot_opt_the_host_into_an_account_import ... ok
+test config::tests::empty_user_acl_is_replaced_and_then_left_alone ... ok
+test config::tests::load_launch_config_reads_explicit_acl ... ok
+test config::tests::load_launch_config_keeps_slash_in_model_id ... ok
+test config::tests::withheld_workspace_default_launches_with_the_cursor_account ... ok
+test config::tests::without_any_acl_only_the_launcher_list_can_bootstrap_an_account ... ok
+test config::tests::workspace_layer_cannot_arm_the_sandbox_posture ... ok
+test config::tests::first_run_acl_is_created_once_and_can_open_a_session_model ... ok
+test config::tests::workspace_only_providers_do_not_self_provision ... ok
+
+failures:
+
+failures:
+    config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback
+
+test result: FAILED. 24 passed; 1 failed; 0 ignored; 0 measured; 379 filtered out; finished in 0.23s
+

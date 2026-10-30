@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_program_max_tool_calls_stops_before_second_dispatch ... ORACLE case=coverage-program-call-limit name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-program-call-limit name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=coverage-program-call-limit name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40314
+ORACLE case=coverage-program-call-limit name=program-max-calls result=pass detail=a one-call script budget permits the first real read, rejects the second before dispatch and retains the complete first receipt
+ORACLE case=coverage-program-call-limit name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 23.25s
+

@@ -1,0 +1,13 @@
+{
+  "case": "network-download-binary",
+  "platform": "windows",
+  "scope": "independent host observation while frozen original turn still waits; not a replacement passing grader",
+  "destination": "artifacts/\u4e0b\u8f7d payload.bin",
+  "bytes": 65536,
+  "sha256": "4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2",
+  "matches_exact_fixture_bytes": true,
+  "original_turn_complete": false,
+  "last_fact": "tool.prepared bash",
+  "observed_acp_child_process": "VCTIP.EXE; causality unproven",
+  "modifies_runtime_or_fixture": false
+}

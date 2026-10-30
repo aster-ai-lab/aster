@@ -1,0 +1,45 @@
+{
+  "binary_path": "/Users/roylin/code/aster/target/debug/deps/a3s_code_core-35b64c27610cd0bd",
+  "binary_sha256": "d1fc50529a7417b16ab03ad1acd40de39734b1eeaca3b6488372c60694e8c758",
+  "test_source_sha256": "d5cc2ee2cca8cf9caf4ca581ba3d61ae78a0db637eaba31cc2870ff001b23cce",
+  "process_timeout_seconds": 15,
+  "copied_binary_first_launch_timeout_seconds": 15,
+  "isolated_results": [
+    {
+      "test": "authorization_headers_return_before_an_outer_model_deadline",
+      "returncode": 101,
+      "process_timeout": false,
+      "seconds": 0.294
+    },
+    {
+      "test": "cancellation_interrupts_non_streaming_body",
+      "returncode": 101,
+      "process_timeout": false,
+      "seconds": 1.07
+    },
+    {
+      "test": "cancellation_interrupts_raw_streaming_error_body",
+      "returncode": 101,
+      "process_timeout": false,
+      "seconds": 1.077
+    },
+    {
+      "test": "cancellation_interrupts_streaming_error_body",
+      "returncode": 101,
+      "process_timeout": false,
+      "seconds": 1.075
+    },
+    {
+      "test": "complete_authorization_body_keeps_the_provider_diagnostic",
+      "returncode": 0,
+      "process_timeout": false,
+      "seconds": 0.028
+    },
+    {
+      "test": "stalled_retryable_error_body_has_a_deadline",
+      "returncode": 101,
+      "process_timeout": false,
+      "seconds": 1.068
+    }
+  ]
+}

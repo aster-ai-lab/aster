@@ -1,0 +1,62 @@
+{
+  "unix": 1792852747.8290458,
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v11/qualification-over128k-v11",
+  "request-result.json": {
+    "schema": "aster-xolotl-context-1m-over128k-v7",
+    "phase": "passed",
+    "unix": 1792852407.210215,
+    "source_hostname": "yangchao-dev",
+    "destination": "http://100.97.136.42:30003/v1",
+    "performance_300_claimed": false,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "short_control": {
+      "passed": true,
+      "content": "42",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 2,
+        "total_tokens": 20,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    "prompt_tokens_verified": 131073,
+    "prompt_sha256": "898033b30b21697c88880272596db87b8e6264cedb4697bd4a61a3955adb58ef",
+    "prompt_characters": 524287,
+    "max_new_tokens": 64,
+    "context_tokens": 1048576,
+    "request_started_unix": 1792852408.9346437,
+    "http_status": 200,
+    "headers_received_unix": 1792852409.0677118,
+    "events": 3,
+    "first_content_unix": 1792852579.8344343,
+    "last_event_unix": 1792852579.9622622,
+    "done": true,
+    "finish_reason": "stop",
+    "content": "42",
+    "reasoning_characters": 0,
+    "usage": {
+      "prompt_tokens": 131073,
+      "completion_tokens": 2,
+      "total_tokens": 131075,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "elapsed_seconds": 171.02990412712097,
+    "time_to_first_content_seconds": 170.8997905254364,
+    "finished_unix": 1792852579.9645507
+  },
+  "request-process.json": {
+    "pid": 787390,
+    "start_ticks": 277919207,
+    "uid": 10250,
+    "unix": 1792852407.1418703,
+    "budget_seconds": 1100
+  },
+  "exact_client_alive": false
+}

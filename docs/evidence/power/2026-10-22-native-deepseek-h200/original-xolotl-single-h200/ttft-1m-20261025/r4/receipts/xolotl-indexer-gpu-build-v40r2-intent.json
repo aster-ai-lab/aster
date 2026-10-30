@@ -1,0 +1,60 @@
+{
+  "unix": 1792868675.2719364,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "aster_indexer_mask_policy.hpp",
+      "bytes": 721,
+      "sha256": "182aa5a064629f3439151e35d69c76cc2accb109edde94a57675bcf9fd3ed1fe"
+    },
+    {
+      "file": "aster_indexer_mask_skip.cuh",
+      "bytes": 3238,
+      "sha256": "c722c721193fd40a26a35b904d9d4dba752630405829849407a3561af41a3e10"
+    },
+    {
+      "file": "lightning-indexer.cu",
+      "bytes": 25486,
+      "sha256": "8c97fc28df2c073bcb24321584f56cd571b7b0b356f6b969a5e6960c1ad33af2"
+    },
+    {
+      "file": "indexer_mask_probe.cu",
+      "bytes": 4750,
+      "sha256": "291b4c6a53f3ce7fece20f645f5188d0b51174c8e7dc64cf737ce50aa9b0257d"
+    },
+    {
+      "file": "indexer_graph_gate.cpp",
+      "bytes": 4416,
+      "sha256": "3267195bb27658f71f4859a01f24f33cd977b5edbc683e70356dc88b5afd784d"
+    },
+    {
+      "file": "gpu_build_worker.py",
+      "bytes": 4446,
+      "sha256": "6e2f01e05eaa7592103de04f3de1c6ff8b7f11a511abfdc5d16e45341de4561a"
+    },
+    {
+      "file": "gpu-build-plan.json",
+      "bytes": 11004,
+      "sha256": "fe9631302136c04d4d7eb6ed656c61b9c6689d6f78786b017ad9c12336da3710"
+    }
+  ],
+  "preflight": {
+    "private_api_reaped": true,
+    "gpu_idle": true
+  },
+  "stage": {
+    "staged": true,
+    "files": 7
+  },
+  "process": {
+    "pid": 2586,
+    "start_ticks": 314816588,
+    "uid": 10250,
+    "unix": 1792868689.9954178,
+    "budget_seconds": 590
+  }
+}

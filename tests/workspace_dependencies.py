@@ -64,7 +64,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         self.assertIn(hosts[0]["id"], metadata["workspace_members"])
         for manifest in [desktop / "Cargo.toml", host]:
             if manifest.is_file():
-                self.assertNotIn("workspace", tomllib.loads(manifest.read_text()), str(manifest))
+                self.assertNotIn("workspace", tomllib.loads(manifest.read_text(encoding="utf-8")), str(manifest))
         for lock in [desktop / "Cargo.lock", desktop / "src-tauri/Cargo.lock"]:
             self.assertFalse(lock.exists(), str(lock))
         for path in [
@@ -81,11 +81,11 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             self.assertTrue(os.access(ROOT / "crates/use/extension/fixtures/packages" / path, os.X_OK))
 
     def test_office_kernel_rebuilds_from_the_workspace(self):
-        package = (ROOT / "packages/office/package.json").read_text()
-        script = (ROOT / "packages/office/scripts/build-office-kernel.sh").read_text()
-        package_host = (ROOT / "apps/studio/scripts/package-host.sh").read_text()
-        kylin = (ROOT / "apps/studio/scripts/kylin-flatpak/build-host.sh").read_text()
-        shell = (ROOT / "apps/studio/scripts/studio-shell.sh").read_text()
+        package = (ROOT / "packages/office/package.json").read_text(encoding="utf-8")
+        script = (ROOT / "packages/office/scripts/build-office-kernel.sh").read_text(encoding="utf-8")
+        package_host = (ROOT / "apps/studio/scripts/package-host.sh").read_text(encoding="utf-8")
+        kylin = (ROOT / "apps/studio/scripts/kylin-flatpak/build-host.sh").read_text(encoding="utf-8")
+        shell = (ROOT / "apps/studio/scripts/studio-shell.sh").read_text(encoding="utf-8")
         self.assertIn('"build": "bash scripts/build-office-kernel.sh && rslib"', package)
         self.assertIn("--locked", script)
         self.assertIn("--package a3s-office-web-kernel", script)
@@ -101,11 +101,11 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         modules = subprocess.check_output([
             "git", "config", "--file", str(ROOT / ".gitmodules"),
             "--get", "submodule.studio.url",
-        ], cwd=ROOT, text=True).strip()
+        ], cwd=ROOT, text=True, encoding="utf-8").strip()
         self.assertEqual(modules, "git@github.com:kense-labs/studio.git")
         tracked = subprocess.check_output([
             "git", "ls-files", "--stage", "--", "apps/studio",
-        ], cwd=ROOT, text=True).splitlines()
+        ], cwd=ROOT, text=True, encoding="utf-8").splitlines()
         self.assertEqual(len(tracked), 1, "desktop sources belong only to the private submodule")
         self.assertTrue(tracked[0].startswith("160000 "), tracked)
         self.assertFalse(list(studio.rglob("Cargo.lock")))
@@ -118,14 +118,14 @@ class WorkspaceDependenciesTest(unittest.TestCase):
                         self.assertTrue(path.resolve().is_relative_to(ROOT), str(path))
                         self.assertTrue(path.exists(), str(path))
         for path in ["src-tauri/Cargo.toml", "native/data-sqlite/Cargo.toml", "src-tauri/contract/Cargo.toml"]:
-            manifest = tomllib.loads((studio / path).read_text())
+            manifest = tomllib.loads((studio / path).read_text(encoding="utf-8"))
             self.assertNotIn("workspace", manifest, path)
 
     def test_studio_stages_companions_from_the_active_cargo_profile(self):
         with tempfile.TemporaryDirectory(prefix="studio-build-") as temporary:
             root = Path(temporary)
             stub = root / "tauri_build.rs"
-            stub.write_text("pub fn build() {}")
+            stub.write_text("pub fn build() {}", encoding="utf-8", newline="\n")
             library = root / "libtauri_build.rlib"
             subprocess.run(["rustc", "--crate-type=rlib", str(stub), "-o", str(library)], check=True)
             executable = root / "build-script"
@@ -138,7 +138,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             manifest = root / "app"
             env = {**os.environ, "OUT_DIR": str(output), "CARGO_MANIFEST_DIR": str(manifest),
                    "CARGO_CFG_TARGET_OS": "windows", "PROFILE": "release"}
-            refused = subprocess.run([str(executable)], env=env, capture_output=True, text=True)
+            refused = subprocess.run([str(executable)], env=env, capture_output=True, text=True, encoding="utf-8")
             self.assertNotEqual(refused.returncode, 0)
             self.assertIn("build ACP and Office first", refused.stderr)
             env["PROFILE"] = "debug"
@@ -187,7 +187,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
                 subprocess.run(["chflags", "uchg", str(binary)], check=True)
                 try:
                     subprocess.run([str(executable)], env=env, check=True, capture_output=True)
-                    flags = subprocess.check_output(["stat", "-f", "%Sf", str(binary)], text=True).strip()
+                    flags = subprocess.check_output(["stat", "-f", "%Sf", str(binary)], text=True, encoding="utf-8").strip()
                     self.assertNotIn("uchg", flags)
                 finally:
                     subprocess.run(["chflags", "nouchg", str(binary)], check=False)
@@ -206,7 +206,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
                 if dependency["name"].startswith("a3s-"):
                     self.assertIsNone(dependency["source"], dependency["name"])
                     self.assertTrue(Path(dependency["path"]).resolve().is_relative_to(ROOT))
-        lock = tomllib.loads((ROOT / "Cargo.lock").read_text())
+        lock = tomllib.loads((ROOT / "Cargo.lock").read_text(encoding="utf-8"))
         for package in lock["package"]:
             if package["name"].startswith("a3s-"):
                 self.assertNotIn("source", package, package["name"])

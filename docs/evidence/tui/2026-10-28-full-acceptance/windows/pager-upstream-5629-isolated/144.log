@@ -1,0 +1,27 @@
+
+running 1 test
+
+thread 'views::dock::tests::every_expanded_section_shows_a_row_under_its_header' (55108) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dock\mod.rs:1444:9:
+assertion `left == right` failed: each section keeps a summary for the rows it cannot show: [
+    " v Subagents 4                                              ",
+    " ♦ Explore subagent 0                                     1s",
+    "   v show 3 more                                            ",
+    " v Tasks 4                                                  ",
+    " ♦ Run task 0                                             1s",
+    "   v show 3 more                                            ",
+    " v Watchers 4                                               ",
+    " ♦ Monitor watch 0                                        1s",
+    "   v show 3 more                                            ",
+]
+  left: 0
+ right: 3
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dock::tests::every_expanded_section_shows_a_row_under_its_header ... FAILED
+
+failures:
+
+failures:
+    views::dock::tests::every_expanded_section_shows_a_row_under_its_header
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

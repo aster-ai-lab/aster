@@ -528,7 +528,7 @@ pub struct PagerArgs {
     /// Only affects `--compaction-mode segments`. Sets `GROK_COMPACTION_DETAIL`.
     #[clap(long = "compaction-detail", value_name = "DETAIL", hide = true)]
     pub compaction_detail: Option<String>,
-    /// Override the agent's system prompt (compat alias: --system-prompt).
+    /// Request full prompt replacement; local Aster ACP refuses it. Use --rules for additional instructions.
     #[clap(
         long = "system-prompt-override",
         alias = "system-prompt",
@@ -838,9 +838,17 @@ impl PagerArgs {
             self.debug_file = Some(anchor_to_launch_dir(file, launch_dir));
         }
         if let Some(ref cwd) = self.cwd {
-            std::env::set_current_dir(cwd).map_err(|e| {
-                anyhow::anyhow!("Failed to set working directory to {:?}: {}", cwd, e)
-            })?;
+            // Downstream session and agent startup resolve this path again.
+            // Retain its absolute location before changing the process cwd.
+            let absolute = dunce::canonicalize(cwd)
+                .and_then(|path| {
+                    std::env::set_current_dir(&path)?;
+                    Ok(path)
+                })
+                .map_err(|e| {
+                    anyhow::anyhow!("Failed to set working directory to {:?}: {}", cwd, e)
+                })?;
+            self.cwd = Some(absolute);
         }
         Ok(self)
     }
@@ -1025,6 +1033,9 @@ impl PagerArgs {
         self.plan && !self.no_plan
     }
 }
+#[cfg(test)]
+#[path = "cli_cwd_tests.rs"]
+mod cwd_tests;
 #[cfg(test)]
 mod tests {
     use super::*;

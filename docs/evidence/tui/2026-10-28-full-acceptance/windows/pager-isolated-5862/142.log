@@ -1,0 +1,24 @@
+
+running 1 test
+
+thread 'views::dock::tests::a_section_scrolls_inside_its_own_band' (10140) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dock\mod.rs:1332:9:
+the summary counts the rows the section is not showing, which the scroll does not change: [
+    " v Tasks 10                                                 ",
+    " ♦ Run task 4                                             1s",
+    " ♦ Run task 5                                             1s",
+    " ♦ Run task 6                                             1s",
+    "   v show 7 more                                            ",
+    " v Watchers 2                                               ",
+    " ♦ Monitor watch 0                                     3m01s",
+    " ♦ Monitor watch 1                                     3m01s",
+]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dock::tests::a_section_scrolls_inside_its_own_band ... FAILED
+
+failures:
+
+failures:
+    views::dock::tests::a_section_scrolls_inside_its_own_band
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

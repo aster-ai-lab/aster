@@ -1,0 +1,92 @@
+{
+  "case": "interrupt",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:32b8c01e8224e33564c3f38d03c84dffcd465d95:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "interrupt",
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-WI8Kzn/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool to run sleep 6; printf LATE > late.txt. Do not run another command. This test       1:26 PM    \n       will interrupt that operation.                                                                                   \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 4.5s                                                                                                 \n     ◆ Run sleep 6; printf LATE > late.txt                                                                              \n                                                                                                                        \n     Turn cancelled in 9.9s.                                                                                            \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13329,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_d2a805ba46b3480698b5955e0203020d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-688c5cce-9f64-48aa-a0fc-58ddd0cf1429",
+            "thread_id": "6580b87a-e405-4de6-beca-55ac26345ddf",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_d2a805ba46b3480698b5955e0203020d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-688c5cce-9f64-48aa-a0fc-58ddd0cf1429",
+            "thread_id": "6580b87a-e405-4de6-beca-55ac26345ddf",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:a12bb948b2ba1acda9726de6c573932ed535c9692a30fe3a5f07ce026dafff71",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:5597fe3a34d6ac0ea8fd5818b83d038bf9f0b4c3478c057c721bfcf5a6c59cae"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

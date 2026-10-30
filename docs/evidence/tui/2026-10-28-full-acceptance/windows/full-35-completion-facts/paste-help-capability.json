@@ -1,0 +1,27 @@
+{
+  "case": "paste-help-capability",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "capability-help",
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-ssXxXG\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                      ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                                        │                                                                              │                                        │  Paste text from the clipboard                                               │                                        │  Ctrl+v / Alt+v                                                              │                                        │                                                                              │                                        │  Paste plain text from the clipboard into the prompt.                        │                                        │                                                                              │                                        │  The Code backend accepts text only.                                         │                                        │                                                                              │                                        │  Use your terminal's paste shortcut to insert text.                          │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                      ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮    │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

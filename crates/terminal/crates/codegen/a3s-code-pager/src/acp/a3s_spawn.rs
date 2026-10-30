@@ -35,7 +35,13 @@ async fn validate_pair(bin: &Path) -> Result<()> {
     command.arg("--build-id").kill_on_drop(true);
     let output = tokio::time::timeout(std::time::Duration::from_secs(10), command.output())
         .await
-        .context("ACP pair identity check timed out")??;
+        .context("ACP pair identity check timed out")?
+        .with_context(|| {
+            format!(
+                "Failed to execute ACP companion {}: rebuild or reinstall aster and a3s-code-acp together",
+                bin.display()
+            )
+        })?;
     let actual = std::str::from_utf8(&output.stdout)
         .context("invalid ACP build identity")?
         .trim();

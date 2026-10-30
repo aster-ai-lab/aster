@@ -1,0 +1,28 @@
+{
+  "parent": "submit_xolotl_single1m_cont10_lease_v100.frozen.py",
+  "parent_sha256": "feab10f476eb15c1328ba27817220c61ff9f226ab0bd6f2518243a6ec0ac7ff2",
+  "candidate": "submit_xolotl_single1m_cont12_lease_v208.frozen.py",
+  "candidate_sha256": "1f9732d7a7daf55f1bf038bdad80dd8414d32ed56e3272694f136cb3e3d0dbc2",
+  "submission_executed": false,
+  "predecessor": {
+    "allocation_job": "aster-xolotl-1mc10-d0ed8472c851-76441859",
+    "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+    "replica": "aster-xolotl-1mc10-d0ed8472c851-76441859-qmx9q",
+    "replica_uid": "e96e8d68-2420-45a8-84f1-510b9f556f16"
+  },
+  "formal": {
+    "allocation_job": "aster-xolotl-1mc11-6ef84ac5b528-78529266",
+    "allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+    "replica": "aster-xolotl-1mc11-6ef84ac5b528-78529266-v4lkj",
+    "replica_uid": "51a633ec-5c55-4544-bf11-94aeb9283ebd"
+  },
+  "required_predecessor_phase": [
+    "Succeeded",
+    "Failed",
+    "Stopped"
+  ],
+  "formal_health_required": true,
+  "expected_new_GPUs": 1,
+  "maximum_task_GPUs": 2,
+  "windows_forwarding": false
+}

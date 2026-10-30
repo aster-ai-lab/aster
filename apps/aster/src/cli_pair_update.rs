@@ -237,7 +237,7 @@ fn resolve_channel(requested: Option<Version>) -> Result<Channel> {
             format!("aster-cli-v{version}"),
         ),
         None => (
-            format!("{OFFICIAL_RELEASES}/latest/download/{MANIFEST_NAME}"),
+            format!("{OFFICIAL_RELEASES}/download/aster-cli-stable/{MANIFEST_NAME}"),
             String::new(),
         ),
     };

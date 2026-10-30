@@ -1,0 +1,125 @@
+✖ all atlas specifications render with accessible labels, local watermark assets and no inline code or style (213.4668ms)
+✔ atlas refuses unknown types and missing explanations at the real renderer boundary (1.4269ms)
+✔ diagram stepping, keyboard bounds and complete view do not start animation timers (208.9546ms)
+✔ requested narration is finite and reduced motion keeps manual controls (239.1273ms)
+✔ exploded diagram assembles and expands without changing any other figure (47.2115ms)
+✔ source walkthrough works without IntersectionObserver and exposes full reading mode (146.7624ms)
+✔ scroll walkthrough follows an observed narrative without announcing every scroll (117.812ms)
+✔ static source walks retain every explanation and original code line without JavaScript (7729.2255ms)
+✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (502.7981ms)
+✔ the product catalog refuses unsafe paths, duplicate versions and invalid defaults (6.2737ms)
+✔ two products and two versions keep content, navigation, source refs and defaults isolated (810.4258ms)
+✖ section navigation and chapter cards keep introductory and Meta Harness guides separate (54.9363ms)
+✖ MDX builds deterministically and refuses stale generated pages (14277.2149ms)
+✖ highlighted code preserves every authored character and remains labelled and keyboard-scrollable (158.9486ms)
+✔ the generated syntax palette meets 4.5:1 text contrast against its light background (14.6019ms)
+✖ SeeCode renders current architecture figures with labels and extracted styles (131.0693ms)
+✔ source citations resolve exact lines from the registered Git snapshot and refuse drift (314.3302ms)
+✔ current reading paths expose ordered page sources at fixed revisions in canonical and alias routes (322.6989ms)
+✔ the terminal-agent tutorial has twelve ordered chapters and project-local neighboring pages (241.5568ms)
+✔ generated documents preserve project URLs, active navigation and accessible diagrams without JavaScript (28242.6622ms)
+✔ current Core and ACP coverage indexes match the authoritative public contract sets (24.2797ms)
+✔ default aliases resolve cross-product and version links from their pinned source location (117.3587ms)
+✔ every Markdown table renders as an accessible table instead of pipe-delimited prose (1934.1725ms)
+✔ GFM supports table alignment, escaped pipes, task lists, deletion, links and footnotes (36.722ms)
+✔ chapter navigation retains its scroll across page loads and isolates product/version state (169.2214ms)
+✔ navigation remains usable when session storage is unavailable or corrupt (74.431ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 21
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49893.7142
+
+✖ failing tests:
+
+test at apps\web\tests\atlas.test.mjs:33:1
+✖ all atlas specifications render with accessible labels, local watermark assets and no inline code or style (213.4668ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(!result.html.includes('fonts.googleapis.com'))
+  
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:49:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\web\tests\docs.test.mjs:115:1
+✖ section navigation and chapter cards keep introductory and Meta Harness guides separate (54.9363ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '内核原理',
+      '设计原理',
+      '构建终端智能体',
+      'Meta Harness',
+      '功能参考'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/docs.test.mjs:124:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '内核原理', '设计原理', '构建终端智能体', 'Meta Harness', '功能参考' ],
+    expected: [ '设计原理', '构建终端智能体', 'Meta Harness', '功能参考' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\web\tests\docs.test.mjs:136:1
+✖ MDX builds deterministically and refuses stale generated pages (14277.2149ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  180 !== 151
+  
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/docs.test.mjs:140:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 180,
+    expected: 151,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\web\tests\docs.test.mjs:150:1
+✖ highlighted code preserves every authored character and remains labelled and keyboard-scrollable (158.9486ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  6 !== 0
+  
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/docs.test.mjs:158:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\web\tests\docs.test.mjs:197:1
+✖ SeeCode renders current architecture figures with labels and extracted styles (131.0693ms)
+  AssertionError [ERR_ASSERTION]: code/workflow/
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/docs.test.mjs:202:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

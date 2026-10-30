@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::agent_view::shell_completion::shell_suggestion_key_tests::tab_insta_accept_clipping_paste_chip_opens_dropdown_without_refetch' (40480) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\shell_completion.rs:647:9:
+assertion failed: matches!(outcome, InputOutcome::Changed)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::shell_completion::shell_suggestion_key_tests::tab_insta_accept_clipping_paste_chip_opens_dropdown_without_refetch ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::shell_completion::shell_suggestion_key_tests::tab_insta_accept_clipping_paste_chip_opens_dropdown_without_refetch
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

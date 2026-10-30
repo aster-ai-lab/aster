@@ -1,0 +1,81 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling tokio v1.53.3
+   Compiling assert-json-diff v2.0.2
+   Compiling rcgen v0.13.2
+   Compiling tokio-util v0.7.19
+   Compiling tower v0.5.2
+   Compiling tokio-rustls v0.26.6
+   Compiling async-compression v0.4.19
+   Compiling deadpool v0.12.3
+   Compiling a3s-common v0.1.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/common)
+   Compiling a3s-memory v0.1.5 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/memory)
+   Compiling a3s-sandbox v0.2.3 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/sandbox)
+   Compiling sha256 v1.6.0
+   Compiling tower-http v0.6.8
+   Compiling h2 v0.4.19
+   Compiling tokio-stream v0.1.17
+   Compiling a3s-effect v0.2.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/effect)
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling hyper v1.8.1
+   Compiling a3s-lane v0.5.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/lane)
+   Compiling hyper-util v0.1.20
+   Compiling hyper-rustls v0.27.7
+   Compiling wiremock v0.6.5
+   Compiling reqwest v0.12.24
+   Compiling a3s-search v3.4.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/search)
+   Compiling a3s-code-core v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 57s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-840c28faad4accf0)
+
+running 34 tests
+test session_folder::catalog::tests::exact_resolution_does_not_create_missing_state ... ok
+test session_folder::catalog::tests::empty_workspace_is_read_only_and_complete ... ok
+test session_folder::catalog::tests::directory_budget_is_shared_between_layouts ... ok
+test session_folder::catalog::tests::nofollow_open_rejects_a_symlink_swapped_in_after_the_precheck ... ok
+test session_folder::catalog::tests::fifo_is_rejected_before_open_without_waiting_for_a_writer ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_linked_state_and_writerless_fifo ... ok
+test session_folder::catalog::tests::opened_handle_gate_rejects_a_fifo_swapped_in_after_the_precheck ... ok
+test session_folder::catalog::tests::corrupt_preferred_folder_does_not_fall_back_to_different_facts ... ok
+test session_folder::catalog::tests::malformed_facts_order_and_duplicate_keys_are_reported_as_incomplete ... ok
+test session_folder::catalog::tests::oversized_files_and_aggregate_budget_never_report_complete ... ok
+test session_folder::catalog::tests::counts_user_and_model_turns_but_not_tools_or_control_facts ... ok
+test session_folder::catalog::tests::query_preserves_permissions_and_all_stored_bytes ... ok
+test session_folder::catalog::tests::exact_original_unicode_id_comes_from_marker ... ok
+test session_folder::catalog::tests::folder_has_runtime_precedence_over_the_legacy_log ... ok
+test session_folder::catalog::tests::a_moved_workspace_uses_its_opened_root_not_the_stored_path ... ok
+test session_folder::catalog::tests::exact_resolution_does_not_equate_colliding_encoded_ids ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_corrupt_or_oversized_preferred_logs ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_ambiguous_dated_identity_and_legacy_substitution ... ok
+test session_folder::catalog::tests::duplicate_dated_identity_is_ambiguous_even_with_a_legacy_log ... ok
+test session_folder::catalog::tests::exact_resolution_accepts_dated_original_ids_and_legacy_thread_ids ... ok
+test session_folder::catalog::tests::marker_cannot_select_another_log_or_another_id ... ok
+test session_folder::tests::a_legacy_effect_log_stays_in_place ... ok
+test session_folder::catalog::tests::literal_query_runs_before_page_limit_and_prompt_is_utf8_bounded ... ok
+test session_folder::catalog::tests::dated_and_legacy_facts_share_a_catalog_without_a_snapshot_store ... ok
+test session_folder::tests::a_session_lands_in_the_local_date_folder ... ok
+test session_folder::tests::a_symlinked_sessions_root_is_refused ... ok
+test session_folder::tests::dotdot_cannot_name_a_session_folder ... ok
+test session_folder::tests::resume_keeps_the_original_date ... ok
+test session_folder::tests::the_effect_log_is_stored_in_the_session_folder ... ok
+test session_folder::catalog::tests::symlinks_at_every_repository_controlled_level_are_refused ... ok
+test session_folder::catalog::tests::exact_resolution_requires_complete_identity_traversal ... ok
+test standing_context::tests::a_session_folder_log_still_admits_the_workspace ... ok
+test fact_control::tests::open_session_writes_the_effect_log_inside_the_session_folder ... ok
+test session_folder::catalog::tests::exact_resolution_ignores_other_logs_and_a_catalog_page_limit ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 5413 filtered out; finished in 0.80s
+

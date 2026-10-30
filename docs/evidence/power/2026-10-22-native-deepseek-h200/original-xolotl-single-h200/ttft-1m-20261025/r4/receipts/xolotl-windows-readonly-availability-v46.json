@@ -1,0 +1,22 @@
+{
+  "unix": 1792870672.7886462,
+  "source": "Windows direct, proxies disabled",
+  "base_url": "http://10.102.93.68/v1",
+  "inference_tested": false,
+  "/health": {
+    "status": 200,
+    "seconds": 0.06199999991804361,
+    "loaded": true,
+    "max_context": 1048576,
+    "models": []
+  },
+  "/v1/models": {
+    "status": 200,
+    "seconds": 0.016000000294297934,
+    "loaded": null,
+    "max_context": null,
+    "models": [
+      "deepseek-v4.1-flash-1017-xq"
+    ]
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "case": "queue-edit-delete-drain",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "queue-effects",
+      "detail": "three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-ViHiBg\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only QUEUED-SECOND-EDITED. Do not call any tools.                                              10:53 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.6s                                                                                                                                                                                                                              QUEUED-SECOND-EDITED                                                                                   10:53 AM                                                                                                                                 Worked for 9.5s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13465,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2979c198f8c941ff80613fb132c39388",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-20a3cfb3-7c3f-4b32-b518-de9e3acd7982",
+            "thread_id": "6fa51df4-70c2-474c-8139-1c38752ffa4e",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2979c198f8c941ff80613fb132c39388",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-20a3cfb3-7c3f-4b32-b518-de9e3acd7982",
+            "thread_id": "6fa51df4-70c2-474c-8139-1c38752ffa4e",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:abe83d0f39af685af869e063f32898c235ccdddc909ead054402d8d9dcfc9f56",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "queue-proof.txt",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:8b7dc5f8aec7c2acd26a36d6b848097cac3fc5413479a9935187bfad1dc615b5",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:8b7dc5f8aec7c2acd26a36d6b848097cac3fc5413479a9935187bfad1dc615b5",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"QUEUE-PROOF-2e6c66ea-d8ee-4cfb-86f2-dc577a706c1e\\r\\n\\n[mutation observation] path=queue-proof.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":50,\"captured_bytes\":50,\"truncated\":false,\"timed_out\":false},\"changed_paths\":[\"queue-proof.txt\"],\"verification_shell_command\":\"Start-Sleep -Seconds 20; Get-Content -LiteralPath queue-proof.txt -Raw\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":50,\"projected_bytes\":50,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:52b31b8c69ed60651b7469437b227f3cbc2bb795033fb706bdce9e7188029e98\",\"projected_digest\":\"sha256:52b31b8c69ed60651b7469437b227f3cbc2bb795033fb706bdce9e7188029e98\",\"repeat_key\":\"sha256:52b31b8c69ed60651b7469437b227f3cbc2bb795033fb706bdce9e7188029e98\",\"content_ref\":\"inline:sha256:52b31b8c69ed60651b7469437b227f3cbc2bb795033fb706bdce9e7188029e98\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"queue-proof.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:607fc97831e461494f8c018aad248d3fc2ec2934da643efac7acecfe551ad243\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13696,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:9a4c5c69482266c3da0d4637aeed6a36765b6e6cb137307b7490975e471bd2ac"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "e6130de313411c2561f3a77e25c3e9168f70dd1f4276e40c2fba73db99230b6e"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13773,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 13,
+          "digest": "a4e39e577f2889a797d5f9538675cd974a665990ee083e0e07b7e2cc24320dd8"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13829,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 18,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 17,
+          "digest": "6c90f069662f81917f43b6de6f8df89024a5233675cf498a92cda5434ab10a72"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

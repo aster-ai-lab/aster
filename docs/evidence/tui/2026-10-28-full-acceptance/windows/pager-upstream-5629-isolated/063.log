@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::settings::subagent_model_inheritance_writes_one_at_a_time_and_issues_the_newest_intent' (46644) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\settings.rs:1625:5:
+assertion failed: read_toast(&app).starts_with("\u{2717} Could not save subagent_model_inheritance")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::settings::subagent_model_inheritance_writes_one_at_a_time_and_issues_the_newest_intent ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::settings::subagent_model_inheritance_writes_one_at_a_time_and_issues_the_newest_intent
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

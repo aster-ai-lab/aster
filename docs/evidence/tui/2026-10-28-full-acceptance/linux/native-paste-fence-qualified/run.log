@@ -1,0 +1,10 @@
+
+running 1 test
+test context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once ... ORACLE case=long-unicode-paste name=source-pair result=pass detail=aster-cli-pair-v1:503af41b9d9f58b0f61096c38251e757a10bdcc6:x86_64-unknown-linux-gnu
+ORACLE case=long-unicode-paste name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=22080
+ORACLE case=long-unicode-paste name=exact-long-paste result=pass detail=more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response
+ORACLE case=long-unicode-paste name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 22 filtered out; finished in 15.30s
+

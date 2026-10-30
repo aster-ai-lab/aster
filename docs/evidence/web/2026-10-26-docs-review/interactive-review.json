@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-review/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "browser_containment": "hostname_v1",
+    "event_count": 14,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-review/events.jsonl",
+    "finished_at_ms": 1793003906618,
+    "goal": "检查目录脚本示例的目录跳转与移动端可读性",
+    "schema_version": 1,
+    "session": "aster-docs-review",
+    "started_at_ms": 1793003581540,
+    "status": "passed",
+    "success_criteria": [
+      "脚本章节可由目录访问，示例与移动导航可读"
+    ],
+    "summary": "Verified script table-of-contents navigation and readable 390px script example; final source defines run(ctx), checks exitCode and supplies the program type discriminator.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-review/report.json",
+  "session": "aster-docs-review",
+  "status": "passed"
+}

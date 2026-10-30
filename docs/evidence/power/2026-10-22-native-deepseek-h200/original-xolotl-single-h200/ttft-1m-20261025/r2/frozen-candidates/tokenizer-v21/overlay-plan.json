@@ -1,0 +1,9 @@
+{
+  "upstream_sha256": "5180c184d1a421dd5b56e799360fe6306b96d41da2d443d0bb68dae6714f2e5d",
+  "patched_sha256": "08703bc5e6148f58ccd4b5ad4bddb7469d047aaf4f2a9e5765c7ceb73947b573",
+  "helper_sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+  "gpu_qualified": false,
+  "production_changed": false,
+  "max_memo_bytes": 33554432,
+  "max_memo_entries": 4
+}

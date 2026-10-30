@@ -1,0 +1,181 @@
+{
+  "assertions_finished": true,
+  "case": "queue-edit-delete-drain",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "sleep 20; cat queue-proof.txt",
+            "timeout": 120000
+          },
+          "id": "call_fd3e61390e1d4f33ae2502f6d6ed90d1",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13203,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-efc50578-2267-4334-996f-0ac9c70a66fd",
+            "thread_id": "f3862447-510b-4b98-be81-69dfc93386ce"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_fd3e61390e1d4f33ae2502f6d6ed90d1",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-efc50578-2267-4334-996f-0ac9c70a66fd",
+            "thread_id": "f3862447-510b-4b98-be81-69dfc93386ce"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_fd3e61390e1d4f33ae2502f6d6ed90d1",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"QUEUE-PROOF-a154053c-1f54-4b19-b4b4-46690d581907\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":48,\"captured_bytes\":48,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":48,\"sha256\":\"e7d29828e707c5ab6f2a598d8ad3cbc81baac8ff9928b75c108a54a754d206f8\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"sleep 20; cat queue-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":48,\"projected_bytes\":48,\"original_estimated_tokens\":12,\"projected_estimated_tokens\":12,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e7d29828e707c5ab6f2a598d8ad3cbc81baac8ff9928b75c108a54a754d206f8\",\"projected_digest\":\"sha256:e7d29828e707c5ab6f2a598d8ad3cbc81baac8ff9928b75c108a54a754d206f8\",\"repeat_key\":\"sha256:e7d29828e707c5ab6f2a598d8ad3cbc81baac8ff9928b75c108a54a754d206f8\",\"content_ref\":\"inline:sha256:e7d29828e707c5ab6f2a598d8ad3cbc81baac8ff9928b75c108a54a754d206f8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:566de6b9e9f6af26926857415c2d3a27d1709f93ceaa01da003ef27d4bbea2fe\"}",
+        "prepared_digest": "sha256:060fd0179fa742baedac6eff4fa274e0b5ace67a54ff4b9cf92f00b748aa1ff4",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13405,
+        "text": "QUEUE-PROOF-a154053c-1f54-4b19-b4b4-46690d581907",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "9b390bc186eeb0f9fad232ef4768840e9ebcedcfb6c5b071ea4f4dfa49957f45",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:d4807ccf5362e5dbdeca7878d79c58b27b62c4865048aaac5917b51ead450f3c"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13479,
+        "text": "QUEUED-FIRST-OK",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "5589a34941e872580623387a0fb39ff4aa4cde29d8737b2f2a87afa36e40c995",
+          "seq": 13
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13535,
+        "text": "QUEUED-SECOND-EDITED",
+        "tool": null
+      },
+      "seq": 17,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "f80cc43cf10865cd4dd8f5bfc3ef2d073977e424da3e9d667fdff42a83125d3a",
+          "seq": 17
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 18,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order",
+      "name": "queue-effects",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-lvkBls/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only QUEUED-SECOND-EDITED. Do not call any tools.                                              12:25 AM    \n                                                                                                                        \n                                                                                                                        \n  ┃  ◆ Thinking…                                                                                                        \n  ┃                                                                                                                     \n  ┃  Kimi will respond only exact no tools.                                                                             \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n    ⠼ Thinking… 0.4s                                                                                 11s ⇣13.5k [stop]  \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                 \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,25 @@
+{
+  "status": "readiness_concurrency_fix_and_auto_routing_audit",
+  "at_epoch": 1792939218.1001806,
+  "root_worktree": "/code/aster/.wt-deepseek-dspark-main-20261025",
+  "power_worktree": "/code/aster/.wt-deepseek-dspark-main-20261025/crates/power",
+  "root_base": "57cc7f7be6d10e1b7b884718f0c118eddbc81430",
+  "power_base": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
+  "power_merge_head": "d9f6acfba5221f1db3fde378b4b6fd26ec7fbf50",
+  "validation_pid": 3134817,
+  "authorization": "Deploy best measured GPU6 profile; commit merge and push remote main; keep one DeepSeek and six Prism; exclude unrelated working edits",
+  "live_power_pid": 2956766,
+  "original_evidence": "/code/aster/.wt-deepseek-platform-runtime/docs/evidence/deployment/2026-10-25-deepseek-dspark-prefill",
+  "next": [
+    "Complete root validation and release build",
+    "Record source and artifact hashes; atomically rollout GPU6 preserving tuning and all other services",
+    "Run actual native short correctness/generation and public WorkBuddy checks",
+    "Commit Power merge with exact staged paths and publish Power main; update parent gitlink, add owned gateway/bridge/evidence, commit and push Aster main without force",
+    "Verify remote refs and server identities, sync landing evidence to Windows"
+  ],
+  "new_goal": "Deeply optimize A3S OS unified gateway; models available and efficient; auto routing based on decision model",
+  "new_power_pid": 3174438,
+  "readiness_race_reproduced": true,
+  "current_release_sha": "de631f93da0831144ada8855e0ee1d2020ef9a2e8271376ff9204e9b928fd0b3",
+  "commit_push_still_required": true
+}

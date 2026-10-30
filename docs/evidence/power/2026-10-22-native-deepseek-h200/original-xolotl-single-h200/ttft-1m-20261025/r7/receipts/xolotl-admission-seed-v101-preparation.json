@@ -1,0 +1,27 @@
+{
+  "binary_sha256": "c96e244dc7ffb1ebd56a2039c96506a81d702cd8c9e158c0f50c134edded2a6c",
+  "profiles": [
+    "off",
+    "on",
+    "off_repeat"
+  ],
+  "unchanged_request_worker": "xolotl_isolation_worker_v90.frozen.py",
+  "qualified_output_gate_unchanged": true,
+  "files": [
+    {
+      "file": "launch_admission_seed_service_v101.frozen.py",
+      "bytes": 8625,
+      "sha256": "ac12b4d54061d4a0fafb7ab867997cf6f6d53a447b4139036365e042b5d183a2"
+    },
+    {
+      "file": "manage_admission_seed_matrix_v102.frozen.py",
+      "bytes": 8785,
+      "sha256": "899cea02572abdd4d6bea7475aa36b811e36ac3155c8e6720f82005fed8bcef3"
+    },
+    {
+      "file": "run_admission_seed_matrix_v103.frozen.py",
+      "bytes": 3914,
+      "sha256": "8ce10e87726cf7d7a98e4d088ead3fe4d7d3430f67a9da107a9d00847be1b0f2"
+    }
+  ]
+}

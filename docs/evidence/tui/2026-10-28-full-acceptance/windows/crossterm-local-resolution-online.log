@@ -1,0 +1,15 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Updating crates.io index
+     Locking 5 packages to latest Rust 1.63.0 compatible versions
+      Adding crossterm v0.28.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\third-party\crossterm)
+    Removing crossterm v0.28.1
+      Adding dashmap v5.4.0 (available: v5.5.3, requires Rust 1.65)
+      Adding serial_test v2.0.0 (available: v3.3.1)
+      Adding serial_test_derive v2.0.0
+      Adding temp-env v0.3.6
+note: pass `--verbose` to see 634 unchanged dependencies behind latest

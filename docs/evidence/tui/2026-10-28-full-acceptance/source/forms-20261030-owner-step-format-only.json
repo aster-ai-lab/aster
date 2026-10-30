@@ -1,0 +1,20 @@
+{
+  "schema": "aster.tui.source-format.v1",
+  "frozen_runtime_pair_digest": "b44752d77fa649bf767498820c1fdb123aaa13ac",
+  "current_source_digest": "295070d681078ee1833dfe33e733cbb8a1054d7e",
+  "current_product_pair_rebuilt": false,
+  "method": "format archived source copies with rustfmt --edition 2021, then compare exact bytes with current files",
+  "rustfmt": "rustfmt 1.9.0-stable (8bab26f4f6 2026-07-14)",
+  "changes": [
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs",
+      "before_sha256": "1d82de579e9f6982d99dae5bc5e1298083a511f7ea9da5a367ed6441c004f167",
+      "after_sha256": "6e5a686745abf02c3b3e9b49cf646e236732ba733ccc0918393bfe2f57295048"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs",
+      "before_sha256": "fde8bc987147d803942345afc26dbe90d234cd4fa9b586d92badc2a779d9790e",
+      "after_sha256": "0b488670e2a00fb6dbe9454bc8d45e1165dcd1cb4fe5480ef3e1b130f96cc786"
+    }
+  ]
+}

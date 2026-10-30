@@ -7,6 +7,7 @@ mod jump;
 mod mid_text_btw;
 mod mid_text_goal;
 mod modes;
+mod modes_code;
 mod notes;
 mod permissions;
 mod prompt;
@@ -125,6 +126,7 @@ fn test_app() -> AppView {
         cli_model_override: None,
         cli_effort_token: None,
         default_yolo: false,
+        launch_yolo: false,
         permission_mode_from_soft_default: true,
         auto_mode_gate: true,
         yolo_policy_block: None,

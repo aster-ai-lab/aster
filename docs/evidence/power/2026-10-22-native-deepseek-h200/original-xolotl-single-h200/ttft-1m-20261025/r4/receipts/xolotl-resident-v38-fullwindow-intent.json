@@ -1,0 +1,29 @@
+{
+  "unix": 1792865726.4730203,
+  "phase": "launched",
+  "kind": "fullwindow",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-resident-compare-v37-v35_packed/qualification-v38-fullwindow",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "binary_sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "request-worker.py",
+      "bytes": 7080,
+      "sha256": "676db47692544d085c405d6026a169afe379512a88b60e64a95c1734b9dbbf8c"
+    },
+    {
+      "file": "request-plan.json",
+      "bytes": 258,
+      "sha256": "2ba5bb344ea3a637e8d81ad124cb14161fc1e5236248ade5a16ad2108c580817"
+    }
+  ],
+  "process": {
+    "pid": 856182,
+    "start_ticks": 279252246,
+    "uid": 10250,
+    "unix": 1792865737.5386927,
+    "budget_seconds": 3400
+  }
+}

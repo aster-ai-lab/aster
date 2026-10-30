@@ -131,7 +131,7 @@ pub(super) async fn owned_conversation_worker(
             Ok(resolved)
         }
         .await;
-        let (mut prompt, attachments, history, command_capable, exact, checkpoint, ordinary) =
+        let (prompt, attachments, history, command_capable, exact, checkpoint, ordinary) =
             match request_inputs {
                 Ok(actual) => actual,
                 Err(error) => {
@@ -221,7 +221,10 @@ pub(super) async fn owned_conversation_worker(
             if let Some(directive) =
                 owed_work_directive(&owed, &captured.config.verification_contracts)
             {
-                prompt = format!("{prompt}\n\n{directive}");
+                captured
+                    .preparation
+                    .construction
+                    .append_turn_guidance(&directive);
             }
         }
         // Exact reservation precedes capability admission, as in the original

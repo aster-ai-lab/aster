@@ -1,0 +1,15 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+error: no matching package named `amq-protocol` found
+location searched: crates.io index
+required by package `lapin v4.12.2`
+    ... which satisfies dependency `lapin = "^4.10.0"` (locked to 4.12.2) of package `a3s-boot v0.2.0 (/mnt/d/code/aster/crates/boot)`
+    ... which satisfies path dependency `a3s-boot` (locked to 0.2.0) of package `a3s-flow v2.0.0 (/mnt/d/code/aster/crates/flow)`
+    ... which satisfies path dependency `a3s-flow` (locked to 2.0.0) of package `a3s-code-core v9.1.6 (/mnt/d/code/aster/crates/code/core)`
+    ... which satisfies path dependency `a3s-code-core` (locked to 9.1.6) of package `a3s-embedding v0.1.0 (/mnt/d/code/aster/crates/embedding)`
+note: offline mode (via `--offline`) can sometimes cause surprising resolution failures
+help: if this error is too confusing you may wish to retry without `--offline`

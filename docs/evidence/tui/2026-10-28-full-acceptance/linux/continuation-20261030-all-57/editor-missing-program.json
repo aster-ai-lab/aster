@@ -1,0 +1,63 @@
+{
+  "assertions_finished": true,
+  "case": "editor-missing-program",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13191,
+        "text": "EDITOR-CONTROL-OK",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "196544b0b2bea163ba6df32d8effdfdde6c330134fac098b55bb3b254112c951",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13191",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                                      │\n│                                                          +#+ ...++o                                                  │\n│                                                        +*###*+  :::                                                  │\n│                                                    ..+*##* *##*+:                                                    │\n│                                                  ...  ::*#*#+                                                        │\n│                                                  .:::::   #                                                          │\n│                                                                                                                      │\n│ Aster  v9.1.4                                                                                                        │\n│ /tmp/aster-kimi-OfI24f/workspace                                                                                     │\n│ Model · kimi/K3.1 Pro                                                                                                │\n│ /help for commands                                                                                                   │\n│                                                                                                                      │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\nNo active session\n  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 343a63dc-6ee7-4354-900f-6db07e84c45e\n  Working directory: /tmp/aster-kimi-OfI24f/workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor failed; the original draft was kept.\n\n❯ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n◆ Thought for 0.9s\n┃ I need respond exact EDITOR-CONTROL-OK no tools. Should follow latest user English. Just respond.\nEDITOR-CONTROL-OK\nWorked for 6.4s\nminimal · /help                                                                                                         \n❯\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "name": "editor-roundtrip",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                                      │\n│                                                          +#+ ...++o                                                  │\n│                                                        +*###*+  :::                                                  │\n│                                                    ..+*##* *##*+:                                                    │\n│                                                  ...  ::*#*#+                                                        │\n│                                                  .:::::   #                                                          │\n│                                                                                                                      │\n│ Aster  v9.1.4                                                                                                        │\n│ /tmp/aster-kimi-OfI24f/workspace                                                                                     │\n│ Model · kimi/K3.1 Pro                                                                                                │\n│ /help for commands                                                                                                   │\n│                                                                                                                      │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\nNo active session\n  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 343a63dc-6ee7-4354-900f-6db07e84c45e\n  Working directory: /tmp/aster-kimi-OfI24f/workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor failed; the original draft was kept.\n\n❯ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n◆ Thought for 0.9s\n┃ I need respond exact EDITOR-CONTROL-OK no tools. Should follow latest user English. Just respond.\nEDITOR-CONTROL-OK\nWorked for 6.4s\nminimal · /help                                                                                                         \n❯\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

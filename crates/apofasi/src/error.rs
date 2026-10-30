@@ -33,6 +33,15 @@ pub enum Error {
         name: String,
     },
 
+    /// State exceeds the configured sequence budget and truncation is refused.
+    #[error("question `{id}` state exceeds max_len={max_len}")]
+    StateOverflow {
+        /// Question whose state exceeded the budget.
+        id: String,
+        /// Configured total sequence budget in tokens.
+        max_len: usize,
+    },
+
     /// JSON state serialization failure.
     #[error("state serialization failed: {0}")]
     StateSerialize(#[from] serde_json::Error),

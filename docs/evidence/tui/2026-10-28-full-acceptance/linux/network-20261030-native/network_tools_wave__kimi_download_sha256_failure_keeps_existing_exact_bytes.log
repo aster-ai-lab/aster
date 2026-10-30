@@ -1,0 +1,61 @@
+
+running 1 test
+test network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes ... ORACLE case=network-download-hash name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+
+thread '<unnamed>' (7789) panicked at crates/code/acp/tests/aster_tui_live_e2e/network_tools_wave.rs:440:17:
+assertion `left == right` failed: fixture received a request for an unexpected host
+  left: None
+ right: Some("aster-fixture.example.test")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes' (7788) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:735:13:
+live turn failed
+                                                                                                                        
+  /t/aster-kimi-Pc0ola/workspace                                                                              0 / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:07 PM    
+       arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                 
+                                                                                                                        
+                                                                                                                        
+  ┃  Turn failed in 0.4s: Request failed: HTTP request transport failed: error sending request : client error           
+  ┃  (Connect): tunnel error: failed to create underlying… Try sending again.                                           
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+FAILED
+
+failures:
+
+failures:
+    network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 112 filtered out; finished in 8.33s
+

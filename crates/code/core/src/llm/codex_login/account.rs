@@ -121,8 +121,7 @@ fn resolve_codex_home() -> Option<PathBuf> {
             return Some(PathBuf::from(home));
         }
     }
-    let user_home = std::env::var_os("HOME").map(PathBuf::from)?;
-    Some(user_home.join(".codex"))
+    dirs::home_dir().map(|home| home.join(".codex"))
 }
 
 fn load_from_home(home: &Path) -> Result<Option<CodexAccountImport>> {
@@ -524,11 +523,13 @@ mod tests {
         .unwrap();
         let import = load_from_home(home.path()).unwrap().unwrap();
         assert_eq!(import.default_model_id, "synthetic-selected-model");
-        assert!(import
-            .provider
-            .models
-            .iter()
-            .any(|model| model.id == "synthetic-selected-model"));
+        assert!(
+            import
+                .provider
+                .models
+                .iter()
+                .any(|model| model.id == "synthetic-selected-model")
+        );
     }
 
     #[test]

@@ -43,6 +43,58 @@ interface PlaybackState {
   transitionKey: number;
 }
 
+export function PresentationPreview({
+  content,
+}: {
+  content: WorkPresentationContent;
+}) {
+  const messages = useOfficeMessages();
+  const [requestedIndex, setRequestedIndex] = useState(0);
+  const index = Math.min(requestedIndex, Math.max(0, content.slides.length - 1));
+  const slide = content.slides[index];
+  if (!slide) return null;
+  const width = content.width ?? 13.333;
+  const height = content.height ?? 7.5;
+  const aspectRatio = `${width} / ${height}`;
+  return (
+    <section
+      className="work-presentation-player work-presentation-preview"
+      data-slide-index={index}
+      style={{ '--work-slide-preview-ratio': width / height } as React.CSSProperties}
+    >
+      <div className="work-presentation-player-stage">
+        <div className="work-presentation-transition-layer" data-slide-transition="none">
+          <SlideCanvas
+            content={content}
+            slide={slide}
+            interactive={false}
+            aspectRatio={aspectRatio}
+          />
+        </div>
+      </div>
+      <footer>
+        <button
+          type="button"
+          aria-label={officeMessage(messages, 'presentation.player.prevAria')}
+          disabled={index === 0}
+          onClick={() => setRequestedIndex(index - 1)}
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <span aria-live="polite">{`${index + 1} / ${content.slides.length}`}</span>
+        <button
+          type="button"
+          aria-label={officeMessage(messages, 'presentation.player.nextAria')}
+          disabled={index >= content.slides.length - 1}
+          onClick={() => setRequestedIndex(index + 1)}
+        >
+          <ChevronRight size={18} />
+        </button>
+      </footer>
+    </section>
+  );
+}
+
 export function PresentationPlayer({
   autoFullscreen = false,
   content,

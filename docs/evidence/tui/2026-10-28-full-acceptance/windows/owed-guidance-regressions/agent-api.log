@@ -1,0 +1,438 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 42s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_core-b84e9a3e662ce246.exe)
+
+running 311 tests
+test agent_api::tests::agents_workers::test_live_worker_catalog_is_model_visible_and_tracks_registry_changes ... ok
+test agent_api::tests::agents_workers::test_register_agent_dir_empty_dir_returns_zero ... ok
+test agent_api::tests::agents_workers::test_register_agent_dir_loads_agents_into_live_session ... ok
+test agent_api::tests::agents_workers::test_register_agent_dir_nonexistent_returns_zero ... ok
+test agent_api::tests::agents_workers::test_register_worker_agent_loads_worker_into_live_session ... ok
+test agent_api::tests::agents_workers::test_register_worker_agents_loads_batch_into_live_session ... ok
+test agent_api::tests::agents_workers::test_session_command_is_available_from_queue_module ... ok
+test agent_api::tests::agents_workers::test_session_for_worker_maps_worker_spec_to_session_options ... ok
+test agent_api::tests::agents_workers::test_session_keeps_claude_agents_as_compatibility_source ... ok
+test agent_api::tests::agents_workers::test_session_loads_workspace_a3s_agents ... ok
+test agent_api::tests::agents_workers::test_session_options_worker_agents_register_for_task_delegation ... ok
+test agent_api::tests::agents_workers::test_session_with_mcp_manager_builds_ok ... ok
+test agent_api::tests::agents_workers::test_workspace_a3s_agents_override_claude_compat_agents ... ok
+test agent_api::tests::async_mcp::async_session_builder_initializes_all_async_resources_on_current_thread_runtime ... ok
+test agent_api::tests::async_mcp::async_session_builder_returns_typed_memory_initialization_error ... ok
+test agent_api::tests::async_mcp::async_session_builder_returns_typed_trajectory_initialization_error ... ok
+test agent_api::tests::async_mcp::async_session_code_intelligence_attaches_tools ... ok
+test agent_api::tests::async_mcp::async_session_keeps_inherited_mcp_sources_separate_from_live_extensions ... ok
+test agent_api::tests::async_mcp::async_sessions_never_share_their_live_mcp_manager ... ok
+test agent_api::tests::async_mcp::close_serializes_with_live_mcp_mutation_and_rejects_late_add_remove ... ok
+test agent_api::tests::async_mcp::duplicate_global_mcp_source_is_deduplicated ... ok
+test agent_api::tests::async_mcp::live_mcp_add_remove_is_session_local_and_restores_inherited_precedence ... ok
+test agent_api::tests::async_mcp::live_mcp_remove_cleanup_failure_still_commits_registry_removal ... ok
+test agent_api::tests::async_mcp::sync_global_mcp_servers_hot_applies_without_rebuilding_agent ... ok
+test agent_api::tests::async_mcp::sync_session_code_intelligence_keeps_host_services ... ok
+test agent_api::tests::async_mcp::sync_session_code_intelligence_requires_async_build ... ok
+test agent_api::tests::async_mcp::sync_session_compatibility_accepts_preinitialized_resources ... ok
+test agent_api::tests::async_mcp::sync_session_compatibility_rejects_async_resource_specs_without_panicking ... ok
+test agent_api::tests::async_mcp::sync_session_uses_cached_global_mcp_without_blocking_runtime ... ok
+test agent_api::tests::attachment_cap::over_cap_attachment_is_rejected_before_history ... ok
+test agent_api::tests::attachment_cap::reloaded_png_keeps_the_same_content_digest ... ok
+== request 0 ==
+  [user] Start the background watch, read the README, tail until the marker, then report.
+== request 1 ==
+  [user] Start the background watch, read the README, tail until the marker, then report.
+  [assistant] 
+  [user] 
+== request 2 ==
+  [user] Start the background watch, read the README, tail until the marker, then report.
+  [assistant] 
+  [user] 
+  [assistant] 
+  [user] 
+== request 3 ==
+  [user] Start the background watch, read the README, tail until the marker, then report.
+  [assistant] 
+  [user] 
+  [assistant] 
+  [user] 
+  [assistant] 
+  [user] 
+  [user] [background:watch] BG1_TWIN_MARK_7f3a-1
+  [user] [background:watch] exited: exit status 0
+== request 4 ==
+  [user] Extract at most 5 durable memories from this completed turn.
+Use the related existing memories to avoid duplicates. If the turn refines a related memory, write one updated standalone memory instead of repeating the old wording.
+Only put ids from Related existing memories in supersedes when the new memory directly replaces or consolidates them.
+Use conflicts_with for directly contradictory related memories that should remain available instead of being deleted.
+
+Return exactly this JSON shape:
+{"items":[{"memory_type":"semantic|procedural","content":"standalone reusable memory","importance":0.0,"confidence":0.0,"tags":["tag"],"source":"project_fact|workflow|failure|preference|decision","scope":"workspace|user","reason":"why this will matter in a future session","supersedes":["related-memory-id"],"conflicts_with":["related-memory-id"],"evolution":null|{"kind":"preference|skill|okf","pattern_key":"stable.semantic.pattern","title":"short reusable title","summary":"what should be learned","instructions":["standalone instruction or fact"]}}]}
+
+Acceptance rules:
+- If the user explicitly asks to remember, note, or retain something for later — in ANY language (for example "remember this", "请记住", "覚えておいて", "기억해") — extract that item with importance at least 0.90, confidence at least 0.95, and source "preference". An explicit retention request is durable user knowledge, never current-turn narration, and always clears the thresholds.
+- Return {"items":[]} unless the memory is likely to change a future answer or action.
+- Use semantic only for durable facts, preferences, or decisions; use procedural only for reusable workflows or failure lessons.
+- Write content and reason in the user's language when clear; do not translate durable facts into another language. Preserve literal names, identifiers, code, and commands exactly.
+- importance must be at least 0.70 and confidence at least 0.75.
+- scope is workspace for repository-specific knowledge and user for stable user preferences.
+- failure memories must state a reusable cause, diagnostic, or prevention rule, never a raw error or stack trace.
+- Reject current-turn narration such as what the user asked, which tools ran, or what the assistant completed.
+- Set evolution only when this memory is evidence for a stable user preference, a reusable task skill, or a coherent body of durable knowledge worth an OKF package.
+- Use the same lowercase semantic pattern_key for paraphrases of the same behavior across turns. It must describe meaning, not quote the current wording or include a session id.
+- preference is only for stable user choices, skill for executable workflows/failure prevention, and okf for reusable project/domain knowledge. Instructions must be standalone, conservative, and contain no secrets.
+- For evolution, write a 3-8 word title of at most 64 characters, a one-sentence summary of at most 200 characters, and at most 4 distinct instructions of at most 200 characters each.
+- Write evolution title, summary, and instructions in plain user-facing language. Use the user's language when clear, state the durable behavior directly, and do not describe how it was learned.
+- Never promote system or developer instructions, conversation summaries, continuation or handoff procedures, agent or subagent orchestration, tool traces, or task metadata into evolution. A task-specific direction is not a stable preference or skill.
+
+User request:
+Start the background watch, read the README, tail until the marker, then report.
+
+Assistant final response:
+BG1_TWIN_MARK_7f3a observed
+
+Related existing memories:
+None
+
+Compressed turn transcript:
+user: Start the background watch, read the README, tail until the marker, then report.
+
+assistant: BG1_TWIN_MARK_7f3a observed
+
+test agent_api::tests::background_settlement::the_run_receives_background_output_and_settles_the_task ... ok
+test agent_api::tests::checkpoint_capability_recovery::cutover_after_exact_preparation_cannot_change_the_pinned_recovery_generation ... ok
+test agent_api::tests::close::test_close_cancels_in_flight_send ... ok
+test agent_api::tests::close::test_close_marks_session_closed_and_is_idempotent ... ok
+test agent_api::tests::close::test_direct_tools_after_close_return_session_closed_error ... ok
+test agent_api::tests::close::test_immediate_capability_mutations_after_close_fail_closed ... ok
+test agent_api::tests::close::test_is_closed_starts_false ... ok
+test agent_api::tests::close::test_send_after_close_returns_session_closed_error ... ok
+test agent_api::tests::close::test_stream_after_close_returns_session_closed_error ... ok
+test agent_api::tests::cognitive::blank_session_id_returns_typed_configuration_error ... ok
+test agent_api::tests::cognitive::cognitive_package_binding_is_persisted_and_retained_by_run_events ... ok
+test agent_api::tests::cognitive::cognitive_provider_failure_and_generation_drift_fail_closed_without_fallback ... ok
+test agent_api::tests::cognitive::cognitive_session_rejects_general_rag_or_graph_provider_fallback ... ok
+test agent_api::tests::cognitive::cognitive_session_resume_requires_the_same_host_injected_binding ... ok
+test agent_api::tests::cognitive::unbound_session_does_not_invent_a_cognitive_package ... ok
+test agent_api::tests::compact::compact_conversation_writes_a_summary_fact ... ok
+test agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input ... ok
+test agent_api::tests::compact::source_carry::compact_twice_reopens_file_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_carry::compact_twice_reopens_memory_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_guard::compact_append_refuses_foreign_writer_and_changed_source ... ok
+test agent_api::tests::compact::source_guard::compact_bad_policy_source_refuses_before_summary_provider ... ok
+test agent_api::tests::compact::source_guard::compact_budget_refusal_does_not_call_summary_provider_or_append ... ok
+test agent_api::tests::compact::source_guard::compact_close_cancels_budget_wait_and_retains_original_writer ... ok
+test agent_api::tests::conversation_busy::test_active_blocking_send_rejects_send_and_stream_then_releases ... ok
+test agent_api::tests::conversation_busy::test_active_stream_rejects_all_conversation_entrypoints ... ok
+test agent_api::tests::conversation_busy::test_active_stream_rejects_slash_command_with_session_busy ... ok
+test agent_api::tests::conversation_busy::test_slash_command_outputs_obey_session_security_provider ... ok
+test agent_api::tests::conversation_busy::test_stream_exposes_current_run_handle_and_replay ... ok
+test agent_api::tests::durable_engineering::combined_budget_race_and_policy_conflict_on_both_stores ... ok
+test agent_api::tests::durable_engineering::combined_child_task_gets_the_policy_and_no_goal_tool ... ok
+test agent_api::tests::durable_engineering::combined_revision_race_admits_one_plan ... ok
+test agent_api::tests::durable_engineering::combined_unknown_receipt_stays_unknown_without_effect ... ok
+test agent_api::tests::durable_engineering::four_modes_bind_work_and_reopen_on_the_file_store ... ok
+test agent_api::tests::durable_engineering::four_modes_bind_work_and_reopen_on_the_memory_store ... ok
+test agent_api::tests::dynamic_workflow::test_session_workflow_inherits_runtime_budget_guard ... ok
+test agent_api::tests::dynamic_workflow::test_session_workflow_is_prewired_with_budget_and_stable_root_id ... ok
+test agent_api::tests::dynamic_workflow::test_session_workflow_parent_permission_can_deny_scoped_host_tool ... ok
+test agent_api::tests::dynamic_workflow::test_session_workflow_runs_a_real_child_agent_step ... ok
+test agent_api::tests::dynamic_workflow::test_session_workflow_scopes_explicit_host_tools_to_its_children ... ok
+test agent_api::tests::fact_log::a_new_run_without_a_standing_digest_does_not_call_the_model ... ok
+test agent_api::tests::fact_log::child_policy::child_policy_actual_fact_run_restores_before_task_and_skill_delegation ... ok
+test agent_api::tests::fact_log::child_policy::delegated_work_policy_reaches_original_workflow_child_prompt ... ok
+test agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes ... ok
+test agent_api::tests::fact_log::context_report_and_cost_command_read_usage_weights_and_repeats_from_the_session ... ok
+test agent_api::tests::fact_log::context_sections_are_recorded_stable_and_source_tracked ... ok
+test agent_api::tests::fact_log::durable_read::durable_transcript_uses_the_owned_log_while_its_writer_is_fenced ... ok
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_file_store_reopen ... ok
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_memory_store ... ok
+test agent_api::tests::fact_log::durable_source::fork_refuses_invalid_source_before_first_snapshot ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_input_keeps_required_target_after_optional_context_timeout ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_input_preserves_unknown_bound_execution_target ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_adaptive_mode ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_code_mode ... ok
+test agent_api::tests::fact_log::fact_log_facade_emits_turn_start_and_turn_end ... ok
+test agent_api::tests::fact_log::fact_log_hides_tools_a_deny_by_default_policy_does_not_expose ... ok
+test agent_api::tests::fact_log::fact_log_identical_call_and_result_get_a_non_blocking_host_note ... ok
+test agent_api::tests::fact_log::fact_log_mcp_is_error_reaches_the_model_tool_result ... ok
+test agent_api::tests::fact_log::fact_log_read_image_bytes_reach_the_next_request_and_restored_history ... ok
+test agent_api::tests::fact_log::fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn ... ok
+test agent_api::tests::fact_log::fact_log_session_attachments_steer_and_history_stay_on_the_log ... ok
+test agent_api::tests::fact_log::fact_log_session_explicit_preference_fails_closed_when_extraction_json_fails ... ok
+test agent_api::tests::fact_log::fact_log_session_new_user_message_calls_the_model_after_a_verified_tool ... ok
+test agent_api::tests::fact_log::fact_log_session_send_and_resume_use_the_stored_model_turn ... ok
+test agent_api::tests::fact_log::fact_log_session_send_projects_the_skill_catalog ... ok
+test agent_api::tests::fact_log::fact_log_session_stream_appends_the_model_turn_and_resume_does_not_resend_it ... ok
+test agent_api::tests::fact_log::final_delivery::assistant_delivery_cannot_replace_missing_verification ... ok
+test agent_api::tests::fact_log::final_delivery::interactive_delivery_calls_the_model_after_verification_without_replaying_tools ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_failed_save_keeps_source_and_never_publishes_target ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_four_modes_file_store ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_four_modes_memory_store ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_refuses_debt_busy_and_changed_source_without_execution ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_refuses_nonterminal_and_existing_targets ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_reuses_original_flat_log_for_same_workspace ... ok
+test agent_api::tests::fact_log::fork_session_at_discards_later_facts_and_the_next_turn_replays_the_prefix ... ok
+test agent_api::tests::fact_log::fork_session_at_refuses_while_a_run_is_streaming ... ok
+test agent_api::tests::fact_log::host_contract_prompt::initial_model_request_contains_only_the_admitted_host_contracts ... ok
+test agent_api::tests::fact_log::host_contract_prompt::no_host_contract_does_not_project_a_user_declared_checker ... ok
+test agent_api::tests::fact_log::host_reports::a_host_recorded_report_closes_the_same_digest_on_the_next_stream ... ok
+test agent_api::tests::fact_log::loop_source::durable_loop_original_exports_resume_all_ingresses_file_reopen ... ok
+test agent_api::tests::fact_log::loop_source::durable_loop_original_exports_resume_all_ingresses_memory_store ... ok
+test agent_api::tests::fact_log::navigation::navigation_explicit_mount_shares_tool_manifest_and_reaches_actual_model_once ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_batch_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_delegated_main_turn_inherits_the_code_profile ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_children_share_the_run_budget_and_keep_denied_receipts ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_provider_projection_retains_admitted_schema_and_profile_identity ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_skill_visibility_keeps_execution_permission_and_confirmation_gates ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_without_permission_or_confirmation_presents_no_tools ... ok
+test agent_api::tests::fact_log::no_count_limit::an_explicit_composed_zero_allowance_is_not_an_absent_ceiling ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_composed_positive_allowance_still_bounds_an_unlimited_session ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_positive_tool_count_still_refuses_the_next_call ... ok
+test agent_api::tests::fact_log::no_count_limit::stock_and_host_composition_preserve_an_absent_count_ceiling ... ok
+test agent_api::tests::fact_log::program_failure_receipts::read_then_throw_keeps_a_failed_parent_and_the_actual_nested_read ... ok
+test agent_api::tests::fact_log::program_failure_receipts::write_then_failed_check_and_throw_keeps_both_original_child_results ... ok
+test agent_api::tests::fact_log::sandbox_availability::the_first_model_request_names_an_unavailable_command_backend ... ok
+test agent_api::tests::fact_log::seam_admission_open_run_stays_frozen ... ok
+test agent_api::tests::fact_log::standing_context_stays_the_admitted_projection ... ok
+test agent_api::tests::fact_log::work_policy::a_policy_session_admits_its_digest_before_the_first_run ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver ... ok
+test agent_api::tests::fact_log::work_policy::corrupt_policy_source_refuses_before_provider_entry ... ok
+test agent_api::tests::fact_log::work_policy::existing_execution_history_refuses_policy_rebinding_without_a_model_or_fact ... ok
+test agent_api::tests::fact_log::work_policy::policy_session_uses_original_memory_and_file_stores_with_actual_reopen ... ok
+test agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal ... ok
+test agent_api::tests::history_concurrency::test_concurrent_history_reads ... ok
+test agent_api::tests::history_concurrency::test_session_no_init_warning_without_file_memory ... ok
+test agent_api::tests::host_adapter::custom_host_adapter_receives_the_tool_result ... ok
+test agent_api::tests::long_horizon_capabilities::a_narrative_answer_does_not_wash_inherited_debt ... ok
+test agent_api::tests::long_horizon_capabilities::a_recorded_host_report_closes_the_next_sends_open_digest ... ok
+test agent_api::tests::long_horizon_capabilities::budget_denial_names_the_forced_stop ... ok
+test agent_api::tests::long_horizon_capabilities::compaction_between_debt_and_settlement_does_not_forgive_it ... ok
+test agent_api::tests::long_horizon_capabilities::contract_does_not_bind_a_suite_that_covers_only_part_of_the_mutation ... ok
+test agent_api::tests::long_horizon_capabilities::crash_mid_long_task_resumes_its_mutation_ledger_and_completes_verified ... ok
+test agent_api::tests::long_horizon_capabilities::debts_from_multiple_unsettled_turns_settle_together ... ok
+test agent_api::tests::long_horizon_capabilities::declared_suite_contract_binds_a_passing_run_and_completes_verified ... ok
+test agent_api::tests::long_horizon_capabilities::distinct_read_only_sources_do_not_force_an_incomplete_answer ... ok
+test agent_api::tests::long_horizon_capabilities::failed_read_calls_still_exhaust_the_total_tool_budget ... ok
+test agent_api::tests::long_horizon_capabilities::interrupted_run_mutations_carry_into_the_next_send_gate ... ok
+test agent_api::tests::long_horizon_capabilities::length_limited_answer_names_the_truncation ... ok
+test agent_api::tests::long_horizon_capabilities::manual_compaction_cannot_accept_unverified_original_mutation ... ok
+test agent_api::tests::long_horizon_capabilities::plan_batch_and_recovery_choreography_survives_the_fact_spine ... ok
+test agent_api::tests::long_horizon_capabilities::plan_management_does_not_exhaust_the_read_only_ceiling ... ok
+test agent_api::tests::long_horizon_capabilities::settled_end_carries_the_gates_verification_summary ... ok
+test agent_api::tests::long_horizon_capabilities::unstreamed_final_response_text_is_resent_at_settle ... ok
+test agent_api::tests::long_horizon_capabilities::without_a_contract_a_bare_suite_run_still_does_not_bind ... ok
+test agent_api::tests::memory::test_memory_remember_and_recall ... ok
+test agent_api::tests::memory::test_session_file_memory_initialization_failure_is_typed ... ok
+test agent_api::tests::memory::test_session_memory_uses_code_config_limits ... ok
+test agent_api::tests::memory::test_session_memory_wired_into_config ... ok
+test agent_api::tests::memory::test_session_uses_configured_default_memory_dir ... ok
+test agent_api::tests::memory::test_session_with_file_memory ... ok
+test agent_api::tests::memory::test_session_with_memory_store ... ok
+test agent_api::tests::memory::test_session_without_memory_store ... ok
+test agent_api::tests::options::test_active_skill_tool_restriction_option_defaults_and_overrides ... ok
+test agent_api::tests::options::test_session_auto_parallel_override_preserves_base_auto_delegation ... ok
+test agent_api::tests::options::test_session_max_parallel_tasks_config_and_override ... ok
+test agent_api::tests::options::test_session_options_builders ... ok
+test agent_api::tests::options::test_session_options_with_rl_trajectory_records_jsonl ... ok
+test agent_api::tests::path_instructions_fact::fact_spine_cuts_the_tail_under_the_default_budget ... ok
+test agent_api::tests::path_instructions_fact::fact_spine_injects_nothing_when_no_rule_matches_the_target ... ok
+test agent_api::tests::path_instructions_fact::fact_spine_injects_the_full_fragment_under_a_large_budget ... ok
+test agent_api::tests::persistence::test_completed_run_clears_its_loop_checkpoint ... ok
+test agent_api::tests::persistence::test_file_session_store_persistence ... ok
+test agent_api::tests::persistence::test_resume_run_picks_up_from_persisted_checkpoint ... ok
+test agent_api::tests::persistence::test_resume_run_preserves_exhausted_tool_budget_for_finalization ... ok
+test agent_api::tests::persistence::test_resume_run_rejects_checkpoint_owned_by_another_session ... ok
+test agent_api::tests::persistence::test_resume_session ... ok
+test agent_api::tests::persistence::test_resume_session_no_store ... ok
+test agent_api::tests::persistence::test_resume_session_not_found ... ok
+test agent_api::tests::persistence::test_resume_session_preserves_artifacts_beyond_default_store_limits ... ok
+test agent_api::tests::persistence::test_resume_session_restores_artifacts ... ok
+test agent_api::tests::persistence::test_resume_session_restores_run_records ... ok
+test agent_api::tests::persistence::test_resume_session_restores_runtime_config ... ok
+test agent_api::tests::persistence::test_resume_session_restores_trace_events ... ok
+test agent_api::tests::persistence::test_resume_session_restores_verification_reports ... ok
+test agent_api::tests::persistence::test_session_artifact_store_limits_option ... ok
+test agent_api::tests::persistence::test_session_explicit_id ... ok
+test agent_api::tests::persistence::test_session_has_id ... ok
+test agent_api::tests::persistence::test_session_save_and_load ... ok
+test agent_api::tests::persistence::test_session_save_no_store ... ok
+test agent_api::tests::persistence::test_session_save_persists_runtime_config ... ok
+test agent_api::tests::persistence::test_session_save_with_history ... ok
+test agent_api::tests::persistence::test_session_snapshots_accumulate_completed_run_usage ... ok
+test agent_api::tests::persistence::test_session_uses_finite_retention_by_default_and_allows_explicit_unbounded ... ok
+test agent_api::tests::persistence::test_session_verification_presets_reflect_workspace ... ok
+test agent_api::tests::persistence::test_verify_commands_builds_report_from_shell_results ... ok
+test agent_api::tests::persistence::test_verify_commands_use_host_direct_policy_but_keep_budget_governance ... ok
+test agent_api::tests::queue::session_close_rejects_and_clears_every_pending_confirmation ... ok
+test agent_api::tests::queue::session_close_settles_a_stream_blocked_on_confirmation ... ok
+test agent_api::tests::queue::test_session_can_disable_manual_delegation_tools_without_dropping_registry ... ok
+test agent_api::tests::queue::test_session_confirmation_api_resolves_pending_request ... ok
+test agent_api::tests::queue::test_session_confirmation_api_without_manager_is_noop ... ok
+test agent_api::tests::queue::test_session_dead_letters_empty ... ok
+test agent_api::tests::queue::test_session_options_with_agent_dir ... ok
+test agent_api::tests::queue::test_session_options_with_queue_config ... ok
+test agent_api::tests::queue::test_session_pending_external_tasks_empty ... ok
+test agent_api::tests::queue::test_session_queue_metrics_disabled ... ok
+test agent_api::tests::queue::test_session_queue_metrics_enabled ... ok
+test agent_api::tests::queue::test_session_queue_stats_with_queue ... ok
+test agent_api::tests::queue::test_session_queue_stats_without_queue ... ok
+test agent_api::tests::queue::test_session_set_lane_handler ... ok
+test agent_api::tests::queue::test_session_uses_single_delegation_tool_surface ... ok
+test agent_api::tests::queue::test_session_with_queue_config ... ok
+test agent_api::tests::queue::test_session_without_queue_config ... ok
+test agent_api::tests::runtime::async_session_build_and_close_fire_lifecycle_hooks_once ... ok
+test agent_api::tests::runtime::session_builder_rejects_out_of_range_injection_budgets ... ok
+test agent_api::tests::runtime::session_pre_prompt_block_emits_stream_error ... ok
+test agent_api::tests::runtime::session_pre_prompt_rewrite_reaches_model_history ... ok
+test agent_api::tests::runtime::synchronous_session_build_keeps_configured_memory_observers ... ok
+test agent_api::tests::runtime::test_agent_close_closes_every_live_session ... ok
+test agent_api::tests::runtime::test_agent_close_rejects_blocked_resume_finalization ... ok
+test agent_api::tests::runtime::test_agent_close_session_closes_target_session ... ok
+test agent_api::tests::runtime::test_agent_list_sessions_tracks_live_sessions ... ok
+test agent_api::tests::runtime::test_agent_rejects_duplicate_live_ids_across_sync_and_async_factories ... ok
+test agent_api::tests::runtime::test_budget_guard_deny_aborts_llm_call ... ok
+test agent_api::tests::runtime::test_cancelled_resume_releases_session_id_reservation ... ok
+test agent_api::tests::runtime::test_close_cancels_session_token ... ok
+test agent_api::tests::runtime::test_closed_session_releases_id_while_old_handle_is_still_held ... ok
+test agent_api::tests::runtime::test_cluster_agent_events_serialize_with_expected_tags ... ok
+test agent_api::tests::runtime::test_custom_host_env_yields_deterministic_session_and_run_ids ... ok
+test agent_api::tests::runtime::test_disconnect_idle_mcp_is_safe_no_op_without_global_mcp ... ok
+test agent_api::tests::runtime::test_failed_sync_and_async_builds_release_session_id_reservations ... ok
+test agent_api::tests::runtime::test_identity_labels_default_to_none ... ok
+test agent_api::tests::runtime::test_identity_labels_round_trip_via_session_options ... ok
+test agent_api::tests::runtime::test_runtime_agent_style_overrides_session_prompt_slots ... ok
+test agent_api::tests::runtime::test_runtime_budget_guard_overrides_session_options_value ... ok
+test agent_api::tests::runtime::test_runtime_output_language_overrides_session_prompt_slots ... ok
+test agent_api::tests::runtime::test_runtime_planning_mode_overrides_session_config ... ok
+test agent_api::tests::runtime::test_send_publishes_runtime_events_to_hook_executor ... ok
+test agent_api::tests::runtime::test_send_records_run_snapshot_and_events ... ok
+test agent_api::tests::runtime::test_send_with_attachments_passes_session_id_to_context_providers ... ok
+test agent_api::tests::runtime::test_session_cancel_token_propagates_to_in_flight_run ... ok
+test agent_api::tests::runtime::test_session_cancel_token_starts_uncancelled ... ok
+test agent_api::tests::runtime::test_session_close_waits_for_accepted_memory_extraction_to_persist ... ok
+test agent_api::tests::scheduler::agent_scheduler_prioritizes_interactive_work_across_sessions ... ok
+test agent_api::tests::scheduler::concurrent_session_direct_generations_share_provider_admission ... ok
+test agent_api::tests::scheduler::host_direct_tools_share_the_agent_scheduler_with_conversation_runs ... ok
+test agent_api::tests::scheduler::independent_sessions_share_scheduler_backed_provider_generation_capacity ... ok
+test agent_api::tests::scheduler::task_and_generate_object_reject_the_same_invalid_object ... ok
+test agent_api::tests::scheduler::test_from_config ... ok
+test agent_api::tests::scheduler::test_session_default ... ok
+test agent_api::tests::session_construction::host_skill_replaces_a_same_name_directory_skill ... ok
+test agent_api::tests::session_construction::isolated_session_omits_discovered_context_and_prior_memory ... ok
+test agent_api::tests::session_construction::test_create_alias_acl ... ok
+test agent_api::tests::session_construction::test_create_and_new_produce_same_result ... ok
+test agent_api::tests::session_construction::test_from_config_defers_default_model_validation_to_session ... ok
+test agent_api::tests::session_construction::test_local_session_installs_native_sandbox_by_default ... ok
+test agent_api::tests::session_construction::test_new_rejects_hcl_files ... ok
+test agent_api::tests::session_construction::test_new_with_acl_string ... ok
+test agent_api::tests::session_construction::test_new_with_existing_acl_file_uses_file_loading ... ok
+test agent_api::tests::session_construction::test_new_with_missing_acl_file_reports_not_found ... ok
+test agent_api::tests::session_construction::test_session_for_agent_applies_definition_and_keeps_skill_overrides_isolated ... ok
+test agent_api::tests::session_construction::test_session_for_agent_preserves_existing_prompt_slots_when_injecting_definition_prompt ... ok
+test agent_api::tests::session_construction::test_session_initializes_without_legacy_agentic_tools ... ok
+test agent_api::tests::session_construction::test_session_routes_agents_md_through_context_provider ... ok
+test agent_api::tests::session_construction::test_session_skill_dirs_override_session_registry_and_skip_invalid_entries ... ok
+test agent_api::tests::session_construction::test_session_skill_dirs_preserve_agent_registry_validator ... ok
+test agent_api::tests::session_construction::test_session_skill_registry_overrides_agent_registry_without_polluting_parent ... ok
+test agent_api::tests::session_construction::test_session_specific_skills_do_not_leak_across_sessions ... ok
+test agent_api::tests::session_construction::test_session_uses_workspace_backend_for_direct_tools ... ok
+test agent_api::tests::session_construction::test_session_with_invalid_model_format ... ok
+test agent_api::tests::session_construction::test_session_with_model_not_found ... ok
+test agent_api::tests::session_construction::test_session_with_model_override ... ok
+test agent_api::tests::skill_collision::skill_named_read_does_not_replace_the_builtin_tool ... ok
+
+thread 'tokio-rt-worker' (53148) panicked at crates\code\core\src\agent_api\tests\stream.rs:998:9:
+only pre-analysis may call complete: You extract durable, reusable memory for a coding agent.
+Return JSON only. Do not include markdown.
+Keep only facts, preferences, decisions, workflows, and failure lessons that are likely useful in future sessions.
+Do not store transient progress, generic praise, raw logs, secrets, credentials, or information that only matters inside the current answer.
+Never narrate what the user or assistant did in this turn.
+Each memory must be standalone, concise, scoped, and justified.
+Write user-facing memory and learning text in plain language without internal orchestration terms.
+Return an empty items array when nothing qualifies.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tokio-rt-worker' (40360) panicked at crates\code\core\src\agent_api\tests\stream.rs:998:9:
+only pre-analysis may call complete: You extract durable, reusable memory for a coding agent.
+Return JSON only. Do not include markdown.
+Keep only facts, preferences, decisions, workflows, and failure lessons that are likely useful in future sessions.
+Do not store transient progress, generic praise, raw logs, secrets, credentials, or information that only matters inside the current answer.
+Never narrate what the user or assistant did in this turn.
+Each memory must be standalone, concise, scoped, and justified.
+Write user-facing memory and learning text in plain language without internal orchestration terms.
+Return an empty items array when nothing qualifies.
+test agent_api::tests::stream::auto_planning_on_the_fact_path_follows_the_pre_analysis_decision ... ok
+test agent_api::tests::stream::cancelled_fact_stream_settles_without_memory_extraction ... ok
+test agent_api::tests::stream::test_cancel_run_only_cancels_matching_current_run ... ok
+test agent_api::tests::stream::test_history_empty_on_new_session ... ok
+test agent_api::tests::stream::test_non_retryable_pre_analysis_stops_before_main_turn ... ok
+test agent_api::tests::stream::test_non_retryable_stream_error_skips_fallback_and_circuit_retries ... ok
+test agent_api::tests::stream::test_run_handle_cancels_send_with_attachments ... ok
+test agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events ... ok
+test agent_api::tests::stream::test_stream_cancel_records_interrupted_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_error_does_not_update_history_or_auto_save ... ok
+test agent_api::tests::stream::test_stream_tool_round_checkpoint_flushes_session_before_end ... ok
+test agent_api::tests::stream::test_stream_updates_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_with_attachments_cancel_records_interrupted_history_and_auto_saves ... ok
+test agent_api::tests::stream::test_stream_with_custom_history_does_not_update_session_history ... ok
+test agent_api::tests::stream::v912_stream_end_waiver_and_cancel ... ok
+test agent_api::tests::stream_identity::admitted_stream_identity_survives_fast_completion_and_later_runs ... ok
+test agent_api::tests::stream_identity::commands_and_closed_sessions_do_not_mint_model_run_identities ... ok
+test agent_api::tests::subagent::cancel_subagent_task_marks_snapshot_cancelled ... ok
+test agent_api::tests::subagent::delegated_child_run_publishes_events_to_the_parent_hook_executor ... ok
+test agent_api::tests::subagent::runtime_budget_guard_refreshes_the_registered_skill_tool ... ok
+test agent_api::tests::subagent::runtime_budget_guard_refreshes_the_registered_task_tool ... ok
+test agent_api::tests::subagent::subagent_events_populate_session_tracker ... ok
+test agent_api::tests::subagent::subagent_progress_events_accumulate_in_tracker ... ok
+test agent_api::tests::subagent::subagent_tasks_scope_to_parent_session ... ok
+test agent_api::tests::subagent::test_agent_executor_created_before_close_rejects_new_steps ... ok
+test agent_api::tests::subagent::test_agent_executor_inherits_parent_run_context ... ok
+test agent_api::tests::subagent::test_registered_task_fanout_inherits_final_confirmation_manager ... ok
+test agent_api::tests::timeouts::test_session_confirmation_and_tool_timeouts_remain_independent ... ok
+test agent_api::tests::timeouts::test_session_confirmation_timeout_does_not_configure_tool_timeout ... ok
+test agent_api::tests::timeouts::test_session_duplicate_tool_call_threshold_configured ... ok
+test agent_api::tests::timeouts::test_session_llm_api_timeout_does_not_configure_tool_timeout ... ok
+test agent_api::tests::timeouts::test_session_tool_timeout_configured ... ok
+test agent_api::tests::timeouts::test_session_without_queue_builds_ok ... ok
+test agent_api::tests::worktree_settlement::the_run_removes_its_worktree_at_settlement_without_an_llm ... ok
+
+test result: ok. 311 passed; 0 failed; 0 ignored; 0 measured; 5003 filtered out; finished in 295.57s
+

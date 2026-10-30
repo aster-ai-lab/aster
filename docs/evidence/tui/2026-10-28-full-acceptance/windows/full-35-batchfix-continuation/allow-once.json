@@ -1,0 +1,358 @@
+{
+  "case": "allow-once",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TM54MK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run Get-   5:56 PM           Item -LiteralPath result.txt -ErrorAction Stop using the bash tool to verify the output exists.                         Read result.txt back and reply with its exact contents. Do not modify source.txt or any other file.                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   ♦ Creating result.txt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ♦ Run write 0.1s                                                                                 16s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow write?                                                                                                         │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TM54MK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run Get-   5:56 PM           Item -LiteralPath result.txt -ErrorAction Stop using the bash tool to verify the output exists.                         Read result.txt back and reply with its exact contents. Do not modify source.txt or any other file.                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   ♦ Creating result.txt                                                                                                                                                                                                                             1  KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f                                                                                                                                                                                            ♦ Thought for 9.8s                                                                                                      ♦ Run Get-Item -LiteralPath result.txt -ErrorAction Stop                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ♦ Run Get-Item -LiteralPath result.txt -ErrorAction Stop 0.0s                                 28s ↓13.9k [↓][stop]                                                                                                                            │                                                                                                                       │  Allow Execute?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=19 model_turns=5 prompt_tokens=69358",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TM54MK\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run Get-   5:56 PM           Item -LiteralPath result.txt -ErrorAction Stop using the bash tool to verify the output exists.                         Read result.txt back and reply with its exact contents. Do not modify source.txt or any other file.                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   ♦ Creating result.txt                                                                                                                                                                                                                             1  KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f                                                                                                                                                                                            ♦ Thought for 9.8s                                                                                                      ♦ Run Get-Item -LiteralPath result.txt -ErrorAction Stop                                                                ♦ Read 1 file                                                                                                                                                                                                                                   KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f                                                         5:57 PM                                                                                                                                 verified ✓ (1 check)                                                                                                                                                                                                                            Worked for 57s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "live-write-verify",
+      "detail": "real read/write/shell receipts, exact output bytes and verified terminal",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TM54MK\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run Get-   5:56 PM           Item -LiteralPath result.txt -ErrorAction Stop using the bash tool to verify the output exists.                         Read result.txt back and reply with its exact contents. Do not modify source.txt or any other file.                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   ♦ Creating result.txt                                                                                                                                                                                                                             1  KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f                                                                                                                                                                                            ♦ Thought for 9.8s                                                                                                      ♦ Run Get-Item -LiteralPath result.txt -ErrorAction Stop                                                                ♦ Read 1 file                                                                                                                                                                                                                                   KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f                                                         5:57 PM                                                                                                                                 verified ✓ (1 check)                                                                                                                                                                                                                            Worked for 57s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13356,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_a57a87127c4046fba0bdfbac665c3acc",
+          "name": "read",
+          "args": {
+            "file_path": "source.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_a57a87127c4046fba0bdfbac665c3acc",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_a57a87127c4046fba0bdfbac665c3acc",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:309249bb04c5aab47b399368e4106f82bb6a6df267b3853bce6189cad036d523",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"source.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":88},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":88,\"projected_bytes\":88,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"projected_digest\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"repeat_key\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"content_ref\":\"inline:sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7d578ee7298e57cb6d3ffe3422c8ff04d536c23d2554d5e7e1ceda9a56b11412\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13587,
+        "has_text": false,
+        "tool": "write",
+        "call": {
+          "id": "call_e19635913eac4f9bb7156a67a79a49b1",
+          "name": "write",
+          "args": {
+            "file_path": "result.txt",
+            "content": "KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_e19635913eac4f9bb7156a67a79a49b1",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_e19635913eac4f9bb7156a67a79a49b1",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:57d5f4884d0ec88391c6c3604e1097f83dad91a57e11fb8696e0314f86557e56",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "result.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 47 bytes (1 lines) to \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-TM54MK\\\\workspace\\\\result.txt\\n[mutation observation] path=result.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"result.txt\",\"created\":true,\"after\":\"KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f\",\"change\":{\"compacted\":false,\"before\":null,\"after\":{\"bytes\":47,\"sha256\":\"ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e06024c3d4e501b68d14f77ff9778b8543566c05ae211ae990d02a17c999f55c\",\"projected_digest\":\"sha256:e06024c3d4e501b68d14f77ff9778b8543566c05ae211ae990d02a17c999f55c\",\"repeat_key\":\"sha256:e06024c3d4e501b68d14f77ff9778b8543566c05ae211ae990d02a17c999f55c\",\"content_ref\":\"inline:sha256:e06024c3d4e501b68d14f77ff9778b8543566c05ae211ae990d02a17c999f55c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"result.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:df5afd4ea807224c7e189ef90273c03419799dc518c01f2ec808a54c7bb77bd6\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13945,
+        "has_text": false,
+        "tool": "bash",
+        "call": {
+          "id": "call_7a38b8d5f19345158faa22bd3fdcec9a",
+          "name": "bash",
+          "args": {
+            "command": "Get-Item -LiteralPath result.txt -ErrorAction Stop"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_7a38b8d5f19345158faa22bd3fdcec9a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_7a38b8d5f19345158faa22bd3fdcec9a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:639e205ed024a1d72a58febe328aa378d9be48b3706022eb8014f30112c0a438",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "result.txt",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0",
+                "mode": 32
+              }
+            },
+            {
+              "path": "source.txt",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:ebcc9097e938cea95f0445f79e87653f066aca47930e8b7a344bb28dd2edbed0",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"[mutation observation] path=result.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"changed_paths\":[\"result.txt\",\"source.txt\"],\"verification_shell_command\":\"Get-Item -LiteralPath result.txt -ErrorAction Stop\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"source.txt\",\"status\":\"persisted\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:result.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:result.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: result.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"15d35f76fb8043184eaa88b32cbc311851be96c9da1603a02361926f30ca90e5\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14158,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_5f6f623b11e245e1883d521f3616f6ff",
+          "name": "read",
+          "args": {
+            "file_path": "result.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 18,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_5f6f623b11e245e1883d521f3616f6ff",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 19,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_5f6f623b11e245e1883d521f3616f6ff",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4ea0cd61-5504-4fe0-bcf3-39a93c032921",
+            "thread_id": "4bba290c-9960-45c8-aa73-1e73a8fec679",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:eb88b81a236cafdcdc075909d0386ab38963a65425d36f8c0498de381fc884d8",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"result.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":88},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":88,\"projected_bytes\":88,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"projected_digest\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"repeat_key\":\"sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"content_ref\":\"inline:sha256:d7816f28a6dd78de795a69a9484146bab4a442d31234e5aa97989cfedeef188d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7d578ee7298e57cb6d3ffe3422c8ff04d536c23d2554d5e7e1ceda9a56b11412\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 20,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14312,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "KIMI-WRITE-c398d724-6802-4fec-b23a-8be2e4d8116f"
+      }
+    },
+    {
+      "seq": 21,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "verified",
+        "effect_digest": "15d35f76fb8043184eaa88b32cbc311851be96c9da1603a02361926f30ca90e5",
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:3b89fc3c4902d2d818ca37cfed9f7f54839ea505306ed2e046943a2cc11b9bbc",
+          "sha256:7a2be2d22360e81feefab9acf2ce9814b5bc9bf647b97bc31f799d27faa7a0f4",
+          "sha256:854cd9f53be2ae09a7f7b585b871296f900f1472f920cde80920a9dd31af8592",
+          "sha256:7c4eba5c9a66633e8ea11965684734613171ccb108ecc100c71b95f201bf63cb"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 20,
+          "digest": "cde87d5d3dd35a7a241e905f519693a2b3a4c2e3ed3fa3e66f4b2f67cee1e8e9"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

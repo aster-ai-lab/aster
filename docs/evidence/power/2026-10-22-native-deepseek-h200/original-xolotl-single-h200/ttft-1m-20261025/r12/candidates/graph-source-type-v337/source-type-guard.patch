@@ -1,0 +1,46 @@
+--- original/ggml-cuda.cu
++++ candidate/ggml-cuda.cu
+@@ -1,4 +1,5 @@
+ #include "ggml-cuda.h"
++#include "aster_graph_source_type_v338.hpp"
+ #include "ggml-impl.h"
+ #include "ggml-backend-impl.h"
+ 
+@@ -2616,7 +2617,36 @@
+     const void * graph_key = ggml_cuda_graph_get_key(cgraph);
+     ggml_cuda_graph * graph = cuda_ctx->cuda_graph(graph_key);
+ 
+-    if (cgraph->uid != 0 &&
++    static const auto source_type_mode = aster_graph_types::parse(getenv("ASTER_XQ_GRAPH_SOURCE_TYPES"));
++    if (source_type_mode == aster_graph_types::Mode::invalid) {
++        GGML_ABORT("ASTER_XQ_GRAPH_SOURCE_TYPES must be 0 or 1");
++    }
++    if (source_type_mode == aster_graph_types::Mode::on) {
++        // The existing node snapshots include source pointers/shapes/strides,
++        // but not source types. F16 and BF16 can share every one of those.
++        // Also check before the UID fast path. No device graph structure or
++        // shared CUDA archive ABI is changed.
++        static aster_graph_types::Cache<> source_types;
++        if (cgraph->n_nodes < 0 || cgraph->n_nodes > 4096) {
++            res = true; // outside the bounded cache, always force recapture
++        } else {
++            std::vector<std::uint16_t> signature;
++            signature.reserve(static_cast<std::size_t>(cgraph->n_nodes) * GGML_MAX_SRC);
++            static_assert(GGML_TYPE_COUNT < 65535);
++            for (int i = 0; i < cgraph->n_nodes; ++i) {
++                for (int j = 0; j < GGML_MAX_SRC; ++j) {
++                    const auto * src = cgraph->nodes[i]->src[j];
++                    if (src && (src->type < 0 || src->type >= GGML_TYPE_COUNT)) {
++                        GGML_ABORT("invalid source type in CUDA graph identity");
++                    }
++                    signature.push_back(src ? static_cast<std::uint16_t>(src->type) : 65535);
++                }
++            }
++            res = source_types.changed(reinterpret_cast<std::uintptr_t>(graph), signature);
++        }
++    }
++
++    if (!res && cgraph->uid != 0 &&
+         cgraph->uid == graph->uid) {
+         GGML_LOG_DEBUG("CUDA Graph id %zu reused\n", cgraph->uid);
+         GGML_ASSERT((int)graph->node_props.size() == cgraph->n_nodes);

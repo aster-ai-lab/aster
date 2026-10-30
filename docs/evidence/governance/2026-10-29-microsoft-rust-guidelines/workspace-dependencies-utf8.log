@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+.warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+..warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+.warning: unused variable: `path`
+  --> D:\code\aster\apps\studio\src-tauri\build.rs:75:11
+   |
+75 | fn unlock(path: &Path) {
+   |           ^^^^ help: if this is intentional, prefix it with an underscore: `_path`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+
+..
+----------------------------------------------------------------------
+Ran 6 tests in 9.828s
+
+OK

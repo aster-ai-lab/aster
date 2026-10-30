@@ -6,6 +6,29 @@ fn parse(payload: Value) -> Vec<SessionPickerEntry> {
     })
     .unwrap()
 }
+#[test]
+fn picker_accepts_code_catalog_id() {
+    let payload = serde_json::json!({
+        "sessions": [{
+            "id": "code-session",
+            "cwd": "/tmp/code-workspace",
+            "createdAt": chrono::Utc::now().to_rfc3339(),
+            "updatedAt": chrono::Utc::now().to_rfc3339(),
+            "firstPrompt": "Do not call tools. Reply only HOME-ORIGINAL-OK.",
+            "summary": "Do not call tools. Reply only HOME-ORIGINAL-OK.",
+            "numMessages": 2,
+            "factCount": 7,
+            "sessionKind": "interactive",
+            "source": "local",
+            "_meta": {"a3sCode/sessionCatalog": "a3s.code.session-catalog.v1"}
+        }]
+    });
+    let entries = parse(payload);
+    assert_eq!(entries.len(), 1);
+    assert_eq!(entries[0].id, "code-session");
+    assert_eq!(entries[0].session_kind.as_deref(), Some("interactive"));
+}
+
 fn row(id: &str, source: &str) -> Value {
     serde_json::json!({
         "sessionId": id,

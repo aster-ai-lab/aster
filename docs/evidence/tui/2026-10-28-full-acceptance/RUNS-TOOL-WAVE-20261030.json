@@ -1,0 +1,306 @@
+{
+  "schema": "aster.tui.tool-wave-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_snapshot": {
+    "file": "source/tool-wave-20261030-source.json",
+    "sha256": "1fe915975e41fbed46567c6f4e65c1b22dbe0c5e17ff444407de0b89091281ab"
+  },
+  "source_pair_digest": "c860e66c1e42149f47a9bfadff219fd6fae2f8fa",
+  "all_77_entrypoints_run": false,
+  "complete_153": false,
+  "supplemental_runs_do_not_replace_initial_failures": true,
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "binaries": [
+        {
+          "name": "a3s-code-acp.exe",
+          "bytes": 185497088,
+          "sha256": "493d457b5c63837df2eb64ca012a922ddc6fab3057ad4c5562b242057e59e7bd"
+        },
+        {
+          "name": "aster.exe",
+          "bytes": 324007424,
+          "sha256": "1d32f4fcf552818eb204c2110c98ab648b3d6e1b095b2eed1aa44b7d98466917"
+        }
+      ],
+      "harness": {
+        "file": "windows/tool-wave-20261030-native/test-binary.json",
+        "sha256": "e1d3c91db8cb9c8b64b94610fd51e04b64e56cf2ba8b5b34d43d1560589641c7"
+      },
+      "passed": 2,
+      "failed": 6,
+      "run_logs": [
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope.log",
+          "sha256": "cb685b3b738d5fc434f710806a1d2d8d28a87085d26909c12a255b77e67e0799",
+          "test": "tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope.log",
+          "seconds": 28.1
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned.log",
+          "sha256": "51fd775415ee408b3a911368d08166231988a294160c5b904cf6500e6003408e",
+          "test": "tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned.log",
+          "seconds": 47.56
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_batch_partial_failure_retains_order_identity_and_successful_items.log",
+          "sha256": "9197a71da406e364a0e44b8fc5409215fce15467860d961466c0c98177ddb3cd",
+          "test": "tool_wave::kimi_batch_partial_failure_retains_order_identity_and_successful_items",
+          "exit_code": 0,
+          "log": "windows/tool-wave-20261030-native/kimi_batch_partial_failure_retains_order_identity_and_successful_items.log",
+          "seconds": 23.05
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts.log",
+          "sha256": "f2756223f6638e962413a18a9c717c8eb7f20af267db2769e0ffb506bc4630b0",
+          "test": "tool_wave::kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts",
+          "exit_code": 0,
+          "log": "windows/tool-wave-20261030-native/kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts.log",
+          "seconds": 43.0
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_plan_program_cannot_promote_its_nested_write_permission.log",
+          "sha256": "4bd14938db41209749f63e72aa72c1d5e7e950f9740842b2787c6bc879c8540c",
+          "test": "tool_wave::kimi_plan_program_cannot_promote_its_nested_write_permission",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_plan_program_cannot_promote_its_nested_write_permission.log",
+          "seconds": 41.26
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_update_plan_replaces_the_real_checklist_and_status_projection.log",
+          "sha256": "ee56d4a1e6c217c3daec79d40ec822e641829785fffd5ac9fed583aba005ee02",
+          "test": "tool_wave::kimi_update_plan_replaces_the_real_checklist_and_status_projection",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_update_plan_replaces_the_real_checklist_and_status_projection.log",
+          "seconds": 27.27
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write.log",
+          "sha256": "94499f84f64df1341f564505b947249c4e98af319f3cbbc76426ff228a0a88a9",
+          "test": "tool_wave::kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write.log",
+          "seconds": 54.08
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier.log",
+          "sha256": "6ba75cde8e44833f7d6829ecb42f97ef07c657f9d82031bd3f64655c5283bd6c",
+          "test": "tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier",
+          "exit_code": 101,
+          "log": "windows/tool-wave-20261030-native/kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier.log",
+          "seconds": 45.96
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-background.json",
+          "sha256": "83161bfe19ad76d65045002dfe3719525ffbb2578f39156896bdeff7f80caa03",
+          "case": "tool-wave-background",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-batch.json",
+          "sha256": "2f513bccd7ebe08a57e1d4e51a01f8bbce29f707a65f3bf36f07716f643e1b3e",
+          "case": "tool-wave-batch",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-checklist.json",
+          "sha256": "9474fb8967527f1323ce3d264079430f37f0feb843b10ef9fe377cbe29a4fb9c",
+          "case": "tool-wave-checklist",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-git.json",
+          "sha256": "7fa61a0c19bcc630e0580ba4c9adb1aea22ae94544ef139e7b16064f4604a71b",
+          "case": "tool-wave-git",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-patch.json",
+          "sha256": "48acf3acc0569adf8ed1438074c7b9fa1d2bbc3ce2139368cde289c2ab970aa2",
+          "case": "tool-wave-patch",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-program-plan.json",
+          "sha256": "2c22c117bae4ab8abdb93d9095b03bca1a87dca798a97447f1696b59dd560e92",
+          "case": "tool-wave-program-plan",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-program.json",
+          "sha256": "96c9ca3a619ef696cafb884aa80728ba4520d4f4e5a6b0d385a67cb7ddab6433",
+          "case": "tool-wave-program",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/tool-wave-20261030-native/reports/tool-wave-task-children.json",
+          "sha256": "dec49ab3dbd6323814f1bf2c83bb5163fb18fd8ad037cbacdcd81ee7ba41cd4c",
+          "case": "tool-wave-task-children",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "binaries": [
+        {
+          "name": "a3s-code-acp",
+          "bytes": 415477512,
+          "sha256": "593126af70709f7256df28262c7f25d477d2fb6d9ba695defcc12bd386744610"
+        },
+        {
+          "name": "aster",
+          "bytes": 1115629216,
+          "sha256": "90ac1afacdc092a5ab11db3c8e066b59215bfd8ef342d9e806d291fe05e26805"
+        }
+      ],
+      "harness": {
+        "file": "linux/tool-wave-20261030-native/test-binary.json",
+        "sha256": "1a0defe4e67cedf8edce256968c05e576baf824fdd0c88d65fde75be5ee48e91"
+      },
+      "passed": 2,
+      "failed": 6,
+      "run_logs": [
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope.log",
+          "sha256": "3cc84a9710025abb7cb2dfc426fea13c093225ddb47a51d57e34c563d021e874",
+          "test": "tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope.log",
+          "seconds": 25.35
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned.log",
+          "sha256": "8d9a164005d07a4db2649c15021e2a6af497eefbc72ee35ff9219dbd8432e1f4",
+          "test": "tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned.log",
+          "seconds": 27.05
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_batch_partial_failure_retains_order_identity_and_successful_items.log",
+          "sha256": "8590a4d3d6a38396addc05fe7d756e4fa7bb931aff933fb8f86969a5dfee16da",
+          "test": "tool_wave::kimi_batch_partial_failure_retains_order_identity_and_successful_items",
+          "exit_code": 0,
+          "log": "linux/tool-wave-20261030-native/kimi_batch_partial_failure_retains_order_identity_and_successful_items.log",
+          "seconds": 26.34
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts.log",
+          "sha256": "2937d81e3155f0d0c47f9c306ba266564df8628e99a4100d47c8dfce8b6050d9",
+          "test": "tool_wave::kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts",
+          "exit_code": 0,
+          "log": "linux/tool-wave-20261030-native/kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts.log",
+          "seconds": 46.73
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_plan_program_cannot_promote_its_nested_write_permission.log",
+          "sha256": "b2d8d8f28db5fc330e94f9006716c967c6baaab8b6a18d03a9fb3636b14e47ab",
+          "test": "tool_wave::kimi_plan_program_cannot_promote_its_nested_write_permission",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_plan_program_cannot_promote_its_nested_write_permission.log",
+          "seconds": 46.38
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_update_plan_replaces_the_real_checklist_and_status_projection.log",
+          "sha256": "2d4c1a7d9881cf0a98670b53e4bc246db1f05f3d73b0ae25408ca3a2f9aecc45",
+          "test": "tool_wave::kimi_update_plan_replaces_the_real_checklist_and_status_projection",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_update_plan_replaces_the_real_checklist_and_status_projection.log",
+          "seconds": 42.23
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write.log",
+          "sha256": "8d7421cc39f369e3c38a356ec8a4c5c3ef1814f4a8e21e0a28ab160d2280488e",
+          "test": "tool_wave::kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write.log",
+          "seconds": 41.01
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier.log",
+          "sha256": "c97ba9645d09d9c794f72e1ce270ffb22e6f276430135e2b44d9a913dfeed7ce",
+          "test": "tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier",
+          "exit_code": 101,
+          "log": "linux/tool-wave-20261030-native/kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier.log",
+          "seconds": 52.94
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-background.json",
+          "sha256": "4b3820a7dee55e560e5c2791b490ac9f0c4342bc44e3eb22d565db8baedb7b09",
+          "case": "tool-wave-background",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-batch.json",
+          "sha256": "3be0805733202c6600948513415275c89083d1bb5e32d484113e79aa2ad31521",
+          "case": "tool-wave-batch",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-checklist.json",
+          "sha256": "f48918aa8092d101be96bd4aef38fa91a0e1973a1e8ab57ef62717e29c7a5ff5",
+          "case": "tool-wave-checklist",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-git.json",
+          "sha256": "68ba338c3db19aa29ceb0837c1124acbe6ae54861dedd7b6a101ff9ede8fdd0c",
+          "case": "tool-wave-git",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-patch.json",
+          "sha256": "72e1022d91e6714a2d85d2bbf7e673b96ed0269f7c408ae560e87df41e911d89",
+          "case": "tool-wave-patch",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-program-plan.json",
+          "sha256": "e44c811000d808b5d88ec1e76038b9cc05c9c57b3b0022fdc2026cf8826dac2c",
+          "case": "tool-wave-program-plan",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-program.json",
+          "sha256": "ce8fe898219f8bd62759cbaf8150f532a34d7f68444db16b079bf98a31b0e688",
+          "case": "tool-wave-program",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/tool-wave-20261030-native/reports/tool-wave-task-children.json",
+          "sha256": "b3d08cb86425515fbf85810f89c5ddaeec468178f961e1eb9f0b18b751ba96d0",
+          "case": "tool-wave-task-children",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    }
+  ]
+}

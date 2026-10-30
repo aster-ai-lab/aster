@@ -1,0 +1,36 @@
+{
+  "unix": 1792879774.0660493,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc8-d1480eb0e2fd/serve-stable-recovery-v58/readiness-watch-v65",
+  "plan": {
+    "allocation_job": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+    "allocation_uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+    "service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc8-d1480eb0e2fd/serve-stable-recovery-v58",
+    "lease_ends_unix": 1792898988.8316312,
+    "service_name": "aster-xolotl-api-v3pool-20261024",
+    "service_uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+    "health_url": "http://10.102.93.68/health"
+  },
+  "observation_only": true,
+  "namespace": "jump host",
+  "files": [
+    {
+      "file": "watch-plan.json",
+      "bytes": 460,
+      "sha256": "635346375ac6ad5961af098ab1497d80db4dac782356630d8f0f5ce3274fc5db"
+    },
+    {
+      "file": "watch-worker.py",
+      "bytes": 3460,
+      "sha256": "a2c86f81588400a17f4b67b41b8fc778944562df26a2c43386b2055144ca2577"
+    }
+  ],
+  "process": {
+    "pid": 968981,
+    "start_ticks": 280656794,
+    "uid": 10250,
+    "unix": 1792879783.0089326,
+    "budget_seconds": 19325,
+    "namespace": "jump host"
+  }
+}

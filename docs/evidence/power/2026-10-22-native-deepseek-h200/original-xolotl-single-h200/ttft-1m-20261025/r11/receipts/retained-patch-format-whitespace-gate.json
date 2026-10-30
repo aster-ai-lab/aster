@@ -1,0 +1,9 @@
+{
+  "unix": 1792922343.2940938,
+  "failure": "git diff --cached --check identified two blank unified-diff context lines",
+  "exact_path": "shim-guard-install.patch",
+  "added_attribute": "whitespace=-blank-at-eol",
+  "reason": "A unified-diff blank context line consists of its required single-space prefix; preserve valid patch syntax.",
+  "prior_attribute_sha256": "db2ae3da0a96bfd6b622bfe37234207edf1a58eb751f83f72d141ff64511a96e",
+  "other_whitespace_checks_preserved": true
+}

@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::dock::tests::narrow_headers_and_overflow_rows_keep_their_chevrons' (36508) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dock\mod.rs:1851:9:
+   v 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dock::tests::narrow_headers_and_overflow_rows_keep_their_chevrons ... FAILED
+
+failures:
+
+failures:
+    views::dock::tests::narrow_headers_and_overflow_rows_keep_their_chevrons
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

@@ -1,0 +1,30 @@
+
+running 1 test
+test ui_qualified_wave::kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows ... ORACLE case=coverage-settings-voice-off name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-settings-voice-off name=hidden-coding_data_sharing result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-dashboard_preview result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-combine_queued_prompts result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-follow_up_behavior result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-plan_mode result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-contextual_hints.plan_mode result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-toolset.ask_user_question.timeout_enabled result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-fork_secondary_model result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-prompt_suggestions result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-auto_update result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-remember_tool_approvals result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-default_selected_permission result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-default_model result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-subagent_model_inheritance result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-hunk_tracker_mode result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-show_tips result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-confirm_before_rewind result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-contextual_hints.image_input result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-voice_keybind_enabled result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-voice_capture_mode result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=hidden-voice_stt_language result=pass detail=exact setting key has no rendered actionable row with the explicit public GROK_VOICE_MODE=0 pin
+ORACLE case=coverage-settings-voice-off name=explicit-voice-off-hidden-settings result=pass detail=all 18 backend-inapplicable rows and all three voice-gated rows are absent; two supported controls remain, and no preference or backend state changes
+ORACLE case=coverage-settings-voice-off name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 98 filtered out; finished in 19.73s
+

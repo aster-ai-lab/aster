@@ -1,0 +1,16 @@
+
+running 1 test
+test input_controls::kimi_external_editor_cancel_without_save_preserves_draft_and_terminal ... ORACLE case=editor-cancel name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_external_editor_cancel_without_save_preserves_draft_and_terminal' (50916) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:219:9:
+external editor did not exit
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_external_editor_cancel_without_save_preserves_draft_and_terminal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 48 filtered out; finished in 24.16s
+

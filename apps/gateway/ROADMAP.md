@@ -774,8 +774,8 @@ HiRoute capabilities mapped to gates:
   (unknown fields refuse), a 64 KiB request bound, and a
   `DecisionServiceClient` port (bounded timeout, no retries that
   would duplicate a turn decision). The request carries content to
-  the configured decision upstream — an inference upstream like any
-  other — and NEVER the other way: no prompt bytes in spool, logs,
+  the configured local or remote decision implementation and NEVER
+  the other way: no prompt bytes in spool, logs,
   or metrics (invariant 7 applies to decision calls verbatim).
   Library-only, doubles-tested.
 - **`HR1` — routing plans on the snapshot.** `InferenceModelRouting`

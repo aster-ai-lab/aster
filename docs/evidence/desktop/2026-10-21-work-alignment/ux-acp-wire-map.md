@@ -18,7 +18,7 @@ The minimal adapter correction is **incoming notifications only**: keep the stan
 | `session/set_model` request | Standard set model | current sessionId, provider/model, typed reasoning-effort meta; resets posture cache | Correct. |
 | `session/prompt` request | Standard prompt | exact sessionId, content blocks, promptId, observation flag, independent permissionPosture/a3sTurn | Correct; response stopReason is validated by PromptEnd. |
 | `session/cancel` notification | Standard cancel | exact current/worker sessionId | Correct; acknowledgement is not settlement. |
-| `_x.ai/interject` request | Internal `x.ai/interject` | exact current ACP sessionId and text | Correct single raw extension prefix. |
+| `_a3s/interject` request | Internal `a3s/interject` | exact current ACP sessionId and text | Correct single raw extension prefix. |
 | `_a3s/wiki/search` request | Internal `a3s/wiki/search` | admitted wiki/query; published result sanitized | Correct single raw extension prefix. |
 | `_a3s/goal/state` request | Internal `a3s/goal/state` | snake-case session_id; direct JSON object with explicit definition/tick | Previously incorrect bare name; actual companion integration exposed it. Native owner corrected raw spelling; strict peer and actual workspace companion pass typed goal projection. |
 
@@ -42,9 +42,9 @@ The actual integration fixture additionally uses raw `_a3s/goal/definition` and 
 | ACP internal producer name | Actual raw method from pinned library | Adapter output / consumer |
 | --- | --- | --- |
 | Standard session update | `session/update` | unchanged standard name; exact sessionId checked. Text/thought/tool calls feed TurnStream; canonical rawInput retains lossless TodoWrite states. |
-| `x.ai/turn/outcome` | `_x.ai/turn/outcome` | `x.ai/turn/outcome`; PromptStop checks sessionId + promptId + epoch and validates the closed forced-stop category. |
+| `a3s/turn/outcome` | `_a3s/turn/outcome` | `a3s/turn/outcome`; PromptStop checks sessionId + promptId + epoch and validates the closed forced-stop category. |
 | `_a3s/execution/observe` (existing internal constant includes underscore) | `__a3s/execution/observe` | `_a3s/execution/observe`; Observer checks protocolVersion, exact session/prompt, safe sequence, Run identity and kind transitions. Do not rename the shared internal constant or pager API. |
-| `x.ai/session_notification` | `_x.ai/session_notification` | `x.ai/session_notification`; Desktop has no matching consumer. Its legacy task/subagent extension data is currently intentionally ignored; it does not grant goal/plan/approval authority. Required planning comes from standard tool rawInput, not this extension. |
+| `a3s/session_notification` | `_a3s/session_notification` | `a3s/session_notification`; Desktop has no matching consumer. Its legacy task/subagent extension data is currently intentionally ignored; it does not grant goal/plan/approval authority. Required planning comes from standard tool rawInput, not this extension. |
 | Unknown valid extension | One raw prefix stripped | Unrecognized internal name ignored; cannot masquerade as a standard method. |
 
 The two required notifications were previously ignored by the raw native client because it did not perform the library's decoding step. Bare-name fake notifications masked the mismatch. The terminal pager uses library-decoded names and must keep its current public/internal spellings.
@@ -59,7 +59,7 @@ PromptEnd recognizes end_turn, cancelled and the explicitly trusted read_only_ev
 
 ## Negative and real gates for closure
 
-1. Real stdio peer sends `session/update`, `_x.ai/turn/outcome` and `__a3s/execution/observe`; assert exact internal names after one decode and that actual consumers act. Send `_session/update`, bare custom notifications, extra-prefix outcome names and wrong session/prompt/epoch to prove no aliasing or cross-owner authority.
+1. Real stdio peer sends `session/update`, `_a3s/turn/outcome` and `__a3s/execution/observe`; assert exact internal names after one decode and that actual consumers act. Send `_session/update`, bare custom notifications, extra-prefix outcome names and wrong session/prompt/epoch to prove no aliasing or cross-owner authority.
 2. Matching responses: explicit result (including null), error, missing both and both present. Malformed matching envelopes must fail a pending request; unknown/late IDs must not resolve another callback.
 3. One peer prompt sends foreign/missing session permission/form requests: no approval/form registration, negative response; valid current parent and worker session requests remain functional. Exact host form owner execution/attempt remains required at submit.
 4. Terminal: valid forced categories, missing/null, unknown string/wrong type and contradictory notifications followed by end_turn. Only the documented explicit read-only-evidence exception may convert the corresponding stop reason to success.

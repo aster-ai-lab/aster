@@ -1,0 +1,7 @@
+{
+  "public_body": "../../r7/code-fixture/public-fixture.txt.gz",
+  "public_body_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+  "body_changed": false,
+  "protected_api_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+  "native_runtime_id_digest_captured": false
+}

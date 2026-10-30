@@ -2302,6 +2302,7 @@ fn default_flags_stamp_normal_permission_posture() {
     let meta = flags.to_meta().expect("a3s session create stamps a posture");
     assert_eq!(flags.effective_permission_posture(), "default");
     assert_eq!(j(&meta, "permissionPosture"), "default");
+    assert_eq!(j(&meta, "sessionKind"), "interactive");
     drop(restore);
 }
 /// --subagents alone produces no profile (a3s-build already has TaskTool).
@@ -2799,6 +2800,7 @@ fn make_session_info(
     a3s_code_shell::session::SessionInfoResponse {
         session_id: "test-session-id".into(),
         cwd: "/tmp/test".into(),
+        permission_posture: None,
         data: SessionInfoData {
             agent_name: None,
             model: Some(model.into()),
@@ -2873,6 +2875,33 @@ fn format_session_info_shows_conversation_id_when_present() {
     let text = format_session_info(&info, None, false, false, false);
     assert!(text.contains("Conversation ID: conv_abc123"));
     assert!(text.contains("Session ID: test-session-id"));
+}
+#[test]
+fn format_session_info_displays_returned_permission_posture() {
+    let without_mode = make_session_info("auto", None, 1000, 10000);
+    assert!(!format_session_info(&without_mode, None, false, false, false).contains("Mode:"));
+
+    let info: a3s_code_shell::session::SessionInfoResponse =
+        serde_json::from_value(serde_json::json!({
+            "sessionId": "session-with-mode",
+            "cwd": "/tmp/test",
+            "permissionPosture": "yolo",
+            "model": "kimi/k3.1-pro",
+            "turns": 1,
+            "turnIndex": 1,
+            "context": { "used": 250, "total": 1000, "usagePct": 25 }
+        }))
+        .unwrap();
+    assert_eq!(info.permission_posture.as_deref(), Some("yolo"));
+    assert!(session_info_fields(&info, None, false).contains(
+        &crate::views::usage_modal::SessionInfoField {
+            label: "Mode",
+            value: "yolo".into(),
+            compact: true,
+        }
+    ));
+    let text = format_session_info(&info, None, false, false, false);
+    assert!(text.contains("Mode: yolo"), "{text}");
 }
 #[test]
 fn format_session_info_shows_resolved_when_enabled_and_different() {
@@ -3169,11 +3198,11 @@ async fn permission_ack_failure_narrows_ui_without_writing_preference() {
         let Some(a3s_acp_lib::AcpAgentMessage::SetSessionMode(args)) = rx.recv().await else {
             panic!("must use acknowledged session/set_mode");
         };
-        assert_eq!(args.request.mode_id.0.as_ref(), "plan");
+        assert_eq!(args.request.mode_id.0.as_ref(), "yolo");
         args.response_tx.send(Err(acp::Error::invalid_params().data("refused"))).unwrap();
     });
     let result = persist_permission_mode_and_notify("yolo", Some(acp::SessionId::new("s")),
-        PermissionModePersist::WithRollback("yolo"), Some("plan"), tx).await;
+        PermissionModePersist::WithRollback("yolo"), Some("yolo"), tx).await;
     assert!(matches!(result, TaskResult::PermissionModeFailed { session_id, .. } if session_id.0.as_ref() == "s"));
     broker.await.unwrap();
 }

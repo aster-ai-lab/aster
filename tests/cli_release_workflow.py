@@ -56,8 +56,8 @@ case "$1:$2" in
 esac
 ''')
             gh.chmod(0o755)
-            # The Linux publisher uses GNU sha256sum; this keeps its shell hermetic on macOS too.
-            sha = commands / "sha256sum"
+            # Keep checksum generation hermetic on the macOS publisher and local test hosts.
+            sha = commands / "shasum"
             sha.write_text('''#!/usr/bin/env python3
 import hashlib, pathlib, sys
 name = sys.argv[-1]
@@ -80,6 +80,8 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
     def test_three_archives_form_a_draft_bound_to_the_artifact_source(self):
         result, manifest, args = self.assemble()
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(manifest["version"], "0.1.5")
+        self.assertEqual(manifest["tag"], "aster-cli-v0.1.5")
         self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
         self.assertEqual(args[args.index("--target") + 1], SOURCE_SHA)
         self.assertIn("--draft", args)
@@ -127,6 +129,14 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                     self.assertEqual(result.returncode, 53)
                     self.assertIsNone(manifest)
                     self.assertIsNone(args)
+
+    def test_windows_build_uses_a_short_cargo_home(self):
+        workflow = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
+        self.assertIn(
+            "      - name: Shorten Windows Cargo home\n        if: runner.os == 'Windows'",
+            workflow,
+        )
+        self.assertIn("CARGO_HOME=D:\\c", workflow)
 
 
 if __name__ == "__main__":

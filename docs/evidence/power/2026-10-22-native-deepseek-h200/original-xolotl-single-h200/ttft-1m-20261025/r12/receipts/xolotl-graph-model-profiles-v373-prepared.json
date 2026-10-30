@@ -1,0 +1,50 @@
+{
+  "files": [
+    {
+      "file": "launch_graph_native_service_v373.frozen.py",
+      "bytes": 7406,
+      "sha256": "893de5a293ff1bef39a2623c4cc8fe4016580e9d202bea9cafe7d26409918a13"
+    },
+    {
+      "file": "xolotl_sealed_bootstrap_v373.py",
+      "bytes": 2939,
+      "sha256": "b272181707e37956dd98248f6d0e1d8db11cf648526bf372af9565646f4b0ec4"
+    },
+    {
+      "file": "manage_graph_native_basic_v373.frozen.py",
+      "bytes": 7150,
+      "sha256": "ad0bd102cae41236fab6b21bdcea412455b8187e8d1f6f218b009e26923bb391"
+    },
+    {
+      "file": "manage_graph_native_extended_v373.frozen.py",
+      "bytes": 7411,
+      "sha256": "a362c95bb82badb12ba9d28dba1b227fdc80c0d23e46a4da305ce6fd448f94e5"
+    },
+    {
+      "file": "manage_graph_fullwindow_suite_v374.py",
+      "bytes": 9360,
+      "sha256": "b81eda8376991cb0664647cefe08981182a44a3726cc76c58be2da1573a98faf"
+    }
+  ],
+  "profiles": [
+    "control_a",
+    "guard",
+    "control_b"
+  ],
+  "flag_modes": [
+    "0",
+    "1",
+    "0"
+  ],
+  "binary": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc15-4cde736558c0/graph-native-link-v371-cpu/ds41_generate.candidate",
+    "bytes": 253365392,
+    "sha256": "b7124c78d711d3f48b928a292bd6423af4137816533e0acfbeb5114644508185"
+  },
+  "ordinary_acceptance_requests": 40,
+  "fullwindow_calls_per_profile": 20,
+  "actual1M_calls_per_profile": 18,
+  "full_output_tokens": 1024,
+  "model_acceptance_changed": false,
+  "formal_changed": false
+}

@@ -646,6 +646,26 @@ async fn supplier_binding_replaces_the_platform_model_until_removed() {
 
 #[tokio::test]
 async fn platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route() {
+    // Isolate the missing-install contract from host-installed model weights
+    // and process-global lazy engine clients. No shared environment is mutated.
+    const CHILD: &str = "A3S_GATEWAY_MISSING_BGE_TEST_CHILD";
+    if std::env::var_os(CHILD).is_none() {
+        let directory = tempfile::tempdir().unwrap();
+        let output = std::process::Command::new(std::env::current_exe().unwrap())
+            .args(["entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route", "--exact", "--test-threads=1"])
+            .env(CHILD, "1")
+            .env("A3S_BGE_M3_MODEL_DIR", directory.path())
+            .env("A3S_BGE_RERANKER_MODEL_DIR", directory.path())
+            .output().unwrap();
+        assert!(
+            output.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        return;
+    }
+
     let verifier = spawn_auth_verifier().await;
     let (chat, _chat_request) = spawn_capturing_backend().await;
     let (embeddings, embeddings_request) = spawn_capturing_backend().await;
@@ -700,9 +720,9 @@ async fn platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_ro
         .send()
         .await
         .unwrap();
-    assert_eq!(refused.status(), 404);
-    let body: serde_json::Value = refused.json().await.unwrap();
-    assert_eq!(body["error"], "standard_not_admitted");
+    assert_eq!(refused.status(), 503);
+    let body = refused.text().await.unwrap();
+    assert!(body.contains("install"), "{body}");
 
     // The reserved alias cannot be hijacked through the grant either: an
     // unknown ordinary alias stays a plain model-not-granted refusal.
@@ -786,9 +806,9 @@ async fn embedding_and_rerank_suppliers_replace_the_platform_model() {
         .send()
         .await
         .unwrap();
-    assert_eq!(served.status(), 404);
+    assert_eq!(served.status(), 200);
     let body: serde_json::Value = served.json().await.unwrap();
-    assert_eq!(body["error"], "standard_not_admitted");
+    assert_eq!(body["model"], "supplier-rerank-model", "{body}");
 
     stop_test_entrypoint(shutdown_tx, handle).await;
 

@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events' (5390) panicked at crates/code/core/src/agent_api/tests/stream.rs:216:31:
+task fan-out must emit ToolEnd
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 0.76s
+

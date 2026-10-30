@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'tools::builtin::read::line_endings_tests::actual_file_reads_distinguish_absent_lf_and_crlf_endings' (53092) panicked at crates\code\core\src\tools\builtin\read\line_endings_tests.rs:22:9:
+     1	same bytes
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tools::builtin::read::line_endings_tests::actual_file_reads_distinguish_absent_lf_and_crlf_endings ... FAILED
+
+failures:
+
+failures:
+    tools::builtin::read::line_endings_tests::actual_file_reads_distinguish_absent_lf_and_crlf_endings
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5307 filtered out; finished in 0.01s
+

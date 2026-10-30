@@ -1,0 +1,38 @@
+{
+  "products": 18,
+  "source_pages": 140,
+  "documentation_urls": 254,
+  "previous_urls_retained": 242,
+  "http_verified": 254,
+  "staged_files": 306,
+  "staged_bytes_match": true,
+  "previous_product_records_unchanged": true,
+  "homepage_unchanged": true,
+  "index_unchanged": true,
+  "order": [
+    "code",
+    "acp",
+    "acl",
+    "flow",
+    "effect",
+    "lane",
+    "event",
+    "memory",
+    "search",
+    "vec",
+    "apofasi",
+    "use",
+    "office",
+    "sandbox",
+    "boot",
+    "orm",
+    "gateway",
+    "power"
+  ],
+  "full_suite_before_reorder": {
+    "python": 20,
+    "javascript": 132
+  },
+  "final_ordered_docs_tests": 4,
+  "rust_examples": 2
+}

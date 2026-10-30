@@ -1,0 +1,13 @@
+{
+  "baseUrl": "http://127.0.0.1:18200",
+  "enabled": true,
+  "hasKey": true,
+  "id": "a1b46a5e-6e54-42e7-a746-ab52dcda7126",
+  "kind": "self_hosted",
+  "models": [
+    "prism-27b"
+  ],
+  "name": "auto-prism-pool",
+  "protocol": "openai",
+  "routable": true
+}

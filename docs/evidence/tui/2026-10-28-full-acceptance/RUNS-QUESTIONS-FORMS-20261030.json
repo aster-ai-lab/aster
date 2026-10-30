@@ -1,0 +1,240 @@
+{
+  "schema": "aster.tui.questions-forms-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "complete_153": false,
+  "whole_pager_qualified": false,
+  "all_67_entrypoints_run_together": false,
+  "original_failures_retained": true,
+  "selected_live_cases_per_platform": 7,
+  "current_source_snapshot": {
+    "file": "source/forms-20261030-error-source.json",
+    "sha256": "d565181ac7953ed3a5b5c384a2bdb41c9e1813ae242f47bfcb42f016571df252"
+  },
+  "current_source_files": 55,
+  "reconstructed_source_archive": {
+    "file": "source/forms-2484-reconstructed-source.json",
+    "sha256": "fcf972480a623020623f74fef3cc84b699dec685cd8925238a1396f4ab5b6556"
+  },
+  "platforms": [
+    {
+      "platform": "windows",
+      "selected_passed_reports": [
+        {
+          "file": "windows/questions-20261030-initial/form-schema-refusals.json",
+          "sha256": "2070b8c3a55e80e2ffa51d56a58b261db179d4ad3986d62ff5b2da301bbb02fc",
+          "case": "form-schema-refusals",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+          "answered_field_count": null
+        },
+        {
+          "file": "windows/forms-20261030-layout-qualified-pair/reports/question-choice-free-text.json",
+          "sha256": "42ad33a0f8ad410bbe977831ac2fa730f9f73bdf62d659a94250bb4c42f70d03",
+          "case": "question-choice-free-text",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+          "answered_field_count": null
+        },
+        {
+          "file": "windows/forms-20261030-layout-qualified-pair/reports/question-cancel-protocol-recovery.json",
+          "sha256": "566f1ee3fd500eced38b8783a65641437fe0b927aa3d0743c0a76a01ba860d96",
+          "case": "question-cancel-protocol-recovery",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+          "answered_field_count": null
+        },
+        {
+          "file": "windows/forms-20261030-layout-qualified-pair/reports/form-catalog-native-profile.json",
+          "sha256": "2790e9c5d14f345320af4516cdb6b097c720e4adae26042e298315d56bbb078e",
+          "case": "form-catalog-native-profile",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+          "answered_field_count": 8
+        },
+        {
+          "file": "windows/forms-20261030-layout-qualified-pair/reports/form-cancel-continue.json",
+          "sha256": "d8c53ccb6c647360916be171f4c9a137d4d572b866ab9507565718dd525d4b30",
+          "case": "form-cancel-continue",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+          "answered_field_count": null
+        },
+        {
+          "file": "windows/forms-20261030-error-qualified-pair/reports/form-constraint-edits.json",
+          "sha256": "00fa5f73fc6dc18e4530cb6607313e5a8332f8ea0384c5856b76d84c8bbf77e7",
+          "case": "form-constraint-edits",
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-pc-windows-msvc",
+          "answered_field_count": 3
+        },
+        {
+          "file": "windows/forms-20261030-error-qualified-pair/reports/form-long-small-window.json",
+          "sha256": "82abb7192203c5b6bd7f582bd4c64b0a288889daf23f154a00dde77cc4467d21",
+          "case": "form-long-small-window",
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-pc-windows-msvc",
+          "answered_field_count": 24
+        }
+      ],
+      "native_pairs": [
+        {
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+          "binaries": [
+            {
+              "name": "a3s-code-acp.exe",
+              "bytes": 185497088,
+              "sha256": "0003230e61f1a1d04eb808917a64c0757129fb5475c8f79af68a8feb36f09994"
+            },
+            {
+              "name": "aster.exe",
+              "bytes": 324007424,
+              "sha256": "eadf3d0e9adb59aeedcb2f2b48e93c80641dad7d0cd9f718e0e2c1e8a6835ff9"
+            }
+          ],
+          "harness": {
+            "file": "windows/forms-20261030-layout-qualified-pair/test-binary.json",
+            "sha256": "a0cba589e14d97a125f2f68bf28dc5ba8608c5878445418a76ba96c569289ca4"
+          },
+          "inventory_count": 67
+        },
+        {
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-pc-windows-msvc",
+          "binaries": [
+            {
+              "name": "a3s-code-acp.exe",
+              "bytes": 185497088,
+              "sha256": "7da57314c5568105e2449ac6af7ebc20593ba5af174bb060895aaa073eae0e6a"
+            },
+            {
+              "name": "aster.exe",
+              "bytes": 324007424,
+              "sha256": "fd2a3a9572b05f53642b1b09d8224373e2dc24952983940da44b47dc92edd4e7"
+            }
+          ],
+          "harness": {
+            "file": "windows/forms-20261030-error-qualified-pair/test-binary.json",
+            "sha256": "d009c322eca7e324da65ceeb6c5431dcbf6f4a1e4409fce43e990ac2a0e22a03"
+          },
+          "inventory_count": 67
+        }
+      ],
+      "library_gates": [
+        {
+          "file": "windows/questions-20261030-cancel-qualified-pair/acp-library.log",
+          "sha256": "0e942aa43c0a1d68a565f689981e47daf3ef95cf769bb1a237a02341c195ff1f",
+          "passed": 363,
+          "ignored": 8
+        },
+        {
+          "file": "windows/forms-20261030-layout-qualified-pair/elicitation-error-library-native.log",
+          "sha256": "0c4e249de9fdeab842e866f1a2e28abf9769fc0fc206e46f181521fc705106be",
+          "passed": 25,
+          "ignored": 0
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "selected_passed_reports": [
+        {
+          "file": "linux/questions-20261030-initial/form-schema-refusals.json",
+          "sha256": "90a84184dc683d4d7ba79504d3051b55c48968bc841bf3197b77169f3bf8567a",
+          "case": "form-schema-refusals",
+          "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+          "answered_field_count": null
+        },
+        {
+          "file": "linux/forms-20261030-layout-qualified-pair/reports/question-choice-free-text.json",
+          "sha256": "f5bfe4bce82864d6a7200f0e30fcd6b80463f4c06ab45929b44f9a6bf20509a8",
+          "case": "question-choice-free-text",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu",
+          "answered_field_count": null
+        },
+        {
+          "file": "linux/forms-20261030-layout-qualified-pair/reports/question-cancel-protocol-recovery.json",
+          "sha256": "d1155a24ba4fdd9494b6bc95595e7b4f050ad6d479463f95fec3293c842b6868",
+          "case": "question-cancel-protocol-recovery",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu",
+          "answered_field_count": null
+        },
+        {
+          "file": "linux/forms-20261030-layout-qualified-pair/reports/form-catalog-native-profile.json",
+          "sha256": "5a01da91df60f58ab61420dd8c6afe3dca142fa8e8dcf49b6f791c9f5fc10463",
+          "case": "form-catalog-native-profile",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu",
+          "answered_field_count": 8
+        },
+        {
+          "file": "linux/forms-20261030-layout-qualified-pair/reports/form-cancel-continue.json",
+          "sha256": "4836cb7a0d5637e947abf7a98cef1031fcd311fe8be277eda3bf3b92458798b3",
+          "case": "form-cancel-continue",
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu",
+          "answered_field_count": null
+        },
+        {
+          "file": "linux/forms-20261030-error-qualified-pair/reports/form-constraint-edits.json",
+          "sha256": "a945d3f69416b30442f4ae90a1abc3f2e3470d473dc93ef500816dec2c041949",
+          "case": "form-constraint-edits",
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-unknown-linux-gnu",
+          "answered_field_count": 3
+        },
+        {
+          "file": "linux/forms-20261030-error-qualified-pair/reports/form-long-small-window.json",
+          "sha256": "6a5767668a76f91d2c270803329e6a8c2275f675d0deec0ab5faf977112c5e12",
+          "case": "form-long-small-window",
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-unknown-linux-gnu",
+          "answered_field_count": 24
+        }
+      ],
+      "native_pairs": [
+        {
+          "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu",
+          "binaries": [
+            {
+              "name": "a3s-code-acp",
+              "bytes": 415477512,
+              "sha256": "0ceee943a7c39adf85e340bd5f0683601d062d42eb41b0144226cfc5d4787ac0"
+            },
+            {
+              "name": "aster",
+              "bytes": 1115629256,
+              "sha256": "4ddc1f60bcd3b7945246af70161df4608853fb9ae23b663d6070562aa2d3a529"
+            }
+          ],
+          "harness": {
+            "file": "linux/forms-20261030-layout-qualified-pair/test-binary.json",
+            "sha256": "4fd86a3e00ba71588478b85827c34eae0858b519135fedef052acf7ffc42cd31"
+          },
+          "inventory_count": 67
+        },
+        {
+          "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-unknown-linux-gnu",
+          "binaries": [
+            {
+              "name": "a3s-code-acp",
+              "bytes": 415477512,
+              "sha256": "4b8c3bcac862b044168028e39b890b2a69a75b6fa019d52395bf9d2d48246067"
+            },
+            {
+              "name": "aster",
+              "bytes": 1115629216,
+              "sha256": "4a1f392a9be86a1c68c1129a4e80f4578ed13149f1c8fcc470ffe6f5f7a87a98"
+            }
+          ],
+          "harness": {
+            "file": "linux/forms-20261030-error-qualified-pair/test-binary.json",
+            "sha256": "7cdbead2170551003fdfd85b90de38d4051aed67883ec160516f51ca5b2be624"
+          },
+          "inventory_count": 67
+        }
+      ],
+      "library_gates": [
+        {
+          "file": "linux/questions-20261030-cancel-qualified-pair/acp-library.log",
+          "sha256": "695bd40f286d90a50784006168aba5de12db011a2218f24f05b36649b1c109f4",
+          "passed": 398,
+          "ignored": 8
+        },
+        {
+          "file": "linux/forms-20261030-layout-qualified-pair/elicitation-error-library-native.log",
+          "sha256": "36926675bc794ec8b04e2296006d926af235f571bc6233a0724cade894583a16",
+          "passed": 25,
+          "ignored": 0
+        }
+      ]
+    }
+  ]
+}

@@ -168,6 +168,11 @@ pub(super) fn gate_result(
     goal_attestation: Option<&[crate::verification::VerificationReport]>,
 ) -> std::result::Result<AgentResult, anyhow::Error> {
     match &parts.surface {
+        // The original controls have been sealed before this call. A cancelled
+        // Run is published by that original owner as Cancelled; its interrupted
+        // narrative must not append an accountable completion boundary or cover
+        // prior effects. Preserve the result for retained interrupted history.
+        Some(surface) if surface.cancel.is_cancelled() => Ok(result),
         Some(surface) => gate_surface_result(surface, result, goal_attestation),
         None => Ok(result),
     }

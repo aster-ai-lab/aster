@@ -1,0 +1,175 @@
+{
+  "started_at_epoch": 1792917769.9856076,
+  "activated": true,
+  "rolled_back": false,
+  "source_fingerprint": "afe123ebe5aad82ff5fc3027544a6e69497e7c49523705865c4933bcf075c8ea",
+  "candidate_sha256": "17d6d7c86ce2680503d56f6d1c1d33177e89bdc851d302ddfd16ea4d7036a674",
+  "previous_sha256": "265cf6ac6889b64470d061f3b2da4df14e7d79aeadf63ae7938e7df8ce6620fe",
+  "previous_pid": 3677599,
+  "models_before": [
+    "auto",
+    "deepseek-v4.1-flash",
+    "platform/apofasi",
+    "platform/bge-m3",
+    "platform/bge-reranker-v2-m3",
+    "platform/pp-ocr-v6",
+    "prism-27b",
+    "prism-27b-alt"
+  ],
+  "snapshot_before": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620"
+  },
+  "snapshot_acl_sha256_before": "fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620",
+  "preserved_services_before": {
+    "a3s-power-deepseek-gpu6.service": {
+      "MainPID": "1986687",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "candidate_config_validation_passed": true,
+  "official_managed_recovery_validation_passed": true,
+  "completed_at_epoch": 1792917771.5514147,
+  "success": true,
+  "new_pid": 2011098,
+  "models_after": [
+    "auto",
+    "deepseek-v4.1-flash",
+    "platform/apofasi",
+    "platform/bge-m3",
+    "platform/bge-reranker-v2-m3",
+    "platform/pp-ocr-v6",
+    "prism-27b",
+    "prism-27b-alt"
+  ],
+  "managed_snapshot_ready": true,
+  "snapshot_replayed": false,
+  "snapshot_after": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620"
+  },
+  "snapshot_acl_sha256_after": "fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620",
+  "preserved_services_after": {
+    "a3s-power-deepseek-gpu6.service": {
+      "MainPID": "1986687",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "preserved_service_pids_unchanged": true,
+  "immutable_candidate": "/opt/a3s/releases/gateway-workbuddy-queue-17d6d7c86ce26805/a3s-gateway",
+  "immutable_backup": "/opt/a3s/releases/gateway-before-workbuddy-queue-265cf6ac6889b644/a3s-gateway"
+}

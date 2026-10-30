@@ -136,6 +136,11 @@ pub(in crate::app::dispatch) fn dispatch_new_session(app: &mut AppView) -> Vec<E
         app.deferred_startup.new_session = true;
         return vec![];
     }
+    let replacing_bound_session =
+        get_active_agent(app).is_some_and(|agent| agent.session.session_id.is_some());
+    if replacing_bound_session && !app.permission_mode_from_soft_default {
+        app.default_yolo = app.launch_yolo;
+    }
     #[cfg(feature = "local-workspace")]
     if matches!(app.active_view, ActiveView::Welcome) {
         let skip_apply = app.welcome_session_local_workspace.is_some();

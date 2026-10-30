@@ -1,0 +1,1 @@
+{"error":{"code":"unsupported_request_fields","message":"unsupported chat completion field(s): chat_template_kwargs; omit unsupported top-level request fields","type":"invalid_request_error"}}

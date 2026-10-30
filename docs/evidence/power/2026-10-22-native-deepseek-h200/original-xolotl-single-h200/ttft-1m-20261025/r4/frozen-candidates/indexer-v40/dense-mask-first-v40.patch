@@ -1,0 +1,77 @@
+--- qualified/ds41_dense.cpp
++++ v40/ds41_dense.cpp
+@@ -1,5 +1,6 @@
+ // tools/v41/engine/ds41_dense.cpp - see ds41_dense.hpp.  Line references are to DeepSeek's inference/model.py.
+ #include "ds41_dense.hpp"
++#include "aster_indexer_mask_policy.hpp"
+ #include "ds41_embd.hpp"
+ 
+ #include "ds41_engram.hpp"
+@@ -315,6 +316,7 @@
+     // tensors are built for at most idx_tile elements at a time (query chunks); 0 = one piece.  Default 2^28 = a 512K
+     // context's 512-query sub-batch, so every context up to 512K builds the very same graph as before.
+     int64_t idx_tile = 0;
++    bool indexer_mask_first = false;
+     std::map<std::array<int64_t, 3>, size_t> graph_bytes_memo;   // span_graph_bytes: (cap 1, cap 2, n) -> bytes
+     std::vector<float> host_fn, host_wts, host_logits, host_emb;
+     std::vector<int32_t> host_ids;
+@@ -819,16 +821,19 @@
+                         ggml_tensor * nvs = ggml_reshape_2d(gc, b.v1(im.i_nvis[r], nq, c0q * 4), 1, nq);
+                         ggml_tensor * ramp = ggml_view_2d(gc, im.neg_ramp, gcap, 1, (size_t) gcap * 4, 0);
+                         ggml_tensor * vis = ggml_log(gc, ggml_step(gc, ggml_add(gc, ggml_repeat(gc, ramp, ggml_new_tensor_2d(gc, GGML_TYPE_F32, gcap, nq)), nvs)));
+-                        ggml_tensor * sc = ggml_lightning_indexer(gc, iq_c, ksrc, iw_c, ggml_cast(gc, vis, GGML_TYPE_F16));
+-                        sc = ggml_reshape_2d(gc, sc, gcap, nq);
++                        ggml_tensor * candidate_mask = nullptr;
+                         if (L.uses_cand) {
+                             const int64_t nblk = (gcap + im.CBS - 1) / im.CBS, ncb = std::min<int64_t>(im.CB, nblk);
+                             ggml_tensor * m = ggml_fill(gc, ggml_new_tensor_3d(gc, GGML_TYPE_F32, im.CBS, nblk, nq), NEG_INF);
+                             ggml_tensor * z = ggml_fill(gc, ggml_new_tensor_3d(gc, GGML_TYPE_F32, im.CBS, ncb, nq), 0.0f);
+                             m = ggml_set_rows(gc, m, z, ggml_cont(gc, ggml_view_2d(gc, im.cand, ncb, nq, im.cand->nb[1], c0q * im.cand->nb[1])));
+                             m = ggml_view_2d(gc, m, gcap, nq, m->nb[2], 0);
+-                            sc = ggml_add(gc, sc, m);
++                            candidate_mask = m;
+                         }
++                        ggml_tensor * index_mask = im.indexer_mask_first && candidate_mask ? ggml_add(gc, vis, candidate_mask) : vis;
++                        ggml_tensor * sc = ggml_lightning_indexer(gc, iq_c, ksrc, iw_c, ggml_cast(gc, index_mask, GGML_TYPE_F16));
++                        sc = ggml_reshape_2d(gc, sc, gcap, nq);
++                        if (candidate_mask && !im.indexer_mask_first) sc = ggml_add(gc, sc, candidate_mask);
+                         if (L.cand_src) {
+                             const int64_t nblk = (gcap + im.CBS - 1) / im.CBS, ncb = std::min<int64_t>(im.CB, nblk);
+                             GGML_ASSERT(gcap % im.CBS == 0);
+@@ -1061,16 +1066,19 @@
+                         ggml_tensor * nvs = ggml_reshape_2d(gc, b.v1(im.i_nvis[r], nq, c0q * 4), 1, nq);
+                         ggml_tensor * ramp = ggml_view_2d(gc, im.neg_ramp, gcap, 1, (size_t) gcap * 4, 0);
+                         ggml_tensor * vis = ggml_log(gc, ggml_step(gc, ggml_add(gc, ggml_repeat(gc, ramp, ggml_new_tensor_2d(gc, GGML_TYPE_F32, gcap, nq)), nvs)));
+-                        ggml_tensor * sc = ggml_lightning_indexer(gc, iq_c, ksrc, iw_c, ggml_cast(gc, vis, GGML_TYPE_F16));   // [cap, nq]
+-                        sc = ggml_reshape_2d(gc, sc, gcap, nq);
++                        ggml_tensor * candidate_mask = nullptr;
+                         if (L.uses_cand) {   // rank only inside cand_layer's candidate blocks
+                             const int64_t nblk = (gcap + im.CBS - 1) / im.CBS, ncb = std::min<int64_t>(im.CB, nblk);
+                             ggml_tensor * m = ggml_fill(gc, ggml_new_tensor_3d(gc, GGML_TYPE_F32, im.CBS, nblk, nq), NEG_INF);
+                             ggml_tensor * z = ggml_fill(gc, ggml_new_tensor_3d(gc, GGML_TYPE_F32, im.CBS, ncb, nq), 0.0f);
+                             m = ggml_set_rows(gc, m, z, ggml_cont(gc, ggml_view_2d(gc, im.cand, ncb, nq, im.cand->nb[1], c0q * im.cand->nb[1])));
+                             m = ggml_view_2d(gc, m, gcap, nq, m->nb[2], 0);
+-                            sc = ggml_add(gc, sc, m);
++                            candidate_mask = m;
+                         }
++                        ggml_tensor * index_mask = im.indexer_mask_first && candidate_mask ? ggml_add(gc, vis, candidate_mask) : vis;
++                        ggml_tensor * sc = ggml_lightning_indexer(gc, iq_c, ksrc, iw_c, ggml_cast(gc, index_mask, GGML_TYPE_F16));
++                        sc = ggml_reshape_2d(gc, sc, gcap, nq);
++                        if (candidate_mask && !im.indexer_mask_first) sc = ggml_add(gc, sc, candidate_mask);
+                         if (L.cand_src) {   // model.py select_candidate_blocks: block score = max, newest block pinned
+                             const int64_t nblk = (gcap + im.CBS - 1) / im.CBS, ncb = std::min<int64_t>(im.CB, nblk);
+                             GGML_ASSERT(gcap % im.CBS == 0);
+@@ -1714,6 +1722,13 @@
+ bool Ds41Dense::init(const std::string & path, const Ds41DenseConfig & cfg, std::string & err) {
+     Impl & im = *p_;
+     im.cfg = cfg;
++    const auto mask_mode = aster_indexer::parse(std::getenv("ASTER_XQ_INDEXER_MASK_SKIP"));
++    if (mask_mode == aster_indexer::Mode::invalid) {
++        err = "ASTER_XQ_INDEXER_MASK_SKIP must be 0 or 1";
++        return false;
++    }
++    im.indexer_mask_first = mask_mode == aster_indexer::Mode::on;
++
+     try {
+         im.model = std::make_unique<GgufModel>(GgufModel::open(path));
+     } catch (const std::exception & e) {

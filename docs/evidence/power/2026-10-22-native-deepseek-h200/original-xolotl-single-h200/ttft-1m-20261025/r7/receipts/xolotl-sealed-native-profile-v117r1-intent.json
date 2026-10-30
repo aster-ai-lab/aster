@@ -1,0 +1,24 @@
+{
+  "unix": 1792893042.0811157,
+  "phase": "executed",
+  "label": "native-profile-v117r1",
+  "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/sealed-native-profile-v117r1.py",
+  "bytes": 53789,
+  "sha256": "30fb9621854d2c4033a34e4f16e06faf6332e0a2be89dd53de96e5c3e8954efd",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "credentials_copied": false,
+  "inline_exec_payload_replaced": true,
+  "stage": {
+    "staged": true,
+    "bytes": 53789,
+    "sha256": "30fb9621854d2c4033a34e4f16e06faf6332e0a2be89dd53de96e5c3e8954efd"
+  },
+  "result": {
+    "pid": 2939,
+    "start_ticks": 712232465,
+    "uid": 10250,
+    "unix": 1792893053.6651554,
+    "budget_seconds": 1200,
+    "namespace": "optimization pod"
+  }
+}

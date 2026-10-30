@@ -52,7 +52,7 @@ The shipped debug `aster update` was then pointed at a local directory that alre
 cargo test -p aster --test cli_p0 --offline --locked -- --test-threads=1 --nocapture
 ```
 
-`aster` and `a3s-code-acp` were built together and both printed `aster-cli-pair-v1:d781e2910c1dd3e384e0747b42e6e84cca1e0825:aarch64-apple-darwin`. The `update-check` oracle printed `updateAvailable` false and `autoUpdate` false, and the test's binary-length assertion passed. The whole `shipped_cli_p0_oracles` test then failed at `models` with `Method not found: "x.ai/models/list"` and exited 101 in 13.51s. `crates/code/acp` answers only its closed host-method set, and that set does not include `x.ai/models/list`. This diff does not change that handler or the `models` command.
+`aster` and `a3s-code-acp` were built together and both printed `aster-cli-pair-v1:d781e2910c1dd3e384e0747b42e6e84cca1e0825:aarch64-apple-darwin`. The `update-check` oracle printed `updateAvailable` false and `autoUpdate` false, and the test's binary-length assertion passed. The whole `shipped_cli_p0_oracles` test then failed at `models` with `Method not found: "a3s/models/list"` and exited 101 in 13.51s. `crates/code/acp` answers only its closed host-method set, and that set does not include `a3s/models/list`. This diff does not change that handler or the `models` command.
 
 ## Explicitly not claimed
 

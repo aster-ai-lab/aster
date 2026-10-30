@@ -1,0 +1,56 @@
+{
+  "schema": "aster-xolotl-resident-mmq-v35-source",
+  "parent_candidate": "checked-cache-v19",
+  "upstream_reference_test_sha256": "9560676b2447563a1bd3b158eeccb07dc505ff1b92ff6c07ba635c04c8a2f6df",
+  "v19_source_sha256": "1f9fbb1630471bbe602c569f21500113f42ab681e9a20844bdbf8185e82c7072",
+  "new_gpu_kernels": false,
+  "additional_vram_buffers": false,
+  "resident_flag": "ASTER_XQ_RESIDENT_MMQ=0|1",
+  "files": [
+    {
+      "file": "aster_cache_restore_policy.hpp",
+      "bytes": 2391,
+      "sha256": "31b4720bcef27d9fc0eb9596ddff6b76a6ec7800e11d4aadf8e06f2d812b31e8"
+    },
+    {
+      "file": "aster_resident_stage_policy.hpp",
+      "bytes": 754,
+      "sha256": "3a7f73176bab85fd096bb17bc2ed748ee25592b08e73aeac3714bd6e41d20ba3"
+    },
+    {
+      "file": "build_worker.py",
+      "bytes": 5319,
+      "sha256": "f229317c061d0323b0a9b94258afbb381cc2b070135e078e84192e8a34f065e2"
+    },
+    {
+      "file": "cache_policy_test.cpp",
+      "bytes": 2675,
+      "sha256": "05e38decfc2bd92589cbb5c1d7ac44d8dea7fa0c1801b86a832c710908ae4dca"
+    },
+    {
+      "file": "ds41_moe.cpp",
+      "bytes": 375596,
+      "sha256": "8e3fe090b73b90ac3012cc423b65642b1077e2c15451edb677bc5ec4cfb0f0b2"
+    },
+    {
+      "file": "resident-mmq-v35.patch",
+      "bytes": 5471,
+      "sha256": "a4ba5b688b60e0f13be4e607b316905e0eb8bc1f7c53ed0f00350d7b21b31266"
+    },
+    {
+      "file": "resident_stage_policy_test.cpp",
+      "bytes": 1258,
+      "sha256": "087c1e0a35477777c3c6a3d6c12ea06b78971f42938175a63a992c98d4ef2a81"
+    },
+    {
+      "file": "test_resident_mmq.cpp",
+      "bytes": 13940,
+      "sha256": "bd8590072882408be71cfe6d90670fa6a4216a51302510c4d05b86fa34a88599"
+    },
+    {
+      "file": "upstream-test_ds41_moe.cpp",
+      "bytes": 13905,
+      "sha256": "9560676b2447563a1bd3b158eeccb07dc505ff1b92ff6c07ba635c04c8a2f6df"
+    }
+  ]
+}

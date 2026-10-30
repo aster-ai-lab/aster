@@ -1,0 +1,7 @@
+{
+  "scope": "test assertion only",
+  "error": "KeyError: update_available",
+  "reason": "UpdateStatus serializes camelCase fields; original five subprocess commands completed successfully before the incorrect assertion",
+  "retained_log": "release915three-installer.log",
+  "correction": "Assert updateAvailable/latestVersion/autoUpdate and repeat in a new owned prefix"
+}

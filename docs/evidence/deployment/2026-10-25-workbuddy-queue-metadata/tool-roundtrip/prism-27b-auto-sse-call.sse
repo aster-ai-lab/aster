@@ -1,0 +1,4 @@
+data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null,"index":0}],"created":1792917986,"id":"chatcmpl-7f9a9999-e153-402b-a889-af680c267209","model":"prism-27b","object":"chat.completion.chunk"}
+
+data: {"error":{"message":"Inference failed: OpenAI upstream returned 500 Internal Server Error","type":"server_error"}}
+

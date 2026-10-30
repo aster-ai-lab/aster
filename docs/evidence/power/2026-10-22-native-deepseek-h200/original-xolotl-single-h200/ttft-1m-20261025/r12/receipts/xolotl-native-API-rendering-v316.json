@@ -1,0 +1,19 @@
+{
+  "unix": 1792925982.7945828,
+  "raw_text_sha256": "d2bfc743e3a52e8f2400129870f29a27feef67767e8375e24d1c6abbf087a957",
+  "raw_characters": 5267,
+  "raw_first_difference": 166,
+  "API_rendered_sha256": "d2bfc743e3a52e8f2400129870f29a27feef67767e8375e24d1c6abbf087a957",
+  "API_rendered_characters": 5267,
+  "API_rendered_first_difference": 166,
+  "API_canonical_reference_equal": false,
+  "raw_prefix": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache",
+  "rendered_prefix": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache",
+  "reference_prefix": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache",
+  "event_kinds": [
+    "content"
+  ],
+  "new_inference_sent": false,
+  "GPU_executed": false,
+  "original_raw_output_gate_changed": false
+}

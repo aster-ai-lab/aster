@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::render_editing_value_cursor_at_logical_position_when_buffer_fits' (55896) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:1656:5:
+assertion `left == right` failed: cursor must render at column 4 (= cursor_byte) for in-window buffer
+  left: None
+ right: Some(4)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::render_editing_value_cursor_at_logical_position_when_buffer_fits ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::render_editing_value_cursor_at_logical_position_when_buffer_fits
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

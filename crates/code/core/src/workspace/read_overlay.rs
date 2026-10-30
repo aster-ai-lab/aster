@@ -148,7 +148,18 @@ pub trait WorkspaceReadOverlay: Send + Sync {
 impl WorkspaceTextRange {
     /// Slice complete text into the range a streaming reader would return.
     pub fn from_text(content: &str, offset: usize, limit: usize) -> Self {
-        let lines = content.lines().collect::<Vec<_>>();
+        let mut range = Self::from_text_with_terminators(content, offset, limit);
+        for line in &mut range.lines {
+            if let Some(text) = line.strip_suffix('\n') {
+                line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
+            }
+        }
+        range
+    }
+
+    /// Slice text without discarding its original line terminators.
+    pub fn from_text_with_terminators(content: &str, offset: usize, limit: usize) -> Self {
+        let lines = content.split_inclusive('\n').collect::<Vec<_>>();
         if offset >= lines.len() {
             return Self {
                 lines: Vec::new(),
@@ -238,6 +249,32 @@ impl OverlayTextReader {
             None => {
                 let content = self.fs.read_text(path).await?;
                 Ok(WorkspaceTextRange::from_text(&content, offset, limit))
+            }
+        }
+    }
+
+    async fn read_text_range_with_terminators(
+        &self,
+        path: &WorkspacePath,
+        offset: usize,
+        limit: usize,
+    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
+        if let Some(content) = self.overlay.read_text(path).await {
+            return Ok(Some(WorkspaceTextRange::from_text_with_terminators(
+                &content, offset, limit,
+            )));
+        }
+        match &self.inner {
+            Some(reader) => {
+                reader
+                    .read_text_range_with_terminators(path, offset, limit)
+                    .await
+            }
+            None => {
+                let content = self.fs.read_text(path).await?;
+                Ok(Some(WorkspaceTextRange::from_text_with_terminators(
+                    &content, offset, limit,
+                )))
             }
         }
     }

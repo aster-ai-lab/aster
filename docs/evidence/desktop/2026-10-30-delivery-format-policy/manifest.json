@@ -1,0 +1,48 @@
+{
+  "scope": "Synthetic chat-only report through the installed real ACP binary; not a replay of the historical user session.",
+  "probeSpecSha256": "161b1e43ebf1855f082dfe649a66de9504629767920f2e71cd2fd5c9c106d58f",
+  "harnessSha256": "570a8c0501db0d62f4448312c61fde9ffe838d914a41c60a75f2973d6fb07643",
+  "nativeBinaryObservedAfterRun": {
+    "path": "/Applications/Aster.app/Contents/Resources/agent/a3s-code-acp",
+    "sha256": "a4a9fbbe2294736216511c82057a0ff95cfa289d4f9b63bc85447979428111a0",
+    "modifiedEpoch": 1793343916.2699473,
+    "bundleVersion": "0.1.6",
+    "bundleSourceIdentity": null
+  },
+  "files": {
+    "before-context.json": "d97b61b127f7fe8d7617ecdf133ebe88d4e35ac7e82ba0e56cc5b1f56c268298",
+    "after-context.json": "f767b8db73e204f6049ac542225ed971c9d182da6f21f2f5f6081ce77e6d0b58",
+    "probe-spec.json": "161b1e43ebf1855f082dfe649a66de9504629767920f2e71cd2fd5c9c106d58f",
+    "probe-results.json": "73abdf306214dcee6bfb4f35546b64f8c5ff7792cf9f0af5b3d3b56e0b4674c0",
+    "before.reply.txt": "aabf040a64ea774191f87111488cc00185369ccb4d57301182b6128f3343c189",
+    "after.reply.txt": "3ea03fc02377ddb30ad1dc30d55ff7e318c41d2130949e257c131e773daebcf9",
+    "reply-table-audit.json": "d190f00180b00685776d674cd91adc179fa425fd78cf2ac373e27184e9d0c1bb"
+  },
+  "workspaceFilesAfterRun": [
+    ".a3s/memory/durable_memory/.a3s-vec.lock.owner",
+    ".a3s/memory/durable_memory/.a3s-vec.lock",
+    ".a3s/memory/durable_memory/manifest.json",
+    ".a3s/memory/durable_memory/segments/snapshot-00000000000000000001.bin",
+    ".a3s/memory/durable_memory/indexes/index-cache.bin",
+    ".a3s/sessions/2026-10-30/60dde9af-aff8-49b2-b94c-9ba210f4f18d/session.json",
+    ".a3s/sessions/2026-10-30/60dde9af-aff8-49b2-b94c-9ba210f4f18d/run-owner-60dde9af-aff8-49b2-b94c-9ba210f4f18d.lock",
+    ".a3s/sessions/2026-10-30/60dde9af-aff8-49b2-b94c-9ba210f4f18d/writer.lock",
+    ".a3s/sessions/2026-10-30/60dde9af-aff8-49b2-b94c-9ba210f4f18d/60dde9af-aff8-49b2-b94c-9ba210f4f18d.jsonl",
+    ".a3s/sessions/2026-10-30/a81e21c9-385a-46cb-8f46-3bb7837d6529/run-owner-a81e21c9-385a-46cb-8f46-3bb7837d6529.lock",
+    ".a3s/sessions/2026-10-30/a81e21c9-385a-46cb-8f46-3bb7837d6529/session.json",
+    ".a3s/sessions/2026-10-30/a81e21c9-385a-46cb-8f46-3bb7837d6529/writer.lock",
+    ".a3s/sessions/2026-10-30/a81e21c9-385a-46cb-8f46-3bb7837d6529/a81e21c9-385a-46cb-8f46-3bb7837d6529.jsonl",
+    ".a3s-code/index/CURRENT",
+    ".a3s-code/index/.index.lock",
+    ".a3s-code/index/generation-1-6198ba7a/manifest.json",
+    ".a3s-code/index/generation-1-6198ba7a/collection/.a3s-vec.lock.owner",
+    ".a3s-code/index/generation-1-6198ba7a/collection/.a3s-vec.lock",
+    ".a3s-code/index/generation-1-6198ba7a/collection/manifest.json",
+    ".a3s-code/index/generation-1-6198ba7a/collection/segments/snapshot-00000000000000000001.bin",
+    ".a3s-code/index/generation-1-6198ba7a/collection/indexes/index-cache.bin"
+  ],
+  "afterSourceRevision": "a379e3aa8acd69664d2e713bd4720dbdbbe62e22",
+  "afterSourceSha256": "229563ab51b146c91a59b29e7bb419cfbae69d8d95a155080081e0d47c915a39",
+  "guidelinesSourceSha256": "15b01ff97df6f68d76334e883046bbf0b39aa1613937e88cb91324fed85fac84",
+  "testRuntimeReproducer": "probe.py is the frozen local harness; its absolute checkout path records the tested environment."
+}

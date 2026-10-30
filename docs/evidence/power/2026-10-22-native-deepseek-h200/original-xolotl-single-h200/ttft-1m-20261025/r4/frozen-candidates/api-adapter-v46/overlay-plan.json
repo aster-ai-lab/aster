@@ -1,0 +1,13 @@
+{
+  "upstream_sha256": "5180c184d1a421dd5b56e799360fe6306b96d41da2d443d0bb68dae6714f2e5d",
+  "patched_sha256": "f333c6929562009bab3096dd5bd22ddb08d764d1626593237a62fddf2315abee",
+  "helper_sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+  "strict_grammar_basis": "serve_ds41_dsml_json_v6b.frozen.py",
+  "memo_basis": "tokenizer-v21",
+  "memo_env": "ASTER_XQ_EXACT_TOKEN_CACHE",
+  "memo_default": "0",
+  "max_memo_bytes": 33554432,
+  "max_memo_entries": 4,
+  "gpu_qualified": false,
+  "production_changed": false
+}

@@ -1,0 +1,44 @@
+
+running 4 tests
+test lifecycle::kimi_allow_always_survives_restart_and_is_workspace_scoped ... ORACLE case=learned-approval name=source-pair result=pass detail=aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-unknown-linux-gnu
+ORACLE case=learned-approval name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26806
+ORACLE case=learned-approval name=allow-always result=pass detail=actual permission selection persisted the exact cat rule in ACL
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26820
+ORACLE case=learned-approval name=learned-restart result=pass detail=same workspace reuses persisted approval with no permission card
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ORACLE case=learned-approval name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26816
+ORACLE case=learned-approval name=approval-workspace-scope result=pass detail=another workspace asks again and returns its own unseen token
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_copy_nth_exact_bytes_and_export_failures ... ORACLE case=copy-export-contract name=source-pair result=pass detail=aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-unknown-linux-gnu
+ORACLE case=copy-export-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26811
+ORACLE case=copy-export-contract name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27298
+ORACLE case=copy-export-contract name=copy-1 result=pass detail=requested assistant response exported with exact UTF-8 bytes
+ORACLE case=copy-export-contract name=copy-2 result=pass detail=requested assistant response exported with exact UTF-8 bytes
+ORACLE case=copy-export-contract name=export-order result=pass detail=full transcript contains both prompts and replies in order
+ORACLE case=copy-export-contract name=export-refusal result=pass detail=directory write and invalid response index fail explicitly without model work
+ORACLE case=copy-export-contract name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_explicit_deny_survives_yolo_and_next_read ... ORACLE case=yolo-explicit-deny name=source-pair result=pass detail=aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-unknown-linux-gnu
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26813
+ORACLE case=yolo-explicit-deny name=explicit-deny result=pass detail=actual write denied under YOLO; exact original bytes retained
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27268
+ORACLE case=yolo-explicit-deny name=usable-after-denial result=pass detail=subsequent actual Kimi read completes in the same session
+ORACLE case=yolo-explicit-deny name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_resume_and_continue_restore_model_history ... ORACLE case=resume-model-history name=source-pair result=pass detail=aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-unknown-linux-gnu
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26811
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13569
+ORACLE case=resume-model-history name=--resume result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13653
+ORACLE case=resume-model-history name=--continue result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 216.80s
+

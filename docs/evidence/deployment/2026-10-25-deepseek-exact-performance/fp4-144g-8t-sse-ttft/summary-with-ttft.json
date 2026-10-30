@@ -1,0 +1,9 @@
+{
+  "profile": "FP4 exact 8t 144GiB PCIe0.75 SSE TTFT supplement",
+  "quality_passed": 0,
+  "decode_medians": {},
+  "prefill_median": 646.8,
+  "full_one_million_completed": false,
+  "prefill_ttft_seconds_median": 26.85578423901461,
+  "quality_note": "Not repeated; five cases passed in fp4-144g-8t-pcie75-exact/quality.json"
+}

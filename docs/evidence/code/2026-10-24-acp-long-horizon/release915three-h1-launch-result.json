@@ -1,0 +1,29 @@
+{
+  "exit_code": 0,
+  "timed_out": false,
+  "whole_test_s": 116.896,
+  "actual_pid_witness": {
+    "test_pid": 69384,
+    "acp_pid": 70910,
+    "actual_parent_pid": 69384,
+    "actual_workspace": "/Users/roylin/code/aster/target/q/r915three-h1/t/.tmpOtC048/workspace",
+    "declared_workspace": "/Users/roylin/code/aster/target/q/r915three-h1/t/.tmpOtC048/workspace",
+    "binary": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/target/qualification/rust-scripted-6bc851d9-cfb8-45f4-8e7f-d58db80c28a3/a3s-code-acp",
+    "binary_sha256": "bded198cf581bd7b29dd7083f3872823756979c750167341b0dcfb2943b9b15c",
+    "actual_executable_observed": true,
+    "inside_owned_tmp": true,
+    "git_ignore_exit": 0,
+    "git_prefix_exit": 0,
+    "git_prefix": "target/q/r915three-h1/t/.tmpOtC048/workspace/",
+    "process_group": 70910,
+    "observed_after_s": 56.938,
+    "scope": "exact actual Driver PID from process-launch; independent OS parent, executable, cwd and Git checks; build-id probes excluded"
+  },
+  "cohort": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/docs/evidence/code/2026-10-24-acp-long-horizon/rust-scripted-6bc851d9-cfb8-45f4-8e7f-d58db80c28a3",
+  "candidate_unchanged": true,
+  "manifest_unchanged": true,
+  "tester_unchanged": true,
+  "changed_compiled_local_sources": [],
+  "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+  "scope": "H1 controlled model with real ACP and compiler VM; not real model performance or full original-case qualification"
+}

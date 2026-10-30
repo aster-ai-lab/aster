@@ -22,12 +22,24 @@ jobs:
         uses: ./.github/actions/checkout-studio
         with:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Fetch the pinned AIX test fixture
+        env:
+          GH_TOKEN: ${{ secrets.STUDIO_READ_TOKEN }}
+        run: |
+          set -euo pipefail
+          ref="$(git ls-tree HEAD apps/api | awk '{print $3}')"
+          test -n "$ref"
+          mkdir -p apps/api/vendor/web/public/cases
+          gh api "repos/kense-labs/api/contents/vendor/web/public/cases/acp-cloud-agent.aix?ref=${ref}" \
+            --jq .content \
+            | python3 -c 'import base64,sys; sys.stdout.buffer.write(base64.b64decode(sys.stdin.read()))' \
+            > apps/api/vendor/web/public/cases/acp-cloud-agent.aix
       - name: Install Linux build tools
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
       - name: Install macOS build tools
         if: runner.os == 'macOS'
-        run: brew install protobuf just
+        run: brew install protobuf just lld
       - name: Install pinned toolchain
         run: rustup show active-toolchain
       - name: Desktop launcher
@@ -64,6 +76,8 @@ jobs:
           python3 tests/cli_sandbox.py
           python3 tests/cli_sandbox_smoke_test.py
           python3 tests/cli_pair_identity.py
+      - name: Release tag and channel governance
+        run: python3 tests/release_governance.py
       - name: Linux CLI glibc baseline and installer
         run: python3 tests/aster_cli_linux.py
       - name: Kylin input method launcher
@@ -104,6 +118,8 @@ jobs:
             python3 apps/studio/scripts/studio_product.py "$tenant" stage-companions
             cargo "${build_args[@]}" --bin Studio
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" tenant:: -- --test-threads=1
+            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" providers:: -- --test-threads=1
+            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" agent_plane::computer_use_tests:: -- --test-threads=1
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" app_updater:: -- --test-threads=1
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" bundled_skills:: -- --test-threads=1
           done
@@ -113,6 +129,10 @@ jobs:
         run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
       - name: ACP integration
         run: cargo test --locked -p a3s-code-acp --test v912_seam
+      - name: Local Git queries and Codex account discovery
+        run: |
+          cargo test --locked -p a3s-code-core --test git_read_queries
+          cargo test --locked -p a3s-code-acp --test codex_account_stdio
       - name: Core long-task ownership and consent contracts
         run: |
           cargo test --locked -p a3s-code-core --lib -- agent_api::goal_facade::tests fact_control:: goal_control:: hitl:: tool_confirmation:: --test-threads=4

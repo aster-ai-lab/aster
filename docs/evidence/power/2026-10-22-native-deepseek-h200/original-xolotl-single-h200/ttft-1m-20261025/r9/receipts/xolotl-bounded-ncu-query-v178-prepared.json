@@ -1,0 +1,35 @@
+{
+  "phase": "prepared",
+  "retained_failure": "xolotl-ncu-preflight-v176.json",
+  "installed_suffix_query": "xolotl-ncu-suffix-query-v177.json",
+  "metric_support_confirmed": [
+    "gpu__time_duration.sum",
+    "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+    "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+    "sm__warps_active.avg.pct_of_peak_sustained_active",
+    "dram__bytes_read.sum",
+    "dram__bytes_write.sum",
+    "smsp__warps_eligible.avg.per_cycle_active",
+    "smsp__issue_active.avg.pct_of_peak_sustained_active"
+  ],
+  "files": [
+    {
+      "file": "xolotl_ncu_actual1m_worker_v171r1.frozen.py",
+      "bytes": 16384,
+      "sha256": "abafb9d93360c7a1ffdbbff82500329c3ff4f0d43ca173edd729b238634e8db0"
+    },
+    {
+      "file": "manage_ncu_actual1m_v172r1.py",
+      "bytes": 12094,
+      "sha256": "992301f611556cbd725a7017baca467c83a6b0ccf27d9dd122df6a460b4e6fdd"
+    },
+    {
+      "file": "run_fullwindow_then_hardware_profile_v173r1.frozen.py",
+      "bytes": 7070,
+      "sha256": "9d8678e950058337d0b6de665ee0fb4de4c5298b6778fe79a66913f9ffc6e6f5"
+    }
+  ],
+  "model_math_changed": false,
+  "profiling_executed": false,
+  "hardware_counters_collected": false
+}

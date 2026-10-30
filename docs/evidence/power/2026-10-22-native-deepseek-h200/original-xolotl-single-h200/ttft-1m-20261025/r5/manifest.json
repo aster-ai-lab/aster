@@ -1,0 +1,1242 @@
+{
+  "schema": "aster-xolotl-long-output-recovery-r5-manifest",
+  "unix": 1792880771.1856735,
+  "files": [
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe",
+      "source": "draft-cumulative-v49/aster_draft_cumulative.hpp"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/cumulative-draft-v49.patch",
+      "bytes": 1648,
+      "sha256": "512954d975cd4fd59a08d738077e9bb7622d7f5d0f7bffb74255105a0c266b97",
+      "source": "draft-cumulative-v49/cumulative-draft-v49.patch"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/ds41_generate.cpp",
+      "bytes": 221080,
+      "sha256": "299a2958c364827270a974425d908383cd0de2bcc2cfc9933c31575e94eeaeec",
+      "source": "draft-cumulative-v49/ds41_generate.cpp"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/ds41_generate.original.cpp",
+      "bytes": 220648,
+      "sha256": "196c58faf7c1674869fd49757b3f5775ab672ec37fc121ebeb32e511cdaf8578",
+      "source": "draft-cumulative-v49/ds41_generate.original.cpp"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/generator_cpu_build_worker.py",
+      "bytes": 4175,
+      "sha256": "5fc15da4ea9fddd5c83a9ce30b734a949af0e3c7fc18372e3bd740513dc2f4c3",
+      "source": "draft-cumulative-v49/generator_cpu_build_worker.py"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/native_link_worker.py",
+      "bytes": 3826,
+      "sha256": "fbc13d74385981eaec91b6942877b9cc40010db870d19f52572cc35ffd0f76d4",
+      "source": "draft-cumulative-v49/native_link_worker.py"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/policy_test.cpp",
+      "bytes": 2423,
+      "sha256": "bdab86a2f71bc9e56d119733939473a2256c237a5fa10c81a06bbcb234a429be",
+      "source": "draft-cumulative-v49/policy_test.cpp"
+    },
+    {
+      "file": "frozen-candidates/draft-cumulative-v49/source-manifest.json",
+      "bytes": 649,
+      "sha256": "d24751d82e3afee05c9adcef66fd1f0e644421bec4c8dc1d360be9b1b4041b83",
+      "source": "draft-cumulative-v49/source-manifest.json"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/actual-tool-output.json",
+      "bytes": 534,
+      "sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646",
+      "source": "api-adapter-v52/actual-tool-output.json"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/aster_token_cache.py",
+      "bytes": 3765,
+      "sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+      "source": "api-adapter-v52/aster_token_cache.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/benchmark_real_tokenizer.py",
+      "bytes": 3454,
+      "sha256": "efe3136fd8fe82a6461dffc5cbd6009ecf801731122c3c8782dd441fc3a99c0a",
+      "source": "api-adapter-v52/benchmark_real_tokenizer.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/cpu_preflight_worker.py",
+      "bytes": 4475,
+      "sha256": "4dda9792223a6216406e087932c7ac8c1a74a60462c4c90707fcd9f4c41d798c",
+      "source": "api-adapter-v52/cpu_preflight_worker.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/hybrid-native-json-v52.patch",
+      "bytes": 944,
+      "sha256": "b98584c23bcb6efcb08d424e333e5b19d44ac8c357d23601294fe77945c3de54",
+      "source": "api-adapter-v52/hybrid-native-json-v52.patch"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/overlay-plan.json",
+      "bytes": 503,
+      "sha256": "41b0d9af2432bdf0caf177a465ae141e8c3d005c19b2f6632490a686ad460a1d",
+      "source": "api-adapter-v52/overlay-plan.json"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/serve_ds41.original.py",
+      "bytes": 28970,
+      "sha256": "f333c6929562009bab3096dd5bd22ddb08d764d1626593237a62fddf2315abee",
+      "source": "api-adapter-v52/serve_ds41.original.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/serve_ds41.py",
+      "bytes": 29473,
+      "sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+      "source": "api-adapter-v52/serve_ds41.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/test_combined_adapter.py",
+      "bytes": 4093,
+      "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5",
+      "source": "api-adapter-v52/test_combined_adapter.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/test_exact_token_cache.py",
+      "bytes": 4741,
+      "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd",
+      "source": "api-adapter-v52/test_exact_token_cache.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/test_hybrid_native_json.py",
+      "bytes": 1721,
+      "sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23",
+      "source": "api-adapter-v52/test_hybrid_native_json.py"
+    },
+    {
+      "file": "frozen-candidates/api-adapter-v52/test_strict_native_json.py",
+      "bytes": 1411,
+      "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865",
+      "source": "api-adapter-v52/test_strict_native_json.py"
+    },
+    {
+      "file": "receipts/workbuddy-native-read-e2e-v60-intent.json",
+      "bytes": 394,
+      "sha256": "9247fb66e9ee1b405d0dbe96d50d56fd82fed4759c1eb561809e9d8c9b12f455",
+      "source": "workbuddy-native-read-e2e-v60-intent.json"
+    },
+    {
+      "file": "receipts/workbuddy-native-read-e2e-v60-result.json",
+      "bytes": 1189,
+      "sha256": "3e1d597778efe71ffda9b44f6694d47a38101c146c59ffead70968a5719bc30f",
+      "source": "workbuddy-native-read-e2e-v60-result.json"
+    },
+    {
+      "file": "receipts/workbuddy-stream-e2e-v61-intent.json",
+      "bytes": 300,
+      "sha256": "1224511c3ef107cfb18b673b59d51fb2dec1919341404e5b8ef75b1a08055e1a",
+      "source": "workbuddy-stream-e2e-v61-intent.json"
+    },
+    {
+      "file": "receipts/workbuddy-stream-e2e-v61-result.json",
+      "bytes": 1762,
+      "sha256": "635040d2d8f7a0e28b3c1955a6bb57d93117da811081c1e143d479d46ceda892",
+      "source": "workbuddy-stream-e2e-v61-result.json"
+    },
+    {
+      "file": "receipts/xolotl-api-actual-source-v51-provenance.json",
+      "bytes": 955,
+      "sha256": "93aa44f5094d014c51a18663e8f454e9855ec4551dc6a73eab22629eedba0c7f",
+      "source": "xolotl-api-actual-source-v51-provenance.json"
+    },
+    {
+      "file": "receipts/xolotl-api-hybrid-v52-intent.json",
+      "bytes": 2931,
+      "sha256": "4efd7ed1363017a6b8561c5aa417b85baca53c75beda5340fe0e2f5f85ff428e",
+      "source": "xolotl-api-hybrid-v52-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-api-hybrid-v52-latest.json",
+      "bytes": 3654,
+      "sha256": "d96b6954e1f5c8a02ac35b58a7d129fcebeac9692d7c3c19d1e019d6fb1553b6",
+      "source": "xolotl-api-hybrid-v52-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-cont8-resource-v58-latest.json",
+      "bytes": 11272,
+      "sha256": "a7ceaf74b5be04eacac051c93d6e7fb279127a059487b9e6cb885cbafc5d34fd",
+      "source": "xolotl-cont8-resource-v58-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-controller-interrupted-for-long-output.json",
+      "bytes": 274,
+      "sha256": "58d2525de75a0a2a1c3e5003a902280d504c39db829b632e7b1c71421a522412",
+      "source": "xolotl-dense-subbatch-v47-controller-interrupted-for-long-output.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-controller-launch.json",
+      "bytes": 276,
+      "sha256": "9b193b61d43ec051dc7dd728e57cfe2afba3b59b40bfbb8206b2497bac30bae4",
+      "source": "xolotl-dense-subbatch-v47-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-controller.json",
+      "bytes": 186,
+      "sha256": "3ba2f684de3efcb1fd9445bd302db3327ee35beb0afaef899f48d8e29a5b831e",
+      "source": "xolotl-dense-subbatch-v47-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense128_repeat-drain.json",
+      "bytes": 343,
+      "sha256": "60ee20d6d49bf0ffa1da48ed6e738c8741f28e0d53130c272d89cd495428d324",
+      "source": "xolotl-dense-subbatch-v47-dense128_repeat-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense128_repeat-intent.json",
+      "bytes": 4362,
+      "sha256": "182c8364ffa81a0d8577e2364ef3f44a60c8d1f24559cb9aa7f7809ef3ad203f",
+      "source": "xolotl-dense-subbatch-v47-dense128_repeat-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense128_repeat-latest.json",
+      "bytes": 4225,
+      "sha256": "8dab54bc183ae8243da9da8f843524c214ac277df9ac92c19aa26a114fdebc7b",
+      "source": "xolotl-dense-subbatch-v47-dense128_repeat-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense128_repeat-qualification-intent.json",
+      "bytes": 995,
+      "sha256": "fc3300e53820f79a1589caab787e48bf10e2758a8d47c0e6e3cd94e9213b5a41",
+      "source": "xolotl-dense-subbatch-v47-dense128_repeat-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense128_repeat-qualification-latest.json",
+      "bytes": 26167,
+      "sha256": "9b045bd17dd815ba69f8cf6805f8f8aa6a90a776c93a50d0141921b139081721",
+      "source": "xolotl-dense-subbatch-v47-dense128_repeat-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense256-drain.json",
+      "bytes": 343,
+      "sha256": "dbdae12a0d41d7cf24834d3988fc8f672a2832e1a98ff8b104707e32d0962a69",
+      "source": "xolotl-dense-subbatch-v47-dense256-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense256-intent.json",
+      "bytes": 4348,
+      "sha256": "3f486fa8f28a4dfabd4f2409649043dda41bc63d5c349709bd6c9900ca28ed8a",
+      "source": "xolotl-dense-subbatch-v47-dense256-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense256-latest.json",
+      "bytes": 4221,
+      "sha256": "c681148fab932db6b09783ffc91e51833bfff2573b83621afe79dfba8a7cd46e",
+      "source": "xolotl-dense-subbatch-v47-dense256-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense256-qualification-intent.json",
+      "bytes": 981,
+      "sha256": "0ddcc54d0851e9ea2b7819500768a579631860ea13d7f9de62f8716ad4121239",
+      "source": "xolotl-dense-subbatch-v47-dense256-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense256-qualification-latest.json",
+      "bytes": 26162,
+      "sha256": "73f839970a9df939e67cb5c3b93b0a53588dcce7206e3cc43660ea2756191c55",
+      "source": "xolotl-dense-subbatch-v47-dense256-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense512-drain.json",
+      "bytes": 342,
+      "sha256": "0ac779e52fc457b4823b7450f08d4b245504f628c736d0371d5704f337928b9d",
+      "source": "xolotl-dense-subbatch-v47-dense512-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense512-intent.json",
+      "bytes": 4348,
+      "sha256": "e09d1ebfbe9017db7b9f5d69ba6647da785ee900f4182551fdfeaf5a0afb9694",
+      "source": "xolotl-dense-subbatch-v47-dense512-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense512-latest.json",
+      "bytes": 4217,
+      "sha256": "4b43ef0cd04106dabb8c7c58239a1e20dc07aa283989d8617b5cd1f24afc2c82",
+      "source": "xolotl-dense-subbatch-v47-dense512-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense512-qualification-intent.json",
+      "bytes": 982,
+      "sha256": "edd67c47014b26c05c7b5f85b63fdd32801bb54b4af5354c99f2660e76a4cc08",
+      "source": "xolotl-dense-subbatch-v47-dense512-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-dense512-qualification-latest.json",
+      "bytes": 26161,
+      "sha256": "f066fef99b4f03c0201e0bb5af089dfc4aa9142b4d6d48a4fc7bd8095cc034f7",
+      "source": "xolotl-dense-subbatch-v47-dense512-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-operators.json",
+      "bytes": 1141,
+      "sha256": "94265dd929850a29da0cc247b0a94cb530cbb11257ef8854d09743aceb3d9e04",
+      "source": "xolotl-dense-subbatch-v47-operators.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47-preflight.json",
+      "bytes": 235,
+      "sha256": "545339d12e6ca4b842649318919c3577d38232759bf3c908e23b8976ce984eae",
+      "source": "xolotl-dense-subbatch-v47-preflight.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47r1-controller-launch.json",
+      "bytes": 313,
+      "sha256": "394ca90cdb0a6d83686062c05aac8654661d72ab18029a9340788892f18412d2",
+      "source": "xolotl-dense-subbatch-v47r1-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-dense-subbatch-v47r1-controller.json",
+      "bytes": 11985,
+      "sha256": "ffe2dc6bf383a73cd01f993aad120835e686a106c94af3b46d19577ab3baaccd",
+      "source": "xolotl-dense-subbatch-v47r1-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-comparison-v50-controller-launch.json",
+      "bytes": 244,
+      "sha256": "68aba314b9b4566b69d6c42c60cdeff8ebb03a28dafbe00e0e614b8170ae6a25",
+      "source": "xolotl-draft-comparison-v50-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-comparison-v50-controller.json",
+      "bytes": 544,
+      "sha256": "44ce3343f221c72c7b89e2d6d1cdfd63b2c46648372657435e95ece33916e1d4",
+      "source": "xolotl-draft-comparison-v50-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-comparison-v53-controller-launch.json",
+      "bytes": 245,
+      "sha256": "36ae5bb5e5fb3b4d53bd801e35b733c4bc5176c10bbc7e20b13ccacc897b83dc",
+      "source": "xolotl-draft-comparison-v53-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-comparison-v53-controller.json",
+      "bytes": 5348,
+      "sha256": "1372e83c68301c3107436db8fe020b1e0d1106241dad35108305e40af253b278",
+      "source": "xolotl-draft-comparison-v53-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cum010-v53-native-diagnostic.json",
+      "bytes": 10336,
+      "sha256": "b7e3320cbc36395268456ad83bd18acf723f4fa89bce21063ce4202b186aa229",
+      "source": "xolotl-draft-cum010-v53-native-diagnostic.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cum010-v53-output-divergence.json",
+      "bytes": 2379,
+      "sha256": "d081ff8da929e947a7cdbba0b0995ba5b6c594d65b1f9409a438601dddfec5cc",
+      "source": "xolotl-draft-cum010-v53-output-divergence.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-cpu-intent.json",
+      "bytes": 1214,
+      "sha256": "20990f13041d917595cfab232abeaa29807169c62a4e4a0ba61f53e8d9581399",
+      "source": "xolotl-draft-cumulative-v49-cpu-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-cpu-latest.json",
+      "bytes": 581,
+      "sha256": "5fa198ea504c4074a00d0975490631b4dcf21f9617d036b6aa847a5cd2d18cc5",
+      "source": "xolotl-draft-cumulative-v49-cpu-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-cuda-header-intent.json",
+      "bytes": 373,
+      "sha256": "a62644291797036db1343a33f17410eb17a6a71685c13aa987a47ff7dd23aa30",
+      "source": "xolotl-draft-cumulative-v49-cuda-header-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-cuda-header-latest.json",
+      "bytes": 4175,
+      "sha256": "f29f3f2a5f0e2f8db6c9ee04b64bd2ebf6c543b495179644993148f4c5357d37",
+      "source": "xolotl-draft-cumulative-v49-cuda-header-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-generator-cpu-intent.json",
+      "bytes": 883,
+      "sha256": "5fd39fc410d7162f64f23a4bd2e7d8f2da3c5e2c976c1b28ed50b6ba10117948",
+      "source": "xolotl-draft-cumulative-v49-generator-cpu-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-generator-cpu-latest.json",
+      "bytes": 4814,
+      "sha256": "428ba1e5d282704886057a7386cfba951356114c3316ddfe7173f01379ec0fa4",
+      "source": "xolotl-draft-cumulative-v49-generator-cpu-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-generator-parent.json",
+      "bytes": 4497,
+      "sha256": "da9fe2b0bd650c6c7e110ebc1a9b24b8c1e93a55f088ad35fefb3c108d6215f6",
+      "source": "xolotl-draft-cumulative-v49-generator-parent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-native-link-intent.json",
+      "bytes": 828,
+      "sha256": "ccf6b51b3499a2c81803ac428b6b25ce9c314c9f98446e484f9f181b793d39d8",
+      "source": "xolotl-draft-cumulative-v49-native-link-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-cumulative-v49-native-link-latest.json",
+      "bytes": 769,
+      "sha256": "5717ae5095452eae00e5b078728322b22500f74944c82bc38f29a65370d92d9e",
+      "source": "xolotl-draft-cumulative-v49-native-link-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v50-off-intent.json",
+      "bytes": 936,
+      "sha256": "2be613468a9f081da2aedf78fd6ce94127e519eaf2f304c9e97e99afd5f8a979",
+      "source": "xolotl-draft-extended-v50-off-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v50-off-latest.json",
+      "bytes": 1524,
+      "sha256": "07eacd0ece1b7f33c1bf6a82a7a7392061c1926b0f797bf395c117169bce185a",
+      "source": "xolotl-draft-extended-v50-off-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-cum010-intent.json",
+      "bytes": 938,
+      "sha256": "3c46179e59b7ae3911006841c885da0a26ba08826fab1649592247efd108e59c",
+      "source": "xolotl-draft-extended-v53-cum010-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-cum010-latest.json",
+      "bytes": 7662,
+      "sha256": "0e1012513192cee0aa97b55d3d8b825df14b404f8d01cedc2301767b3e93ef9f",
+      "source": "xolotl-draft-extended-v53-cum010-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-off-intent.json",
+      "bytes": 936,
+      "sha256": "bf21b0f53d9851de25e425194434ce7e3657e103c945192f6e2456d63b211b14",
+      "source": "xolotl-draft-extended-v53-off-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-off-latest.json",
+      "bytes": 54986,
+      "sha256": "4c427af1fa3b4a4278941397bfbc17c2f6167bcd85f7a5ab1b241fec179bcd6c",
+      "source": "xolotl-draft-extended-v53-off-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-off_repeat-intent.json",
+      "bytes": 943,
+      "sha256": "a9f00538ff0c768911771f72d850d49fa4b62954c14996f3945e8c02f18c3f7b",
+      "source": "xolotl-draft-extended-v53-off_repeat-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-extended-v53-off_repeat-latest.json",
+      "bytes": 54990,
+      "sha256": "cfacd55142da4e44bce925183a719d1e07ae466d6c073052f9ccf786482d6251",
+      "source": "xolotl-draft-extended-v53-off_repeat-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-recovery-v55-controller-launch.json",
+      "bytes": 184,
+      "sha256": "019fc8e793a4f26cd6d712e0e1f3c3699825169549c5233bc228adcbfcedbe3f",
+      "source": "xolotl-draft-recovery-v55-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-recovery-v55-controller.json",
+      "bytes": 5445,
+      "sha256": "7e9fbdbdb14943aaebf08d704c38f85e3eb8d5207b44cfd005d1c01282e6d303",
+      "source": "xolotl-draft-recovery-v55-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v50-off-drain.json",
+      "bytes": 343,
+      "sha256": "9d7eb9a1f3a12f67aa6c1fc02bb3840d20d9c3f2d2406a3fe3562c263ab98b3f",
+      "source": "xolotl-draft-service-v50-off-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v50-off-intent.json",
+      "bytes": 6685,
+      "sha256": "8487231bb53cb7b73a314313b54ce4afaa30eb6ec47380b9b2211c3d44c2e3b5",
+      "source": "xolotl-draft-service-v50-off-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v50-off-latest.json",
+      "bytes": 4190,
+      "sha256": "db51dff93b1f3aa13fe384da118ec1be89331f3701b3f9d0cefcc672358cfeb4",
+      "source": "xolotl-draft-service-v50-off-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v50-off-qualification-intent.json",
+      "bytes": 968,
+      "sha256": "2a97540fced70e1cef5d12828be5a98cf966bc651c7a9d1cb5c2289d3c608bb7",
+      "source": "xolotl-draft-service-v50-off-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v50-off-qualification-latest.json",
+      "bytes": 26158,
+      "sha256": "d6a8dc60b797d8093e63b3f813aa88467201d44001d8394365cfc629589a9888",
+      "source": "xolotl-draft-service-v50-off-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-cum010-drain.json",
+      "bytes": 343,
+      "sha256": "79032faca372d575036048b0b12ad53cec70bc850f21450447bedbdb55dfdd5a",
+      "source": "xolotl-draft-service-v53-cum010-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-cum010-intent.json",
+      "bytes": 7687,
+      "sha256": "bc87efcb9a2494f2f12035462e029e3c6292f8406b0e62a5ced3009871cd794d",
+      "source": "xolotl-draft-service-v53-cum010-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-cum010-latest.json",
+      "bytes": 4356,
+      "sha256": "c84aec99ce8f49a6eaccdc24049d7d386ccf5e499deca31088e9961c7cab9f4e",
+      "source": "xolotl-draft-service-v53-cum010-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-cum010-qualification-intent.json",
+      "bytes": 974,
+      "sha256": "20f3fd02f2e7c5216e1d39efb025c851e37db84788905cc6349503b3ac80a74a",
+      "source": "xolotl-draft-service-v53-cum010-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-cum010-qualification-latest.json",
+      "bytes": 26176,
+      "sha256": "c5d573b21c59076a4a63b3597857864e3c2bfe7d1d512ae5e2eb41ad31665d1c",
+      "source": "xolotl-draft-service-v53-cum010-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off-drain.json",
+      "bytes": 341,
+      "sha256": "3a2782426d10fe1a692770204d49d8208fbea95c0aa60623c61c4db3a777f7c9",
+      "source": "xolotl-draft-service-v53-off-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off-intent.json",
+      "bytes": 7661,
+      "sha256": "c6625582ee7d38835d02fbb90318e577ad9d2855f7a4ae38e35ff955ea70f00c",
+      "source": "xolotl-draft-service-v53-off-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off-latest.json",
+      "bytes": 4257,
+      "sha256": "06f970fe1cc0f48754d3da1747bf856fcaef171cfff4a570f9e94fcc29c66789",
+      "source": "xolotl-draft-service-v53-off-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off-qualification-intent.json",
+      "bytes": 969,
+      "sha256": "ac3399efe686006856004be5715763d7ccd76bbebb982dfc17f9e48149e720cf",
+      "source": "xolotl-draft-service-v53-off-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off-qualification-latest.json",
+      "bytes": 26160,
+      "sha256": "07f97097afcf63c7912815e8c8ce10077b47f33337613da724298fa3e3422512",
+      "source": "xolotl-draft-service-v53-off-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off_repeat-intent.json",
+      "bytes": 7723,
+      "sha256": "aadb42c9d18252fc7b464cfdf981b8396d0888502c489c69f1454f4a702fe936",
+      "source": "xolotl-draft-service-v53-off_repeat-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off_repeat-latest.json",
+      "bytes": 1006,
+      "sha256": "43ec2a754d16a8191fcb4435581d742859c79980f7df07d36bdf4985aa01662d",
+      "source": "xolotl-draft-service-v53-off_repeat-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off_repeat-qualification-intent.json",
+      "bytes": 982,
+      "sha256": "1e68d09c008dde91001065843b8f99f01af19ae2b97689883451091274a45d64",
+      "source": "xolotl-draft-service-v53-off_repeat-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-draft-service-v53-off_repeat-qualification-latest.json",
+      "bytes": 26154,
+      "sha256": "aca24f1dbaaf81b6cbbd651e0ea383976c18a610596598ca7b8aa1c9d9e3dc55",
+      "source": "xolotl-draft-service-v53-off_repeat-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-copy-v63-intent.json",
+      "bytes": 2080,
+      "sha256": "5c0702f052774a64d0382b8b99ff3605153c58673971b1e0cf91c8efa7601b8c",
+      "source": "xolotl-engram-local-copy-v63-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-copy-v63-latest.json",
+      "bytes": 1883,
+      "sha256": "bae4d1a753b8c86e2d9769920211c79a12bbe09a8df0f55054ee956e5f1d223f",
+      "source": "xolotl-engram-local-copy-v63-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-storage-v63-inventory.json",
+      "bytes": 968,
+      "sha256": "25ad69822e9d98890a260076d7e9d25dab8da7fe4258422ebf1e880a82760db3",
+      "source": "xolotl-engram-local-storage-v63-inventory.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-storage-v63-optimization-space.json",
+      "bytes": 210,
+      "sha256": "7e1a811e49a83ee033983a0f5d1f9de16e5481bb457d30192dfdd84156af08d8",
+      "source": "xolotl-engram-local-storage-v63-optimization-space.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-storage-v63-plan-inputs.json",
+      "bytes": 1397,
+      "sha256": "8d2b62cad21a2ec31d46186528f85b740499b48e250720f5905ab8790e8153a5",
+      "source": "xolotl-engram-local-storage-v63-plan-inputs.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-storage-probe-v64-intent.json",
+      "bytes": 859,
+      "sha256": "a07d932f6353a314776df71e008146f5cf27a41127265d7d7e71b247629579eb",
+      "source": "xolotl-engram-storage-probe-v64-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-storage-probe-v64-latest.json",
+      "bytes": 6218,
+      "sha256": "5c3bbc21982891e80710c88cc829c202c83cc48b74dd9c2c5542957bc6630a90",
+      "source": "xolotl-engram-storage-probe-v64-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-fixture-v54-intent.json",
+      "bytes": 1265,
+      "sha256": "063ef0ef3c0b3b773d664b9f555238e90ecddeaf1ba9f74f2d70f386b57e0933",
+      "source": "xolotl-fullwindow-long-fixture-v54-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-fixture-v54-latest.json",
+      "bytes": 1843,
+      "sha256": "6ea339f33c98b3d988e6b6fe397d5b33c03fc4c29bb35bf64e09943a6329799f",
+      "source": "xolotl-fullwindow-long-fixture-v54-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-fixture-v54r1-intent.json",
+      "bytes": 1268,
+      "sha256": "3e0bebbb03b1ea320a92f5fccd8a40fe67c540374a64704ef81ed7927fc1bb63",
+      "source": "xolotl-fullwindow-long-fixture-v54r1-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-fixture-v54r1-latest.json",
+      "bytes": 2297,
+      "sha256": "a6fd43c96c3d651c68f6afec8ea9d104f0d896ac9b7dbccd34f8b56847d10d4e",
+      "source": "xolotl-fullwindow-long-fixture-v54r1-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-suite-v56-intent.json",
+      "bytes": 1807,
+      "sha256": "6795740ae1c14fdc33951b31692dcfe5e670c5a51bd05f999e6054ddf641d28a",
+      "source": "xolotl-fullwindow-long-suite-v56-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-suite-v56-latest.json",
+      "bytes": 111922,
+      "sha256": "a5d91b38bdd987c38780d5c395009d4bfa8b667741eb5496023a345721b219f0",
+      "source": "xolotl-fullwindow-long-suite-v56-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-long-v56-postmortem.json",
+      "bytes": 14555,
+      "sha256": "9e83649847f063f5b1df7b986ee05804d605ab3244ccb59053f4cf70852e83bf",
+      "source": "xolotl-fullwindow-long-v56-postmortem.json"
+    },
+    {
+      "file": "receipts/xolotl-indexer-full1m-v45-cold-numeric.json",
+      "bytes": 1103,
+      "sha256": "bc4cea11849bf4edbdb90da0f642506af2f95cc122e53e1e4f6eec2c92987915",
+      "source": "xolotl-indexer-full1m-v45-cold-numeric.json"
+    },
+    {
+      "file": "receipts/xolotl-indexer-full1m-v45-numeric-phases.json",
+      "bytes": 2753,
+      "sha256": "b856b0d4a762cb82cfa89b08d425658c1fefe49af6ad506187d32b677b25e090",
+      "source": "xolotl-indexer-full1m-v45-numeric-phases.json"
+    },
+    {
+      "file": "receipts/xolotl-indexer-fullwindow-suite-v45-intent.json",
+      "bytes": 1934,
+      "sha256": "7e67b24766ad0bcf7a9c94977e543658c9283e757869a4608ca0700a4c302b7d",
+      "source": "xolotl-indexer-fullwindow-suite-v45-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-indexer-fullwindow-suite-v45-latest.json",
+      "bytes": 26736,
+      "sha256": "8dfa4311ddc7cfc445caf5ff4cbc276a3c45a33cbcd1ab3a928d918c1ad0a525",
+      "source": "xolotl-indexer-fullwindow-suite-v45-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-indexer-v45-drain.json",
+      "bytes": 758,
+      "sha256": "75ea7f6b9ac89e8bd931b0ef24aaf5d249367e898a94ab274e4fcc44d03f21f1",
+      "source": "xolotl-indexer-v45-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-old-cleanup-v31-after-recovery-v65.json",
+      "bytes": 737,
+      "sha256": "f89429671a715388771d2d0b3e881fef11c5b75ccb21db6965ff2c92da4f6537",
+      "source": "xolotl-old-cleanup-v31-after-recovery-v65.json"
+    },
+    {
+      "file": "receipts/xolotl-post-concurrency-v66-intent.json",
+      "bytes": 1068,
+      "sha256": "6e7d1e3121c09a9b7d2977cc0dfe4071e4d90c42a4cd0b07656c9186469bd8c9",
+      "source": "xolotl-post-concurrency-v66-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-post-concurrency-v66-latest.json",
+      "bytes": 6335,
+      "sha256": "a9f750d67de47fbef9896bc4c649d343d98930d2b8c3aaabf1844918ef2dddc7",
+      "source": "xolotl-post-concurrency-v66-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-readiness-watch-v65-intent.json",
+      "bytes": 1276,
+      "sha256": "48cdf4e973391cc43cf56c285e8bccc7112f3fe39aab87cfb293f126b931f39d",
+      "source": "xolotl-readiness-watch-v65-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-readiness-watch-v65-latest.json",
+      "bytes": 489,
+      "sha256": "e587de625190bc2ad113558bbda5881633a14ae48ccfcfdccbcfbb39463a9720",
+      "source": "xolotl-readiness-watch-v65-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-single1m-cont8-lease-pending.json",
+      "bytes": 5345,
+      "sha256": "0ff9a3f0108cdb0f1a51c4321dd3c51006453d4a47313e72d21579ba3564aa9b",
+      "source": "xolotl-single1m-cont8-lease-pending.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-edge-suite-v59-intent.json",
+      "bytes": 1279,
+      "sha256": "4b7fc9f592d2182f255e56e6ddd3a876a8a83d6e6f6cc3c4a32e6bc3e7426991",
+      "source": "xolotl-stable-edge-suite-v59-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-edge-suite-v59-latest.json",
+      "bytes": 2179,
+      "sha256": "d082d3d4a5d9f1a62f1ff78c9ea4cced257784b6174df79d7bdbe2aa90d54b39",
+      "source": "xolotl-stable-edge-suite-v59-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-extended-v58-stable-intent.json",
+      "bytes": 942,
+      "sha256": "664150f542f624b01d914f4b125e57486d8779e5ecfb22221b4d74507f886dc4",
+      "source": "xolotl-stable-extended-v58-stable-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-extended-v58-stable-latest.json",
+      "bytes": 54985,
+      "sha256": "39a435b515e048b8bda021fcd1ac3eddea4483c68e96c611795b514825ec2121",
+      "source": "xolotl-stable-extended-v58-stable-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-controller-launch.json",
+      "bytes": 221,
+      "sha256": "7b1773049f60e9307f2fa42dd226970fa35024df9f8819601f30240ad66a4d32",
+      "source": "xolotl-stable-recovery-v58-controller-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-controller.json",
+      "bytes": 5399,
+      "sha256": "9c6e275d77dc85d064f81bec6cbf791af5377673a7d549fb25547947bf258cac",
+      "source": "xolotl-stable-recovery-v58-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-promotion.json",
+      "bytes": 9426,
+      "sha256": "f1588ac01eb6d03844952d464476b66d614a8cd853ccc7adbdd5c58f71a3b221",
+      "source": "xolotl-stable-recovery-v58-promotion.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-stable-intent.json",
+      "bytes": 7653,
+      "sha256": "1368a52552ec2c54231f836edb5755611fb2acfd54d4591b602b044ea3769da7",
+      "source": "xolotl-stable-recovery-v58-stable-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-stable-latest.json",
+      "bytes": 1006,
+      "sha256": "858ff9828a2719540d3846779739cdb6d7b8bc88bd56c3d9d9d548f7268eed19",
+      "source": "xolotl-stable-recovery-v58-stable-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-stable-qualification-intent.json",
+      "bytes": 977,
+      "sha256": "e144207d330b440c15d400625b6b6bfd601daed38d54409c04c81436f0ec72f3",
+      "source": "xolotl-stable-recovery-v58-stable-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v58-stable-qualification-latest.json",
+      "bytes": 26162,
+      "sha256": "b2f42c0ca8104bee5a8ca0c33c173aa9e90939070cd9eb6105d181e6cd934053",
+      "source": "xolotl-stable-recovery-v58-stable-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-service-v57-network-diagnostic.json",
+      "bytes": 1062,
+      "sha256": "b9892ee0111fab5d994f3c6fa2474cc68c53715f6b2ed53db4ea89264fb1d8fc",
+      "source": "xolotl-stable-service-v57-network-diagnostic.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-service-v58-intent.json",
+      "bytes": 8045,
+      "sha256": "cd6a7dfcbac3541ca16ba3f042fc0f37557511a5e318cf67b78e7bc26a6b9c2b",
+      "source": "xolotl-stable-service-v58-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-v31-early-stop-v57-reason.json",
+      "bytes": 2353,
+      "sha256": "17b1b3ad4e7d1df92ab8da641bbf99dd40007d62d42805fb35c36b747c79d07f",
+      "source": "xolotl-stable-v31-early-stop-v57-reason.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-v58-public-parent.json",
+      "bytes": 2109,
+      "sha256": "dc842788dad5da019db8142ba37d1a78b77943775e31ed369f2639dfb57c68a9",
+      "source": "xolotl-stable-v58-public-parent.json"
+    },
+    {
+      "file": "receipts/xolotl-tool-diagnostic-v51-diagnostic-intent.json",
+      "bytes": 6821,
+      "sha256": "5295b5da3e7a7e633d1d0e6299aa294ee0254c7a4959a61d4da6e4cccac12352",
+      "source": "xolotl-tool-diagnostic-v51-diagnostic-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-tool-diagnostic-v51-diagnostic-latest.json",
+      "bytes": 2147,
+      "sha256": "a34d9e2140a2bb061ebe33aac7e59f7294d88b11e9b8d21682e23e7cdde1881e",
+      "source": "xolotl-tool-diagnostic-v51-diagnostic-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-tool-diagnostic-v51-drain.json",
+      "bytes": 584,
+      "sha256": "f41747a3587f6e720f148d7d34399ca46f98c3a5c392b168b94461705e158de4",
+      "source": "xolotl-tool-diagnostic-v51-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-tool-raw-probe-v51-intent.json",
+      "bytes": 292,
+      "sha256": "674591e286e13c4ce1ddfab8dfd16e1e85d6184dbf86be212a70156f72838d40",
+      "source": "xolotl-tool-raw-probe-v51-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-tool-raw-probe-v51-latest.json",
+      "bytes": 841,
+      "sha256": "4d874453f7e0d001dce5c07aa2e7258a97f57a92b45f3671c68f63df9f97fb8f",
+      "source": "xolotl-tool-raw-probe-v51-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-upstream-dspark-cumulative-v48-diff.json",
+      "bytes": 2631,
+      "sha256": "a601ddda971db8775014b1a2f0929beeabb810ec0b073808b87fb28d020ec6f7",
+      "source": "xolotl-upstream-dspark-cumulative-v48-diff.json"
+    },
+    {
+      "file": "receipts/xolotl-upstream-head-v48-audit.json",
+      "bytes": 7912,
+      "sha256": "00c7cd1b40f00601fa7b0761930ec0c564e638341c436689b18dbb4ab6f361bc",
+      "source": "xolotl-upstream-head-v48-audit.json"
+    },
+    {
+      "file": "receipts/xolotl-windows-models-v58.json",
+      "bytes": 502,
+      "sha256": "31331bd89f013d35ee5ceb29819787787b92a40405ce6cbb1cc9168809d285d9",
+      "source": "xolotl-windows-models-v58.json"
+    },
+    {
+      "file": "receipts/xolotl-workbuddy-realistic-prefill-v62-native.json",
+      "bytes": 9661,
+      "sha256": "e2c8bf469665f457b7fb5cccb56e06db0ffa44d8dd067256c0dfd0054baf9984",
+      "source": "xolotl-workbuddy-realistic-prefill-v62-native.json"
+    },
+    {
+      "file": "receipts/xolotl-workbuddy-stock-prefill-v62-native.json",
+      "bytes": 2761,
+      "sha256": "de2c8da3f46cecd5598c12115d8a719ae7e48ca70b91b322475e07a90c51034a",
+      "source": "xolotl-workbuddy-stock-prefill-v62-native.json"
+    },
+    {
+      "file": "operators/prepare_xolotl_dense_subbatch_v47.py",
+      "bytes": 11740,
+      "sha256": "c7f95778ca346f0414fb9415ed3203fdcf2cf29cce0b8384fefd05bb8d2470f3",
+      "source": "prepare_xolotl_dense_subbatch_v47.py"
+    },
+    {
+      "file": "operators/launch_xolotl_dense_subbatch_v47.frozen.py",
+      "bytes": 5640,
+      "sha256": "9123a470ef37e2c4b02d3ee8ae2b3e51d6b59dad7c43b9b4cc75d6d2312e7241",
+      "source": "launch_xolotl_dense_subbatch_v47.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_dense_subbatch_v47.frozen.py",
+      "bytes": 7056,
+      "sha256": "468c23dbe840958ac00ed2410e56a332d95b1c3ae873a4c0fa089c17a3feac58",
+      "source": "manage_xolotl_dense_subbatch_v47.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_dense_subbatch_v47r1.frozen.py",
+      "bytes": 5054,
+      "sha256": "e6f4a7076742782a5611b6e8b00dfe8908b5a554bdd9fbf9095ddfb8a6b0008e",
+      "source": "run_xolotl_dense_subbatch_v47r1.frozen.py"
+    },
+    {
+      "file": "operators/prepare_xolotl_draft_cumulative_v49.py",
+      "bytes": 6444,
+      "sha256": "9ed9c679f2608639c740039252d5e754de9e18691b02b72110afd65ed8a0685a",
+      "source": "prepare_xolotl_draft_cumulative_v49.py"
+    },
+    {
+      "file": "operators/launch_xolotl_draft_cpu_build_v49.frozen.py",
+      "bytes": 3997,
+      "sha256": "aab4fdec8e3806eb88d3bf88755ea2612cb6484dc41630df80caba9b3cfff94b",
+      "source": "launch_xolotl_draft_cpu_build_v49.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_draft_cuda_headers_v49.frozen.py",
+      "bytes": 4650,
+      "sha256": "dcdfedb479b0b96423b8c5910669bbb2af45918934721a14ab6079c3c196154c",
+      "source": "stage_xolotl_draft_cuda_headers_v49.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_draft_native_link_v49.frozen.py",
+      "bytes": 6288,
+      "sha256": "8bf6cef20457b8ed5dddc6b7afda2048f59fa730c707d81b8bc124db82ebb38b",
+      "source": "launch_xolotl_draft_native_link_v49.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_draft_service_v50.frozen.py",
+      "bytes": 8050,
+      "sha256": "f75bf13c644e162b017dcb2fa2f024c40096f4208a1143bc8f4c93cca7709916",
+      "source": "launch_xolotl_draft_service_v50.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_draft_service_v50.frozen.py",
+      "bytes": 7063,
+      "sha256": "ea9a74b34717d8600a751781415d55da84fe943e021043adf0b45671d0be00a2",
+      "source": "manage_xolotl_draft_service_v50.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_draft_extended_v50.frozen.py",
+      "bytes": 7310,
+      "sha256": "a269428a5ac2046594bb9a223959e2c74503fbd6916f07b063e4f8a3d1e5ae52",
+      "source": "manage_xolotl_draft_extended_v50.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_draft_comparison_v50.frozen.py",
+      "bytes": 5400,
+      "sha256": "8f619e5a375dead07972d98a39ffe5e037d6e1263bcab938eaf0388efe0b5d06",
+      "source": "run_xolotl_draft_comparison_v50.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_draft_long_output_worker_v50.frozen.py",
+      "bytes": 10599,
+      "sha256": "e4d0e2cf742631af019b4bc81c0eb510be7c6bc2151e5d49ecdcb9a12a9c376f",
+      "source": "xolotl_draft_long_output_worker_v50.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_tool_diagnostic_v51.frozen.py",
+      "bytes": 7979,
+      "sha256": "5ec7e5718eb8174f997a1057aa0521afbfa64cdd35ab71c785570f4183d24754",
+      "source": "launch_xolotl_tool_diagnostic_v51.frozen.py"
+    },
+    {
+      "file": "operators/prepare_xolotl_api_hybrid_v52.py",
+      "bytes": 5458,
+      "sha256": "42ca17bd9521ef50346112810f120c8efd76dc3e4570a5c5fde4a2d9fd3d18c2",
+      "source": "prepare_xolotl_api_hybrid_v52.py"
+    },
+    {
+      "file": "operators/stage_xolotl_api_hybrid_v52.frozen.py",
+      "bytes": 6644,
+      "sha256": "7c7fd8343235f28ff54788e2beaa3df129fad138cd1b75e72d0ff0ea32bd5951",
+      "source": "stage_xolotl_api_hybrid_v52.frozen.py"
+    },
+    {
+      "file": "operators/test_xolotl_native_http_v52.frozen.py",
+      "bytes": 7894,
+      "sha256": "70e7b60366f8997a36815c4f7b80b854cc11035405c3114b65043a93f48ae1ac",
+      "source": "test_xolotl_native_http_v52.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_draft_service_v53.frozen.py",
+      "bytes": 8226,
+      "sha256": "7c91a4856d4238684190ffe566616b480396e28304d8a5af380e27f11871e174",
+      "source": "launch_xolotl_draft_service_v53.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_draft_service_v53.frozen.py",
+      "bytes": 7063,
+      "sha256": "c7ea954a1df7deba09b790fb06d65201a6f9e51fb03106ac98f0461d970c4ed7",
+      "source": "manage_xolotl_draft_service_v53.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_draft_extended_v53.frozen.py",
+      "bytes": 7310,
+      "sha256": "fe2d9f053129d5a5aa21a6ef882e4e563c5b92a72f2a1657900959a7b8d87d0e",
+      "source": "manage_xolotl_draft_extended_v53.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_draft_comparison_v53.frozen.py",
+      "bytes": 5400,
+      "sha256": "8728ff2531c0f38b04271f7c35830d3785db2289c7de602b095ac2adc30c5504",
+      "source": "run_xolotl_draft_comparison_v53.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_draft_recovery_v55.frozen.py",
+      "bytes": 5800,
+      "sha256": "a6e2b5c3a32a4b70ba3d30b2cc44a51dfdb6bb09c769ac0d21cad6b19cbd4320",
+      "source": "run_xolotl_draft_recovery_v55.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 5715,
+      "sha256": "921561a3cbfffba14bc67242f2703726e692b8bcd4d427feb8b0975cce594af7",
+      "source": "xolotl_fullwindow_long_fixture_v54.py"
+    },
+    {
+      "file": "operators/test_xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 4854,
+      "sha256": "c80ae32183362a09d406cc494a3ae9a00a8b390bc7b882128ab6b25992dcac13",
+      "source": "test_xolotl_fullwindow_long_fixture_v54.py"
+    },
+    {
+      "file": "operators/xolotl_fullwindow_long_prepare_v54.frozen.py",
+      "bytes": 2599,
+      "sha256": "063f5ca61e4ae6de3f2ab3d3ab7a5ce9ec9760fd5073db7b78855fc40d826a3f",
+      "source": "xolotl_fullwindow_long_prepare_v54.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_fullwindow_long_prepare_v54r1.frozen.py",
+      "bytes": 2608,
+      "sha256": "83f033c3556214dd08dbfeb6275a369cada158642026c802ff462bdf4d2e695c",
+      "source": "xolotl_fullwindow_long_prepare_v54r1.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_fullwindow_long_fixture_v54.frozen.py",
+      "bytes": 3315,
+      "sha256": "5262b760639804ed4191613755dd1a4bdef1b695d16563d8882e4adcbb2208b0",
+      "source": "stage_xolotl_fullwindow_long_fixture_v54.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_fullwindow_long_fixture_v54r1.frozen.py",
+      "bytes": 3883,
+      "sha256": "89d57e0459d7e8f07d97aa24a264fb8bb51bc74bee028553352bb3978d1d2371",
+      "source": "stage_xolotl_fullwindow_long_fixture_v54r1.frozen.py"
+    },
+    {
+      "file": "operators/observe_xolotl_fullwindow_long_fixture_v54.frozen.py",
+      "bytes": 1381,
+      "sha256": "99b71a4139bdd6e45f58d08abf257e100f5b23bd2d9246d9b9b87d24aa9a4fc0",
+      "source": "observe_xolotl_fullwindow_long_fixture_v54.frozen.py"
+    },
+    {
+      "file": "operators/observe_xolotl_fullwindow_long_fixture_v54r1.frozen.py",
+      "bytes": 1385,
+      "sha256": "a3e83d6290d97401f2ee95befc41f7cac7a65fa4163ec9f4454b3fc9022d854e",
+      "source": "observe_xolotl_fullwindow_long_fixture_v54r1.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_fullwindow_long_worker_v54.frozen.py",
+      "bytes": 9591,
+      "sha256": "cdf8c65f0f2d79039b5e4a2bfd041622b99c9113ba8602144cf072aa5e33fb8d",
+      "source": "xolotl_fullwindow_long_worker_v54.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_fullwindow_long_suite_worker_v56.frozen.py",
+      "bytes": 4453,
+      "sha256": "934d1ee947b1479d936fbb438fe77fb81ec51e2a2e5e518b531ef8270795acfd",
+      "source": "xolotl_fullwindow_long_suite_worker_v56.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_fullwindow_long_suite_v56.frozen.py",
+      "bytes": 9025,
+      "sha256": "0f904beab3216f9c0a15841b77e3a45b0794be944397f88385d4da93615e3d5a",
+      "source": "manage_xolotl_fullwindow_long_suite_v56.frozen.py"
+    },
+    {
+      "file": "operators/submit_xolotl_single1m_cont8_lease.frozen.py",
+      "bytes": 10019,
+      "sha256": "9da7a39aa8a0c4de8a99970217e00082e343a1073397bdf09a3f2266a1f05a34",
+      "source": "submit_xolotl_single1m_cont8_lease.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_cont8_common_v58.py",
+      "bytes": 4543,
+      "sha256": "69ee8d8cae821acc231a3dd3c963bdf571de17c69e31d4dd0add04d8d1b898e4",
+      "source": "xolotl_cont8_common_v58.py"
+    },
+    {
+      "file": "operators/xolotl_qualified_api_worker_v53.frozen.py",
+      "bytes": 8567,
+      "sha256": "26f557e9eafd167de55fe65e95fd4ea610ba1d8c803e906f07349b188651526f",
+      "source": "xolotl_qualified_api_worker_v53.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_stable_recovery_v58.frozen.py",
+      "bytes": 6136,
+      "sha256": "101f039a24fd1ae6ee183cb2cb6fb873fbf72a342498166e8f069bbc988d6726",
+      "source": "launch_xolotl_stable_recovery_v58.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_recovery_v58.frozen.py",
+      "bytes": 7040,
+      "sha256": "1a0a444efbe5b18715252396616a07ded0b264e806d664a281891b63a53dd2e0",
+      "source": "manage_xolotl_stable_recovery_v58.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_extended_v58.frozen.py",
+      "bytes": 7279,
+      "sha256": "7f701196f02b04ac8de4f2bff050e94a5a718cc140d0c61721023b8c8220d61a",
+      "source": "manage_xolotl_stable_extended_v58.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_stable_recovery_v58.frozen.py",
+      "bytes": 5831,
+      "sha256": "eeec212aeea29bb6ea2202f19ad6c9b33e61a8427658de3ea77fcbc0eefa7b5c",
+      "source": "run_xolotl_stable_recovery_v58.frozen.py"
+    },
+    {
+      "file": "operators/promote_xolotl_stable_recovery_v58.frozen.py",
+      "bytes": 8557,
+      "sha256": "eefc42797ed4611c458a59f3802749372c05a9e625daeae1ed88058f35cef15a",
+      "source": "promote_xolotl_stable_recovery_v58.frozen.py"
+    },
+    {
+      "file": "operators/finalize_xolotl_stable_recovery_v58.frozen.py",
+      "bytes": 6001,
+      "sha256": "67fa25a7fc12e266529742804110a1d3cf82336eb5e5b55efaf0988c5c16ec36",
+      "source": "finalize_xolotl_stable_recovery_v58.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_stable_edge_suite_worker_v59.frozen.py",
+      "bytes": 4427,
+      "sha256": "766b18a135af4a9537a049ee23d100be11c4d2ea9fdc4eb03f323ca679e98625",
+      "source": "xolotl_stable_edge_suite_worker_v59.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_edge_suite_v59.frozen.py",
+      "bytes": 8905,
+      "sha256": "772b243872b35674709038eadaaaf03a4c271880f5390449fe460a8b3f3e56dc",
+      "source": "manage_xolotl_stable_edge_suite_v59.frozen.py"
+    },
+    {
+      "file": "operators/workbuddy_native_read_e2e_worker_v60.frozen.py",
+      "bytes": 5591,
+      "sha256": "59f72d405113b494c8a29ad03a984d2023b61226a5c1d8e96b2f9c51174709ab",
+      "source": "workbuddy_native_read_e2e_worker_v60.frozen.py"
+    },
+    {
+      "file": "operators/launch_workbuddy_native_read_e2e_v60.frozen.py",
+      "bytes": 2685,
+      "sha256": "e24c55017fc31c8811a92890845e8a0038852336025684895036eb80024d3228",
+      "source": "launch_workbuddy_native_read_e2e_v60.frozen.py"
+    },
+    {
+      "file": "operators/workbuddy_stream_e2e_worker_v61.frozen.py",
+      "bytes": 3665,
+      "sha256": "855074869405d9e675e87beb80d75dc360b7d16018bbe357a94a59f5ddf6833c",
+      "source": "workbuddy_stream_e2e_worker_v61.frozen.py"
+    },
+    {
+      "file": "operators/launch_workbuddy_stream_e2e_v61.frozen.py",
+      "bytes": 1853,
+      "sha256": "20b3113f49fe2cd86d7ede2812e45fe799c26abdd4d18439764875728f2d7ac5",
+      "source": "launch_workbuddy_stream_e2e_v61.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_engram_local_copy_worker_v63.frozen.py",
+      "bytes": 7021,
+      "sha256": "a9bad5133c93f002f8dcfc98ec16282e28e1ad87a1e2bb7e290c15e18ae78899",
+      "source": "xolotl_engram_local_copy_worker_v63.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_engram_local_copy_v63.frozen.py",
+      "bytes": 3721,
+      "sha256": "6814004b2a2a73dda36f39b97a31f8dea70ac15eb4f4a92ce398940a1c9c9baa",
+      "source": "stage_xolotl_engram_local_copy_v63.frozen.py"
+    },
+    {
+      "file": "operators/observe_xolotl_engram_local_copy_v63.frozen.py",
+      "bytes": 1503,
+      "sha256": "93351fd9e20879000ea0ab5e5e46befb27df257a044e948a5b5fbc7e0febb565",
+      "source": "observe_xolotl_engram_local_copy_v63.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_engram_storage_probe_worker_v64.frozen.py",
+      "bytes": 5783,
+      "sha256": "6d27105090441006c91e7bdb211f28ada9e1a126af37abc4bf225c0a844dd0dd",
+      "source": "xolotl_engram_storage_probe_worker_v64.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_engram_storage_probe_v64.frozen.py",
+      "bytes": 3717,
+      "sha256": "ec2dd87836a4ebcd68615c4b02627d70b141409a9b9f8f654dddd2ee5546e4c0",
+      "source": "stage_xolotl_engram_storage_probe_v64.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_readiness_watch_worker_v65.frozen.py",
+      "bytes": 3460,
+      "sha256": "a2c86f81588400a17f4b67b41b8fc778944562df26a2c43386b2055144ca2577",
+      "source": "xolotl_readiness_watch_worker_v65.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_readiness_watch_v65.frozen.py",
+      "bytes": 3517,
+      "sha256": "e58c1dcb32cf3e1ac550a7d42cdd4e5d7270e2d765cc6f24207e1c94f53fb782",
+      "source": "launch_xolotl_readiness_watch_v65.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_post_concurrency_worker_v66.frozen.py",
+      "bytes": 2267,
+      "sha256": "a46d44584e58a7c652725e725a49757427c56ceca65d511ebc4c121f1507c0f1",
+      "source": "xolotl_post_concurrency_worker_v66.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_post_concurrency_v66.frozen.py",
+      "bytes": 6376,
+      "sha256": "1b75da45e15c12a45be66f010caa2300901f84f3ff4ec03261e0485ed2e3dd4b",
+      "source": "manage_xolotl_post_concurrency_v66.frozen.py"
+    },
+    {
+      "file": "operators/retain_xolotl_long_output_recovery_r5.py",
+      "bytes": 22771,
+      "sha256": "684c335ff625cbe1263972b20c7c71b4421f9462d072631683c0ec66c8c7b923",
+      "source": "retain_xolotl_long_output_recovery_r5.py"
+    },
+    {
+      "file": "operators/audit_h200_staged_publication_v1.py",
+      "bytes": 3782,
+      "sha256": "d80e079259506544afa77802b8940932c6d8f931588fd27052048090fb5bcfcf",
+      "source": "audit_h200_staged_publication_v1.py"
+    },
+    {
+      "file": "current-serving-public-metadata.json",
+      "bytes": 1299,
+      "sha256": "cbd834808a5d170e0499200272c3fc7e9389c6427528869bc7318d2a7619a26e",
+      "source": null
+    },
+    {
+      "file": "round-summary.json",
+      "bytes": 22121,
+      "sha256": "fc362b0c0cd32a1b52e23676485906272e3c4e79ee1d22ac6c09c11e94c1da90",
+      "source": null
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 7012,
+      "sha256": "5da263665f4779b967b1e2bae422a694b6aaf5051d9815d49f5c564f3d69f3bf",
+      "source": null
+    }
+  ]
+}

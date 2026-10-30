@@ -1,0 +1,19 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v203-cpu",
+  "phase": "launched",
+  "profiler_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-hardware-actual1m-v172r2",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "stage": {
+    "worker_sha256": "cbb01b1df46581fb3fab7cfb959791d9ec91d50223c0bc20186c1ada299289f9",
+    "gpu_worker_sha256": "dd10bae065b7e951227b40942071f47b2356516f12c1476a7afbdcb24c01f21d"
+  },
+  "model_forward_executed": false,
+  "process": {
+    "pid": 9031,
+    "start_ticks": 713940690,
+    "uid": 10250,
+    "unix": 1792910135.9089487,
+    "namespace": "optimization pod",
+    "budget_seconds": 330
+  }
+}

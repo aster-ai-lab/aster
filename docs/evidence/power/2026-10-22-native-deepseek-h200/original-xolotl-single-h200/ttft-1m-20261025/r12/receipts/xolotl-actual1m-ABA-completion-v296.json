@@ -1,0 +1,65 @@
+{
+  "unix": 1792922531.3582895,
+  "phase": "actual1m_ABA_complete",
+  "controller": "xolotl-topk-native-model-v213r4-controller.json",
+  "input_tokens": 1047544,
+  "output_tokens": 1024,
+  "sequential_requests_per_profile": 8,
+  "summary": {
+    "control_a": {
+      "cold_output_sha256": "7f9b16debd8c73a488bdf1ef1ca517afee6c9e27581e6ca2964b7ef86422e7cf",
+      "c1": {
+        "concurrency": 1,
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 350.48583571473137,
+        "aggregate_end_to_end_completion_tok_s": 23.37326980217158,
+        "ttft_p50_seconds": 7.823960093548521,
+        "ttft_p95_seconds": 8.103600139264017,
+        "request_p95_seconds": 44.06409612230491,
+        "per_stream_interval_tok_s_estimate": 28.482219108265134
+      },
+      "full_output_identity_passed": false
+    },
+    "topk": {
+      "cold_output_sha256": "7f9b16debd8c73a488bdf1ef1ca517afee6c9e27581e6ca2964b7ef86422e7cf",
+      "c1": {
+        "concurrency": 1,
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 230.60843309899792,
+        "aggregate_end_to_end_completion_tok_s": 35.52341902641199,
+        "ttft_p50_seconds": 7.964118777075782,
+        "ttft_p95_seconds": 8.133475784258916,
+        "request_p95_seconds": 29.042715921695343,
+        "per_stream_interval_tok_s_estimate": 49.0729861465958
+      },
+      "full_output_identity_passed": false
+    },
+    "control_b": {
+      "cold_output_sha256": "7f9b16debd8c73a488bdf1ef1ca517afee6c9e27581e6ca2964b7ef86422e7cf",
+      "c1": {
+        "concurrency": 1,
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 349.87383657088503,
+        "aggregate_end_to_end_completion_tok_s": 23.41415431428033,
+        "ttft_p50_seconds": 7.843254139414057,
+        "ttft_p95_seconds": 7.964659572625533,
+        "request_p95_seconds": 44.18950516928453,
+        "per_stream_interval_tok_s_estimate": 28.525960490366547
+      },
+      "full_output_identity_passed": false
+    }
+  },
+  "API_wall_improvement_percent": {
+    "control_a": 51.98309576314204,
+    "control_b": 51.71771121686937
+  },
+  "C1_gain_qualified": true,
+  "full_C2_acceptance_passed": false,
+  "formal_candidate_promoted": false,
+  "goal_complete": false,
+  "next_diagnostic_controller": "xolotl-comparison-then-nsys-v296-controller.json",
+  "old_gate_refusal_retained": "xolotl-comparison-then-nsys-v292-controller.json"
+}

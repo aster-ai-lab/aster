@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'git_info::tests::compute_cwd_git_info_standalone_grok_worktree' (31680) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\git_info.rs:560:9:
+assertion `left == right` failed
+  left: Some("~/AppData\\Local\\Temp\\.tmp6EkbNr\\repo")
+ right: Some("C:\\Users\\admin\\AppData\\Local\\Temp\\.tmp6EkbNr\\repo")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test git_info::tests::compute_cwd_git_info_standalone_grok_worktree ... FAILED
+
+failures:
+
+failures:
+    git_info::tests::compute_cwd_git_info_standalone_grok_worktree
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.27s
+

@@ -1,0 +1,305 @@
+{
+  "unix": 1792894749.9676733,
+  "native_pod_namespace": [
+    {
+      "pid": 3737,
+      "stat": [
+        "D",
+        "3735",
+        "3735",
+        "3735",
+        "0",
+        "-1",
+        "4194304",
+        "56494326",
+        "0",
+        "0",
+        "0",
+        "93876",
+        "35313",
+        "0",
+        "0",
+        "20",
+        "0",
+        "54",
+        "0",
+        "712279251",
+        "706292867072",
+        "42592352"
+      ],
+      "wchan": "cxiWaitEventWait",
+      "io": "rchar: 155240939437\nwchar: 148584\nsyscr: 17644547\nsyscw: 14133\nread_bytes: 0\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "threads": [
+        {
+          "tid": "3737",
+          "wchan": "cxiWaitEventWait",
+          "stat": [
+            "D",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "4194304",
+            "54403278",
+            "0",
+            "0",
+            "0",
+            "85838",
+            "6037",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3739",
+          "wchan": "do_poll.constprop.0",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "4194368",
+            "4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3740",
+          "wchan": "do_poll.constprop.0",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "4194368",
+            "2147",
+            "0",
+            "0",
+            "0",
+            "12",
+            "17",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3741",
+          "wchan": "do_poll.constprop.0",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "4194368",
+            "307",
+            "0",
+            "0",
+            "0",
+            "4",
+            "11",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3742",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "68732",
+            "0",
+            "0",
+            "0",
+            "184",
+            "914",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3743",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "34678",
+            "0",
+            "0",
+            "0",
+            "152",
+            "919",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3744",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "71267",
+            "0",
+            "0",
+            "0",
+            "181",
+            "895",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3745",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "65265",
+            "0",
+            "0",
+            "0",
+            "179",
+            "903",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3746",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "71128",
+            "0",
+            "0",
+            "0",
+            "183",
+            "899",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3747",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "42200",
+            "0",
+            "0",
+            "0",
+            "174",
+            "911",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3748",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "80153",
+            "0",
+            "0",
+            "0",
+            "157",
+            "924",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "tid": "3749",
+          "wchan": "futex_wait_queue_me",
+          "stat": [
+            "S",
+            "3735",
+            "3735",
+            "3735",
+            "0",
+            "-1",
+            "1077936192",
+            "14540",
+            "0",
+            "0",
+            "0",
+            "153",
+            "907",
+            "0",
+            "0"
+          ]
+        }
+      ]
+    }
+  ],
+  "log_tail": [
+    "serve: VRAM 5.48 GiB free -> prompt batch 512 (of 8192)",
+    "chunk prof: 40 calls, 57 launches: wall 259 ms = waits on reads 0 + wave/copy waits 0 + final sync 89 + other host 170; reader wall 0 ms; GPU grouped kernels 44 ms (resident 42); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 322 sub-runs; PTQ1_0 -> Q2_0 transcode 11 ms GPU (inside the grouped kernels) over 19 sub-runs, 21.7 GB of ternary read = 1927 GB/s",
+    "resident MMQ stage: 186 waves, 59980492800 exact D2D bytes",
+    "serve: cache regrown: 414 experts back (0 from the file) in 89 ms",
+    "dense prof turn: 40 attn spans: build 1 ms, alloc 4, gpu compute 62, engram wait 56, readback 10, upload 0, finish build 1",
+    "serve: prompt phases: 151 new = 151 batch (1.21 s: dense 0.14, experts 0.89, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 151 tokens (0 reused, batch) in 1.22 s = 124.2 tok/s (experts 35035 hit / 0 cpu / 1205 pcie / 0 file)",
+    "arena rebalance: 0 swaps planned (so far 0 retired, 0 published, 0 slots re-used, 0 cancelled; skipped: cand in 0, victim gone 0, victim in VRAM 0, victim recent 0, slot small 0)",
+    "serve: 1024 tokens in 20.99 s = 48.73 tok/s (length); experts: 326559 hit, 0 cpu, 1521 pcie, 0 file",
+    "serve: DSpark 480 passes, 2.13 tokens/pass (all requests 2.67)",
+    "serve: pass split 43.74 ms/pass = verify 40.72 (dense 29.36, tier 10.67, taps 0.22, logits 0.47) + sample 0.21 + draft 2.80 + other 0.01",
+    "strata serve: conversation cache: parked 132097 tokens in 5.6 ms; parked=7 bytes=876011100 evictions=0 (unrelated)",
+    "serve: reuse lcp=2 pool=7 lp=0 hist=0 snap=-1 prompt=1047544 images=0 -> reused=0",
+    "serve: cache kept for a 1047544-token batch (1298 tail slots out, 11178 experts stay)"
+  ]
+}

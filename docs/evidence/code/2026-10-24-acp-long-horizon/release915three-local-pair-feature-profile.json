@@ -1,0 +1,37 @@
+{
+  "package_id": "path+file:///Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/core#a3s-code-core@9.1.5",
+  "target": {
+    "kind": [
+      "lib"
+    ],
+    "crate_types": [
+      "lib"
+    ],
+    "name": "a3s_code_core",
+    "src_path": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/core/src/lib.rs",
+    "edition": "2021",
+    "doc": true,
+    "doctest": true,
+    "test": true
+  },
+  "profile": {
+    "opt_level": "3",
+    "debuginfo": 0,
+    "debug_assertions": false,
+    "overflow_checks": false,
+    "test": false
+  },
+  "features": [
+    "a3s-vec-fts",
+    "default",
+    "grep-trigram",
+    "local-code",
+    "web-fetch-pdf"
+  ],
+  "filenames": [
+    "/Users/roylin/code/aster/target/qualification/net-progress-build/target/release/deps/liba3s_code_core-61d3f441b8cf2e2b.rlib",
+    "/Users/roylin/code/aster/target/qualification/net-progress-build/target/release/deps/liba3s_code_core-61d3f441b8cf2e2b.rmeta"
+  ],
+  "executable": null,
+  "fresh": false
+}

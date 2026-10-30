@@ -1,0 +1,57 @@
+{
+  "case": "editor-invalid-utf8",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=5 model_turns=1 prompt_tokens=13443",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-5lQ3yt\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 7f01a7bf-89ac-49d7-ac8b-5d77a3ba29b6\n  Working directory: C:\\Windows\\Temp\\aster-kimi-5lQ3yt\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor saved invalid UTF-8; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 1.5s\n│ I need respond with exact EDITOR-CONTROL-OK no tools. Should consider user says Reply with EDITOR-CONTROL-OK. Do not  \n│ call tools. ORIGINAL-DRAFT. I should respond exactly EDITOR-CONTROL-OK. No need anything else. Ensure no tools.       \nEDITOR-CONTROL-OK\nWorked for 5.7s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (11%) · ctrl+o transcript"
+    },
+    {
+      "name": "editor-roundtrip",
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-5lQ3yt\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 7f01a7bf-89ac-49d7-ac8b-5d77a3ba29b6\n  Working directory: C:\\Windows\\Temp\\aster-kimi-5lQ3yt\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor saved invalid UTF-8; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 1.5s\n│ I need respond with exact EDITOR-CONTROL-OK no tools. Should consider user says Reply with EDITOR-CONTROL-OK. Do not  \n│ call tools. ORIGINAL-DRAFT. I should respond exactly EDITOR-CONTROL-OK. No need anything else. Ensure no tools.       \nEDITOR-CONTROL-OK\nWorked for 5.7s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (11%) · ctrl+o transcript"
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13443,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 6,
+          "digest": "11b1c47f4bb8f16f300dcb16f2af215a338372345290791f6c496c89ba853d96"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

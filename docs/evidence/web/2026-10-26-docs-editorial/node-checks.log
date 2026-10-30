@@ -1,0 +1,15 @@
+
+> test
+> node --test tests/docs.test.mjs
+
+✔ the project catalog refuses traversal, collisions and projects without a landing page (0.582209ms)
+✔ MDX builds deterministically and refuses stale generated pages (58.495125ms)
+✔ generated documents preserve project URLs, active navigation and accessible diagrams without JavaScript (84.8685ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 434.69225

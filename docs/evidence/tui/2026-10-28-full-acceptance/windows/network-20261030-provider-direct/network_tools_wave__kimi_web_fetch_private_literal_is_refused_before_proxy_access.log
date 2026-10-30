@@ -1,0 +1,12 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access ... ORACLE case=network-fetch-private name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=network-fetch-private name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40646
+ORACLE case=network-fetch-private name=web-fetch-controlled-error result=pass detail=the real web_fetch failure preserves its actual status or timeout reason; the controlled endpoint confirms whether network dispatch occurred
+ORACLE case=network-fetch-private name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13803
+ORACLE case=network-fetch-private name=web-fetch-error-recovery result=pass detail=the same session completes a fresh model turn after the real fetch failure
+ORACLE case=network-fetch-private name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 29.14s
+

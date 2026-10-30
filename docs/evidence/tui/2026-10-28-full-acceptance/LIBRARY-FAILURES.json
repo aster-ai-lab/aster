@@ -1,0 +1,3263 @@
+{
+  "schema": "aster.tui.library-failure-attribution.v1",
+  "whole_pager_qualified": false,
+  "candidate_source_pair": "5862dded8faeab96d4be04ae9ae535e3c474973e",
+  "upstream_commit": "5629b3009ba757cb74a4b4463168ed480eca5553",
+  "log_sha256": {
+    "windows": "7d24ae9dbcd689860397f5726127010a54136f76c74cab8c41e7aef3602e0baa",
+    "upstream_windows": "cb51e7f4a6db9875bcee18eeab7a5cdf03d42ef0674669d2c20230383ab71b48",
+    "linux": "f12639a1bca439074f8522b2be1f0bbb305be411c8e0a1d112decfcbf081de94"
+  },
+  "counts": {
+    "windows_failures": 165,
+    "upstream_windows_failures": 165,
+    "shared_windows_failures": 164,
+    "linux_failures": 19,
+    "modern_terminal_passes": 53
+  },
+  "candidate_only_failures": [
+    "app::effects::tests::permission_ack_failure_narrows_ui_without_writing_preference"
+  ],
+  "upstream_only_failures": [
+    "app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review"
+  ],
+  "owned_regression_correction": [
+    "windows/permission-ack-fixed.log",
+    "linux/permission-ack-fixed.log"
+  ],
+  "cases": [
+    {
+      "name": "acp::a3s_spawn::tests::a3s_acp_executable_reads_the_environment_override",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/001.log",
+        "sha256": "cdd41dd96aa02e4cf90e5adac8c5bb88805dec769bee25d5c5659a29f9b131f8"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/001.log",
+        "sha256": "1ba672e156b2e9468440351d8481540be95bfd966dd29be862d24b59cef44093"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/001.log",
+        "sha256": "0de5712a8ed35b40edc2940dc5e5e3d6b5e24c234bf3320ba52fe49d5ee3b283"
+      }
+    },
+    {
+      "name": "acp::a3s_spawn::tests::a_set_override_stops_when_the_path_cannot_be_executed",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/002.log",
+        "sha256": "97557ce41701c486b6bb804f104214d0c3d41ee97513d38ace96e59d5fe009d7"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/002.log",
+        "sha256": "4daf174cd68dd683b9e0bceb1109c37ed2d4e46cfa688fcd9915316428e9367c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/002.log",
+        "sha256": "d5ba9bf0bc8856ea0c8ba197c56700eb2d3290e061dc5c3f54da2633626c8b6d"
+      }
+    },
+    {
+      "name": "app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review",
+      "candidate_windows": null,
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/003.log",
+        "sha256": "76cef58423716fff376ec0d5a853c2389530994234cf003a9dff1af5c90d35f8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": null
+    },
+    {
+      "name": "app::agent_view::links::link_click_tests::privacy_banner_owns_slot_and_clicks_dispatch",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/003.log",
+        "sha256": "a00a79d6b103f259a563270ab426155bf20b677f2e85b09e783294fd1375d62f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/004.log",
+        "sha256": "cf9763dbd0fa91098693995dea4ac5541a4670811254bd0889c4e1d0bda61b7f"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/001.log",
+        "sha256": "4c189f1efd53dffd9accb9a49440ed7592157dbd2787507d36b39c7d50612e23"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/003.log",
+        "sha256": "ee5330b0ede5a6f201241619edefb1d87a87306d198f3b9bc65e790a04a4295b"
+      }
+    },
+    {
+      "name": "app::agent_view::paste::paste_key_tests::agent_completion_inserts_unreadable_file_url_as_path_text",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/004.log",
+        "sha256": "33406b6f1ad74b40c28fe878c91a54c3228de175df7bf0fc7d0b171fdd5a92b0"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/005.log",
+        "sha256": "53c68baff75495fa5670678bf46233d05b574a45aaa33b26c4c6d9c4f99fbbc5"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/004.log",
+        "sha256": "b141af331376a3a3431066566ded129f15d61d17799279f74caae6197608da48"
+      }
+    },
+    {
+      "name": "app::agent_view::selection::tests::active_child_copy_uses_child_scrollback_cwd",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/005.log",
+        "sha256": "49a1b7ff4e21f9a22a051011d9697af23400e141e04701e8a57c29ee4223db5d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/006.log",
+        "sha256": "eaebeaa1f8b46c3f92824f498c31eddc9ce180eaa5982dcb17b5fc70a765c216"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/005.log",
+        "sha256": "f131a45079402cc6073d2ad63cc70b530df0d8da51399ab2480d1f3091c89101"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::esc_closes_tab_fetched_dropdown",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/006.log",
+        "sha256": "6eb9cd1995ab63013981d7d79d01e8c1a0ecee72b3752c6f95fb85a0abea866a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/007.log",
+        "sha256": "79428b1a80e1668e10cc8e3cd21eccf5167edf9ab96f426cd7cf1c4a5cb0007e"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/006.log",
+        "sha256": "d737c29048e0e8eb25380d273fd4147c8d3f8be6469a23a4ef0cc97d87328a2e"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::prompt_click_invalidates_cached_items_before_tab",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/007.log",
+        "sha256": "07b867f643630546eb9f6a86e01573ef9d0cee58c6a5bad08926813fb9ea1083"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/008.log",
+        "sha256": "bc832690b1c9cc6a19656cdb1c50111e845b3660d7ff590a82ba218f3ae4f758"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/007.log",
+        "sha256": "1a28c5ce86d6cd4d35dd847868afcf3b5b0f917e63c0ced92c47822627f77a33"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::repeat_tab_fires_single_fetch_while_pending",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/008.log",
+        "sha256": "7ba5d90d37e82a3d9a9a5c3dc64d9041d282464218f63bdc463673edad225ce1"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/009.log",
+        "sha256": "14c15f797920371634a54809ff8b76438f2120458c318d5ce37d821d369c8fb0"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/008.log",
+        "sha256": "d49fe9929334f0085e347b96c20be976141a9936f3c91ba25b205786bb15434d"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fill_clipping_paste_chip_opens_dropdown_without_refetch",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/009.log",
+        "sha256": "b1b79c9b46669a9641aa9c5719770c7927d737fa7bdeb2b33154e9351487eed1"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/010.log",
+        "sha256": "83ed1221628103642147e40322cc69202647b257ec5b9310433091d654b99afc"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/009.log",
+        "sha256": "3597ed904bf32c6f2bf92967d9e5b74418f220ff07b46053ba5ca6cbd962d3cf"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fill_kicks_deterministic_fetch_always_on",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/010.log",
+        "sha256": "cb9f3a0012557dcf5c983a34b7203ef3094f95f159931c24749ca11f556a849d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/011.log",
+        "sha256": "163e5b26e936c72684fe2a4e7f9d54cc9f7f8c7961c5ba769b5892e5357afa66"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/010.log",
+        "sha256": "fe505f7f76855fcd7cd8be814df5ab3ec6adadc88dcf2a720d36ad9dc3bf2e0e"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fills_common_prefix_then_opens_dropdown_on_refresh",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/011.log",
+        "sha256": "6f193188489ee86348ded27650610af611c45fbda450c6a2c2528341441394bd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/012.log",
+        "sha256": "3f2491ec9dda39e176e9fad72075af1ec2b756afad32f66ddea54654ecf59f2b"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/011.log",
+        "sha256": "1413a34f71df7d7531813182251260ff627a389846971d629ff08b069ef17731"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_insta_accept_clipping_paste_chip_opens_dropdown_without_refetch",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/012.log",
+        "sha256": "a2269d8396b164571e5c0df58e082a600b4ed4cfb942614c923fd8b2678ba571"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/013.log",
+        "sha256": "25eb8451859d17f05e2c50551f5914e657dabc25fc05da9a1e46ab4baae62d58"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/012.log",
+        "sha256": "99b7369df99e92eecca6d0b979700ea07a7a23e93ee180f5284d5b769340135b"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_mixed_file_and_history_items_opens_dropdown",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/013.log",
+        "sha256": "be677c51bbeb5bfc1dcb704959cc50b46c4fc4a4009f712ef719a06adc1cad15"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/014.log",
+        "sha256": "25f18623d529be09825b084ed5f8070a2f54344710f176d2c1e2add9b0439dd1"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/013.log",
+        "sha256": "590b14c8f578ae6ac211527bb0adce054ecf326a8121c3088b3425bf4dd0dde4"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_mixed_rangeless_and_ranged_rows_open_dropdown",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/014.log",
+        "sha256": "70efe4d5f20fc693952ae51761994eed2480d3b3a58771c4aa07b4ec60d4a948"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/015.log",
+        "sha256": "806a60beea57cc065a40f568bc96e0e046da85d34ef473579a03354c971c74ae"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/014.log",
+        "sha256": "c8808fe56b8a4a978836af0a0115b8d2a9eaac8dda076ff1af63dcaba7bca15e"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_opens_dropdown_without_ghost",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/015.log",
+        "sha256": "698fb62b3085135e3dc5f86d680a90346c9914fdaac0c3b6e2d45df36853a467"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/016.log",
+        "sha256": "14356bef28965cb2f176278e8281a7458b118694431038ccdd6f989b60f7fffa"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/015.log",
+        "sha256": "3e075903a08f55984db18b6e37b651d7d2d7f0ac056276fabe14ba97d8662e86"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_candidate_accepts_and_kicks_fetch_always_on",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/016.log",
+        "sha256": "a007bff74975917d750cd654e56706a67d231426e11b56d76dbb6f9ef8451b13"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/017.log",
+        "sha256": "18569a3721d55747638adbdfbcabfc89ac545d8d7b8a733bb52bbab7833492c2"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/016.log",
+        "sha256": "5af6ffd54e57741ae672f2ab06946d204c31782a1383422b6078e26c04d20416"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_history_item_opens_dropdown",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/017.log",
+        "sha256": "310f1c1b43aebaa66765f287f778e0060c00ac838fe97bb0989a944c80ba6605"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/018.log",
+        "sha256": "90653c547165be0d393f65fc6e83190f64a7c4bf37001fc33c4aa2f0d08b9681"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/017.log",
+        "sha256": "d8be2e1efb382562a06c4009fcb4e80890f6a43c15eebc92d935440950a0b248"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_token_candidate_accepts_without_dropdown_flash",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/018.log",
+        "sha256": "1b7f9979b99a7d49a3dc2b75855cadf8740a2499d923898f52eb9f73946a5105"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/019.log",
+        "sha256": "8a245c1b3bb04d9238832e64aa471591a07b90e81da87262a936ecb77bfd1b16"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/018.log",
+        "sha256": "d94fd5020df1b0d9ecf723450b82e8daf707ebaa6b8bf66471c2f72953aff3b3"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_sole_rangeless_path_row_opens_dropdown_never_accepts",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/019.log",
+        "sha256": "22a4ebff10c661fe88a46833aa59efb6be3278446227ee250cb657ebafdcb24d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/020.log",
+        "sha256": "ef06dc305624913ac60b5abfe08389c0c6edbf7c8afecb0468eeae54d99107c9"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/019.log",
+        "sha256": "b96d3ed6a883f80b8f84136087020cb46ed22a379b63a56269efdb9de060f046"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_whole_line_history_items_open_dropdown_not_fill",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/020.log",
+        "sha256": "bd5564c12a5a90dfba341bf77156177d5c423f86a42bf828019d549f531c11b1"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/021.log",
+        "sha256": "ea037a6cca19dc2d06be64ef65c11ce875d99077eef4071d75f3c7e7d3b71cf3"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/020.log",
+        "sha256": "2bac8d65888fb7098a40da14125c9d2e76d7e6fc3ea494a902f7bbc7b072da65"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_with_stale_items_refetches",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/021.log",
+        "sha256": "b245add5592fb0ce2e1de1607b91af7ef5a27451cf768a62a09b14b5bffb348e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/022.log",
+        "sha256": "2c93e054792c3f5e42ec64906bc878fabdf6d6b2356c7c862f9c3699bd56a975"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/021.log",
+        "sha256": "4bb65be1007920d0bdd0c0cf37b7489cf0153b4e096a44306d50d6e43f5b1344"
+      }
+    },
+    {
+      "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_without_items_fires_deterministic_fetch",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/022.log",
+        "sha256": "1291ea2a35b3ecaa2e1f5c30c522613043b887544a86f8a02b9bf7917e6d6542"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/023.log",
+        "sha256": "09a89fa27a852748e1c23da50015200bb73b1ee99287a4dec52456ed386e01c6"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/022.log",
+        "sha256": "5d111d4a655c2e78dcfefc09b1e61917dc69b3af1683893f2941ceb93b3cdb0a"
+      }
+    },
+    {
+      "name": "app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/023.log",
+        "sha256": "f5bf7246c44ee1ffc1bcdc43f0146567672dfb7757e04c164dc4b91c25d3ee61"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/024.log",
+        "sha256": "fcf559eb0f367bf3bff130af413071241ce008f3c5efbed9a5466460d12165fa"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/023.log",
+        "sha256": "87d2427014c1077d1b0220698257249bd1b3958463b6fa4e320191a3a122081d"
+      }
+    },
+    {
+      "name": "app::agent_view::task_icon_mouse_tests::dock_subagent_icons_hover_and_click_where_painted",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/024.log",
+        "sha256": "18758acc00d70e79829bab9625aa0c5edafec358b7e328c049cbab94a0d3c04a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/025.log",
+        "sha256": "feece4ce4347d5cd5c678f5eacb83e4bc2ad7a030e16fd00770dc9a11415e8e6"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/024.log",
+        "sha256": "d755ff9a7f510b00aa4a42130ade9cc05dc848fa17a5a5834c86e1242322d8eb"
+      }
+    },
+    {
+      "name": "app::agent_view::task_icon_mouse_tests::tasks_pane_icons_hover_and_click_where_painted",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/025.log",
+        "sha256": "d33bcb24c8c218f9acf29e863529e665d9b28c16e86ff968b77a45570118953f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/026.log",
+        "sha256": "4038bef76fbf5249633303387cbac27cfefbeb96a032ec681550f372ebb584dd"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/025.log",
+        "sha256": "8a2366af4417f45ba74e7dd1a7023fee2d1a3f8d4ec928e3632214644f569e9f"
+      }
+    },
+    {
+      "name": "app::agent_view::task_icon_mouse_tests::tasks_pane_view_click_opens_viewer_without_scrollback_entry",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/026.log",
+        "sha256": "9d860e815fab57187538269634c5cb4415aac97f8e01ebd9852720bba3aa4778"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/027.log",
+        "sha256": "15f1eabaa7bff406c0a099ef2f679b9b53f24e55d5a1349c682bbcb5bdc8f835"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/026.log",
+        "sha256": "fc04a24dd64b06efc1891d9cf1ca51d18c3c8db19f2e16b42978f54470c94f91"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/027.log",
+        "sha256": "1a701ce07dae837ddc8f06332b94ebb0d163d39c088174d4e7659a9577ac1eb8"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/028.log",
+        "sha256": "1df00d2779288ba8a75c8988f1d452c06fe3dd19fbda56f98a8dc3014d695e0b"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/002.log",
+        "sha256": "9fbbf2b3e55fc4af8f3df82311fd6e186598df11184c7b977048d3a6c890495c"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/027.log",
+        "sha256": "4694d11ac6888b4c5e0127c2504739a9d91aaf80bea502e738d2d8f963f4580f"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/028.log",
+        "sha256": "891d2f7a3c7b613e77d15d53ceb6eb7662ba97ad1041ac5a711eb001ce6b9bd0"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/029.log",
+        "sha256": "25a439adaf04c56cc7a37820e5c1d60d6258de10c0e1f8e25a97cec03f89d1d4"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/003.log",
+        "sha256": "971eb74165417e63910b3432cd1a9a584cbf464768aadd56a2f4aec7dc02204c"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/028.log",
+        "sha256": "87b5dd3a4f7c78805aa86177bd791a9ddf5f79dfeb386af0c7f6e5d0581591b9"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::closing_loaded_workspace_agent_rebinds_selection_to_unloaded_row",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/029.log",
+        "sha256": "a70e3a29b41d52be356df93a45721852a1b6676330ba41ac234388d67a00c72f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/030.log",
+        "sha256": "f9fb14694ea659982a90a0bf6a377e58e7314d03455a49daa1b2f83b6527ae2a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/029.log",
+        "sha256": "e2e6da4719cff4ade9e121e69620eaa9cbe64bfac47fd9e7964ed035e992c5a9"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::dashboard_open_detects_standalone_grok_worktree",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/030.log",
+        "sha256": "861b81fec8fa362fe0dbd272f6b7300154d7f7db4ae88366776e3f535c61f9a4"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/031.log",
+        "sha256": "d3cdff39624a297a071374c5aefd06b3af391a1337cb4107b0ec0f11ee311e44"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/030.log",
+        "sha256": "b97d470b0ffd7eb8e21f0a22ff48a6e137d60cdd0ec704a03a2c4d8bea6d378c"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::initial_workspace_snapshot_ignores_config_backed_pin",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/031.log",
+        "sha256": "d74891507852e2d1f631f3ba05569b2a3c1db60caf75e9444507678acf9ed52e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/032.log",
+        "sha256": "d058eef115275bfa2b6a25cb5df8c319c4feb538a9833e31168960307f9c7ea4"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/031.log",
+        "sha256": "6b4b74fb7c27e9a69d78b2c236a2fe7c1cf54473975b319a092ef4215b43b55d"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_dispatch_shows_row_before_session_created_and_keeps_its_id",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/032.log",
+        "sha256": "758ec4adff05271af307ba7858a3a03286a9553baf9c2ab196bb8fde8bb5aa00"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/033.log",
+        "sha256": "f49e1e7d85e34b5268e05a3ca7b0143acf4aeb5ae1b1e44f5d432c25508da5ef"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/032.log",
+        "sha256": "e025671fcaa6383f81192aa8fbcdcddbfefa747b273a429055223e0d6de41f5b"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_dispatch_with_attach_selects_the_provisional_row",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/033.log",
+        "sha256": "56973f115e1595ebe0d31719d70c010016abc260ad3b3e0f3dcc9e38fb5c5251"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/034.log",
+        "sha256": "174db1b111367d8bff10c9d4743b07251606701eede5312ca7fc584f00f0b45e"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/033.log",
+        "sha256": "dd75b5774cdca2266218c65380b156189c798028aec3aaaef8ee00f47001b028"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_live_row_hidden_while_archive_is_in_flight",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/034.log",
+        "sha256": "2135d47d8add22ffff3904963ac06acabf3f045834425f043e2ea41c48f539ca"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/035.log",
+        "sha256": "bc6a53dfa7f60084addbda126c61e6e53791d9d491a2a9e188e60a928f6dd62a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/034.log",
+        "sha256": "9daa08c6fb065c917172a46e50255f208e67aad29c9bf5cf6e2ce7a93b532f49"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_overlay_cycle_reaches_provisional_but_not_hidden_live_agents",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/035.log",
+        "sha256": "44ebb7034a77325fa51d12dbd72b3220be7713e9af4001161ad75f154113d1eb"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/036.log",
+        "sha256": "24ab10dbd5caf5c5885549fcd17ee9924445eb6d38fbc6810df5c8803fa173b7"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/035.log",
+        "sha256": "7b70c8b084ea1cfd7bd8a0481ec7dea20e37f01c7c11425139c8286c8f09dd85"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_session_created_becomes_an_upsert_candidate",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/036.log",
+        "sha256": "c0c8853fb453999a53f958f0fbe91748ef6ebbb640ae952abc58a4d412161a96"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/037.log",
+        "sha256": "10d53167f88a69aed1dbe8c8cf76aa6230043985910d4c07220ad3160a4c31e3"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/036.log",
+        "sha256": "2e4c73595f7f63c51b251fb70fa87b4965edca6242e565fd04abf9d5127b4430"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_snapshot_load_requests_live_adoption",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/037.log",
+        "sha256": "7ada2f046c76359dbe53e1ddc266c3ba576846d4973696857dbddbc46ce16d1d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/038.log",
+        "sha256": "74a666761c8608a8b720138c934d6b0c3e67a8244c98b99f7639319e0b60b3f8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/037.log",
+        "sha256": "84731e9d3c7f7ec0687e1d134ff96dc75a55adc5414c6aae8ab38e0bc3cec49c"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::dashboard::workspace_worktree_dispatch_shows_row_while_worktree_is_created",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/038.log",
+        "sha256": "004dfa56eccb9b1ad0bb1513ebe367ecd320b5b018f707c4d87a6e80b023bcd8"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/039.log",
+        "sha256": "462a1693df6b648f0b8b693b7138aca6a52733e683d92c078183bd61233933e6"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/038.log",
+        "sha256": "4c6db5b4fdeb749a877232fb0f413e7320d3af44676e84f9fd6e899657ce2c36"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::plan_mode_toast_format",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/039.log",
+        "sha256": "ba99c7b5971ee0c42961698f5e33d07ce8a1689e72c1f40dc049a2864780a2bf"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/040.log",
+        "sha256": "6efef7f8246f7a17e3742124d42e16faf335b8f6111e7678389a5ebb4d168b98"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/039.log",
+        "sha256": "8e52f3170f69857f2ce2403d765193c9540090f6bb9b90c948b36cf8c172320a"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/040.log",
+        "sha256": "a1852c380800c079379270bc8fe019f356ba5747e4274af3184f073e0cdb5f1f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/041.log",
+        "sha256": "1529e2d1e982043240300dd3fec28b19c31506be7a5443b51c89318952963fb0"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/040.log",
+        "sha256": "d091e4d94f99cd51229db657cfb092f6221dce9353f97b698d077aef295f10db"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_permission_mode_always_approve_under_plan_uses_plan_aware_toast",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/041.log",
+        "sha256": "7330fb8cb177588f08f573c44de798375e59b4f8369209b667a40770cbc1082b"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/042.log",
+        "sha256": "9e72f7d0b084b87396ef1cf364013f2af8ba7dd79ea6ffeb8018fed7eca759fd"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/041.log",
+        "sha256": "2b20ad33df1531cdc7a4aa39c705c98d0569409fd2ba858946f1b9fcfc2ca665"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_permission_mode_default_overrides_canonical_to_default",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/042.log",
+        "sha256": "dbe2f0f02c2e5e37ae479b5bf2ee25ca6ffef755d71830affcb9ba8665d136af"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/043.log",
+        "sha256": "af27011d8ca0f890ced635de9818633ac848afc6deb0827a88cfdf57506681ad"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/042.log",
+        "sha256": "8aa5ad8980a45c30eaeb876f8431641c44f21a5d98ab04c6279986b6b25256ab"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_plan_mode_idempotent_off",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/043.log",
+        "sha256": "e9d0085d605f8f591432d4247be57097df04652c85342fd88877fdad4d9cde91"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/044.log",
+        "sha256": "9f8138ac176f674ccc1a5aa101fc658bea3a9a74c6a9f0d12459f81f60c35a1f"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/043.log",
+        "sha256": "2cc7aed00fda4234538996a30acd6435227bbc61fe9c424bedaa7d0865f90a46"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_plan_mode_idempotent_on",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/044.log",
+        "sha256": "a162594e28ef2c4e59f4a2de25b79a84ef737bfb0dd7368e165c3f3501c7f7f4"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/045.log",
+        "sha256": "aa74f84c8a8d4c1bc1a8c9e8a2feb689ad7ff2baedeec0c8d13f31c7f8887f23"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/044.log",
+        "sha256": "3fc68f0114e328cd4fd954d1716aa10409a91b2e2de5a3d79432ecbebb4a7380"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_yolo_mode_on_under_plan_uses_plan_aware_toast",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/045.log",
+        "sha256": "7a5c32533592d54d4513205c0563dc79c84c9d67b2b7ca4d4239092b2d2a13fe"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/046.log",
+        "sha256": "dd1d44fcc0fe2d27467df2d00a2afdea7b7fbde85517e4c0fc405905ca939f93"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/045.log",
+        "sha256": "ac9a97f2d315fa17f99309b86bf4e97587a0b4f8b25b4841210791130cca7dcb"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::modes::set_yolo_mode_toast_format",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/046.log",
+        "sha256": "53f962906f0c0be5a72f372692500c3ddec0d50030acc71c5ab1e1e3195b9643"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/047.log",
+        "sha256": "4872ef8db4bc787517d15f7e30c27fedf3ba07e4ff0dc17c43ea3dcba1189fbd"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/046.log",
+        "sha256": "46607340edbe70241dac09cd5eed5b88f9d5d647b4adde0487af752108e04446"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::permissions::set_permission_mode_ask_emits_brand_consistent_toast",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/047.log",
+        "sha256": "989d92c8ba55f7324bc5faa92a840b2299f00a9be8c385bc0f89b11000c9bd6f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/048.log",
+        "sha256": "eaf57cef9ffc40362bb246a4b9db39d32d70677e5cb7cb5828b5f8bf7e4968ee"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/047.log",
+        "sha256": "2c10009e7b8aca86df6d7dddb001648b0e754b237e5020a5492c8c5802858458"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_all_cancel_keys_restore_prompt_without_effect",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/048.log",
+        "sha256": "a44a6d649827901b5f622f93128e068618dc6f4b5fe40a807f7de73de0c00a97"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/049.log",
+        "sha256": "d5aae44e78a84738e7dadf1b49a8981bfebb7d424a237c80fcadd5faeca8c25d"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/048.log",
+        "sha256": "767af78acb46d709ec822b32b89418835f4289ae382680c1319622f727dcd1d2"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_background_confirm_keeps_original_target",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/049.log",
+        "sha256": "3d998d4d699c1cdd5a3c1785ffdd01035f1ae366780d0b280ecda8c33e718477"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/050.log",
+        "sha256": "3683f0371eb854016fc99c0dcc024d3f3dc7765410a04a19f9f74b034602aa54"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/049.log",
+        "sha256": "1504e7d69b12a2b6e41fee7fd37d06ad0171801bca61ec8f99ee919ece4e4743"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_cancel_routes_to_initiator_then_fallbacks",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/050.log",
+        "sha256": "9d4f66d29f66aa9d44d2c073b439a2b978e17e947c0cb616b58c815bf913115c"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/051.log",
+        "sha256": "cc5a5172053592c506233b050acb01ed3af1beb67eeecf107243aff8321e3a57"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/050.log",
+        "sha256": "74005e62544506d8b03ecbd5092e83843215e3f40f3127884aa92957ed0b821b"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_confirm_rejects_changed_session_or_cwd",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/051.log",
+        "sha256": "933a25387075a101e4c68fd65cd6e5ec9be1a0b47cdf9cbc948dbfef4dc4d160"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/052.log",
+        "sha256": "5d9b93ceb42759fd1b08573bc5716e7f826236af807e185a5353700dbce3c630"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/051.log",
+        "sha256": "69e822a4bf4f128a36731d89b523a2f71fafeba4b2593a65872dc2c386dcbfb5"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_modal_stashes_prompt_and_confirms_exactly_one_apply",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/052.log",
+        "sha256": "f1357ea4c5624045c9ea7abf9185a49e3620f2aa1405a3c54a1f064e0ab13b38"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/053.log",
+        "sha256": "e94392ca5780d34595e2f35f5fec1b0e9a955cfbf660336d1d63ef20a4cf404e"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/052.log",
+        "sha256": "aa65f32597a185da43562f830feb748a763ae9916368f6568730434e4eb74014"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_none_target_rejects_cwd_change",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/053.log",
+        "sha256": "c6d96ae30312903d23ef846f5a327f8bbdc7c7699f67801993db91a77f66eecf"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/054.log",
+        "sha256": "eed5b4759f77483bd02d8b888603911a5255edffdb01f9df619d6fdadcc0c882"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/053.log",
+        "sha256": "04b8ac7019dfe9f64705daebcebb92d58907a5626273fc0fd9a1eeca42754506"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::doctor_fix_promoted_target_allows_confirm_and_apply",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/054.log",
+        "sha256": "c0efa20549b08418d185bfea3a41cf1fafea1707613a443c41775aa9d0bb2c20"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/055.log",
+        "sha256": "31bff5c3fc8cc764a4d146c83699ef1555b0dcf63e2fb0a1e86bc49074ec9aea"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/054.log",
+        "sha256": "30994f9d462d9439f5dff09f6a786a77303d332874d34b5b701f6b0ee4674295"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::tab_fetch_landing_insta_accepts_single_candidate_always_on",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/055.log",
+        "sha256": "8cdaf3b0b40ed812bfca7e146c8b5ff0ffe8f3332512aab7c96d744a167273e3"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/056.log",
+        "sha256": "a831ec8af040a6c9258f181133e9de2bbd4532f7bc7c0e93db515359a4ff653c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/055.log",
+        "sha256": "51ae2da356515556593b5f96b0724a5e0b13f1b67f32f4008bf0ac6359e3dc6a"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::prompt::tab_fetch_landing_opens_dropdown_for_ambiguous_set_always_on",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/056.log",
+        "sha256": "576fbe76b7f1a308f2fcf3fff6c73378f9ad97e63bb1a450fa8dfa8145128fff"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/057.log",
+        "sha256": "e1239cca2fb1fdb317e9890e32ea654375fd2ba1c4a71263e01438141343a00a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/056.log",
+        "sha256": "e180506c74f8d75a717933c8edb517241150a0ddf12a01f95490cd5f2c73a740"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::rollback_permission_mode_reverts_state_no_effect",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/057.log",
+        "sha256": "32185745fe6437b27ab583ba9cad0db4765c346d1daa21357cd98f476e96105b"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/058.log",
+        "sha256": "3fa30ffdb4ab2922ea859386d58606b2c3deb36c0d3682ddefd636ce3a373ab7"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/057.log",
+        "sha256": "6345e662536ab4f8261f4b0607c8b43c93d68bf48302b8cfb4cee73479c22e6c"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::set_auto_dark_theme_toast_format_uses_display_name",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/058.log",
+        "sha256": "a66a3f0cf3e91728930c1d5a91758b6af0ae1e67387d18c10759b77035c76121"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/059.log",
+        "sha256": "e226eaf7eda8145b86cd2d51c1c40f5f8405702b6261e0afe602bdaa19ac5edc"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/058.log",
+        "sha256": "b63f9f880840f5f9b01c1238743e2b82bc744037be6aa541f8eaf3ae8a249d9e"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::set_compact_mode_toast_format",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/059.log",
+        "sha256": "24d4ed19eb47cdd8bfc6f20bbf625ebf8628a2d056bbea48b40b87112b909eb6"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/060.log",
+        "sha256": "05ffcfd8df45a9a828e775740488f18d8b84167f34830cfd017e4d6c94dfd121"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/059.log",
+        "sha256": "4b2d466c1226e8d5f5921790cb76bd99c071ff8099cc73f6cae9813d0598a87c"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::set_multiline_mode_toast_format",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/060.log",
+        "sha256": "6aa776057868dfdd064be6a61c19257af35c9bccbcad3eafe8449fef1990c05c"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/061.log",
+        "sha256": "d7a6269fc051586103e56504359e3865fb99f64a08bf1425565f8dc6b7a1e323"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/060.log",
+        "sha256": "3a492b0149970009ec4e969766f92ae48d4b6d5879d188c8230b84ca2bf7f183"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::set_theme_toast_format_uses_display_name",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/061.log",
+        "sha256": "900c2524dfa7b913617289cada01fb875449092a08c4e7f6e56a41d5a8373e83"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/062.log",
+        "sha256": "30d3b3499df2a1dd8e203f3aadeb22081f2db853aa2b6cf98e1289cef20dc318"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/061.log",
+        "sha256": "6c7e7b20f1aac937f9d5e516ac86f8babc5f31bbbe4f739a2947a329935251c4"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::settings::subagent_model_inheritance_writes_one_at_a_time_and_issues_the_newest_intent",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/062.log",
+        "sha256": "14eef5934b52923501517a83e971f2501f3f2a9f4ce4e6189c56ce5b2cd6e222"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/063.log",
+        "sha256": "f5ee53bed1d47be2303deca41b23eddb02eb74248fc4794bc9c36bd930639b9c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/062.log",
+        "sha256": "40f861226be85d02d2b5c3e32b69e3ec0ffea1e2f430178e435c0eb811d4b476"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::status::coding_data_sharing_failed_rolls_back_and_toasts_error",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/063.log",
+        "sha256": "92ad6f90d1133c4e8d5244aa8655b362536ba5f74ea83e6f3b39149aa4de9c9c"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/064.log",
+        "sha256": "f821984786682ee8400ef80a68c2a74d82c21d2f96fa524c74322c296c1bd191"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/063.log",
+        "sha256": "f1f16cbeba517abf8c26f6c465bd463febf07d5c3b095169bf31cd399b477ec0"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::status::set_coding_data_sharing_blocked_by_zdr",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/064.log",
+        "sha256": "ac38a72ea5f0b60cf1e2e536bd3f743bc1d5cbb23c1e93f008a4600968fea08b"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/065.log",
+        "sha256": "41211e31fd3fc2a5f2433a57f0831f74e9d4cd6cb3b0a71152e458891360f5ce"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/064.log",
+        "sha256": "0e8c28e13c597956c3f9fe8ac68b3dcdeb723ebd58aea5b4b24e5d59d7fb2146"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::task_result::doctor_planning_displaces_feedback_before_opening_question",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/065.log",
+        "sha256": "0256a65f1be545c51add7cc4b5655720295964feef57dfb0b4444b86afbd2b54"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/066.log",
+        "sha256": "72e6a48eb9b77ce6c707cb285944fe5770c777a17d47dbd4ea61bac894264b3a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/065.log",
+        "sha256": "cfda85b8ffc6a2c57a6c973313f1631483fb484183f2e608d0eb81479bd17ae5"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::task_result::doctor_planning_opens_refuses_remote_and_rejects_stale_identity",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/066.log",
+        "sha256": "307df7a56e74d688d4916259becdfcfa9b42eb7612bb5f1fb5b5e8270e903656"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/067.log",
+        "sha256": "13222b01e2d78d494c1c1ab28df39f1825a7c4e77b8bd274d21a8b6374cbce41"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/066.log",
+        "sha256": "3d7e85e52a50e61c28aeaa4fcba5f6cc4032024d5b7aab344d5892165febb735"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::task_result::doctor_planning_promotes_initial_session_binding",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/067.log",
+        "sha256": "b297910c0881c6bd4675bbdb90670117a088e36d8411170fe6673a7687708c73"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/068.log",
+        "sha256": "f6b5c7b15fd970113ce4691d12a3ffaf58b68958124d8e63dad8df6992b0f8d2"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/067.log",
+        "sha256": "cc081a59d1ab49ce08d99761e400c5ca9a891a3487af70b0b301104ebc1595eb"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::task_result::doctor_planning_rejects_bind_replace_and_unbind_rebind",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/068.log",
+        "sha256": "363082feaa5e0a67f30ca6d9033605bb17f6f5d58a5141c3119b212e963d1449"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/069.log",
+        "sha256": "989907677643214e95068afc6b4de65aff8374f4072b14f7dafd72986c953494"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/068.log",
+        "sha256": "79138090676196c3202fd81bdfb3c23c332cf7b22c0e47ef8158d0829c2db05d"
+      }
+    },
+    {
+      "name": "app::dispatch::tests::task_result::persist_failed_toast_contains_key_and_error",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/069.log",
+        "sha256": "17fd05bdb25e6d9fcd22533c745f2d07ca37c8cbeb42d49f5083abc190451fe5"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/070.log",
+        "sha256": "fa54fb8ca92d03a4a75ae000c09c4d74f6bd04c5966dbc3f4e11758d334a41d7"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/069.log",
+        "sha256": "9c720184c5d699aff7a51993142b89f274ae8a8e5ece2998b234aa416ffca106"
+      }
+    },
+    {
+      "name": "app::effects::tests::permission_ack_failure_narrows_ui_without_writing_preference",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/070.log",
+        "sha256": "4d878da717c359a34043b29bce5898739e2817e21da7dacb096c329717d9f7d1"
+      },
+      "upstream_windows": null,
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/004.log",
+        "sha256": "24393edf709cefb31cd6e5ba1bca1cfe8df1a1c95cdced899a74d0b06f2b390a"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/070.log",
+        "sha256": "85eeb871b5c0f2611b3fa1e09931042df64bfcfed0a4c93588483a9a3d81c48e"
+      }
+    },
+    {
+      "name": "app::foreign_sessions::tests::async_gate_supports_bundled_and_user_skill_locations",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/071.log",
+        "sha256": "567dd9711a9b13fd76ddc7ecbdaeecbfdb49b5263aa1ea327bcbfc00d21ef0c2"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/071.log",
+        "sha256": "d82177af2129b880caabcaa22d222a5873f2ea962cfa0e0d55ed1e0b5d60b44d"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/071.log",
+        "sha256": "5d578c7e183fe02e51c5899ff6ac496316203e34939eee4064102ff0d452870c"
+      }
+    },
+    {
+      "name": "app::workspace_membership::tests::foreign_commit_refreshes_through_the_same_store_handle",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/072.log",
+        "sha256": "0465c0fc98d253b9fbc0b0eefb8b4f781ac91c50407eb232a22e980942674a90"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/072.log",
+        "sha256": "f76f50ad183fdf2c973bdb45eaf31ef87c589762f9f0a45d6f7b44481678ab64"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/072.log",
+        "sha256": "bf89cde7dd844c112f185f5505a3add46eacee7dab8e466c28a1707daba3dd86"
+      }
+    },
+    {
+      "name": "app::workspace_sync::tests::maps_bound_local_build_agent_metadata",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/073.log",
+        "sha256": "31da460e2b544beb3e2f17c6258c8817dc3e4509f2c31a267e7213806863f39f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/073.log",
+        "sha256": "18c6cd902420374845bfc0dae4da654763d5b1ba64336d7d8c0343f639460fc6"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/073.log",
+        "sha256": "5094182417d05ae538338460becd92ae47236dd65d2f273cba215346399baa35"
+      }
+    },
+    {
+      "name": "app::workspace_sync::tests::metadata_is_canonicalized_to_store_limits",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/074.log",
+        "sha256": "e53573d2501c36b89c299c02d247a569cbd1bf4292493d1ed283352c0f682045"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/074.log",
+        "sha256": "41aad832f4d4027b0fce63296eeb9e153da8c2d2204b2abde8f8629f9ff80e9f"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/074.log",
+        "sha256": "be1287468be93843ff9769ef1a15a6779589bb5fbb110451937120d2ae276c74"
+      }
+    },
+    {
+      "name": "app::workspace_sync::tests::provisional_ids_cover_unbound_dispatch_but_not_hidden_or_ineligible_agents",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/075.log",
+        "sha256": "d0ca4b54c649ad0b494857e72bee9265862f4f53c58598dcf0aaaa40bfcafada"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/075.log",
+        "sha256": "3bb69f176ee4a60fa44ea0bf472865aca92df804f60d79267961497f75c84875"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/075.log",
+        "sha256": "f986ee692a041d077ff6117ebd0f322450d50efd61c7f8f8d3f7673dccc9694f"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::applicable_fix_listing_uses_report_metadata_and_planner_availability",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/076.log",
+        "sha256": "34083e26e1259f5c76da2bbf1030bff205f43b46f1d572f6ddc88681d42ecc9e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/076.log",
+        "sha256": "d005dbc57952bf382cb44494f9b8d5b917882dc79ed10c120c8fa9f606193f0e"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/076.log",
+        "sha256": "e21ebd59175b5563a52de073c96ba41f77e1629456e11375ed91429ac30d4530"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::bash_zsh_and_fish_plans_use_exact_paths_and_aliases",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/077.log",
+        "sha256": "7cf4674d93d3be48e15f0aad039187ec4b483e0d076e5b10bbdd241f843f0abd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/077.log",
+        "sha256": "dc1653c88c84ee486fe48b2b3d1d50fcf2ec3f46d56a5ddadb470621e7d75612"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/077.log",
+        "sha256": "06608f907de5bf9fa13e1076546324cd9c6f4cf2ff8829bca9e4c28fa9819b03"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::comments_and_managed_alias_do_not_create_false_conflicts",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/078.log",
+        "sha256": "de27762ff8007930a166164aa609ae146e06dc230130150440182a6d70774be2"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/078.log",
+        "sha256": "12467f229f65175aabb4de7e50c3ab7afe348d6dbf031149d79127c12e03e1d8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/078.log",
+        "sha256": "605f1ba6f5b6cc3e210d30ba21dc1ae9eacc8cf710645282579998817f792867"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::configured_report_reaches_pass_state_only_for_exact_managed_alias",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/079.log",
+        "sha256": "641e6ab40b83a6a6d43834d8d79ee40e8a9fd74d23fcfea98403e0131a01ea74"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/079.log",
+        "sha256": "025aca19d674191c12df4bbe00d805161e5796b6ce0c25a8da99af9dfb21a8f8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/079.log",
+        "sha256": "e71ca0378877490bd571a9c45af105650479a9a65684ff85e037ed6103f88dbf"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::conflict_scan_uses_the_exact_validated_source_snapshot",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/080.log",
+        "sha256": "4c66ac046d497596c18427a2328d4acb3bcb33bfc7d7d667af11f8a38ad801be"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/080.log",
+        "sha256": "d0255349c37c9690252cd8b0b95580575d48e335bf6609442336c9865a0e6ab9"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/080.log",
+        "sha256": "3e97a38f767bfacbcb8ffa362466d19ec26b84fa99d8cde339c7448476c16d0f"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::existing_alias_and_function_conflicts_are_preserved",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/081.log",
+        "sha256": "e4da039053849fbbe9b9b134184cb0251200786fa53e349a37e7a7dc86b6b4b1"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/081.log",
+        "sha256": "293c7d04d19d5bd27b60f660fefaa185bcb2975ee28d9406fe01d846ced7d3dd"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/081.log",
+        "sha256": "6cde61cc7ad74a7c180e05edb5c1919b1bc862c976611f141865500b5bf0bf9a"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::healthy_direct_does_not_suppress_repair_of_noncanonical_managed_item",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/082.log",
+        "sha256": "7e8ff3ff89d34e3d176f95e10aa6f6f033ffa34c82fff5820f2cdb5420c06005"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/082.log",
+        "sha256": "ad68d7c45f366938397291807d04c22c031faa787cfb7d5adb5b423ceda301d9"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/082.log",
+        "sha256": "a0fd82f887d9e18b60a75b04793682d7ae1bb19a3d9be18fd7587783d68c2499"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::non_utf8_source_fails_closed_before_conflict_policy",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/083.log",
+        "sha256": "b7479d5f0cfc82415eb9296281aafe0bf67abbe3efd0cad89aa066be6a7f52c9"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/083.log",
+        "sha256": "63fc870acdf21a4873b8e1a9c7a9d7e77a4c08aa5284ffa5fd38f24bcd8a2a8c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/083.log",
+        "sha256": "630f28693d6ab188d13ae40125bdb9d00997bc82aebb59c3d4b167e7f16e00f2"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::remote_vscode_and_unsupported_shell_are_refused",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/084.log",
+        "sha256": "c9d6a4cfd1b53aed0cc0382344baffacc043385ff8820b0dfa67026b1bf0bb03"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/084.log",
+        "sha256": "c2519dd6b2fdd967879dff1bf71728682fa6644621df31e94c12200ba6673c5c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/084.log",
+        "sha256": "40232799e25c877dd5b3be89b8f905d7ea81cac568c35ab0c5aad66157e50b11"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::ssh_wrap_outcome_verifies_with_planned_shell_not_process_shell",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/085.log",
+        "sha256": "48a4e35dd0e1c6161cb219e3b270e9d09c58c43e2fab32a07b9f4a7c74661f3f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/085.log",
+        "sha256": "03463cb59810d377921143b213ddbfff6c0f6b21329b3982faa6d1d1e2a5e1a3"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/085.log",
+        "sha256": "ab536860370a01810df8a2479a3df2994cf8d6b9e66034c7aa7544309233a76f"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::stale_plan_is_rejected_and_apply_verifies_postcondition",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/086.log",
+        "sha256": "acdc648c01133d9811b9f432b84e093764335ae118b6d110fde1847ec3cbfbda"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/086.log",
+        "sha256": "cd39fdf850f4f3b85f4527a5b16c5b1f8175c009cf82b9a07a40f100e2682404"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/086.log",
+        "sha256": "253b8aba26cfde4660edb0dc4467149a47fca4eef203bad26621cb064c04128c"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::tmux_managed_items_coexist_and_each_apply_is_one_transaction",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/087.log",
+        "sha256": "79870511692d236252eeb41c58845b02538da6729c01928a91828c8230db4cdc"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/087.log",
+        "sha256": "8cae5d848c5c4e0ab78c618331aeed7449d6b6c1c8edae496d8fccdcfdd1a7d3"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/087.log",
+        "sha256": "1552d6fcc7af2201f258cf0ffbb57fb8c6d8215744ab3b23e94bacb9d482b085"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::tmux_stale_plan_and_idempotence_reuse_managed_writer_safety",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/088.log",
+        "sha256": "c33469e85c179f8eb89b9a0b66c0a38229e8ede42d1c807c6c1715528f44e79e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/088.log",
+        "sha256": "63fea695bbc8e140be1c4112e03b761b5f21b4dc08912e81dbef3bb4c5b34c8f"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/088.log",
+        "sha256": "3d7e4c939c4de3bc8ced5d417d1581df6440a8753289a21cd914e14f27de446d"
+      }
+    },
+    {
+      "name": "diagnostics::fix::tests::tmux_truecolor_fix_appends_alongside_existing_terminal_features",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/089.log",
+        "sha256": "dd5f0abdc363f0ef930c53103da8af72af8d0ab9f233a4a34c37835e7628e49d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/089.log",
+        "sha256": "3076e29151d84a0efc7e27010471c3bfecdc18ea65e61750f9094ed0e9be052e"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/089.log",
+        "sha256": "3862a2f468641faa48d3e2685ecceb9bc839cbe6ed0f4ad67ca726d845d4f972"
+      }
+    },
+    {
+      "name": "disk_usage_cmd::tests::collect_report_joins_registry_and_flags_untracked",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/090.log",
+        "sha256": "ec04b62eb99c4513604a19b75377e28ba57cb2bd18310ecc9fc294e9be904fd6"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/090.log",
+        "sha256": "754c08365fc645da114d19825da142f8e5a2a7f2ca30795b46ca4dadf89057c9"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/090.log",
+        "sha256": "5cdda3203eddc881fb552270549cef45b22a3d1a1016d793ffa260857f95ee48"
+      }
+    },
+    {
+      "name": "doctor_cmd::tests::decline_is_success_and_does_not_write",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/091.log",
+        "sha256": "3a0ee63eef170c6a1a63ab76eab7e24e70c0d08ac211223adbd55c3beb585dc0"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/091.log",
+        "sha256": "ac2b65be7a2eb9a0d2b6b779b6dc2e437bafa786b9adf87f4e328123c5144b41"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/091.log",
+        "sha256": "39d6bccddd78dc0880811f0dd22561d8d1a6f63221ba2dfc529f32d2fa5b5889"
+      }
+    },
+    {
+      "name": "doctor_cmd::tests::fake_standalone_facts_compose_through_shared_view",
+      "candidate_windows": null,
+      "upstream_windows": null,
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/005.log",
+        "sha256": "91bcc939308e5d095449250b715c0f93bec4d2c99d7ba8efb7d92122adf42217"
+      },
+      "explicit_modern_terminal": null
+    },
+    {
+      "name": "doctor_cmd::tests::fix_preview_contains_exact_change_and_caveats",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/092.log",
+        "sha256": "cd1747cdf665a0e3117731b401a6ea6b901a9a9893f0184c80573ebccbc1f264"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/092.log",
+        "sha256": "a56938fcb2cf2234b260f0c186ff4066ff276b53158b6d047df067288c3ed5b1"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/092.log",
+        "sha256": "a6042a6f1f8cc972f74ed6820fcd6a0b6671b94d1ac02570d9f4c64faf67470a"
+      }
+    },
+    {
+      "name": "doctor_cmd::tests::non_tty_without_yes_fails_safely_before_write",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/093.log",
+        "sha256": "834eacd750f7b25674b2f768b3097789f6f648cc0c90817bafa578a893b4d4a5"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/093.log",
+        "sha256": "5bc218d597dd8fe55c1ee0921994e3fb525ea7c7236ef88cf25bfa3d1b0c6b4a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/093.log",
+        "sha256": "7305ce08e8ddd878b70f58d9603202c2843378678986958749af2efbbcd8d592"
+      }
+    },
+    {
+      "name": "git_info::tests::compute_cwd_git_info_linked_git_worktree",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/094.log",
+        "sha256": "fd84d0f8da31fce8ab3d00b63edccbc3b5237ddfe6974f307606eb22b749b7c3"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/094.log",
+        "sha256": "3ae62748ad2c39967c0561d3df0b1fee939d7de35b2096e9026c2e0008ff313c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/094.log",
+        "sha256": "34bfebddaea913f09c3f6d5859d65310618db376fd9b2941ef4b0d56ab4db180"
+      }
+    },
+    {
+      "name": "git_info::tests::compute_cwd_git_info_standalone_grok_worktree",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/095.log",
+        "sha256": "1e0a0659712afa183163d30c9f2ff062b5b6502118d736801e207df245e62db9"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/095.log",
+        "sha256": "b507a4894dd6ca5f9e67767e4295175c17bda97e7f612c8ad85d65b87f1a7251"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/095.log",
+        "sha256": "27fc11272e972fcc8952e6e3b9220c08ad4a25d738eeda3120144b2a8a65094d"
+      }
+    },
+    {
+      "name": "git_info::tests::compute_cwd_git_info_standalone_marker_from_nested_cwd",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/096.log",
+        "sha256": "25032278521547e8de4b7ad217c522f56572bd024cd8332a47c2fd52249e5f44"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/096.log",
+        "sha256": "f48814329f04a9669ba3e367bb58238bdeb3fdee3bbdb965e9718d42242da5ef"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/096.log",
+        "sha256": "d6c86c5cca5ffd228587d8f17253f250b6ffdb49820c3b391739e77c6436cb1a"
+      }
+    },
+    {
+      "name": "headless::tests::worktree_create_opens_session_at_worktree_subdirectory",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/097.log",
+        "sha256": "db426ea37d525ee752d4736a8c463688a09e85e844c1d411b16f86bc30746be3"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/097.log",
+        "sha256": "1cb441bd5c5f3465f368613efedbd8dee82f5ce47f892a4b08ad2e39666cfa9c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/097.log",
+        "sha256": "2231fcfddad786100f4aa724f0d50885ea63ac73e3ebcdaa1c38c833897928d4"
+      }
+    },
+    {
+      "name": "notifications::hooks::tests::omits_session_id_when_none",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/098.log",
+        "sha256": "b5ddda3a55e1aa343bd387692f1b23c29188547a0dee2888ec3b8cbe1909436d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/098.log",
+        "sha256": "9e6a7226dd578a61d07567f2735538cf527457a4852d0c02bb445c3e3f46c434"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/098.log",
+        "sha256": "8ebff14f97ab8f10d98e4ea0f2b64eaa1f23c4e737d005f1a577cbc7bdf980c4"
+      }
+    },
+    {
+      "name": "notifications::hooks::tests::run_hook_passes_correct_env_via_thread",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/099.log",
+        "sha256": "550ea33a690b6ca610325bd99f5675f2547f03b9f86e49391a51fcef694cb719"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/099.log",
+        "sha256": "8bdb8683bfafcacf9d3fa56269067143d1aba45eb2d1e83ce86280fcb3cf5c21"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/099.log",
+        "sha256": "26ab9e2dec0efb01d99993b1ce89250a2921da069a62a1a7734114ef56931352"
+      }
+    },
+    {
+      "name": "notifications::hooks::tests::sets_environment_variables",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/100.log",
+        "sha256": "f781450c662ed6c0fa0f762a19852d3bcca81e19cd7334fc00b5d600d0fff333"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/100.log",
+        "sha256": "788798bec1f828b296a34e9e37d57e9fad711163d1846c066d7b239268b27733"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/100.log",
+        "sha256": "5566525f70bf0808a5ab6638ca98c9a253f03373437119a942fee0bda69ebeb9"
+      }
+    },
+    {
+      "name": "notifications::hooks::tests::successful_command_completes_without_error",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/101.log",
+        "sha256": "1b717da1955d40d71284658e1c97e06bb2b8a3b35d545df8cda0b454450ee6c4"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/101.log",
+        "sha256": "acb00fd205c2409c34623d3cf38d0e176ae28857d027473fe1a4fb271222b3fa"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/101.log",
+        "sha256": "051722837e309d08e53095ee322dac93b93172ce2619e3e03b36a8016cca3c40"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_all_free_when_total_is_zero",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/102.log",
+        "sha256": "8750a07e39f4759ce7503c9da18bb067a9080ceba72f55ddca5aa00bc7ff3add"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/102.log",
+        "sha256": "725179388f38a8e9f5db1b5d1e41916e770221696b73cf7ca403b00c3af906e4"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/102.log",
+        "sha256": "5d6b7ac44d6e3abeb3b6732199d43dc33d20e80dbf34a1125c97b5b470bcd8fc"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_all_used_when_completely_full",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/103.log",
+        "sha256": "451c35292a8c8ec0d6029bbf6e03435abce277b0bb04550dcb37cc99d4206a4b"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/103.log",
+        "sha256": "d802e9ddedb7cec2664b43e46b09b2b0b6013528d6c4d25be7536d3bbc8c8d38"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/103.log",
+        "sha256": "86a11d49bf7362ab6de066b61fb4ed706adfcefe5fc20c252f1c35aebb487e2e"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_and_legend_reconcile_used_with_overhead_excluding_tools",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/104.log",
+        "sha256": "68e0d89eadd106ee1cdf570a2053dc0e930db5ca9591e9a7b56a6ccd002ca0d0"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/104.log",
+        "sha256": "b28d9d6d59b41213870f6429385616f9bdc575748c543954c17d739c367e5ad0"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/104.log",
+        "sha256": "3e6bf161ece9203aef26f539e8f046d793db42b79b66dfb7073c32914bd68a41"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_total_cells_always_sum_to_one_hundred",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/105.log",
+        "sha256": "955355182818e145b2eda81a70b5884d6ad4e0ededfd6d916fd7a4563380a4dd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/105.log",
+        "sha256": "9c89266e5f9f7a56ea24a0e38712456c4ee7e9301460e2bb93486811ecea46ad"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/105.log",
+        "sha256": "54abfbb7edc5ea656fe6a4a3acb7778fc597a978dc6e72c03c41fe02d8e1396f"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_used_band_does_not_overshoot_when_estimates_exceed_used",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/106.log",
+        "sha256": "ab4e4e6d00e1dc8a76256c1e8403f1470afd4780a49257311ca622f686e1d14e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/106.log",
+        "sha256": "b75b28de63740cb8e93656fa6143ad592f31735176578b19b0459162eb36876f"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/106.log",
+        "sha256": "cd3c64efa0334d1555f20419791996c2f3b202c6caae554548f8174beabdcbe0"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::bar_used_band_excludes_tools_and_never_overshoots",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/107.log",
+        "sha256": "0b2f2a8e390905ba9f2dc5e18e9cef8e3998fe45076d9cfc28f34f1945480f61"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/107.log",
+        "sha256": "2cd71406ffa9e06e86afedb1b3bae3a63d25297862815ba4e0f152e0c06b7cc4"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/107.log",
+        "sha256": "a48c9a6e69d95752e185d43a3c8ef0813318ea1fb13a2b677e2c64cfa9d4550c"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::build_lines_renders_usage_categories_with_details",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/108.log",
+        "sha256": "4fd79192b07d8a8cd458b7d7b611de5daca3d50890c408e5fa6e2d42c153eedd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/108.log",
+        "sha256": "905ad1cc1d09d5a2d904152bcee7c4fdc06983f2951a8734413729df1f24b3b8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/108.log",
+        "sha256": "9983b9c609b18333fc73814218693bcd72088cf43166e144ae22c38f5592dbf2"
+      }
+    },
+    {
+      "name": "scrollback::blocks::context_info::tests::narrow_bar_total_cells_still_100",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/109.log",
+        "sha256": "929b0d7cd84f58d66edbaf2c9094a5ef20b33ede3d8eed91ba7d0ee8161e2e73"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/109.log",
+        "sha256": "232e1a1ee0089fe2feae87b577e39fc9ac407d10283bbb4d19094914e6d9f58b"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/109.log",
+        "sha256": "da8cee0e09beabedfbd98de0407dac99205b20f536e1018233cbd8a4b1ba5603"
+      }
+    },
+    {
+      "name": "scrollback::blocks::thinking::tests::thinking_body_dim_italic_survives_the_terminal_native_palette",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/110.log",
+        "sha256": "eb262ebc21d8a59de929a6696ce8bd7d7788f52849fae2668339e8af141b3e90"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/110.log",
+        "sha256": "ad1bbecb903d22cf4bb01295d2ea87cda237049ceb98cf3b6b05afa22f7f6ab1"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/110.log",
+        "sha256": "a1e36cd2cfe6ed8913cd18b1995d06badd5cf52febddf0321489a944fcb4d84a"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::edit::tests::expanded_shows_relative_when_under_cwd_preamble_absolute",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/111.log",
+        "sha256": "477dee3cd1c8769a3447a701f0148a0c1cbc9b4643b4b016ef3639cd24c33dc0"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/111.log",
+        "sha256": "68d8b0c5f9bbb3d4f46b7142faec78569ecbec55410ede66f24bb8e8d259b231"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/111.log",
+        "sha256": "61a87245d55dd32222ac72239b5d61ab90982fe5fa99ece7b1eaf402afa2d149"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::edit::tests::header_link_target_is_absolute_file_for_all_surfaces",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/112.log",
+        "sha256": "360db4845ae71acaa9cd6076ec0bca93b8394df835b12c8db0ed9fb204c88a3f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/112.log",
+        "sha256": "b3f87ee2a2867b859f8ed52827323785efb8e13528cda56dbc771e335126aa5a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/112.log",
+        "sha256": "8497cf589c71b542f3d820117c20a061edd66bf1bf75117031db0dd8e7562ceb"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::edit::tests::test_edit_block_header",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/113.log",
+        "sha256": "99e1cbea4f6e08ae6164497788206a21368cf8eb401e46e3faa315007a6b9341"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/113.log",
+        "sha256": "b148e4ddbe799001a24ba6b0a78384149db3bf39c04963ca1ac6f79fc8795a47"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/113.log",
+        "sha256": "e05ab1cc570eb419173ab87a96de10c7ddafc90c4c0f243de470e0a1fbe05f56"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::edit::tests::workflow_script_header_hides_rhai_path",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/114.log",
+        "sha256": "1c1472fa6d52bb88c0728e348a00eda27baa396479baa07cfdb7f9c1eb32286e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/114.log",
+        "sha256": "39d3112b0f31216758b2726188731b0d2845c03d8db80062ab51c48876bbd039"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/114.log",
+        "sha256": "3f4d3dc24dfb780c0868600651bba6e79d5f0dcb75c60ddad696f45d94c8b462"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::memory_search::tests::shorten_memory_path",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/115.log",
+        "sha256": "d4686dacd299783eb711f5c6143e094cb7a8ff3ac6d7febae5a81cfefc8ae467"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/115.log",
+        "sha256": "01ca6be5094345ac8e845b66e0d894ea3fb76d1a75821bd33f1cd4dba7ea6769"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/115.log",
+        "sha256": "2579c3f6a76e4331b828d8876bb146fec2c620f2c2e4d6ed135e01c5b4b130ae"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::read::tests::expanded_header_selection_matches_relative_path",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/116.log",
+        "sha256": "8539ca17ff7100a592133b4e7f8d8ebb540fcbf5f7df110f688eeacc6d06c153"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/116.log",
+        "sha256": "7064d7cec1fa58f5fa1d0163253347e651dcb19c8ad6a776acd804362cfff0fa"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/116.log",
+        "sha256": "cf1e8dd5fd20f97a04bd802937d8005f616d0dbfb01ac13e94a5d9a83ba00961"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::read::tests::expanded_shows_relative_when_under_cwd_preamble_absolute",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/117.log",
+        "sha256": "1851977bb77b4fe034625caf5232293b96a2791fd7406ff456ef672793cf4592"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/117.log",
+        "sha256": "649e0d358bdf3193554f4d0fb26a6a1970685410c62d452b935f662ef6d28a89"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/117.log",
+        "sha256": "a665fac6f6a5f7442a457c942c55ad29583fa2897d9945bc58dd52bf89bc2b42"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::read::tests::header_link_target_is_absolute_file_for_collapsed_and_expanded",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/118.log",
+        "sha256": "06e1f654f091b1d1854a07f2f34ca57ef67a286ce56b1a82197ed12ee07c7d62"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/118.log",
+        "sha256": "e9c92dbf6dc7690bfb44ca903b75f5ed763099b426c9a831ec9a7722b2c160d7"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/118.log",
+        "sha256": "59bafe85faf88244200dac55daee0843922449f8824279f30fd9ecad92f59a8d"
+      }
+    },
+    {
+      "name": "scrollback::blocks::tool::sent_message::tests::bullet_and_label_styles_follow_running_and_selection",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/119.log",
+        "sha256": "fb0998a14cbba721343b0e59e0aae5f59ad352da430a22223e6460d7a534a4b6"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/119.log",
+        "sha256": "f2e872db5e66b8017e7b3a2be7dcc3e957dc94267532b33b08393a6a471a6231"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/119.log",
+        "sha256": "1b5e023ae2ae2b248dd06a2de21898df18fb94aaff3cebf7c937bb8fa1611367"
+      }
+    },
+    {
+      "name": "scrollback::blocks::user::tests::invalid_token_ranges_are_dropped",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/120.log",
+        "sha256": "dc993371b21959d967d49b16469f39a3cf0ce6608fcfb861bd8e95a7eda2acdf"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/120.log",
+        "sha256": "a0bd4c91dd902874a49b91d1f4166e3380a31c8b0a7782e25a0e551adce1a3d1"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/006.log",
+        "sha256": "d3315fff5abb3bdb2c9ae8291e53cb3018483581e1327dab8b4e3c1c5f1b610c"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/120.log",
+        "sha256": "e01008345205fd32d22302fcfb20cb7cc8b539b7d5bc1939f5abe412fad2581f"
+      }
+    },
+    {
+      "name": "scrollback::blocks::user::tests::mid_text_multiple_tokens_each_teal",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/121.log",
+        "sha256": "c6c21fff77b9c10e7ad2c1fbefe1c971993102d3f316b066e010689ad90c4b40"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/121.log",
+        "sha256": "daa353d12460c514229c1b438f32af14afb61b4b4ba38ce973b4064d348382c0"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/007.log",
+        "sha256": "9a9b4fa963eec8999086cb8381cc60253f3ab79c95020f9f0853fd9b84174078"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/121.log",
+        "sha256": "eec388c64a4e15fb55044fb5f0adfab3fe5c5a420cba595fbce0206ed07acdce"
+      }
+    },
+    {
+      "name": "scrollback::blocks::user::tests::mid_text_token_on_second_logical_line",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/122.log",
+        "sha256": "3864e435d0961af7cbb7e9a5bfd3c1fc1874cd797e8cd6eba0a89272f6f49c57"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/122.log",
+        "sha256": "1817d6c3b607a51770ee39ac27dd5dc96a30f9eb40f7e106e7a496922da273a0"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/008.log",
+        "sha256": "6c5ad22f045e28ba1a537710cade8d6236d8b914e3b870f1ca3b12fee0260e33"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/122.log",
+        "sha256": "9d9eb593ee8b0780826f47fadd3677a9cb4e391d1343d8aedbd826dcb0ff5a43"
+      }
+    },
+    {
+      "name": "scrollback::link_map::tests::file_target_provenance_survives_overlay_to_visible_map",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/123.log",
+        "sha256": "3ed08880b21acb0751b963cd3e653304ae7c3e4429dc8d562af9baabef1bbe98"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/123.log",
+        "sha256": "ad08d0b4a70f21bf62707bd2edc35a890189bd6a5a866dda02adaaf4c4aefd6c"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/123.log",
+        "sha256": "b802f3e8b783cdb261cce496fd5b66339bd0808124adfe8a01b8feef5e3048d7"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::basename_headers_stay_grok_owned_for_duplicate_and_outside_targets",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/124.log",
+        "sha256": "bd53dbd4d9cea0a1d34abf2689a65d171ddd5b654856bddb3e98cfe27784e09d"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/124.log",
+        "sha256": "d906329b3f5def3cfec46d5f63d57fd4dc14518a9326ab398e3efcfffcff5a21"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/124.log",
+        "sha256": "86d6cfae96ba5dce5cc4264ec888701525c59a3ba1a749e61dafb67deaccf073"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::collapse_header_entry_does_not_leak_links_but_visible_group_entries_do",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/125.log",
+        "sha256": "7cc4ea9f6fdf876500a783006f8b242ae08953e808f989ddeb6fb2f0f0cc9ed3"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/125.log",
+        "sha256": "69944c2aa4cf436d98e239a260fdf3edc924031117eac9ce7ce2a420fa79d832"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/125.log",
+        "sha256": "e8b555000623d6fd6fa7e23b19940f6e630a37a53854c92fdf73170e834d026c"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::collapsed_block_header_file_path_is_scanned",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/126.log",
+        "sha256": "c55cb85bc35ba91350f589d69f100f5e4599ce3e0fff46ad81eb64e5f65762d9"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/126.log",
+        "sha256": "c63432ec0702880b0e9b431fd207c7fe5de2366c54df2e2b9331b3336be098d5"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/126.log",
+        "sha256": "269c616843edbcf095fb3f0e488871e514dd6c4599e4d59d5adbfa645ed9213a"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::explicit_tool_link_clips_before_u16_conversion",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/127.log",
+        "sha256": "18ba6e469081da9669155b18234699f1865b81d01a3db0c256fc3e972302b82a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/127.log",
+        "sha256": "9fea33d25118f2f4a779f402f68ea8e71b85b6151d597faed0941888bd631a1b"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/127.log",
+        "sha256": "807d9404685c6dbcafa98a4af37368f92f4a967d144b93aac7f7e4caa1a5294c"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::long_read_header_link_is_clipped_to_offset_content_area",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/128.log",
+        "sha256": "dee1748d89649dd8880cf74c033f31a112a7a21e97051691065e4a1190b6c5d5"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/128.log",
+        "sha256": "7af7e9cccb5395797434b0e49b31003afaad785959c832986ec36a8c1a482e82"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/128.log",
+        "sha256": "d28bbe3b1ef01a0dc3708f629ac99fec48f016bb9853aaeb643ad7f53fae07d3"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::markdown_wrapped_project_media_path_fully_linkified",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/129.log",
+        "sha256": "50ccbd4232754f9614bd149e7c858981db35812e7ded1a7b973de0a065e563aa"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/129.log",
+        "sha256": "07c5d6588bb760bd0a3e45ee0417844cec9240087553fa709c18b92e5065f406"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/129.log",
+        "sha256": "badbf1c37cb6569ca4a9bc805f4e03bd93a9209f74e1738c2ba6beaba8bb3a6a"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::official_vscode_remote_delegates_scanned_absolute_path",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/130.log",
+        "sha256": "2067b86b1a85628277b9126dc9953043c3a0b2c0cd8ffa2723656b48a4d34293"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/130.log",
+        "sha256": "04568eb6b752dcd12377e14433add9ec5e62ace59dd199ddec5e30ca45400483"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/130.log",
+        "sha256": "a33cba20958823e6ba8d4d23777eb484cbbbe075077eabc3bc1d4b60782b73ba"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::official_vscode_remote_tool_headers_delegate_only_self_resolving_paint",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/131.log",
+        "sha256": "073c44fdbd40bd42acdcd35df2c4c2825e4609c403c72106021fe4c5913b0c4a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/131.log",
+        "sha256": "266a0050ca22e02d95c085a847a21d0ef69b6f51a1a33e17e85579de5052c204"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/131.log",
+        "sha256": "4aa7d74e8fc8b5734ea391ecf9e5a5a61d39f0aa5f6478936133ae4171637114"
+      }
+    },
+    {
+      "name": "scrollback::render::tests::tool_header_link_target_overlay_covers_path_after_bullet",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/132.log",
+        "sha256": "9815a1abd86519496f01bd8259205423abf76962e2afb7f5bc85a01ad2ecd085"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/132.log",
+        "sha256": "decdc8909b8e797bcfc4306b0f3c519d84f3fb2190416e4d8ff5ed29e298bf5b"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/132.log",
+        "sha256": "fe873ae91e0ab3c134fb77d8c5ab53c71d346f67570e23f7286ae8cdd75078e0"
+      }
+    },
+    {
+      "name": "scrollback::text_selection::tests::semantic_selection_single_row_word_and_url",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/133.log",
+        "sha256": "0be73446992279a3e9799029574399524ac051e88c876e6d071893c597f31670"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/133.log",
+        "sha256": "af2f5fe393df016cc465ff83cc72f8d8012bcc6d633a1ce4a6c56dfab933b984"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/009.log",
+        "sha256": "c90918484032097f57133d4c0144c4ff10f77a4c38ae87f91e47960e469c714b"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/133.log",
+        "sha256": "ecdd2a89873c942fb25db88b3c470415cde24a652644303423ca61c7c60f0e81"
+      }
+    },
+    {
+      "name": "scrollback::wrappers::entry_renderer::tests::non_pending_running_tool_keeps_default_bullet",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/134.log",
+        "sha256": "b08996304fdebb11cbc3d3e5102c2424edf559bfc6b9f9777c3fe2d7621090e6"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/134.log",
+        "sha256": "82c84fef4c3504ec3ad5c3d6155bd4179bd0b5a518aa29f16d4d9ffd15d62949"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/134.log",
+        "sha256": "f86d7041407508e9aacfcad048db436155c84c2a62d3f37f313872a3f3967aa5"
+      }
+    },
+    {
+      "name": "scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/135.log",
+        "sha256": "ca5ed75e0544bed150e89822053924fa8f89cbe2e091594906ba79dc0d975891"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/135.log",
+        "sha256": "aa06aa11f259adcdfc87092aed2e23c0959e37d6099054a946e1a15a71ecd62a"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/135.log",
+        "sha256": "279c193204e1ed7afee6cc41fa1b682ab46e79154446c4317795bcc9bcdaf066"
+      }
+    },
+    {
+      "name": "scrollback::wrappers::entry_renderer::tests::test_entry_renderer_layout",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/136.log",
+        "sha256": "01a52af94fcb37c875877f1f66cdba74e4ee4b315ca9b5c75290971d9afbee98"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/136.log",
+        "sha256": "97cd4daa2378de70416fa4ce407898ccaf6443adf4c9405e2991371c855fd62f"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/136.log",
+        "sha256": "92959543ac93c5b3a1992fbddc2df277aa239980c6e63c67e357905ff1679336"
+      }
+    },
+    {
+      "name": "views::announcements::tests::render_promo_row_button_and_hide_affordances",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/137.log",
+        "sha256": "15045fd6bceb8704e1955c25c178fd43f5e198ed857786d96c893cbb3738dccd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/137.log",
+        "sha256": "93c259418132ad7473e618108c09d210fa4abdf5a8268a0fecff99eaae0b297c"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/010.log",
+        "sha256": "40c070edfd0c7fe3acb9de4ed5028ec50733c84128b5618ce5fba3cad427b51f"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/137.log",
+        "sha256": "f65c77c6e21a9c3c5aa4d7bbd86b7ec7386eb841764ee4b978d46357c11e0f27"
+      }
+    },
+    {
+      "name": "views::btw_overlay::tests::done_state_scans_file_paths_like_scrollback",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/138.log",
+        "sha256": "e94ce1ecc69fbaaa759fc50ee96d6c2f4a8da393881bfdf90543f8198bc59065"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/138.log",
+        "sha256": "d1bd9cab3aa30c1b3eeb1a790ffd22262760a914d536a56d2ac2c7f97de633ce"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/138.log",
+        "sha256": "694fda386ff3b3816d6f8de6f5346cdf4284b33cc294d4e25a7f50c689478ae6"
+      }
+    },
+    {
+      "name": "views::dashboard::render::tests::render_popup_overlay_registers_close_hit_rect",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/139.log",
+        "sha256": "8cbe19042ebf9e0df5b0a7a6302973f60046a99c6579501f70fc193853179bdd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/139.log",
+        "sha256": "2b9c559763ca43105c886cfbf60582cb756b35f1f4d6fe52c1144c07b5259843"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/139.log",
+        "sha256": "6ecbf7850154f89564e31e5e153547cd09c69a2e53d8fc1fe5a24aca2a7c6dc0"
+      }
+    },
+    {
+      "name": "views::dashboard::render::tests::render_row_two_line_layout_paints_title_and_secondary",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/140.log",
+        "sha256": "56ce9724aa5a24cde88f678e3134b7c91282775bc1232ae0500289cd6450964a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/140.log",
+        "sha256": "a1b5309df5293835ce4c51f5390a24da5914bdffa106aad45f3b89904fa12e30"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/140.log",
+        "sha256": "ae261221c310b16e7a75a8c028df6e886bf668c11d003fbd0448acfcb6056e31"
+      }
+    },
+    {
+      "name": "views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/141.log",
+        "sha256": "e88422b514a2010ae46ce8446cf44b55198b1651b9bff201e67f5ac343d76f0e"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/141.log",
+        "sha256": "011031fbfcf852da019af0f56df4a2840bb42f97ccbc89983f7aebb38dcca7e8"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/141.log",
+        "sha256": "b3f74470820d07ede3d14827d6aa711734709e01b66db2eb9e4266b0bccae616"
+      }
+    },
+    {
+      "name": "views::dock::tests::a_section_scrolls_inside_its_own_band",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/142.log",
+        "sha256": "5c9af6bfc2ae61138b4ad95f312653e3b711c756fb40ae9f85de4d19911ff4bd"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/142.log",
+        "sha256": "66c9e1757b4c832835253bffa195c12473a4ba11cc9f3f3ef2d677aa325a7292"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/142.log",
+        "sha256": "071ef4b91fcbdf77f4e97b542736416444e29676cd804fc271250dd63c0aece2"
+      }
+    },
+    {
+      "name": "views::dock::tests::crowded_dock_keeps_every_header_and_never_grows_past_its_cap",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/143.log",
+        "sha256": "f560b3ee9758b884edfb50717c0669758b7d0b0ec539cc75dc9d41dd5b991001"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/143.log",
+        "sha256": "c69e0a156c604d30200c45bd4b975327bf09ab001be4f5ffbe23738703cb5652"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/143.log",
+        "sha256": "7178a28ba6bc047414ad5e3f6eaf8d2012d50c373807ade33fd0d6e729d76f80"
+      }
+    },
+    {
+      "name": "views::dock::tests::every_expanded_section_shows_a_row_under_its_header",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/144.log",
+        "sha256": "a30909d8ad8d5330d777db6a6043847660e6fb466959e6ad1a2a0f4e0cef48e2"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/144.log",
+        "sha256": "c5284d4b1cdff2ffe96dcd327df9684d1c451dd31b420d345ea50277e0248093"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/144.log",
+        "sha256": "1d26d4aede4ad95081f8df629e46d432dc55831ca3ddb4904e3f7bda50c33e00"
+      }
+    },
+    {
+      "name": "views::dock::tests::narrow_headers_and_overflow_rows_keep_their_chevrons",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/145.log",
+        "sha256": "28dbe1c32d8527f4f667b3c3641dace91a1255ca6856833c8c483eb76dfac8bb"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/145.log",
+        "sha256": "5ec84cf67bc22374146abaab7a9deb6006b70a760873991b0a35e5e1d5dddfd4"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/145.log",
+        "sha256": "fa3d3bd7af7f62ed3d3408ebc017e2cd7e2bf0b4238cc750f41c11c01f10ebbe"
+      }
+    },
+    {
+      "name": "views::extensions_modal::tests::handle_key_tab_completes_single_field_path",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/146.log",
+        "sha256": "46f89338ac9ccb15b6dfea50a55bcbf26f615f445fc0c9e37e96a3f676021fc7"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/146.log",
+        "sha256": "493a5f50d4ebddef9b0d1886ecd8e0c45ce7ae2b98591d688624d34a1044147d"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/146.log",
+        "sha256": "44753984a30c8d59a40e037c97cb8bf1ec9ab24e0e462c6d0bbbb6dfc6557ce1"
+      }
+    },
+    {
+      "name": "views::goal_detail::tests::render_with_todos_shows_status_icons",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/147.log",
+        "sha256": "717749b4077534de30c0285efa8b291c39c6964b6dbff05df554629c82944a3f"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/147.log",
+        "sha256": "643662ddcbd69a37966551e2cc22e48f410a378a422883f0c7a56b5c84824c61"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/147.log",
+        "sha256": "92df06116e628d8dd477399f0ca9586310036e4d3f1b9ea20176463059082885"
+      }
+    },
+    {
+      "name": "views::mcps_modal::tests::managed_connectors_url_display_strips_scheme",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/148.log",
+        "sha256": "c41b128f10305010143fec0774a7632ea60902ad32e1df2be29a32a839c0abb4"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/148.log",
+        "sha256": "7465d92fb7b04f124cb8d06466127b9560323206aa9a8c145216f767d3de4572"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/011.log",
+        "sha256": "67952cbe5d672b1774f0d1000e6f8a2685be6632e51a77196c5f83bc3c37eb48"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/148.log",
+        "sha256": "bc0005edd8122dbd448b2d1ea7df3455359f5612184d5d578ef51f5c4d5d87c1"
+      }
+    },
+    {
+      "name": "views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/149.log",
+        "sha256": "a8d59280d98e6d31b69d37a3f948ed51b45778cc85b9e51fcc5a6c94e67bf520"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/149.log",
+        "sha256": "f26e8d5f066f2401471ef0554508755d209f22299b75c3f49f95b34b8a88e5f6"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/012.log",
+        "sha256": "a2afcb45c75d18903aad6ec5153eb6de1f3627f957eafbae129b095046374a4e"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/149.log",
+        "sha256": "03f3451f416dcc442dc325326527ac5973761af14092f3d3eedfe9a7b99c571e"
+      }
+    },
+    {
+      "name": "views::model_config::document::tests::user_home_uses_userprofile_when_home_is_empty",
+      "candidate_windows": null,
+      "upstream_windows": null,
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/013.log",
+        "sha256": "620a2bb5e05e11cfa4dd32a22a5b63b1e49ad129a874bf53fb6145a3f621b076"
+      },
+      "explicit_modern_terminal": null
+    },
+    {
+      "name": "views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/150.log",
+        "sha256": "15b27e5b97db0baea4841804e303a0dd86b422c85f344b175dfbc399ca7b9181"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/150.log",
+        "sha256": "8172d04259d173f9ff596f82aaa22a6c17547327bdb25d5a2d7e46c4f341a56b"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/014.log",
+        "sha256": "381f7c7ed5cbc2707dad09d2a8610ce372a083102ab4eef0b598ca4495877f30"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/150.log",
+        "sha256": "3cace44e80f64ca45c0aa4443fb327ea13dd25b75d83bdd4c240d05d98bb3f03"
+      }
+    },
+    {
+      "name": "views::privacy_banner::tests::each_legal_link_hits_its_own_words",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/151.log",
+        "sha256": "7294cb2216ec4437a80d2b5804909e705fc8331dda4db7d8f7b8853088b341ed"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/151.log",
+        "sha256": "967895d575cce034d0eb34959d4110ba7d05a80768dd34d27ec18a8b308fb9ba"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/015.log",
+        "sha256": "193c35889ae62a4b9b4de416fa9e87410d31b692dfbb9a470207cc1ffcc16594"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/151.log",
+        "sha256": "843d0d1209125faf2c6a68a107f8d5bd905a09f26598fe4e057667f200c05da7"
+      }
+    },
+    {
+      "name": "views::privacy_banner::tests::height_reserves_every_row_the_banner_paints",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/152.log",
+        "sha256": "fed1879b714dbf189ce45b51f452c182df385414576f87e64255d1d64dc807d9"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/152.log",
+        "sha256": "8a0afab11945d4792bb57a3a78a635729d63c90fe811b25cd6f7006217ab1328"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/016.log",
+        "sha256": "f6533c85a89c2089369d519040f0a6e013893fa64ff698f9262769303290eead"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/152.log",
+        "sha256": "c5369f1435b0d322537ed9ce5dc7b865cc1f6a03bec6fe92252de4812fdf9f8c"
+      }
+    },
+    {
+      "name": "views::progress_bar::tests::test_partial_block",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/153.log",
+        "sha256": "6ce426d881725cc5e7ddd60ffd1afdcaeca43fe9835a47629b2deb756b507680"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/153.log",
+        "sha256": "07a36082faee404a4fc110134effe75357dcce495cf32736f0232b5fa38c80ee"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/153.log",
+        "sha256": "c405e627298f03ecaf5d1cd11e58cba43272643032b3b630df19c999ce92ba22"
+      }
+    },
+    {
+      "name": "views::prompt_widget::tests::accept_arg_completion_replaces_arg_range",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/154.log",
+        "sha256": "483ed4bf748211365ef019a71258bba1db06580d02e31b5de5d5983795fa97fe"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/154.log",
+        "sha256": "88d3d73f09afc417fc57d53a0470f783fd12d3eedd65b2af0db6655acf2712ab"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/017.log",
+        "sha256": "e71007c6955e73a9e0a53b10a9ffa3891537e98d1873cf958d70635cef37f1f9"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/154.log",
+        "sha256": "3293784ef88ea8d89e5890fb830ab34e24aef26341631e6c8906803916118ae1"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::chevron_column_aligns_across_one_and_two_line_layouts",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/155.log",
+        "sha256": "0c85dac77351be03647d21921c376259d7867f5484dd18be04ad62759fd84269"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/155.log",
+        "sha256": "1d09861e7f1e85269d0968ac02f9f1309609302d605f849afceffd6322ab5721"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/155.log",
+        "sha256": "bdd3a84fdaafd6d9feffb8da1d61687e4ec0ab6e5f29d3590a19ef4f2e020adf"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::chevron_column_is_at_constant_right_offset",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/156.log",
+        "sha256": "5f020207c7d4d2e2c951f2f3b015a1ad39dcd7847a15d965a0f2be2d13578d28"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/156.log",
+        "sha256": "24577bf5dd5cd26ceaf124eef9f7a8635550718429d2b34e76ba7fc1a3fdf330"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/156.log",
+        "sha256": "163e05d75e3a70ee066f42acfb3be94b7118e5d4d55319cb43c1a6911c5fd122"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::int_editing_value_renders_stepper_ui",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/157.log",
+        "sha256": "ae69f853b907408a7fc8c5e68e26dd96edb8362dfe32a90c8fcd720286aefccf"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/157.log",
+        "sha256": "6a69363814d0e54db0b77e6ba7d7bfe67e6167c95f40818915e32ce07d933e55"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/157.log",
+        "sha256": "95ae6aa0cd044d21798ccf80d4ed466433bc245b5e65a9398707ae5b30dccecb"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::picker_separates_focus_highlight_from_committed_marker",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/158.log",
+        "sha256": "0fc2897578468ee61a55c1887e3c8cf1f57672c7fa398ce08c785335edaf189a"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/158.log",
+        "sha256": "20416aae95b4027af3d3f4b0a1524c5c7b42072c9d08a20295928ab674a16490"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/158.log",
+        "sha256": "16961f555ea462b2cfb1e4a667546d4f89d8b04c2c3d7a844ec843801d7db76b"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::picker_string_original_value_fills_committed_marker",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/159.log",
+        "sha256": "5b3c582763e21d4f833f70757772571185a3edd63cf29a5986281256b05fc1a3"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/159.log",
+        "sha256": "82f86102814588e954543a60413ba83f20ebea77b288f9eaae28bf2fc00c0967"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/159.log",
+        "sha256": "16a9afec4b4e5d903ea103b16961a07672fe2e465f79b4f4c523966a014ad721"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::render_editing_value_cursor_at_logical_position_when_buffer_fits",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/160.log",
+        "sha256": "41f153edfec46e56f8c32a1196b50e6d67c9046d7c36bb91fabaf99c353d0318"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/160.log",
+        "sha256": "5a1a8c96f91361c195434210d6f6fadc0226832ed08dbd81b3fc94ff9f0805bf"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/160.log",
+        "sha256": "df35156afc1f6c659c17183a3a491e40f3760fa3578ba400cdc4d510bebfc071"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::render_editing_value_cursor_pans_to_left_on_overflow_at_start",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/161.log",
+        "sha256": "5515a8e9b133e4c75b00bfeacaf5a713dfb0479e7cd8c71adc983d8f23230129"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/161.log",
+        "sha256": "4b9e3623ba14f5874512d0f74bf77043cc3595b7ed3e25f4e8809aeb18b2e9c4"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/161.log",
+        "sha256": "1e4396a200b0b698efb7cf8fd50bead31e46b2905f9d6434a8a20f5df44a82d9"
+      }
+    },
+    {
+      "name": "views::settings_modal::tests::render_editing_value_cursor_pans_to_right_on_overflow_at_end",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/162.log",
+        "sha256": "5e082670c558b412756bcaf93a28d0696cb007fa465ba7b85d9224ec08cf2a92"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/162.log",
+        "sha256": "38955c6732e002c9f24d2ea531f0a842ab7e9e6cdfb900a5f741817408440883"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/162.log",
+        "sha256": "241b999ab6b389c07b16eaadf14415ad551e4941a86723805836e35830f82238"
+      }
+    },
+    {
+      "name": "views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/163.log",
+        "sha256": "38b917c59aa8e4ecedf10b9a5a8cba2482e652fd21ed1a2791e0c86567cd1232"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/163.log",
+        "sha256": "977bab777efbcd817681c8bf8ff3b162488e0c1621074531ce619b355ef44ee0"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/018.log",
+        "sha256": "c79db11f93e9d0cd9f381270b23da6aa1c737afc31ba57e8cbfd2c31fb5e12e0"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/163.log",
+        "sha256": "7b4a84a531a1b1571ed1993bce914513fa53a4daee57709257f6021b1110ff82"
+      }
+    },
+    {
+      "name": "views::status_line::tests::render_ansi_emits_absolute_link_spans",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/164.log",
+        "sha256": "8cb233516f054f5b619fccbb1075cc60d61d77824e8866dbe22dc11a32c6bcb7"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/164.log",
+        "sha256": "da0f32f6e9a9f5c6e5bec5dcfd858bf1c1ef8020aa714a998359887a5e1aa9aa"
+      },
+      "candidate_linux": {
+        "exit_code": 101,
+        "file": "linux/pager-isolated-5862/019.log",
+        "sha256": "334960350b9c1e0431dd798d3f5dcb6449eaa26a8a7c13e11adff3292c4dd36c"
+      },
+      "explicit_modern_terminal": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-modern-5862/164.log",
+        "sha256": "7afb271a296bdb4064d36ee302e61d2e346f3bd6e4a5e172593817da289b8c07"
+      }
+    },
+    {
+      "name": "views::tasks_pane::tests::render_loop_row_truncates_before_kill_button",
+      "candidate_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-isolated-5862/165.log",
+        "sha256": "165c8fa5afa8e45b91e5a3bb8318f7bb604fa6c9fc95e057701f11770157ace4"
+      },
+      "upstream_windows": {
+        "exit_code": 101,
+        "file": "windows/pager-upstream-5629-isolated/165.log",
+        "sha256": "0464ab945e7258d628789a09c1d847a2c7f452f9c761981d50f53276dc1518d3"
+      },
+      "candidate_linux": null,
+      "explicit_modern_terminal": {
+        "exit_code": 0,
+        "file": "windows/pager-isolated-modern-5862/165.log",
+        "sha256": "4f9839947f2ad12e3bd38a4a9a01bf10d4cd3880395cf5029ae0b64fa07a84d2"
+      }
+    }
+  ],
+  "limitation": "The baseline was executed on native Windows. Linux attribution is not inferred from matching names. No whole-library or whole-feature success is claimed."
+}

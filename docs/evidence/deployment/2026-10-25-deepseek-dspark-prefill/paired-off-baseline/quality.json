@@ -1,0 +1,263 @@
+[
+  {
+    "ttft_seconds": 2.2600543799926527,
+    "first_content_seconds": 4.643784921034239,
+    "sse_file": "stream-f7fd551a5de24c5e8e007567c2bd3c38.sse",
+    "wall_seconds": 4.847109308990184,
+    "request_sha256": "b889edb040dd65d2207223d46d722fb005d84f90e5bab04145779e539c8ccc92",
+    "request_utf8_bytes": 291,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-988b65f52af04735831cb5fe",
+      "created": 1792930826,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":250}",
+            "reasoning_content": "We need answer JSON object one key answer integer value compute (19*23)-(17*11). 19*23=437. 17*11=187. Difference 250. Need JSON no markdown. Ensure valid JSON. {\"answer\":250}."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 56,
+        "completion_tokens": 60,
+        "total_tokens": 116,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 56,
+        "prompt_ms": 2120.7,
+        "prompt_per_token_ms": 37.87,
+        "prompt_per_second": 26.4,
+        "predicted_n": 60,
+        "predicted_ms": 2586.5,
+        "predicted_per_token_ms": 43.108,
+        "predicted_per_second": 23.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "arithmetic",
+    "correct": true,
+    "expected": {
+      "answer": 250
+    }
+  },
+  {
+    "ttft_seconds": 2.194974780024495,
+    "first_content_seconds": 5.2611474900040776,
+    "sse_file": "stream-393205198b424da08587640838aa7658.sse",
+    "wall_seconds": 5.463222220016178,
+    "request_sha256": "f3503c0cf115571890bf436cd802820646ac1b95f7d9c93b8807f35c237d2372",
+    "request_utf8_bytes": 311,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-f63dc59e3a3943f099becdcc",
+      "created": 1792930831,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":16}",
+            "reasoning_content": "We need answer. Need evaluate Python slicing. a=[2,5,8,11,14]. a[1::2] means start index 1, step 2: indices 1,3 => values 5,11. sum=16. Return only JSON with key answer and integer result. Need ensure JSON. {\"answer\":16}."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 67,
+        "completion_tokens": 79,
+        "total_tokens": 146,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 67,
+        "prompt_ms": 2191.5,
+        "prompt_per_token_ms": 32.709,
+        "prompt_per_second": 30.6,
+        "predicted_n": 79,
+        "predicted_ms": 3268.0,
+        "predicted_per_token_ms": 41.367,
+        "predicted_per_second": 24.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "python-slices",
+    "correct": true,
+    "expected": {
+      "answer": 16
+    }
+  },
+  {
+    "ttft_seconds": 1.7642913399613462,
+    "first_content_seconds": 3.4522343759890646,
+    "sse_file": "stream-fd2efcdc18654a4ca84c5d3e6fc11580.sse",
+    "wall_seconds": 3.650804197997786,
+    "request_sha256": "5a9c113911d29e175953c191ac53f9c94e7e0ea1bcd8a304edeaa4069ab05743",
+    "request_utf8_bytes": 306,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-d58c0ea02709479cb74ef1a2",
+      "created": 1792930836,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":1}",
+            "reasoning_content": "We need answer. u8::MAX = 255. wrapping_add(2) = 255+2 mod 256 = 257 mod 256 = 1. Return JSON only key answer integer."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 58,
+        "completion_tokens": 49,
+        "total_tokens": 107,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 58,
+        "prompt_ms": 1760.9,
+        "prompt_per_token_ms": 30.36,
+        "prompt_per_second": 32.9,
+        "predicted_n": 49,
+        "predicted_ms": 1886.3,
+        "predicted_per_token_ms": 38.496,
+        "predicted_per_second": 26.0,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "rust-overflow",
+    "correct": true,
+    "expected": {
+      "answer": 1
+    }
+  },
+  {
+    "ttft_seconds": 1.5338131489697844,
+    "first_content_seconds": 2.5646167710074224,
+    "sse_file": "stream-80a59ca023d44380bf51338401b48d20.sse",
+    "wall_seconds": 2.93434666399844,
+    "request_sha256": "359cb9b81156bd6cbff31b07d42597eb2e4480028cfb1e8a0769899275da37de",
+    "request_utf8_bytes": 301,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-2e514389c7114fbd938ae187",
+      "created": 1792930840,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"city\":\"杭州\",\"ok\":true}",
+            "reasoning_content": "We need answer only exact JSON object preserving Chinese characters. Need output {\"city\":\"杭州\",\"ok\":true}. No extra."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 51,
+        "completion_tokens": 36,
+        "total_tokens": 87,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 51,
+        "prompt_ms": 1530.4,
+        "prompt_per_token_ms": 30.008,
+        "prompt_per_second": 33.3,
+        "predicted_n": 36,
+        "predicted_ms": 1400.3,
+        "predicted_per_token_ms": 38.897,
+        "predicted_per_second": 25.7,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "json-unicode",
+    "correct": true,
+    "expected": {
+      "city": "杭州",
+      "ok": true
+    }
+  },
+  {
+    "ttft_seconds": 2.3551197209744714,
+    "first_content_seconds": 4.708754720981233,
+    "sse_file": "stream-82bd63cfefe043c6a6093ad110976654.sse",
+    "wall_seconds": 4.907449563965201,
+    "request_sha256": "cbb4fda700ba97a91479656844cce0bd3110ac1af3cd32276afe66e629272f76",
+    "request_utf8_bytes": 378,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-c56ae2ca4d804bd0b4a3dc1f",
+      "created": 1792930843,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":1}",
+            "reasoning_content": "We need answer. SQL WHERE keeps only TRUE. Values (1),(NULL),(3). WHERE x <> 1. For 1: false. NULL: unknown, filtered. 3: true. Count 1. Need JSON only key answer integer count. Ensure no extra."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 77,
+        "completion_tokens": 64,
+        "total_tokens": 141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 77,
+        "prompt_ms": 2351.5,
+        "prompt_per_token_ms": 30.539,
+        "prompt_per_second": 32.7,
+        "predicted_n": 64,
+        "predicted_ms": 2552.0,
+        "predicted_per_token_ms": 39.875,
+        "predicted_per_second": 25.1,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "sql-three-valued-logic",
+    "correct": true,
+    "expected": {
+      "answer": 1
+    }
+  }
+]

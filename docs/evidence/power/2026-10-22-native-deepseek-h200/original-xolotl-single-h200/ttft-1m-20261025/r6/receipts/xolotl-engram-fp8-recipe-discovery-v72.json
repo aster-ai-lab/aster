@@ -1,0 +1,133 @@
+{
+  "build/build.ninja": [
+    {
+      "line": 4935,
+      "context": [
+        "  TARGET_PDB = libds41_dense.pdb",
+        "",
+        "build CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_engram.cpp.o: CXX_COMPILER__ds41_dense_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp || cmake_object_order_depends_target_ds41_dense",
+        "  DEFINES = -DDS41_HAVE_CUDA -DGGML_USE_CPU -DGGML_USE_CUDA -DSTRATA_DSV41_FQ_OP -DSTRATA_DSV41_HC_MIX -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+        "  OBJECT_DIR = CMakeFiles/ds41_dense.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/ds41_dense.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/ds41_dense.dir/ds41_dense.pdb"
+      ]
+    },
+    {
+      "line": 4937,
+      "context": [
+        "build CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_engram.cpp.o: CXX_COMPILER__ds41_dense_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp || cmake_object_order_depends_target_ds41_dense",
+        "  DEFINES = -DDS41_HAVE_CUDA -DGGML_USE_CPU -DGGML_USE_CUDA -DSTRATA_DSV41_FQ_OP -DSTRATA_DSV41_HC_MIX -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+        "  OBJECT_DIR = CMakeFiles/ds41_dense.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/ds41_dense.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/ds41_dense.dir/ds41_dense.pdb",
+        "  TARGET_PDB = libds41_dense.pdb",
+        ""
+      ]
+    },
+    {
+      "line": 4953,
+      "context": [
+        "# Link the static library libds41_dense.a",
+        "",
+        "build libds41_dense.a: CXX_STATIC_LIBRARY_LINKER__ds41_dense_Release CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_dense.cpp.o CMakeFiles/ds41_dense.dir/tools/v41/engine/ds41_engram.cpp.o || ggml/src/ggml-cuda/libggml-cuda.a ggml/src/libggml-base.a ggml/src/libggml-cpu.a ggml/src/libggml.a",
+        "  LANGUAGE_COMPILE_FLAGS = -O3 -DNDEBUG",
+        "  OBJECT_DIR = CMakeFiles/ds41_dense.dir",
+        "  POST_BUILD = :",
+        "  PRE_LINK = :",
+        "  TARGET_COMPILE_PDB = CMakeFiles/ds41_dense.dir/ds41_dense.pdb",
+        "  TARGET_FILE = libds41_dense.a",
+        "  TARGET_PDB = libds41_dense.pdb"
+      ]
+    },
+    {
+      "line": 5161,
+      "context": [
+        "build cmake_object_order_depends_target_bench_ds41_engram: phony || .",
+        "",
+        "build CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/bench_ds41_engram.cpp.o: CXX_COMPILER__bench_ds41_engram_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/bench_ds41_engram.cpp || cmake_object_order_depends_target_bench_ds41_engram",
+        "  DEFINES = -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/bench_ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+        "  OBJECT_DIR = CMakeFiles/bench_ds41_engram.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/bench_ds41_engram.dir/"
+      ]
+    },
+    {
+      "line": 5163,
+      "context": [
+        "build CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/bench_ds41_engram.cpp.o: CXX_COMPILER__bench_ds41_engram_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/bench_ds41_engram.cpp || cmake_object_order_depends_target_bench_ds41_engram",
+        "  DEFINES = -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/bench_ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+        "  OBJECT_DIR = CMakeFiles/bench_ds41_engram.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/bench_ds41_engram.dir/",
+        "  TARGET_PDB = bench_ds41_engram.pdb",
+        ""
+      ]
+    },
+    {
+      "line": 5171,
+      "context": [
+        "  TARGET_PDB = bench_ds41_engram.pdb",
+        "",
+        "build CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/ds41_engram.cpp.o: CXX_COMPILER__bench_ds41_engram_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp || cmake_object_order_depends_target_bench_ds41_engram",
+        "  DEFINES = -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+        "  OBJECT_DIR = CMakeFiles/bench_ds41_engram.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/bench_ds41_engram.dir/"
+      ]
+    },
+    {
+      "line": 5173,
+      "context": [
+        "build CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/ds41_engram.cpp.o: CXX_COMPILER__bench_ds41_engram_unscanned_Release /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp || cmake_object_order_depends_target_bench_ds41_engram",
+        "  DEFINES = -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\"",
+        "  DEP_FILE = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/ds41_engram.cpp.o.d",
+        "  FLAGS = -O3 -DNDEBUG -std=c++20",
+        "  INCLUDES = -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+        "  OBJECT_DIR = CMakeFiles/bench_ds41_engram.dir",
+        "  OBJECT_FILE_DIR = CMakeFiles/bench_ds41_engram.dir/tools/v41/engine",
+        "  TARGET_COMPILE_PDB = CMakeFiles/bench_ds41_engram.dir/",
+        "  TARGET_PDB = bench_ds41_engram.pdb",
+        ""
+      ]
+    },
+    {
+      "line": 5189,
+      "context": [
+        "# Link the executable bench_ds41_engram",
+        "",
+        "build bench_ds41_engram: CXX_EXECUTABLE_LINKER__bench_ds41_engram_Release CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/bench_ds41_engram.cpp.o CMakeFiles/bench_ds41_engram.dir/tools/v41/engine/ds41_engram.cpp.o",
+        "  FLAGS = -O3 -DNDEBUG",
+        "  OBJECT_DIR = CMakeFiles/bench_ds41_engram.dir",
+        "  POST_BUILD = :",
+        "  PRE_LINK = :",
+        "  TARGET_COMPILE_PDB = CMakeFiles/bench_ds41_engram.dir/",
+        "  TARGET_FILE = bench_ds41_engram",
+        "  TARGET_PDB = bench_ds41_engram.pdb"
+      ]
+    }
+  ],
+  "source/CMakeLists.txt": [],
+  "source": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp",
+    "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b"
+  },
+  "original_object": {
+    "bytes": 150984,
+    "sha256": "235a321d32f24b5807d7dab2f92b81651b12203ea476a55bd5ff69536fc5dfb6"
+  }
+}

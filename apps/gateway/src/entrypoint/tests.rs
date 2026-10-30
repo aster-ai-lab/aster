@@ -2965,7 +2965,7 @@ async fn passive_health_half_open_recovery_readmits_traffic_after_recovery_time(
 }
 
 #[tokio::test]
-async fn passive_health_half_open_still_broken_reblacklists_after_threshold() {
+async fn passive_health_retains_last_healthy_backend_and_observes_recovery() {
     use crate::service::passive_health::PassiveHealthConfig;
     use std::sync::atomic::{AtomicU16, Ordering};
 
@@ -2995,42 +2995,17 @@ async fn passive_health_half_open_still_broken_reblacklists_after_threshold() {
     assert_eq!(second.status(), 503);
     assert_eq!(second.text().await.unwrap(), "broken");
 
-    let denied = client.get(&url).send().await.unwrap();
-    assert_eq!(denied.status(), 503);
-    assert_eq!(
-        denied.text().await.unwrap(),
-        r#"{"error":"No healthy backends"}"#
-    );
-
-    // Keep the upstream broken: after recovery_time the half-open probe must
-    // contact it again, then re-trip and fail closed without a Gateway restart.
-    assert_eq!(status.load(Ordering::SeqCst), 503);
-    let mut saw_probe = false;
-    let mut reblacklisted = false;
-    for _ in 0..60 {
-        tokio::time::sleep(Duration::from_millis(50)).await;
+    // A one-backend service retains its last healthy backend. The
+    // existing max-ejection guard prevents a synthetic whole-service outage.
+    for _ in 0..4 {
         let response = client.get(&url).send().await.unwrap();
         assert_eq!(response.status(), 503);
-        let body = response.text().await.unwrap();
-        match body.as_str() {
-            "broken" => saw_probe = true,
-            r#"{"error":"No healthy backends"}"# if saw_probe => {
-                reblacklisted = true;
-                break;
-            }
-            r#"{"error":"No healthy backends"}"# => {}
-            other => panic!("unexpected passive-health body: {other}"),
-        }
+        assert_eq!(response.text().await.unwrap(), "broken");
     }
-    assert!(
-        saw_probe,
-        "half-open recovery did not re-admit a probe to the still-broken backend"
-    );
-    assert!(
-        reblacklisted,
-        "still-broken backend was not re-blacklisted after the error threshold"
-    );
-
+    status.store(200, Ordering::SeqCst);
+    let response = client.get(&url).send().await.unwrap();
+    assert_eq!(response.status(), 200);
+    assert_eq!(response.text().await.unwrap(), "recovered");
     stop_test_entrypoint(shutdown_tx, handle).await;
 }
 

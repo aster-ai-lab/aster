@@ -1,0 +1,583 @@
+{
+  "unix": 1792855216.5336735,
+  "model_execution": false,
+  "cases": [
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 1,
+      "bpe_tokens": 23,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 2,
+      "bpe_tokens": 23,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 7,
+      "bpe_tokens": 23,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 1000,
+      "bpe_tokens": 23,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 1,
+      "bpe_tokens": 15,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 2,
+      "bpe_tokens": 15,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 7,
+      "bpe_tokens": 15,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 1000,
+      "bpe_tokens": 15,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 1,
+      "bpe_tokens": 29,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 2,
+      "bpe_tokens": 29,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 7,
+      "bpe_tokens": 29,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 1000,
+      "bpe_tokens": 29,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 1,
+      "bpe_tokens": 18,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 2,
+      "bpe_tokens": 18,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 7,
+      "bpe_tokens": 18,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "json",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 1000,
+      "bpe_tokens": 18,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 1,
+      "bpe_tokens": 41,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 2,
+      "bpe_tokens": 41,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 7,
+      "bpe_tokens": 41,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": false,
+      "grouped": 1000,
+      "bpe_tokens": 41,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 1,
+      "bpe_tokens": 34,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 2,
+      "bpe_tokens": 34,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 7,
+      "bpe_tokens": 34,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": false,
+      "forced": true,
+      "grouped": 1000,
+      "bpe_tokens": 34,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 1,
+      "bpe_tokens": 47,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 2,
+      "bpe_tokens": 47,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 7,
+      "bpe_tokens": 47,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": false,
+      "grouped": 1000,
+      "bpe_tokens": 47,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 1,
+      "bpe_tokens": 37,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 2,
+      "bpe_tokens": 37,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 7,
+      "bpe_tokens": 37,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    },
+    {
+      "grammar": "native_parameters",
+      "wrapped": true,
+      "forced": true,
+      "grouped": 1000,
+      "bpe_tokens": 37,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ],
+      "content": ""
+    }
+  ],
+  "passed": true
+}

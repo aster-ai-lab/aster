@@ -76,7 +76,10 @@ impl CompetenceStore {
 
 pub(crate) struct DecisionPlane {
     service: Option<Arc<dyn DecisionService>>,
+    #[cfg(feature = "neural")]
+    apofasi: Option<Arc<super::ApofasiDecisionService>>,
     cache: Mutex<TurnDecisionCache>,
+    flights: super::decision_flights::DecisionFlights,
     competence: CompetenceStore,
     /// The clock — real time in production; injectable in tests so
     /// TTL and freshness cases run without wall clocks.
@@ -95,10 +98,71 @@ impl DecisionPlane {
     ) -> Self {
         Self {
             service,
+            #[cfg(feature = "neural")]
+            apofasi: None,
             cache: Mutex::new(TurnDecisionCache::new()),
+            flights: Default::default(),
             competence: CompetenceStore::default(),
             clock,
         }
+    }
+
+    #[cfg(feature = "neural")]
+    pub(crate) fn from_environment(required: bool) -> Result<Self, super::DecisionError> {
+        let checkpoint = std::env::var_os("A3S_APOFASI_CHECKPOINT");
+        if required && checkpoint.is_none() {
+            return Err(super::DecisionError::Invalid(
+                "apofasi routing requires A3S_APOFASI_CHECKPOINT".into(),
+            ));
+        }
+        let mut plane = Self::dormant();
+        if let Some(checkpoint) = checkpoint {
+            let concurrency = std::env::var("A3S_APOFASI_DECISION_CONCURRENCY")
+                .ok()
+                .and_then(|value| value.parse::<usize>().ok())
+                .unwrap_or(2);
+            plane.apofasi = Some(Arc::new(super::ApofasiDecisionService::load(
+                checkpoint,
+                concurrency,
+            )?));
+        }
+        Ok(plane)
+    }
+
+    #[cfg(not(feature = "neural"))]
+    pub(crate) fn from_environment(required: bool) -> Result<Self, super::DecisionError> {
+        if required {
+            return Err(super::DecisionError::Invalid(
+                "apofasi routing requires a gateway built with the neural feature".into(),
+            ));
+        }
+        Ok(Self::dormant())
+    }
+
+    #[cfg(feature = "neural")]
+    pub(crate) fn apofasi(&self) -> Option<Arc<dyn DecisionService>> {
+        self.apofasi
+            .as_ref()
+            .map(|service| service.clone() as Arc<dyn DecisionService>)
+    }
+
+    #[cfg(not(feature = "neural"))]
+    pub(crate) fn apofasi(&self) -> Option<Arc<dyn DecisionService>> {
+        None
+    }
+
+    fn unavailable(
+        &self,
+        model: &InferenceModelConfig,
+        plan: &InferenceRoutingPlan,
+    ) -> (RouteDecision, FrozenDecision, bool) {
+        let decision = evaluate_routing(model, Some(plan), None, true);
+        let frozen = FrozenDecision {
+            group: decision.group.clone(),
+            reason: DecisionReason::DecisionUnreachable,
+            frozen_at: (self.clock)(),
+        };
+        (decision, frozen, false)
     }
 
     /// The fail-closed default: no transport, every decision mode
@@ -118,6 +182,25 @@ impl DecisionPlane {
         request: Option<&DecisionRequest>,
         transport: Option<std::sync::Arc<dyn DecisionService>>,
     ) -> (RouteDecision, FrozenDecision, bool) {
+        // Bind both the frozen decision and in-flight work to this exact
+        // published policy. A snapshot successor cannot reuse an older choice.
+        use std::hash::Hasher;
+        let policy = serde_json::to_vec(&(model, plan));
+        let Ok(policy) = policy else {
+            return self.unavailable(model, plan);
+        };
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        hasher.write_u64(identity.model_alias_fingerprint);
+        hasher.write(&policy);
+        hasher.write_u8(u8::from(request.is_some()));
+        let identity = TurnIdentity {
+            model_alias_fingerprint: hasher.finish(),
+            ..*identity
+        };
+        let Some(_flight) = self.flights.acquire(identity).await else {
+            return self.unavailable(model, plan);
+        };
+        let identity = &identity;
         let now = (self.clock)();
         if let Ok(cache) = self.cache.lock() {
             if let Some(frozen) = cache.lookup(identity, now) {
@@ -246,66 +329,5 @@ fn extract_inputs(
         InferenceRoutingMode::Fixed | InferenceRoutingMode::FreeFirst => {
             Ok(DecisionInputs::default())
         }
-    }
-}
-
-/// HR3c: the HTTP decision transport — POST /v1/decisions to the
-/// decision model's resolved backend. One attempt, a bounded timeout,
-/// strict decode; every failure is `Unreachable` so the plane fails
-/// closed to primary. No prompt bytes persist: the request body exists
-/// for this call's lifetime only.
-pub(crate) struct HttpDecisionTransport {
-    url: String,
-    authorization: Option<String>,
-    timeout: std::time::Duration,
-}
-
-impl HttpDecisionTransport {
-    pub(crate) fn new(url: String, authorization: Option<String>) -> Self {
-        Self {
-            url,
-            authorization,
-            timeout: std::time::Duration::from_secs(5),
-        }
-    }
-}
-
-#[async_trait::async_trait]
-impl DecisionService for HttpDecisionTransport {
-    async fn decide(
-        &self,
-        request: &DecisionRequest,
-    ) -> Result<DecisionResponse, crate::inference::decision::DecisionError> {
-        let unreachable =
-            |message: String| crate::inference::decision::DecisionError::Unreachable(message);
-        let body = request
-            .encode_bounded()
-            .map_err(|error| unreachable(error.to_string()))?;
-        let client = reqwest::Client::builder()
-            .timeout(self.timeout)
-            .build()
-            .map_err(|error| unreachable(error.to_string()))?;
-        let mut call = client
-            .post(format!("{}/v1/decisions", self.url.trim_end_matches('/')))
-            .header(reqwest::header::CONTENT_TYPE, "application/json")
-            .body(body);
-        if let Some(key) = &self.authorization {
-            call = call.bearer_auth(key);
-        }
-        let response = call
-            .send()
-            .await
-            .map_err(|error| unreachable(error.to_string()))?;
-        if response.status() != reqwest::StatusCode::OK {
-            return Err(unreachable(format!(
-                "decision service answered {}",
-                response.status()
-            )));
-        }
-        let bytes = response
-            .bytes()
-            .await
-            .map_err(|error| unreachable(error.to_string()))?;
-        DecisionResponse::decode_validated(&bytes, request)
     }
 }

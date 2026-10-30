@@ -1,0 +1,113 @@
+{
+  "case": "send-now-cancel-ownership",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "send-now-owner",
+      "detail": "the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-WJ57aM/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use bash exactly once to run this exact command: printf started > started.txt; sleep 8; printf late  12:29 PM    \n       > late.txt. Then reply ORIGINAL-COMPLETED. Do not call any other tool.                                           \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.9s                                                                                                 \n     ◆ Run printf started > started.txt; sleep 8; printf late > late.txt                                                \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    #1 Reply only SEND-NOW-OWNED. Do not call any tool.                                                                 \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+;:queue  │  Ctrl+x:shortcuts                                                                  \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13340,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_bd4f6bdb98c146389d82de0c477f31de",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a76c2df2-64a7-4b63-b8fe-8bc7851d6eea",
+            "thread_id": "6ac8c1d6-8e57-4437-8de4-729ad26cbbe6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_bd4f6bdb98c146389d82de0c477f31de",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a76c2df2-64a7-4b63-b8fe-8bc7851d6eea",
+            "thread_id": "6ac8c1d6-8e57-4437-8de4-729ad26cbbe6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:f218fe6bbd253adf38c720b7cdc9392ab1a53544a8f7e2319b24dd1ac75359e8",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [
+            {
+              "path": "started.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:03494afd4248c42f5fa1237bf2eeebe751ab8d9c977d55405fcb17469dbd91f8",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:b182688bc1ed63e61b50028e21b4dcfd2f6880843eaffe9d181c7fc784a08b51"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13564,
+        "has_text": true,
+        "tool": null
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

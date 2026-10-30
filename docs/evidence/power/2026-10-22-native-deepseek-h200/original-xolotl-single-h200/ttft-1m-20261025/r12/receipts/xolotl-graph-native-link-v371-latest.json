@@ -1,0 +1,54 @@
+{
+  "unix": 1792933467.3093977,
+  "exact_worker_alive": false,
+  "result.json": {
+    "unix": 1792933452.4255607,
+    "phase": "linked",
+    "GPU_executed": false,
+    "model_executed": false,
+    "formal_service_changed": false,
+    "runs": [
+      {
+        "name": "mode-compile",
+        "returncode": 0,
+        "seconds": 0.26412657648324966
+      },
+      {
+        "name": "link-control",
+        "returncode": 0,
+        "seconds": 1.7214289894327521
+      },
+      {
+        "name": "link-candidate",
+        "returncode": 0,
+        "seconds": 0.91521708201617
+      }
+    ],
+    "profile": "candidate",
+    "control": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc15-4cde736558c0/graph-native-link-v371-cpu/ds41_generate.control",
+      "bytes": 253359832,
+      "sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195"
+    },
+    "candidate": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc15-4cde736558c0/graph-native-link-v371-cpu/ds41_generate.candidate",
+      "bytes": 253365392,
+      "sha256": "b7124c78d711d3f48b928a292bd6423af4137816533e0acfbeb5114644508185"
+    },
+    "mode_object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc15-4cde736558c0/graph-native-link-v371-cpu/source-type-mode.o",
+      "sha256": "a5dd4981d39923dab17b32485be734dd04b7599dd39db3952be9947ea51abd15"
+    },
+    "control_byte_equal": true,
+    "original_indexer_unchanged": true,
+    "MXFP4_header_candidate_excluded": true,
+    "only_CUDA_core_replaced": true,
+    "invalid_modes_refused": 8,
+    "model_quality_qualified": false,
+    "finished_unix": 1792933456.8647652
+  },
+  "worker.log": "",
+  "link-control.log": "",
+  "link-candidate.log": "",
+  "mode-compile.log": ""
+}

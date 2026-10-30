@@ -1,0 +1,22 @@
+
+running 4 tests
+test agent_api::tests::fact_log::durable_read::durable_transcript_uses_the_owned_log_while_its_writer_is_fenced ... ok
+
+thread 'agent_api::tests::fact_log::durable_source::durable_source_four_modes_file_store_reopen' (52144) panicked at crates\code\core\src\agent_api\tests\fact_log\durable_source.rs:159:53:
+called `Result::unwrap()` on an `Err` value: Os { code: 32, kind: Uncategorized, message: "另一个程序正在使用此文件，进程无法访问。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_file_store_reopen ... FAILED
+
+thread 'agent_api::tests::fact_log::durable_source::durable_source_four_modes_memory_store' (12936) panicked at crates\code\core\src\agent_api\tests\fact_log\durable_source.rs:159:53:
+called `Result::unwrap()` on an `Err` value: Os { code: 32, kind: Uncategorized, message: "另一个程序正在使用此文件，进程无法访问。" }
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_memory_store ... FAILED
+test agent_api::tests::fact_log::durable_source::fork_refuses_invalid_source_before_first_snapshot ... ok
+
+failures:
+
+failures:
+    agent_api::tests::fact_log::durable_source::durable_source_four_modes_file_store_reopen
+    agent_api::tests::fact_log::durable_source::durable_source_four_modes_memory_store
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 5300 filtered out; finished in 1.43s
+

@@ -1,0 +1,419 @@
+{
+  "assertions_finished": true,
+  "case": "network-fetch-timeout",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-error.json"
+          },
+          "id": "call_b97faa5e273043e699d6565898af5e83",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13210,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+            "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b97faa5e273043e699d6565898af5e83",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+            "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b97faa5e273043e699d6565898af5e83",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":1,\\\"url\\\":\\\"http://aster-fixture.example.test/slow\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":117},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":117,\"projected_bytes\":117,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"projected_digest\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"repeat_key\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"content_ref\":\"inline:sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:47f7143c3ae345534e573758610144aec4d404e40b32ead48680bd8872b223b6\"}",
+        "prepared_digest": "sha256:4bb48cd6d7eb7b5879cf3215fa4740936b7c34a23c9c3f285e3d2fef9356a417",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "format": "text",
+            "timeout": 1,
+            "url": "http://aster-fixture.example.test/slow"
+          },
+          "id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13435,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+            "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+          "turn": 1
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+            "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Web fetch timed out after 1 seconds\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":35,\"projected_bytes\":35,\"original_estimated_tokens\":9,\"projected_estimated_tokens\":9,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"projected_digest\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"repeat_key\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"content_ref\":\"inline:sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:90c8454abcfa435df09822e6b24fd0bebf9bb7d2a0b059a65149b746a389129f\"}",
+        "prepared_digest": "sha256:04294cafd2d14175b4bca7e3216e1a7d383b8dcaae0bf694b45e9b59a2382850",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13586,
+        "text": "Web fetch timed out after 1 seconds",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "607aab1394688d4acfb2aa830498f31a06aa628eb281c241c3211a869e27da1f",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:92aa91a4642a91b4587819bbdedea081ba8bdb011ca3d81d8204923eeeccb923",
+          "sha256:16c0e22ddab7116f0bc4aa0774c82d3072bfec98b4c687b50225db1ef25fcf20"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13642,
+        "text": "FETCH-ERROR-RECOVERY",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "f2b6f6379c6c3148382feb598f56cea50af24cb447b0026681c539a6570c7de9",
+          "seq": 16
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40231",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Bz3yTP/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-error.json once. Call web_fetch exactly once with its exact JSON object as         2:18 PM    \n       arguments. Report the exact failure without retrying, switching source, inventing content or                     \n       calling other tools.                                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website · 1 failed                                                                        \n                                                                                                                        \n     Web fetch timed out after 1 seconds                                                                     2:18 PM    \n                                                                                                                        \n     Worked for 28s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real web_fetch failure preserves its actual status or timeout reason; the controlled endpoint confirms whether network dispatch occurred",
+      "name": "web-fetch-controlled-error",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Bz3yTP/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-error.json once. Call web_fetch exactly once with its exact JSON object as         2:18 PM    \n       arguments. Report the exact failure without retrying, switching source, inventing content or                     \n       calling other tools.                                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website · 1 failed                                                                        \n                                                                                                                        \n     Web fetch timed out after 1 seconds                                                                     2:18 PM    \n                                                                                                                        \n     Worked for 28s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13642",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Bz3yTP/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only FETCH-ERROR-RECOVERY. Do not call tools.                                                   2:18 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.6s                                                                                                 \n                                                                                                                        \n     FETCH-ERROR-RECOVERY                                                                                    2:18 PM    \n                                                                                                                        \n     Worked for 6.5s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the same session completes a fresh model turn after the real fetch failure",
+      "name": "web-fetch-error-recovery",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Bz3yTP/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only FETCH-ERROR-RECOVERY. Do not call tools.                                                   2:18 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.6s                                                                                                 \n                                                                                                                        \n     FETCH-ERROR-RECOVERY                                                                                    2:18 PM    \n                                                                                                                        \n     Worked for 6.5s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "network-fetch-timeout",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-error.json"
+              },
+              "id": "call_b97faa5e273043e699d6565898af5e83",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13210,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+                "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b97faa5e273043e699d6565898af5e83",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+                "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b97faa5e273043e699d6565898af5e83",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":1,\\\"url\\\":\\\"http://aster-fixture.example.test/slow\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":117},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":117,\"projected_bytes\":117,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"projected_digest\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"repeat_key\":\"sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"content_ref\":\"inline:sha256:f7d605e66fc4b5992ccae9ff4ce5c7077e29d357703929f867ce5ff88f9c2c52\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:47f7143c3ae345534e573758610144aec4d404e40b32ead48680bd8872b223b6\"}",
+            "prepared_digest": "sha256:4bb48cd6d7eb7b5879cf3215fa4740936b7c34a23c9c3f285e3d2fef9356a417",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "format": "text",
+                "timeout": 1,
+                "url": "http://aster-fixture.example.test/slow"
+              },
+              "id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13435,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+                "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+              "turn": 1
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-d2ae16ec-9dce-4990-9e6d-f9ac1ea8ed8d",
+                "thread_id": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_1ac1f129bcda45a8882eba0ac143ad86",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Web fetch timed out after 1 seconds\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":35,\"projected_bytes\":35,\"original_estimated_tokens\":9,\"projected_estimated_tokens\":9,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"projected_digest\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"repeat_key\":\"sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"content_ref\":\"inline:sha256:b8c7599fd6fc7f21ae01f38e1b84150b86e5f71f9b0f4200665b54c1d4ee3d89\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:90c8454abcfa435df09822e6b24fd0bebf9bb7d2a0b059a65149b746a389129f\"}",
+            "prepared_digest": "sha256:04294cafd2d14175b4bca7e3216e1a7d383b8dcaae0bf694b45e9b59a2382850",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13586,
+            "text": "Web fetch timed out after 1 seconds",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "607aab1394688d4acfb2aa830498f31a06aa628eb281c241c3211a869e27da1f",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:92aa91a4642a91b4587819bbdedea081ba8bdb011ca3d81d8204923eeeccb923",
+              "sha256:16c0e22ddab7116f0bc4aa0774c82d3072bfec98b4c687b50225db1ef25fcf20"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13642,
+            "text": "FETCH-ERROR-RECOVERY",
+            "tool": null
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "f2b6f6379c6c3148382feb598f56cea50af24cb447b0026681c539a6570c7de9",
+              "seq": 16
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 17,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "1cd925ed-adab-4357-a18d-b17a455c97ee"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

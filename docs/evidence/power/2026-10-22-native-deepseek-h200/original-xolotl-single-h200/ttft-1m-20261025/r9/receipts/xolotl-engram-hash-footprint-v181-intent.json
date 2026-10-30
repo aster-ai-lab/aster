@@ -1,0 +1,34 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/engram-hash-footprint-v181-cpu",
+  "source": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source",
+  "build": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build",
+  "model": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+  "input_ids": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-actual1m-input-v169-cpu/prompt.u32le",
+  "original_object": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137/object-original/ds41_engram.cpp.o",
+    "bytes": 150984,
+    "sha256": "235a321d32f24b5807d7dab2f92b81651b12203ea476a55bd5ff69536fc5dfb6"
+  },
+  "source_bytes": 3474,
+  "source_sha256": "e18704c106693e56a5e39a60b637d983dbcc24233588dfa6069de1f523f3679b",
+  "source_headers": [
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.hpp",
+      "exists": true,
+      "bytes": 9611,
+      "sha256": "459bf6cfef67edb144e47883f7ceb95e72de9ac5a1086817e10723f501c8a04b"
+    }
+  ],
+  "GPU_executed": false,
+  "model_forward_executed": false,
+  "namespace": "jump host",
+  "process": {
+    "pid": 1294982,
+    "start_ticks": 283147577,
+    "uid": 10250,
+    "unix": 1792904690.8462448,
+    "namespace": "jump host",
+    "budget_seconds": 160
+  },
+  "phase": "launched"
+}

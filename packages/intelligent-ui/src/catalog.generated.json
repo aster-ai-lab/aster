@@ -1,54 +1,105 @@
 {
   "BarChart": {
     "children": false,
-    "props": ["labels", "values"]
+    "props": [
+      "labels",
+      "values"
+    ]
   },
   "Button": {
     "children": false,
-    "props": ["action", "label"]
+    "props": [
+      "action",
+      "label"
+    ]
   },
   "Card": {
     "children": true,
-    "props": ["title"]
+    "props": [
+      "title"
+    ]
   },
   "Checkbox": {
     "children": false,
-    "props": ["label", "checked", "required"]
-  },
-  "Grid": {
-    "children": true,
-    "props": ["columns"]
-  },
-  "Input": {
-    "children": false,
-    "props": ["label", "value", "type", "min", "max", "step", "required", "placeholder"]
-  },
-  "Metric": {
-    "children": false,
-    "props": ["label", "value", "unit"]
-  },
-  "Select": {
-    "children": false,
-    "props": ["label", "value", "options", "required", "placeholder"]
-  },
-  "Slider": {
-    "children": false,
-    "props": ["label", "value", "min", "max", "step"]
-  },
-  "Stack": {
-    "children": true,
-    "props": ["direction", "gap"]
-  },
-  "Text": {
-    "children": false,
-    "props": ["content"]
-  },
-  "Textarea": {
-    "children": false,
-    "props": ["label", "value", "required", "placeholder"]
+    "props": [
+      "label",
+      "checked",
+      "required"
+    ]
   },
   "Form": {
     "children": true,
-    "props": ["submitAction"]
+    "props": [
+      "submitAction"
+    ]
+  },
+  "Grid": {
+    "children": true,
+    "props": [
+      "columns"
+    ]
+  },
+  "Input": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "type",
+      "min",
+      "max",
+      "step",
+      "required",
+      "placeholder"
+    ]
+  },
+  "Metric": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "unit"
+    ]
+  },
+  "Select": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "options",
+      "required",
+      "placeholder"
+    ]
+  },
+  "Slider": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "min",
+      "max",
+      "step"
+    ]
+  },
+  "Stack": {
+    "children": true,
+    "props": [
+      "direction",
+      "gap"
+    ]
+  },
+  "Text": {
+    "children": false,
+    "props": [
+      "content"
+    ]
+  },
+  "Textarea": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "required",
+      "placeholder"
+    ]
   }
 }

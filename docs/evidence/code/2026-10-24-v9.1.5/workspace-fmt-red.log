@@ -1,0 +1,7 @@
+error: couldn't read `/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs`: No such file or directory (os error 2)
+   --> /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/studio/src-tauri/src/app_updater.rs:129:1
+    |
+129 | mod os_feed_tests;
+    | ^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `os_feed_tests`: /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs does not exist

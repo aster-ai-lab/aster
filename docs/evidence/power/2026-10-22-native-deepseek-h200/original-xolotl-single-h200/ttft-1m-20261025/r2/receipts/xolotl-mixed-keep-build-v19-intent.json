@@ -1,0 +1,51 @@
+{
+  "unix": 1792856689.8750916,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-mixed-keep-v19",
+  "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "gpu_free": true,
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "ds41_moe.cpp",
+      "bytes": 372521,
+      "sha256": "1f9fbb1630471bbe602c569f21500113f42ab681e9a20844bdbf8185e82c7072"
+    },
+    {
+      "file": "aster_cache_restore_policy.hpp",
+      "bytes": 2391,
+      "sha256": "31b4720bcef27d9fc0eb9596ddff6b76a6ec7800e11d4aadf8e06f2d812b31e8"
+    },
+    {
+      "file": "cache_policy_test.cpp",
+      "bytes": 2675,
+      "sha256": "05e38decfc2bd92589cbb5c1d7ac44d8dea7fa0c1801b86a832c710908ae4dca"
+    },
+    {
+      "file": "build_worker.py",
+      "bytes": 4413,
+      "sha256": "e6d4f23261f4be26438e197c937dea0edd505bad6b38fe575129ef457ccc5af0"
+    },
+    {
+      "file": "mixed-cache-checked-v19.patch",
+      "bytes": 7528,
+      "sha256": "722857e6f099db1f845a3bbefd4accb9aec8ead03045e56d1fe6d7abf91d8019"
+    },
+    {
+      "file": "plan.json",
+      "bytes": 3771,
+      "sha256": "1f0756e2c1488e4732f5a2986bb7aef7b8506dbffb531accd388ba83c9727d2c"
+    }
+  ],
+  "stage": {
+    "staged": true,
+    "files": 6
+  },
+  "process": {
+    "pid": 4977,
+    "start_ticks": 728362312,
+    "uid": 10250,
+    "unix": 1792856701.1995566,
+    "budget_seconds": 210
+  }
+}

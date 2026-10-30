@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::picker_separates_focus_highlight_from_committed_marker' (40716) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:2721:5:
+assertion `left == right` failed: row 3 (committed, unfocused) should be ●
+  left: "•"
+ right: "●"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::picker_separates_focus_highlight_from_committed_marker ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::picker_separates_focus_highlight_from_committed_marker
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

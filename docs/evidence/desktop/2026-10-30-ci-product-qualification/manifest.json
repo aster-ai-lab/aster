@@ -1,0 +1,247 @@
+{
+  "archive": "checks.tar.gz",
+  "bytes": 420276,
+  "sha256": "6e2fbb66419c2a161f5519d8cb41c66ff4cd04817b63b851bfb983bbf6f858fd",
+  "entries": [
+    {
+      "path": "capture-product-contract-before.log",
+      "bytes": 1591,
+      "sha256": "69d8f36eaa73b71eb304729e5be580776f98ca7b4dc23410e1434c1a9305ac76"
+    },
+    {
+      "path": "capture-product-contract-alone-before.log",
+      "bytes": 1560,
+      "sha256": "3a7c51d7d39b43fc42ddd41cf5bf6459633d96d6284b47e269a1bd0fe628add3"
+    },
+    {
+      "path": "capture-product-contract-qualified.log",
+      "bytes": 129,
+      "sha256": "ac9ed29ede7c9229adbfdc0f6d948f2db6176f55fb256eab6f079cc9e5423e2f"
+    },
+    {
+      "path": "studio-retired-tenant-alone-before.log",
+      "bytes": 9008,
+      "sha256": "75525dccf9f3ee623662fe6743c11c943cc57c13dbc4a44172730cec89d2a9df"
+    },
+    {
+      "path": "studio-identity-toyou-after.log",
+      "bytes": 8726,
+      "sha256": "4c9b91ed47fc49dc60eafccaf5316b43c944d99dde75f60243f1d48a4f9ed803"
+    },
+    {
+      "path": "studio-identity-aster-qualified.log",
+      "bytes": 22194,
+      "sha256": "80cda3bb036f7d710410a7ce764898575635b2c1b09f54ce407a72fcacab78f0"
+    },
+    {
+      "path": "studio-identity-toyou-qualified.log",
+      "bytes": 19289,
+      "sha256": "ddac3ddf2a2f13d5296bcbd3bb8e011923d6223abe8651893ae6cecf362826b8"
+    },
+    {
+      "path": "aster-computer-use-final.log",
+      "bytes": 9265,
+      "sha256": "96da1b6bdca2ed189ffd16016957f009a46f372364682c81c3b8887057da3a3e"
+    },
+    {
+      "path": "studio-computer-use-toyou-qualified.log",
+      "bytes": 9048,
+      "sha256": "e3a298e865b4f585342d65628d93178382441ac264e6374f1f785e674ea7e2ec"
+    },
+    {
+      "path": "studio-providers-aster-qualified.log",
+      "bytes": 14365,
+      "sha256": "c4a5911c0b2155429da621e811735112be9d0cc2f68627795df87a3025567886"
+    },
+    {
+      "path": "studio-providers-toyou-qualified.log",
+      "bytes": 10173,
+      "sha256": "8690f2a0a7cd5e914cc88690b58063fd107a2b2b9d1ae0532d6664dd46822d8f"
+    },
+    {
+      "path": "toyou-provider-policy-binary-alone-before.log",
+      "bytes": 846,
+      "sha256": "b3aa495cddd67f36150dd7b6b4fff6bdbe31d8432db5bad81e7088e4f929c026"
+    },
+    {
+      "path": "toyou-provider-policy-binary-before.json",
+      "bytes": 469,
+      "sha256": "747efe49b48eb63b615923e116781d2f0ee846f490898cd69ff5e1d23d6db5a7"
+    },
+    {
+      "path": "toyou-provider-policy-alone-before.log",
+      "bytes": 5686,
+      "sha256": "cd2e0bcd88e8a15ad8f7bcb20a650bc6f926dbb1167474a4115bb5ee5861cd9a"
+    },
+    {
+      "path": "toyou-policy-build-sample.txt",
+      "bytes": 953,
+      "sha256": "39984693355dae46312703788d299957ca0789f21d5f9ed544cd1344a234a8dd"
+    },
+    {
+      "path": "toyou-providers-final.log",
+      "bytes": 9556,
+      "sha256": "c6b23fd029625a3650b5fadf42621d653c68259b432879a50543e1fbaf037745"
+    },
+    {
+      "path": "aster-clippy-final.log",
+      "bytes": 177290,
+      "sha256": "3694048a296df661e5c74de75fb5c149e764144fce509e21675e74bae3f1803e"
+    },
+    {
+      "path": "toyou-policy-clippy-final.log",
+      "bytes": 174011,
+      "sha256": "0b51e31804e26967c52424fc49985d097ee0c9d07f9423c9ecb0104210c08472"
+    },
+    {
+      "path": "ci-clippy-capture.log",
+      "bytes": 16821,
+      "sha256": "e12825b9b8146b622466376a249fc5c4c74ae9fe94ed111fba1fa9063de1f35d"
+    },
+    {
+      "path": "ci-clippy-studio-results.json",
+      "bytes": 915,
+      "sha256": "2805f5b8ab56c28e71c494746625f9934d5eb1046554cacb3e430008730ea50c"
+    },
+    {
+      "path": "ci-final-fixture-checks.json",
+      "bytes": 1267,
+      "sha256": "0effb840df76ef9156740faaffc356dae45cbc78f9ca39fd86283fa46b638adf"
+    },
+    {
+      "path": "ci-toyou-policy-final-results.json",
+      "bytes": 727,
+      "sha256": "897d4ca78d0b3ddb200d4f0b78b15b16931b8556c072c6ce7ca6d865f90b7ed7"
+    },
+    {
+      "path": "studio-ci-qualified-results.json",
+      "bytes": 2421,
+      "sha256": "682e5e6e95fcd7ff582c63406eb122c6f414bdeaf49f9d259ba9f98e73119001"
+    },
+    {
+      "path": "ci-final-root-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ci-final-workspace-dependencies.log",
+      "bytes": 1658,
+      "sha256": "10baaf3986a8b6db04108fb664380bc4faaf4e8dbaa470e01ea548995bf93cad"
+    },
+    {
+      "path": "ci-final-workflow-parse.log",
+      "bytes": 15,
+      "sha256": "1d60180cdf6c56ae98c59d729de069af23dd1dcece0c6861b2130e2e55a2b8a7"
+    },
+    {
+      "path": "ci-launcher-qualified.log",
+      "bytes": 123,
+      "sha256": "d3068d4ddd6eb17f302cef8b0e17f19fdaebae7bafaa83755eac77f9387ebe9a"
+    },
+    {
+      "path": "ci-release-governance-qualified.log",
+      "bytes": 107,
+      "sha256": "eab37e776ee9e037149f0f9790d200ba5214520c9ca74b46dcc16b48be65ae9d"
+    },
+    {
+      "path": "main376-macos-job.log",
+      "bytes": 344119,
+      "sha256": "6d19090d0ac6516f222e3e68e59425367a48316530ac719b71f50bf90aca1539"
+    },
+    {
+      "path": "main376-linux-job.log",
+      "bytes": 783429,
+      "sha256": "f6ee4f74ef722a6372e647a9426dac9bda3fed51dccb89156c342b2a3bafb348"
+    },
+    {
+      "path": "main56-linux-job.log",
+      "bytes": 197511,
+      "sha256": "37222677cc1ab94c6575895577e01f49c12e78239e6d0826b8ec40f7971ac45c"
+    },
+    {
+      "path": "main56-backend-check.log",
+      "bytes": 397050,
+      "sha256": "e15b38b912f635e1697005015e9af9a920b38142fedf130e77ec7cbe709b6088"
+    },
+    {
+      "path": "capture-linux-deps-before.log",
+      "bytes": 1811,
+      "sha256": "01597340cd4f869be3b5a52d943577ff873877a93a1fc1b6c9a45763f7cfec74"
+    },
+    {
+      "path": "capture-linux-deps-after.log",
+      "bytes": 1676,
+      "sha256": "aaeff8a601bba33caec9d38fb37137c386f1573d375c7162de673e64e42d13f2"
+    },
+    {
+      "path": "capture-linux-check-after.log",
+      "bytes": 2109,
+      "sha256": "206bbac075c9c810dba237cad89e38c4645884cb5daefbedf62e112d5e09c6a2"
+    },
+    {
+      "path": "capture-aarch64-apple-darwin-deps-after.log",
+      "bytes": 4904,
+      "sha256": "26b6ae596f9d0791e3018f2c03078249a7d6cca6896bbe676c1a4132d8121c2c"
+    },
+    {
+      "path": "capture-x86_64-pc-windows-msvc-deps-after.log",
+      "bytes": 4153,
+      "sha256": "cbf9f1e15f7deae0f5742e4ae4931c8b570350bb4707aa59708c8192839e46bc"
+    },
+    {
+      "path": "capture-supported-audio-graphs.json",
+      "bytes": 307,
+      "sha256": "fd2427eb7bfe75864ddae3bceee1cdbb0ce8f3c1e1f45a184de771560ee55bb8"
+    },
+    {
+      "path": "libkrun-cross-linker/probe.c",
+      "bytes": 34,
+      "sha256": "f2b500bdb3c726b045833ba4e7725b1d90e9698f65aaa1adb4d88921665c524f"
+    },
+    {
+      "path": "libkrun-cross-linker/results.json",
+      "bytes": 2154,
+      "sha256": "90a956b322800fd48cf3fe854370f69d5f7a9b562e99cd37bda957fb86f4dc3f"
+    },
+    {
+      "path": "libkrun-cross-linker/aarch64-linux-gnu-missing-lld.log",
+      "bytes": 61,
+      "sha256": "872fd8702400c608f7ef0308b6fab09943241570a4f8731ca7d9aa9eb1c78388"
+    },
+    {
+      "path": "libkrun-cross-linker/aarch64-linux-gnu-installed-lld.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "libkrun-cross-linker/x86_64-linux-gnu-missing-lld.log",
+      "bytes": 61,
+      "sha256": "872fd8702400c608f7ef0308b6fab09943241570a4f8731ca7d9aa9eb1c78388"
+    },
+    {
+      "path": "libkrun-cross-linker/x86_64-linux-gnu-installed-lld.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "libkrun-cross-linker/aarch64-linux-gnu-installed-lld",
+      "bytes": 1256,
+      "sha256": "a9ecb9ea55f579b5eb64ff91095d5c1850da9096463cdf58f26e7e1e9c6da3d1"
+    },
+    {
+      "path": "libkrun-cross-linker/x86_64-linux-gnu-installed-lld",
+      "bytes": 1192,
+      "sha256": "c415c2dd22b11750822e78b78d8d8799300cc7b273dc32a4ac36a1697021dec9"
+    },
+    {
+      "path": "libkrun-cross-linker/callers-after.log",
+      "bytes": 746,
+      "sha256": "a2ae9753418ae58f03a8b4840ebee08fcea65d9b808e4890919e267d58fb5e56"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 2432,
+      "sha256": "3ffb790666507ef6ee95213934b983ce03af82d21467ea2af8664c77fcbad9f7"
+    }
+  ]
+}

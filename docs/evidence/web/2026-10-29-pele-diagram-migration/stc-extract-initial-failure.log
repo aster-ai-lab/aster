@@ -1,0 +1,8 @@
+file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/scripts/docs_prose.mjs:36
+  const values = [definition.spec.title, definition.spec.subtitle, ...definition.steps.flatMap((step) => [step.title, step.body])].filter(Boolean);
+                                  ^
+
+TypeError: Cannot read properties of undefined (reading 'title')
+    at file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/scripts/docs_prose.mjs:36:35
+
+Node.js v26.8.1

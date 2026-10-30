@@ -1,0 +1,6 @@
+
+running 1 test
+test scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

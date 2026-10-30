@@ -1,0 +1,22 @@
+{
+  "unix": 1792892692.1288452,
+  "phase": "trace_collected",
+  "formal_service_unchanged": true,
+  "actual1m_input_executed": false,
+  "performance_300_qualified": false,
+  "goal_complete": false,
+  "matrix_phase": "comparison_completed",
+  "matrix_profile": "pool_off_repeat",
+  "matrix_tests": 13,
+  "observed_unix": 1792893149.90269,
+  "trace_phase": "complete",
+  "trace_requests": 4,
+  "trace_worker_alive": false,
+  "trace": {
+    "file": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-critical-path-v117/warm-prose.nsys-rep",
+    "bytes": 14200601,
+    "sha256": "41923ac7f5f8eb77c231d0dfb6f28a199a6590af0589973c2c01b79be3f9f72a",
+    "diagnostic_only": true
+  },
+  "finished_unix": 1792893149.90269
+}

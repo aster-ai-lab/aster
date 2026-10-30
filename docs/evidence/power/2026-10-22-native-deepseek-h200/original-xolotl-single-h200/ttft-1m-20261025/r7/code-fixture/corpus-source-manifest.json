@@ -1,0 +1,1320 @@
+{
+  "repository": "https://github.com/Indras-Mirror/Xolotl",
+  "revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "source_archive_sha256": "bfdeb3b4d178e0b4a2c29076d394083c7b6f4b50509c2de982fa886bc1d6fcad",
+  "license": "MIT License\n\nCopyright (c) 2026 Niko1221 and the Strata contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+  "included": [
+    {
+      "file": "tools/v41/engine/bench_attn_f16_peak.cpp",
+      "bytes": 3428,
+      "sha256": "7c9f7bcee77a48e3b6811e382595a316a374ec88f1f4dca67510a5ebfbd8fa97"
+    },
+    {
+      "file": "tools/v41/engine/bench_ds41_conv_pool.cpp",
+      "bytes": 23142,
+      "sha256": "94c9d440fde90843fe84ec12c0e29c047c08c00482e786ca534c7f95b557bae5"
+    },
+    {
+      "file": "tools/v41/engine/bench_ds41_conv_pool_spin.cu",
+      "bytes": 582,
+      "sha256": "135e8c60929a8c8a443f4e5a732693300cd8379afd34ca5d3f1d4d6b7b33bca1"
+    },
+    {
+      "file": "tools/v41/engine/bench_ds41_engram.cpp",
+      "bytes": 13590,
+      "sha256": "c866d2b450e74dadb9bdbeb42b29bcf190680bebf9f9293c949495dbaf57cfc5"
+    },
+    {
+      "file": "tools/v41/engine/ds41_batch.hpp",
+      "bytes": 11966,
+      "sha256": "edbd964d870bbc7f32c273b554cacd9632efe357f72da89a65eb09de0c9cf151"
+    },
+    {
+      "file": "tools/v41/engine/ds41_batch_slots.hpp",
+      "bytes": 10400,
+      "sha256": "3c0e69e61413af7f3ccf9208dfa58e2a694604a57c0da90293dfe2c029a272a1"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conv_pool.cpp",
+      "bytes": 36012,
+      "sha256": "b72f510acf36522ad78f3eb97ee4a827c57d81f5edd40cf3dc6f12ebe675f552"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conv_reuse.hpp",
+      "bytes": 19277,
+      "sha256": "aadb728a453397a76b6408761de10d8ad715e36daa7962c72df08ffe56760dfd"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conversation.cpp",
+      "bytes": 6947,
+      "sha256": "eec64db2f7146267a71591853764856279b6a85cfb84fcc6818fa93ae51ee9a9"
+    },
+    {
+      "file": "tools/v41/engine/ds41_conversation.hpp",
+      "bytes": 2266,
+      "sha256": "8ffa3850044b557fb17df0cfbe3d685b40f4990fc2986838e6b814fc4758e1be"
+    },
+    {
+      "file": "tools/v41/engine/ds41_cuda_policy.cpp",
+      "bytes": 1678,
+      "sha256": "0312d0a11470af7e7c575592ebd96485653780fdd62960d9e18673d51e8a1c7b"
+    },
+    {
+      "file": "tools/v41/engine/ds41_cuda_policy.hpp",
+      "bytes": 423,
+      "sha256": "0d1ba34911d16229c500b3a6212db339a369648d95a029af51f888a335048a07"
+    },
+    {
+      "file": "tools/v41/engine/ds41_dense.cpp",
+      "bytes": 192356,
+      "sha256": "86f4e5a256e6a70c3f627f0269400bf5ebc71666cb7b89bcc193dc06c5c433a2"
+    },
+    {
+      "file": "tools/v41/engine/ds41_dense.hpp",
+      "bytes": 23208,
+      "sha256": "e642c9aed5a0e925cc3195146e1d6ce72c6596e0f705441ce4d52e14fe6d5540"
+    },
+    {
+      "file": "tools/v41/engine/ds41_dspark.cpp",
+      "bytes": 34696,
+      "sha256": "9924f2f72229a75eb5c58094312993f53c09d9913ae512d9b1beb62ea82d93a4"
+    },
+    {
+      "file": "tools/v41/engine/ds41_dspark.hpp",
+      "bytes": 3588,
+      "sha256": "598a197be38342689c8cdccde5822d7b723e2b38965ff8f29366d714aeb6f5ec"
+    },
+    {
+      "file": "tools/v41/engine/ds41_embd.hpp",
+      "bytes": 1246,
+      "sha256": "680d3c0f88ac7ae65dd8116caf38c7d15e9d6d33b6b7186c62d07ff437c9b24e"
+    },
+    {
+      "file": "tools/v41/engine/ds41_engram.cpp",
+      "bytes": 37273,
+      "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b"
+    },
+    {
+      "file": "tools/v41/engine/ds41_engram.hpp",
+      "bytes": 9611,
+      "sha256": "459bf6cfef67edb144e47883f7ceb95e72de9ac5a1086817e10723f501c8a04b"
+    },
+    {
+      "file": "tools/v41/engine/ds41_engram_hot.cpp",
+      "bytes": 17443,
+      "sha256": "172e7e6f5341f5b84ec12e9a45fc71db577753a10cc807c7d2664c1f38e47a8f"
+    },
+    {
+      "file": "tools/v41/engine/ds41_exec.hpp",
+      "bytes": 2442,
+      "sha256": "23b3494096d945b86d8724f79b7b991f551f4e96e494112b22f99a8a44aed37c"
+    },
+    {
+      "file": "tools/v41/engine/ds41_generate.cpp",
+      "bytes": 218955,
+      "sha256": "f21337a48d8d8fafa7408751cc27031dbdef6f30b46770e40b58fdf8d6f2076f"
+    },
+    {
+      "file": "tools/v41/engine/ds41_geometry.hpp",
+      "bytes": 35093,
+      "sha256": "0e60445056373f21b91bff5fe486fc31b7b9859c024aa36ae02591aa3f38e301"
+    },
+    {
+      "file": "tools/v41/engine/ds41_helper.cpp",
+      "bytes": 39783,
+      "sha256": "1f1646b7ffc9f0ce0367bdc822bdeda8cfac1efbb8cf1bfcc21a2cc006024210"
+    },
+    {
+      "file": "tools/v41/engine/ds41_mmq_plan.hpp",
+      "bytes": 3645,
+      "sha256": "a9ea726ad832ca921fee3331a6e2237a43fe7ac2bf93dcb21cd140f4577e6c56"
+    },
+    {
+      "file": "tools/v41/engine/ds41_moe.cpp",
+      "bytes": 369341,
+      "sha256": "e123b8209be7cd0b9da8ceaf29c97d2e7edf2ed43850e8525ad89261aa4599e0"
+    },
+    {
+      "file": "tools/v41/engine/ds41_moe.hpp",
+      "bytes": 41076,
+      "sha256": "8e991b292b8f8b5aa05da7b6f9bdf860d3414f51da59e6597f3b2708da828981"
+    },
+    {
+      "file": "tools/v41/engine/ds41_ops.hpp",
+      "bytes": 4166,
+      "sha256": "84866ec2f84a6bb633775525d5af752eac0e33f1431859f2965d0d7adb92653e"
+    },
+    {
+      "file": "tools/v41/engine/ds41_pipeline.cpp",
+      "bytes": 18268,
+      "sha256": "158298fb37cc3e35d959be67f388187f2d3639dcd4104f0525f05fe5c443253e"
+    },
+    {
+      "file": "tools/v41/engine/ds41_pipeline.hpp",
+      "bytes": 3367,
+      "sha256": "f4385ac5b88b6cda89f5a4e6202c98c1da386d8785d31df4df122d8f64f1903f"
+    },
+    {
+      "file": "tools/v41/engine/ds41_remote.hpp",
+      "bytes": 6894,
+      "sha256": "da6a35860faa2647ed1198da610aee3df0f0bd0c35fe699048428c2791b3ccab"
+    },
+    {
+      "file": "tools/v41/engine/ds41_sys.hpp",
+      "bytes": 8497,
+      "sha256": "40f610273db2087a63d5e058b4e4b78b21f6bf0cb8d651e48475ca84f12d4e24"
+    },
+    {
+      "file": "tools/v41/engine/ds41_transcode.cu",
+      "bytes": 5189,
+      "sha256": "c52f518d8412c96a69ae7ca7efbcbe0aad51b9074629ee584c79b37b5785fed6"
+    },
+    {
+      "file": "tools/v41/engine/ds41_transcode.hpp",
+      "bytes": 1104,
+      "sha256": "cb2d696dba5526ea731f7995b7036e1423dd09165df1f189642b53b6a6f5268d"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_batch.cpp",
+      "bytes": 21014,
+      "sha256": "a6f4c253c8cc9888fe7c699409e54934936662d0667f706240aa5ec650bf46a5"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_batch_plan.cpp",
+      "bytes": 4238,
+      "sha256": "f7508a090987ee20b83bd74a2c480b36ac200d7e2bf26e406212d614dd6b3908"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_conv_pool.cpp",
+      "bytes": 19655,
+      "sha256": "8a568e31d15e9e760753914ae8e6577bd5bf4e0eba84b79387dbcfdeeda32536"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_dense.cpp",
+      "bytes": 10063,
+      "sha256": "ba76988662ce717f4af6d5cc43709fcaa630ca1c46e28da4cb9d24cac5930b62"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_dspark.cpp",
+      "bytes": 5584,
+      "sha256": "ad723717c4edb21474c139eed5fb4fdecde5ce0aeb70c2bf76027b51709711dc"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_fq.cpp",
+      "bytes": 4223,
+      "sha256": "054b8723064132b663a70bd6c8a0beda79c0f7b2966e7a87df0824fc1ff71132"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_geometry.cpp",
+      "bytes": 4702,
+      "sha256": "c8fca3717e25b270dbab13980714315088513f0042c05d54b6cd578fa006f562"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_hcmix.cpp",
+      "bytes": 6653,
+      "sha256": "2ee512cfb2fdb00983d52c27fb83c50b80bcdac69c40a3ea9a93a241d8e17fc2"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_kvfp4.cpp",
+      "bytes": 5777,
+      "sha256": "a8b395ce88be6b0ce17a169335fedd4e5bec1ed27ca6a4c7886fd648b20c9567"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_moe.cpp",
+      "bytes": 13905,
+      "sha256": "9560676b2447563a1bd3b158eeccb07dc505ff1b92ff6c07ba635c04c8a2f6df"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_ops.cpp",
+      "bytes": 3291,
+      "sha256": "29aff573da0a235abe5dfb35705212517d3600925846e20339f96e08ce408801"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_prom.cpp",
+      "bytes": 13201,
+      "sha256": "493426050e2f2abbfed203dc002b702309ff39b0e240d61f88abbca8b6f1df26"
+    },
+    {
+      "file": "tools/v41/engine/test_ds41_transcode.cpp",
+      "bytes": 3910,
+      "sha256": "4335d0d440710a15387e2c4a6237424dc7d9a6cd118563126935ab4172cd6a94"
+    },
+    {
+      "file": "src/kernels/bf16_bits_test.cpp",
+      "bytes": 3644,
+      "sha256": "e26ebb9239946d0416e81cb212ba24618386ed3da15522c8ed1af9995b586d97"
+    },
+    {
+      "file": "src/kernels/bf16_gemv_parity.cpp",
+      "bytes": 7325,
+      "sha256": "a7c6de83f57b333865e5fefb7f790573db6de6d8a88d79c950280f56c2f5e44e"
+    },
+    {
+      "file": "src/kernels/cpu/expert.cpp",
+      "bytes": 33179,
+      "sha256": "31b7b1a628e29f22bce3e39e69efe968298066d08383d8292c9ea1279bee1cfe"
+    },
+    {
+      "file": "src/kernels/cpu/expert_layout.cpp",
+      "bytes": 20456,
+      "sha256": "b8b69717f57a51ebf42018cb9c91fd0b24d13224c64465862a8ae0f4c894f6aa"
+    },
+    {
+      "file": "src/kernels/cpu/expert_multi_test.cpp",
+      "bytes": 5551,
+      "sha256": "e78740421b62ba8a322e21e94f57783e3d0173a6959a498504a4759e12c95450"
+    },
+    {
+      "file": "src/kernels/cpu/expert_parity.cpp",
+      "bytes": 8348,
+      "sha256": "75bd21e3e73d294669dd795832cb174eaecee286c75bb813f80af8d52e135031"
+    },
+    {
+      "file": "src/kernels/cpu/iq_avx1.cpp",
+      "bytes": 26557,
+      "sha256": "af3a4b7fa9ae4eb61cbc99e9ea49d5bae2374521a60a49fd34fc4fd569a7fe03"
+    },
+    {
+      "file": "src/kernels/cpu/iq_avx1_parity.cpp",
+      "bytes": 13956,
+      "sha256": "046bc442c1a8f89f515db500575225612e571005132f1c0268a87fafe47f86bb"
+    },
+    {
+      "file": "src/kernels/cpu/iq_avx2.cpp",
+      "bytes": 28698,
+      "sha256": "e68574a5878be602ffd5cdc712f594ba39d9507572fb438787048a57ba1acd33"
+    },
+    {
+      "file": "src/kernels/cpu/iq_avx2_parity.cpp",
+      "bytes": 26145,
+      "sha256": "fb4e0b0629e749b816c4ec71da836f383330cf93aed49a11d03607937e1232d9"
+    },
+    {
+      "file": "src/kernels/cpu/iq_avx512.cpp",
+      "bytes": 15488,
+      "sha256": "4e616b4703a82988625cfe0b5e8a40462154fb738df967bd936b1697a216833f"
+    },
+    {
+      "file": "src/kernels/cpu/kq_avx1.cpp",
+      "bytes": 3128,
+      "sha256": "3e7b6c1dcc4b2df972704c0d69da5703cf4adad2aff391a151c336c9ee060640"
+    },
+    {
+      "file": "src/kernels/cpu/kq_avx2.cpp",
+      "bytes": 13169,
+      "sha256": "4e8f29b049af758a8174ad82c966aefc92e9c531c14646d8edd8244bc4851639"
+    },
+    {
+      "file": "src/kernels/cpu/kq_cpu_bench.cpp",
+      "bytes": 8457,
+      "sha256": "9f8e3a4e8a8ee578c55638b448a054e11e92e4afc7dbd94b05b184e8d1648d9a"
+    },
+    {
+      "file": "src/kernels/cpu/native_expert.cpp",
+      "bytes": 20273,
+      "sha256": "5a0afaa33844d056ecd339c780ca648a3f812325521395a2e3af54c2934749e3"
+    },
+    {
+      "file": "src/kernels/cpu/nvfp4_avx2.cpp",
+      "bytes": 9439,
+      "sha256": "af67580a2af8b4d951339c1f3bd334abffbae1a6b942ef49e79b39feb6042bfe"
+    },
+    {
+      "file": "src/kernels/cpu/nvfp4_avx512.cpp",
+      "bytes": 9662,
+      "sha256": "4271f7a29b2e67ad579a2b6ef34840d06cfc6d9362683d654b095b8167a77b96"
+    },
+    {
+      "file": "src/kernels/cpu/nvfp4_avx512_parity.cpp",
+      "bytes": 17936,
+      "sha256": "3f63d738f49b239ec4cfecc235dfa6f32805d35f87e6748ee47c911dfe6922c5"
+    },
+    {
+      "file": "src/kernels/cpu/pool.cpp",
+      "bytes": 44829,
+      "sha256": "ac5cb4424834c903c28a1aa382c9d2d844a4690c420ae0ba8285a55c24ee2433"
+    },
+    {
+      "file": "src/kernels/cpu/pool_affinity_linux.hpp",
+      "bytes": 3363,
+      "sha256": "36c373feffae439f7f18cba37a9c6313ef07794357aca0c684a6ebfe32cdd4c0"
+    },
+    {
+      "file": "src/kernels/cpu/pool_affinity_linux_test.cpp",
+      "bytes": 11355,
+      "sha256": "33305144a4d15b4bd74027f42d0a7daee05aeac01053b377fe02f848f90de465"
+    },
+    {
+      "file": "src/kernels/cpu/pool_affinity_test.cpp",
+      "bytes": 7197,
+      "sha256": "579f024bb699958e592225053fe48a355c9a8d6303a2abab528c4742f5c14fa5"
+    },
+    {
+      "file": "src/kernels/cpu/pool_affinity_win.hpp",
+      "bytes": 2796,
+      "sha256": "63a3e8d6346d2887b6e139638ad74ab5ce005be20f6c0d4664c16938a84abe6f"
+    },
+    {
+      "file": "src/kernels/cpu/pool_stress.cpp",
+      "bytes": 4193,
+      "sha256": "21fdb493bc6aab804583c38a3f8befba418becb67243452d61a6fa3b8a32d88b"
+    },
+    {
+      "file": "src/kernels/cpu/pool_tasks_test.cpp",
+      "bytes": 4472,
+      "sha256": "3473ad141e76226f9e58d63da47a54d261216354544cd3ace140046f81280786"
+    },
+    {
+      "file": "src/kernels/cpu/pool_test.cpp",
+      "bytes": 10399,
+      "sha256": "d1f225f1b5f5e4ec2805843fc3a49cfc3a53788f15e243c76c63b02f2ed913ef"
+    },
+    {
+      "file": "src/kernels/cpu/ptq1_0.cpp",
+      "bytes": 14413,
+      "sha256": "8b735492a5d41e868c0d3c8243db27b157e9c244c05acc70b4d9c14af857d9ed"
+    },
+    {
+      "file": "src/kernels/cpu/q2_avx1.cpp",
+      "bytes": 15177,
+      "sha256": "055a281bcb67dfd14a380cef8c05dd96a23795ed8f468f3e36543cc4a1d9566a"
+    },
+    {
+      "file": "src/kernels/cpu/q2_avx2.cpp",
+      "bytes": 13767,
+      "sha256": "ce92563c3706433845aaee48488ccac2d817eb69ae1a48d44ea3a3be1c093dec"
+    },
+    {
+      "file": "src/kernels/cpu/q2_bitplane_parity.cpp",
+      "bytes": 6089,
+      "sha256": "a8c08d4540f84f1fd5d75203a88cb16bf0c940e3880a888fd800bae43709271e"
+    },
+    {
+      "file": "src/kernels/cpu/q8k_quant_parity.cpp",
+      "bytes": 7324,
+      "sha256": "db23ca8d2636cb99621cb99c05788fc5ba92ab598c5e653015c8a81cc8d9be12"
+    },
+    {
+      "file": "src/kernels/cpu/router_dot_parity.cpp",
+      "bytes": 3201,
+      "sha256": "1d14ce8bef7dd769bdd4ada8ba97caad67be28a86651e96b2b8a7bb219f8c19e"
+    },
+    {
+      "file": "src/kernels/cuda/bf16_gemv.cu",
+      "bytes": 7138,
+      "sha256": "1408ce4707d9d03bc3d752773401afbb1170b0cf1fc3b53fb95cab9aff652c53"
+    },
+    {
+      "file": "src/kernels/cuda/cvec.cu",
+      "bytes": 7119,
+      "sha256": "bc81bc52db8c2889756ff63bea6e3312dfa7cc3251a400e63fbbac5084e7335d"
+    },
+    {
+      "file": "src/kernels/cuda/dense_kernels.cu",
+      "bytes": 57842,
+      "sha256": "71d01a25300b84ee2876465b0e7ff74f30a45cbb835d9aa26d07cd73806871c1"
+    },
+    {
+      "file": "src/kernels/cuda/dequant_bf16.cu",
+      "bytes": 22701,
+      "sha256": "d1184e16ce6d8529992c2553a29714f57dc8f37e349db92354b2ff90ec09ca8a"
+    },
+    {
+      "file": "src/kernels/cuda/dequant_s2.cu",
+      "bytes": 2244,
+      "sha256": "a32870e7c7fb7deab1bb93e36ba15d6679ba3b5b2055ea0ab0b3e88c421d2f63"
+    },
+    {
+      "file": "src/kernels/cuda/elementwise.cu",
+      "bytes": 23296,
+      "sha256": "edcd8f71a862665c103ab47fc3f5b055c1eaf9b5690dc07de05ac374e3959861"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_dq.cuh",
+      "bytes": 3394,
+      "sha256": "c945e02d6e23507aa4bf577206fbfb661eb3cf6d66207e365f20448b785eff38"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_fmt.cuh",
+      "bytes": 3939,
+      "sha256": "62dfd1af0f1ba8827575edc0bdc8ca7c7622b6350fd0f31633b8cae8f510a5b6"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_gu_mixed.cuh",
+      "bytes": 2325,
+      "sha256": "feed6520da44ca008bbebd86fcea774e84bafb0acefabfa6bee3b7d2cad74c4e"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_helpers.cuh",
+      "bytes": 949,
+      "sha256": "dbd014ca0c05fb4740c6a332a4ef8e5f7fe74eb067d7cd8a7b7d51455a188c20"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_layout.cuh",
+      "bytes": 1260,
+      "sha256": "62e42b940274e213922b45d2e3a6759cdb694cb7f9d2e38538e066835e2a3608"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_mmvq_q2k_block.cuh",
+      "bytes": 543,
+      "sha256": "ba7e23c8095b534212a9d680f710d933173bef51f1e1326a043898dc3f4742d9"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_mmvq_q2k_dot.cuh",
+      "bytes": 1322,
+      "sha256": "bca1861fd07898dbada9f31ebcb5121053410cc8b27fbbf8f2f76fc327191346"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_mmvq_q2k_launch.cuh",
+      "bytes": 1745,
+      "sha256": "9255a5c5319c09db9172985fda4083f372f218e48bcee93529b829ba3715524d"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_mmvq_q2k_traits.cuh",
+      "bytes": 1517,
+      "sha256": "6ec7dd610abbb7696deb18956e494c4ea78489d9f257f8aeb1ee8a864d091a4e"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_prom.cuh",
+      "bytes": 10863,
+      "sha256": "65177c7c72fd3ce606afc772586d44db77e73fe364883dd064e17692c51a1de4"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_vecdot.cuh",
+      "bytes": 11903,
+      "sha256": "f6f264748fca0d999cc9de82477ea46ca53b923d4f5bdaab80a069f0334c7abd"
+    },
+    {
+      "file": "src/kernels/cuda/fork/fork_weighted_sum.cuh",
+      "bytes": 2714,
+      "sha256": "a0f0ceb94c8b771a99fb06832e6a778d8ecf9690ba654885b57eaed2b623f588"
+    },
+    {
+      "file": "src/kernels/cuda/fused_gdn.cu",
+      "bytes": 9531,
+      "sha256": "3c1fbc952f122013ef24eb21460dc4dc374b0a3aea255fd426a0005cd2d48177"
+    },
+    {
+      "file": "src/kernels/cuda/fused_gr.cu",
+      "bytes": 113538,
+      "sha256": "870be6e0282a9078682396045e4c46afffc19b2685c252cf1499e620d0a6751d"
+    },
+    {
+      "file": "src/kernels/cuda/gdn.cu",
+      "bytes": 11688,
+      "sha256": "7c6b392f3942b0f12aa81f36687c0c4f8850efa4a61bee99f9783ea28b9a0f7f"
+    },
+    {
+      "file": "src/kernels/cuda/gr.cu",
+      "bytes": 26033,
+      "sha256": "73068d2cb8c997352108d0dfca1f6dd7d7fede9dad291870722092bc10e48b07"
+    },
+    {
+      "file": "src/kernels/cuda/iq_kernels.cu",
+      "bytes": 211715,
+      "sha256": "591a0929910420c2861338949f4a2bc766930d8d76ed44a9615a332f8a04a70f"
+    },
+    {
+      "file": "src/kernels/cuda/kv_q4.cu",
+      "bytes": 12205,
+      "sha256": "e055aebc0316c219d0a005b84824d8991b23107ba264c80c7090dc1c52574427"
+    },
+    {
+      "file": "src/kernels/cuda/kv_q8.cu",
+      "bytes": 8030,
+      "sha256": "52610aee08ddf7597a921f76a02270811d967beb2c5091a089fa0e45281a7b8a"
+    },
+    {
+      "file": "src/kernels/cuda/kv_stream.cu",
+      "bytes": 12980,
+      "sha256": "1e4b9c67666b4f460898429a684f4ce7a3c8fc506538450f99da46adaccd66fc"
+    },
+    {
+      "file": "src/kernels/cuda/native_bf16.cu",
+      "bytes": 19601,
+      "sha256": "ddb35a48c6372a85a5b2dff3ca56dd1fc9a76e800beb2f897d0c2c96d2b63093"
+    },
+    {
+      "file": "src/kernels/cuda/native_flash_attn.cu",
+      "bytes": 10153,
+      "sha256": "d848cc229226e499405b50050e6baacd4ca6031087b45983065319c16b06b9bf"
+    },
+    {
+      "file": "src/kernels/cuda/native_gdn.cu",
+      "bytes": 5965,
+      "sha256": "5ea9d912cdb179c157bed76317ec4148361a873464c8f248e1b54752d0f8fb03"
+    },
+    {
+      "file": "src/kernels/cuda/native_gdn_preprocess.cu",
+      "bytes": 9303,
+      "sha256": "940aa60cd42e77ad7f4b5a6e2fd8177b80016975d2aaf55ed7a620f6437f27c4"
+    },
+    {
+      "file": "src/kernels/cuda/native_gr_norm.cu",
+      "bytes": 4611,
+      "sha256": "15648e96fadfa771cb68f96ef0dfe6aab9c7c4e3b91d0271d2122cd246df80b6"
+    },
+    {
+      "file": "src/kernels/cuda/native_gr_postops.cu",
+      "bytes": 8396,
+      "sha256": "23c3c0b613c1bbd41fbbf05f958ba6a050be99705ef8d4e22c0d95ff3f058b13"
+    },
+    {
+      "file": "src/kernels/cuda/native_mmvq.cu",
+      "bytes": 132668,
+      "sha256": "16cf853eb4743b7f5c80d092beb9c06721ecff25a7975813921863d1635a82dd"
+    },
+    {
+      "file": "src/kernels/cuda/native_moe.cu",
+      "bytes": 12808,
+      "sha256": "ed63f56561673e0ad00fd830b75a4dc912d1963d781a43db566932cb2caa9b6e"
+    },
+    {
+      "file": "src/kernels/cuda/native_ple_postops.cu",
+      "bytes": 15132,
+      "sha256": "4dfa61501f8f6e428f313c4a1fc8cf08b7d882185d517e90e914781dfe48ab95"
+    },
+    {
+      "file": "src/kernels/cuda/native_qsa.cu",
+      "bytes": 8423,
+      "sha256": "91a21d493e9896b486e106ab53b26a4df9dfebb369880842a1a9add79c7604b4"
+    },
+    {
+      "file": "src/kernels/cuda/native_qsa_indexer.cu",
+      "bytes": 23352,
+      "sha256": "8fa911b34164e03a4ada188a89eed5e1d5af7aff98ed6a94c270fa863c50764f"
+    },
+    {
+      "file": "src/kernels/cuda/native_qsa_score.cu",
+      "bytes": 9890,
+      "sha256": "046dac614be068448e71d378150e9d1c5c39fa07d8fd27459611efd5e1566e5d"
+    },
+    {
+      "file": "src/kernels/cuda/native_rope.cu",
+      "bytes": 12716,
+      "sha256": "afd49a84a3a4f0dc8cd618329b07b44c2fb59c11212d05919e7ffc6345961768"
+    },
+    {
+      "file": "src/kernels/cuda/native_router.cu",
+      "bytes": 15981,
+      "sha256": "89131c17bb9809e7ed02d08d2e3b03d2a2b0e077885d2f82df9471a7b8bf2256"
+    },
+    {
+      "file": "src/kernels/cuda/ple.cu",
+      "bytes": 21748,
+      "sha256": "ca887e5837f70ee4198a7a24329daf4f028744d443e898edb53febe7ba016382"
+    },
+    {
+      "file": "src/kernels/cuda/q8_1_il.cuh",
+      "bytes": 3802,
+      "sha256": "dcadd11672258a9307daf71ad214f5931127f49abb935e7ccf580277b2bf010b"
+    },
+    {
+      "file": "src/kernels/cuda/qsa.cu",
+      "bytes": 44124,
+      "sha256": "dc7ff0992355ec744bcdcb919f50cf8925a340438e0c5209ae917177d938295a"
+    },
+    {
+      "file": "src/kernels/cuda/qsa_decode_attn.cu",
+      "bytes": 39807,
+      "sha256": "9d5b493b497213e97fb67498586bb690220f76b7bbfb4cd1e5ad3dd5010c04d6"
+    },
+    {
+      "file": "src/kernels/cuda/qsa_prompt_attn.cu",
+      "bytes": 77111,
+      "sha256": "2e3ab1df7b852a4eaa896c1ac6f7bd17b6444dc43ba98c051cbfa00ccc8ab61c"
+    },
+    {
+      "file": "src/kernels/cuda/qsa_select.cu",
+      "bytes": 70427,
+      "sha256": "0b7ace194a3ebc7b4be7aa76daa9b7c62dfcdf76240735c10f988d999353b31f"
+    },
+    {
+      "file": "src/kernels/cuda/quantize_act.cu",
+      "bytes": 17199,
+      "sha256": "207d0e2ec4b0fca136d03bc6bee10b625fe01683f996eb317af1ca5a5f25eb67"
+    },
+    {
+      "file": "src/kernels/cuda/qwen35_attention.cu",
+      "bytes": 10521,
+      "sha256": "d384b6d4ede2f43a87f744a2115169af88c8b20f1162aa27fd1163618ddb45bd"
+    },
+    {
+      "file": "src/kernels/cuda/rope.cu",
+      "bytes": 7070,
+      "sha256": "8b72c00ff58b885e06561f01c3474cd9d9731c0b42abdc635fba7cef84d262ba"
+    },
+    {
+      "file": "src/kernels/cuda/route_prior.cu",
+      "bytes": 3424,
+      "sha256": "f5e0d560e951d7c2dd19a780ec1d77f0293d7a835bbe28def2bd5264ccdf2aaf"
+    },
+    {
+      "file": "src/kernels/cuda/router_top10.cu",
+      "bytes": 24728,
+      "sha256": "4fa8260d101ba1d5c82e9ee1ee6260ca3f8a7d8020493254682dd0e597c5e94a"
+    },
+    {
+      "file": "src/kernels/cuda/s26_tsum.cuh",
+      "bytes": 3159,
+      "sha256": "9d48c241a67096c4d57d10e0a0e7f8f20197ac91754c32889527c0550ce0a695"
+    },
+    {
+      "file": "src/kernels/cuda/s2_expert_grouped.cu",
+      "bytes": 66854,
+      "sha256": "df5b571883379c778ead44ec200cef732febbe8722fcd73c2a6a6b0d0bcfbbc8"
+    },
+    {
+      "file": "src/kernels/cuda/s2_gemv.cu",
+      "bytes": 2337,
+      "sha256": "4d21a4e14e166b02652719c095b25fa7f346c3d0b3dd1009e050e793b2167b9b"
+    },
+    {
+      "file": "src/kernels/cuda/s2_gemv_fast.cu",
+      "bytes": 7297,
+      "sha256": "ff3ab5c5b0da5b25aa73f7da3a86894c93960efef3b8c71463d501c1e8adaafe"
+    },
+    {
+      "file": "src/kernels/cuda/s2_gemv_q8.cu",
+      "bytes": 4735,
+      "sha256": "c5123b1a7373acad6e62c701bac3ed04f90c1ed5702104008892125de052733d"
+    },
+    {
+      "file": "src/kernels/cuda/s2_gemv_quads.cu",
+      "bytes": 4675,
+      "sha256": "7ed6b10201829d55868acd1a7f0f81db9fdb06fd9d1b65283e91e6715ed926cb"
+    },
+    {
+      "file": "src/kernels/cuda/s_gemv.cu",
+      "bytes": 40810,
+      "sha256": "46c946cff34b50f252a5d4a6b2f99e0d30b78a6ad741919417566ccb43017e40"
+    },
+    {
+      "file": "src/kernels/cuda/sampler.cu",
+      "bytes": 74909,
+      "sha256": "988f8535ece34b475ddc367690ea5f018da27eed526258173fe77b6111481092"
+    },
+    {
+      "file": "src/kernels/cuda/shared_expert.cu",
+      "bytes": 23084,
+      "sha256": "7b92c338e6710b299731f03129aa042274260a87fb3132ebf4e39786ef84c9cb"
+    },
+    {
+      "file": "src/kernels/cuda/verify_kernels.cu",
+      "bytes": 80141,
+      "sha256": "4b0d85b5974c573388cfa5972cc672eb91097d67dcc0d50007e0838c3e9780ab"
+    },
+    {
+      "file": "src/kernels/cvec_parity.cpp",
+      "bytes": 9581,
+      "sha256": "cadfaa08778a4db2254e714940b3cbc23e08c3b366f02c4b07a0d756717ce8e7"
+    },
+    {
+      "file": "src/kernels/decode_cluster_parity.cpp",
+      "bytes": 20624,
+      "sha256": "89957dbd82f2921663da5e97cb6051bc298661d18600098e2f088aaf8e915d95"
+    },
+    {
+      "file": "src/kernels/dequant_bf16_test.cpp",
+      "bytes": 4838,
+      "sha256": "65d9c5fad2d3e887020917aeeabe741593a2678b96b9ba49ac6071097d24273f"
+    },
+    {
+      "file": "src/kernels/dequant_s2_parity.cpp",
+      "bytes": 6745,
+      "sha256": "456935d009abf36b7d8ff3f620094ea281210e077f234b5ceba74d3634d84679"
+    },
+    {
+      "file": "src/kernels/dequant_wide_parity.cpp",
+      "bytes": 8174,
+      "sha256": "4cf5cf71d9d04cb6991004573d3c8287e379e642476ef42129e2494ae00038f6"
+    },
+    {
+      "file": "src/kernels/ds4_expert_parity.cpp",
+      "bytes": 21240,
+      "sha256": "79a3fd639242a2f8bb1915839a038bde7d2f15da0e79f76c3aae7579ef09167b"
+    },
+    {
+      "file": "src/kernels/elementwise_parity.cpp",
+      "bytes": 27090,
+      "sha256": "4e8a5efb2cade6675d8d0687e63bdc1edc1b712914834a65870e00571a571098"
+    },
+    {
+      "file": "src/kernels/fused_gr_bench.cpp",
+      "bytes": 16588,
+      "sha256": "d293222aa0492913906fb69f23882ec7267156f332f6dc91a35b52c11b71acf9"
+    },
+    {
+      "file": "src/kernels/gdn_parity.cpp",
+      "bytes": 34648,
+      "sha256": "cac034098d49cb94c19dd1673a50e37ba25bda8d6bbc7dd04f8b2023a912b20a"
+    },
+    {
+      "file": "src/kernels/gr_multi_parity.cpp",
+      "bytes": 6433,
+      "sha256": "96327cad5f493dbd5a1c7cf20892fafa2bae2cbc3e506bd3b14fef2be26c01c8"
+    },
+    {
+      "file": "src/kernels/gr_parity.cpp",
+      "bytes": 48118,
+      "sha256": "ee96e4e112fa34698316ca97266b9d2cc3c755a163dc9ffdf81ce8694ac37cd6"
+    },
+    {
+      "file": "src/kernels/iq_multi_parity.cpp",
+      "bytes": 21079,
+      "sha256": "df320364c11b04fc4e952b98eaac0fad712e2a0515c4bae89e125ce1af36f976"
+    },
+    {
+      "file": "src/kernels/iq_parity.cpp",
+      "bytes": 6507,
+      "sha256": "21bba170ff91d80d5b0f1db877af96d4c57e3b70957eb7fae27e238a39851b8a"
+    },
+    {
+      "file": "src/kernels/kv_hybrid_parity.cpp",
+      "bytes": 19463,
+      "sha256": "f315eedf6ce80ce12d9862644dee92d0bb99253e5eb2e744715627c689b3d7f3"
+    },
+    {
+      "file": "src/kernels/kv_q4_parity.cpp",
+      "bytes": 14276,
+      "sha256": "2b5dece46df2c1448735ac78e5f81c7fa1108b9d4827f5ec75190b504681af63"
+    },
+    {
+      "file": "src/kernels/kv_q8_parity.cpp",
+      "bytes": 8622,
+      "sha256": "acb2310d93f60f5638941e350d1dd29b860c9575202bf264dc03c37efe95c04f"
+    },
+    {
+      "file": "src/kernels/kv_steps_parity.cpp",
+      "bytes": 7258,
+      "sha256": "726597d93f053470f6d72340b70a52c802f109e74eb4e3393b69fe5bcb19ab2a"
+    },
+    {
+      "file": "src/kernels/kv_stream_parity.cpp",
+      "bytes": 14108,
+      "sha256": "e0ada4be116973ba7a165fa081df0be9c13f9ffa6865540913218bbe5c35ea11"
+    },
+    {
+      "file": "src/kernels/mmvq_il_parity.cpp",
+      "bytes": 14479,
+      "sha256": "0ce0eb4484fb21926b8992201f9a38278e59282035bf166d6db778666e3b8dd5"
+    },
+    {
+      "file": "src/kernels/mmvq_multi_parity.cpp",
+      "bytes": 13328,
+      "sha256": "b5eb2c1fc14f34dba94c96cc92fbf1ab1dc8244308e09f5f5be8095ebc9939e9"
+    },
+    {
+      "file": "src/kernels/native_expert_bench.cpp",
+      "bytes": 8493,
+      "sha256": "17f5205fa82ba205b97db7bd82419b61e319561f7c3bc4fe271d88dd99094747"
+    },
+    {
+      "file": "src/kernels/native_expert_parity.cpp",
+      "bytes": 34916,
+      "sha256": "e2b4fa8a26c0bcc4139422b5749e779a6b01bda53a1148cd8acde137fd07613e"
+    },
+    {
+      "file": "src/kernels/native_grouped_parity.cpp",
+      "bytes": 16855,
+      "sha256": "385205179bc18df17be942fa78bc365d8171df617c18b5f28aa615345c31b905"
+    },
+    {
+      "file": "src/kernels/native_multi_parity.cpp",
+      "bytes": 9163,
+      "sha256": "fb0042a854c86e3783783c3b944d9cb22bf7d9130434f2d8d5fb82baa1c847ce"
+    },
+    {
+      "file": "src/kernels/ngram.cpp",
+      "bytes": 32016,
+      "sha256": "c4b244f0e686b2776c813a986823c124e0dcb4c272adc31dd63f6cbc2ff5b592"
+    },
+    {
+      "file": "src/kernels/nvfp4_decode_bench.cpp",
+      "bytes": 8219,
+      "sha256": "26d8f697d759c7f7ab49cf2e935999a5ded52853d21610e27c4d64720b8b3c86"
+    },
+    {
+      "file": "src/kernels/nvfp4_expert_gpu_parity.cpp",
+      "bytes": 5695,
+      "sha256": "53abcfb1014220c1faec198ca0375c51415891f64f5673971aa24f2a91e4426f"
+    },
+    {
+      "file": "src/kernels/pdl_parity.cpp",
+      "bytes": 14374,
+      "sha256": "bd2e5c56c42565aecff1e2d7d5d9bf1bfbc426a67ba36c8c5df4fc86d100d82e"
+    },
+    {
+      "file": "src/kernels/ple_fp8_parity.cpp",
+      "bytes": 4406,
+      "sha256": "cc9f2003628c6169a38464d2e65b28237311d92fa92f6b4fdbb8984d775a168e"
+    },
+    {
+      "file": "src/kernels/ple_parity.cpp",
+      "bytes": 71430,
+      "sha256": "c6f8fb7db96b7c34b8dc13f28e9d1a4c664720a4e6b6b9e83b54c01721c3a7ca"
+    },
+    {
+      "file": "src/kernels/ple_q5_parity.cpp",
+      "bytes": 3542,
+      "sha256": "8f8540c618dfefd05bf5b8e62dd98970d4c69b222c9725234f611e6051f2b869"
+    },
+    {
+      "file": "src/kernels/q5_projection_parity.cpp",
+      "bytes": 2838,
+      "sha256": "efc674248722919c1c2daafeaee07cc6fe104955a7b8fe58106d6e94dba202dd"
+    },
+    {
+      "file": "src/kernels/q8_gemv_bench.cpp",
+      "bytes": 4782,
+      "sha256": "34d8b3aa14d7a11b662b3338d9c410557dc445783e975389d7f163830f251810"
+    },
+    {
+      "file": "src/kernels/qsa_parity.cpp",
+      "bytes": 95788,
+      "sha256": "d541095fa2264105b70490f3f97712f70202c5b356295bfdd8080168d272bbf6"
+    },
+    {
+      "file": "src/kernels/qsa_prompt_attn_parity.cpp",
+      "bytes": 17652,
+      "sha256": "63d0179f96822a24b6ece7b02eac8aa3a3b673e9c30263da4b20dc47e9ee445c"
+    },
+    {
+      "file": "src/kernels/qsa_select_bench.cpp",
+      "bytes": 10493,
+      "sha256": "0d3f79763d11009fb84fd7d7dc0207b59e3637e7d9340b686d9de59d2a5ed02a"
+    },
+    {
+      "file": "src/kernels/qsa_topk_active_parity.cpp",
+      "bytes": 4502,
+      "sha256": "ad514dfaf2d773b89f25f7b209615e26c81c4c5e42d4f6472488eca231eda2d3"
+    },
+    {
+      "file": "src/kernels/qsa_topk_parity.cpp",
+      "bytes": 7828,
+      "sha256": "1223d0091cea64efbd5301e3cba5d22c665893094d18edff01f62b279150221a"
+    },
+    {
+      "file": "src/kernels/quantize_act_parity.cpp",
+      "bytes": 21905,
+      "sha256": "435da59b51f4279e1b479fffb5e705245390295639618b533311f9372a709ea8"
+    },
+    {
+      "file": "src/kernels/resident_plan_parity.cpp",
+      "bytes": 7523,
+      "sha256": "c95791c38c80e3416eff60292323327d5a4936b52d3600acc6ccb504cb076a3e"
+    },
+    {
+      "file": "src/kernels/rope_parity.cpp",
+      "bytes": 32748,
+      "sha256": "da33dea7355d64ea0fba5e328c65a177390542cccfccb144e4f1da71bf720e45"
+    },
+    {
+      "file": "src/kernels/route_resident_parity.cu",
+      "bytes": 13572,
+      "sha256": "b4006789a14a37439eadcdf5acbf6198a9a8097bff0eb600751b9cbce30238b6"
+    },
+    {
+      "file": "src/kernels/route_window_parity.cpp",
+      "bytes": 4347,
+      "sha256": "ad6057c9632cb66606b46f07fcdf5c247e03c88f7a7664b0d050d4b08842dc5d"
+    },
+    {
+      "file": "src/kernels/router_chain_bench.cpp",
+      "bytes": 8357,
+      "sha256": "a83ad0f8f39d450b0e50091c1a2c514b9bd316ee0462d1127836d726f63b9fcf"
+    },
+    {
+      "file": "src/kernels/router_top10_parity.cpp",
+      "bytes": 7718,
+      "sha256": "987983c10f5035d919d26853f068ea45007296c5a3fe22df2c0bc3a694b086d9"
+    },
+    {
+      "file": "src/kernels/s2_expert_grouped_parity.cpp",
+      "bytes": 32314,
+      "sha256": "2a83a46766172baa4690fc2310a09fe6575ac1faf45d18fdf0ecb039dbdbbc55"
+    },
+    {
+      "file": "src/kernels/s2_gemv_parity.cpp",
+      "bytes": 8202,
+      "sha256": "3b7f7f5b1fdbcb24962ceb4cfc659e8660a002f538bc181fb2f791560a2fcacc"
+    },
+    {
+      "file": "src/kernels/s2_gemv_q8_parity.cpp",
+      "bytes": 9042,
+      "sha256": "33b0372c74e09a429987d154130394db47e203bca15a6d9a4fbd4f9821e02935"
+    },
+    {
+      "file": "src/kernels/s_gemv_parity.cpp",
+      "bytes": 34518,
+      "sha256": "e936521ff789e93ef7052594f41e90eb8af165394ef3a8f170aa8e0fdad876ba"
+    },
+    {
+      "file": "src/kernels/s_gemv_q8k_parity.cpp",
+      "bytes": 17733,
+      "sha256": "da527cedd708f376a2fed8ecd62859fa5e462dd853f1fab72e39a15cc07de566"
+    },
+    {
+      "file": "src/kernels/sampler_parity.cpp",
+      "bytes": 79528,
+      "sha256": "7239bd56225bbffce41a117f960022674349ac7b19ac0007bf94c998778c0dff"
+    },
+    {
+      "file": "src/kernels/shared_expert_parity.cpp",
+      "bytes": 29261,
+      "sha256": "fc6ed4bbcf0ad9902298e748aa3c580ebd63ee5d518d525b5ea55aed1d8a3b0e"
+    },
+    {
+      "file": "src/kernels/spec_verify_parity.cpp",
+      "bytes": 13302,
+      "sha256": "4c006d046023c7030d9806de416c6f9190da0a74f0535cbf06153f46060b9acb"
+    },
+    {
+      "file": "src/kernels/verify_batch_parity.cpp",
+      "bytes": 7346,
+      "sha256": "c75ff016724d463073171b53e99a7b2f181cee314882404e8b70cb8b716c04cc"
+    },
+    {
+      "file": "src/kernels/verify_parity.cpp",
+      "bytes": 5333,
+      "sha256": "22a29523ed932dbdb6b0c536444ba56f7a664e9415ef8ddbb9e0e4095a800f6b"
+    },
+    {
+      "file": "include/strata/kernels/bf16_bits.hpp",
+      "bytes": 2660,
+      "sha256": "813b51f17c5c264d642f4d77b3d6e5f35e7ea7310ba87b18b3a2a5bc9185198f"
+    },
+    {
+      "file": "include/strata/kernels/bf16_gemv.hpp",
+      "bytes": 4460,
+      "sha256": "97e5fac5c5b8dbd86b4e104bf4b69155424bc6d28d0a991240bd9912349f6e6f"
+    },
+    {
+      "file": "include/strata/kernels/cpu/expert.hpp",
+      "bytes": 13408,
+      "sha256": "f68b6110c2088b63b73777d7ffc758918a21657a1cffd2a46e600621491d298f"
+    },
+    {
+      "file": "include/strata/kernels/cpu/expert_layout.hpp",
+      "bytes": 6842,
+      "sha256": "d8fae0136edaa3d5e6af31e0ae65b5c502a78cced208441576b810a8b120fba9"
+    },
+    {
+      "file": "include/strata/kernels/cpu/iq_avx1.hpp",
+      "bytes": 2310,
+      "sha256": "71ed249250e52d5f3e370becae54d4ac5255d0493bc7dfce513545bbd2a35cc1"
+    },
+    {
+      "file": "include/strata/kernels/cpu/iq_avx2.hpp",
+      "bytes": 3228,
+      "sha256": "fa23d6e504d1beb9dfeb7e206ddb8c4dba66cdbe71aed5c2774d2aae4e4554ab"
+    },
+    {
+      "file": "include/strata/kernels/cpu/iq_avx512.hpp",
+      "bytes": 1081,
+      "sha256": "5f7390dec79d0c3ed787abfd83f0082287f49c1d6cb05a2099e9d8acf7eb5e0f"
+    },
+    {
+      "file": "include/strata/kernels/cpu/kq_avx1.hpp",
+      "bytes": 1011,
+      "sha256": "af289c2fec6ec8e4946352dbbbcc25df41bb57468953589e4b5b7cfe1d0ddbda"
+    },
+    {
+      "file": "include/strata/kernels/cpu/kq_avx2.hpp",
+      "bytes": 1386,
+      "sha256": "c4cd342ba0f2ffd34f6b5ac9c254c59d0a521370de0d7650f0c28e7a390b55dd"
+    },
+    {
+      "file": "include/strata/kernels/cpu/native_expert.hpp",
+      "bytes": 5473,
+      "sha256": "51c2d25f18d13979b3bb0525fd842f99bcbb7f20d03f2e36d74d7c0df41a1e07"
+    },
+    {
+      "file": "include/strata/kernels/cpu/nvfp4_avx2.hpp",
+      "bytes": 1430,
+      "sha256": "d11a3f774ff31cc5b722e5eff8d6b4c708c88051040938efaf12a1a54a8ff9b9"
+    },
+    {
+      "file": "include/strata/kernels/cpu/nvfp4_avx512.hpp",
+      "bytes": 1643,
+      "sha256": "927872a719ecc13e5438563e5da092eb31992c93acf3fd0582e15625e61d6d62"
+    },
+    {
+      "file": "include/strata/kernels/cpu/pool.hpp",
+      "bytes": 20012,
+      "sha256": "ea3aed687a04f929226e0f70c273902f43a564d9a256774979f10599bb92fe36"
+    },
+    {
+      "file": "include/strata/kernels/cpu/ptq1_0.hpp",
+      "bytes": 3244,
+      "sha256": "04e8d599ccd817ad31559e143fc7cb92f3715aa3f13f76fb646148a917b260bb"
+    },
+    {
+      "file": "include/strata/kernels/cvec.hpp",
+      "bytes": 3997,
+      "sha256": "9f8effb3704845cb294983af4a9737f3066f730adcf15a2894a7597b52d2b3de"
+    },
+    {
+      "file": "include/strata/kernels/dense_kernels.hpp",
+      "bytes": 11048,
+      "sha256": "4e33cb05eb09f78fcf61e43c45da287b9171b325083d576a850dd0617535d44e"
+    },
+    {
+      "file": "include/strata/kernels/dequant_bf16.hpp",
+      "bytes": 1981,
+      "sha256": "f5f191d8b1c66b576529f7774158025de9b463b5c09fee3f51b65136045b7298"
+    },
+    {
+      "file": "include/strata/kernels/dequant_s2.hpp",
+      "bytes": 937,
+      "sha256": "d8f3aa8d610887451f177f05ada1135d52daf21b95a8c2c58686c07403c8013d"
+    },
+    {
+      "file": "include/strata/kernels/dp4a.hpp",
+      "bytes": 3001,
+      "sha256": "b4ca42cf7b4d99dcaf69ff7d8153112f1e1ce6dc32e486fd8b152ddf915366ab"
+    },
+    {
+      "file": "include/strata/kernels/elementwise.hpp",
+      "bytes": 11937,
+      "sha256": "5d21dddee56505b0918f2b1a57e82777d973b4413781454fd66d2e5a1d4ceeef"
+    },
+    {
+      "file": "include/strata/kernels/f16_bits.hpp",
+      "bytes": 5334,
+      "sha256": "0f74e6dd832da427b681c9971265a0af1a91198694fdef3654d860b98863fc8c"
+    },
+    {
+      "file": "include/strata/kernels/fused_gdn.hpp",
+      "bytes": 2646,
+      "sha256": "d000a57332724f795dcac13d78e73658e335d60d5a9df5271cfcdedb9344522a"
+    },
+    {
+      "file": "include/strata/kernels/fused_gr.hpp",
+      "bytes": 5566,
+      "sha256": "199b44c105bebb8356498c2171943c236c9c0dfd4b899e400c62082f3966ebf4"
+    },
+    {
+      "file": "include/strata/kernels/gdn.hpp",
+      "bytes": 5558,
+      "sha256": "f44626e3f52813b9be289aee72f708e9ad61aa9b3a0e43037ba5ff8b358fc638"
+    },
+    {
+      "file": "include/strata/kernels/gfx_arch.hpp",
+      "bytes": 2176,
+      "sha256": "e8c6e4d0a06c8a14b22fa7d15ddf9bcd0f907873a4697d2c5b389904990bb8a6"
+    },
+    {
+      "file": "include/strata/kernels/gr.hpp",
+      "bytes": 8625,
+      "sha256": "00710717cbe8640aff0f9b69f8f8dfe60a3f2cf6486339dfe8fa7fb8ae2f4bcf"
+    },
+    {
+      "file": "include/strata/kernels/iq_kernels.hpp",
+      "bytes": 10974,
+      "sha256": "f8003aae263a258337608a20231f6195cefe77c274cc86872f7e62b0d4130406"
+    },
+    {
+      "file": "include/strata/kernels/kv_q4.hpp",
+      "bytes": 3705,
+      "sha256": "f6e35e2764934c0c4949f2651513dc9a90c5b4cf764c92916de4b0ea9a80a22d"
+    },
+    {
+      "file": "include/strata/kernels/kv_q8.hpp",
+      "bytes": 3093,
+      "sha256": "7c70db0cbc1726e244b7085a319e1f0be5c8a3a415a6b0de7db7d0cdbe70e26e"
+    },
+    {
+      "file": "include/strata/kernels/kv_stream.hpp",
+      "bytes": 7207,
+      "sha256": "24a47cb5eca790fa35b13bbeb12cf3407389c41219899789880d965cf86d8abe"
+    },
+    {
+      "file": "include/strata/kernels/mrope.hpp",
+      "bytes": 3820,
+      "sha256": "f7add5611f54af2434daa1ad711fe441e214693bd33524a12c56058807fd381c"
+    },
+    {
+      "file": "include/strata/kernels/native_flash_attn.hpp",
+      "bytes": 1990,
+      "sha256": "6cc7bb288fc263ee800f5b5329bcc8d139ddde7e31a022364850cf80b1e5f7ff"
+    },
+    {
+      "file": "include/strata/kernels/native_gdn.hpp",
+      "bytes": 1109,
+      "sha256": "2b65e1b5b689c06d099bc061d746d606dcc5b974a7bffe0820ce01e7295d1971"
+    },
+    {
+      "file": "include/strata/kernels/native_gdn_preprocess.hpp",
+      "bytes": 2004,
+      "sha256": "7533d8464b6ae8e2800e43ee3036d23f21181c2472c069d19bacf115beeafc69"
+    },
+    {
+      "file": "include/strata/kernels/native_gr_norm.hpp",
+      "bytes": 1256,
+      "sha256": "12c20abec1952f23f825eefc9e2f676e812417d46922005ce42416212caab535"
+    },
+    {
+      "file": "include/strata/kernels/native_gr_postops.hpp",
+      "bytes": 2303,
+      "sha256": "c773be294343919d0d13ea2408b2072c0ed8e54b8cb447f897f8630cb1a96e7e"
+    },
+    {
+      "file": "include/strata/kernels/native_mmvq.hpp",
+      "bytes": 9963,
+      "sha256": "a08f87f4bbf2b3dbaf98f29c4e36b6b8f484c6b471e746b17e5b5733e7101cc8"
+    },
+    {
+      "file": "include/strata/kernels/native_moe.hpp",
+      "bytes": 2966,
+      "sha256": "4224a4cdc885f91dbea879895ef66cd34b13e3f8d1fcfa90a24b0320b3e61d47"
+    },
+    {
+      "file": "include/strata/kernels/native_ple_postops.hpp",
+      "bytes": 2819,
+      "sha256": "7f80b056a71995c3dddd881dca1da009696b74b9a9a86c9e5e2c3ef816429496"
+    },
+    {
+      "file": "include/strata/kernels/native_qsa.hpp",
+      "bytes": 2013,
+      "sha256": "119fd52ad31c7151c1061af997e41e0db43c7312fc644c5d156a732b8f441ea9"
+    },
+    {
+      "file": "include/strata/kernels/native_qsa_indexer.hpp",
+      "bytes": 4385,
+      "sha256": "3628d2cbedb29d296d959b88e45a8023eae37be725ecad904643eb4729933dc3"
+    },
+    {
+      "file": "include/strata/kernels/native_qsa_score.hpp",
+      "bytes": 1648,
+      "sha256": "d57ba2509e97093ed2bfa3cbe73886407211a5d476a0b629ed925dd992369354"
+    },
+    {
+      "file": "include/strata/kernels/native_rope.hpp",
+      "bytes": 2048,
+      "sha256": "06e3fbbc046fe4a3dda4788943285e586d08fe0885cd97cc9c21d132d750c413"
+    },
+    {
+      "file": "include/strata/kernels/native_router.hpp",
+      "bytes": 1900,
+      "sha256": "f6e7fd76c1613561b22937ff73b9768f9a2d1949080104d6e908160950e28fd0"
+    },
+    {
+      "file": "include/strata/kernels/ngram.hpp",
+      "bytes": 15951,
+      "sha256": "edc6d36eaf6062e8c377577de787ed9e5576ede19e04c5964dc7e6b83b8d01ac"
+    },
+    {
+      "file": "include/strata/kernels/pdl.hpp",
+      "bytes": 5271,
+      "sha256": "fd3e1d2122aa3c8dbd2abd45089139e8f22852664c75b694acf7f96903d07c08"
+    },
+    {
+      "file": "include/strata/kernels/ple.hpp",
+      "bytes": 8153,
+      "sha256": "d044c70b3cc5044ee379d1d817c41c6fce7b0c0db18a1ce6274af3e62629255f"
+    },
+    {
+      "file": "include/strata/kernels/q8_1_finite.hpp",
+      "bytes": 1652,
+      "sha256": "6789c75d692ef1cf21a07d8d602e5cf35ad40657b715f8d510cf7ddad1162598"
+    },
+    {
+      "file": "include/strata/kernels/qsa.hpp",
+      "bytes": 25547,
+      "sha256": "87c02222284f842fcecb46a422b119af769c72c3914edc8da5b2ee782456dc74"
+    },
+    {
+      "file": "include/strata/kernels/qsa_decode_attn.hpp",
+      "bytes": 2651,
+      "sha256": "6fa4b817f835c43783774d5946d14938f2867d7af16abb4db0f4b75d4622a915"
+    },
+    {
+      "file": "include/strata/kernels/qsa_prompt_attn.hpp",
+      "bytes": 2226,
+      "sha256": "a535cf4bf4fd5770e8726327f5dd64145e22478b2d711441d066ad3082f79d55"
+    },
+    {
+      "file": "include/strata/kernels/qsa_select.hpp",
+      "bytes": 4715,
+      "sha256": "152dfce28a1f517169542590b32b7bb0b72442cf833446d1beb91cb104922250"
+    },
+    {
+      "file": "include/strata/kernels/quantize_act.hpp",
+      "bytes": 3813,
+      "sha256": "baad6fe6c691f8f5aee2d6dbbb3513eead12c754b485ee41af4618d5035772f7"
+    },
+    {
+      "file": "include/strata/kernels/qwen35_attention.hpp",
+      "bytes": 2320,
+      "sha256": "dc506d2259246e0f4390bfb75d64d2142e212609ce3f7ba6d69414f6e7487134"
+    },
+    {
+      "file": "include/strata/kernels/rope.hpp",
+      "bytes": 3707,
+      "sha256": "bd9094c0f0f761971a6760fde2b84a5660c934ce9a654dc287c686acd284a65a"
+    },
+    {
+      "file": "include/strata/kernels/rope_scaling.hpp",
+      "bytes": 11764,
+      "sha256": "05a8dcf57c9b12a23128f22e4bef01445c3a37991df5e1ffacd01d077c46595d"
+    },
+    {
+      "file": "include/strata/kernels/route_prior.hpp",
+      "bytes": 775,
+      "sha256": "03bdf4d6c3d6f78f8d21955445c7ee4d0d1454292f1b209a684e8e0953c5b1e6"
+    },
+    {
+      "file": "include/strata/kernels/router_top10.hpp",
+      "bytes": 1434,
+      "sha256": "cd0d8e91e702bfa2cfd681d4ccf4f6c4c62af2cd612d2d109e5369845ddf362d"
+    },
+    {
+      "file": "include/strata/kernels/s2_expert_grouped.hpp",
+      "bytes": 10871,
+      "sha256": "74802f312c20daa90b7fbacba4a3357c8e94c7ecdab75f402be507dd303a8193"
+    },
+    {
+      "file": "include/strata/kernels/s2_gemv.hpp",
+      "bytes": 1460,
+      "sha256": "cc146b9c652f1ee0c89be65ce179ea4cb31d4b4d32366c07f06b45644bbb8eb0"
+    },
+    {
+      "file": "include/strata/kernels/s2_gemv_q8.hpp",
+      "bytes": 1059,
+      "sha256": "5c2ccbdc5b3f3a66b9afef5bc799ae2a83bcb2103b258bb84e8d82aad06b4eb1"
+    },
+    {
+      "file": "include/strata/kernels/s_gemv.hpp",
+      "bytes": 9086,
+      "sha256": "369ab6cc010b49ac1d82bb680246e93b4c10f4f7081f56a325f6c7138ab1c3fb"
+    },
+    {
+      "file": "include/strata/kernels/sampler.hpp",
+      "bytes": 7636,
+      "sha256": "75fa38a5ca9d93656dea5d83dd2f7b03e7938d160a1f340c353af6150ccd1108"
+    },
+    {
+      "file": "include/strata/kernels/shared_expert.hpp",
+      "bytes": 7147,
+      "sha256": "1aab416f17dd889456f43286d1d4ed40b9a5af2df68543fb3e3026306fab8cad"
+    },
+    {
+      "file": "include/strata/kernels/verify_kernels.hpp",
+      "bytes": 14721,
+      "sha256": "3df02161d26029feb74204e1f81a04d785d7592f3171758823ea6fc75f500005"
+    }
+  ],
+  "excluded": [],
+  "selection": "one continuous token prefix, no corpus cycling"
+}

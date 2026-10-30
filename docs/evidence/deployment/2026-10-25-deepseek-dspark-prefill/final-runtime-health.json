@@ -1,0 +1,107 @@
+{
+  "at_epoch": 1792936122.8240676,
+  "checks": {
+    "power_loaded": true,
+    "admission_idle": true,
+    "native_loaded_1m": true,
+    "native_idle": true,
+    "gateway_ready": true,
+    "speech_healthy": true,
+    "same_power": true,
+    "same_engine": true,
+    "same_tuning": true,
+    "same_acl": true,
+    "same_v3_weights": true,
+    "context_1m": true,
+    "gpu6_only": true,
+    "other_services_preserved": true,
+    "private_content_logs_disabled": true
+  },
+  "all_passed": true,
+  "power": {
+    "status": "ok",
+    "loaded_models": 1,
+    "admission": {
+      "active_limit": 1,
+      "active": 0,
+      "waiting": 0
+    }
+  },
+  "native": {
+    "status": "ok",
+    "loaded": true,
+    "model": "deepseek-v41-flash-1017-xq-1m",
+    "max_context": 1048576
+  },
+  "snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 48,
+    "snapshot_digest": "sha256:78352ed8c6079b47e0c2c4304bf156701e12bcfd940c4f150ab479f289866c1c"
+  },
+  "speech_health": {
+    "18300": 200,
+    "18301": 200
+  },
+  "other_services": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  }
+}

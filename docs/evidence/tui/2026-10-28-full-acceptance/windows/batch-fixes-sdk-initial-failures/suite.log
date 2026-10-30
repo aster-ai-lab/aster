@@ -1,0 +1,133 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 10s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_core-b84e9a3e662ce246.exe)
+
+running 68 tests
+test agent_api::tests::fact_log::a_new_run_without_a_standing_digest_does_not_call_the_model ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_input_preserves_unknown_bound_execution_target ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_input_keeps_required_target_after_optional_context_timeout ... ok
+test agent_api::tests::fact_log::durable_read::durable_transcript_uses_the_owned_log_while_its_writer_is_fenced ... ok
+test agent_api::tests::fact_log::child_policy::delegated_work_policy_reaches_original_workflow_child_prompt ... ok
+test agent_api::tests::fact_log::fact_log_session_explicit_preference_fails_closed_when_extraction_json_fails ... ok
+test agent_api::tests::fact_log::fact_log_session_attachments_steer_and_history_stay_on_the_log ... ok
+test agent_api::tests::fact_log::fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn ... ok
+test agent_api::tests::fact_log::fact_log_facade_emits_turn_start_and_turn_end ... ok
+test agent_api::tests::fact_log::fact_log_hides_tools_a_deny_by_default_policy_does_not_expose ... ok
+test agent_api::tests::fact_log::context_sections_are_recorded_stable_and_source_tracked ... ok
+test agent_api::tests::fact_log::fact_log_session_send_and_resume_use_the_stored_model_turn ... ok
+test agent_api::tests::fact_log::fact_log_session_stream_appends_the_model_turn_and_resume_does_not_resend_it ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_refuses_debt_busy_and_changed_source_without_execution ... ok
+test agent_api::tests::fact_log::fact_log_session_send_projects_the_skill_catalog ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_failed_save_keeps_source_and_never_publishes_target ... ok
+test agent_api::tests::fact_log::fact_log_read_image_bytes_reach_the_next_request_and_restored_history ... ok
+test agent_api::tests::fact_log::fork_session_at_refuses_while_a_run_is_streaming ... ok
+test agent_api::tests::fact_log::durable_source::fork_refuses_invalid_source_before_first_snapshot ... ok
+test agent_api::tests::fact_log::host_contract_prompt::initial_model_request_contains_only_the_admitted_host_contracts ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_reuses_original_flat_log_for_same_workspace ... ok
+test agent_api::tests::fact_log::host_contract_prompt::no_host_contract_does_not_project_a_user_declared_checker ... ok
+test agent_api::tests::fact_log::fork_session_at_discards_later_facts_and_the_next_turn_replays_the_prefix ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_refuses_nonterminal_and_existing_targets ... ok
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_memory_store ... ok
+test agent_api::tests::fact_log::durable_source::durable_source_four_modes_file_store_reopen ... ok
+test agent_api::tests::fact_log::loop_source::durable_loop_original_exports_resume_all_ingresses_memory_store ... ok
+test agent_api::tests::fact_log::loop_source::durable_loop_original_exports_resume_all_ingresses_file_reopen ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_four_modes_memory_store ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_provider_projection_retains_admitted_schema_and_profile_identity ... ok
+test agent_api::tests::fact_log::fork_admission::fork_admission_four_modes_file_store ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_without_permission_or_confirmation_presents_no_tools ... ok
+test agent_api::tests::fact_log::no_count_limit::an_explicit_composed_zero_allowance_is_not_an_absent_ceiling ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_composed_positive_allowance_still_bounds_an_unlimited_session ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_positive_tool_count_still_refuses_the_next_call ... ok
+test agent_api::tests::fact_log::navigation::navigation_explicit_mount_shares_tool_manifest_and_reaches_actual_model_once ... ok
+
+thread 'agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run' (38144) panicked at crates\code\core\src\agent_api\tests\fact_log\nested_governance.rs:564:10:
+called `Result::unwrap()` on an `Err` value: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... FAILED
+
+thread 'agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes' (38656) panicked at crates\code\core\src\agent_api\tests\fact_log\confirmation_snapshot.rs:203:10:
+called `Option::unwrap()` on a `None` value
+test agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes ... FAILED
+test agent_api::tests::fact_log::fact_log_mcp_is_error_reaches_the_model_tool_result ... ok
+test agent_api::tests::fact_log::seam_admission_open_run_stays_frozen ... ok
+test agent_api::tests::fact_log::sandbox_availability::the_first_model_request_names_an_unavailable_command_backend ... ok
+test agent_api::tests::fact_log::standing_context_stays_the_admitted_projection ... ok
+
+thread 'agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history' (37496) panicked at crates\code\core\src\agent_api\tests\fact_log\tool_call_fidelity.rs:59:13:
+assertion `left == right` failed
+  left: ["Submit the specified diagnostic once and report its actual result.", ""]
+ right: ["Submit the specified diagnostic once and report its actual result."]
+test agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history ... FAILED
+test agent_api::tests::fact_log::final_delivery::assistant_delivery_cannot_replace_missing_verification ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution ... ok
+test agent_api::tests::fact_log::work_policy::a_policy_session_admits_its_digest_before_the_first_run ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver ... ok
+test agent_api::tests::fact_log::host_reports::a_host_recorded_report_closes_the_same_digest_on_the_next_stream ... ok
+test agent_api::tests::fact_log::work_policy::existing_execution_history_refuses_policy_rebinding_without_a_model_or_fact ... ok
+test agent_api::tests::fact_log::work_policy::corrupt_policy_source_refuses_before_provider_entry ... ok
+test agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal ... ok
+test agent_api::tests::fact_log::work_policy::policy_session_uses_original_memory_and_file_stores_with_actual_reopen ... ok
+test agent_api::tests::fact_log::program_failure_receipts::read_then_throw_keeps_a_failed_parent_and_the_actual_nested_read ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_batch_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_children_share_the_run_budget_and_keep_denied_receipts ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_delegated_main_turn_inherits_the_code_profile ... ok
+test agent_api::tests::fact_log::final_delivery::interactive_delivery_calls_the_model_after_verification_without_replaying_tools ... ok
+test agent_api::tests::fact_log::fact_log_session_new_user_message_calls_the_model_after_a_verified_tool ... ok
+test agent_api::tests::fact_log::program_failure_receipts::write_then_failed_check_and_throw_keeps_both_original_child_results ... ok
+test agent_api::tests::fact_log::context_report_and_cost_command_read_usage_weights_and_repeats_from_the_session ... ok
+test agent_api::tests::fact_log::fact_log_identical_call_and_result_get_a_non_blocking_host_note ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_adaptive_mode ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_skill_visibility_keeps_execution_permission_and_confirmation_gates ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_code_mode ... ok
+test agent_api::tests::fact_log::no_count_limit::stock_and_host_composition_preserve_an_absent_count_ceiling ... ok
+test agent_api::tests::fact_log::child_policy::child_policy_actual_fact_run_restores_before_task_and_skill_delegation ... ok
+
+failures:
+
+failures:
+    agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes
+    agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run
+    agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history
+
+test result: FAILED. 65 passed; 3 failed; 0 ignored; 0 measured; 5248 filtered out; finished in 24.57s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

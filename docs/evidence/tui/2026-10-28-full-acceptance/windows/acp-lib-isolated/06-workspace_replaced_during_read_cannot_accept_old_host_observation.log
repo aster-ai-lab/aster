@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation' (36136) panicked at crates\code\acp\src\document_read_tests.rs:450:46:
+called `Result::unwrap()` on an `Err` value: Os { code: 5, kind: PermissionDenied, message: "拒绝访问。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation ... FAILED
+
+failures:
+
+failures:
+    document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.10s
+

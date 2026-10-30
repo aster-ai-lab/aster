@@ -1,0 +1,18 @@
+
+running 1 test
+ORACLE case=multiline-unicode name=source-pair result=pass detail=aster-cli-pair-v1:589a2967872c9e61354aa648add5d0e9aa5d5d0d:x86_64-pc-windows-msvc
+
+thread 'functional::kimi_multiline_unicode_and_prompt_history' (37384) panicked at crates\code\acp\tests\aster_tui_live_e2e\driver.rs:501:17:
+assertion `left == right` failed: submitted prompt bytes differ from the fixed test input
+  left: ["Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.第二行：这是多行输入验证，请勿修改文件。Do not call other tools."]
+ right: ["Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.\n第二行：这是多行输入验证，请勿修改文件。\nDo not call other tools."]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test functional::kimi_multiline_unicode_and_prompt_history ... FAILED
+
+failures:
+
+failures:
+    functional::kimi_multiline_unicode_and_prompt_history
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 17.57s
+

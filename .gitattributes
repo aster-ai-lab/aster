@@ -1,5 +1,49 @@
+# Source text has the same checkout bytes on Windows, Linux and macOS.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
 # Evidence and model fixtures carry SHA-256 identities over their exact bytes.
+/docs/evidence/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /crates/deepseek/fixtures/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evidence/power/2026-10-22-native-deepseek-h200/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evidence/power/2026-10-22-h200-official/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evidence/power/2026-10-24-h200-submit/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Unified patch data uses a single space for blank context lines. Its complete
+# source snapshots retain the ordinary whitespace checks above.
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r2/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r3/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r4/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r6/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r7/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r8/frozen-candidates/**/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r8/public-diagnostics/literal-cpu-v145/upstream-frontend-tests.log -text whitespace=-blank-at-eol
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r9/frozen-candidate/*.patch -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve the executed profiler worker byte-for-byte, including its recorded
+# trailing space. This exception covers only this immutable evidence snapshot.
+/docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r10/operators/xolotl_ncu_actual1m_worker_v171r2.frozen.py -text whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Retain native PTY evidence exactly, including terminal padding and line endings.
+/docs/evidence/tui/2026-10-28-kimi-k31-source-integration/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/tui/2026-10-28-wsl-linux-k31-source-integration/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/tui/2026-10-28-kimi-k31-source-integration/**/*.log whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/docs/evidence/tui/2026-10-28-wsl-linux-k31-source-integration/**/*.log whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+
+# Keep upstream Markdown spacing, including its intentional hard line breaks.
+# Checkout line endings still follow the source-wide LF rule above.
+/crates/third-party/crossterm/README.md whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/crates/third-party/crossterm/docs/CONTRIBUTING.md whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/crates/third-party/crossterm/docs/know-problems.md whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/crates/third-party/crossterm/examples/README.md whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Native terminal logs and unified-patch context retain their recorded bytes.
+/docs/evidence/tui/2026-10-28-full-acceptance/**/*.log whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/docs/evidence/tui/2026-10-28-full-acceptance/source/*-owned.patch whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/tui/2026-10-28-full-acceptance/windows/windows-metadata-experiment.patch whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve raw rustfmt context lines and the CLI help output byte-for-byte.
+/docs/evidence/governance/2026-10-29-microsoft-rust-guidelines/focused-format.log -text whitespace=-blank-at-eol
+/docs/evidence/governance/2026-10-29-microsoft-rust-guidelines/format.log -text whitespace=-blank-at-eof

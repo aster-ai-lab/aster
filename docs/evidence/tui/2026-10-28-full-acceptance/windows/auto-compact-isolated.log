@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input' (44728) panicked at crates\code\core\src\agent_api\tests\compact\source_carry.rs:235:10:
+called `Result::unwrap()` on an `Err` value: SessionConfiguration { field: "limit.context", message: "context_window_unhostable: the declared context window (256 tokens) is              smaller than the harness prompt floor (12288); raise the model's limit.context (and the serving backend's max context) or pick a model with a larger window" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5303 filtered out; finished in 0.00s
+

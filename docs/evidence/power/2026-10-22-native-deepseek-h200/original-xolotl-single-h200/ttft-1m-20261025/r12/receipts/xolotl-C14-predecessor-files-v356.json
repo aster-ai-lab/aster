@@ -1,0 +1,86 @@
+{
+  "unix": 1792930811.5687764,
+  "files": [
+    {
+      "file": "service-worker.py",
+      "expected_bytes": 8567,
+      "actual_bytes": 8670,
+      "expected_sha256": "26f557e9eafd167de55fe65e95fd4ea610ba1d8c803e906f07349b188651526f",
+      "actual_sha256": "ef7ede4e6cf9ec2ca9d4910bd5c033b084309343b18b9db4e67972ef33b783cb"
+    },
+    {
+      "file": "server-config.json",
+      "expected_bytes": 1822,
+      "actual_bytes": 1810,
+      "expected_sha256": "4bd171927358e1fa6f4da6aeb042630ef743ac2aa58589fdff6720ca3982fb02",
+      "actual_sha256": "6c4d5ffcdd3dcb352c2e851132b585156c46a25f2ef5162feca5f1eb2b8226ca"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "expected_bytes": 3753,
+      "actual_bytes": 3753,
+      "expected_sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575",
+      "actual_sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    },
+    {
+      "file": "test_exact_token_cache.py",
+      "expected_bytes": 4741,
+      "actual_bytes": 4741,
+      "expected_sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd",
+      "actual_sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd"
+    },
+    {
+      "file": "test_strict_native_json.py",
+      "expected_bytes": 1411,
+      "actual_bytes": 1411,
+      "expected_sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865",
+      "actual_sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865"
+    },
+    {
+      "file": "test_combined_adapter.py",
+      "expected_bytes": 4093,
+      "actual_bytes": 4093,
+      "expected_sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5",
+      "actual_sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5"
+    },
+    {
+      "file": "test_hybrid_native_json.py",
+      "expected_bytes": 1721,
+      "actual_bytes": 1721,
+      "expected_sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23",
+      "actual_sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23"
+    },
+    {
+      "file": "actual-tool-output.json",
+      "expected_bytes": 534,
+      "actual_bytes": 534,
+      "expected_sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646",
+      "actual_sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646"
+    },
+    {
+      "file": "service-plan.json",
+      "expected_bytes": 4585,
+      "actual_bytes": 5571,
+      "expected_sha256": "9863d3ba3f821afcb0ed751ed1ddfa38b8156c998046d5e1b1e3f3ae437373ca",
+      "actual_sha256": "37e621fe11d6c574cdacb9d972830202ef3723dccbabcade3f7bc1a924acead0"
+    }
+  ],
+  "plan_different_fields": [
+    {
+      "field": "inputs",
+      "equal": false
+    },
+    {
+      "field": "schema",
+      "equal": false
+    },
+    {
+      "field": "api_overlay",
+      "equal": false
+    },
+    {
+      "field": "same_qualified_native",
+      "equal": false
+    }
+  ]
+}

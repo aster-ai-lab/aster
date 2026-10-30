@@ -1,0 +1,42 @@
+{
+  "unix": 1792932970.0214794,
+  "phase": "passed",
+  "client": "installed WorkBuddy CLI",
+  "gui_test_passed": false,
+  "base_url": "http://10.102.93.68/v1",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "tools_profile": [
+    "WebSearch"
+  ],
+  "no_session_persistence": true,
+  "public_search_only": true,
+  "search_tool_roundtrip_passed": false,
+  "raw_output_publication_permitted": false,
+  "client_pid": 102928,
+  "events": 44,
+  "search_calls": 3,
+  "elapsed_seconds": 19.264999999664724,
+  "repeated_search_workflow_terminated": true,
+  "successful_authenticated_search_tested": false,
+  "reply": "COMPLETED=3",
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 14999,
+    "duration_api_ms": 14999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 33882,
+      "output_tokens": 150,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25353,
+      "cache_creation": null,
+      "server_tool_use": null,
+      "service_tier": null
+    }
+  },
+  "client_exit_code": 0,
+  "seconds": 19.733999999705702,
+  "first_output_seconds": 19.07799999974668,
+  "finished_unix": 1792932989.7472792
+}

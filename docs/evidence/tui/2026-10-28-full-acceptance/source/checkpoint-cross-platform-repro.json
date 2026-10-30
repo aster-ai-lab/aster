@@ -1,0 +1,8 @@
+{
+  "windows_sha256": "09e4dd66ef5d95e96159fa565d5d40d94d1c7b804811a097694bc1cd5cc22687",
+  "linux_sha256": "09e4dd66ef5d95e96159fa565d5d40d94d1c7b804811a097694bc1cd5cc22687",
+  "byte_identical": true,
+  "cr_bytes": 0,
+  "encoding": "utf-8",
+  "checkpoint_count": 153
+}

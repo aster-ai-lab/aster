@@ -1,0 +1,55 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0382]: borrow of moved value: `source`
+   --> crates\code\core\src\agent_api\tests\fact_log\fork_admission.rs:395:5
+    |
+297 |     let source = agent
+    |         ------ move occurs because `source` has type `agent_api::AgentSession`, which does not implement the `Copy` trait
+...
+333 |     drop(source);
+    |          ------ value moved here
+...
+395 |     source.close().await;
+    |     ^^^^^^ value borrowed here after move
+    |
+note: if `agent_api::AgentSession` implemented `Clone`, you could clone the value
+   --> crates\code\core\src\agent_api.rs:624:1
+    |
+624 | pub struct AgentSession {
+    | ^^^^^^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type
+    |
+   ::: crates\code\core\src\agent_api\tests\fact_log\fork_admission.rs:333:10
+    |
+333 |     drop(source);
+    |          ------ you could clone this value
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+For more information about this error, try `rustc --explain E0382`.
+warning: `a3s-code-core` (lib test) generated 3 warnings
+error: could not compile `a3s-code-core` (lib test) due to 1 previous error; 3 warnings emitted

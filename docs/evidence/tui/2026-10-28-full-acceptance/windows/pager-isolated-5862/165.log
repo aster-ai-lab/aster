@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::tasks_pane::tests::render_loop_row_truncates_before_kill_button' (54416) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\tasks_pane.rs:2376:9:
+expected a `✗` kill button on the loop row
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::tasks_pane::tests::render_loop_row_truncates_before_kill_button ... FAILED
+
+failures:
+
+failures:
+    views::tasks_pane::tests::render_loop_row_truncates_before_kill_button
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

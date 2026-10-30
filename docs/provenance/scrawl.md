@@ -27,3 +27,7 @@ This dependency belongs to the CaptureKit test target. It is not an A3S product 
 - The evidence library and the optional GPUI executable use separate module roots. Studio links the evidence library without GPUI; the vendored app keeps its own UI modules.
 - The upstream `site` sources and feature-map fixtures are retained so the upstream feature-inventory test can run in this workspace.
 - Aster-owned integration is specified separately. Workspace membership alone is not proof of native recording, signing or platform support.
+
+First-party package, module, helper and bundle names now use Capture. Existing `.scrawl` bundles and `scrawl.json` manifests remain readable in place. Upstream names and historical evidence remain unchanged.
+
+The upstream marketing video manifest no longer declares a separate Cargo workspace; it remains reference source outside the product members. Studio enables the `aster` feature, which disables the standalone JSON configuration reader and writer. The embedded library is qualified on macOS; the preserved GPUI application is opt-in through `ui`.

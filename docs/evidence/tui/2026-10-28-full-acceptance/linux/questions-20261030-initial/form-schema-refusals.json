@@ -1,0 +1,1371 @@
+{
+  "assertions_finished": true,
+  "case": "form-schema-refusals",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "form-probe.json"
+          },
+          "id": "call_70ce59b22ed049c6a67cd4557af59c94",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13224,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_70ce59b22ed049c6a67cd4557af59c94",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_70ce59b22ed049c6a67cd4557af59c94",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{},\\\"type\\\":\\\"UnsupportedWidget\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":116},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":116,\"projected_bytes\":116,\"original_estimated_tokens\":29,\"projected_estimated_tokens\":29,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"projected_digest\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"repeat_key\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"content_ref\":\"inline:sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8c53a1f9246b6e66ed351f9f6add4c8f2b1dfc42f6188b50a1bb27e3e1166f05\"}",
+        "prepared_digest": "sha256:1fa256b457a5ec408ba3b0d5224e1f32abc7e005121bb12ced7400cd82bb7837",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"root\":{\"props\":{},\"type\":\"UnsupportedWidget\"}},\"root\":\"root\"}",
+            "prompt": "Schema validation probe"
+          },
+          "id": "call_513178c596304cc78993b00a98f19abb",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 13415,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_513178c596304cc78993b00a98f19abb",
+          "turn": 1
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_513178c596304cc78993b00a98f19abb",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: unsupported component\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":51,\"projected_bytes\":51,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"projected_digest\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"repeat_key\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"content_ref\":\"inline:sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:dd821c75cabd96a1859e95f55b77bab31ccb1a0732db7b97132ab544ce1e0681\"}",
+        "prepared_digest": "sha256:b9dcbd9c9cde0584e0ce1f36392cb2f9e7446404186ef8659c95b5c33f1ae1f6",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13554,
+        "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: unsupported component\n```",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "ebbfd0ec8cb59fd82517544f0c35b9ee526acce8d0714a32c5d113ec981e9cfb",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:2ba76302239fda8976d8eebb0b60b6ea0180d158000933234d5ef4c562ed4ea2",
+          "sha256:3f06a16e6476822623ddade84a65183498403383f0f6dd35b290543b2b2b6129"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "form-probe.json"
+          },
+          "id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13662,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 17,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}},\\\"type\\\":\\\"Input\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\"}},\\\"version\\\":\\\"future\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":202},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":202,\"projected_bytes\":202,\"original_estimated_tokens\":51,\"projected_estimated_tokens\":51,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"projected_digest\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"repeat_key\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"content_ref\":\"inline:sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7425e1152b0e0dd6b8f8d309ab542dc7343004002f758401a3545bf9e12f36d1\"}",
+        "prepared_digest": "sha256:7b81747ffd2c7513f5fac1c0d24c58513fadfcf23d2f9ef8749933759938e3b4",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 18,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"root\":{\"props\":{\"label\":\"Name\",\"value\":{\"$bindState\":\"/form/name\"}},\"type\":\"Input\"}},\"root\":\"root\",\"state\":{\"form\":{\"name\":\"\"}},\"version\":\"future\"}",
+            "prompt": "Schema validation probe"
+          },
+          "id": "call_0eae4f263ef745f6b6d0886e97034688",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 13829,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 19,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_0eae4f263ef745f6b6d0886e97034688",
+          "turn": 2
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 20,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_0eae4f263ef745f6b6d0886e97034688",
+          "turn": 2
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: expected root/elements/state\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":58,\"projected_bytes\":58,\"original_estimated_tokens\":15,\"projected_estimated_tokens\":15,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"projected_digest\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"repeat_key\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"content_ref\":\"inline:sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b982e0c346a83222ca9b3cc9a7b8f067cc2be5ba31266d7800760b7fc88239e3\"}",
+        "prepared_digest": "sha256:d9731cb8acba2547bac8a2e4cf84acf86f48385f60e00e14a0a8516573555487",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 21,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13989,
+        "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: expected root/elements/state\n```",
+        "tool": null
+      },
+      "seq": 22,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "3c062fbf9278df08dc5da866b667b2967948117321afc43db8126af40ff69e9c",
+          "seq": 22
+        },
+        "receipt_keys": [
+          "sha256:43b270489aaae395577c159603eae921603026b5b0e53797aad4e44973846fe1",
+          "sha256:d91e92d54f4f6c80b84a069b7aae4c75b5c08f3fc24d8d4aacdeaa1a9c67b87c"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 23,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "form-probe.json"
+          },
+          "id": "call_23255829a4874838aaef2f2eb9b53d02",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 14100,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 26,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_23255829a4874838aaef2f2eb9b53d02",
+          "turn": 3
+        },
+        "tool": "read"
+      },
+      "seq": 27,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_23255829a4874838aaef2f2eb9b53d02",
+          "turn": 3
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"children\\\":[\\\"root\\\"],\\\"props\\\":{\\\"title\\\":\\\"Cycle\\\"},\\\"type\\\":\\\"Card\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":138},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"projected_digest\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"repeat_key\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"content_ref\":\"inline:sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:28a53647020a8b606b340e06950a9d9215e689cdc5c2811e87216fb7a8ceff7a\"}",
+        "prepared_digest": "sha256:895fbc61c973cf6bc277be3948000b45dffbcedab2c7acf3ce10b856dd87d11c",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 28,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"root\":{\"children\":[\"root\"],\"props\":{\"title\":\"Cycle\"},\"type\":\"Card\"}},\"root\":\"root\"}",
+            "prompt": "Schema validation probe"
+          },
+          "id": "call_428863357a7242adab14ae679d9a3c41",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 14239,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 29,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_428863357a7242adab14ae679d9a3c41",
+          "turn": 3
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 30,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_428863357a7242adab14ae679d9a3c41",
+          "turn": 3
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: cyclic, shared or deep element\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":60,\"projected_bytes\":60,\"original_estimated_tokens\":15,\"projected_estimated_tokens\":15,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"projected_digest\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"repeat_key\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"content_ref\":\"inline:sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6a158548e2f7c57460a772d70008a870bd516d70a8e5307b47da9118b77b1f16\"}",
+        "prepared_digest": "sha256:03764aad5f61746e128cabac2c96727723f48f8fd36251169d06c8e4e4dda6ac",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 31,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14378,
+        "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: cyclic, shared or deep element\n```",
+        "tool": null
+      },
+      "seq": 32,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "0e62f7359a3c440472f29a8eb8c09f4d5cfe296c7fd4d122785abaa7118ffa64",
+          "seq": 32
+        },
+        "receipt_keys": [
+          "sha256:77f944a49e5d7aabe51dffbea5e5f59eef672987c1637991fb52140baf46ea79",
+          "sha256:e988a92222ae8ab25c080ea7af30f87543433ac417a279607d3c8039cf265926"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 33,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "form-probe.json"
+          },
+          "id": "call_55a932b55a534eeaa98bde9147f81cba",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 14562,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 36,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_55a932b55a534eeaa98bde9147f81cba",
+          "turn": 4
+        },
+        "tool": "read"
+      },
+      "seq": 37,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_55a932b55a534eeaa98bde9147f81cba",
+          "turn": 4
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{\\\"label\\\":\\\"Output\\\",\\\"value\\\":42},\\\"type\\\":\\\"Metric\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":132},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":132,\"projected_bytes\":132,\"original_estimated_tokens\":33,\"projected_estimated_tokens\":33,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"projected_digest\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"repeat_key\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"content_ref\":\"inline:sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:50b1e1cd46ca1434217745a738d8f8687dcad93673681b472a3571f9d959113a\"}",
+        "prepared_digest": "sha256:349d86a8f5e556d327cf5e3bda4cbc7b2b792cc92f7dd5773016575d6e2147ee",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 38,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"root\":{\"props\":{\"label\":\"Output\",\"value\":42},\"type\":\"Metric\"}},\"root\":\"root\"}",
+            "prompt": "Schema validation probe"
+          },
+          "id": "call_a6333d685b8548bea347cf7b1be5e02e",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 14694,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 39,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a6333d685b8548bea347cf7b1be5e02e",
+          "turn": 4
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 40,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+            "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a6333d685b8548bea347cf7b1be5e02e",
+          "turn": 4
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"form request failed: form contains no fields\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":44,\"projected_bytes\":44,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"projected_digest\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"repeat_key\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"content_ref\":\"inline:sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5d3a0c62d2eda2e81c0c687f691ae394244e90d750b99626cb348650bb0611fe\"}",
+        "prepared_digest": "sha256:b3390836459efdc30bc38dbce6ee49db3046d822af4e73006f8803b229ef9317",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 41,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14830,
+        "text": "Tool error (exit code 1):\n\n```text\nform request failed: form contains no fields\n```",
+        "tool": null
+      },
+      "seq": 42,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "dd9002d2aac40c295c0aab7374ec545e67203bd3939ec0f8ac0cc6a3502ecde5",
+          "seq": 42
+        },
+        "receipt_keys": [
+          "sha256:f4c451e886abab42dd6e08fc91b59f183bc067b4653f2691c93a784b045e62a4",
+          "sha256:918943c6f037cfdc9c425636443911b694732b539169602e0e5487ee32b31532"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 43,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14945,
+        "text": "FORM-SCHEMA-RECOVERED",
+        "tool": null
+      },
+      "seq": 46,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "e563a8bd6c2988e0866d94f529e2fff0d3177172a9ef18032b56dc08c02cebbd",
+          "seq": 46
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 47,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40193",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 1.9s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:26 AM    \n                                                                                                                        \n     invalid JSON Render document: unsupported component                                                                \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real ask_user_form receipt refuses unknown-component with its explicit reason, leaves no native form card, and preserves the source bytes",
+      "name": "unknown-component",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 1.9s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:26 AM    \n                                                                                                                        \n     invalid JSON Render document: unsupported component                                                                \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=10 model_turns=3 prompt_tokens=41480",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 0.3s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:26 AM   █\n                                                                                                                       █\n     invalid JSON Render document: expected root/elements/state                                                        █\n                                                                                                                       █\n     Worked for 15s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real ask_user_form receipt refuses unknown-schema with its explicit reason, leaves no native form card, and preserves the source bytes",
+      "name": "unknown-schema",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 0.3s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:26 AM   █\n                                                                                                                       █\n     invalid JSON Render document: expected root/elements/state                                                        █\n                                                                                                                       █\n     Worked for 15s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=10 model_turns=3 prompt_tokens=42717",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:27 AM    \n                                                                                                                        \n     invalid JSON Render document: cyclic, shared or deep element                                                       \n                                                                                                                        \n     Worked for 1m0s                                                                                                    \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real ask_user_form receipt refuses cyclic-document with its explicit reason, leaves no native form card, and preserves the source bytes",
+      "name": "cyclic-document",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:26 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:27 AM    \n                                                                                                                        \n     invalid JSON Render document: cyclic, shared or deep element                                                       \n                                                                                                                        \n     Worked for 1m0s                                                                                                    \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=10 model_turns=3 prompt_tokens=44086",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:27 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 0.0s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:28 AM    \n                                                                                                                        \n     form request failed: form contains no fields                                                                       \n                                                                                                                        \n     Worked for 1m6s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real ask_user_form receipt refuses no-editable-fields with its explicit reason, leaves no native form card, and preserves the source bytes",
+      "name": "no-editable-fields",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read form-probe.json once. Call ask_user_form exactly once with the exact JSON document from that    10:27 AM    \n       file as form and prompt 'Schema validation probe'. Do not repair or replace the document. Report                 \n       the actual tool error without retrying, modifying files or calling other tools.                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 0.0s                                                                                                 \n                                                                                                                        \n     Tool error (exit code 1):                                                                              10:28 AM    \n                                                                                                                        \n     form request failed: form contains no fields                                                                       \n                                                                                                                        \n     Worked for 1m6s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=14945",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly FORM-SCHEMA-RECOVERED.                                              10:28 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.8s                                                                                                 \n                                                                                                                        \n     FORM-SCHEMA-RECOVERED                                                                                  10:29 AM    \n                                                                                                                        \n     Worked for 53s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the same session completes a fresh real model turn after all four schema refusals",
+      "name": "form-refusal-recovery",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-pDMH14/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly FORM-SCHEMA-RECOVERED.                                              10:28 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.8s                                                                                                 \n                                                                                                                        \n     FORM-SCHEMA-RECOVERED                                                                                  10:29 AM    \n                                                                                                                        \n     Worked for 53s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "form-schema-refusals",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "form-probe.json"
+              },
+              "id": "call_70ce59b22ed049c6a67cd4557af59c94",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13224,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_70ce59b22ed049c6a67cd4557af59c94",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_70ce59b22ed049c6a67cd4557af59c94",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{},\\\"type\\\":\\\"UnsupportedWidget\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":116},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":116,\"projected_bytes\":116,\"original_estimated_tokens\":29,\"projected_estimated_tokens\":29,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"projected_digest\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"repeat_key\":\"sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"content_ref\":\"inline:sha256:c6041580bed0746c94964ea9501899a68ddbb6c84182047f3ef9ff74f0a4b71b\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8c53a1f9246b6e66ed351f9f6add4c8f2b1dfc42f6188b50a1bb27e3e1166f05\"}",
+            "prepared_digest": "sha256:1fa256b457a5ec408ba3b0d5224e1f32abc7e005121bb12ced7400cd82bb7837",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"root\":{\"props\":{},\"type\":\"UnsupportedWidget\"}},\"root\":\"root\"}",
+                "prompt": "Schema validation probe"
+              },
+              "id": "call_513178c596304cc78993b00a98f19abb",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 13415,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_513178c596304cc78993b00a98f19abb",
+              "turn": 1
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-425ae2d0-06d9-4faa-85af-5fdb264eca16",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_513178c596304cc78993b00a98f19abb",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: unsupported component\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":51,\"projected_bytes\":51,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"projected_digest\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"repeat_key\":\"sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"content_ref\":\"inline:sha256:6ed08ea8f49643e99ca8d13821cf829bc10ef80a30474a1b3bfa6e6b1c2ddad2\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:dd821c75cabd96a1859e95f55b77bab31ccb1a0732db7b97132ab544ce1e0681\"}",
+            "prepared_digest": "sha256:b9dcbd9c9cde0584e0ce1f36392cb2f9e7446404186ef8659c95b5c33f1ae1f6",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13554,
+            "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: unsupported component\n```",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "ebbfd0ec8cb59fd82517544f0c35b9ee526acce8d0714a32c5d113ec981e9cfb",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:2ba76302239fda8976d8eebb0b60b6ea0180d158000933234d5ef4c562ed4ea2",
+              "sha256:3f06a16e6476822623ddade84a65183498403383f0f6dd35b290543b2b2b6129"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "form-probe.json"
+              },
+              "id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13662,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 17,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_cca56ebb8020496d85a3c9681bc17c7e",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}},\\\"type\\\":\\\"Input\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\"}},\\\"version\\\":\\\"future\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":202},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":202,\"projected_bytes\":202,\"original_estimated_tokens\":51,\"projected_estimated_tokens\":51,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"projected_digest\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"repeat_key\":\"sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"content_ref\":\"inline:sha256:005b229b0931d8ae954edb02d0ff2a843a422bc1dbceb8cc0af53b31056222de\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7425e1152b0e0dd6b8f8d309ab542dc7343004002f758401a3545bf9e12f36d1\"}",
+            "prepared_digest": "sha256:7b81747ffd2c7513f5fac1c0d24c58513fadfcf23d2f9ef8749933759938e3b4",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 18,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"root\":{\"props\":{\"label\":\"Name\",\"value\":{\"$bindState\":\"/form/name\"}},\"type\":\"Input\"}},\"root\":\"root\",\"state\":{\"form\":{\"name\":\"\"}},\"version\":\"future\"}",
+                "prompt": "Schema validation probe"
+              },
+              "id": "call_0eae4f263ef745f6b6d0886e97034688",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 13829,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 19,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_0eae4f263ef745f6b6d0886e97034688",
+              "turn": 2
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 20,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0d149abf-8ec5-4887-9099-d6f121293601",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_0eae4f263ef745f6b6d0886e97034688",
+              "turn": 2
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: expected root/elements/state\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":58,\"projected_bytes\":58,\"original_estimated_tokens\":15,\"projected_estimated_tokens\":15,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"projected_digest\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"repeat_key\":\"sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"content_ref\":\"inline:sha256:9235da625c831c679ae5cdc8d3d7bd4eb43ea9587ddaa142979ca38f8fb5bcbd\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b982e0c346a83222ca9b3cc9a7b8f067cc2be5ba31266d7800760b7fc88239e3\"}",
+            "prepared_digest": "sha256:d9731cb8acba2547bac8a2e4cf84acf86f48385f60e00e14a0a8516573555487",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 21,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13989,
+            "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: expected root/elements/state\n```",
+            "tool": null
+          },
+          "seq": 22,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "3c062fbf9278df08dc5da866b667b2967948117321afc43db8126af40ff69e9c",
+              "seq": 22
+            },
+            "receipt_keys": [
+              "sha256:43b270489aaae395577c159603eae921603026b5b0e53797aad4e44973846fe1",
+              "sha256:d91e92d54f4f6c80b84a069b7aae4c75b5c08f3fc24d8d4aacdeaa1a9c67b87c"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 23,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "form-probe.json"
+              },
+              "id": "call_23255829a4874838aaef2f2eb9b53d02",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 14100,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 26,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_23255829a4874838aaef2f2eb9b53d02",
+              "turn": 3
+            },
+            "tool": "read"
+          },
+          "seq": 27,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_23255829a4874838aaef2f2eb9b53d02",
+              "turn": 3
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"children\\\":[\\\"root\\\"],\\\"props\\\":{\\\"title\\\":\\\"Cycle\\\"},\\\"type\\\":\\\"Card\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":138},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"projected_digest\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"repeat_key\":\"sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"content_ref\":\"inline:sha256:482a9d33b7640491a0716e5e1f8362a3b40dd506a6f5b7940df0067b882f68c8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:28a53647020a8b606b340e06950a9d9215e689cdc5c2811e87216fb7a8ceff7a\"}",
+            "prepared_digest": "sha256:895fbc61c973cf6bc277be3948000b45dffbcedab2c7acf3ce10b856dd87d11c",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 28,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"root\":{\"children\":[\"root\"],\"props\":{\"title\":\"Cycle\"},\"type\":\"Card\"}},\"root\":\"root\"}",
+                "prompt": "Schema validation probe"
+              },
+              "id": "call_428863357a7242adab14ae679d9a3c41",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 14239,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 29,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_428863357a7242adab14ae679d9a3c41",
+              "turn": 3
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 30,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-81bce695-4280-46d3-a858-13b175ff84aa",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_428863357a7242adab14ae679d9a3c41",
+              "turn": 3
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"invalid JSON Render document: cyclic, shared or deep element\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":60,\"projected_bytes\":60,\"original_estimated_tokens\":15,\"projected_estimated_tokens\":15,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"projected_digest\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"repeat_key\":\"sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"content_ref\":\"inline:sha256:8aa004c1ba934334037c6345b6914b504de80f51eff227802b5a78e541342974\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6a158548e2f7c57460a772d70008a870bd516d70a8e5307b47da9118b77b1f16\"}",
+            "prepared_digest": "sha256:03764aad5f61746e128cabac2c96727723f48f8fd36251169d06c8e4e4dda6ac",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 31,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14378,
+            "text": "Tool error (exit code 1):\n\n```text\ninvalid JSON Render document: cyclic, shared or deep element\n```",
+            "tool": null
+          },
+          "seq": 32,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "0e62f7359a3c440472f29a8eb8c09f4d5cfe296c7fd4d122785abaa7118ffa64",
+              "seq": 32
+            },
+            "receipt_keys": [
+              "sha256:77f944a49e5d7aabe51dffbea5e5f59eef672987c1637991fb52140baf46ea79",
+              "sha256:e988a92222ae8ab25c080ea7af30f87543433ac417a279607d3c8039cf265926"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 33,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "form-probe.json"
+              },
+              "id": "call_55a932b55a534eeaa98bde9147f81cba",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 14562,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 36,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_55a932b55a534eeaa98bde9147f81cba",
+              "turn": 4
+            },
+            "tool": "read"
+          },
+          "seq": 37,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_55a932b55a534eeaa98bde9147f81cba",
+              "turn": 4
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"root\\\":{\\\"props\\\":{\\\"label\\\":\\\"Output\\\",\\\"value\\\":42},\\\"type\\\":\\\"Metric\\\"}},\\\"root\\\":\\\"root\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form-probe.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":132},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":132,\"projected_bytes\":132,\"original_estimated_tokens\":33,\"projected_estimated_tokens\":33,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"projected_digest\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"repeat_key\":\"sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"content_ref\":\"inline:sha256:5edad5bd8ae6c7c38ad1e5f06a7f94f98b808e3f8fc9d164b5b6ed81b5fb7d48\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:50b1e1cd46ca1434217745a738d8f8687dcad93673681b472a3571f9d959113a\"}",
+            "prepared_digest": "sha256:349d86a8f5e556d327cf5e3bda4cbc7b2b792cc92f7dd5773016575d6e2147ee",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 38,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"root\":{\"props\":{\"label\":\"Output\",\"value\":42},\"type\":\"Metric\"}},\"root\":\"root\"}",
+                "prompt": "Schema validation probe"
+              },
+              "id": "call_a6333d685b8548bea347cf7b1be5e02e",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 14694,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 39,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a6333d685b8548bea347cf7b1be5e02e",
+              "turn": 4
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 40,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-46b370f7-cb6b-4cba-9ff0-640528c1318e",
+                "thread_id": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a6333d685b8548bea347cf7b1be5e02e",
+              "turn": 4
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"form request failed: form contains no fields\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":44,\"projected_bytes\":44,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"projected_digest\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"repeat_key\":\"sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"content_ref\":\"inline:sha256:4f0cf4cbd75cebd46f47449e96d66de9fc938791973dfba458720a63a741b784\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5d3a0c62d2eda2e81c0c687f691ae394244e90d750b99626cb348650bb0611fe\"}",
+            "prepared_digest": "sha256:b3390836459efdc30bc38dbce6ee49db3046d822af4e73006f8803b229ef9317",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 41,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14830,
+            "text": "Tool error (exit code 1):\n\n```text\nform request failed: form contains no fields\n```",
+            "tool": null
+          },
+          "seq": 42,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "dd9002d2aac40c295c0aab7374ec545e67203bd3939ec0f8ac0cc6a3502ecde5",
+              "seq": 42
+            },
+            "receipt_keys": [
+              "sha256:f4c451e886abab42dd6e08fc91b59f183bc067b4653f2691c93a784b045e62a4",
+              "sha256:918943c6f037cfdc9c425636443911b694732b539169602e0e5487ee32b31532"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 43,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14945,
+            "text": "FORM-SCHEMA-RECOVERED",
+            "tool": null
+          },
+          "seq": 46,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "e563a8bd6c2988e0866d94f529e2fff0d3177172a9ef18032b56dc08c02cebbd",
+              "seq": 46
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 47,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "4f1ab5cb-4c31-4b3c-9103-840eb10ae859"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

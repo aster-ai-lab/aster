@@ -1,0 +1,48 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/use/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+   Compiling a3s-power v0.10.0 (/code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.37s
+     Running unittests src/lib.rs (target-power/debug/deps/a3s_power-65f37d3f6bb16005)
+
+running 16 tests
+test backend::openai_compat::stream::tests::exact_usage_and_nonnegative_timing_observations_are_required ... ok
+test backend::openai_compat::stream::tests::malformed_tool_deltas_and_inconsistent_usage_fail_closed ... ok
+test backend::openai_compat::stream::tests::sse_handles_comments_and_multiline_data_frames ... ok
+test backend::openai_compat::stream::tests::sse_handles_fragmented_utf8_crlf_and_explicit_done ... ok
+test backend::openai_compat::stream::tests::sse_propagates_transport_read_errors ... ok
+test backend::openai_compat::stream::tests::sse_rejects_incomplete_frames_invalid_utf8_and_bad_json ... ok
+test backend::openai_compat::stream::tests::sse_rejects_oversized_input_before_growing_the_buffer ... ok
+test backend::openai_compat::stream::tests::tool_deltas_preserve_explicit_indexes_and_empty_continuation_metadata ... ok
+test backend::openai_compat::tests::common_request_preserves_tool_contract_history_and_literal_arguments ... ok
+test backend::openai_compat::tests::malformed_stream_options_fail_closed_and_nonstreaming_omits_stream_policy ... ok
+test backend::openai_compat::tests::upstream_validation_preserves_client_errors_and_refuses_fake_streams ... ok
+test backend::openai_compat::tool_policy::tests::identity_conflicts_and_unbounded_fragmented_arguments_refuse ... ok
+test backend::openai_compat::tool_policy::tests::named_selection_accepts_fragmented_complete_offered_call ... ok
+test backend::openai_compat::tool_policy::tests::none_and_single_tool_policy_reject_calls_before_successful_finish ... ok
+test backend::openai_compat::tool_policy::tests::unavailable_names_unknown_choices_and_duplicate_tools_refuse_before_startup ... ok
+test backend::openai_compat::tool_policy::tests::wrong_function_incomplete_json_and_missing_required_call_cannot_complete ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 1998 filtered out; finished in 0.03s
+

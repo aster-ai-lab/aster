@@ -1,0 +1,10 @@
+{
+  "unix": 1792883767.1459193,
+  "phase": "requires_inspection",
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "observed_unix": 1792883863.4029202,
+  "service_phase": "stopped",
+  "error": "RuntimeError: launch_xolotl_engram_local_repeat_v79.frozen.py exit1: Traceback (most recent call last):\n  File \"D:\\code\\aster\\target\\h200-native\\launch_xolotl_engram_local_repeat_v79.frozen.py\", line 125, in <module>\n    record['process'] = owned(code)\n                        ^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 93, in owned\n    return jump(wrapper,timeout)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 12, in jump\n    if p.returncode:raise RuntimeError('jump failed: '+p.stderr[-3000:])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: jump failed: client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\nTraceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\n  File \"<stdin>\", line 4, in cli\nRuntimeError: owned CLI failed exit 1: Traceback (most recent call last):\n  File \"<string>\", line 36, in <module>\nRuntimeError: finite7-request repeat deadline insufficient\ncommand terminated with exit code 1\n\n\n",
+  "finished_unix": 1792883863.4029202
+}

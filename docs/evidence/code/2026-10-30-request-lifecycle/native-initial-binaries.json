@@ -1,0 +1,25 @@
+{
+  "base_commit": "e2beb284d3fe99a1fd8b4ad78f13a9988187c9f9",
+  "build_command": "cargo build --locked -p aster -p a3s-code-acp",
+  "binaries": [
+    {
+      "name": "aster",
+      "bytes": 808383272,
+      "sha256": "313c609f2cc1a16fc4b3dc2dd8c315bc01786b7bb1ca5598c17e410bd6d72ea8"
+    },
+    {
+      "name": "a3s-code-acp",
+      "bytes": 342270352,
+      "sha256": "4cd064ed8224d3e1bf5b69d500259e42e1b4cc78d9d102a13fea98e5d00e494c"
+    }
+  ],
+  "historical_probe_sha256": "c6d3ec3cb5a1341ec09f8e9f72dcfa64cc34c80f7fe6ff0d76832dcfa1f463fa",
+  "historical_probe_unchanged": true,
+  "production_source": {
+    "crates/code/core/src/llm/http.rs": "381d2f7e7268d9bb5384d9f0210f732c1a3f2a992c946b0f89a3705a1019b7f5",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs": "9cd8de9c6769ef6bc7da386388e2f594c824aca9c69156d9d6163a8eaa0f97b5",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli.rs": "ef8564b48be990ce443f54319de5e3be5c1fbb9df4a17c1d2296bc100dde38af",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs": "44024d550df4a61750c9b8a47e3298460230bdc73090db660ceaeb6344be933b",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "a29151ebd6bf64b10df3c61ba7c419d6c8b886eed8f4db16d081dd25051b51eb"
+  }
+}

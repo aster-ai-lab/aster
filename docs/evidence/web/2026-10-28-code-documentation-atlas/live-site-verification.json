@@ -1,0 +1,1516 @@
+{
+  "checkedAt": "2026-10-28T14:01:19.829Z",
+  "base": "https://aster-ai-lab.github.io/aster/",
+  "deployedCommit": "e9c00be87570aeab3b7bc0484a30d0dc7790998f",
+  "run": "https://github.com/aster-ai-lab/aster/actions/runs/40701137901",
+  "passed": true,
+  "fileCount": 197,
+  "files": [
+    {
+      "file": "cosmic.js",
+      "url": "https://aster-ai-lab.github.io/aster/cosmic.js",
+      "status": 200,
+      "sha256": "6033052a8bf8c4ebaefd548fa8d0ef3944e308f605bf919195663be42ebf9f01",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/client/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/client/",
+      "status": 200,
+      "sha256": "87a11f81916b6f1c77e3d37f3d97d32395a1c3ac01e412d3da049cff6d8eabd5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/documents/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/documents/",
+      "status": 200,
+      "sha256": "bf73ba52e6edfcf038e857f42fec2bab707d66216ebecc9711ed532a18946de4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/events/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/events/",
+      "status": 200,
+      "sha256": "202e0626bb1a3180717bed3a5867d3d9b3f29b1dfb3df016030f1ffe2d1d0efa",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/goals/",
+      "status": 200,
+      "sha256": "38727a8bd5d1904de6766838210917e12bc315f2bf2a69f9e928188bf0224c62",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/",
+      "status": 200,
+      "sha256": "fd5a059a3f78f13052a1287a8b79bcd3239208f8f3cad2e5948b9161d5c1ac66",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/internals/events/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/internals/events/",
+      "status": 200,
+      "sha256": "8b9191b964cf95868f754bb14dae45396e9d1014db5a0aac350956cf4f3e801a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/internals/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/internals/goals/",
+      "status": 200,
+      "sha256": "d6497aae30807c7598cbbde3df4f46e114a16405d535ef2f38232518d15ec03d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/internals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/internals/",
+      "status": 200,
+      "sha256": "61c6e65a055fe88e9dcbf3d5f340d51614c7b4a0dccaea53f07b4e3d15001ba3",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/launch/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/launch/",
+      "status": 200,
+      "sha256": "cbf1d88c29fdab8897f9ab22142d7fa98335b51ebd3f3925efaa84e8359507e9",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/memory/",
+      "status": 200,
+      "sha256": "45415fb60d7b951fa7abab7f43dac5c8ea4120a8c5f4c46122c63988c72e5c3a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/models/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/models/",
+      "status": 200,
+      "sha256": "244a2030389bacfc5838cde80a6184eeb5d2038eee4c67912d279a05d492fdfe",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/permissions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/permissions/",
+      "status": 200,
+      "sha256": "e82e7e5e977aa17944105c2c748388d68fee3127c35b14bcbf1aa695b3d274e6",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/plugins/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/plugins/",
+      "status": 200,
+      "sha256": "3b1b1bced31a99fb5e0d0f98cccbabd6ae2c975f129fbe187da33e7cd2daf641",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/protocol/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/protocol/",
+      "status": 200,
+      "sha256": "3d21dae9d48bcdd3eb4bea268ed77bcc4e452af54ceb114eb74ad48c4f4a621b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/reference/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/reference/",
+      "status": 200,
+      "sha256": "7bcd4a048aff9af8955054924d410cbcd21abe50df5d8eb08fcff8ea870844fd",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/sessions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/sessions/",
+      "status": 200,
+      "sha256": "ea778f35b5f1d3b027836dda2ff539f290f358d757a8ab1434b1c635c4ad234d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/9.1.6/unattended/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/unattended/",
+      "status": 200,
+      "sha256": "758bb0b97851309db0d54e57e56cfe57b9c48e2e9f409374e009e0c0f89b90a2",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/client/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/client/",
+      "status": 200,
+      "sha256": "f8675bd1ba3b07020585bfd8cde46bcc1077e5bf765fcbc782bb0158f356abf0",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/documents/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/documents/",
+      "status": 200,
+      "sha256": "181a4d345340887f2a32757d2e811d9aa5634c333931795f8942a3b8c8ad833f",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/events/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/events/",
+      "status": 200,
+      "sha256": "ec83e37a795b9244a37dbf9dafbe0252963c9cc429e9d166d8770b4ea845d0e4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/goals/",
+      "status": 200,
+      "sha256": "a9071c0783e8cc8c50d463808aef780c5981687a6361748faa0d0a44cc304d84",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/",
+      "status": 200,
+      "sha256": "f8f62383132768e45c58caa9488be4f04ccda1bb8986ac1e9d93abd0393c4952",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/internals/events/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/internals/events/",
+      "status": 200,
+      "sha256": "80786fb6ca3c4d654d0c36f77215cf92a70dd0a75e0e85e1fa0cba9faf7a6d8d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/internals/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/internals/goals/",
+      "status": 200,
+      "sha256": "ccbe81c3bac5f5286f62176e6fa63735955b13aa1d7ba4cbdd2d38afb644381e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/internals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/internals/",
+      "status": 200,
+      "sha256": "9a40ffc1e5631a8636df66225fce6438f0f56025ba83eac7a7e593dd4f8146ca",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/launch/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/launch/",
+      "status": 200,
+      "sha256": "0f5abc31f6765c7349259c1e9a559ca56de480ffef0d5e20cc8dc8fce84fed7c",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/memory/",
+      "status": 200,
+      "sha256": "7f33a1692da95203142891c3c08d344e8f65d47c892790c6701a248424ca354d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/models/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/models/",
+      "status": 200,
+      "sha256": "7998f8973abf655139f04ccd00498e9e326866f8e5d883e47d2d61a337159b20",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/permissions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/permissions/",
+      "status": 200,
+      "sha256": "0dbc2aecafdea82bd46a2a1edb16e6a596c258a8ba66bfd391c2590c29529876",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/plugins/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/plugins/",
+      "status": 200,
+      "sha256": "990eaea9a44b296116183367ae930fb2fcd1b05784d3f59bd668550aca8800ba",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/protocol/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/protocol/",
+      "status": 200,
+      "sha256": "a46b17b3ff013bd0243a985aef47c9fd49afa59cc72f2a986a92787113dd5188",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/reference/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/reference/",
+      "status": 200,
+      "sha256": "e631897cafacd513c8366616e068cc4a7ba89b2fdeba055581bd36b2a52b2a10",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/sessions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/sessions/",
+      "status": 200,
+      "sha256": "f0c9fc3d0f00b7d300ba64c45809283042d77111abcfd68573950c6c7856b95b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/acp/unattended/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/acp/unattended/",
+      "status": 200,
+      "sha256": "2e31b3245cfecf83316eec291ed8f19ff625fd3ad28a46116d75c51ba7a41ddc",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-acp-boundary.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-acp-boundary.svg",
+      "status": 200,
+      "sha256": "829e1c16a00b61a73ba9a1907ae1b6d4287ad71dd14ba0fda305508604090831",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-architecture.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-architecture.svg",
+      "status": 200,
+      "sha256": "f2559dd841b0fd25cdf93500669b187d38eab9d5460ec3bcd4c3d0afef8385e6",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-event-routing.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-event-routing.svg",
+      "status": 200,
+      "sha256": "8911221c6ca86a2254ae5f956118007ff26f07445abca0e354d2852f6534a163",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-permission-roundtrip.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-permission-roundtrip.svg",
+      "status": 200,
+      "sha256": "93fb0267233662e3180da0c32612bd6ab5273b52c44601f9411ac2e4b7f15a1f",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-protocol-lifecycle.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-protocol-lifecycle.svg",
+      "status": 200,
+      "sha256": "e0bc15852030556acb515926bd4a37325ee24554bb9b4082380496be063603a1",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/acp-unattended.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/acp-unattended.svg",
+      "status": 200,
+      "sha256": "4a77af42a5e1d80214558a0c0a4169fd994c13c1f9cd28e252c227d5c7f6c6bd",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-architecture.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-architecture.svg",
+      "status": 200,
+      "sha256": "13da97faf647a81cd682f82f8e0944a72a95e468c66ba48982cbd21409984573",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-completion-gate.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-completion-gate.svg",
+      "status": 200,
+      "sha256": "900fcdb9ffb30ee6cbfb9f954b184c6d9222d3b03db232220b147c8d946017b5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-context-assembly.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-context-assembly.svg",
+      "status": 200,
+      "sha256": "7a34f0c58da707e201d5cf7a426758599bf14b9f7c8562775d5ef02acea51d16",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-extension-surfaces.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-extension-surfaces.svg",
+      "status": 200,
+      "sha256": "a2470d00fd57301f99167f87aea34e78ab9f60ab3fff9916b29b630e02573040",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-framework-layers.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-framework-layers.svg",
+      "status": 200,
+      "sha256": "fb1007c0ce3054bd9bdbbc3b133662e4c950c6d82053f3c7535f68cbd87e4e7d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-goal-decisions.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-goal-decisions.svg",
+      "status": 200,
+      "sha256": "c2b0d4beac784dd936d8158b8994d90db29a1a753ca5f0d2f6d1e65bf743fe12",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-goal-lifecycle.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-goal-lifecycle.svg",
+      "status": 200,
+      "sha256": "0d5c59815a8adbf0027088e671228382577b7f5a3cfaca4b787fee55d2aa301e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-memory-lifecycle.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-memory-lifecycle.svg",
+      "status": 200,
+      "sha256": "66659d926a6a8f25fc3780c383d2386a867274e8447a66a87d78c6ac1f68af91",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-meta-harness.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-meta-harness.svg",
+      "status": 200,
+      "sha256": "9c6b48fb823e9cdeafd9af7759a9010f0fd280163c9303c873c9e8da3adbea4e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-prompt-stack.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-prompt-stack.svg",
+      "status": 200,
+      "sha256": "8aa35c1e0eea3a623202ce69c8b4ed4b3e826b1505850d02d3853796e175bcfc",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-recovery.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-recovery.svg",
+      "status": 200,
+      "sha256": "72e2632dafcc01c6fd8551197469c300b9448c65f9eee78e22077409da605f54",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-rsi-cycle.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-rsi-cycle.svg",
+      "status": 200,
+      "sha256": "794eabbe3a6c714ba9bb3d3658700e2a31cca5b80dd2de88bd09cf02ccf28aae",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-run-control.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-run-control.svg",
+      "status": 200,
+      "sha256": "5cab3909d0d35b2999d50214dfd9ba601ef295bf8f10e26d71f6cc3d42322783",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-tutorial-architecture.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-tutorial-architecture.svg",
+      "status": 200,
+      "sha256": "276cab5fed5f7028261458d6fbd508bbd94d4c5b2911accb127878e2beeae044",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-tutorial-permissions.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-tutorial-permissions.svg",
+      "status": 200,
+      "sha256": "87eab37f4699c30d46330210e41a947bad9b6b7e84d9a8a2f7c7f18018bfcb8b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-verification-revision.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-verification-revision.svg",
+      "status": 200,
+      "sha256": "ba493dbb11b5a15a2ee7b4d58f98e8a164b9d33ded99ecc7c42aa0c3b356abc7",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/code-workflow.svg",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/code-workflow.svg",
+      "status": 200,
+      "sha256": "d20920f94cfae165f863e24cb8eff9b3e03d98ddf620b8f952fda842af94a1ef",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/seecode-symbol.png",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/seecode-symbol.png",
+      "status": 200,
+      "sha256": "65945d378927af1f83965039e3e8abcc0df9ed0a83c29bb0459358c4c0011a8c",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/atlas/seecode-word.png",
+      "url": "https://aster-ai-lab.github.io/aster/docs/atlas/seecode-word.png",
+      "status": 200,
+      "sha256": "76d2c8c25e2f8fcee811f58387fdae67afaf64814cc217e4bb808385afd04ab2",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/comparison/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/comparison/",
+      "status": 200,
+      "sha256": "54c77ff7e08a8973c28cb1c9f3a9d36d110dcafb71e6a4c2bc8a16ff36ed61dd",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/design/philosophy/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/design/philosophy/",
+      "status": 200,
+      "sha256": "85c6a665ae81459c89bf5403bd75785b2defdca73ef17af2f11177d699e02e32",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/design/rsi/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/design/rsi/",
+      "status": 200,
+      "sha256": "d7e91c528a3f810883ef080f7de53a11327c8c3a105cfa7f3742095e04f8f525",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/",
+      "status": 200,
+      "sha256": "c8e19ef769d0fbcdb42ae5b13cd188b869a26c14b9223b8768c52fd031db9f27",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/integration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/integration/",
+      "status": 200,
+      "sha256": "ac8f4eabe5403c2c80b60de0bf3427d629fe586175cd9f5500409b628a49a615",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/agent-directory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/agent-directory/",
+      "status": 200,
+      "sha256": "e329dcc79693381a4ffedfd61c7d3511df0fedd3af03a8e954580cb780c2f4f4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/composition/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/composition/",
+      "status": 200,
+      "sha256": "128b4560090a48b5996d1dbd2d26ed4191d2c1e68194b519eeda57faae99b297",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/context-tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/context-tools/",
+      "status": 200,
+      "sha256": "ad02662b5913e22ce93b8ec279d4276f0a387d8cf0d934aac0d848a874a1cc0e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/durable-work/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/durable-work/",
+      "status": 200,
+      "sha256": "588983a92025d7d412d9dc27b2a3bbd612dccfee18c8b3e1779880d7e981b582",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/extensions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/extensions/",
+      "status": 200,
+      "sha256": "cd56e267e6f44521b79ab6e87054a153c356032cc5034298dfb13a70819151ff",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/",
+      "status": 200,
+      "sha256": "93dd9e1046f36b1b4f97a9103e18a340d575be1d4b2649b93bd90f31b320705e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/recovery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/recovery/",
+      "status": 200,
+      "sha256": "87bcdef47c62fdb91c268b7c000e95b0854e269b7a4316bcc414f74e0e334b4d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/meta-harness/verification-resources/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/meta-harness/verification-resources/",
+      "status": 200,
+      "sha256": "04f287bbd88542405e60fc3733a85a3c3ff4e1b50476758ca061865831227036",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/context/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/context/",
+      "status": 200,
+      "sha256": "3d6d25db0efdd03c188599943a83d36ac49bd3c9a8de291456509874ec6c28b5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/delivery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/delivery/",
+      "status": 200,
+      "sha256": "d728e8c3ae00059e1ab2a4376b75c3bb8eda707399091e8371c6d9d43e002b7c",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/goals/",
+      "status": 200,
+      "sha256": "d6935844a4156d3198deae4a37a65369142f54c421a732aa33e37aeae33992ec",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/harness/",
+      "status": 200,
+      "sha256": "b864790dd04026caa04d2dddf2a39ffa42713e3973192fab1708a71d42fae169",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/",
+      "status": 200,
+      "sha256": "1bc35722b05817ecc198c5826fc4fd1d921f76e0faaaf7a087971e54a58c9377",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/memory/",
+      "status": 200,
+      "sha256": "6cc88f1f44b16bfca47c17b76d0c03f7a296e7a97dbd489e27c92200398642f1",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/permissions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/permissions/",
+      "status": 200,
+      "sha256": "d8ceeeaa44273a0e8f16ba851460a1d8e87728f48fae3b9e85b19459392251f1",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/persistence/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/persistence/",
+      "status": 200,
+      "sha256": "d4e17512af65d0e0b7a7d17f7478e137472379bc038515fb1434ea259f611030",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/setup/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/setup/",
+      "status": 200,
+      "sha256": "cc3bbbd3e67a6f9416c3bce711ead2bdb57d1ea5e1e3563cf88b53c5d5108a0b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/streaming/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/streaming/",
+      "status": 200,
+      "sha256": "ff120d46b4371d86ae3a2981ca3bab3e6ef7d2f57ac0a64e30f9628ebabc4412",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/tools/",
+      "status": 200,
+      "sha256": "026db954a04daa6bf725f660517a8e2f362d743398bbbe90e550a51afe2262fd",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/tui/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/tui/",
+      "status": 200,
+      "sha256": "739a53d0f5ea7b3a2f7f252eb3640510bf156f3eb8ae9cecda2df53b98ebc87d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/tutorial/verification/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/tutorial/verification/",
+      "status": 200,
+      "sha256": "53ba84953be7d28d83f2acd5c67a4db50d02937ba60edb4da16f1879532741e5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.5/workflow/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.5/workflow/",
+      "status": 200,
+      "sha256": "53160256dcc3e435e18d16d10af47e5dca9d347a2bd026f305aa724fd9bede73",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/comparison/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/comparison/",
+      "status": 200,
+      "sha256": "b5c61c318685fa9b258130661dfa9ec478d3ea077a600f77c732a3fb2201b495",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/design/philosophy/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/design/philosophy/",
+      "status": 200,
+      "sha256": "ce8a890c8a34298f538a104c1b9b34b591a959c95057fdac817f0b022b1d6850",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/design/rsi/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/design/rsi/",
+      "status": 200,
+      "sha256": "e30c32d046d8989c5660a5151e98339c8577b987cc2c83a2f93a2db3ba339e44",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/",
+      "status": 200,
+      "sha256": "b7e458a6652e6e97b06fcd637085096f29f8d4b84805eb62ad824f54d8409719",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/integration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/integration/",
+      "status": 200,
+      "sha256": "e5c8dc0cd4d1f7c9fbf758b89d492e1f4abb626ad78a208a45d85614a36f9f5a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/completion/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/completion/",
+      "status": 200,
+      "sha256": "58774ceb47a20b512f596aa7d36b0f04715c36cddf49b89e705c8e307e5b8a52",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/context/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/context/",
+      "status": 200,
+      "sha256": "b5e87645050c842f82f8d959e770ec1dcd76caef4eb21f841d88f1125b9b63dd",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/execution/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/execution/",
+      "status": 200,
+      "sha256": "35d76ea56c1ca6f71e2d0fd8162eef32a244cefe3c6ccbe56a3fdb1150904f74",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/",
+      "status": 200,
+      "sha256": "e53197a1ed7938d7f42b417ae6331bfbb312f2a84dc39f8eea9d71e1d7b824c8",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/long-running/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/long-running/",
+      "status": 200,
+      "sha256": "67bbc901486cd1a18846ab3cd98a1f0e88113d2a4392460647d14a8c827be7a0",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/recovery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/recovery/",
+      "status": 200,
+      "sha256": "af2f9593623b869edee67c0dfb20136a11fae0714bfca2fae0a9c6a15057be6d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/internals/system-prompts/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/system-prompts/",
+      "status": 200,
+      "sha256": "36392e9f39b6c039b809945a59ea07b3a69990301a70c17cdfa9dd85408f68e1",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/agent-directory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/agent-directory/",
+      "status": 200,
+      "sha256": "595849d2ddd8e520e9b4233b6eb521a303aad1e946b3ba6195549f3a6edd72a8",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/composition/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/composition/",
+      "status": 200,
+      "sha256": "a688edfc1054bf705457c8654ea07cf5088d2399518a6e75e6b949bc4c377611",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/context-tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/context-tools/",
+      "status": 200,
+      "sha256": "87563f5304c07bb5a535e02ace61eddf54a33e2b7b370b7cbbe6435e6c193df3",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/durable-work/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/durable-work/",
+      "status": 200,
+      "sha256": "de1db5739ff4d45dc0acb454472d6d95af5fc92169a0d24140d370690ce528fb",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/extensions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/extensions/",
+      "status": 200,
+      "sha256": "3422ae7994b28558ef11a101db190508d2cceb2b408da09586bfba37310cbbfb",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/",
+      "status": 200,
+      "sha256": "6b62cc701985de642c1632765c66fbfc15245ef687efc15a46196a006dcedeb4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/recovery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/recovery/",
+      "status": 200,
+      "sha256": "9191687e9f88e0b7cdf39bff60535ef31ec89ed1bf43a52396310a7fd39d6686",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/meta-harness/verification-resources/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/meta-harness/verification-resources/",
+      "status": 200,
+      "sha256": "d74b6f76379260fa616d9c5b34e1f2463f29e80b07294d511aea76f38eec7bfb",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/advanced/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/advanced/",
+      "status": 200,
+      "sha256": "fc236f02f4ce500910cd302adff3ac0652ede8da6bcf481bc897df7561a4ab6b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/configuration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/configuration/",
+      "status": 200,
+      "sha256": "6aa3812e3cf87b30cc548bcabece4001d1e837556f144a5396e0928a2217561d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/governance/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/governance/",
+      "status": 200,
+      "sha256": "ba110b37034d357c2d07da04cb182d58144b1d46fd27f07445ecedb9177068fe",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/",
+      "status": 200,
+      "sha256": "8a68d22f3369685020962ebbb2c338259cef80357a0bf36ff711b9546f95913a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/memory/",
+      "status": 200,
+      "sha256": "11c97c4a801e2b0d52af2a62654b81cd7ad80a4879cf844d9d3b3d45a1a731b2",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/operations/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/operations/",
+      "status": 200,
+      "sha256": "eab4449b742c1c341c3d77cf9ce3f14e09de443c28c79feea0d3e8268e39173e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/orchestration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/orchestration/",
+      "status": 200,
+      "sha256": "dd1bd0db450f8770a213f3262e70f43bc93c75ced7f8861d1f8fcf85d29af601",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/retrieval/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/retrieval/",
+      "status": 200,
+      "sha256": "b8987c8547a138aec08b50972dc16db7206db3bda18b41eac220e05dcebffd0d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/run-control/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/run-control/",
+      "status": 200,
+      "sha256": "1d2b844fa101edacdbdd1edb12ca1997a0805200dca5d15039a1f7dee74fb07d",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/reference/workspace-tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/reference/workspace-tools/",
+      "status": 200,
+      "sha256": "c75b7746677dee68cf74d24fd2625c90c6add001a8dd290fb624d53e415dc24f",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/context/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/context/",
+      "status": 200,
+      "sha256": "21a4fc10a385df7ed7ed8d87a95e51eaa435a7fc36c78efc123d3ad3adb2f644",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/delivery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/delivery/",
+      "status": 200,
+      "sha256": "c69af9ebdd68f0f2639a5d8c74f4adf33dbef991d9f3b266cbbb8c5f27659b7c",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/goals/",
+      "status": 200,
+      "sha256": "6e88b5abeda8223120202083d3144f56acd9e19eaf0148c81d908c9771aeb6a4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/harness/",
+      "status": 200,
+      "sha256": "4db2bedbbd6be6cff5335f185c0823f829efb44777daf75dead47ac553b9eae8",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/",
+      "status": 200,
+      "sha256": "43f81a604e024c9564c25010f8136b66491d0888fadb866f3662458d8526f8cf",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/memory/",
+      "status": 200,
+      "sha256": "f68b2fc349851da6f44e5c2b337577740b97b7116ad1f19a1184f5b57383553b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/permissions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/permissions/",
+      "status": 200,
+      "sha256": "695ab043ba2478a425021d6c8e91a6eda5860452afaa2ad010611a60801e0067",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/persistence/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/persistence/",
+      "status": 200,
+      "sha256": "870ea08f63e98963fa5db7521be9676bd5f4957867a27f0b5e680b32908614ff",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/setup/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/setup/",
+      "status": 200,
+      "sha256": "089a6d20a20826dbabac91e60f3f9153854e0b06d297de5e2a95e0013366e457",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/streaming/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/streaming/",
+      "status": 200,
+      "sha256": "7a1d01308e66c958545c862bd67d5f253e174bbb9012346fcbdd63158ba0bffa",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/tools/",
+      "status": 200,
+      "sha256": "533fe2d675a5215e0677983c5ccc322b075c7c2cdaa0816e25474bcaf8c2bba3",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/tui/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/tui/",
+      "status": 200,
+      "sha256": "83a486c8654722b4318c504af52feed38902eedfa597076d75298563a5982815",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/tutorial/verification/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/tutorial/verification/",
+      "status": 200,
+      "sha256": "0274d27f67675e1f395781692471f2ccc55206f56cf09660e00014ca459cdfe0",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/9.1.6/workflow/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/9.1.6/workflow/",
+      "status": 200,
+      "sha256": "854bbffbfdb4b1e4fc1cf8b9f18a22f3ca1ea730c35763348bf8ae94d22e714b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/comparison/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/comparison/",
+      "status": 200,
+      "sha256": "8a5d24d08262541de9ea8f49deeba8f41afb59d76837fcbf58442726208828b7",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/design/philosophy/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/design/philosophy/",
+      "status": 200,
+      "sha256": "b9f4b9352a9d99b6d19d03d8089b18534fe64401bc9990d8e6552ae01d272ee2",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/design/rsi/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/design/rsi/",
+      "status": 200,
+      "sha256": "4f6d0454ffffef9f58c9fcad64fc5a11feec721c420421727f1248768b0bf9ec",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/",
+      "status": 200,
+      "sha256": "c2317ac31cd4e9b2272182e6427ef457d226e8721b285918aedd70ea329dbe33",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/integration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/integration/",
+      "status": 200,
+      "sha256": "5e353b3148ef32a102882e705cdb5f2f2e120889731955858b9141bfc2005e6b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/completion/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/completion/",
+      "status": 200,
+      "sha256": "dc2003506376d290694b89d53ea3f029067220adf13fabe3bc1cd15b343e4629",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/context/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/context/",
+      "status": 200,
+      "sha256": "c1ddb13ae7086eaa28d85a3545a609bfd02180d7ffeaab6fdf3115acec6050e0",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/execution/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/execution/",
+      "status": 200,
+      "sha256": "241c358aa5df1fb80875f9c09d6feeee47b5a9ae62229f3b65749601f97c3bc9",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/",
+      "status": 200,
+      "sha256": "40562ea1b95a13abdcb51bca125ce458d7fccdc3312e562fc8442e8091527e2c",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/long-running/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/long-running/",
+      "status": 200,
+      "sha256": "22b1cbe827c3d78514894338a224fc0d0b8700ab650f068b63e01086add2a6d2",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/recovery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/recovery/",
+      "status": 200,
+      "sha256": "ad5a9bc5534ca7d9776784871590dcf33800bea0334bde2507771b29ef5cae31",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/internals/system-prompts/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/internals/system-prompts/",
+      "status": 200,
+      "sha256": "22293023a77f76ab0ef2dd10c65b43618c81e89210da0e35bfa0551c79a1ee33",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/agent-directory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/agent-directory/",
+      "status": 200,
+      "sha256": "452830345d83d8cd5ccbec58c7a4ee4d4b33f9fb075d4cd1c9d437b024b7efb7",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/composition/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/composition/",
+      "status": 200,
+      "sha256": "0ef3a314d0a980669b74abbb8603350df3b1f968cbe83d62fe3abe8f816dfeb1",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/context-tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/context-tools/",
+      "status": 200,
+      "sha256": "c2210aad93e9c2614980de951077f185a3a9c1f9ffea5ec1f26a5629b97095ec",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/durable-work/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/durable-work/",
+      "status": 200,
+      "sha256": "37b6af69f7cc58d97a42270e85506e73b7274ee55e3f9b8383a1b3364ada2d73",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/extensions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/extensions/",
+      "status": 200,
+      "sha256": "f129d00691a7054a2bcf0962e2417ae2f5aa5883e2fe1bcf73c6710d7f70624b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/",
+      "status": 200,
+      "sha256": "bf39903a2823210720b99af0e21f6dee0f9203f0dcb23dd93683a8829d27e3b0",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/recovery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/recovery/",
+      "status": 200,
+      "sha256": "cab45908a079758fbd753d3475378c3c506900ab4988d3697a87212bd9eadda5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/meta-harness/verification-resources/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/meta-harness/verification-resources/",
+      "status": 200,
+      "sha256": "785bbe330ddef526cbf3f9e8454e1baa6cff50e5dfb8275a0886da96aeb0b7a4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/advanced/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/advanced/",
+      "status": 200,
+      "sha256": "116fcacca4c799b3aef33e41332693ff09f565d4ee9325b11618185caf9ccce6",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/configuration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/configuration/",
+      "status": 200,
+      "sha256": "f806bf20e9fe619bf6628f8944c949063376ac5fceeb47d43d5f4cfc04fd2c78",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/governance/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/governance/",
+      "status": 200,
+      "sha256": "d7001cee14ca8b8a260446a93f97af6858fc2929180ecfd4c4ab15337c3d5b99",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/",
+      "status": 200,
+      "sha256": "23b25e74bbf68104666ec4761caa5e0912d6642527b36ecec5b911f7b900ca5e",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/memory/",
+      "status": 200,
+      "sha256": "ebd7077c5a51a14cb00835fef1ae920bbb3ae54ed636cd7bde835e55504b2b6a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/operations/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/operations/",
+      "status": 200,
+      "sha256": "29602cde8739c43e9c841237c29a3783cd810cc617cbe9eabe86ff74d3e6b814",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/orchestration/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/orchestration/",
+      "status": 200,
+      "sha256": "a096030b07a6517f6a93c6be6bee90155a84eddaa7d65ce7f93e4d77b381cbd7",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/retrieval/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/retrieval/",
+      "status": 200,
+      "sha256": "286a1e6d42c7d56c89d1511815bfa0e0f7cae95683ff79b86140da1a97d9a4b4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/run-control/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/run-control/",
+      "status": 200,
+      "sha256": "052027044452065ff1d34c810a3926c8984dcff58fea8cab7a3e01b5da543c58",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/reference/workspace-tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/reference/workspace-tools/",
+      "status": 200,
+      "sha256": "1503c93fde268d63ea40066e6e07062418e73d9b27e9a02d67164642ca200bbe",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/context/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/context/",
+      "status": 200,
+      "sha256": "c4b846ce62b590b4c55e0fa09e7af29f86b485dc87a5823f5b2333d59103faff",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/delivery/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/delivery/",
+      "status": 200,
+      "sha256": "c2e5018431819096e2750a13c961ade87add7bd670098ae33fc8f7b6e09f5f93",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/goals/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/goals/",
+      "status": 200,
+      "sha256": "7d7c6a03a5e0a847d86f870bbacba7bde0999572b8ceb9ffa7fab2aab824db82",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/harness/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/harness/",
+      "status": 200,
+      "sha256": "43911c85d665b37891908834102b208c7553d95eb37f6b352fe52b27f8af5d0b",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/",
+      "status": 200,
+      "sha256": "d153d2380291da12a3dd3da6638e985afa83cad9429be74154e386721cd5fe75",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/memory/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/memory/",
+      "status": 200,
+      "sha256": "ee298f468f288a12451c56b6861d6751a03f05d8b9447d42d21e8a394071fd75",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/permissions/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/permissions/",
+      "status": 200,
+      "sha256": "91cc3413b0e87c62f63eb5fe8001d0227ee52e0a688618fe5ac2605e9792d08a",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/persistence/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/persistence/",
+      "status": 200,
+      "sha256": "400592ed3d4202f3c30b9e74b7c3dcd2b289ab498f9d2c162afa5ec6208ed4b4",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/setup/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/setup/",
+      "status": 200,
+      "sha256": "85d4b55b1e300daeda2d4b00e3bbf1f47b032429f1872601fcf29f2984f91c4f",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/streaming/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/streaming/",
+      "status": 200,
+      "sha256": "36a27b1b4697955391d40dd845723819766bc82416d4c5c403241e6e6055f348",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/tools/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/tools/",
+      "status": 200,
+      "sha256": "a051802b7a3cf5345153721b71db74898959d9ad2747aa310b9747d61c1adfd5",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/tui/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/tui/",
+      "status": 200,
+      "sha256": "9e5d40a5173ce5d67414236da54f623ed02dc09fee0b69f01200f94b2ead2310",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/tutorial/verification/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/tutorial/verification/",
+      "status": 200,
+      "sha256": "683be9c89db438142fa6a394cd4d51794bce26d70c8b4e8c818e5d9408569c85",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/code/workflow/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/code/workflow/",
+      "status": 200,
+      "sha256": "63aee9c6e04b29028d5d535988e347c7512da6aa64cebf690ab0c8dd893fb616",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/generated.css",
+      "url": "https://aster-ai-lab.github.io/aster/docs/generated.css",
+      "status": 200,
+      "sha256": "528cfc2f0b44dcf230275b71534b5873943101457a966d76d0d54c990478e5b7",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/docs/",
+      "status": 200,
+      "sha256": "704313fa746df90545f763693ff805de4f073d6e02028d4365befc28fb6be4ee",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/navigation.js",
+      "url": "https://aster-ai-lab.github.io/aster/docs/navigation.js",
+      "status": 200,
+      "sha256": "ddeae9ed6fa9090d7c2861695a717490047ed8f3289117142cfc0ab8c8b4fb72",
+      "matchesStaged": true
+    },
+    {
+      "file": "docs/styles.css",
+      "url": "https://aster-ai-lab.github.io/aster/docs/styles.css",
+      "status": 200,
+      "sha256": "042224d9575ce3183c7c492aa9c9de1c7d7818ada93fa6966d57e9e5ea879b18",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/app.js",
+      "url": "https://aster-ai-lab.github.io/aster/download/app.js",
+      "status": 200,
+      "sha256": "6ef73e942cf257a2c506f32ba957e47895036925d2ec324a627c6c4d27bdb703",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/canvas.js",
+      "url": "https://aster-ai-lab.github.io/aster/download/canvas.js",
+      "status": 200,
+      "sha256": "ba445d251471ded23ed06ffd3e1266b556da86064832ea4ffca21112e6f31d3e",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/fonts/ubuntu-latin-400-normal.woff2",
+      "url": "https://aster-ai-lab.github.io/aster/download/fonts/ubuntu-latin-400-normal.woff2",
+      "status": 200,
+      "sha256": "dabae363ac0ae6c3b2a137a32f7132b42520a8af252f87aa6c2198f2a79cf91c",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/fonts/ubuntu-latin-500-normal.woff2",
+      "url": "https://aster-ai-lab.github.io/aster/download/fonts/ubuntu-latin-500-normal.woff2",
+      "status": 200,
+      "sha256": "428ec293d3b79af16abdca704f630c6c951744f572eddbc80e970bc9a94a33d2",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/fonts/ubuntu-latin-700-normal.woff2",
+      "url": "https://aster-ai-lab.github.io/aster/download/fonts/ubuntu-latin-700-normal.woff2",
+      "status": 200,
+      "sha256": "3658a0717e347c1db8d80dd565584b9dc56769fbf87909c50a4a7740206ec5f7",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/fonts/Ubuntu-LICENSE.txt",
+      "url": "https://aster-ai-lab.github.io/aster/download/fonts/Ubuntu-LICENSE.txt",
+      "status": 200,
+      "sha256": "52fdffecb23a020de527f68c516cac16dbbaf2dbb73fd9e29e2149703b881c82",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/index.html",
+      "url": "https://aster-ai-lab.github.io/aster/download/",
+      "status": 200,
+      "sha256": "6e055becb2f283ba9a61fb61623191f8d16a19bc5bd87049afbd26fbcca32542",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/screenshots/lineage.png",
+      "url": "https://aster-ai-lab.github.io/aster/download/screenshots/lineage.png",
+      "status": 200,
+      "sha256": "2e991cdbae0e1f545f5a835edd1a724026fb958d1ed90a0c904ff901d2ca7e97",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/screenshots/office.png",
+      "url": "https://aster-ai-lab.github.io/aster/download/screenshots/office.png",
+      "status": 200,
+      "sha256": "c71cbffd33d53d06600633b9be853d2941d78e09880034b8737e595699c15818",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/screenshots/review.png",
+      "url": "https://aster-ai-lab.github.io/aster/download/screenshots/review.png",
+      "status": 200,
+      "sha256": "8631bf9d07edcda9429e68b8325231407134535f290b6ff732e121ade10f08b3",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/screenshots/workspace.png",
+      "url": "https://aster-ai-lab.github.io/aster/download/screenshots/workspace.png",
+      "status": 200,
+      "sha256": "91810a348aded85d28e9a6c9ff57ebc4992ddfc0c9bb25a383cb9c1ffc404545",
+      "matchesStaged": true
+    },
+    {
+      "file": "download/styles.css",
+      "url": "https://aster-ai-lab.github.io/aster/download/styles.css",
+      "status": 200,
+      "sha256": "8c56ec8e72e92178d48982a2a14174770f9dc30aca431e8f4e1cd514ed2157fd",
+      "matchesStaged": true
+    },
+    {
+      "file": "home.css",
+      "url": "https://aster-ai-lab.github.io/aster/home.css",
+      "status": 200,
+      "sha256": "92b7df80d2c0566c3fbde37f4c973ad4a1e463c829d11e9b9e3eb9d74a24db21",
+      "matchesStaged": true
+    },
+    {
+      "file": "home.js",
+      "url": "https://aster-ai-lab.github.io/aster/home.js",
+      "status": 200,
+      "sha256": "1a4f4ddfa9586560bd7175d520cb8214bd1e6389e3003ef90ca0cc160e31f5b5",
+      "matchesStaged": true
+    },
+    {
+      "file": "index.html",
+      "url": "https://aster-ai-lab.github.io/aster/",
+      "status": 200,
+      "sha256": "26e9367514b2ceb8b452da07e99dfb3fa6fc9ae49b684cd15e7897d50e0f9d8b",
+      "matchesStaged": true
+    },
+    {
+      "file": "tenant/aster/favicon.png",
+      "url": "https://aster-ai-lab.github.io/aster/tenant/aster/favicon.png",
+      "status": 200,
+      "sha256": "49b76478cc48ea0c8d77eb2d2d4d3f164686710dc5e9f47a87e2fa52e09ede1c",
+      "matchesStaged": true
+    },
+    {
+      "file": "tenant/aster/logo.svg",
+      "url": "https://aster-ai-lab.github.io/aster/tenant/aster/logo.svg",
+      "status": 200,
+      "sha256": "153830278f9f5deae8bd962918e019a01394623843853a811d02ed6d0892267f",
+      "matchesStaged": true
+    },
+    {
+      "file": "tenant/aster/mark-light.png",
+      "url": "https://aster-ai-lab.github.io/aster/tenant/aster/mark-light.png",
+      "status": 200,
+      "sha256": "49b76478cc48ea0c8d77eb2d2d4d3f164686710dc5e9f47a87e2fa52e09ede1c",
+      "matchesStaged": true
+    }
+  ],
+  "downloads": [
+    {
+      "key": "desktop.macos",
+      "product": "desktop",
+      "platform": "macos",
+      "arch": "aarch64",
+      "version": "0.1.3",
+      "format": "DMG",
+      "tag": "v0.1.3",
+      "asset": "aster_0.1.3_aarch64.dmg",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.3/aster_0.1.3_aarch64.dmg"
+    },
+    {
+      "key": "desktop.windows",
+      "product": "desktop",
+      "platform": "windows",
+      "arch": "x64",
+      "version": "0.1.1",
+      "format": "EXE",
+      "tag": "v0.1.1",
+      "asset": "aster_0.1.1_x64-setup.exe",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe"
+    },
+    {
+      "key": "desktop.kylin",
+      "product": "desktop",
+      "platform": "kylin",
+      "arch": "x86_64",
+      "version": "0.1.2",
+      "format": "RUN",
+      "tag": "v0.1.2",
+      "asset": "aster_0.1.2_kylin-v10_x86_64.run",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run"
+    },
+    {
+      "key": "cli.macos",
+      "product": "cli",
+      "platform": "macos",
+      "arch": "release archive",
+      "version": "0.1.4",
+      "format": "TAR.GZ",
+      "tag": "aster-cli-v0.1.4",
+      "asset": "aster-cli-v0.1.4-macos.tar.gz",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-macos.tar.gz"
+    },
+    {
+      "key": "cli.linux",
+      "product": "cli",
+      "platform": "linux",
+      "arch": "release archive",
+      "version": "0.1.4",
+      "format": "TAR.GZ",
+      "tag": "aster-cli-v0.1.4",
+      "asset": "aster-cli-v0.1.4-linux.tar.gz",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-linux.tar.gz"
+    },
+    {
+      "key": "cli.windows",
+      "product": "cli",
+      "platform": "windows",
+      "arch": "release archive",
+      "version": "0.1.4",
+      "format": "ZIP",
+      "tag": "aster-cli-v0.1.4",
+      "asset": "aster-cli-v0.1.4-windows.zip",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-windows.zip"
+    }
+  ],
+  "actualUrls": {
+    "download/index.html": [
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-linux.tar.gz",
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-macos.tar.gz",
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-windows.zip",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.3/aster_0.1.3_aarch64.dmg"
+    ],
+    "index.html": [
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-linux.tar.gz",
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-macos.tar.gz",
+      "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-windows.zip",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run",
+      "https://github.com/aster-ai-lab/aster/releases/download/v0.1.3/aster_0.1.3_aarch64.dmg"
+    ]
+  },
+  "assetHeads": [
+    {
+      "key": "desktop.macos",
+      "version": "0.1.3",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.3/aster_0.1.3_aarch64.dmg",
+      "status": 200
+    },
+    {
+      "key": "desktop.windows",
+      "version": "0.1.1",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe",
+      "status": 200
+    },
+    {
+      "key": "desktop.kylin",
+      "version": "0.1.2",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run",
+      "status": 200
+    },
+    {
+      "key": "cli.macos",
+      "version": "0.1.4",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-macos.tar.gz",
+      "status": 200
+    },
+    {
+      "key": "cli.linux",
+      "version": "0.1.4",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-linux.tar.gz",
+      "status": 200
+    },
+    {
+      "key": "cli.windows",
+      "version": "0.1.4",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.4/aster-cli-v0.1.4-windows.zip",
+      "status": 200
+    }
+  ],
+  "excludedDraftTags": [
+    "desktop-stable"
+  ]
+}

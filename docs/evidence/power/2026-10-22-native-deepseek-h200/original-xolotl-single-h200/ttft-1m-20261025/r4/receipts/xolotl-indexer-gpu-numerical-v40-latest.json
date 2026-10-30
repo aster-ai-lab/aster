@@ -1,0 +1,79 @@
+{
+  "unix": 1792868479.307279,
+  "result": {
+    "schema": "aster-indexer-v40-gpu-numerical",
+    "unix": 1792868386.1265433,
+    "phase": "failed",
+    "runs": [
+      {
+        "name": "helper-eligibility-write-fallback",
+        "returncode": 0,
+        "seconds": 0.3147957711480558,
+        "stdout": "PASS exact masked-block CUDA eligibility/write/fallback: 144 cases\n",
+        "stderr": ""
+      },
+      {
+        "name": "archive-reference",
+        "returncode": 0,
+        "seconds": 0.4147552731446922,
+        "stdout": "CASE 0 heads32 type0 pattern0 rows1542\nCASE 1 heads32 type0 pattern1 rows1542\nCASE 2 heads32 type0 pattern2 rows1542\nCASE 3 heads32 type0 pattern3 rows1542\nCASE 4 heads32 type0 pattern4 rows1542\nCASE 5 heads32 type1 pattern0 rows1542\nCASE 6 heads32 type1 pattern1 rows1542\nCASE 7 heads32 type1 pattern2 rows1542\nCASE 8 heads32 type1 pattern3 rows1542\nCASE 9 heads32 type1 pattern4 rows1542\nCASE 10 heads32 type30 pattern0 rows1542\nCASE 11 heads32 type30 pattern1 rows1542\nCASE 12 heads32 type30 pattern2 rows1542\nCASE 13 heads32 type30 pattern3 rows1542\nCASE 14 heads32 type30 pattern4 rows1542\nCASE 15 heads32 type2 pattern0 rows1542\nCASE 16 heads32 type2 pattern1 rows1542\nCASE 17 heads32 type2 pattern2 rows1542\nCASE 18 heads32 type2 pattern3 rows1542\nCASE 19 heads32 type2 pattern4 rows1542\nCASE 20 heads32 type3 pattern0 rows1542\nCASE 21 heads32 type3 pattern1 rows1542\nCASE 22 heads32 type3 pattern2 rows1542\nCASE 23 heads32 type3 pattern3 rows1542\nCASE 24 heads32 type3 pattern4 rows1542\nCASE 25 heads32 type6 pattern0 rows1542\nCASE 26 heads32 type6 pattern1 rows1542\nCASE 27 heads32 type6 pattern2 rows1542\nCASE 28 heads32 type6 pattern3 rows1542\nCASE 29 heads32 type6 pattern4 rows1542\nCASE 30 heads32 type7 pattern0 rows1542\nCASE 31 heads32 type7 pattern1 rows1542\nCASE 32 heads32 type7 pattern2 rows1542\nCASE 33 heads32 type7 pattern3 rows1542\nCASE 34 heads32 type7 pattern4 rows1542\nCASE 35 heads32 type8 pattern0 rows1542\nCASE 36 heads32 type8 pattern1 rows1542\nCASE 37 heads32 type8 pattern2 rows1542\nCASE 38 heads32 type8 pattern3 rows1542\nCASE 39 heads32 type8 pattern4 rows1542\nCASE 40 heads32 type39 pattern0 rows1542\nCASE 41 heads32 type39 pattern1 rows1542\nCASE 42 heads32 type39 pattern2 rows1542\nCASE 43 heads32 type39 pattern3 rows1542\nCASE 44 heads32 type39 pattern4 rows1542\nCASE 45 heads64 type0 pattern0 rows1542\nCASE 46 heads64 type0 pattern1 rows1542\nCASE 47 heads64 type0 pattern2 rows1542\nCASE 48 heads64 type0 pattern3 rows1542\nCASE 49 heads64 type0 pattern4 rows1542\nCASE 50 heads64 type1 pattern0 rows1542\nCASE 51 heads64 type1 pattern1 rows1542\nCASE 52 heads64 type1 pattern2 rows1542\nCASE 53 heads64 type1 pattern3 rows1542\nCASE 54 heads64 type1 pattern4 rows1542\nCASE 55 heads64 type30 pattern0 rows1542\nCASE 56 heads64 type30 pattern1 rows1542\nCASE 57 heads64 type30 pattern2 rows1542\nCASE 58 heads64 type30 pattern3 rows1542\nCASE 59 heads64 type30 pattern4 rows1542\nCASE 60 heads64 type2 pattern0 rows1542\nCASE 61 heads64 type2 pattern1 rows1542\nCASE 62 heads64 type2 pattern2 rows1542\nCASE 63 heads64 type2 pattern3 rows1542\nCASE 64 heads64 type2 pattern4 rows1542\nCASE 65 heads64 type3 pattern0 rows1542\nCASE 66 heads64 type3 pattern1 rows1542\nCASE 67 heads64 type3 pattern2 rows1542\nCASE 68 heads64 type3 pattern3 rows1542\nCASE 69 heads64 type3 pattern4 rows1542\nCASE 70 heads64 type6 pattern0 rows1542\nCASE 71 heads64 type6 pattern1 rows1542\nCASE 72 heads64 type6 pattern2 rows1542\nCASE 73 heads64 type6 pattern3 rows1542\nCASE 74 heads64 type6 pattern4 rows1542\nCASE 75 heads64 type7 pattern0 rows1542\nCASE 76 heads64 type7 pattern1 rows1542\nCASE 77 heads64 type7 pattern2 rows1542\nCASE 78 heads64 type7 pattern3 rows1542\nCASE 79 heads64 type7 pattern4 rows1542\nCASE 80 heads64 type8 pattern0 rows1542\nCASE 81 heads64 type8 pattern1 rows1542\nCASE 82 heads64 type8 pattern2 rows1542\nCASE 83 heads64 type8 pattern3 rows1542\nCASE 84 heads64 type8 pattern4 rows1542\nCASE 85 heads64 type39 pattern0 rows1542\nCASE 86 heads64 type39 pattern1 rows1542\nCASE 87 heads64 type39 pattern2 rows1542\nCASE 88 heads64 type39 pattern3 rows1542\nCASE 89 heads64 type39 pattern4 rows1542\nPASS actual CUDA indexer score cases: 90\n",
+        "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+      },
+      {
+        "name": "new-cuda-off",
+        "returncode": 0,
+        "seconds": 0.36459419317543507,
+        "stdout": "CASE 0 heads32 type0 pattern0 rows1542\nCASE 1 heads32 type0 pattern1 rows1542\nCASE 2 heads32 type0 pattern2 rows1542\nCASE 3 heads32 type0 pattern3 rows1542\nCASE 4 heads32 type0 pattern4 rows1542\nCASE 5 heads32 type1 pattern0 rows1542\nCASE 6 heads32 type1 pattern1 rows1542\nCASE 7 heads32 type1 pattern2 rows1542\nCASE 8 heads32 type1 pattern3 rows1542\nCASE 9 heads32 type1 pattern4 rows1542\nCASE 10 heads32 type30 pattern0 rows1542\nCASE 11 heads32 type30 pattern1 rows1542\nCASE 12 heads32 type30 pattern2 rows1542\nCASE 13 heads32 type30 pattern3 rows1542\nCASE 14 heads32 type30 pattern4 rows1542\nCASE 15 heads32 type2 pattern0 rows1542\nCASE 16 heads32 type2 pattern1 rows1542\nCASE 17 heads32 type2 pattern2 rows1542\nCASE 18 heads32 type2 pattern3 rows1542\nCASE 19 heads32 type2 pattern4 rows1542\nCASE 20 heads32 type3 pattern0 rows1542\nCASE 21 heads32 type3 pattern1 rows1542\nCASE 22 heads32 type3 pattern2 rows1542\nCASE 23 heads32 type3 pattern3 rows1542\nCASE 24 heads32 type3 pattern4 rows1542\nCASE 25 heads32 type6 pattern0 rows1542\nCASE 26 heads32 type6 pattern1 rows1542\nCASE 27 heads32 type6 pattern2 rows1542\nCASE 28 heads32 type6 pattern3 rows1542\nCASE 29 heads32 type6 pattern4 rows1542\nCASE 30 heads32 type7 pattern0 rows1542\nCASE 31 heads32 type7 pattern1 rows1542\nCASE 32 heads32 type7 pattern2 rows1542\nCASE 33 heads32 type7 pattern3 rows1542\nCASE 34 heads32 type7 pattern4 rows1542\nCASE 35 heads32 type8 pattern0 rows1542\nCASE 36 heads32 type8 pattern1 rows1542\nCASE 37 heads32 type8 pattern2 rows1542\nCASE 38 heads32 type8 pattern3 rows1542\nCASE 39 heads32 type8 pattern4 rows1542\nCASE 40 heads32 type39 pattern0 rows1542\nCASE 41 heads32 type39 pattern1 rows1542\nCASE 42 heads32 type39 pattern2 rows1542\nCASE 43 heads32 type39 pattern3 rows1542\nCASE 44 heads32 type39 pattern4 rows1542\nCASE 45 heads64 type0 pattern0 rows1542\nCASE 46 heads64 type0 pattern1 rows1542\nCASE 47 heads64 type0 pattern2 rows1542\nCASE 48 heads64 type0 pattern3 rows1542\nCASE 49 heads64 type0 pattern4 rows1542\nCASE 50 heads64 type1 pattern0 rows1542\nCASE 51 heads64 type1 pattern1 rows1542\nCASE 52 heads64 type1 pattern2 rows1542\nCASE 53 heads64 type1 pattern3 rows1542\nCASE 54 heads64 type1 pattern4 rows1542\nCASE 55 heads64 type30 pattern0 rows1542\nCASE 56 heads64 type30 pattern1 rows1542\nCASE 57 heads64 type30 pattern2 rows1542\nCASE 58 heads64 type30 pattern3 rows1542\nCASE 59 heads64 type30 pattern4 rows1542\nCASE 60 heads64 type2 pattern0 rows1542\nCASE 61 heads64 type2 pattern1 rows1542\nCASE 62 heads64 type2 pattern2 rows1542\nCASE 63 heads64 type2 pattern3 rows1542\nCASE 64 heads64 type2 pattern4 rows1542\nCASE 65 heads64 type3 pattern0 rows1542\nCASE 66 heads64 type3 pattern1 rows1542\nCASE 67 heads64 type3 pattern2 rows1542\nCASE 68 heads64 type3 pattern3 rows1542\nCASE 69 heads64 type3 pattern4 rows1542\nCASE 70 heads64 type6 pattern0 rows1542\nCASE 71 heads64 type6 pattern1 rows1542\nCASE 72 heads64 type6 pattern2 rows1542\nCASE 73 heads64 type6 pattern3 rows1542\nCASE 74 heads64 type6 pattern4 rows1542\nCASE 75 heads64 type7 pattern0 rows1542\nCASE 76 heads64 type7 pattern1 rows1542\nCASE 77 heads64 type7 pattern2 rows1542\nCASE 78 heads64 type7 pattern3 rows1542\nCASE 79 heads64 type7 pattern4 rows1542\nCASE 80 heads64 type8 pattern0 rows1542\nCASE 81 heads64 type8 pattern1 rows1542\nCASE 82 heads64 type8 pattern2 rows1542\nCASE 83 heads64 type8 pattern3 rows1542\nCASE 84 heads64 type8 pattern4 rows1542\nCASE 85 heads64 type39 pattern0 rows1542\nCASE 86 heads64 type39 pattern1 rows1542\nCASE 87 heads64 type39 pattern2 rows1542\nCASE 88 heads64 type39 pattern3 rows1542\nCASE 89 heads64 type39 pattern4 rows1542\nPASS actual CUDA indexer score cases: 90\n",
+        "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+      },
+      {
+        "name": "graph-mask-only",
+        "returncode": 0,
+        "seconds": 0.4647307703271508,
+        "stdout": "CASE 0 heads32 type0 pattern0 rows1542\nCASE 1 heads32 type0 pattern1 rows1542\nCASE 2 heads32 type0 pattern2 rows1542\nCASE 3 heads32 type0 pattern3 rows1542\nCASE 4 heads32 type0 pattern4 rows1542\nCASE 5 heads32 type1 pattern0 rows1542\nCASE 6 heads32 type1 pattern1 rows1542\nCASE 7 heads32 type1 pattern2 rows1542\nCASE 8 heads32 type1 pattern3 rows1542\nCASE 9 heads32 type1 pattern4 rows1542\nCASE 10 heads32 type30 pattern0 rows1542\nCASE 11 heads32 type30 pattern1 rows1542\nCASE 12 heads32 type30 pattern2 rows1542\nCASE 13 heads32 type30 pattern3 rows1542\nCASE 14 heads32 type30 pattern4 rows1542\nCASE 15 heads32 type2 pattern0 rows1542\nCASE 16 heads32 type2 pattern1 rows1542\nCASE 17 heads32 type2 pattern2 rows1542\nCASE 18 heads32 type2 pattern3 rows1542\nCASE 19 heads32 type2 pattern4 rows1542\nCASE 20 heads32 type3 pattern0 rows1542\nCASE 21 heads32 type3 pattern1 rows1542\nCASE 22 heads32 type3 pattern2 rows1542\nCASE 23 heads32 type3 pattern3 rows1542\nCASE 24 heads32 type3 pattern4 rows1542\nCASE 25 heads32 type6 pattern0 rows1542\nCASE 26 heads32 type6 pattern1 rows1542\nCASE 27 heads32 type6 pattern2 rows1542\nCASE 28 heads32 type6 pattern3 rows1542\nCASE 29 heads32 type6 pattern4 rows1542\nCASE 30 heads32 type7 pattern0 rows1542\nCASE 31 heads32 type7 pattern1 rows1542\nCASE 32 heads32 type7 pattern2 rows1542\nCASE 33 heads32 type7 pattern3 rows1542\nCASE 34 heads32 type7 pattern4 rows1542\nCASE 35 heads32 type8 pattern0 rows1542\nCASE 36 heads32 type8 pattern1 rows1542\nCASE 37 heads32 type8 pattern2 rows1542\nCASE 38 heads32 type8 pattern3 rows1542\nCASE 39 heads32 type8 pattern4 rows1542\nCASE 40 heads32 type39 pattern0 rows1542\nCASE 41 heads32 type39 pattern1 rows1542\nCASE 42 heads32 type39 pattern2 rows1542\nCASE 43 heads32 type39 pattern3 rows1542\nCASE 44 heads32 type39 pattern4 rows1542\nCASE 45 heads64 type0 pattern0 rows1542\nCASE 46 heads64 type0 pattern1 rows1542\nCASE 47 heads64 type0 pattern2 rows1542\nCASE 48 heads64 type0 pattern3 rows1542\nCASE 49 heads64 type0 pattern4 rows1542\nCASE 50 heads64 type1 pattern0 rows1542\nCASE 51 heads64 type1 pattern1 rows1542\nCASE 52 heads64 type1 pattern2 rows1542\nCASE 53 heads64 type1 pattern3 rows1542\nCASE 54 heads64 type1 pattern4 rows1542\nCASE 55 heads64 type30 pattern0 rows1542\nCASE 56 heads64 type30 pattern1 rows1542\nCASE 57 heads64 type30 pattern2 rows1542\nCASE 58 heads64 type30 pattern3 rows1542\nCASE 59 heads64 type30 pattern4 rows1542\nCASE 60 heads64 type2 pattern0 rows1542\nCASE 61 heads64 type2 pattern1 rows1542\nCASE 62 heads64 type2 pattern2 rows1542\nCASE 63 heads64 type2 pattern3 rows1542\nCASE 64 heads64 type2 pattern4 rows1542\nCASE 65 heads64 type3 pattern0 rows1542\nCASE 66 heads64 type3 pattern1 rows1542\nCASE 67 heads64 type3 pattern2 rows1542\nCASE 68 heads64 type3 pattern3 rows1542\nCASE 69 heads64 type3 pattern4 rows1542\nCASE 70 heads64 type6 pattern0 rows1542\nCASE 71 heads64 type6 pattern1 rows1542\nCASE 72 heads64 type6 pattern2 rows1542\nCASE 73 heads64 type6 pattern3 rows1542\nCASE 74 heads64 type6 pattern4 rows1542\nCASE 75 heads64 type7 pattern0 rows1542\nCASE 76 heads64 type7 pattern1 rows1542\nCASE 77 heads64 type7 pattern2 rows1542\nCASE 78 heads64 type7 pattern3 rows1542\nCASE 79 heads64 type7 pattern4 rows1542\nCASE 80 heads64 type8 pattern0 rows1542\nCASE 81 heads64 type8 pattern1 rows1542\nCASE 82 heads64 type8 pattern2 rows1542\nCASE 83 heads64 type8 pattern3 rows1542\nCASE 84 heads64 type8 pattern4 rows1542\nCASE 85 heads64 type39 pattern0 rows1542\nCASE 86 heads64 type39 pattern1 rows1542\nCASE 87 heads64 type39 pattern2 rows1542\nCASE 88 heads64 type39 pattern3 rows1542\nCASE 89 heads64 type39 pattern4 rows1542\nPASS actual CUDA indexer score cases: 90\n",
+        "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+      },
+      {
+        "name": "graph-mask-and-skip",
+        "returncode": -6,
+        "seconds": 0.6147717800922692,
+        "stdout": "CASE 0 heads32 type0 pattern0 rows1542\nCASE 1 heads32 type0 pattern1 rows1542\nCASE 2 heads32 type0 pattern2 rows1542\nCASE 3 heads32 type0 pattern3 rows1542\nCASE 4 heads32 type0 pattern4 rows1542\n",
+        "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nCUDA error: misaligned address\n  current device: 0, in function ggml_backend_cuda_synchronize at /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:2553\n  cudaStreamSynchronize(cuda_ctx->stream())\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:108: CUDA error\n"
+      }
+    ],
+    "model_quality_claimed": false,
+    "performance_claimed": false,
+    "score_comparisons": [
+      {
+        "profile": "archive-reference",
+        "mask_first": "0",
+        "skip_flag": "0",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "byte_equal_to_actual_archive": true
+      },
+      {
+        "profile": "new-cuda-off",
+        "mask_first": "0",
+        "skip_flag": "0",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "byte_equal_to_actual_archive": true
+      },
+      {
+        "profile": "graph-mask-only",
+        "mask_first": "1",
+        "skip_flag": "0",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "byte_equal_to_actual_archive": true
+      }
+    ],
+    "error": "RuntimeError: graph-mask-and-skip exit -6",
+    "finished_unix": 1792868389.3042207
+  },
+  "exact_numerical_alive": false
+}

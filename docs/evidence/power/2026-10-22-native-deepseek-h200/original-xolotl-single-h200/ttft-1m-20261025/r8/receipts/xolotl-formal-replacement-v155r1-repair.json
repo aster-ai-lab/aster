@@ -1,0 +1,11 @@
+{
+  "unix": 1792899759.0457973,
+  "phase": "preflight_guard_repaired",
+  "prior_failed_operator": "submit_xolotl_single1m_cont11_lease_v155.frozen.py",
+  "previous_error": "Guard queried a nonexistent C11 job name while retaining C10 UID; generated global prefix replacement was too broad",
+  "old_failure_before_submission_intent": true,
+  "old_failure_before_remote_mutation": true,
+  "new_gpu_submitted_by_failed_attempt": false,
+  "exact_existing_optimization_job": "aster-xolotl-1mc10-d0ed8472c851-76441859",
+  "maximum_authorized_h200": 2
+}

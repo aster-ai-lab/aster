@@ -1,0 +1,1080 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/Cargo.toml
+   Compiling parking_lot_core v0.9.12
+   Compiling getrandom v0.2.16
+   Compiling errno v0.3.14
+   Compiling serde_json v1.0.154
+   Compiling rand_core v0.6.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling parking_lot v0.12.5
+   Compiling crypto-common v0.1.6
+   Compiling futures-util v0.3.34
+   Compiling tokio v1.53.3
+   Compiling zerocopy v0.8.48
+   Compiling icu_normalizer v2.0.0
+   Compiling string_cache v0.9.0
+   Compiling digest v0.10.7
+   Compiling web_atoms v0.2.3
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling sha2 v0.10.9
+   Compiling tokio-util v0.7.19
+   Compiling rustix v1.1.5
+   Compiling ring v0.17.14
+   Compiling h2 v0.4.19
+   Compiling cipher v0.4.4
+   Compiling ahash v0.8.12
+   Compiling getrandom v0.4.1
+   Compiling rustls v0.23.46
+   Compiling rustls-webpki v0.103.15
+   Compiling fs-set-times v0.20.3
+   Compiling url v2.5.8
+   Compiling markup5ever v0.38.0
+   Compiling futures-executor v0.3.34
+   Compiling concurrent-queue v2.5.0
+   Compiling hyper v1.8.1
+   Compiling derive_more-impl v2.1.1
+   Compiling anyhow v1.0.104
+   Compiling cap-primitives v4.0.3
+   Compiling cssparser v0.37.0
+   Compiling derive_more v2.1.1
+   Compiling event-listener v5.4.1
+   Compiling hyper-util v0.1.20
+   Compiling flate2 v1.1.5
+   Compiling ppv-lite86 v0.2.21
+   Compiling markup5ever v0.39.0
+   Compiling string_cache v0.8.9
+   Compiling fs2 v0.4.3
+   Compiling proc-macro2 v1.0.106
+   Compiling tower v0.5.2
+   Compiling publicsuffix v2.3.0
+   Compiling markup5ever v0.14.1
+   Compiling selectors v0.38.0
+   Compiling tokio-rustls v0.26.6
+   Compiling html5ever v0.39.0
+   Compiling cssparser v0.34.0
+   Compiling rand_chacha v0.3.1
+   Compiling event-listener-strategy v0.5.4
+   Compiling cap-std v4.0.2
+   Compiling html5ever v0.38.0
+   Compiling uuid v1.26.1
+   Compiling universal-hash v0.5.1
+   Compiling num_cpus v1.17.0
+   Compiling quote v1.0.45
+   Compiling either v1.15.0
+   Compiling tower-http v0.6.8
+   Compiling polyval v0.6.2
+   Compiling rayon v1.12.0
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/acl)
+   Compiling selectors v0.26.0
+   Compiling html5ever v0.29.1
+   Compiling cap-fs-ext v4.0.2
+   Compiling hyper-rustls v0.27.7
+   Compiling async-lock v3.4.1
+   Compiling cookie_store v0.21.1
+   Compiling async-compression v0.4.19
+   Compiling dom_query v0.28.0
+   Compiling rand v0.8.8
+   Compiling jsonschema-value v0.48.5
+   Compiling referencing v0.48.5
+   Compiling futures v0.3.34
+   Compiling xml5ever v0.38.0
+   Compiling dirs-sys v0.4.1
+   Compiling dirs-sys v0.5.0
+   Compiling aes v0.8.4
+   Compiling tokio-stream v0.1.17
+   Compiling rand_xoshiro v0.6.0
+   Compiling bytemuck v1.25.2
+   Compiling deadpool-runtime v0.1.4
+   Compiling dom_smoothie v0.18.2
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling roaring v0.11.1
+   Compiling deadpool v0.12.3
+   Compiling dashmap v6.2.1
+   Compiling tracing-subscriber v0.3.23
+   Compiling imbl v3.0.0
+   Compiling scraper v0.22.0
+   Compiling oci-spec v0.10.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/vendor/oci-spec-0.10.0)
+   Compiling jsonschema v0.48.5
+   Compiling rand v0.10.3
+   Compiling dirs v6.0.0
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling dirs v5.0.1
+   Compiling reqwest v0.12.24
+   Compiling rquickjs-core v0.11.0
+   Compiling ghash v0.5.1
+   Compiling tempfile v3.27.0
+   Compiling referencing v0.47.0
+   Compiling cbc v0.1.2
+   Compiling ecb v0.1.2
+   Compiling ctr v0.9.2
+   Compiling yasna v0.5.2
+   Compiling md-5 v0.10.6
+   Compiling assert-json-diff v2.0.2
+   Compiling aead v0.5.2
+   Compiling fsevent-sys v4.1.0
+   Compiling memmap2 v0.9.11
+   Compiling ttf-parser v0.25.1
+   Compiling sha256 v1.6.0
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/crates/sdk)
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/vec)
+   Compiling notify v8.2.0
+   Compiling aes-gcm v0.10.3
+   Compiling rcgen v0.13.2
+   Compiling lopdf v0.42.0
+   Compiling wiremock v0.6.5
+   Compiling lsp-types v0.97.0
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/search)
+   Compiling jsonschema v0.47.0
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/sandbox)
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/form-core)
+   Compiling a3s-lane v0.5.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/lane)
+   Compiling rquickjs v0.11.0
+   Compiling syn v2.0.117
+   Compiling htmd v0.5.4
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/effect)
+   Compiling html2text v0.16.7
+   Compiling a3s-common v0.1.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/common)
+   Compiling a3s-memory v0.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/memory)
+   Compiling a3s-code-core v9.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 2 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 30s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/target/qualification/net-progress-build/target/debug/deps/a3s_code_core-6bfe2b8f136bd896)
+
+running 743 tests
+test agent_api::conversation_runtime::child_run::tests::zero_tool_rounds_child_continues_without_removing_independent_guards ... ok
+test agent_api::conversation_runtime::host_event_tests::a_ready_send_remains_observable_after_cancellation ... ok
+test agent_api::conversation_runtime::host_event_tests::cancellation_releases_a_full_host_send_without_replacing_the_queued_prefix ... ok
+test agent_api::conversation_runtime::host_event_tests::uncancelled_host_delivery_keeps_backpressure_and_order ... ok
+test agent_api::conversation_runtime::memory_retention_tests::detached_and_exact_recovery_register_before_publication_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::explicit_host_typed_writer_remains_a_separate_positive_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::former_matcher_inputs_cannot_grant_writes_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_close_timeout_uses_original_five_second_drain_in_both_stores ... original drain wake Memory/Blocking: 5.001s
+original drain wake Memory/Stream: 5.001s
+original drain wake Memory/Detached: 5.001s
+original drain wake Memory/Exact: 5.001s
+original drain wake File/Blocking: 5.001s
+original drain wake File/Stream: 5.001s
+original drain wake File/Detached: 5.001s
+original drain wake File/Exact: 5.001s
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_entered_store_results_remain_truthful_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores ... all-stage deny observation Memory/Blocking: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Stream: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Detached: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Exact: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Blocking: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Stream: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Detached: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Exact: checks=[("retention-lifecycle", false, 3642), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_failed_empty_disabled_turns_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_original_cancel_before_store_refuses_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::blocking_send_awaits_original_extraction_and_accounts_usage_in_both_stores ... original callback observations Memory: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+original callback observations File: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::supplemental_original_facade_parts_match_and_aux_keep_guard_usage_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_remember_bytes_require_valid_model_authority_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_worker_joins_original_committer_before_end_and_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::stream_registers_before_end_preserves_fifo_and_immediate_close_in_both_stores ... ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::actual_checkpoint_eof_is_independent_of_partial_model_callback_in_both_session_stores ... ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_detached ... mode=Detached file_session=false file_memory=false
+mode=Detached file_session=false file_memory=true
+mode=Detached file_session=true file_memory=false
+mode=Detached file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_exact_recovery ... mode=ExactRecovery file_session=false file_memory=false
+mode=ExactRecovery file_session=false file_memory=true
+mode=ExactRecovery file_session=true file_memory=false
+mode=ExactRecovery file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_ordinary_checkpoint ... mode=OrdinaryCheckpoint file_session=false file_memory=false
+mode=OrdinaryCheckpoint file_session=false file_memory=true
+mode=OrdinaryCheckpoint file_session=true file_memory=false
+mode=OrdinaryCheckpoint file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_ordinary_log ... mode=OrdinaryLog file_session=false file_memory=false
+mode=OrdinaryLog file_session=false file_memory=true
+mode=OrdinaryLog file_session=true file_memory=false
+mode=OrdinaryLog file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_prepared_stored ... mode=PreparedStored file_session=false file_memory=false
+mode=PreparedStored file_session=false file_memory=true
+mode=PreparedStored file_session=true file_memory=false
+mode=PreparedStored file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_prepared_supplied ... mode=PreparedSupplied file_session=false file_memory=false
+mode=PreparedSupplied file_session=false file_memory=true
+mode=PreparedSupplied file_session=true file_memory=false
+mode=PreparedSupplied file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_send ... mode=Send file_session=false file_memory=false
+mode=Send file_session=false file_memory=true
+mode=Send file_session=true file_memory=false
+mode=Send file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_send_attachments ... mode=SendAttachments file_session=false file_memory=false
+mode=SendAttachments file_session=false file_memory=true
+mode=SendAttachments file_session=true file_memory=false
+mode=SendAttachments file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_stream ... mode=Stream file_session=false file_memory=false
+mode=Stream file_session=false file_memory=true
+mode=Stream file_session=true file_memory=false
+mode=Stream file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_stream_attachments ... mode=StreamAttachments file_session=false file_memory=false
+mode=StreamAttachments file_session=false file_memory=true
+mode=StreamAttachments file_session=true file_memory=false
+mode=StreamAttachments file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::cancelled_success_waits_for_original_charge_then_releases_in_both_stores ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::canonical_blocking_returns_after_actual_original_retirement_and_keeps_governance ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::canonical_commands_execute_in_one_original_worker_without_a_fact_run ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::detached_observer_drains_actual_events_before_waiting_for_the_original_proxy ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::exact_invalid_identity_finishes_the_known_unconstructed_branch_without_a_model ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::lost_blocking_caller_and_last_session_drop_retain_actual_callback_and_task_lease ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::prepared_recovery_from_another_admission_refuses_before_target_mutation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::a_future_terminal_does_not_erase_prepared_debt_at_the_exact_cached_prefix ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::an_original_write_without_its_verifier_cannot_authorize_cached_passed_reports ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_passed_report_requires_the_original_accepted_bound_report ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_prepared_debt_waits_for_its_actual_later_original_boundary ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::completion_gate_to_host_retains_typed_reconciliation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_background_terminals_reconcile_legacy_observation_only_cache_keys ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_unknown_receipt_covers_its_cache_without_forgiving_debt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_write_and_verifier_receipts_cover_a_passed_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_prepared_only_debt_proves_its_negative_cache_without_a_terminal_receipt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::incomplete_or_mismatched_original_evidence_cannot_promote_a_passed_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::originally_settled_legacy_history_stays_readable_without_positive_cache_claims ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_run_settled_receipts_keep_their_own_frozen_binding_in_cache_coverage ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_settled_path_does_not_rebind_a_new_runs_distinct_effect_report ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_file_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_memory_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::actual_original_log_io_fault_refuses_resume_before_provider_and_retains_source_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::committed_negative_input_survives_surface_destruction_and_actual_send ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::distinct_target_runs_reuse_one_negative_identity_but_changed_source_content_does_not ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::exact_target_publisher_cleanup_never_deletes_source_or_discharges_original_negative ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::full_log_negative_survives_compaction_settlement_later_original_proof_and_current_passed ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::malformed_and_unknown_negative_inputs_remain_unproved_on_fresh_surface_and_actual_send ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::original_negative_debt_survives_memory_and_reopened_file_session_stores_without_caches ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::reports_only_and_unreadable_original_logs_remain_unproved ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::unrelated_prepared_debt_does_not_invalidate_exact_cache_provenance ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::valid_older_cache_is_covered_before_a_later_known_write ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::conflicting_detached_binding_fails_before_execution_and_retains_close_failure ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_binding_uses_the_pinned_capability_cognitive_and_control_identity ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_live_controls_apply_exact_steer_and_settle_parked_interrupt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::failed_recovery_seed_closes_bound_run_before_releasing_session_slots ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::missing_log_and_compacted_checkpoint_preserve_unknown_after_history_import ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::original_log_wins_for_later_known_bytes_and_preserves_all_unknowns_past_marker ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::retained_end_and_external_end_share_the_actual_byte_check_summary ... ok
+test agent_api::conversation_runtime::steer_lifecycle_tests::joined_aborted_worker_fails_steer_and_closes_wire_before_accounting_returns ... ok
+test agent_api::conversation_runtime::steer_terminal_tests::accepted_steer_after_last_safe_point_is_retained_before_normal_completion ... outcome=Ok(AgentResult { text: "The original answer is complete.", messages: [Message { role: "user", content: [Text { text: "Finish the current answer." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }, Message { role: "assistant", content: [Text { text: "The original answer is complete." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }, Message { role: "user", content: [Text { text: "Use the new workspace requirement on the next turn." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }], usage: TokenUsage { prompt_tokens: 0, completion_tokens: 8, total_tokens: 8, cache_read_tokens: None, cache_write_tokens: None }, tool_calls_count: 0, verification_reports: [], completion: Narrative, forced_stop: None, run_admission: "ordinary" }) receipt=RunControlReceipt { schema: "a3s.code.run-control-receipt.v1", request_id: "terminal-steer-request", session_id: "terminal-steer", run_id: "run-d826945c-4358-430f-8647-41f6d3e73649", operation: Steer, state: Applied, sequence: 1, turn_id: Some("turn-1"), turn_revision: 1, accepted_at_ms: 1792845710921, applied_at_ms: Some(1792845710926), error: None } facts=[Fact { seq: 1, kind: "a3s.standing-context", key: "standing-context", cause: None, payload: Object {"context": String("sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f"), "digest": String("sha256:4ae5d8f7010ec7efd9c984c4f132dc1577cfc2ed95657748745c0c94564ac37b")} }, Fact { seq: 2, kind: "user.message", key: "m-1", cause: None, payload: Object {"text": String("Finish the current answer.")} }, Fact { seq: 3, kind: "context.sections", key: "context:1792845710914:sha256:feda3c168a424f36311f536918faa547c69337ae350be97f410fb49654a8cb4f", cause: None, payload: Object {"sections": Array [Object {"digest": String("sha256:5bace783932e45f94e27845a313e8d7025e9c25eb80f1a934e59c50faa7f327c"), "provider": String("sandbox_availability")}]} }, Fact { seq: 4, kind: "model.turn", key: "model:1:0", cause: Some("infer:1:0"), payload: Object {"kind": String("text"), "text": String("The original answer is complete."), "tool_effect_protocol": Number(1)} }, Fact { seq: 5, kind: "user.message", key: "run-steer-v1:sha256:ec4b76360263c8b9665bf4ac94900fdd9ae9ab3b1354e80ac0305709ba16e934", cause: None, payload: Object {"text": String("Use the new workspace requirement on the next turn.")} }, Fact { seq: 6, kind: "turn.complete", key: "turn-complete:5:77a4f24434a1c2f3d4ec66a22714a682321f019b7a8dddd967e98726ac715f39", cause: None, payload: Object {"background_receipt_keys": Array [], "effect_digest": Null, "forced_stop": Null, "log_cut": Object {"digest": String("77a4f24434a1c2f3d4ec66a22714a682321f019b7a8dddd967e98726ac715f39"), "seq": Number(5)}, "receipt_keys": Array [], "terminal": String("narrative")} }]
+ok
+test agent_api::conversation_runtime::steer_terminal_tests::actual_original_file_io_failure_retains_both_errors_and_never_publishes_success ... actual combined failure=Session error: fact schema: fact log must be a single-link regular file; terminal input retention also failed: fact schema: fact log must be a single-link regular file; terminal transcript also failed: fact schema: fact log must be a single-link regular file
+ok
+test agent_api::conversation_runtime::steer_terminal_tests::late_input_reaches_original_log_store_and_next_provider_across_public_routes ... late input route=send file=false
+late input route=send file=true
+late input route=attachments file=false
+late input route=attachments file=true
+late input route=stream file=false
+late input route=stream file=true
+late input route=detached file=false
+late input route=detached file=true
+ok
+test agent_api::conversation_runtime::stream_usage_tests::public_stream_end_preserves_mapped_usage_including_cache_tokens ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::budget_denial_tests::denied_original_budget_stops_once_and_same_session_accepts_reallocated_budget ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::budget_guard_denial_fails_without_cancelling_or_calling_provider ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_with_attachments_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_with_attachments_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::late_token_cancel_cannot_reverse_the_original_sealed_success ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancelled_success_uses_owned_token_after_active_slot_is_cleared ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::ordinary_interruption_words_complete_across_conversation_surfaces ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::provider_error_with_interruption_word_is_failed_without_cancellation ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::public_cancel_keeps_cancellation_and_original_cleanup_error_event ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::tool_budget_forced_stop_remains_distinct_from_host_cancellation ... ok
+test agent_api::direct_tools::governed_tests::governed_denial_binds_the_request_before_permission_evidence ... ok
+test agent_api::direct_tools::governed_tests::governed_host_call_obeys_permission_before_side_effects ... ok
+test agent_api::direct_tools::governed_tests::governed_host_call_requires_approval_before_side_effects ... ok
+test agent_api::direct_tools::governed_tests::governed_search_grep_works_without_embeddings_and_obeys_denial ... ok
+test agent_api::direct_tools::governed_tests::runtime_policy_retains_visibility_and_the_hosts_snapshot_boundary ... ok
+test agent_api::direct_tools::governed_tests::runtime_posture_and_host_deny_both_govern_direct_calls ... ok
+test agent_api::direct_tools::governed_tests::trusted_host_call_preserves_explicit_control_plane_authority ... ok
+test agent_api::direct_tools::tests::direct_background_task_does_not_hold_event_bridge_open ... ok
+test agent_api::direct_tools::tests::direct_read_file_passes_offset_and_limit ... ok
+test agent_api::direct_tools::tests::direct_tool_call_uses_session_tool_context ... ok
+test agent_api::direct_tools::tests::direct_tool_call_with_events_forwards_tool_stream_deltas ... ok
+test agent_api::direct_tools::tests::direct_tool_events_are_sanitized_and_end_after_all_deltas ... ok
+test agent_api::direct_tools::tests::host_direct_calls_still_obey_budget_before_side_effects ... ok
+test agent_api::direct_tools::tests::host_direct_calls_still_obey_pre_tool_hooks ... ok
+test agent_api::direct_tools::tests::host_direct_calls_still_obey_tool_timeout ... ok
+test agent_api::direct_tools::tests::host_direct_calls_still_sanitize_tool_output ... ok
+test agent_api::direct_tools::tests::host_direct_hook_denial_sanitizes_structured_reason ... ok
+test agent_api::direct_tools::tests::host_direct_nested_calls_do_not_deadlock_a_single_slot_tool_queue ... ok
+test agent_api::direct_tools::tests::host_direct_policy_bypasses_model_permission_for_nested_batch_calls ... ok
+test agent_api::direct_tools::tests::host_direct_policy_propagates_to_nested_program_calls ... ok
+test agent_api::direct_tools::tests::parse_glob_output_ignores_empty_lines ... ok
+test agent_api::direct_tools::tests::pre_tool_hook_rewrites_and_revalidates_arguments_before_execution ... ok
+test agent_api::direct_tools::tests::session_cancellation_interrupts_host_direct_tool_execution ... ok
+test agent_api::goal_facade::tests::competing_definition_revisions_have_one_original_winner ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_current_source_and_original_judgment_accept_only_the_ready_step ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_failed_source_or_current_judgment_cannot_unlock_dependencies ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_judges_a_bounded_observation_that_names_its_omission ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_late_workspace_acceptance_still_requires_its_original_report ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_original_structured_repair_usage_is_included_once ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_oversized_original_observation_cannot_be_silently_truncated ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_does_not_bypass_unknown_host_mount_admission ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_binds_the_original_run_without_another_planner ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_refuses_the_legacy_opener_without_original_worker ... ok
+test agent_api::goal_facade::tests::execution::attestation::automatic_slice_resets_stall_only_after_an_accepted_workspace_mutation ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_denied_attempt_preserves_verified_current_write ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_attestation_accepts_write_and_preserves_original_probe ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_report_with_wrong_effect_digest_is_not_authority ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_late_artifact_drift_refuses_original_completion_and_progress ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_replan_revalidates_retained_bytes_without_replaying_the_write ... ok
+test agent_api::goal_facade::tests::execution::attestation::legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress ... ok
+test agent_api::goal_facade::tests::execution::attestation::net_zero::net_zero_write_cycles_cannot_refresh_automatic_progress_after_reopen ... ok
+test agent_api::goal_facade::tests::execution::attestation::net_zero::repeated_workspace_states_stop_while_legal_v2_history_replays_unchanged ... ok
+test agent_api::goal_facade::tests::execution::attestation::settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_stream_tick_hands_the_slice_events_to_the_host_and_accepts_like_tick ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_admits_one_original_run_and_persists_finite_use_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_occupied_session_reconciles_without_admission ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_a_policy_above_the_admission_ceilings_without_a_run ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_without_trusted_enabled_unexpired_bounds ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_without_progress_stops_at_the_stall_bound ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_writer_revalidation_refuses_stale_or_invalid_origins ... ok
+test agent_api::goal_facade::tests::execution::completion::a_stopped_owner_after_the_last_acceptance_completes_on_reconcile ... ok
+test agent_api::goal_facade::tests::execution::completion::an_earlier_unclosed_slice_holds_completion_until_reconcile ... ok
+test agent_api::goal_facade::tests::execution::completion::an_unmet_goal_criterion_keeps_the_last_step_open_and_the_goal_active ... ok
+test agent_api::goal_facade::tests::execution::completion::the_last_step_judges_the_goal_and_its_owner_records_completion_once ... ok
+test agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::control::a_plan_revision_during_a_running_slice_waits_for_the_next_slice ... ok
+test agent_api::goal_facade::tests::execution::control::goal_control_settles_the_running_slice_and_an_old_wake_executes_nothing ... ok
+test agent_api::goal_facade::tests::execution::control::refused_goal_control_does_not_cancel_the_running_run ... ok
+test agent_api::goal_facade::tests::execution::control::replayed_goal_control_does_not_cancel_a_later_slice ... ok
+test agent_api::goal_facade::tests::execution::cumulative::an_automatic_slice_child_task_is_billed_once_through_the_original_guard ... CHILD-COST closeout=14 governed=21
+ok
+test agent_api::goal_facade::tests::execution::deadline::a_source_that_expires_before_its_worker_starts_cannot_reach_the_model ... ok
+test agent_api::goal_facade::tests::execution::deadline::active::an_absolute_deadline_stops_continuously_active_model_and_tool_rounds ... ok
+test agent_api::goal_facade::tests::execution::deadline::an_expired_automatic_policy_does_not_disable_an_explicit_manual_run ... ok
+test agent_api::goal_facade::tests::execution::deadline::an_expired_preview_preserves_the_typed_host_refusal_without_model_work ... ok
+test agent_api::goal_facade::tests::execution::deadline::automatic_deadline_stops_a_stalled_goal_assessment_without_a_session_timeout ... ok
+test agent_api::goal_facade::tests::execution::deadline::automatic_deadline_stops_a_stalled_main_model_without_a_session_timeout ... ok
+test agent_api::goal_facade::tests::execution::deadline::automatic_deadline_stream_retains_the_reason_without_a_success_end ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::automatic_deadline_bounds_a_stalled_confirmation_cancellation ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::automatic_deadline_drops_a_stalled_confirmation_registration ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::an_already_cancelled_call_never_registers_or_cancels_an_existing_request ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::confirmation_backpressure_is_cancellable_without_dropping_the_queued_prefix ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::direct::the_shared_runtime_cancels_both_pending_provider_stages_without_claiming_cleanup ... ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::a_cancelled_runs_late_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_8f7ed3de35144882858e12caaae9031d current_id=call_ec0677f63b7144a5992ae6e3454e2536 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::a_rejected_runs_late_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_106d4049a5414338803819326abb9932 current_id=call_62e54cfa590e477391bca9ec41b476c2 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::an_answered_runs_old_approval_cannot_authorize_a_reused_model_call_id ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_b67f34a0968d4b25b54316cf6fbc5f1a current_id=call_3d248e214cb145e0a6e7a26627aa1d6e late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::identity::unconfirmed_host_cleanup_cannot_let_an_abandoned_approval_authorize_a_new_run ... CONFIRMATION_IDENTITY_OBSERVATION reused_model_id=verify-current old_id=call_21f410f93a304812bdc14a511be7374a current_id=call_2e8d490ec7754e92b9ea421d47111a41 late_accepted=false current_accepted=true
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_availability ... POLICY_CALLBACK_OBSERVATION stage=Available reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_policy ... POLICY_CALLBACK_OBSERVATION stage=Policy reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_recheck ... POLICY_CALLBACK_OBSERVATION stage=Recheck reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::confirmation::policy_callbacks::automatic_deadline_cancels_a_stalled_confirmation_requirement ... POLICY_CALLBACK_OBSERVATION stage=Requires reached=true stopped=true dropped=true status=Cancelled
+ok
+test agent_api::goal_facade::tests::execution::deadline::persistence::a_pending_checkpoint_write_reports_the_deadline_without_fake_retirement ... PERSISTENCE_OWNER_OBSERVATION stage=Store file=false entered=true still_owned=true dropped_early=false notice=true blocked=true model_calls=1 status=Planning
+PERSISTENCE_OWNER_OBSERVATION stage=Store file=true entered=true still_owned=true dropped_early=false notice=true blocked=true model_calls=1 status=Planning
+ok
+test agent_api::goal_facade::tests::execution::deadline::persistence::a_pending_export_reports_the_deadline_without_fake_retirement ... PERSISTENCE_OWNER_OBSERVATION stage=Export file=false entered=true still_owned=true dropped_early=false notice=true blocked=true model_calls=1 status=Planning
+PERSISTENCE_OWNER_OBSERVATION stage=Export file=true entered=true still_owned=true dropped_early=false notice=true blocked=true model_calls=1 status=Planning
+ok
+test agent_api::goal_facade::tests::execution::deadline::tool::automatic_deadline_retires_a_stalled_tool_and_keeps_the_session_available ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_cached_pass_narrative_and_display_events_do_not_admit_progress ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_current_run_does_not_inherit_prior_run_verification_authority ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_original_read_receipts_bind_exact_run_on_both_stores ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_real_mutation_cannot_borrow_a_foreign_passed_report ... ok
+test agent_api::goal_facade::tests::execution::goal_run_binding_survives_all_original_recovery_ingresses_and_two_stores ... ok
+test agent_api::goal_facade::tests::execution::novelty::productive::accepted_step_progress_continues_with_identical_tool_observations ... ok
+test agent_api::goal_facade::tests::execution::novelty::productive::genuinely_changed_observations_extend_progress_but_revisited_bytes_do_not ... ok
+test agent_api::goal_facade::tests::execution::novelty::repeated_observations_under_new_run_identities_stop_and_stay_stalled_after_reopen ... NOVELTY slice=0 calls=4 progress={"information_delta":1,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+NOVELTY slice=1 calls=8 progress={"information_delta":0,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+NOVELTY slice=2 calls=12 progress={"information_delta":0,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+NOVELTY slice=0 calls=4 progress={"information_delta":1,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+NOVELTY slice=1 calls=8 progress={"information_delta":0,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+NOVELTY slice=2 calls=12 progress={"information_delta":0,"mutation_delta":0,"plan_delta":0,"uncertainty_delta":0}
+ok
+test agent_api::goal_facade::tests::execution::proposed_goal_plan_still_refuses_before_explicit_planning_model ... ok
+test agent_api::goal_facade::tests::execution::recovery_limits::a_disabled_reopened_policy_requires_explicit_host_reenablement ... RECOVERED_LIMITS_OBSERVATION file=false constraint=Disabled phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Disabled phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Disabled phase=2 admitted=2 synthetic_total=42 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Disabled phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Disabled phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Disabled phase=2 admitted=2 synthetic_total=42 model_calls=0
+ok
+test agent_api::goal_facade::tests::execution::recovery_limits::an_expired_reopened_deadline_requires_explicit_host_extension_and_keeps_usage ... RECOVERED_LIMITS_OBSERVATION file=false constraint=Deadline phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Deadline phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Deadline phase=2 admitted=2 synthetic_total=42 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Deadline phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Deadline phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Deadline phase=2 admitted=2 synthetic_total=42 model_calls=0
+ok
+test agent_api::goal_facade::tests::execution::recovery_limits::reopened_slice_policy_preserves_cumulative_opportunities_and_recorded_usage ... RECOVERED_LIMITS_OBSERVATION file=false constraint=Slices phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Slices phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=false constraint=Slices phase=2 admitted=2 synthetic_total=42 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Slices phase=0 admitted=1 synthetic_total=21 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Slices phase=1 admitted=2 synthetic_total=42 model_calls=3
+RECOVERED_LIMITS_OBSERVATION file=true constraint=Slices phase=2 admitted=2 synthetic_total=42 model_calls=0
+ok
+test agent_api::goal_facade::tests::execution::recovery_limits::reopened_stall_policy_keeps_the_original_no_progress_count ... RECOVERED_LIMITS_OBSERVATION file=false constraint=NoProgress phase=0 admitted=1 synthetic_total=2 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=false constraint=NoProgress phase=1 admitted=2 synthetic_total=4 model_calls=1
+RECOVERED_LIMITS_OBSERVATION file=false constraint=NoProgress phase=2 admitted=2 synthetic_total=4 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=NoProgress phase=0 admitted=1 synthetic_total=2 model_calls=0
+RECOVERED_LIMITS_OBSERVATION file=true constraint=NoProgress phase=1 admitted=2 synthetic_total=4 model_calls=1
+RECOVERED_LIMITS_OBSERVATION file=true constraint=NoProgress phase=2 admitted=2 synthetic_total=4 model_calls=0
+ok
+test agent_api::goal_facade::tests::execution::refusal::a_single_run_cannot_keep_billing_after_its_identical_tool_calls_are_refused ... REPEATED_REFUSAL_OBSERVATION model_calls=5 physical_calls=3 stopped=true before_deadline=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::child::a_delegated_task_stops_the_child_and_returns_its_original_failure ... DELEGATED_REFUSAL_OBSERVATION model_calls=7
+ok
+test agent_api::goal_facade::tests::execution::refusal::child::an_owned_child_can_complete_three_required_identical_checks ... ok
+test agent_api::goal_facade::tests::execution::refusal::child::an_owned_child_log_cannot_keep_billing_after_repeated_refusals ... CHILD_REFUSAL_OBSERVATION model_calls=5 physical_calls=3 stopped=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::a_larger_existing_duplicate_allowance_permits_bounded_repeated_states ... BOUNDED_UPDATE_OBSERVATION advance=false threshold=8 updates=12 result=Ok(Ok(12))
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::a_single_external_change_cannot_disable_later_state_cycle_detection ... NET_STATE_LOOP_OBSERVATION external_at=Some(2) model_calls=9 physical_calls=9 stopped=true denials=0 before_deadline=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::a_single_run_cannot_keep_billing_by_alternating_already_observed_source_states ... NET_STATE_LOOP_OBSERVATION external_at=None model_calls=8 physical_calls=8 stopped=true denials=0 before_deadline=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::an_owned_child_also_stops_a_successful_source_state_cycle ... CHILD_REANCHOR_OBSERVATION external_at=None model_calls=8 stopped=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::an_owned_child_detects_a_state_cycle_after_one_external_change ... CHILD_REANCHOR_OBSERVATION external_at=Some(2) model_calls=9 stopped=true
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::genuinely_new_source_states_allow_many_identical_tool_arguments ... BOUNDED_UPDATE_OBSERVATION advance=true threshold=3 updates=12 result=Ok(Ok(12))
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::intervening_external_source_states_are_not_a_closed_agent_cycle ... BOUNDED_UPDATE_OBSERVATION advance=false threshold=3 updates=12 result=Ok(Ok(12))
+ok
+test agent_api::goal_facade::tests::execution::refusal::mutation::three_required_round_trips_still_complete_with_the_existing_allowance ... BOUNDED_UPDATE_OBSERVATION advance=false threshold=3 updates=6 result=Ok(Ok(6))
+ok
+test agent_api::goal_facade::tests::execution::refusal::productive::new_original_information_between_refusals_keeps_the_run_eligible ... ok
+test agent_api::goal_facade::tests::execution::refusal::productive::three_identical_required_checks_still_finish_without_a_refusal_cycle ... ok
+test agent_api::goal_facade::tests::execution::review_binding::engineering_findings_lifecycle_survives_both_stores_and_replan_stales_the_step ... ok
+test agent_api::goal_facade::tests::execution::review_binding::review_binding_names_the_current_step_run_and_findings_never_accept_it ... ok
+test agent_api::goal_facade::tests::execution::settlement::a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage ... BARRIERS closed=["a3s.goal.slice.admitted", "user.message", "context.sections", "model.turn", "tool.result", "model.turn", "turn.complete", "a3s.goal.step.accepted"] unknown=["tool.prepared"]
+ok
+test agent_api::goal_facade::tests::execution::settlement::the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refuses ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_exact_operation_tracks_the_original_run_across_replan_cancel_and_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_is_read_only_and_missing_activation_survives_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_reads_original_debt_without_starting_recovery ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_rejects_stale_scope_and_operation_without_execution ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_requires_plan_acceptance_and_respects_imported_pause ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_due_wait_wakes_only_after_a_host_clock_observation ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_wait_gates_only_its_step_and_an_answer_reaches_the_next_run ... ok
+test agent_api::goal_facade::tests::goal_definition_recovers_each_initialization_prefix_and_rejects_legacy_policy_rebinding ... ok
+test agent_api::goal_facade::tests::goal_definition_requires_original_owner_and_rejects_foreign_or_busy_before_writes ... ok
+test agent_api::goal_facade::tests::goal_definition_reuses_original_stores_and_reopens_with_and_without_policy ... ok
+test agent_api::goal_facade::tests::goal_reads_keep_the_one_log_handle_a_later_run_uses ... ok
+test agent_api::goal_facade::tests::import::dropped_or_closed_import_source_check_never_commits ... ok
+test agent_api::goal_facade::tests::import::import_uses_original_fences_and_reopens_both_stores_without_execution ... ok
+test agent_api::goal_facade::tests::legacy::legacy_goal_state_abort_releases_original_fences ... ok
+test agent_api::goal_facade::tests::legacy::legacy_goal_state_uses_original_owner_writer_and_refuses_bound_or_closed ... ok
+test agent_api::run_admission::joined_failure::tests::actual_original_store_and_entered_hook_are_never_retried_or_replaced ... ok
+test agent_api::run_admission::joined_failure::tests::closed_error_channel_preserves_pinned_cancellation_and_retains_owner ... ok
+test agent_api::run_admission::joined_failure::tests::failure_wire_closed_set_round_trips_and_refuses_unknown ... ok
+test agent_api::run_admission::joined_failure::tests::full_error_channel_is_observed_once_without_waiting_or_retry ... ok
+test agent_api::run_admission::joined_failure::tests::panicking_receipt_observer_cannot_release_unproved_original_owner ...
+thread 'agent_api::run_admission::joined_failure::tests::panicking_receipt_observer_cannot_release_unproved_original_owner' (66895268) panicked at crates/code/core/src/agent_api/run_admission/joined_failure/tests.rs:43:13:
+actual Settled receipt observer panic
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test agent_api::run_admission::joined_failure::tests::proved_no_run_drops_publisher_without_error_and_retires_original_lease ... ok
+test agent_api::run_admission::joined_failure::tests::queued_error_drops_sender_before_blocked_receipt_hook_and_retains_owner ... ok
+test agent_api::run_admission::log_owner_tests::a_foreign_admission_label_cannot_change_the_captured_source ... ok
+test agent_api::run_admission::log_owner_tests::an_actual_child_process_uses_the_same_original_admission_boundary ... ok
+test agent_api::run_admission::log_owner_tests::child_process_probe ... ignored, invoked by the bounded parent process test with an explicit temporary workspace
+test agent_api::run_admission::log_owner_tests::independent_instances_refuse_the_same_source_and_rollback_failed_admission ... ok
+test agent_api::run_admission::log_owner_tests::losing_the_public_stream_proxy_retains_the_file_owner_until_actual_join ... ok
+test agent_api::run_admission::log_owner_tests::separate_original_threads_and_workspaces_keep_their_original_independence ... ok
+test agent_api::run_admission::log_owner_tests::the_original_log_handle_is_reused_across_lease_retirement ... ok
+test agent_api::run_admission::owner_lifetime_tests::actual_committer_join_error_is_not_success ... ok
+test agent_api::run_admission::owner_lifetime_tests::actual_model_handle_survives_cancelled_borrow_and_guardian_waits_worker_first ... ok
+test agent_api::run_admission::owner_lifetime_tests::actual_model_panic_is_retained_and_never_reusable_or_success ...
+thread 'agent_api::run_admission::owner_lifetime_tests::actual_model_panic_is_retained_and_never_reusable_or_success' (66895293) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests.rs:750:21:
+actual model child panic
+ok
+test agent_api::run_admission::owner_lifetime_tests::actual_worker_join_error_retains_original_lease ... ok
+test agent_api::run_admission::owner_lifetime_tests::borrowed_committer_wait_cancellation_retains_actual_handle ... ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_checkpoint_io_error_blocking ... runtime-checkpoint save_result=Err(failed to inspect session store path: Not a directory (os error 20))
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845815453,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Ok","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845815406:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:2febd8c54f805f04fa0c96bd813fda5c94e8fd26714cce0f1a9e9e0ca3c14f7f","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:ba52f24d5cc17cb689a3a241bb698afe95cdac3b9731fe732c3e7eb245d44957","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:c93dd941e3b8624b98f9937ee9e888bd6351ca9b9d356c2b9bc24c58b64768c1","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:80529834df8c157a992e9800355485735ca9688311d833aee5e5711fb075abdc","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"80529834df8c157a992e9800355485735ca9688311d833aee5e5711fb075abdc","seq":8},"receipt_keys":["sha256:2febd8c54f805f04fa0c96bd813fda5c94e8fd26714cce0f1a9e9e0ca3c14f7f"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":true,"io_fault":true,"original_run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95","save_results":[{"result":{"Err":"failed to inspect session store path: Not a directory (os error 20)"},"run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95"}],"streaming":false,"terminal":{"accepted_at_ms":1792845815453,"applied_at_ms":1792845815461,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-46c8bf8b-bffc-43f7-b7ed-ad8d6dedee95","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_checkpoint_io_error_streaming ... runtime-checkpoint save_result=Err(failed to inspect session store path: Not a directory (os error 20))
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845815578,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Ok","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845815528:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:77c58b29e00ee74ed13e0de759abf2546172fbbd6d7890efa5e53e71d8722403","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:b3841cd5f2579eac712f7016c6c7f811a6fc2f82a27bd8342cc143edf7b4b5d1","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:97a2ba1e39608e3d822b1f61ce859f5536ad785d3d65b63c06a6456fc503b97f","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:eea39541cf185c4e04011863965df87b99826bdfddac894f4b4da52379241800","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"eea39541cf185c4e04011863965df87b99826bdfddac894f4b4da52379241800","seq":8},"receipt_keys":["sha256:77c58b29e00ee74ed13e0de759abf2546172fbbd6d7890efa5e53e71d8722403"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":true,"io_fault":true,"original_run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53","save_results":[{"result":{"Err":"failed to inspect session store path: Not a directory (os error 20)"},"run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53"}],"streaming":true,"terminal":{"accepted_at_ms":1792845815578,"applied_at_ms":1792845815584,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ba819481-93fc-4fd3-88ba-e0ea0778ac53","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_file_blocking ... runtime-checkpoint save_result=Ok(())
+
+thread 'agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_file_blocking' (66895321) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/checkpoint_failure_tests.rs:139:36:
+actual runtime checkpoint export panic
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845815712,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":"Session error: checkpoint committer failed: Session error: original checkpoint committer did not complete: Joined(Panicked); original cleanup remains unproved: original execution owner: original cleanup proof incomplete; zero slot mutation","export":"Panic","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845815654:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:47aa3577934e1a1ca68b8833de772ca91f18aed8f578fed4d0c256294b6f3260","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:1d7e1e49d1c3d3a37c2be97e1cc85966ca17556af5c78d7c718df105dbf698b1","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"}],"file":true,"io_fault":false,"original_run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73","save_results":[{"result":{"Ok":null},"run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73"}],"streaming":false,"terminal":{"accepted_at_ms":1792845815712,"applied_at_ms":1792845815718,"error":{"code":"STEER_PERSISTENCE_FAILED","message":"input retention failed; this input was not acknowledged as persisted"},"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ce34c429-1e1c-481f-b01f-1711b220db73","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"settled","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_file_streaming ... runtime-checkpoint save_result=Ok(())
+
+thread 'agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_file_streaming' (66895333) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/checkpoint_failure_tests.rs:139:36:
+actual runtime checkpoint export panic
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845815840,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Panic","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845815786:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:8d056645262f2ebab4b4dc39e3378154f556c051ab20d7a5c591ea377a5b2bb7","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:702d896553156f13e7f3dee5d340b4e9ceeb9db8b1dc5c64f2dd1299c318b625","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"}],"file":true,"io_fault":false,"original_run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4","save_results":[{"result":{"Ok":null},"run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4"}],"streaming":true,"terminal":{"accepted_at_ms":1792845815840,"applied_at_ms":1792845815848,"error":{"code":"STEER_PERSISTENCE_FAILED","message":"input retention failed; this input was not acknowledged as persisted"},"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-0c6d972d-995f-4215-ad98-71153f5163d4","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"settled","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_memory_blocking ... runtime-checkpoint save_result=Ok(())
+
+thread 'agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_memory_blocking' (66895344) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/checkpoint_failure_tests.rs:139:36:
+actual runtime checkpoint export panic
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845815972,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":"Session error: checkpoint committer failed: Session error: original checkpoint committer did not complete: Joined(Panicked); original cleanup remains unproved: original execution owner: original cleanup proof incomplete; zero slot mutation","export":"Panic","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845815936:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:a7046d99ebf67261d1ba9046c4d2a82c0e0431ca20430a5a769f1b9a6df40fcc","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:38ca02334ee8788d8d7c246c97d6a6f3f5cb4a5edc00eaf7b5d8ad83b96919ae","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"}],"file":false,"io_fault":false,"original_run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192","save_results":[{"result":{"Ok":null},"run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192"}],"streaming":false,"terminal":{"accepted_at_ms":1792845815972,"applied_at_ms":1792845815980,"error":{"code":"STEER_PERSISTENCE_FAILED","message":"input retention failed; this input was not acknowledged as persisted"},"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-c054e218-7ebb-47d6-a04d-55f67e565192","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"settled","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_memory_streaming ... runtime-checkpoint save_result=Ok(())
+
+thread 'agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_committer_panic_memory_streaming' (66895355) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/checkpoint_failure_tests.rs:139:36:
+actual runtime checkpoint export panic
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845816082,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Panic","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845816046:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:d0fcebc2f4a99a338ae8e4851ced0c2fd66fc795bb912f87ae39f458ed020c52","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:dbc1ca8fe74518cd36d45affea7de406f8cafe3eafa471743d23d8b945f70c76","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"}],"file":false,"io_fault":false,"original_run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960","save_results":[{"result":{"Ok":null},"run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960"}],"streaming":true,"terminal":{"accepted_at_ms":1792845816082,"applied_at_ms":1792845816088,"error":{"code":"STEER_PERSISTENCE_FAILED","message":"input retention failed; this input was not acknowledged as persisted"},"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-2597a082-9be6-46b1-99cf-2d9b67a79960","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"settled","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_export_error_file_blocking ... runtime-checkpoint save_result=Ok(())
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845816230,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Error","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845816177:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:277a20d3aeb95f285709a9241d567ff48eb1cd625948591c6ace9ece4b579514","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:b59206868e63cf2da4723ffd16382e78ff88c965f8a84fa54d27812b1569befb","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:c8b4419ab306791fc2795a848ec884c2f690db18947e2e20cf1553896e737ab4","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:2dc542def53d9177c5be62fffc9c1e73152c771c0094b1c1fb4aa7c81f5387f8","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"2dc542def53d9177c5be62fffc9c1e73152c771c0094b1c1fb4aa7c81f5387f8","seq":8},"receipt_keys":["sha256:277a20d3aeb95f285709a9241d567ff48eb1cd625948591c6ace9ece4b579514"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":true,"io_fault":false,"original_run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623","save_results":[{"result":{"Ok":null},"run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623"}],"streaming":false,"terminal":{"accepted_at_ms":1792845816230,"applied_at_ms":1792845816237,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-b3056d3a-1b3a-4763-b87e-8f3eb776e623","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_export_error_file_streaming ... runtime-checkpoint save_result=Ok(())
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845816358,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Error","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845816306:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:dce2fe4c3b89ba870f3d02773c3e989ec3d0d3b636891b2c590aead1989e63f0","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:9e35f17dbd66a16e058c86893f13ea186770efa616899f37413b08d8e879f4fc","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:b3915c116cd15e4bd7f5b3407064758ae37955725410a7da1d31f78cbaf414d4","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:63496acd756dfe74aa48956ac3506373457ad6c56398b38e4f290c36a19eaa6a","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"63496acd756dfe74aa48956ac3506373457ad6c56398b38e4f290c36a19eaa6a","seq":8},"receipt_keys":["sha256:dce2fe4c3b89ba870f3d02773c3e989ec3d0d3b636891b2c590aead1989e63f0"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":true,"io_fault":false,"original_run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f","save_results":[{"result":{"Ok":null},"run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f"}],"streaming":true,"terminal":{"accepted_at_ms":1792845816358,"applied_at_ms":1792845816364,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-ec479fd5-4c1f-4def-a1bf-bb34ed7ca27f","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_export_error_memory_blocking ... runtime-checkpoint save_result=Ok(())
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845816467,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Error","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845816431:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:8ad4670831f8a7e6fa947d4f5c7fb28925cac72a4e3ce87a7e8ef4d4dbd3f614","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:155fb1125944e1bcd7e7a9d2c76dc2c0182ea19b5d6c466a2596a4e67bb308d0","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:cc7fc2aa4f06e9c5dc0619fa64495e5ec717b54b05241cf11edba3dc926a4ca4","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:11aef3f477d9566e4872ea06905878dee8713ee5b8fee8c6fe5aecd1990db232","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"11aef3f477d9566e4872ea06905878dee8713ee5b8fee8c6fe5aecd1990db232","seq":8},"receipt_keys":["sha256:8ad4670831f8a7e6fa947d4f5c7fb28925cac72a4e3ce87a7e8ef4d4dbd3f614"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":false,"io_fault":false,"original_run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae","save_results":[{"result":{"Ok":null},"run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae"}],"streaming":false,"terminal":{"accepted_at_ms":1792845816467,"applied_at_ms":1792845816474,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-197a09df-edbb-4ef3-b623-f12a0d6aabae","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::checkpoint_failure_tests::actual_export_error_memory_streaming ... runtime-checkpoint save_result=Ok(())
+runtime-checkpoint facts_snapshot={"accepted":{"accepted_at_ms":1792845816562,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"accepted","turn_id":"turn-1","turn_revision":1},"caller_error":null,"export":"Error","facts":[{"cause":null,"key":"standing-context","payload":{"context":"sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f","digest":"sha256:1600fe161cd5c6bbea87f494e12c576559148449521b68783a6b52fe1d87d572"},"seq":1,"type":"a3s.standing-context"},{"cause":null,"key":"m-1","payload":{"text":"Give an informational answer after the refused read."},"seq":2,"type":"user.message"},{"cause":null,"key":"context:1792845816527:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef","payload":{"sections":[]},"seq":3,"type":"context.sections"},{"cause":"infer:1:0","key":"model:1:0","payload":{"call":{"args":{"file_path":"never-read.txt"},"id":"denied-read","name":"read","needs_confirmation":false},"kind":"tool","prompt_tokens":3,"tool_effect_protocol":1},"seq":4,"type":"model.turn"},{"cause":null,"key":"tool-prepared:sha256:b23ce11c92bb031385a0fb5badc97fdd07f081bd0ef5f006ef442a8854382cad","payload":{"prepared":{"effective_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"original_args_digest":"sha256:34d2cd74117accdb9028c9624c6dbbf51ba790f60c9c8ae1602efd09f71dc6c2","recovery":"never_replay","schema":"a3s.code.tool-prepared.v1","tool_name":"read"}},"seq":5,"type":"tool.prepared"},{"cause":"tool:1:0:denied-read","key":"tool-result:1:0:denied-read","payload":{"countRun":true,"ok":false,"output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","receipt":{"effects":{"changes":[],"completeness":"complete"},"exit_code":null,"identity":{"admission":{"capability_binding_digest":"sha256:0baf3e54bc1c7495724ebb7c84082808757f0f36d2269ab02191a77929fa81c7","run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9","thread_id":"runtime-checkpoint-failure"},"batch_index":0,"cycle":0,"tool_call_id":"denied-read","turn":1},"outcome":"denied","output":"tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy","prepared_digest":"sha256:7a47f51084f72346c932b38337ba29db057d6fc0671021cfedda7ae7d69a900b","schema":"a3s.code.tool-result.v1"},"toolCallId":"denied-read"},"seq":6,"type":"tool.result"},{"cause":"infer:1:1","key":"model:1:1","payload":{"kind":"text","prompt_tokens":3,"text":"The informational reply is complete.","tool_effect_protocol":1},"seq":7,"type":"model.turn"},{"cause":null,"key":"run-steer-v1:sha256:3d50f7cb7dd7a333d51d352b423064d58733b71263bdbcfa75bd7be86b9aee6e","payload":{"text":" \t保留这条终止前的原始指令。\n"},"seq":8,"type":"user.message"},{"cause":null,"key":"turn-complete:8:b1cb45d3e57bae2f6cfa73ba7635a7010bb7303c117f3206a44e60e3af1d2d70","payload":{"background_receipt_keys":[],"effect_digest":null,"forced_stop":null,"log_cut":{"digest":"b1cb45d3e57bae2f6cfa73ba7635a7010bb7303c117f3206a44e60e3af1d2d70","seq":8},"receipt_keys":["sha256:b23ce11c92bb031385a0fb5badc97fdd07f081bd0ef5f006ef442a8854382cad"],"terminal":"narrative"},"seq":9,"type":"turn.complete"}],"file":false,"io_fault":false,"original_run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9","save_results":[{"result":{"Ok":null},"run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9"}],"streaming":true,"terminal":{"accepted_at_ms":1792845816562,"applied_at_ms":1792845816568,"operation":"steer","request_id":"original-late-checkpoint-steer","run_id":"run-cf40717f-ba51-437d-a20b-32e1a121a0d9","schema":"a3s.code.run-control-receipt.v1","sequence":1,"session_id":"runtime-checkpoint-failure","state":"applied","turn_id":"turn-1","turn_revision":1}}
+ok
+test agent_api::run_admission::owner_lifetime_tests::closed_start_receiver_joins_and_releases_original_lease ... ok
+test agent_api::run_admission::owner_lifetime_tests::committer_failure_tests::actual_committer_errors_retain_original_capacity_and_fail_unretained_steer ...
+thread 'agent_api::run_admission::owner_lifetime_tests::committer_failure_tests::actual_committer_errors_retain_original_capacity_and_fail_unretained_steer' (66895417) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/committer_failure_tests.rs:37:13:
+actual original committer panic
+
+thread 'agent_api::run_admission::owner_lifetime_tests::committer_failure_tests::actual_committer_errors_retain_original_capacity_and_fail_unretained_steer' (66895417) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/committer_failure_tests.rs:37:13:
+actual original committer panic
+ok
+test agent_api::run_admission::owner_lifetime_tests::earlier_cancelled_ack_cannot_mask_dropped_second_error_publication ... ok
+test agent_api::run_admission::owner_lifetime_tests::foreign_start_signals_refuse_effects_and_join_each_original_worker ... ok
+test agent_api::run_admission::owner_lifetime_tests::joined_effectful_worker_without_proof_retains_real_capacity ... ok
+test agent_api::run_admission::owner_lifetime_tests::last_session_drop_keeps_original_close_identity_alive ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::actual_close_request_unblocks_original_receipt_waiting_for_cancel ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::actual_host_cancel_revalidates_foreign_same_id_after_state_lock_wait ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::actual_host_cancel_unblocks_original_policy_waiting_for_cancel ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::actual_host_cancel_unblocks_original_receipt_waiting_for_cancel ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::actual_interrupt_cancels_before_original_receipt_observer ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::exact_slot_removal_refuses_missing_canonical_capability_close ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::exact_slot_removal_refuses_original_accepted_controls ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::exact_slot_removal_refuses_unjoined_original_committer ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::exact_slot_removal_refuses_unresolved_original_model_accounting ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::goal_run_proof_requires_actual_created_run_log_worker_and_unsealed_owner ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::public_exact_retries_use_retained_inbox_after_exact_slot_removal ... ok
+test agent_api::run_admission::owner_lifetime_tests::lifecycle_boundary_tests::retry_reservation_joins_same_child_and_survives_dropped_waiter ... ok
+test agent_api::run_admission::owner_lifetime_tests::original_accepted_control_debt_and_attempted_scope_cannot_qualify_release ... ok
+test agent_api::run_admission::owner_lifetime_tests::original_request_waiter_drop_is_inert_and_accepted_request_has_no_store_tail ... ok
+test agent_api::run_admission::owner_lifetime_tests::owned_handoff_starts_only_after_guardian_has_actual_lease ... ok
+test agent_api::run_admission::owner_lifetime_tests::owner_closed_sets_round_trip_and_refuse_unknown ... ok
+test agent_api::run_admission::owner_lifetime_tests::positive_worker_with_poisoned_retirement_lock_keeps_actual_lease_and_registration ...
+thread 'agent_api::run_admission::owner_lifetime_tests::positive_worker_with_poisoned_retirement_lock_keeps_actual_lease_and_registration' (66895498) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests.rs:1574:13:
+intentional real retirement-lock poison
+ok
+test agent_api::run_admission::owner_lifetime_tests::protocol_cancel_tests::accepted_cancel_waits_for_actual_original_terminal_publication ... ok
+test agent_api::run_admission::owner_lifetime_tests::protocol_cancel_tests::cancellation_deadline_keeps_original_owner_and_returns_no_terminal_receipt ... ok
+test agent_api::run_admission::owner_lifetime_tests::protocol_cancel_tests::poisoned_original_registry_does_not_prove_run_release ...
+thread '<unnamed>' (66895540) panicked at crates/code/core/src/agent_api/run_admission/owner_lifetime_tests/protocol_cancel_tests.rs:166:9:
+poison the original identity registry
+ok
+test agent_api::run_admission::owner_lifetime_tests::protocol_cancel_tests::terminal_with_retired_slots_waits_for_the_same_original_worker_to_exit ... ok
+test agent_api::run_admission::owner_lifetime_tests::public_observer_abort_does_not_release_original_lease ... ok
+test agent_api::run_admission::owner_lifetime_tests::publication_seal_rejects_late_requests_and_real_committer_blocks_capacity_release ... ok
+test agent_api::run_admission::owner_lifetime_tests::real_cancelled_and_error_acks_keep_dropped_event_hook_unproved ... ok
+test agent_api::run_admission::owner_lifetime_tests::same_id_foreign_inbox_and_token_refuse_cancel_and_cleanup_without_mutation ... ok
+test agent_api::run_admission::owner_lifetime_tests::same_worker_two_actual_scope_closes_and_positive_no_run_release ... ok
+test agent_api::run_admission::owner_lifetime_tests::unconstructed_committer_is_unproved_and_repeated_install_refuses ... ok
+test agent_api::run_admission::owner_lifetime_tests::unspawned_original_reservation_restores_actual_vacant_and_wrong_worker_cannot_mint ... ok
+test agent_api::run_admission::tests::lease_rejects_overlap_and_releases_on_drop ... ok
+test agent_api::run_admission::tests::registered_stream_worker_can_be_force_settled ... ok
+test agent_api::run_admission::tests::stream_guard_survives_public_handle_abort ... ok
+test agent_api::tests::fact_log::confirmation_snapshot::owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes ... ok
+test agent_api::tests::queue::session_close_settles_a_stream_blocked_on_confirmation ... ok
+test config::goal_control::tests::goal_control_decimal_strings_are_exact_and_canonical ... ok
+test config::goal_control::tests::goal_control_is_optional_and_requires_all_fields_even_when_disabled ... ok
+test config::goal_control::tests::goal_control_layer_validation_preserves_file_boundaries ... ok
+test config::goal_control::tests::goal_control_rejects_duplicate_unknown_and_nonliteral_values ... ok
+test config::goal_control::tests::goal_control_section_roundtrip_preserves_u64_and_unrelated_acl ... ok
+test config::goal_control::tests::goal_control_workspace_cannot_activate_enlarge_disable_or_erase_host_policy ... ok
+test fact_control::approval_identity_tests::owned_consent_ids_are_fresh_without_hiding_same_response_collisions_or_changing_legacy_ids ... ok
+test fact_control::checkpoints::tests::checkpoint_does_not_pair_reused_ids_across_model_turns ... ok
+test fact_control::checkpoints::tests::checkpoint_keeps_one_batch_and_pairs_results_by_recorded_identity ... ok
+test fact_control::checkpoints::tests::checkpoint_omits_unexecuted_batch_calls_without_inventing_results ... ok
+test fact_control::checkpoints::tests::checkpoint_preserves_user_and_tool_image_bytes ... ok
+test fact_control::checkpoints::tests::checkpoint_starts_at_last_compaction_and_does_not_invent_result_ids ... ok
+test fact_control::conversation_history_tests::assistant_header_inside_a_user_body_cannot_change_its_role ... ok
+test fact_control::conversation_history_tests::folded_assistant_text_preserves_the_original_role ... ok
+test fact_control::conversation_history_tests::user_images_and_unmarked_summary_keep_their_existing_projection ... ok
+test fact_control::goal_evidence::tests::a_foreign_or_later_slice_cannot_refresh_this_slice ... ok
+test fact_control::goal_evidence::tests::a_settled_background_mutation_must_belong_to_the_current_run ... ok
+test fact_control::goal_evidence::tests::mixed_capability_receipts_and_unsettled_outcomes_do_not_refresh_progress ... ok
+test fact_control::goal_evidence::tests::only_complete_known_workspace_identity_changes_are_progress ... ok
+test fact_control::model_error_tests::detached_calls_never_fallback_after_terminal_refusal_or_incomplete_stream ... ok
+test fact_control::model_error_tests::detached_cancellation_interrupts_stream_setup_and_nonstreaming_fallback ... ok
+test fact_control::model_error_tests::dropping_a_detached_call_cancels_only_its_provider_attempt ... ok
+test fact_control::model_error_tests::identical_untyped_budget_words_remain_retryable_provider_errors ... ok
+test fact_control::model_error_tests::typed_host_budget_denial_is_terminal_even_with_context ... ok
+test fact_control::model_governance_tests::actual_store_none_and_closed_output_are_retained_without_success_ack ... ok
+test fact_control::model_governance_tests::an_empty_provider_delta_does_not_suppress_the_final_answer ... ok
+test fact_control::model_governance_tests::done_delivers_without_waiting_for_provider_channel_eof ... ok
+test fact_control::model_governance_tests::dropping_actual_blocked_public_projection_keeps_real_store_some_and_entered_send ... ok
+test fact_control::model_governance_tests::final_response_fallback_does_not_inherit_earlier_streamed_text ... ok
+test fact_control::model_governance_tests::original_parent_projects_actual_input_usage_and_store_before_public_in_order ... ok
+test fact_control::no_count_limit_tests::no_count_ceiling_removes_only_derived_tool_and_transition_limits ... ok
+test fact_control::receipts::tests::a_call_prepared_before_another_unknown_cannot_mutate_or_run_twice ... ok
+test fact_control::receipts::tests::a_captured_incomplete_receipt_is_not_replayed_as_an_invocation_obligation ... ok
+test fact_control::receipts::tests::a_marker_only_covers_the_receipts_it_explicitly_names ... ok
+test fact_control::receipts::tests::a_settled_background_observation_gap_is_not_an_unresolved_execution ... ok
+test fact_control::receipts::tests::admission_refused_background_settles_without_an_exit_code ... ok
+test fact_control::receipts::tests::argument_validation::invalid_original_arguments_fail_before_hook_or_tool_execution ... ok
+test fact_control::receipts::tests::argument_validation::invalid_rewritten_arguments_preserve_both_inputs_and_hook_uncertainty ... ok
+test fact_control::receipts::tests::argument_validation::permission_denial_with_invalid_arguments_remains_denied_without_execution ... ok
+test fact_control::receipts::tests::argument_validation::valid_unchanged_arguments_still_execute_once ... ok
+test fact_control::receipts::tests::background_evidence_does_not_clear_wrong_run_or_incomplete_terminals ... ok
+test fact_control::receipts::tests::batch_evidence::batched_background_identity_settles_only_with_its_matching_terminal ... ok
+test fact_control::receipts::tests::batch_evidence::lost_batch_lifecycle_evidence_cannot_be_successful_execution ... ok
+test fact_control::receipts::tests::batch_evidence::typed_child_identity_does_not_need_a_duplicate_in_opaque_metadata ... ok
+test fact_control::receipts::tests::batch_evidence::wrapped_reconciliation_failure_keeps_its_typed_event_and_identity ... ok
+test fact_control::receipts::tests::byte_receipts_keep_all_paths_and_explicit_deletion ... ok
+test fact_control::receipts::tests::cache_proof::large_late_pure_negative_proof_visits_original_events_once_and_waits_for_actual_tail ... ok
+test fact_control::receipts::tests::cache_proof::proof_cursor_refuses_invalid_originals_and_regressing_projection_boundaries ... ok
+test fact_control::receipts::tests::cache_provenance::actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::background_terminal_cannot_borrow_a_later_exact_spawn_binding_at_its_earlier_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::cached_preparation_after_last_receipt_requires_the_actual_final_log_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::exact_original_unknown_and_incomplete_receipts_prove_cached_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_prefix ... ok
+test fact_control::receipts::tests::cache_provenance::malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown ... ok
+test fact_control::receipts::tests::cache_provenance::purely_negative_cache_uses_original_typed_preparation_without_inventing_receipts ... ok
+test fact_control::receipts::tests::cache_provenance::selected_prefix_never_imports_future_or_untyped_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::typed_background_uncertainty_is_distinct_from_malformed_fields_and_bindings ... ok
+test fact_control::receipts::tests::cancelled_background_can_settle_without_inventing_complete_output ... ok
+test fact_control::receipts::tests::context_cancellation_after_a_write_is_not_a_pre_execution_denial ... ok
+test fact_control::receipts::tests::durable_background_terminal_settles_only_its_exact_child ... ok
+test fact_control::receipts::tests::event_cancellation::a_ready_tool_event_still_reaches_the_host_after_run_cancellation ... ok
+test fact_control::receipts::tests::event_cancellation::tool_event_backpressure_ends_on_the_exact_run_token_and_keeps_fifo_order ... ok
+test fact_control::receipts::tests::exact_confirmation_and_budget_refusals_prove_zero_execution ... ok
+test fact_control::receipts::tests::executed_error_text_cannot_prove_zero_execution_or_discharge_external_debt ... ok
+test fact_control::receipts::tests::execution_availability::hook_without_argument_rewrite_still_rechecks_backend_availability ... ok
+test fact_control::receipts::tests::execution_availability::identical_error_after_dispatch_remains_unknown ... ok
+test fact_control::receipts::tests::execution_availability::initialization_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::execution_availability::native_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::execution_availability::permission_denial_keeps_a_pre_spawn_refusal ... ok
+test fact_control::receipts::tests::execution_availability::rewritten_unavailable_invocation_retains_the_input_hooks_uncertainty ... ok
+test fact_control::receipts::tests::execution_availability::unavailable_backend_refuses_before_input_hooks_without_creating_debt ... ok
+test fact_control::receipts::tests::execution_availability::unconfirmed_ask_keeps_a_pre_spawn_refusal ... ok
+test fact_control::receipts::tests::failed_and_cancelled_writes_restore_actual_byte_identity_once ... ok
+test fact_control::receipts::tests::heredoc_approval::exact_approved_heredoc_reaches_bash_but_unapproved_or_rewritten_calls_do_not ... ok
+test fact_control::receipts::tests::incomplete_paths_and_external_unknown_are_distinct_from_a_local_scan ... ok
+test fact_control::receipts::tests::legacy_unsettled_is_unknown_but_settled_legacy_history_stays_readable ... ok
+test fact_control::receipts::tests::malformed_cross_call_and_missing_preparation_results_fail_closed ... ok
+test fact_control::receipts::tests::missing_admission_and_permission_refusal_execute_nothing ... ok
+test fact_control::receipts::tests::mixed_background_and_foreground_receipts_project_in_fact_order ... ok
+test fact_control::receipts::tests::native_artifact_scope::parallel_prepared_invocations_never_inherit_or_share_native_evidence ... ok
+test fact_control::receipts::tests::novel_information::missing_preparation_malformed_digest_and_denied_results_never_earn_information_credit ... ok
+test fact_control::receipts::tests::novel_information::original_observations_ignore_run_identity_host_hints_and_tool_supplied_digest_metadata ... ok
+test fact_control::receipts::tests::novel_information::private_observation_meter_does_not_change_the_model_tool_message ... ok
+test fact_control::receipts::tests::pre_spawn::a_capture_failure_after_the_child_starts_stays_unknown ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_does_not_block_a_later_tool ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_on_a_missed_status_does_not_block_a_later_tool ... ok
+test fact_control::receipts::tests::pre_spawn::a_write_past_the_stamp_cap_does_not_freeze_the_ledger ... ok
+test fact_control::receipts::tests::pre_spawn::missing_execution_evidence_overrides_a_path_budget ... ok
+test fact_control::receipts::tests::preparation_and_unknown_cannot_be_forgiven_by_a_turn_marker_or_scan ... ok
+test fact_control::receipts::tests::preparation_binds_the_actual_run_and_refuses_frozen_generation_drift ... ok
+test fact_control::receipts::tests::preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval ... ok
+test fact_control::receipts::tests::prepared_batch_observes_each_actual_execution_boundary_and_failed_bytes ... ok
+test fact_control::receipts::tests::progress::replaying_original_receipts_cannot_inflate_progress_measurement ... ok
+test fact_control::receipts::tests::protocol_one_unprepared_call_is_proven_unexecuted_but_preparation_opens_debt ... ok
+test fact_control::receipts::tests::readonly_effect::all_read_batch_and_program_do_not_watch_or_freeze_a_later_read ... ok
+test fact_control::receipts::tests::readonly_effect::read_only_execution_error_settles_failed_and_the_turn_can_close ... ok
+test fact_control::receipts::tests::readonly_effect::unknown_mutating_call_keeps_one_identity_and_blocks_later_writes ... ok
+test fact_control::receipts::tests::recovery_seed_and_legacy_reset_preserve_the_authoritative_prefix ... ok
+test fact_control::receipts::tests::refusal_cycle::a_gap_clears_an_old_cycle_before_recounting_fresh_original_actions ... ok
+test fact_control::receipts::tests::refusal_cycle::an_external_before_state_breaks_a_previously_closed_workspace_cycle ... ok
+test fact_control::receipts::tests::refusal_cycle::fresh_net_workspace_states_reset_identical_invocation_counts ... ok
+test fact_control::receipts::tests::refusal_cycle::fresh_original_information_and_new_user_input_supersede_an_earlier_cycle ... ok
+test fact_control::receipts::tests::refusal_cycle::harness_files_do_not_reset_a_detected_workspace_cycle ... ok
+test fact_control::receipts::tests::refusal_cycle::incoherent_receipt_endpoints_cannot_prove_a_state_cycle ... ok
+test fact_control::receipts::tests::refusal_cycle::known_workspace_changes_allow_a_new_attempt_after_a_refusal ... ok
+test fact_control::receipts::tests::refusal_cycle::new_original_child_information_or_input_supersedes_refusals ... ok
+test fact_control::receipts::tests::refusal_cycle::old_information_foreign_results_and_compaction_do_not_reset_the_refusal_cycle ... ok
+test fact_control::receipts::tests::refusal_cycle::original_information_and_user_input_supersede_state_cycles ... ok
+test fact_control::receipts::tests::refusal_cycle::owned_child_refusals_use_only_unbound_original_receipts ... ok
+test fact_control::receipts::tests::refusal_cycle::private_child_state_cycles_preserve_their_own_log_authority ... ok
+test fact_control::receipts::tests::refusal_cycle::repeated_original_workspace_states_consume_only_the_existing_allowance ... ok
+test fact_control::receipts::tests::refusal_cycle::state_cycle_detection_resumes_after_original_continuity_recovers ... ok
+test fact_control::receipts::tests::refusal_cycle::typed_refusals_ignore_different_call_ids_and_rendered_diagnostics ... ok
+test fact_control::receipts::tests::refusal_cycle::unsupported_or_unprepared_receipts_cannot_manufacture_a_cycle ... ok
+test fact_control::receipts::tests::tool_budget::allowed_tool_budget_is_checked_once_before_the_original_effect ... ok
+test fact_control::receipts::tests::tool_budget::denied_tool_budget_prevents_execution_and_keeps_original_typed_receipt ... ok
+test fact_control::receipts::tests::tool_budget::permission_refusal_and_precancel_do_not_enter_the_tool_budget ... ok
+test fact_control::receipts::tests::tool_budget::soft_tool_budget_preserves_execution_and_reports_the_original_limit ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_drops_the_original_pending_budget_future_before_tool_effects ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_wins_over_a_ready_original_budget_decision ... ok
+test fact_control::receipts::tests::unchanged_ask_obeys_the_frozen_host_confirmation_authority ... ok
+test fact_control::receipts::tests::workspace_boundary::known_workspace_boundary_refusal_does_not_block_a_later_tool_or_completion ... ok
+test fact_control::recovery_unproved::tests::actual_frozen_binding_is_retained_and_never_inferred ... ok
+test fact_control::recovery_unproved::tests::construction_checks_exact_source_session_and_derived_thread ... ok
+test fact_control::recovery_unproved::tests::empty_unbounded_control_and_mismatched_stored_identities_refuse ... ok
+test fact_control::recovery_unproved::tests::every_payload_field_is_required_including_nullable_binding ... ok
+test fact_control::recovery_unproved::tests::exact_payload_round_trips_without_execution_or_verification_claims ... ok
+test fact_control::recovery_unproved::tests::invalid_digest_and_unloadable_source_schema_refuse ... ok
+test fact_control::recovery_unproved::tests::legacy_content_identity_does_not_upgrade_schema_binding_or_portable_admission ... ok
+test fact_control::recovery_unproved::tests::negative_contract_is_idempotent_on_memory_and_reopened_original_file_log ... ok
+test fact_control::recovery_unproved::tests::portable_v1_still_requires_a_real_completed_tool_round_boundary ... ok
+test fact_control::recovery_unproved::tests::source_content_changes_identity_but_object_order_does_not ... ok
+test fact_control::recovery_unproved::tests::stored_kind_key_and_transition_cause_cannot_be_reassigned ... ok
+test fact_control::recovery_unproved::tests::unknown_field_and_incorrect_wire_types_refuse ... ok
+test fact_control::recovery_unproved::tests::unsupported_schema_and_closed_reason_have_named_refusals ... ok
+test fact_control::steer_terminal_tests::actual_file_io_error_is_returned_without_repair_or_another_writer ... ok
+test fact_control::steer_terminal_tests::new_namespace_is_disjoint_from_future_digest_old_ids_on_memory_and_reopened_file ... ok
+test fact_control::tests::a_failed_model_summary_keeps_a_normal_task_instruction ... ok
+test fact_control::tests::a_failed_model_summary_still_shrinks_the_prefix ... ok
+test fact_control::tests::auto_compact_keeps_the_latest_tool_pair_and_continues ... ok
+test fact_control::tests::auto_compact_triggers_on_provider_tokens_and_keeps_a_recent_tail ... ok
+test fact_control::tests::automatic_fallback_reseals_typed_source_twice_without_trusting_summary ... ok
+test fact_control::tests::bash_that_cannot_spawn_does_not_park_for_confirmation ... ok
+test fact_control::tests::compaction_transcript_replays_user_and_assistant ... ok
+test fact_control::tests::configured_duplicate_guard_refuses_the_second_identical_call ... ok
+test fact_control::tests::effort_ceiling_asks_for_a_final_answer_before_denying ... ok
+test fact_control::tests::effort_tool_budget_runs_every_round_before_deny ... ok
+test fact_control::tests::effort_tool_rounds_are_the_fact_budget ... ok
+test fact_control::tests::explicit_stock_compose_keeps_token_compaction ... ok
+test fact_control::tests::fact_log_budget_does_not_call_the_tool_body ... ok
+test fact_control::tests::fact_log_confirm_is_true_only_for_the_pending_tool ... ok
+test fact_control::tests::fact_log_default_resume_retains_admitted_unbounded_and_explicit_step_limits ... ok
+test fact_control::tests::fact_log_denial_does_not_run_the_tool ... ok
+test fact_control::tests::fact_log_follow_up_sends_the_recorded_tool_call ... ok
+test fact_control::tests::fact_log_history_seeds_a_caused_model_turn_and_one_new_call ... ok
+test fact_control::tests::fact_log_leaked_dsml_reasoning_is_a_tool_decision ... ok
+test fact_control::tests::fact_log_leaked_dsml_text_is_a_tool_decision ... ok
+test fact_control::tests::fact_log_live_completion_ask_user_parks_with_options ... ok
+test fact_control::tests::fact_log_live_completion_stores_a_tool_call_and_passes_tools ... ok
+test fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool ... ok
+test fact_control::tests::fact_log_live_stream_outlasts_the_provider_deadline ... ok
+test fact_control::tests::fact_log_model_stream_timeout_stops_at_the_provider_deadline ... ok
+test fact_control::tests::fact_log_non_decision_sets_schema_error_without_a_tool_or_parse_retry ... ok
+test fact_control::tests::fact_log_plan_guardrail_denies_a_write_the_default_policy_would_ask ... ok
+test fact_control::tests::fact_log_question_cap_rejects_before_a_fourth_fact ... ok
+test fact_control::tests::fact_log_question_options_and_allow_free_text_survive_reopen ... ok
+test fact_control::tests::fact_log_question_stays_parked_until_the_answer_fact ... ok
+test fact_control::tests::fact_log_recorded_tool_calls_start_after_the_latest_compaction ... ok
+test fact_control::tests::fact_log_runner_failure_is_unknown_and_never_reexecuted ... ok
+test fact_control::tests::fact_log_second_resume_does_not_call_the_model ... ok
+test fact_control::tests::fact_log_sessions_do_not_share_a_thread ... ok
+test fact_control::tests::fact_log_silent_non_streaming_fallback_still_times_out ... ok
+test fact_control::tests::fact_log_steer_is_a_user_message_fact ... ok
+test fact_control::tests::fact_log_step_limit_does_not_start_a_pending_transition ... ok
+test fact_control::tests::fact_log_stream_silence_after_a_delta_still_times_out ... ok
+test fact_control::tests::fact_log_tool_round_cap_uses_an_empty_tool_list ... ok
+test fact_control::tests::fact_log_yolo_lane_is_allow_not_a_second_policy ... ok
+test fact_control::tests::host_cancel_drops_a_hung_tool_and_records_cancelled ... ok
+test fact_control::tests::latest_user_text_ignores_assistant_and_tool_lines ... ok
+test fact_control::tests::malformed_batch_does_not_park_for_confirmation ... ok
+test fact_control::tests::one_generation_keeps_tool_names_and_the_next_admission_sees_the_grant ... ok
+test fact_control::tests::one_response_keeps_every_non_question_tool_call ... ok
+test fact_control::tests::open_session_writes_the_effect_log_inside_the_session_folder ... ok
+test fact_control::tests::parallel_batches_are_reads_or_distinct_writes ... ok
+test fact_control::tests::parallel_safe_names_match_the_registered_tool_registry ... ok
+test fact_control::tests::parked_skill_ask_is_not_rewritten_as_unapproved ... ok
+test fact_control::tests::prepared_context_does_not_replace_a_later_answer_or_steer ... ok
+test fact_control::tests::repeated_result_note_counts_identical_text_and_leaves_json_parseable ... ok
+test fact_control::tests::repeated_tool_call_is_a_nudge_and_the_turn_continues ... ok
+test fact_control::tests::seam_admission_denied_write_under_always_approve_does_not_run ... ok
+test fact_control::tests::seam_admission_mutation_still_needs_digest_gate ... ok
+test fact_control::tests::user_attachment_plan_restores_png_bytes_after_compaction ... ORACLE restored-image media_type=image/png bytes=8
+ok
+test fact_control::tool_history_tests::actual_completion_refuses_missing_metadata_before_provider_entry ... ok
+test fact_control::tool_history_tests::actual_completion_sends_retained_native_tool_pair_and_assistant_role ... ok
+test fact_control::tool_history_tests::actual_folded_entry_point_preserves_assistant_role ... ok
+test fact_control::tool_history_tests::batch_result_order_and_reused_ids_follow_the_original_scheduler ... ok
+test fact_control::tool_history_tests::cached_prompt_cannot_replace_a_retained_tool_result ... ok
+test fact_control::tool_history_tests::closed_batch_of_two_reaches_the_provider_as_structured_calls ... ok
+test fact_control::tool_history_tests::closed_scheduler_tool_batches_are_not_assistant_prose ... ok
+test fact_control::tool_history_tests::compaction_cannot_replace_original_result_bytes ... ok
+test fact_control::tool_history_tests::compaction_kept_results_retain_original_tool_metadata ... ok
+test fact_control::tool_history_tests::extra_result_line_refuses_before_the_provider ... ok
+test fact_control::tool_history_tests::folded_tool_messages_preserve_typed_exit_codes_without_changing_original_receipts ... ok
+test fact_control::tool_history_tests::legacy_result_without_id_and_error_role_remain_supported ... ok
+test fact_control::tool_history_tests::malformed_original_call_and_result_identity_are_refused ... ok
+test fact_control::tool_history_tests::missing_original_metadata_never_fabricates_a_tool_call ... ok
+test fact_control::tool_history_tests::repeated_compaction_selects_original_suffix_when_outputs_are_identical ... ok
+test fact_control::tool_history_tests::scheduler_indexes_cover_each_closed_shape ... ok
+test fact_control::tool_history_tests::scheduler_tool_record_is_not_sent_as_assistant_prose ... ok
+test fact_control::tool_history_tests::summary_prefix_does_not_reopen_a_closed_record ... ok
+test fact_control::tool_history_tests::unequal_tool_records_do_not_invent_a_call ... ok
+test fact_control::tool_history_tests::user_body_cannot_inject_an_assistant_role ... ok
+test fact_control::unsettled_debt_tests::unsettled_mutation_paths_reads_only_past_the_last_settlement ... ok
+test goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice ... ok
+test goal_control::continuation::tests::a_new_policy_is_capped_at_1000_slices_and_30_days_but_replay_is_not ... ok
+test goal_control::continuation::tests::continuation_limits_keep_u64_boundaries_without_saturation_or_wrap ... ok
+test goal_control::continuation::tests::continuation_limits_refuse_disabled_expired_unknown_clock_and_exhausted_counts ... ok
+test goal_control::continuation::tests::continuation_policy_requires_every_explicit_finite_field ... ok
+test goal_control::dimension_registry_tests::every_registered_dimension_covers_all_its_members ... ok
+test goal_control::dimension_registry_tests::the_registry_names_only_test_functions_that_exist ... ok
+test goal_control::facts::control::tests::goal_cancel_preserves_history_and_terminal_state_in_original_stores ... ok
+test goal_control::facts::control::tests::goal_cancel_rejects_tampered_facts_and_changed_operation_replay ... ok
+test goal_control::facts::control::tests::goal_control_rejects_foreign_stale_unsupported_and_ambiguous_input ... ok
+test goal_control::facts::plan::tests::plan_proposals_and_acceptance_share_original_memory_and_file_scenarios ... ok
+test goal_control::facts::plan::tests::plan_wire_and_sources_refuse_unknown_missing_forged_and_stale_fields ... ok
+test goal_control::facts::run::mutation_progress::tests::first_observation_of_another_path_does_not_rename_previous_states ... ok
+test goal_control::facts::run::mutation_progress::tests::known_modes_and_symlink_targets_are_states_but_new_metadata_alone_is_not ... ok
+test goal_control::facts::run::mutation_progress::tests::missing_observation_cannot_supply_a_continuity_proof ... ok
+test goal_control::facts::run::mutation_progress::tests::net_zero_existing_and_created_paths_do_not_earn_progress ... ok
+test goal_control::facts::run::mutation_progress::tests::original_continuity_recovers_without_forgetting_already_seen_states ... ok
+test goal_control::facts::run::mutation_progress::tests::overlapping_identical_observations_are_coherent_but_a_gap_cannot_prove_progress ... ok
+test goal_control::facts::run::mutation_progress::tests::previously_observed_terminal_states_do_not_refresh_mutation_progress ... ok
+test goal_control::facts::run::mutation_progress::tests::unavailable_evidence_does_not_reset_visited_states ... ok
+test goal_control::facts::run::mutation_progress::tests::unknown_initial_identity_cannot_supply_progress_but_later_known_changes_can ... ok
+test goal_control::facts::run::tests::continuation::a_zero_delta_stall_terminates_instead_of_admitting_forever ... ok
+test goal_control::facts::run::tests::continuation::continuation_history_preserves_caps_across_replay_revision_replan_and_both_logs ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_cannot_disappear_by_substituting_its_fact_kind ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_preserves_ordinary_wire_and_is_refused_by_the_original_body_reader ... ok
+test goal_control::facts::run::tests::continuation::continuation_sources_refuse_recomputed_invalid_limits_clock_and_unbound_goal ... ok
+test goal_control::facts::run::tests::continuation::current_raw_mutation_and_plan_counters_need_original_workspace_or_step_proof ... ok
+test goal_control::facts::run::tests::continuation::growing_uncertainty_does_not_reset_stall_across_replay_and_reopen ... ok
+test goal_control::facts::run::tests::continuation::historical_negative_progress_preserves_already_admitted_slices ... ok
+test goal_control::facts::run::tests::continuation::information_progress_keeps_admitting_indefinitely ... ok
+test goal_control::facts::run::tests::continuation::progress_basis_preserves_legacy_bytes_and_refuses_unknown_semantics ... ok
+test goal_control::facts::run::tests::continuation::reduced_uncertainty_and_read_only_information_keep_their_continuation_opportunity ... ok
+test goal_control::facts::run::tests::continuation::stall_bound_admits_exactly_one_slice_after_a_changed_plan ... ok
+test goal_control::facts::run::tests::continuation::the_progress_basis_closed_set_parses_all_members ... ok
+test goal_control::facts::run::tests::goal_run_binding_replays_and_reopens_original_memory_and_file_logs ... ok
+test goal_control::facts::run::tests::goal_tick_preview_uses_both_original_logs_without_appending_or_recovering ... ok
+test goal_control::facts::run::tests::run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens ... ok
+test goal_control::facts::tests::corrupted_or_future_definition_sources_fail_closed ... ok
+test goal_control::facts::tests::definitions_replay_revise_and_reopen_original_memory_and_file_logs ... ok
+test goal_control::facts::tests::import::import_source_is_authenticated_and_pause_survives_revision_on_both_logs ... ok
+test goal_control::facts::tests::invalid_requests_and_ambiguous_wire_fields_never_prepare_a_write ... ok
+test goal_control::facts::wait::tests::a_new_plan_proposal_clears_waits_of_the_previous_revision ... ok
+test goal_control::facts::wait::tests::step_waits_gate_only_their_step_and_quiet_observations_append_nothing ... ok
+test goal_control::tests::binding_preserves_existing_workspace_and_source_types ... ok
+test goal_control::tests::binding_validation_refuses_invalid_references_without_rewriting_them ... ok
+test goal_control::tests::closed_sets_share_canonical_serde_and_explicit_parsing ... ok
+test goal_control::tests::fact_keys_are_unambiguous_and_bound_to_goal_operation_and_kind ... ok
+test goal_control::tests::goal_content_is_original_type_and_client_progress_is_refused ... ok
+test goal_control::tests::graph_validation_matches_independent_reachability_for_every_four_node_graph ... ok
+test goal_control::tests::new_binding_wire_rejects_unknown_fields_including_nested_sources ... ok
+test goal_control::tests::plan_limits_and_missing_duplicate_self_or_cyclic_dependencies_are_refused ... ok
+test goal_control::tests::valid_plan_returns_original_identity_without_accepting_display_statuses ... ok
+test hitl::tests::an_abandoned_receiver_cannot_accept_or_publish_a_late_approval ... ok
+test hitl::tests::auto_approve_confirmation_provider_never_blocks ... ok
+test hitl::tests::cancelling_one_confirmation_leaves_concurrent_confirmation_pending ... ok
+test hitl::tests::duplicate_tool_ids_reject_both_requests_without_leaving_a_receiver ... ok
+test hitl::tests::expiring_one_confirmation_leaves_concurrent_confirmation_pending ... ok
+test hitl::tests::test_cancel_all ... ok
+test hitl::tests::test_cancel_confirmation ... ok
+test hitl::tests::test_cancel_nonexistent ... ok
+test hitl::tests::test_confirmation_flow_approve ... ok
+test hitl::tests::test_confirmation_flow_reject ... ok
+test hitl::tests::test_confirmation_manager_no_hitl ... ok
+test hitl::tests::test_confirmation_manager_policy_update ... ok
+test hitl::tests::test_confirmation_manager_with_hitl ... ok
+test hitl::tests::test_confirmation_manager_with_yolo ... ok
+test hitl::tests::test_confirmation_not_found ... ok
+test hitl::tests::test_confirmation_policy_default ... ok
+test hitl::tests::test_confirmation_policy_disabled_is_always_yolo ... ok
+test hitl::tests::test_confirmation_policy_enabled ... ok
+test hitl::tests::test_confirmation_policy_is_yolo ... ok
+test hitl::tests::test_confirmation_policy_with_timeout ... ok
+test hitl::tests::test_confirmation_policy_yolo_mode ... ok
+test hitl::tests::test_confirmation_policy_yolo_multiple_lanes ... ok
+test hitl::tests::test_multiple_confirmations ... ok
+test hitl::tests::test_no_timeout_when_confirmed ... ok
+test hitl::tests::test_pending_confirmations_info ... ok
+test hitl::tests::test_session_lane ... ok
+test hitl::tests::test_session_lane_all_execute ... ok
+test hitl::tests::test_session_lane_all_query ... ok
+test hitl::tests::test_session_lane_priority ... ok
+test hitl::tests::test_timeout_auto_approve ... ok
+test hitl::tests::test_timeout_reject ... ok
+test tool_confirmation::tests::approved_confirmation_returns_approved_and_forwards_events ... ok
+test tool_confirmation::tests::closed_confirmation_channel_is_a_rejection ... ok
+test tool_confirmation::tests::invocation_cancellation_rejects_the_exact_request_and_pairs_events ... ok
+test tool_confirmation::tests::invocation_timeout_expires_only_its_own_confirmation ... ok
+test tool_confirmation::tests::rejected_confirmation_returns_llm_safe_rejection ... ok
+test tool_confirmation::tests::timeout_does_not_approve_or_deny ... ok
+test tools::task::tests::background_capability_admission_failure_emits_terminal_event ... ok
+test tools::task::tests::background_scheduler_admission_carries_output_schema_into_identity ... ok
+test tools::task::tests::background_setup_error_records_a_terminal_tracker_snapshot ... ok
+test tools::task::tests::background_spawn_failure_after_admission_emits_terminal_event ... ok
+test tools::task::tests::background_task_is_promoted_out_of_the_turn_but_settled_before_run_close ... ok
+test tools::task::tests::background_task_keeps_the_admitted_run_permission_snapshot_across_turn_changes ... ok
+test tools::task::tests::background_task_updates_shared_tracker_without_an_event_receiver ... ok
+test tools::task::tests::background_task_write_is_a_parent_mutation_after_it_settles ... ok
+test tools::task::tests::batch_nested_tool_events_are_paired_and_preserve_web_source_anchors ... ok
+test tools::task::tests::bounded_child_tool_call_can_finalize_structured_output_without_a_live_child ... ok
+test tools::task::tests::cancelled_child_execution_error_reports_cancelled_by_caller ... ok
+test tools::task::tests::cancelled_parent_stops_manager_mcp_registration_before_child_execution ... ok
+test tools::task::tests::cancelled_structured_generation_reports_cancelled_by_caller ... ok
+test tools::task::tests::cancelled_token_stops_manager_mcp_tool_registration_before_child ... ok
+test tools::task::tests::cancelled_token_stops_projected_mcp_binding_registration_before_child ... ok
+test tools::task::tests::cancelling_a_batch_waiting_for_provider_capacity_returns_promptly ... ok
+test tools::task::tests::child_events_terminal_state_and_direct_result_are_sanitized ... ok
+test tools::task::tests::child_policy::child_policy_covers_normal_and_structured_task_with_original_budget ... ok
+test tools::task::tests::child_policy::child_policy_uses_invoking_run_instead_of_captured_registration ... ok
+test tools::task::tests::child_policy::review_under_a_work_policy_is_read_only_and_unchanged_without_one ... ok
+test tools::task::tests::child_source_anchor_is_sanitized_before_task_metadata_persistence ... ok
+test tools::task::tests::concurrent_parallel_batches_share_eight_slots_and_execute_each_branch_once ... ok
+test tools::task::tests::concurrent_parallel_calls_share_one_provider_capacity_window ... ok
+test tools::task::tests::deep_research_child_agent_inherits_parent_permissions_for_bash ... ok
+test tools::task::tests::delegated_child_retains_large_tool_original_through_parent_content_adapter ... ok
+test tools::task::tests::delegated_child_skips_redundant_pre_analysis_model_call ... ok
+test tools::task::tests::delegated_child_uses_the_parent_runs_exact_projected_mcp_binding ... ok
+test tools::task::tests::delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_circuit ... ok
+test tools::task::tests::delegated_task_admission_fails_closed_after_its_invoking_turn_closes ... ok
+test tools::task::tests::delegation_soak::soak_parent_fanout_cancel_leaves_no_child_or_source_change ... ignored, S-PD-01 repeated parent fan-out; run with --ignored
+test tools::task::tests::delegation_soak::source_digest_excludes_harness_state_and_tracks_source_edits ... ok
+test tools::task::tests::detached_children_share_one_run_quota_before_using_global_capacity ... ok
+test tools::task::tests::duplicate_source_anchors_do_not_hide_a_later_valid_anchor ... ok
+test tools::task::tests::early_setup_failure_leaves_no_stale_canceller_entry ... ok
+test tools::task::tests::empty_child_final_output_is_reported_as_a_failed_task ... ok
+test tools::task::tests::empty_child_output_is_a_failure_and_never_triggers_schema_coercion ... ok
+test tools::task::tests::event_bridge_join_failure_is_warned_and_task_still_completes ... ok
+test tools::task::tests::execute_step_with_schema_coerces_structured_output ... ok
+test tools::task::tests::execute_step_with_schema_demotes_step_on_coercion_failure ... ok
+test tools::task::tests::execute_step_without_schema_has_no_structured_output ... ok
+test tools::task::tests::execute_with_task_id_fails_closed_when_parent_cancellation_is_already_set ... ok
+test tools::task::tests::execute_with_task_id_runs_a_foreground_child ... ok
+test tools::task::tests::failed_background_task_does_not_persist_source_anchors ... ok
+test tools::task::tests::failed_source_tool_exit_remains_excluded ... ok
+test tools::task::tests::failed_step_with_schema_skips_coercion ... ok
+test tools::task::tests::finished_task_owns_a_path_it_dirtied_for_the_parent_session ... ok
+test tools::task::tests::foreground_task_is_cancellable_while_waiting_on_the_scheduler_lease ... ok
+test tools::task::tests::foreground_without_scheduler_attaches_provider_model_generation_admission ... ok
+test tools::task::tests::independent_subagent_work_uses_the_agent_scheduler_without_nested_deadlock ... ok
+test tools::task::tests::oversized_successful_source_url_is_not_collected ... ok
+test tools::task::tests::parallel_isolates_schema_coercion_failure_from_sibling ... ok
+test tools::task::tests::parallel_result_source_anchor_budget_prioritizes_successful_results ... ok
+test tools::task::tests::parallel_task_both_inherit_permissions ... ok
+test tools::task::tests::parallel_task_does_not_replay_a_read_only_branch_from_error_prose ... ok
+test tools::task::tests::parallel_task_does_not_retry_a_mutating_branch ... ok
+test tools::task::tests::parallel_task_executor_emits_subagent_events_for_each_child ... ok
+test tools::task::tests::parallel_task_executor_isolates_unknown_agent_failure ... ok
+test tools::task::tests::parallel_task_executor_respects_configured_concurrency_limit ... ok
+test tools::task::tests::parallel_task_executor_runs_children_concurrently_and_preserves_input_order ... ok
+test tools::task::tests::parallel_task_lifecycle_recovers_from_a_poisoned_mutex ...
+thread 'tools::task::tests::parallel_task_lifecycle_recovers_from_a_poisoned_mutex' (66899998) panicked at crates/code/core/src/tools/task.rs:198:13:
+intentional parallel task lifecycle poison
+ok
+test tools::task::tests::parallel_task_metadata_carries_successful_child_read_anchor ... ok
+test tools::task::tests::parallel_task_preserves_successful_siblings_without_prose_driven_replay ... ok
+test tools::task::tests::parallel_task_tool_allows_partial_failure_when_requested ... ok
+test tools::task::tests::parallel_task_tool_can_return_after_min_success_count ... ok
+test tools::task::tests::parallel_task_tool_emits_terminal_event_for_aborted_child ... ok
+test tools::task::tests::parallel_task_tool_rejects_arguments_that_conflict_with_its_contract ... ok
+test tools::task::tests::parallel_task_tool_reports_error_when_any_child_fails ... ok
+test tools::task::tests::parallel_task_tool_returns_structured_child_output_when_schema_requested ... ok
+test tools::task::tests::parallel_task_tool_still_fails_when_all_children_fail ... ok
+test tools::task::tests::parallel_task_tool_timeout_path_respects_configured_concurrency_limit ... ok
+test tools::task::tests::parallel_task_tool_timeout_returns_completed_partial_results ... ok
+test tools::task::tests::projected_mcp_bindings_starve_manager_tool_registration ... ok
+test tools::task::tests::queued_background_task_can_be_cancelled_by_task_id ... ok
+test tools::task::tests::reject_unclean_capability_subtask_close_formats_incomplete_report ... ok
+test tools::task::tests::scheduled_foreground_composes_distinct_provider_quota_identity ... ok
+test tools::task::tests::scheduler_empty_quotas_uses_acquire_with_identity ... ok
+test tools::task::tests::scheduler_identity_derive_failure_fails_closed_before_child ... ok
+test tools::task::tests::schema_invalid_child_output_still_uses_llm_coercion_fallback ... ok
+test tools::task::tests::schema_pattern_cannot_bypass_structured_output_redaction ... ok
+test tools::task::tests::schema_valid_child_json_skips_llm_coercion ... ok
+test tools::task::tests::schema_valid_json_embedded_in_dirty_output_skips_llm_coercion ... ok
+test tools::task::tests::schema_valid_protocol_value_survives_display_redaction ... ok
+test tools::task::tests::scoped_tool_name_collision_fails_before_child_execution ... ok
+test tools::task::tests::settle_delegated_execution_covers_close_error_branches ... ok
+test tools::task::tests::settle_task_capability_operation_covers_close_error_branches ... ok
+test tools::task::tests::source_anchor_candidate_scan_stops_a_duplicate_flood ... ok
+test tools::task::tests::source_anchor_candidate_scan_stops_an_invalid_value_flood ... ok
+test tools::task::tests::source_anchor_count_cap_is_shared_across_tool_events ... ok
+test tools::task::tests::structured_output_sanitization_without_schema_redacts_nested_strings ... ok
+test tools::task::tests::successful_source_tool_metadata_becomes_normalized_anchors ... ok
+test tools::task::tests::synthesize_progress_emits_tool_completed_for_tool_end ... ok
+test tools::task::tests::synthesize_progress_emits_turn_completed_for_turn_end ... ok
+test tools::task::tests::synthesize_progress_ignores_unrelated_events ... ok
+test tools::task::tests::synthesize_progress_includes_error_kind_when_present ... ok
+test tools::task::tests::task_child_and_schema_coercion_share_the_scoped_budget_boundary ... ok
+test tools::task::tests::task_child_run_confirmation_auto_approve ... ok
+test tools::task::tests::task_child_run_permission_allow ... ok
+test tools::task::tests::task_child_run_permission_deny ... ok
+test tools::task::tests::task_child_run_step_budget_enforced ... ok
+test tools::task::tests::task_child_workspace_write_is_a_parent_mutation ... ok
+test tools::task::tests::task_executor_prefers_run_scope_over_session_scope_for_admission ... ok
+test tools::task::tests::task_json_sanitizer_redacts_nested_string_values ... ok
+test tools::task::tests::task_positive_role_round_limit_survives_parent_default_alias ... ok
+test tools::task::tests::task_role_round_tightening_preserves_absent_and_trusted_zero_roles ... ok
+test tools::task::tests::task_scheduler_without_typed_pool_skips_shared_provider_admission ... ok
+test tools::task::tests::task_tool_executes_multiple_unified_tasks_concurrently ... ok
+test tools::task::tests::task_tool_executes_the_unified_single_task_shape ... ok
+test tools::task::tests::task_tool_exposes_one_compact_model_schema_and_hides_parallel_alias ... ok
+test tools::task::tests::task_tool_parent_cancellation_reaches_child_llm_call ... ok
+test tools::task::tests::task_tool_rejects_zero_max_steps_before_foreground_background_or_fanout_launch ... ok
+test tools::task::tests::task_tool_returns_structured_child_output_when_schema_requested ... ok
+test tools::task::tests::test_compact_task_output_preserves_small_output ... ok
+test tools::task::tests::test_format_task_result_for_context_truncates_large_output ... ok
+test tools::task::tests::test_parallel_task_params_all_background ... ok
+test tools::task::tests::test_parallel_task_params_clone ... ok
+test tools::task::tests::test_parallel_task_params_debug ... ok
+test tools::task::tests::test_parallel_task_params_deserialize ... ok
+test tools::task::tests::test_parallel_task_params_empty_tasks ... ok
+test tools::task::tests::test_parallel_task_params_large_count ... ok
+test tools::task::tests::test_parallel_task_params_missing_tasks ... ok
+test tools::task::tests::test_parallel_task_params_roundtrip ... ok
+test tools::task::tests::test_parallel_task_params_schema ... ok
+test tools::task::tests::test_parallel_task_params_schema_items ... ok
+test tools::task::tests::test_parallel_task_params_schema_required ... ok
+test tools::task::tests::test_parallel_task_params_serialize ... ok
+test tools::task::tests::test_parallel_task_params_single_task ... ok
+test tools::task::tests::test_task_artifact_reference_is_stable ... ok
+test tools::task::tests::test_task_params_all_fields ... ok
+test tools::task::tests::test_task_params_clone ... ok
+test tools::task::tests::test_task_params_debug_format ... ok
+test tools::task::tests::test_task_params_default_background ... ok
+test tools::task::tests::test_task_params_deserialize ... ok
+test tools::task::tests::test_task_params_empty_strings ... ok
+test tools::task::tests::test_task_params_max_steps_zero_is_rejected ... ok
+test tools::task::tests::test_task_params_missing_required_field ... ok
+test tools::task::tests::test_task_params_rejects_permissive_field ... ok
+test tools::task::tests::test_task_params_roundtrip ... ok
+test tools::task::tests::test_task_params_schema ... ok
+test tools::task::tests::test_task_params_schema_descriptions ... ok
+test tools::task::tests::test_task_params_schema_hides_permissive_field ... ok
+test tools::task::tests::test_task_params_schema_properties ... ok
+test tools::task::tests::test_task_params_schema_required_fields ... ok
+test tools::task::tests::test_task_params_serialize ... ok
+test tools::task::tests::test_task_params_serialize_skip_none ... ok
+test tools::task::tests::test_task_params_serialize_with_max_steps ... ok
+test tools::task::tests::test_task_params_with_background ... ok
+test tools::task::tests::test_task_params_with_max_steps ... ok
+test tools::task::tests::test_task_result_clone ... ok
+test tools::task::tests::test_task_result_debug_format ... ok
+test tools::task::tests::test_task_result_deserialize ... ok
+test tools::task::tests::test_task_result_empty_output ... ok
+test tools::task::tests::test_task_result_roundtrip ... ok
+test tools::task::tests::test_task_result_serialize ... ok
+test tools::task::tests::test_task_result_success_false ... ok
+test tools::task::tests::test_task_result_success_true ... ok
+test tools::task::tests::test_task_schema_examples_use_delegation_core ... ok
+test tools::task::tests::tool_free_schema_step_uses_one_structured_model_call ... ok
+test tools::task::tests::with_mcp_builds_an_executor_that_accepts_a_manager ... ok
+test tools::task::tests::with_mcp_registers_manager_tools_into_the_delegated_child ... ok
+
+test result: ok. 741 passed; 0 failed; 2 ignored; 0 measured; 4712 filtered out; finished in 162.86s

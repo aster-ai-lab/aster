@@ -1,0 +1,302 @@
+{
+  "case": "plan-read-write",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": false,
+  "panicked": true,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:945306086e646e5a1704d79cc26aa70f4494214e:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26838",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-f1zaRX/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify    9:16 PM    \n       any file or call any other tool.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                          9:17 PM    \n                                                                                                                        \n     Worked for 21s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "plan-read",
+      "detail": "explicit plan launch, actual read receipt and unchanged source bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-f1zaRX/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify    9:16 PM    \n       any file or call any other tool.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                          9:17 PM    \n                                                                                                                        \n     Worked for 21s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=13 model_turns=4 prompt_tokens=57170",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-f1zaRX/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     9:17 PM    \n       test -f phase-result.txt using the bash tool to verify the output. Read phase-result.txt back and                \n       reply with its exact contents. Do not change planning-proof.txt.                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 20.1s                                                                                                \n                                                                                                                        \n     ◆ Creating phase-result.txt                                                                                       █\n                                                                                                                       █\n       1  PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                               █\n                                                                                                                       █\n     ◆ Thought for 1.1s                                                                                                █\n     ◆ Run test -f phase-result.txt                                                                                    █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                          9:17 PM   █\n                                                                                                                       █\n     verified ✓ (1 check)                                                                                              █\n                                                                                                                       █\n     Worked for 38s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    }
+  ],
+  "last_screen": "                                                                                                                        \n  /t/aster-kimi-f1zaRX/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     9:17 PM    \n       test -f phase-result.txt using the bash tool to verify the output. Read phase-result.txt back and                \n       reply with its exact contents. Do not change planning-proof.txt.                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 20.1s                                                                                                \n                                                                                                                        \n     ◆ Creating phase-result.txt                                                                                       █\n                                                                                                                       █\n       1  PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                               █\n                                                                                                                       █\n     ◆ Thought for 1.1s                                                                                                █\n     ◆ Run test -f phase-result.txt                                                                                    █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e                                                          9:17 PM   █\n                                                                                                                       █\n     verified ✓ (1 check)                                                                                              █\n                                                                                                                       █\n     Worked for 38s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        ",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13328,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2b9e8f7e62474f188f0985ae4c1a9ea1",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a6c96bd5-7449-48d2-8d12-a92f0da3cf8a",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2b9e8f7e62474f188f0985ae4c1a9ea1",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a6c96bd5-7449-48d2-8d12-a92f0da3cf8a",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:271aa12d6c9417176bdf6f03810aa6b1c0c66a0b2d3482ee6a1927f30d197e41",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"planning-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":54},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"projected_digest\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"repeat_key\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"content_ref\":\"inline:sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ae71f8cccb94c59a72afcc2adc703587682e1ade84afe65b91e0fdeb57633cb5\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13510,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:e43efd7746fde2da51e6e7363090a6604924d2747c3d87bd4e7a8ab01f0933f0"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "cd4867867723065fb1dde977f6574030b5caba1b36ec7483025234ce283dfbdd"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13624,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_3dceb6351767421a97c0a17abb636b65",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_3dceb6351767421a97c0a17abb636b65",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:6ab5742819318fca549944a057c8e396a2d7dfee25c6de3798e4ebf4f851455e",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "phase-result.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:4a2854be85837c703e4d9309cdbab506d7723c87c62c7a8698cb4b68b1ff8ce7",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 47 bytes (1 lines) to /tmp/aster-kimi-f1zaRX/workspace/phase-result.txt\\n[mutation observation] path=phase-result.txt status=unavailable\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"phase-result.txt\",\"created\":true,\"after\":\"PLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e\\n\",\"change\":{\"compacted\":false,\"before\":null,\"after\":{\"bytes\":47,\"sha256\":\"4a2854be85837c703e4d9309cdbab506d7723c87c62c7a8698cb4b68b1ff8ce7\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":77,\"projected_bytes\":77,\"original_estimated_tokens\":20,\"projected_estimated_tokens\":20,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e20e48c1c016c23bb0de69ec90a46e53c561cf574c031b28a6fd513ef5d405f3\",\"projected_digest\":\"sha256:e20e48c1c016c23bb0de69ec90a46e53c561cf574c031b28a6fd513ef5d405f3\",\"repeat_key\":\"sha256:e20e48c1c016c23bb0de69ec90a46e53c561cf574c031b28a6fd513ef5d405f3\",\"content_ref\":\"inline:sha256:e20e48c1c016c23bb0de69ec90a46e53c561cf574c031b28a6fd513ef5d405f3\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"phase-result.txt\",\"status\":\"unavailable\"}},\"observation_digest\":\"sha256:062989bbb2a008696ddd017b9c5151bf1657e1d2a604ea80b879485d40bb8ac9\"}"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14530,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 1,
+          "tool_call_id": "call_2f1286e3c1984c8e918c7fe784ffe123",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 18,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 1,
+          "tool_call_id": "call_2f1286e3c1984c8e918c7fe784ffe123",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:eb3f2f819a238ea34ce052c4adf7654774e4e1bb7023fbedbcda0a1ac5666904",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"test -f phase-result.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:phase-result.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:phase-result.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: phase-result.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"1fa1294fbb913e3d61aca5db84412c1ffc6758eb2df01445229c45dbd0f9beda\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}"
+      }
+    },
+    {
+      "seq": 19,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14449,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 20,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 2,
+          "tool_call_id": "call_fd6ca97936194d7dbbe9815c497749be",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 21,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 2,
+          "tool_call_id": "call_fd6ca97936194d7dbbe9815c497749be",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-11ec9b73-3336-4eae-bcbf-2d4bf504f2db",
+            "thread_id": "f8d9c084-2a93-44b7-b26a-6445acf712e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:62a83e87769a11ce480d74468f3d5f3ec3b574cfa1be3d597f7c11afcf6aa661",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPLAN-READ-cec80d24-5311-4d2a-a896-4a92366eff8e\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"phase-result.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":54},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"projected_digest\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"repeat_key\":\"sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"content_ref\":\"inline:sha256:8c988ca91b6961870f819c7b60feb0a20865af6c2a279fae7a039b0a98ba7f57\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ae71f8cccb94c59a72afcc2adc703587682e1ade84afe65b91e0fdeb57633cb5\"}"
+      }
+    },
+    {
+      "seq": 22,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14567,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 23,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "verified",
+        "effect_digest": "1fa1294fbb913e3d61aca5db84412c1ffc6758eb2df01445229c45dbd0f9beda",
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:88341926a858c7ab2ef430bcca7fa1d599e0947b0412a8b367596c1c38a75e46",
+          "sha256:382f78dceff0d0bbb747a44eced1e7a989c117e4c14eee43ba449f0329fdba5b",
+          "sha256:c626cd05d45f804737cb8f1a5f8f9fed488c888b13184f27a8cde64ba9a75ccb"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 22,
+          "digest": "1398ca488f487b12a91470e87bb784c613eb3422edc78d6f09f84cdcd8cdd395"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

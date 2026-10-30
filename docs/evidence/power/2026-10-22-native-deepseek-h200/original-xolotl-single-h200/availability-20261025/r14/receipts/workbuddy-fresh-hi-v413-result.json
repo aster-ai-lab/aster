@@ -1,0 +1,37 @@
+{
+  "unix": 1792939305.3690362,
+  "phase": "passed",
+  "test": "Fresh WorkBuddy session, literal HI, standard tool definitions",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "base_url": "http://10.102.93.68/v1",
+  "prompt": "HI",
+  "default_tools_profile": true,
+  "no_session_persistence": true,
+  "GUI_tested": false,
+  "performance_optimization": false,
+  "events": 19,
+  "tool_calls": 0,
+  "client_pid": 168572,
+  "elapsed_seconds": 48.32800000021234,
+  "first_output_seconds": 47.85900000017136,
+  "client_exit": 0,
+  "reply": "Hi. What would you like to work on?",
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 44067,
+    "duration_api_ms": 44066,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 24870,
+      "output_tokens": 11,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": null,
+      "server_tool_use": null,
+      "service_tier": null
+    }
+  },
+  "seconds": 48.5,
+  "finished_unix": 1792939353.8799143
+}

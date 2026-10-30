@@ -1,0 +1,758 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 2 warnings
+warning: unused variable: `screen`
+   --> crates/code/acp/tests/aster_tui_live_e2e/driver.rs:699:21
+    |
+699 |                 let screen = loop {
+    |                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_screen`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-acp` (test "aster_tui_live_e2e") generated 1 warning (run `cargo fix --test "aster_tui_live_e2e" -p a3s-code-acp` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 59.45s
+     Running tests/aster_tui_live_e2e.rs (target/debug/deps/aster_tui_live_e2e-71a36fc7129eef76)
+
+running 57 tests
+test context_and_input::kimi_actual_compaction_with_and_without_focus_preserves_model_history ... ORACLE case=compact-model-history name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26578
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13503
+ORACLE case=compact-model-history name=/compact result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13544
+ORACLE case=compact-model-history name=/compact Preserve the exact acceptance key and the still-open task. result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=quit result=pass detail=exit 0
+ok
+test context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once ... ORACLE case=long-unicode-paste name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=long-unicode-paste name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=21961
+ORACLE case=long-unicode-paste name=exact-long-paste result=pass detail=more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response
+ORACLE case=long-unicode-paste name=quit result=pass detail=exit 0
+ok
+test context_and_input::kimi_multiline_mode_inserts_literal_newlines_before_manual_submission ... ORACLE case=multiline-manual-enter name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=multiline-manual-enter name=manual-enter-newline result=pass detail=bare Enter in multiline mode keeps the draft local
+ORACLE case=multiline-manual-enter name=manual-enter-newline result=pass detail=bare Enter in multiline mode keeps the draft local
+ORACLE case=multiline-manual-enter name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13204
+ORACLE case=multiline-manual-enter name=multiline-manual-enter result=pass detail=literal bare-Enter newlines and Unicode text reach one exact model request
+ORACLE case=multiline-manual-enter name=quit result=pass detail=exit 0
+ok
+test context_and_input::kimi_normal_mode_alt_and_backslash_enter_insert_literal_newlines ... ORACLE case=multiline-alt-backslash name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=multiline-alt-backslash name=alt-enter-newline result=pass detail=Alt+Enter in normal mode keeps the draft local
+ORACLE case=multiline-alt-backslash name=backslash-enter-newline result=pass detail=backslash then Enter keeps the draft local
+ORACLE case=multiline-alt-backslash name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13207
+ORACLE case=multiline-alt-backslash name=multiline-alt-backslash result=pass detail=Alt+Enter and backslash-continuation produce one exact multiline model request
+ORACLE case=multiline-alt-backslash name=quit result=pass detail=exit 0
+ok
+test file_references::kimi_file_completion_selects_real_file_and_line_range ... ORACLE case=file-ref-selection name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-selection name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-selection name=file-ref-selection result=pass detail=the real completion opens the selected file and confirms exact lines 1-2
+ORACLE case=file-ref-selection name=quit result=pass detail=exit 0
+ok
+test file_references::kimi_missing_file_reference_is_refused_without_model_work ... ORACLE case=file-ref-missing name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-missing name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-missing name=file-ref-missing result=pass detail=a selected reference whose file disappeared is explicitly refused without model work
+ORACLE case=file-ref-missing name=quit result=pass detail=exit 0
+ok
+test file_references::kimi_outside_file_reference_is_refused_without_model_work ... ORACLE case=file-ref-outside name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-outside name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-outside name=file-ref-outside result=pass detail=a selected reference redirected outside the workspace is explicitly refused without exposing bytes
+ORACLE case=file-ref-outside name=quit result=pass detail=exit 0
+ok
+test functional::kimi_config_crud_validation_cancel_reload_and_restart ... ORACLE case=config-crud-restart name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=config-crud-restart name=config-invalid result=pass detail=empty model id refused; ACL bytes remain unchanged
+ORACLE case=config-crud-restart name=config-add-edit-save result=pass detail=actual provider/model records and edited name persisted as ACL
+ORACLE case=config-crud-restart name=config-cancel-reload result=pass detail=unsaved provider discarded; explicit disk reload preserves saved ACL
+ORACLE case=config-crud-restart name=quit result=pass detail=exit 0
+ORACLE case=config-crud-restart name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26549
+ORACLE case=config-crud-restart name=config-restart-request result=pass detail=saved ACL restarted; real Kimi reads unseen fixture token
+ORACLE case=config-crud-restart name=config-remove result=pass detail=only the selected added provider removed; original Kimi provider retained
+ORACLE case=config-crud-restart name=quit result=pass detail=exit 0
+ok
+test functional::kimi_disabled_and_unknown_commands_never_reach_model ... ORACLE case=backend-refusal name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=backend-refusal name=refused-usage result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-view-plan result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-plan result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-tutorial result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-docs result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-privacy result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-login result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-logout result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-btw result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-feedback result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-queue result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-fork result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-resume result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-rename result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-history result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-transcript result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-rewind result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-workflows result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-workflow result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-personas result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-config-agents result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-plugins result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-skills result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-mcps result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-hooks result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-marketplace result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-import-claude result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-remember result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-tasks result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-imagine result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-imagine-video result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-voice result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-dashboard result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-recap result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-share result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-release-notes result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-announcements result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-dream result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-flush result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-memory result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-loop result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-auto result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=unknown-refusal result=pass detail=unknown command is not submitted as a model prompt
+ORACLE case=backend-refusal name=quit result=pass detail=exit 0
+ok
+test functional::kimi_history_recall_edit_and_resubmit_uses_exact_draft ... ORACLE case=history-edit-resubmit name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=history-edit-resubmit name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13189
+ORACLE case=history-edit-resubmit name=history-recall result=pass detail=the previous prompt is restored into the composer without another request
+ORACLE case=history-edit-resubmit name=history-edit result=pass detail=the recalled draft is edited locally before explicit resubmission
+ORACLE case=history-edit-resubmit name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13245
+ORACLE case=history-edit-resubmit name=history-edit-resubmit result=pass detail=the exact recalled and edited drafts are two distinct requests in order on the same session
+ORACLE case=history-edit-resubmit name=quit result=pass detail=exit 0
+ok
+test functional::kimi_home_picker_cancel_and_return_preserves_existing_session ... ORACLE case=home-return name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=home-return name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13184
+ORACLE case=home-return name=session-kind-marker result=pass detail={
+  "schema": "a3s.code.session-folder.v1",
+  "id": "c73d8088-a142-44d8-9716-6b8041617b82",
+  "created_at": "2026-10-30T09:47:53.051589833+08:00",
+  "workspace": "/tmp/aster-kimi-gNNFxc/workspace",
+  "effect_log": "c73d8088-a142-44d8-9716-6b8041617b82.jsonl",
+  "sessionKind": "interactive"
+}
+ORACLE case=home-return name=home-welcome result=pass detail=/home reaches the welcome screen without creating a session or changing the original fact log
+ORACLE case=home-return name=home-picker-cancelled result=pass detail=closing the picker preserves the original session and creates no model turn or session fact log
+ORACLE case=home-return name=home-return-restored result=pass detail=the original id and transcript return without a new session, model request or history mutation
+ORACLE case=home-return name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13238
+ORACLE case=home-return name=home-return-usable result=pass detail=the returned original session completes a fresh real Kimi turn
+ORACLE case=home-return name=quit result=pass detail=exit 0
+ok
+test functional::kimi_missing_file_has_real_failed_tool_receipt ... ORACLE case=missing-file name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=missing-file name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26602
+ORACLE case=missing-file name=missing-read result=pass detail=one actual failed read invocation, completed reply and no created file
+ORACLE case=missing-file name=quit result=pass detail=exit 0
+ok
+test functional::kimi_multiline_unicode_and_prompt_history ... ORACLE case=multiline-unicode name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=multiline-unicode name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26603
+ORACLE case=multiline-unicode name=multiline-utf8 result=pass detail=exact multiline user.message, real Unicode/space-path read and unseen token reply
+ORACLE case=multiline-unicode name=prompt-history result=pass detail=last submitted prompt recalled without another model request
+ORACLE case=multiline-unicode name=quit result=pass detail=exit 0
+ok
+test functional::kimi_new_session_isolated_from_previous_history_permissions_and_runtime ... ORACLE case=session-isolation name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=session-isolation name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13185
+ORACLE case=session-isolation name=fresh-session-isolated result=pass detail=new id, empty context and composer, default permissions and idle runtime; old fact log bytes unchanged
+ORACLE case=session-isolation name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13185
+ORACLE case=session-isolation name=session-isolation result=pass detail=the second session completes independently without inheriting the first session's history or state
+ORACLE case=session-isolation name=quit result=pass detail=exit 0
+ok
+test functional::kimi_plan_ceiling_remains_binding_with_yolo ... ORACLE case=plan-yolo-ceiling name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=plan-yolo-ceiling name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26572
+ORACLE case=plan-yolo-ceiling name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27270
+ORACLE case=plan-yolo-ceiling name=plan-ceiling result=pass detail=YOLO retains Plan ceiling: actual write denied, no mutation
+ORACLE case=plan-yolo-ceiling name=quit result=pass detail=exit 0
+ok
+test functional::kimi_plan_read_then_yolo_verified_write ... ORACLE case=plan-read-write name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26551
+ORACLE case=plan-read-write name=plan-read result=pass detail=explicit plan launch, actual read receipt and unchanged source bytes
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=55147
+ORACLE case=plan-read-write name=plan-exit-write result=pass detail=same session switches from plan to execution and finishes a real byte-verified mutation
+ORACLE case=plan-read-write name=quit result=pass detail=exit 0
+ok
+test functional::kimi_preferences_apply_after_restart_and_sessions_remain_distinct ... ORACLE case=preferences-restart name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=preferences-restart name=quit result=pass detail=exit 0
+ORACLE case=preferences-restart name=preferences-reloaded result=pass detail=four persisted settings actually restored before inverse toggles
+ORACLE case=preferences-restart name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26571
+ORACLE case=preferences-restart name=restart-kimi result=pass detail=new parent session completes a real Kimi read after preference reload
+ORACLE case=preferences-restart name=quit result=pass detail=exit 0
+ok
+test functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage ... ORACLE case=session-info-contract name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+
+thread 'functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage' (15665) panicked at crates/code/acp/tests/aster_tui_live_e2e/functional.rs:658:54:
+transparent ACP trace proxy
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text ... ORACLE case=draft-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "WRONG"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "RIGHT"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=undo-redo result=pass detail=word deletion and actual undo/redo restore the intended draft
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "数据"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=stash-pop result=pass detail=Ctrl+S clears and restores the Unicode draft without submitting it
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "BROKEN"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "数据"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13191
+ORACLE case=draft-edit-controls name=exact-edited-prompt result=pass detail=cursor/line deletion, clear and undo retain exact UTF-8 bytes in one real model request
+ORACLE case=draft-edit-controls name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_external_editor_cancel_without_save_preserves_draft_and_terminal ... ORACLE case=editor-cancel name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=editor-cancel name=editor-exit-no-save result=pass detail=the external editor exited successfully without changing the draft file
+ORACLE case=editor-cancel name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13190
+ORACLE case=editor-cancel name=editor-cancel result=pass detail=normal editor exit without save preserves the exact original draft and restores terminal control
+ORACLE case=editor-cancel name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=editor-save name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13190
+ORACLE case=editor-save name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-save name=quit result=pass detail=exit 0
+ORACLE case=editor-nonzero name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=editor-nonzero name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13191
+ORACLE case=editor-nonzero name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-nonzero name=quit result=pass detail=exit 0
+ORACLE case=editor-invalid-utf8 name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=editor-invalid-utf8 name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13190
+ORACLE case=editor-invalid-utf8 name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-invalid-utf8 name=quit result=pass detail=exit 0
+ORACLE case=editor-missing-program name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=editor-missing-program name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13191
+ORACLE case=editor-missing-program name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-missing-program name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_history_help_uses_reachable_entry ... ORACLE case=history-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=history-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=history-help-capability name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_multiline_undo_redo_clear_and_stash_restore_exact_draft ... ORACLE case=multiline-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=1 ms
+ORACLE case=multiline-edit-controls name=multiline-undo-redo result=pass detail=undo and redo restore the final line without submitting
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=1 ms
+ORACLE case=multiline-edit-controls name=multiline-stash-pop result=pass detail=stash and pop restore all three lines
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=1 ms
+ORACLE case=multiline-edit-controls name=multiline-clear-undo result=pass detail=clear and undo restore the complete multiline draft
+ORACLE case=multiline-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13205
+ORACLE case=multiline-edit-controls name=multiline-edit-controls result=pass detail=multiline undo, redo, clear and stash preserve every Unicode byte in one model request
+ORACLE case=multiline-edit-controls name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_paste_help_matches_text_only_backend ... ORACLE case=paste-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=paste-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=paste-help-capability name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_selection_replace_and_delete_preserve_unicode_draft ... ORACLE case=selection-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=selection-edit-controls name=draft-redraw result=pass detail=one key operation removes "WRONG"; additional display wait=1 ms
+ORACLE case=selection-edit-controls name=selection-replace result=pass detail=typing replaces exactly the keyboard-selected suffix without submitting
+ORACLE case=selection-edit-controls name=draft-redraw result=pass detail=one key operation removes "RIGHT"; additional display wait=1 ms
+ORACLE case=selection-edit-controls name=selection-delete result=pass detail=Backspace deletes only the selected suffix and preserves the Unicode draft
+ORACLE case=selection-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13191
+ORACLE case=selection-edit-controls name=selection-edit-controls result=pass detail=selection replacement and deletion preserve exact Unicode text in one model request
+ORACLE case=selection-edit-controls name=quit result=pass detail=exit 0
+ok
+test input_controls::kimi_sessions_help_uses_reachable_entry ... ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=sessions-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=sessions-help-capability name=quit result=pass detail=exit 0
+ORACLE case=send-now-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=send-now-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=send-now-help-capability name=quit result=pass detail=exit 0
+ok
+test kimi_tui_allow_once_writes_and_verifies_actual_workspace_bytes ... ORACLE case=allow-once name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=settled-turn result=pass detail=facts=19 model_turns=5 prompt_tokens=68031
+ORACLE case=allow-once name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=allow-once name=quit result=pass detail=exit 0
+ok
+test kimi_tui_durable_goal_controls_persist_real_facts ... ORACLE case=goal name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=goal name=goal-create result=pass detail=actual Core goal.created fact preserves the objective
+ORACLE case=goal name=/goal pause result=pass detail=a3s.goal.paused
+ORACLE case=goal name=/goal resume result=pass detail=a3s.goal.resumed
+ORACLE case=goal name=/goal clear result=pass detail=a3s.goal.cancelled
+ORACLE case=goal name=quit result=pass detail=exit 0
+ok
+test kimi_tui_expands_actual_folded_tool_output ... ORACLE case=expand name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=expand name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27991
+ORACLE case=expand name=expand-content result=pass detail=unseen last tool-output line appears only after /expand
+ORACLE case=expand name=quit result=pass detail=exit 0
+ok
+test kimi_tui_interrupts_a_running_tool_without_late_side_effects ... ORACLE case=interrupt name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=interrupt name=interrupt result=pass detail=Ctrl+C settles an admitted bash call; no delayed write after eight seconds
+ORACLE case=interrupt name=quit result=pass detail=exit 0
+ok
+test kimi_tui_multiturn_edits_and_runs_the_real_checker ... ORACLE case=coding name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=coding name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26739
+ORACLE case=coding name=coding-diagnose result=pass detail=both functions diagnosed, source bytes unchanged
+ORACLE case=coding name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=57371
+ORACLE case=coding name=coding-repair result=pass detail=real edit receipt, verified terminal, unchanged checker and independent passing execution
+ORACLE case=coding name=quit result=pass detail=exit 0
+ok
+test kimi_tui_native_form_validates_submits_and_cancels ... ORACLE case=form-submit name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=form-submit name=form-required result=pass detail=native required-field validation blocks empty submission
+ORACLE case=form-submit name=form-range result=pass detail=native numeric validation blocks amount 6
+ORACLE case=form-submit name=form-submit result=pass detail=actual ACP/Core tool receipt contains Ada, 4 and true
+ORACLE case=form-submit name=quit result=pass detail=exit 0
+ORACLE case=form-cancel name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=form-cancel name=form-cancel result=pass detail=actual tool result carries the cancelled outcome
+ORACLE case=form-cancel name=quit result=pass detail=exit 0
+ok
+test kimi_tui_offered_commands_have_observable_effects ... ORACLE case=surface name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=surface name=welcome-60x20 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=welcome-80x24 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=welcome-120x40 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=palette-settings result=pass detail=Open the settings modal
+ORACLE case=surface name=palette-config result=pass detail=Add and configure providers and models
+ORACLE case=surface name=palette-new result=pass detail=Start a new session
+ORACLE case=surface name=palette-effort result=pass detail=Set reasoning effort
+ORACLE case=surface name=palette-goal result=pass detail=durable goal
+ORACLE case=surface name=palette-compact result=pass detail=Compact conversation history
+ORACLE case=surface name=palette-model result=pass detail=Switch the active model
+ORACLE case=surface name=palette-context result=pass detail=View context usage
+ORACLE case=surface name=palette-jump result=pass detail=Jump to a turn
+ORACLE case=surface name=palette-edit-prompt result=pass detail=external editor
+ORACLE case=surface name=palette-session-info result=pass detail=Show session info
+ORACLE case=surface name=palette-export result=pass detail=Export the current conversation
+ORACLE case=surface name=palette-copy result=pass detail=Copy last response
+ORACLE case=surface name=palette-find result=pass detail=Search the conversation scrollback
+ORACLE case=surface name=palette-theme result=pass detail=Switch the color theme
+ORACLE case=surface name=palette-yolo result=pass detail=skip all permission prompts
+ORACLE case=surface name=palette-vim-mode result=pass detail=vim-style scrollback
+ORACLE case=surface name=palette-multiline result=pass detail=multiline input mode
+ORACLE case=surface name=palette-compact-mode result=pass detail=less padding, more content
+ORACLE case=surface name=palette-timestamps result=pass detail=message timestamps
+ORACLE case=surface name=palette-toggle-mouse-reporting result=pass detail=terminal mouse reporting
+ORACLE case=surface name=palette-minimal result=pass detail=scrollback-native
+ORACLE case=surface name=palette-timeline result=pass detail=timeline sidebar
+ORACLE case=surface name=palette-doctor result=pass detail=show available fixes
+ORACLE case=surface name=palette-home result=pass detail=welcome screen
+ORACLE case=surface name=palette-delete result=pass detail=Delete this session
+ORACLE case=surface name=palette-help result=pass detail=Browse commands and keyboard shortcuts
+ORACLE case=surface name=palette-quit result=pass detail=Quit the application
+ORACLE case=surface name=/doctor result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/goal status result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/compact result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/help result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/settings result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/config result=pass detail=actual command result; no model turn
+ORACLE case=surface name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26564
+ORACLE case=surface name=live-transcript result=pass detail=unseen file content in actual Kimi reply
+ORACLE case=surface name=export result=pass detail=actual transcript file contains Kimi reply
+ORACLE case=surface name=copy result=pass detail=actual copied reply bytes
+ORACLE case=surface name=session-info result=pass detail=same persisted session after a live turn
+ORACLE case=surface name=context result=pass detail=actual context report after a live turn
+ORACLE case=surface name=find result=pass detail=search locates actual assistant transcript token
+ORACLE case=surface name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13451
+ORACLE case=surface name=jump result=pass detail=turn picker opened and selected a turn
+ORACLE case=surface name=/theme grokday result=pass detail=grokday
+ORACLE case=surface name=/compact-mode result=pass detail=compact_mode = true
+ORACLE case=surface name=/timestamps result=pass detail=show_timestamps = false
+ORACLE case=surface name=/timeline result=pass detail=show_timeline = true
+ORACLE case=surface name=/vim-mode result=pass detail=vim_mode = true
+ORACLE case=surface name=multiline-on result=pass detail=session toggle shown
+ORACLE case=surface name=multiline-off result=pass detail=toggle returned to ordinary input
+ORACLE case=surface name=model result=pass detail=catalog selection changed and restored to Kimi before further inference
+ORACLE case=surface name=effort result=pass detail=reasoning effort actually changed to low in model footer
+ORACLE case=surface name=yolo result=pass detail=permission posture flag enabled
+ORACLE case=surface name=toggle-mouse-reporting result=pass detail=actual terminal mouse capture mode changed
+ORACLE case=surface name=edit-prompt result=pass detail=real editor process ran and returned edited composer bytes
+ORACLE case=surface name=compact result=pass detail=actual model compaction appended compaction.done
+ORACLE case=surface name=quit result=pass detail=exit 0
+ORACLE case=surface name=continue result=pass detail=same source-built ACP session reconnected
+ORACLE case=surface name=quit result=pass detail=exit 0
+ORACLE case=surface name=resume result=pass detail=explicit session identity restored
+ORACLE case=surface name=home result=pass detail=returned to welcome screen
+ORACLE case=surface name=new result=pass detail=new session identity
+ORACLE case=surface name=minimal result=pass detail=switched renderer
+ORACLE case=surface name=expand-empty result=pass detail=actual empty result in minimal mode
+ORACLE case=surface name=fullscreen result=pass detail=returned to fullscreen renderer
+ORACLE case=surface name=delete result=pass detail=persisted session summary removed and welcome screen restored
+ORACLE case=surface name=quit result=pass detail=exit 0
+ok
+test kimi_tui_permission_reject_and_cancel_leave_no_side_effect ... ORACLE case=permission-reject name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=permission-reject name=permission-reject result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-reject name=quit result=pass detail=exit 0
+ORACLE case=permission-cancel name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=permission-cancel name=permission-cancel result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-cancel name=quit result=pass detail=exit 0
+ok
+test kimi_tui_reads_actual_workspace_bytes ... ORACLE case=read name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=read name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26538
+ORACLE case=read name=live-read result=pass detail=actual read receipt and unseen file token in settled assistant reply
+ORACLE case=read name=quit result=pass detail=exit 0
+ok
+test kimi_tui_writes_and_verifies_actual_workspace_bytes ... ORACLE case=write-verify name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+
+thread 'kimi_tui_writes_and_verifies_actual_workspace_bytes' (28782) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:522:13:
+timeout waiting for bound Session ID
+                                                                                                                        
+  /t/aster-kimi-gJTqur/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+FAILED
+test lifecycle::kimi_allow_always_survives_restart_and_is_workspace_scoped ... ORACLE case=learned-approval name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=learned-approval name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26567
+ORACLE case=learned-approval name=allow-always result=pass detail=actual permission selection persisted the exact cat rule in ACL
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26559
+ORACLE case=learned-approval name=learned-restart result=pass detail=same workspace reuses persisted approval with no permission card
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ORACLE case=learned-approval name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=learned-approval name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26602
+ORACLE case=learned-approval name=approval-workspace-scope result=pass detail=another workspace asks again and returns its own unseen token
+ORACLE case=learned-approval name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_background_session_switch_keeps_reply_permission_and_tool_owner ... ORACLE case=background-session-owner name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=background-session-owner name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13199
+ORACLE case=background-session-owner name=quit result=pass detail=exit 0
+ORACLE case=background-session-owner name=background-permission-owner result=pass detail=the background session prepared the tool, but no permission card or result appears in the visible session and its log is unchanged
+ORACLE case=background-session-owner name=background-permission-card-owner result=pass detail=returning to the original owner reveals its pending permission card, still without a result file
+ORACLE case=background-session-owner name=background-tool-owner result=pass detail=the approved tool completes in the background without exposing its result in the visible session or changing its log
+
+thread 'lifecycle::kimi_background_session_switch_keeps_reply_permission_and_tool_owner' (29932) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:664:13:
+live turn failed
+                                                                                                                        
+  /t/aster-kimi-RFlNX7/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Use the bash tool exactly once to run sleep 6; printf 'A-TOOL-RESULT' > owner-result.txt; cat        10:05 AM    
+       owner-result.txt. Reply with the exact output. Do not call other tools or modify any other file.                 
+                                                                                                                        
+                                                                                                                        
+     ◆ Thought for 2.9s                                                                                                 
+     ◆ Run sleep 6; printf 'A-TOOL-RESULT' > owner-result.txt; cat owner-result.txt                                     
+     ◆ Thought for 1.0s                                                                                                 
+                                                                                                                        
+     A-TOOL-RESULT                                                                                          10:05 AM    
+                                                                                                                        
+  ┃  Turn failed in 25s: completion gate: workspace mutation                                                            
+  ┃  8169e53e1e70f86fa8a974c3005278407e4856c630183bd653d0c784a7f6c4d8 (owner-result.txt) has no bound Passed            
+  ┃  verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to        
+  ┃  this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash`        
+  ┃  command that exits 0 and includes `test -f owner-result.txt` with the check that proves the change, for example    
+  ┃  `test -f owner-result.txt && <test command>`.                                                                      
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+FAILED
+test lifecycle::kimi_background_session_switch_preserves_read_only_tool_and_response_owner ... ORACLE case=background-session-read-only-owner name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=background-session-read-only-owner name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13205
+ORACLE case=background-session-read-only-owner name=quit result=pass detail=exit 0
+ORACLE case=background-session-read-only-owner name=background-permission-owner result=pass detail=the read-only tool request waits in session A while session B has no permission card, output, or log changes
+ORACLE case=background-session-read-only-owner name=background-permission-card-owner result=pass detail=returning to session A reveals its pending permission card
+ORACLE case=background-session-read-only-owner name=background-tool-owner result=pass detail=the approved read completes in session A while session B's screen and byte-identical fact log have no result
+ORACLE case=background-session-read-only-owner name=settled-turn result=pass detail=facts=9 model_turns=2 prompt_tokens=26676
+ORACLE case=background-session-read-only-owner name=background-response-owner result=pass detail=session A alone receives the single tool result and final reply containing the unseen file token; the input file remains unchanged
+ORACLE case=background-session-read-only-owner name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_continue_selects_latest_per_workspace ... ORACLE case=continue-latest-workspace name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=continue-latest-workspace name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13221
+ORACLE case=continue-latest-workspace name=quit result=pass detail=exit 0
+ORACLE case=continue-latest-workspace name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13220
+ORACLE case=continue-latest-workspace name=quit result=pass detail=exit 0
+ORACLE case=continue-latest-workspace name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13219
+ORACLE case=continue-latest-workspace name=quit result=pass detail=exit 0
+ORACLE case=continue-latest-workspace name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13276
+ORACLE case=continue-latest-workspace name=continue-latest-workspace-a result=pass detail=the latest interactive session in this workspace restored its own identity and history without tools
+ORACLE case=continue-latest-workspace name=quit result=pass detail=exit 0
+ORACLE case=continue-latest-workspace name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13277
+ORACLE case=continue-latest-workspace name=continue-latest-workspace-b result=pass detail=the latest interactive session in this workspace restored its own identity and history without tools
+ORACLE case=continue-latest-workspace name=quit result=pass detail=exit 0
+ORACLE case=continue-latest-workspace name=continue-preserves-older-session result=pass detail=the older same-workspace session was not selected or mutated
+ok
+test lifecycle::kimi_copy_nth_exact_bytes_and_export_failures ... ORACLE case=copy-export-contract name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=copy-export-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26563
+ORACLE case=copy-export-contract name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27037
+ORACLE case=copy-export-contract name=copy-1 result=pass detail=requested assistant response exported with exact UTF-8 bytes
+ORACLE case=copy-export-contract name=copy-2 result=pass detail=requested assistant response exported with exact UTF-8 bytes
+ORACLE case=copy-export-contract name=export-order result=pass detail=full transcript contains both prompts and replies in order
+ORACLE case=copy-export-contract name=export-refusal result=pass detail=directory write and invalid response index fail explicitly without model work
+ORACLE case=copy-export-contract name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_explicit_deny_survives_yolo_and_next_read ... ORACLE case=yolo-explicit-deny name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26584
+ORACLE case=yolo-explicit-deny name=explicit-deny result=pass detail=actual write denied under YOLO; exact original bytes retained
+ORACLE case=yolo-explicit-deny name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27102
+ORACLE case=yolo-explicit-deny name=usable-after-denial result=pass detail=subsequent actual Kimi read completes in the same session
+ORACLE case=yolo-explicit-deny name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_resume_and_continue_restore_model_history ... ORACLE case=resume-model-history name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26588
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13474
+ORACLE case=resume-model-history name=--resume result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13558
+ORACLE case=resume-model-history name=--continue result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_session_picker_filters_selects_and_cancels_by_real_id ... ORACLE case=session-picker-duplicate-title name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=session-picker-duplicate-title name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13219
+ORACLE case=session-picker-duplicate-title name=quit result=pass detail=exit 0
+ORACLE case=session-picker-duplicate-title name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13225
+ORACLE case=session-picker-duplicate-title name=quit result=pass detail=exit 0
+ORACLE case=session-picker-duplicate-title name=picker-filter-by-id result=pass detail=the exact older UUID filters the duplicate-title picker without loading another session
+ORACLE case=session-picker-duplicate-title name=picker-esc-leaves-search result=pass detail=the first Esc leaves the focused search without dropping the UUID query or closing the picker
+ORACLE case=session-picker-duplicate-title name=picker-esc-clears-filter result=pass detail=Esc from navigation clears the UUID query and restores both duplicate-title rows without closing the picker
+ORACLE case=session-picker-duplicate-title name=picker-cancel-preserves-history result=pass detail=cancelling the filtered picker creates no session fact log and leaves the newer duplicate-title history byte-identical
+ORACLE case=session-picker-duplicate-title name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13276
+ORACLE case=session-picker-duplicate-title name=picker-selects-real-id-not-title result=pass detail=the older duplicate-title session is selected by UUID and recalls its own history without touching the newer session
+ORACLE case=session-picker-duplicate-title name=quit result=pass detail=exit 0
+ok
+test lifecycle::kimi_session_picker_native_paste_keeps_initial_shortcut_character ... ORACLE case=session-picker-native-paste name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=session-picker-native-paste name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13226
+ORACLE case=session-picker-native-paste name=quit result=pass detail=exit 0
+ORACLE case=session-picker-native-paste name=native-paste-first-character result=pass detail=the initial e remains query text instead of expanding the selected session card
+ORACLE case=session-picker-native-paste name=native-paste-first-character result=pass detail=the initial e remains query text instead of expanding the selected session card
+ORACLE case=session-picker-native-paste name=native-paste-first-character result=pass detail=the initial e remains query text instead of expanding the selected session card
+ORACLE case=session-picker-native-paste name=native-paste-first-character result=pass detail=the initial e remains query text instead of expanding the selected session card
+ORACLE case=session-picker-native-paste name=native-paste-reopen result=pass detail=four terminal picker pastes preserve an initial e without invoking the expand shortcut
+ORACLE case=session-picker-native-paste name=quit result=pass detail=exit 0
+ok
+test reading_controls::kimi_find_match_positions_jump_cancel_and_vim_navigation ... ORACLE case=reading-navigation name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=reading-navigation name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27514
+ORACLE case=reading-navigation name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=14363
+ORACLE case=reading-navigation name=find-positions result=pass detail=all three independently placed tool-output matches become visible in order, reverse order and wraparound
+ORACLE case=reading-navigation name=jump-first result=pass detail=selecting the first actual turn moves the viewport to its prompt, away from the second turn
+ORACLE case=reading-navigation name=jump-cancel result=pass detail=previewing the other turn and cancelling restores the original first-turn viewport
+ORACLE case=reading-navigation name=vim-and-resize result=pass detail=Vim top/bottom navigation changes actual transcript positions and remains reachable across three PTY sizes
+ORACLE case=reading-navigation name=quit result=pass detail=exit 0
+ok
+test stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing ... ORACLE case=direct-shell-capability name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=direct-shell-capability name=direct-shell-refusal result=pass detail=backend explicitly refuses the direct-command surface before any model request or file effect
+ORACLE case=direct-shell-capability name=quit result=pass detail=exit 0
+ok
+test stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order ... ORACLE case=queue-edit-delete-drain name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=queue-edit-delete-drain name=queue-effects result=pass detail=three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order
+ORACLE case=queue-edit-delete-drain name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26615
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27307
+ORACLE case=ls-search-contracts name=search-unsupported-combination result=pass detail=the original content-plus-pagination request is explicitly refused according to the published search contract
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=28001
+ORACLE case=ls-search-contracts name=search-context result=pass detail=one scoped content search returns both unknown context tokens and excludes outside content
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=28979
+ORACLE case=ls-search-contracts name=search-bounded-page result=pass detail=files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=29700
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30448
+ORACLE case=ls-search-contracts name=search-no-match result=pass detail=the actual scoped no-match receipt succeeds without returning fixture contents or changing their bytes
+ORACLE case=ls-search-contracts name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26769
+ORACLE case=shell-nonzero-contract name=native-nonzero result=pass detail=one real native command preserves exit 7, independent stdout/stderr tokens, exact working directory and unchanged script bytes
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13706
+ORACLE case=shell-nonzero-contract name=failed-tool-recovery result=pass detail=the same session accepts and completes the next no-tool request after the real failed shell call
+ORACLE case=shell-nonzero-contract name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=send-now-cancel-ownership name=send-now-owner result=pass detail=the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal
+ORACLE case=send-now-cancel-ownership name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=send-now-model-stream name=send-now-model-owner result=pass detail=an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools
+ORACLE case=send-now-model-stream name=quit result=pass detail=exit 0
+ok
+test workspace_trust::kimi_read_rejects_escapes_links_and_preserves_bounded_pages ... ORACLE case=path-absolute-escape name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=path-absolute-escape name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26624
+ORACLE case=path-absolute-escape name=path-absolute-escape result=pass detail=the actual read receipt fails closed and never exposes the outside secret
+ORACLE case=path-absolute-escape name=quit result=pass detail=exit 0
+ORACLE case=path-relative-escape name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=path-relative-escape name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26714
+ORACLE case=path-relative-escape name=path-relative-escape result=pass detail=the actual read receipt fails closed and never exposes the outside secret
+ORACLE case=path-relative-escape name=quit result=pass detail=exit 0
+ORACLE case=path-link-escape name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=path-link-escape name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26570
+ORACLE case=path-link-escape name=link-escape result=pass detail=a symlink/junction cannot expose the outside secret through the real read path
+ORACLE case=path-link-escape name=quit result=pass detail=exit 0
+ORACLE case=path-bounded-read name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=path-bounded-read name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26746
+ORACLE case=path-bounded-read name=bounded-read result=pass detail=the large file returns exactly twenty lines with next_offset=20 and no later secret
+ORACLE case=path-bounded-read name=quit result=pass detail=exit 0
+ok
+test workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace ... ORACLE case=relative-cwd name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=relative-cwd name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26594
+ORACLE case=relative-cwd name=relative-cwd result=pass detail=interactive relative --cwd preserves Unicode and spaces in the real tool workspace
+ORACLE case=relative-cwd name=quit result=pass detail=exit 0
+ok
+test workspace_trust::kimi_workspace_acl_cannot_override_host_provider_or_explicit_deny ... ORACLE case=workspace-acl-authority name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=workspace-acl-authority name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26581
+ORACLE case=workspace-acl-authority name=workspace-provider-boundary result=pass detail=a same-name workspace provider and local URL cannot replace the trusted Kimi provider or its credentials
+ORACLE case=workspace-acl-authority name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27162
+ORACLE case=workspace-acl-authority name=workspace-host-deny result=pass detail=workspace content cannot relax the explicit CLI deny under YOLO; original bytes remain
+ORACLE case=workspace-acl-authority name=quit result=pass detail=exit 0
+ok
+test workspace_trust::kimi_workspace_trust_accept_restart_and_second_workspace_are_scoped ... ORACLE case=trust-accept name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=trust-accept name=trust-prompt result=pass detail=release-stamped trust gate blocks the declared process and all session/model work
+ORACLE case=trust-accept name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26555
+ORACLE case=trust-accept name=trust-accept result=pass detail=the shown workspace grant starts its declared command and permits a real Kimi read
+ORACLE case=trust-accept name=quit result=pass detail=exit 0
+ORACLE case=trust-accept name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=26555
+ORACLE case=trust-accept name=trust-restart result=pass detail=the original workspace reuses its grant and completes another real Kimi read after a real process restart
+ORACLE case=trust-accept name=quit result=pass detail=exit 0
+ORACLE case=trust-accept name=trust-workspace-scope result=pass detail=a second workspace asks again and declining it leaves the original grant byte-identical
+ok
+test workspace_trust::kimi_workspace_trust_decline_and_cancel_have_no_effects ... ORACLE case=trust-reject name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=trust-reject name=trust-reject result=pass detail=decline/cancel exits before the declared process, session/model work or an acceptance record
+ORACLE case=trust-cancel name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=trust-cancel name=trust-cancel result=pass detail=decline/cancel exits before the declared process, session/model work or an acceptance record
+ok
+
+failures:
+
+failures:
+    functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage
+    kimi_tui_writes_and_verifies_actual_workspace_bytes
+    lifecycle::kimi_background_session_switch_keeps_reply_permission_and_tool_owner
+
+test result: FAILED. 54 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2348.20s
+
+error: test failed, to rerun pass `-p a3s-code-acp --test aster_tui_live_e2e`

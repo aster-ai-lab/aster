@@ -1,0 +1,28 @@
+
+running 1 test
+test agent_api::tests::fact_log::navigation::navigation_explicit_mount_shares_tool_manifest_and_reaches_actual_model_once ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5303 filtered out; finished in 0.47s
+
+
+running 8 tests
+test agent_api::tests::compact::compact_conversation_writes_a_summary_fact ... ok
+
+thread 'agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input' (23032) panicked at crates\code\core\src\agent_api\tests\compact\source_carry.rs:235:10:
+called `Result::unwrap()` on an `Err` value: SessionConfiguration { field: "limit.context", message: "context_window_unhostable: the declared context window (256 tokens) is              smaller than the harness prompt floor (12288); raise the model's limit.context (and the serving backend's max context) or pick a model with a larger window" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input ... FAILED
+test agent_api::tests::compact::source_carry::compact_twice_reopens_file_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_carry::compact_twice_reopens_memory_store_in_all_four_modes ... ok
+test agent_api::tests::compact::source_guard::compact_append_refuses_foreign_writer_and_changed_source ... ok
+test agent_api::tests::compact::source_guard::compact_bad_policy_source_refuses_before_summary_provider ... ok
+test agent_api::tests::compact::source_guard::compact_budget_refusal_does_not_call_summary_provider_or_append ... ok
+test agent_api::tests::compact::source_guard::compact_close_cancels_budget_wait_and_retains_original_writer ... ok
+
+failures:
+
+failures:
+    agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 5296 filtered out; finished in 4.05s
+

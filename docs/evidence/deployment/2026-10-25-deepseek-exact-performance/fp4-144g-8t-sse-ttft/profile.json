@@ -1,0 +1,14 @@
+{
+  "out": "/data/deepseek-v41-xq-1017/native-fp4-144g-8t-sse-ttft-20261025",
+  "profile": "FP4 exact 8t 144GiB PCIe0.75 SSE TTFT supplement",
+  "routes": [],
+  "decode_trials": 0,
+  "prefill": true,
+  "stream_io": true,
+  "threads": 8,
+  "arena_gib": 144,
+  "pcie_bp": 7500,
+  "kv_fp4": true,
+  "prior_quality_proof": "fp4-144g-8t-pcie75-exact/quality.json",
+  "deployment_receipt": "native-exact-fp4-144g-8t-ttft-deployment.json"
+}

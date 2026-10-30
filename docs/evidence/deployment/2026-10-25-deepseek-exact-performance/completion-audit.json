@@ -1,0 +1,71 @@
+{
+  "all_passed": true,
+  "cohorts": [
+    {
+      "cohort": "fresh-bf16-60g-8t-baseline",
+      "quality_passed": 5,
+      "warm_decode_trials": 3,
+      "decode_tokens_per_second_median": 5.4,
+      "sse_prefill_source": "fresh-bf16-60g-8t-baseline",
+      "prefill_tokens_per_second_median": 658.8,
+      "prefill_ttft_seconds_median": 26.270528936991468
+    },
+    {
+      "cohort": "fp4-60g-exact",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 5.9,
+      "sse_prefill_source": "fp4-60g-8t-sse-ttft",
+      "prefill_tokens_per_second_median": 429.0,
+      "prefill_ttft_seconds_median": 40.24409111402929
+    },
+    {
+      "cohort": "fp4-144g-8t-pcie75-exact",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 18.65,
+      "sse_prefill_source": "fp4-144g-8t-sse-ttft",
+      "prefill_tokens_per_second_median": 646.8,
+      "prefill_ttft_seconds_median": 26.85578423901461
+    },
+    {
+      "cohort": "fp4-144g-24t-pcie50-exact",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 21.6,
+      "sse_prefill_source": "fp4-144g-24t-pcie50-exact",
+      "prefill_tokens_per_second_median": 647.1,
+      "prefill_ttft_seconds_median": 26.90182302100584
+    },
+    {
+      "cohort": "fp4-144g-24t-pcie25-exact",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 24.4,
+      "sse_prefill_source": "fp4-144g-24t-pcie25-exact",
+      "prefill_tokens_per_second_median": 661.7,
+      "prefill_ttft_seconds_median": 26.242778716958128
+    },
+    {
+      "cohort": "fp4-144g-24t-pcie0-exact",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 26.25,
+      "sse_prefill_source": "fp4-144g-24t-pcie0-exact",
+      "prefill_tokens_per_second_median": 656.8,
+      "prefill_ttft_seconds_median": 26.423363472975325
+    }
+  ],
+  "short_decode_ratio": 4.861111111111111,
+  "native_cold_one_million_passed": true,
+  "public_warm_one_million_passed": true,
+  "final_selected_profile_restored": true,
+  "final_workbuddy_cases": 6,
+  "final_workbuddy_http_requests": 10,
+  "official_healthy": true,
+  "limitations": [
+    "Synthetic repeated archive retrieval",
+    "Short-prompt speed ratio does not measure the 1M speed ratio",
+    "No global quality equivalence or hardware-limit claim"
+  ]
+}

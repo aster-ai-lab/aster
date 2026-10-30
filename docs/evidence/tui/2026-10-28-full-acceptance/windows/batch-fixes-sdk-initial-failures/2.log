@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history' (53024) panicked at crates\code\core\src\agent_api\tests\fact_log\tool_call_fidelity.rs:59:13:
+assertion `left == right` failed
+  left: ["Submit the specified diagnostic once and report its actual result.", ""]
+ right: ["Submit the specified diagnostic once and report its actual result."]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::fact_log::tool_call_fidelity::diagnostic_calls_keep_literal_arguments_and_runtime_refusals_in_model_history
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5315 filtered out; finished in 0.22s
+

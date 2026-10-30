@@ -1,0 +1,99 @@
+{
+  "unix": 1792921791.3706305,
+  "phase": "cpu_qualified",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v284",
+  "old_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v270",
+  "allocation_uid": "e808d0b3-65c6-4a48-b121-220ff6fc5eb2",
+  "replica_uid": "81b3fe4f-fe48-4624-97cb-6432c000b175",
+  "gpu_uuid": "GPU-ae6ae91f-8d9b-abc1-f7d4-7077c20fcc97",
+  "pod_ip": "100.104.93.41",
+  "native_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "lease_ends_unix": 1792933033.9163594,
+  "same_vip": true,
+  "same_existing_key": true,
+  "files": [
+    {
+      "file": "service-worker.py",
+      "bytes": 8670,
+      "sha256": "ef7ede4e6cf9ec2ca9d4910bd5c033b084309343b18b9db4e67972ef33b783cb"
+    },
+    {
+      "file": "test_tool_roundtrip.py",
+      "bytes": 6253,
+      "sha256": "bd8b4e5afe4513f6052c2e77c4deca621a8021acd3192a76252eb1c3d7dd7e88"
+    },
+    {
+      "file": "source/serve/frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+    },
+    {
+      "file": "source/tools/v41/serve/serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+    },
+    {
+      "file": "source/tools/v41/serve/aster_tool_roundtrip.py",
+      "bytes": 6081,
+      "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af"
+    },
+    {
+      "file": "test_exact_token_cache.py",
+      "bytes": 4741,
+      "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd"
+    },
+    {
+      "file": "test_strict_native_json.py",
+      "bytes": 1411,
+      "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865"
+    },
+    {
+      "file": "test_combined_adapter.py",
+      "bytes": 4093,
+      "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5"
+    },
+    {
+      "file": "test_hybrid_native_json.py",
+      "bytes": 1721,
+      "sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23"
+    },
+    {
+      "file": "actual-tool-output.json",
+      "bytes": 534,
+      "sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    },
+    {
+      "file": "service-plan.json",
+      "bytes": 5571,
+      "sha256": "37e621fe11d6c574cdacb9d972830202ef3723dccbabcade3f7bc1a924acead0"
+    }
+  ],
+  "preflight": {
+    "unix": 1792921813.8875632,
+    "phase": "cpu_qualified",
+    "tests": [
+      {
+        "name": "tool-roundtrip-tests",
+        "returncode": 0,
+        "tail": "test_anthropic_parallel_ids_reorder_results (__main__.ProtocolTests) ... ok\ntest_failed_recovery_exposes_zero_tool_chunks (__main__.ProtocolTests) ... ok\ntest_forged_recovery_marker_cannot_trigger (__main__.ProtocolTests) ... ok\ntest_only_exact_three_completed_rounds_trigger (__main__.ProtocolTests) ... ok\ntest_openai_parallel_ids_reorder_results (__main__.ProtocolTests) ... ok\ntest_ordinary_stream_remains_incremental (__main__.ProtocolTests) ... ok\ntest_recovery_retains_schema_and_disables_further_calls (__main__.ProtocolTests) ... ok\ntest_successful_recovery_preserves_final_chunks (__main__.ProtocolTests) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.003s\n\nOK\n"
+      },
+      {
+        "name": "security-tests",
+        "returncode": 0,
+        "tail": "......../mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v284/source/serve/telemetry.py:351: ResourceWarning: unclosed file <_io.TextIOWrapper name='/proc/stat' mode='r' encoding='UTF-8'>\n  f = [int(x) for x in open(\"/proc/stat\").readline().split()[1:]]\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v284/source/serve/telemetry.py:334: ResourceWarning: unclosed file <_io.TextIOWrapper name='/proc/cpuinfo' mode='r' encoding='utf-8'>\n  return line.split(\":\", 1)[1].strip()\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n...............\n----------------------------------------------------------------------\nRan 23 tests in 8.271s\n\nOK\n"
+      },
+      {
+        "name": "ds41-api-tests",
+        "returncode": 0,
+        "tail": "rgs('max')\nok   effort_kwargs('25')\nok   effort_kwargs('none')\nok   effort_kwargs('0')\nok   effort_kwargs(False)\nok   effort_kwargs('medium')\nok   effort_kwargs(None)\nok   effort_kwargs rejects unknown\nok   DSML parse == DeepSeek's parser at every split 1..39 (thinking=True)\nok   DSML parse == DeepSeek's parser at every split 1..39 (thinking=False)\nok   non-DSML text passes through\nok   DwarfStar escape undone\nok   parallel: the server calls the ds41 version\nok   parallel 4 -> --batch 4\nok   parallel beside the expert --slots\nok   parallel 1 / absent: nothing\n[strata] \"parallel\": 40 - the DeepSeek-V4.1 engine runs at most 16 requests together (a batch window is 16 rows); it will use 16\n[strata] \"parallel\": 40 - the DeepSeek-V4.1 engine runs at most 16 requests together (a batch window is 16 rows); it will use 16\nok   parallel 40 -> 16\nok   parallel: an explicit --batch-slots wins\n[strata] \"parallel\" must be a whole number of requests (2..16), not '4': ignored\n[strata] \"parallel\" must be a whole number of requests (2..16), not True: ignored\nok   parallel not a number: ignored\n[strata] \"parallel\": 4 ignored: the DeepSeek-V4.1 engine's batch slots need its conversation pool (--conversation-cache-mib 0 turns it off); one request at a time\nok   parallel without the pool: off\n[strata] \"parallel\": 4 ignored: the DeepSeek-V4.1 engine's batch slots are turned off (STRATA_DS41_PARALLEL=0); one request at a time\nok   parallel with STRATA_DS41_PARALLEL=0: off\nok   engine_args: parallel reaches the ds41 engine\nok   tokenizer: specials are single tokens\nok   tokenizer round trip\nok   stop ids = <\uff5cend\u2581of\u2581sentence\uff5c> only\nok   vision: only actual image blocks become markers\nok   vision: adjacent images expand to all encoder rows\nok   vision: source order and sampling room preserved\nok   vision: combined records keep prompt order\nok   vision: rejects image-count mismatch\nok   HTTP OpenAI tool call\nok   HTTP Anthropic tool_use\nok   HTTP plain answer after the scripted call\nall passed\n"
+      }
+    ],
+    "formal_service_changed": false,
+    "model_inference_sent": false
+  }
+}

@@ -1,0 +1,12 @@
+
+running 1 test
+test coverage_wave::kimi_program_timeout_terminates_vm_and_next_turn_still_runs ... ORACLE case=coverage-program-timeout name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-program-timeout name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=coverage-program-timeout name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40316
+ORACLE case=coverage-program-timeout name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13730
+ORACLE case=coverage-program-timeout name=program-timeout-and-recovery result=pass detail=the real embedded VM times out with zero nested dispatches and the same session completes a fresh model turn
+ORACLE case=coverage-program-timeout name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 31.80s
+

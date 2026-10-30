@@ -1,0 +1,221 @@
+{
+  "candidate_build_id": "aster-cli-pair-v1:3c601c086ffef3b3e86a13c0f71d19b49abc3dae:aarch64-apple-darwin",
+  "candidate_binaries": {
+    "aster": {
+      "sha256": "20b4aafacaa7edc92408dc95c8e25dc228db77011306ce59a5d0ed76665bfed4",
+      "bytes": 810696680
+    },
+    "acp": {
+      "sha256": "524764968686e2a5101eb9e36f2112dd9139fded4ed866af3ceea6b8bee9a460",
+      "bytes": 342040416
+    }
+  },
+  "actual_suites": {
+    "unattended": {
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_s": 417.996,
+      "candidate_unchanged": true,
+      "tester_unchanged": true,
+      "manifest_unchanged": true,
+      "changed_compiled_local_sources": [],
+      "build_id": "aster-cli-pair-v1:3c601c086ffef3b3e86a13c0f71d19b49abc3dae:aarch64-apple-darwin",
+      "scope": "actual registered ACP with controlled local model; entire-suite time includes debug binary identity verification, not product task latency"
+    },
+    "conformance": {
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_s": 362.465,
+      "candidate_unchanged": true,
+      "tester_unchanged": true,
+      "manifest_unchanged": true,
+      "changed_compiled_local_sources": [],
+      "build_id": "aster-cli-pair-v1:3c601c086ffef3b3e86a13c0f71d19b49abc3dae:aarch64-apple-darwin",
+      "scope": "actual registered ACP with controlled local model; entire-suite time includes debug binary identity verification, not product task latency"
+    }
+  },
+  "h1": {
+    "checks": {
+      "inner_workflow_and_qualification": true,
+      "owned_cleanup": true,
+      "baseline_really_failed": true,
+      "independent_vm_oracle": true,
+      "wire_contract": true,
+      "original_exit_code_bound": true,
+      "exact_command_advice_observed": true,
+      "runtime_unchanged": true,
+      "runtime_matches_qualified_assets": true,
+      "relay_closed_no_unknown_rejections": true,
+      "raw_and_wire_generation_counts": true,
+      "wire_sequences_contiguous": true,
+      "bound_metadata": true,
+      "outer_identity_checks": true,
+      "actual_driver_workspace_witness": true,
+      "each_raw_usage_matches_acp": true,
+      "registered_candidate_really_used": true,
+      "actual_acp_pid_absent_after_join": true,
+      "owned_acp_group_absent_after_join": true
+    },
+    "qualified_h1": true,
+    "cohort": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/docs/evidence/code/2026-10-24-acp-long-horizon/rust-scripted-5b973826-f337-46da-9423-3a6b0876e99c",
+    "main_steps": 6,
+    "auxiliary_requests": 3,
+    "wire_and_raw_usage": [
+      {
+        "sequence": 1,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 2,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 3,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 4,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 5,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 6,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 7,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 8,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      },
+      {
+        "sequence": 9,
+        "raw_state": "present",
+        "http_status": 200,
+        "prompt": 1,
+        "completion": 1,
+        "total": 2,
+        "matches_acp": true
+      }
+    ],
+    "synthetic_total_tokens": 18,
+    "workflow_ms": 34453,
+    "whole_test_s": 234.996,
+    "tools": 8,
+    "permission_requests": 7,
+    "scope": "controlled scripted H1; synthetic usage is not real model billing or performance benefit; no full original-case/GUI/soak qualification"
+  },
+  "goal_settlement": {
+    "checks_passed": true,
+    "totals": {
+      "created_goals": 6,
+      "admitted_slices": 10,
+      "settled_slices": 10,
+      "completed_goals": 4,
+      "pending_slices": 0
+    },
+    "rows": [
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-stalled-goal-tmp-60401-1792850637182814000/a3s-code-acp-e460ec54-9f16-4343-8f5e-2806efc6be2e/sessions/2026-10-24/12b886ea-3159-4929-997d-219885d2ef12/12b886ea-3159-4929-997d-219885d2ef12.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 4,
+        "settled_slices": 4,
+        "completed_goals": 0,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      },
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-tmp-deadline-60401-1792850385638765000/a3s-code-acp-757440fa-31ae-4217-acd1-35d287fdba5a/sessions/2026-10-24/812876b5-007e-4d7f-9a4d-43148a7493a1/812876b5-007e-4d7f-9a4d-43148a7493a1.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 2,
+        "settled_slices": 2,
+        "completed_goals": 0,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      },
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-tmp-goal-60401-1792850452022607000/a3s-code-acp-7de546f6-43f4-4f0e-ad48-71c2ff82ff15/sessions/2026-10-24/d0809573-1c35-42f5-97f1-a2d66eb42c59/d0809573-1c35-42f5-97f1-a2d66eb42c59.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 1,
+        "settled_slices": 1,
+        "completed_goals": 1,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      },
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-tmp-large-60401-1792850605901021000/a3s-code-acp-deaea42e-614c-4780-8e9f-d471534542c8/sessions/2026-10-24/ab3c4282-1bc9-4008-a202-342946c39241/ab3c4282-1bc9-4008-a202-342946c39241.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 1,
+        "settled_slices": 1,
+        "completed_goals": 1,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      },
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-tmp-skill-60401-1792850482605226000/a3s-code-acp-39576eb3-4318-4a22-aab5-aff1df0bfe8a/sessions/2026-10-24/bf807fe7-a159-4ba9-9ec8-889ff6ec4cd4/bf807fe7-a159-4ba9-9ec8-889ff6ec4cd4.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 1,
+        "settled_slices": 1,
+        "completed_goals": 1,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      },
+      {
+        "fact_log": "target/q/r915final-unattended/t/a3s-unattended-verified-goal-tmp-60401-1792850773618705000/a3s-code-acp-7883ea4a-7884-4960-81ad-11ec23db2dbd/sessions/2026-10-24/06d8517b-3415-49be-9426-8f61aa7fd2c2/06d8517b-3415-49be-9426-8f61aa7fd2c2.jsonl",
+        "created_goals": 1,
+        "admitted_slices": 1,
+        "settled_slices": 1,
+        "completed_goals": 1,
+        "pending_slices": 0,
+        "v3_progress_basis": true
+      }
+    ],
+    "scope": "original controlled ACP Goal/Slice facts; 4 goals completed and 2 intentionally stopped, no universal recovery or process-cleanup claim"
+  },
+  "scope": "controlled models, exact registered debug pair; not four-platform release-profile byte qualification or real-model speed/token improvements"
+}

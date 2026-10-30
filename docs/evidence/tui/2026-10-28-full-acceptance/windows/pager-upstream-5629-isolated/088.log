@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::tmux_stale_plan_and_idempotence_reuse_managed_writer_safety' (39356) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:679:5:
+assertion failed: matches!(apply_fix(plan),
+    Err(FixError::TmuxManaged(a3s_code_config::managed_text::ManagedConfigError::StalePlan(_))))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::tmux_stale_plan_and_idempotence_reuse_managed_writer_safety ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::tmux_stale_plan_and_idempotence_reuse_managed_writer_safety
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

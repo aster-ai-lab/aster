@@ -1,0 +1,21 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content ... ORACLE case=network-fetch-pages name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=network-fetch-pages name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40278
+ORACLE case=network-fetch-pages name=web-fetch-unicode-first-page result=pass detail=the first real response uses Unicode character offsets, reports next_offset=17 and retains a content-addressed full-text artifact
+ORACLE case=network-fetch-pages name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=41994
+
+thread 'network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content' (14046) panicked at crates/code/acp/tests/aster_tui_live_e2e/tool_wave.rs:646:9:
+assertion `left == right` failed: exactly one requested model call is required
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 112 filtered out; finished in 50.00s
+

@@ -1,0 +1,113 @@
+{
+  "case": "send-now-cancel-ownership",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "send-now-owner",
+      "detail": "the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-41rqkv\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started');   2:39 PM           Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED.                     Do not call any other tool.                                                                                                                                                                                                                                                                                                                                           ♦ Thought for 4.0s                                                                                                      ♦ Run [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late…                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #1 Reply only SEND-NOW-OWNED. Do not call any tool.                                                                                                                                                                                           ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+;:queue  │  Ctrl+x:shortcuts                                                                                                                                                                                          "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13482,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_8e8cda4977e44c37bd62ae8f4529dca4",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-5fb08232-ec27-456c-888f-876fe9178fd4",
+            "thread_id": "64d5dfe7-a40d-4513-8af8-c6789cd9a481",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_8e8cda4977e44c37bd62ae8f4529dca4",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-5fb08232-ec27-456c-888f-876fe9178fd4",
+            "thread_id": "64d5dfe7-a40d-4513-8af8-c6789cd9a481",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:08223bce73aabf901329037332dc48c0477a27aca0cb013b901d5d0e71c46982",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [
+            {
+              "path": "started.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:03494afd4248c42f5fa1237bf2eeebe751ab8d9c977d55405fcb17469dbd91f8",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:9b5956b1745dd096d8fb83469ba2dbffaa14a58a2e5701601ce993bcb792c84d"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13742,
+        "has_text": true,
+        "tool": null
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

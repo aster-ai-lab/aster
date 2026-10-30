@@ -168,10 +168,35 @@ pub struct AgentViewLayout {
     pub timeline_width: u16,
 }
 impl AgentViewLayout {
+    pub(crate) fn compute_for_elicitation(params: AgentViewLayoutParams) -> Self {
+        // Blocking form controls take priority over the background panes when
+        // the ordinary scrollback minimum would clip fields or action rows.
+        Self::compute_with_scrollback_min(
+            AgentViewLayoutParams {
+                tasks_height: 0,
+                todo_height: 0,
+                queue_height: 0,
+                btw_height: 0,
+                turn_status_height: 0,
+                banner_height: 0,
+                cta_height: 0,
+                follow_ups_height: 0,
+                dock_height: 0,
+                prompt_gap: 0,
+                ..params
+            },
+            0,
+        )
+    }
+
     /// Stack the rows described by `params` into the screen area.
     ///
     /// Each row's rules are documented on [`AgentViewLayoutParams`].
     pub fn compute(params: AgentViewLayoutParams) -> Self {
+        Self::compute_with_scrollback_min(params, SCROLLBACK_MIN_ROWS)
+    }
+
+    fn compute_with_scrollback_min(params: AgentViewLayoutParams, scrollback_min: u16) -> Self {
         let AgentViewLayoutParams {
             area,
             layout_cfg,
@@ -231,7 +256,7 @@ impl AgentViewLayout {
         }
         let status_gap = if top_vpad == 0 { 0u16 } else { 1 };
         constraints.push(Constraint::Length(status_gap));
-        constraints.push(Constraint::Min(SCROLLBACK_MIN_ROWS));
+        constraints.push(Constraint::Min(scrollback_min));
         if btw_height > 0 {
             constraints.push(Constraint::Length(1));
             constraints.push(Constraint::Length(btw_height));

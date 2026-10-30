@@ -1,0 +1,17 @@
+{
+  "assertions_finished": false,
+  "case": "session-info-contract",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    }
+  ],
+  "panicked": true,
+  "raw_terminal_tail": ""
+}

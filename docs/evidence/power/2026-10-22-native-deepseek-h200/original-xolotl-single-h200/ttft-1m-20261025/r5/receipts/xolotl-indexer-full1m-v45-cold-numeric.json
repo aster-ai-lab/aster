@@ -1,0 +1,12 @@
+{
+  "unix": 1792872104.1964478,
+  "cold_numeric": [
+    "chunk prof: 2620 calls, 3531 launches: wall 509672 ms = waits on reads 0 + wave/copy waits 0 + final sync 440779 + other host 68893; reader wall 0 ms; GPU grouped kernels 51388 ms (resident 35757); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 10473 sub-runs; PTQ1_0 -> Q2_0 transcode 8 ms GPU (inside the grouped kernels) over 19 sub-runs, 13.7 GB of ternary read = 1668 GB/s",
+    "resident MMQ stage: 8999 waves, 772847953920 exact D2D bytes",
+    "serve: cache regrown: 1192 experts back (0 from the file) in 268 ms",
+    "dense prof turn: 164420 attn spans: build 4043 ms, alloc 2106, gpu compute 1262863, engram wait 5384, readback 35241, upload 11740, finish build 329",
+    "serve: prompt phases: 1048504 new = 1048504 batch (1922.78 s: dense 1323.65, experts 563.05, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 1048504 tokens (0 reused, batch) in 1922.80 s = 545.3 tok/s (experts 103039771 hit / 0 cpu / 23217509 pcie / 0 file)"
+  ]
+}

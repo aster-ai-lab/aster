@@ -1,0 +1,57 @@
+{
+  "assertions_finished": true,
+  "case": "editor-save",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13442,
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "c414bf69c9680d54a30dbe8805bd29b91e2e98a9cc17e9fa4c4b7331b5a708a8",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13442",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-FoDqAW\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 8754cdc2-18f7-4230-b0e4-946fdd6d284e\n  Working directory: C:\\Windows\\Temp\\aster-kimi-FoDqAW\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. SAVED-DRAFT\n\n♦ Thought for 1.1s\n│ I need respond exactly EDITOR-CONTROL-OK no tools. Should consider instructions? User explicitly reply phrase. Do.    \nEDITOR-CONTROL-OK\nWorked for 9.4s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (11%) · ctrl+o transcript"
+    },
+    {
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "name": "editor-roundtrip",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-FoDqAW\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 8754cdc2-18f7-4230-b0e4-946fdd6d284e\n  Working directory: C:\\Windows\\Temp\\aster-kimi-FoDqAW\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. SAVED-DRAFT\n\n♦ Thought for 1.1s\n│ I need respond exactly EDITOR-CONTROL-OK no tools. Should consider instructions? User explicitly reply phrase. Do.    \nEDITOR-CONTROL-OK\nWorked for 9.4s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (11%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

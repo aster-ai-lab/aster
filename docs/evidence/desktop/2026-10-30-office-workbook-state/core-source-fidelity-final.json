@@ -1,0 +1,34 @@
+{
+  "filesCompared": 70,
+  "unchangedFiles": 68,
+  "changedFiles": [
+    {
+      "path": "dist/index.esm.js",
+      "beforeSha256": "81486814a8b88218d25c9a421f5db4c352427033bdab9322aec558ebc7f575cd",
+      "afterSha256": "606914949f75ed1e69f62bd791b2ce684386e8866b9c7b003850ed4265ab13f6",
+      "removed": [
+        "    if (_.isEmpty(value)) {"
+      ],
+      "added": [
+        "    if (_.isNil(value) || value === \"\") {",
+        "    value = String(value);"
+      ],
+      "diff": "--- before/dist/index.esm.js\n\n+++ after/dist/index.esm.js\n\n@@ -52936,9 +52936,10 @@\n\n     } else {\n       value = cell;\n     }\n-    if (_.isEmpty(value)) {\n+    if (_.isNil(value) || value === \"\") {\n       return null;\n     }\n+    value = String(value);\n   }\n   if (tr === \"3\") {\n     renderCtx.textBaseline = \"top\";\n"
+    },
+    {
+      "path": "dist/index.js",
+      "beforeSha256": "f2a04bab6ef9a64bc728a4bf490fe6575ad99539f2061de2650ebd841c25a5b2",
+      "afterSha256": "4f3daadb3245b66cd112910dd91eb20c5c4797537b978c453b3181f4a489f602",
+      "removed": [
+        "    if (___default['default'].isEmpty(value)) {"
+      ],
+      "added": [
+        "    if (___default['default'].isNil(value) || value === \"\") {",
+        "    value = String(value);"
+      ],
+      "diff": "--- before/dist/index.js\n\n+++ after/dist/index.js\n\n@@ -52946,9 +52946,10 @@\n\n     } else {\n       value = cell;\n     }\n-    if (___default['default'].isEmpty(value)) {\n+    if (___default['default'].isNil(value) || value === \"\") {\n       return null;\n     }\n+    value = String(value);\n   }\n   if (tr === \"3\") {\n     renderCtx.textBaseline = \"top\";\n"
+    }
+  ],
+  "packageDirectory": "@fortune-sheet+core@1.0.4_patch_hash=02c8497e3db46bd5b21a471c59c23d1678de4acf76acb830613b72209d192dda",
+  "patchSha256": "fa1a984af7f84942f3de336ac7a2456c5c1b0698237f4c5c35bec95e0ca63967"
+}

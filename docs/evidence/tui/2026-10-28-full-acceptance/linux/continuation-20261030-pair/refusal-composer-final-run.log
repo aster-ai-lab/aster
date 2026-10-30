@@ -1,0 +1,51 @@
+
+running 1 test
+test functional::kimi_disabled_and_unknown_commands_never_reach_model ... ORACLE case=backend-refusal name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu
+ORACLE case=backend-refusal name=refused-usage result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-view-plan result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-plan result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-tutorial result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-docs result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-privacy result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-login result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-logout result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-btw result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-feedback result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-queue result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-fork result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-resume result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-rename result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-history result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-transcript result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-rewind result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-workflows result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-workflow result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-personas result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-config-agents result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-plugins result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-skills result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-mcps result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-hooks result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-marketplace result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-import-claude result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-remember result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-tasks result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-imagine result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-imagine-video result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-voice result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-dashboard result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-recap result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-share result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-release-notes result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-announcements result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-dream result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-flush result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-memory result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-loop result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=refused-auto result=pass detail=explicit backend refusal with no session/model facts
+ORACLE case=backend-refusal name=unknown-refusal result=pass detail=unknown command is not submitted as a model prompt
+ORACLE case=backend-refusal name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 56 filtered out; finished in 35.73s
+

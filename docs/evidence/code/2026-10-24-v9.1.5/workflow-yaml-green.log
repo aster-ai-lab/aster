@@ -1,0 +1,1 @@
+actionlint 1.7.12: ci.yml and release-aster-cli.yml passed (shellcheck and pyflakes disabled).

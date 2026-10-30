@@ -1,0 +1,6 @@
+{
+  "failure": "Copied fixture digest had 65 characters; authoritative metadata, plaintext and archived bytes agree on the 64-character digest",
+  "actual_sha256": "539aadd60c25d9abfbfc4defab2a3c658b9abc9e78cd45355b3b0930bdd12489",
+  "native_request_started": false,
+  "corrected": true
+}

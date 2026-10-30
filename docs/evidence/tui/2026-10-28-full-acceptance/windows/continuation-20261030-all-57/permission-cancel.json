@@ -1,0 +1,61 @@
+{
+  "assertions_finished": true,
+  "case": "permission-cancel",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "content": "permission-test",
+            "file_path": "side-effect.txt"
+          },
+          "id": "call_fecee9e8a97d4277899d79b0fc32d3e4",
+          "name": "write"
+        },
+        "has_text": false,
+        "prompt_tokens": 13335,
+        "text": null,
+        "tool": "write"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "d4c7ceaa597387fc35a93d07b084e191aa69a3cf5858e84c4dfbbba5f84e4256",
+          "seq": 7
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 8,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "real permission card dismissed; file absent before and after rejection/cancellation",
+      "name": "permission-cancel",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-29NRyG\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool once to create side-effect.txt containing 'permission-test'. If the request is     9:50 AM           rejected or cancelled, do not retry and do not use another tool; just report that it was not                            written.                                                                                                                                                                                                                                                                                                                                                              ♦ Thought for 1.8s                                                                                                                                                                                                                           │  ♦ Creating side-effect.txt                                                                                                                                                                                                                      denied                                                                                                  9:50 AM                                                                                                                                 Worked for 4.1s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

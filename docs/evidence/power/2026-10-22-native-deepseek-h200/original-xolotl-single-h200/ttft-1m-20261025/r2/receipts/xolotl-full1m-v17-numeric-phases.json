@@ -1,0 +1,70 @@
+{
+  "unix": 1792857313.733147,
+  "public_fixture_only": true,
+  "records": [
+    {
+      "phases": "serve: prompt phases: 1048504 new = 1048504 batch (2222.74 s: dense 1485.87, experts 701.55, logits 0.00) + DSpark tail 128 from the batch (cache open 2.45 s, seed 0.01 s)",
+      "summary": "serve: prompt 1048504 tokens (0 reused, batch) in 2225.21 s = 471.2 tok/s (experts 0 hit / 0 cpu / 126257280 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.03 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.03 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    },
+    {
+      "phases": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "summary": "serve: prompt 1048504 tokens (1048504 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+    }
+  ]
+}

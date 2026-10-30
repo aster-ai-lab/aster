@@ -1,0 +1,1128 @@
+{
+  "schema": "aster.tui.network-wave-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "runtime_pair_digest": "c860e66c1e42149f47a9bfadff219fd6fae2f8fa",
+  "runtime_pair_rebuilt": false,
+  "original_14_case_source_retained": true,
+  "original_failures_retained": true,
+  "windows_independent_file_observation": {
+    "file": "source/network-20261030-windows-pending-shell-observation.json",
+    "sha256": "28f863cd7106ab0e4359f747ab70682e5ac4677b559d8eca5ef944ad007ad1aa"
+  },
+  "process_identity_correction": {
+    "file": "source/network-20261030-process-identity-correction.json",
+    "sha256": "4f06d1e44693a797189997afb148925b0c89e245c67345f80dfb4941e5f8d286"
+  },
+  "phases": [
+    {
+      "platform": "windows",
+      "phase": "network-20261030-native",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "source_snapshot": {
+        "file": "source/network-20261030-source.json",
+        "sha256": "4067919376111b5db934376688ef1f65421934b341dfb26e208140259f3507db"
+      },
+      "harness": {
+        "file": "windows/network-20261030-native/test-binary.json",
+        "sha256": "5cf770d10084fe4578946dcac98a9e98a2fbac69219c1bbc382188058a661abf"
+      },
+      "harness_source": {
+        "file": "windows/network-20261030-native/harness-source.json",
+        "sha256": "8aa0e4bd53919162e15c93f33841f97e908c37221377ddb9c1878a8bb3f57a7e"
+      },
+      "inventory": 113,
+      "provider_direct_fixture_profile": false,
+      "passed": 0,
+      "failed": 14,
+      "seconds": 140.11,
+      "run_logs": [
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "sha256": "dbacbde92818311b9bd3429b4afb9f70df9d0ceac460fe9027e6aaf4df7c7f7a",
+          "test": "network_tools_wave::kimi_download_binary_unicode_destination_matches_sha256_and_real_checker",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "seconds": 13.1
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "sha256": "6b2b7b56b766d726dd519bef127179974202dac006b3ec0f029d7e129ae3f2eb",
+          "test": "network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "seconds": 9.66
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "sha256": "f679db0b04efafa590f47f0ed38ea4ed0d08c47dc35afdd70119693d98eb5268",
+          "test": "network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "seconds": 9.7
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "sha256": "277250ee78b22445575801d652690b1788ab6154645ef100605d5b8423880af1",
+          "test": "network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "seconds": 9.76
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "sha256": "17006f764d7e4a424dad4e9f2ba9b8d63dd0ef3efccdd13903d9805fd326638c",
+          "test": "network_tools_wave::kimi_download_http_404_leaves_no_destination_or_partial",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "seconds": 9.57
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "sha256": "522a66a481277eb50620f0cebaf8825d6b244c5a1830e5438efdede195623031",
+          "test": "network_tools_wave::kimi_download_private_literal_refuses_before_proxy_or_file_effect",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "seconds": 9.7
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "sha256": "1a449093e4b2d7561ac8435eca1a3ec955012a0e36b05c9b0c686143e91ce51c",
+          "test": "network_tools_wave::kimi_download_truncated_http_body_never_promotes_partial_file",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "seconds": 9.71
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "sha256": "09cf9bdca010a2c9c70f14c1b795f2103f90b5d550c7c8f9487dd7865dc7cb1c",
+          "test": "network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "seconds": 9.83
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "sha256": "1e218d245d1b972149f3c5f8731f8333ec4793200349589f09e0f6a5e2961a6f",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "seconds": 10.01
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "sha256": "01de956cf17e987a886dc86f2e057ca06a37dbe5890d0a981c97d3b08ffe0925",
+          "test": "network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "seconds": 9.96
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "sha256": "7494301eba405ade06c320499e5f3b553804e8cbe72c7591bb7a9549b3b09413",
+          "test": "network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "seconds": 9.79
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "sha256": "5eed263227f99962ab2ab024dbd8407f539ab67ad4fd78758fcc9eebfbd96cad",
+          "test": "network_tools_wave::kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "seconds": 9.8
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "sha256": "93fa1d2fd80c6228030cf6539837369ee3d627f8985c149d05403ce62eff8609",
+          "test": "network_tools_wave::kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "seconds": 9.74
+        },
+        {
+          "file": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "sha256": "75bdf7dab608dbf4bf621e9b64d33d33f9e9a81e3c30d400134ef614eca83cfe",
+          "test": "network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access",
+          "exit_code": 101,
+          "log": "windows/network-20261030-native/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "seconds": 9.78
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/network-20261030-native/reports/network-download-404.json",
+          "sha256": "5273b4b845b6bd1fea98453f6fa1581d9c39f3ef318205f5aecddbd218d264dc",
+          "case": "network-download-404",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-binary.json",
+          "sha256": "9e9d7fa84a2bceece1d90ef87a0c70fb9942f95eb56054f57080373a237aaa59",
+          "case": "network-download-binary",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-existing.json",
+          "sha256": "faa5b21dfb6257d6429dab5af95147e090790b429c956a85beb06cdbc5e2a9bf",
+          "case": "network-download-existing",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-hash.json",
+          "sha256": "bc2e860d7f15cc5b103a6fa1f2d878057e81047a85db137ed7853fff406e5e26",
+          "case": "network-download-hash",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-private.json",
+          "sha256": "bc05331f646fc44c6521a03da1a788601fdc28e04a476ae8ef8f53dbf3fb731a",
+          "case": "network-download-private",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-size.json",
+          "sha256": "293267daf798177bc1c08a65524f17c7b0738f45110cfca00a74eef3b9671cca",
+          "case": "network-download-size",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-download-truncated.json",
+          "sha256": "60e304f7972f22be6f939052a2c3c4ea94d99d445462c9cec748f187e75f5eca",
+          "case": "network-download-truncated",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-404.json",
+          "sha256": "0c5719c009f3e7f1100e1e0b89c84cada4b87b1dd3d4489346ebee25a52ef236",
+          "case": "network-fetch-404",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-429.json",
+          "sha256": "45ab26cfeb5ff21c04d11c313757f67e769b7926bcbcf6a1914ddd3823bf9e37",
+          "case": "network-fetch-429",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-main.json",
+          "sha256": "e5fc33d844d9ea71cbfaa93b4fe730fc9b8049fc2b90764ebbdc3cdcf9ef1441",
+          "case": "network-fetch-main",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-pages.json",
+          "sha256": "9a80551665b43a8715f44a313c40b11bab4e0bcb15c42d00ea5b93e3b9755753",
+          "case": "network-fetch-pages",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-private.json",
+          "sha256": "f12eacc68942c1cd4a2531b6f137a4d71e53c468d8aa552b7603ea7a19007dcc",
+          "case": "network-fetch-private",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-redirect.json",
+          "sha256": "4443782033b1a6a7986f3ac1540c01996cc1481cecde24dc10c5b002f9f6327c",
+          "case": "network-fetch-redirect",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-native/reports/network-fetch-timeout.json",
+          "sha256": "013006ffeb99b7d55db24046ef6d4d60f425e1e92a37e8cc1b9fe9288cc947d9",
+          "case": "network-fetch-timeout",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "network-20261030-native",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "source_snapshot": {
+        "file": "source/network-20261030-source.json",
+        "sha256": "4067919376111b5db934376688ef1f65421934b341dfb26e208140259f3507db"
+      },
+      "harness": {
+        "file": "linux/network-20261030-native/test-binary.json",
+        "sha256": "a14c1432e59d5735a44838f9efc0dca67096b4420eb29bbca8018075ada76649"
+      },
+      "harness_source": {
+        "file": "linux/network-20261030-native/harness-source.json",
+        "sha256": "c14d162944448e331c09c1248cf1624aaa801772fdd845c223dc3b4f52c7f3e3"
+      },
+      "inventory": 113,
+      "provider_direct_fixture_profile": false,
+      "passed": 0,
+      "failed": 14,
+      "seconds": 115.3,
+      "run_logs": [
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "sha256": "1d78bed78dc0c34ff167948596f5a64436d0646723c5cf2a5be5da526ceec4cf",
+          "test": "network_tools_wave::kimi_download_binary_unicode_destination_matches_sha256_and_real_checker",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "seconds": 8.48
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "sha256": "dc65543a6143fcf5580fd09673959c9955f271b7a1481d42181b2be94fdd599e",
+          "test": "network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "seconds": 8.23
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "sha256": "0184253e55d8009bd7ced522aba04d7633b187398d86ac98f43afd603a3a5f3c",
+          "test": "network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "seconds": 8.33
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "sha256": "e977efb648802d3de7d4f34688ec4341c049e4b2ce69dd4382a61d96f0d505c1",
+          "test": "network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "seconds": 8.13
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "sha256": "1b5281ce3d4ba660827ce4803bdf91064f4b6f8f8e8460545b68132150844f9c",
+          "test": "network_tools_wave::kimi_download_http_404_leaves_no_destination_or_partial",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "seconds": 8.19
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "sha256": "b56920ada2e9bd9a66f9b392033c216936f248fe109779c5347c16dea859ab2d",
+          "test": "network_tools_wave::kimi_download_private_literal_refuses_before_proxy_or_file_effect",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "seconds": 8.17
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "sha256": "70cd1b18664b5a4128354f746b9919917f5cf3c1a29843298b7812695d2ea4a8",
+          "test": "network_tools_wave::kimi_download_truncated_http_body_never_promotes_partial_file",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "seconds": 8.11
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "sha256": "fbf1237551383bf2fd3beca7ef260014da2f0991933a1fd83bc50664023a6c25",
+          "test": "network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "seconds": 8.24
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "sha256": "0e185e0aacc46661cd9fe29398618572e72627fea11441b03ce6eced209c68ea",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "seconds": 8.4
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "sha256": "23a6fd584d37f348a43cf6663e1b1926075eaf1b02046c4d97c14686a6518b0f",
+          "test": "network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "seconds": 8.3
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "sha256": "c00a07c9e78c883bb64bcf4d0f7dad29f0bc2722b434979ec56930c452ed0f61",
+          "test": "network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "seconds": 8.51
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "sha256": "900688e1696684eae788f23a901e7fdbd5b14f868ee606efe3955ff60fcb5d15",
+          "test": "network_tools_wave::kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "seconds": 6.59
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "sha256": "d149089634b524e9c89f2c1e9b5d564efe4a6d3be4edd57c8aa955059e094468",
+          "test": "network_tools_wave::kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "seconds": 8.87
+        },
+        {
+          "file": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "sha256": "dd08581e9e02195ef12383da90cdf71cb3e9b03d2c06d24279317344929123c4",
+          "test": "network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access",
+          "exit_code": 101,
+          "log": "linux/network-20261030-native/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "seconds": 8.75
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/network-20261030-native/reports/network-download-404.json",
+          "sha256": "0390bd2b1e6177bea7b6d459fff2cb9ab7bb8522f21239bc7fb3c413bd74137d",
+          "case": "network-download-404",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-binary.json",
+          "sha256": "a1a221f5f1d3e748b9a75a86d0376e00ae972e199cf141eceed7bf8771dd8abd",
+          "case": "network-download-binary",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-existing.json",
+          "sha256": "b6cae06780d396e4cbcb0ed37ed542da19703e6b1b672044297fd72020e73248",
+          "case": "network-download-existing",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-hash.json",
+          "sha256": "503631e5277a5db2361e39e3d5d47a1147e5d559e8c7751b221283a730815d00",
+          "case": "network-download-hash",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-private.json",
+          "sha256": "92047b134010ddf170780d8ef3436d97fa2d2ce00b9fdf8a698c1115392db104",
+          "case": "network-download-private",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-size.json",
+          "sha256": "50694fa0d1039e7d4c55de3382edac8f2acce7e3d1e0731db5d6b9d0f2e9869c",
+          "case": "network-download-size",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-download-truncated.json",
+          "sha256": "9a5eaccb18b85f711a50b0f359b2914cf591f128a18b42119022457792e9fcaf",
+          "case": "network-download-truncated",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-404.json",
+          "sha256": "2b542ba1e0cad3fe25715650dd9613c085740f2e355229f4fbda2d0cb5612a55",
+          "case": "network-fetch-404",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-429.json",
+          "sha256": "cc529b98e990eb0afc2384d86f730fa619ac1e66507a4c33e5fa5d6fdeed93f9",
+          "case": "network-fetch-429",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-main.json",
+          "sha256": "25e25a3605d89d65934169d174bac4184ea62a41d500552d9503b25f9ad4e5a6",
+          "case": "network-fetch-main",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-pages.json",
+          "sha256": "b2ed8e72445f2743d0530a1cf2ff9136a5b25eabff804e52e661e2606f7d76f2",
+          "case": "network-fetch-pages",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-private.json",
+          "sha256": "94b4a77ca4dbdea0091086cd982c6701f46c44f3c3d3deae045414ccfb7e2a7e",
+          "case": "network-fetch-private",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-redirect.json",
+          "sha256": "89c28f51ab1f243b0088313dcf53108b05c6d8ab5a959dcdfcc0fa2b818c5f5a",
+          "case": "network-fetch-redirect",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-native/reports/network-fetch-timeout.json",
+          "sha256": "1d627792f4e5c42d31e8875764c98760efef7d3490d1412c9553f7e5a0ae3c88",
+          "case": "network-fetch-timeout",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    },
+    {
+      "platform": "windows",
+      "phase": "network-20261030-provider-direct",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "source_snapshot": {
+        "file": "source/network-20261030-provider-direct-source.json",
+        "sha256": "2f9e169033fbfb8405124b15fbca4d64d82255852d3883478570d38bda1cc2b3"
+      },
+      "harness": {
+        "file": "windows/network-20261030-provider-direct/test-binary.json",
+        "sha256": "103ddcedd5aa413ebf4bfbfc136104da1059430ef2d8147b1ab470c99ef9e9c9"
+      },
+      "harness_source": {
+        "file": "windows/network-20261030-provider-direct/harness-source.json",
+        "sha256": "318575e8a80b88085fe56e488bd4e2d4f2074ffeddc0bbe45fbbe98ceb4ff890"
+      },
+      "inventory": 113,
+      "provider_direct_fixture_profile": true,
+      "passed": 12,
+      "failed": 2,
+      "seconds": 842.71,
+      "run_logs": [
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "sha256": "721614d3c0e5aa5442d7ac89c444cad76d70cac31b4e12f3fb727bb0d64cfe6b",
+          "test": "network_tools_wave::kimi_download_binary_unicode_destination_matches_sha256_and_real_checker",
+          "exit_code": 101,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "seconds": 427.58
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "sha256": "8b8bbd2c7f478adb43ecad48ee0068e13e9499be2fd41eb2ae82fa8ffdf9c36f",
+          "test": "network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "seconds": 26.9
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "sha256": "b1eaed6c75aeee17816bc6ef66436f4276880c42d431b5be44e66ff55daa05b9",
+          "test": "network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "seconds": 27.23
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "sha256": "77f692a22c14c84f8e57180b933999a203607eb07c23ee848a99ec2b742d56ae",
+          "test": "network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "seconds": 28.15
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "sha256": "ce0c1963fa6fef688c5e552717737c9f9e954f2bdcfffe489feee1361e54a0e7",
+          "test": "network_tools_wave::kimi_download_http_404_leaves_no_destination_or_partial",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "seconds": 28.83
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "sha256": "f4355e470c9fe8aca519896d665ba63d464385dcf576cc761f5d0fe6d5ab3435",
+          "test": "network_tools_wave::kimi_download_private_literal_refuses_before_proxy_or_file_effect",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "seconds": 28.37
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "sha256": "e9a94107196cc5a284d1b385ba8e3b05852f389efad43dcb723c35e4b39ec4b2",
+          "test": "network_tools_wave::kimi_download_truncated_http_body_never_promotes_partial_file",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "seconds": 25.46
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "sha256": "1a470b01342755efb79bda896c4459f34d942596466a2cee45f9372b90cf6249",
+          "test": "network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "seconds": 30.73
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "sha256": "0bf1c6bc129694415d178cb71c939fdf109102faf38373128808304b320d98ee",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content",
+          "exit_code": 101,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "seconds": 61.7
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "sha256": "85b7bbc77609d81383dd5fd168e34caf8d7083540a59fa1661fbd25e405cb81f",
+          "test": "network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "seconds": 22.52
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "sha256": "3a07c86d186769445e6a2edeea4659ddcfffd720ec94830ca7aa6a042b206a52",
+          "test": "network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "seconds": 41.8
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "sha256": "fab1a17f65b3fc405dcfa7452001be6740e3b3fc286f5d739d31c9ee32819f49",
+          "test": "network_tools_wave::kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "seconds": 34.43
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "sha256": "a483768353635701373bc007fdfe4fedc17eec7d8022c165ca2dceae8ed5bc62",
+          "test": "network_tools_wave::kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "seconds": 29.87
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "sha256": "180f1f59604da9aea76948f4d01723c1e0b867abba21b7ddaa0a1a963c1eb0ef",
+          "test": "network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access",
+          "exit_code": 0,
+          "log": "windows/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "seconds": 29.14
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-404.json",
+          "sha256": "356f066f26e0d8cd9f598e9e76edc2f1bc9f7e272ad725a6fe0071ce95ffc421",
+          "case": "network-download-404",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-binary.json",
+          "sha256": "e3c795eb619a7ddc867c3665e1c05de510a9713b87bb9b6e49016d54a8a63524",
+          "case": "network-download-binary",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-existing.json",
+          "sha256": "d82605826cd96759ede1bd59d81cde08750ea70a6c67dd5774f1363196404024",
+          "case": "network-download-existing",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-hash.json",
+          "sha256": "22c2a404623f2c386db18f8d51b324d70c2d5c7dde8f4eddcc3fd9356270f68e",
+          "case": "network-download-hash",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-private.json",
+          "sha256": "2ab6fb8b956cbb3dfc7064e96f56b864b80659f23c03c948dab4cd50edd21aab",
+          "case": "network-download-private",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-size.json",
+          "sha256": "198a4b5f1cfcaf2810e0b4cf6c0943a650c7c874b91bb9d1170eeb58730a8e8b",
+          "case": "network-download-size",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-download-truncated.json",
+          "sha256": "d03d23b9971692a3e2e29868a3d1a411412eb1fcec59f56e412df6e208916d37",
+          "case": "network-download-truncated",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-404.json",
+          "sha256": "283f35788f09affeaf483ab3baf347a9018369a5e2c23910c8196b74a83d8242",
+          "case": "network-fetch-404",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-429.json",
+          "sha256": "cafaa6dba7c3ef0a06fd5c2d59875975087a4a95181b60517d6687c0053221c0",
+          "case": "network-fetch-429",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-main.json",
+          "sha256": "255de3fae88250dd32f36f50a99d9de9d14be377f68a27e685bda2c713adf192",
+          "case": "network-fetch-main",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-pages.json",
+          "sha256": "bc4268156780d6076722deb731f6bdbcd63e4a4277e00f8dda6f8776565b71de",
+          "case": "network-fetch-pages",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-private.json",
+          "sha256": "d8ca9566d2a0d25d7db19115b2d0f4f5ebdd567b7679438a6726d2ffab4b2a1b",
+          "case": "network-fetch-private",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-redirect.json",
+          "sha256": "84e83136e5ce0798c3dc125ecd37a3d5802acfae3a428bd8625b4ae6b508d031",
+          "case": "network-fetch-redirect",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/network-20261030-provider-direct/reports/network-fetch-timeout.json",
+          "sha256": "696b59da96e4a81e1839a31d8daeda9de4798c3aa577037c524f09708c5a68e0",
+          "case": "network-fetch-timeout",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "network-20261030-provider-direct",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "source_snapshot": {
+        "file": "source/network-20261030-provider-direct-source.json",
+        "sha256": "2f9e169033fbfb8405124b15fbca4d64d82255852d3883478570d38bda1cc2b3"
+      },
+      "harness": {
+        "file": "linux/network-20261030-provider-direct/test-binary.json",
+        "sha256": "6012403439c0af5b6e8a5e870d9bcac1785ab61bf35aeedb7f8979618176e979"
+      },
+      "harness_source": {
+        "file": "linux/network-20261030-provider-direct/harness-source.json",
+        "sha256": "bba5be5ee7e0e388ab65508939536758652329e33e97e45d427408014d7aee84"
+      },
+      "inventory": 113,
+      "provider_direct_fixture_profile": true,
+      "passed": 13,
+      "failed": 1,
+      "seconds": 520.34,
+      "run_logs": [
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "sha256": "6cfa3bcd344caf12e2b2bfdb5eb259a8d77da5c55d55f007151d64233cb3474f",
+          "test": "network_tools_wave::kimi_download_binary_unicode_destination_matches_sha256_and_real_checker",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log",
+          "seconds": 42.24
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "sha256": "11453ac8431bbdafea7f7303fd559218cd68e95a4a739e00110e4c44f0c26374",
+          "test": "network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log",
+          "seconds": 34.08
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "sha256": "5f7d165195b507b347702bfdf424f8cf643f9d00fcbc4aaaedcf4647601ccfd8",
+          "test": "network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log",
+          "seconds": 29.03
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "sha256": "fa0c8cfdea107702d9cabfcdccb651cc5115c7ade73222f84126b5c946460b8e",
+          "test": "network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log",
+          "seconds": 30.84
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "sha256": "619207555acbf30444a81d1c2ba6f6a2c48a5805a9ccfb0445aada247935c00d",
+          "test": "network_tools_wave::kimi_download_http_404_leaves_no_destination_or_partial",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log",
+          "seconds": 25.51
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "sha256": "f95962ef24b2f4a0b4e3833f045671cc5bf79a8ce63025385a274608e5b747da",
+          "test": "network_tools_wave::kimi_download_private_literal_refuses_before_proxy_or_file_effect",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log",
+          "seconds": 29.54
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "sha256": "7c6440e336c14198e89f32c3ec8fea8e3d14d07c4cbe769231a1bbd7e9bb2e21",
+          "test": "network_tools_wave::kimi_download_truncated_http_body_never_promotes_partial_file",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log",
+          "seconds": 30.17
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "sha256": "00c9a5455b53b50251873414320eb20a770f63fb72abaad22fa42930dce18801",
+          "test": "network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log",
+          "seconds": 37.63
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "sha256": "8727d00a758f43d79476b1ae3d91123b2f1006981608c4e77ffe1d18cf101006",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content",
+          "exit_code": 101,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log",
+          "seconds": 50.0
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "sha256": "a136213ecd6d2d8b0a1c7b90821ab2ea7240da876035cd4e93b62a618e9c9f70",
+          "test": "network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log",
+          "seconds": 36.02
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "sha256": "949110d4b686d6a6c1d0c9c3aaf3f40dd069e010ffadb435f413941564af91d0",
+          "test": "network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log",
+          "seconds": 46.3
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "sha256": "6ac0ebe7fe3a0edff99c9a677d82bf3d2501f6d2d7a517bd54507f467f878ab6",
+          "test": "network_tools_wave::kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log",
+          "seconds": 37.4
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "sha256": "41bb5e19748c407d144873744f4a5e50380c8641ff1ecd4a7e9e7c9e9090bf13",
+          "test": "network_tools_wave::kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log",
+          "seconds": 43.75
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "sha256": "7d0e31567db75a1fb2d169923809497a860d36736d7b39e48c37e6dbb8794f55",
+          "test": "network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access",
+          "exit_code": 0,
+          "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log",
+          "seconds": 47.83
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-404.json",
+          "sha256": "d3f91778ed0f2e1fec9d4ac78b31caac7e73a6443c9f63a3801501305094f361",
+          "case": "network-download-404",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-binary.json",
+          "sha256": "0d8ffa0d986edbea846e696084d67a804db06570b71a66b749099e6ee68c3a2c",
+          "case": "network-download-binary",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-existing.json",
+          "sha256": "bd5801dfd64dd2ad14aa72cf0d4a720da4c650888a702e8fb517163d401c207d",
+          "case": "network-download-existing",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-hash.json",
+          "sha256": "581b8f313575aafaefdc7246e801c48a6ad394f1eb1d1c1a99521407f9611ed1",
+          "case": "network-download-hash",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-private.json",
+          "sha256": "36471e358961ad2e95d8c471e76e9a2dd8545e471e4208795f6f1b82846cbf17",
+          "case": "network-download-private",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-size.json",
+          "sha256": "4b6d9b99d8c380e0f1ad0981c8675cb3e6d9a94b7cffdcf9f3790f3f5badfe2a",
+          "case": "network-download-size",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-download-truncated.json",
+          "sha256": "6c044531e32fe475a7a16e7793f364769723ae58cf3153399a286c14134a51b2",
+          "case": "network-download-truncated",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-404.json",
+          "sha256": "d9a3b6242f25aced7ae7053869f5d943c2300fba4f868f4f475653eda899abf8",
+          "case": "network-fetch-404",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-429.json",
+          "sha256": "d275aad42136396b3c91e9b0b74c70563eea258ab167db047d96ffc65bdb0f25",
+          "case": "network-fetch-429",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-main.json",
+          "sha256": "e458e543e51d46cdd9d469a7ea665b9b6913b92aa13474026a4882f3ee109c4d",
+          "case": "network-fetch-main",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-pages.json",
+          "sha256": "245a23308ef92f6f0468c9bd2c8cba5b0dd5ea6a7619d7fb4816e1a16a4f0814",
+          "case": "network-fetch-pages",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-private.json",
+          "sha256": "443e4e958242969d616c6b2d1539a186e1892c089a5c321eb152906900cc7475",
+          "case": "network-fetch-private",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-redirect.json",
+          "sha256": "ae72769df038c0a5c0afd6621dd608ad16888df65881f279964b8c86aae80b08",
+          "case": "network-fetch-redirect",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/network-20261030-provider-direct/reports/network-fetch-timeout.json",
+          "sha256": "44c4319948cc34881d16a34b1e08342a164b3c7cb8ecfcdb7e4ac9e8ef6153ed",
+          "case": "network-fetch-timeout",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "windows",
+      "phase": "network-20261030-pagination",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "source_snapshot": {
+        "file": "source/network-20261030-pagination-source.json",
+        "sha256": "c1ae493962f5033356f6b4d165745c674300b7a2603a059b3b4b7d9c1aede135"
+      },
+      "harness": {
+        "file": "windows/network-20261030-pagination/test-binary.json",
+        "sha256": "62f7bed81143b0faf311dba9b0a5c1960ab0c99128dfcb5ca1106e8be24179fd"
+      },
+      "harness_source": {
+        "file": "windows/network-20261030-pagination/harness-source.json",
+        "sha256": "9bbb8e668b9f236221396e1c628e71f482993fb37d024d30d3c4afd4a7d50cc1"
+      },
+      "inventory": 114,
+      "provider_direct_fixture_profile": true,
+      "passed": 0,
+      "failed": 1,
+      "seconds": 39.05,
+      "run_logs": [
+        {
+          "file": "windows/network-20261030-pagination/network_tools_wave__kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read.log",
+          "sha256": "b441a4a2650168595c1a6fd5f0d4c1ed8259b2f7fac132b0b3f1a1eb64fbee92",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read",
+          "exit_code": 101,
+          "log": "windows/network-20261030-pagination/network_tools_wave__kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read.log",
+          "seconds": 39.05
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/network-20261030-pagination/reports/network-fetch-pages-inline-read.json",
+          "sha256": "47436fd26ccdd1c19ad6e74a997c650a78646c6c932463b296079b6ef7426770",
+          "case": "network-fetch-pages-inline-read",
+          "assertions_finished": false,
+          "panicked": true
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "network-20261030-pagination",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "source_snapshot": {
+        "file": "source/network-20261030-pagination-source.json",
+        "sha256": "c1ae493962f5033356f6b4d165745c674300b7a2603a059b3b4b7d9c1aede135"
+      },
+      "harness": {
+        "file": "linux/network-20261030-pagination/test-binary.json",
+        "sha256": "b18c4ba8829ed8dca09afbb1e05d2d92f6bd8b5e6da919308cf823f75a300f8c"
+      },
+      "harness_source": {
+        "file": "linux/network-20261030-pagination/harness-source.json",
+        "sha256": "4b7f8f8c1d3379978afe30dd9119dc188cfc9c1dffec9c35c04f07fc29e23e95"
+      },
+      "inventory": 114,
+      "provider_direct_fixture_profile": true,
+      "passed": 1,
+      "failed": 0,
+      "seconds": 68.74,
+      "run_logs": [
+        {
+          "file": "linux/network-20261030-pagination/network_tools_wave__kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read.log",
+          "sha256": "a5af174808350ece97af045a9cff3a8578649c40b66b632ac13872c8bdb0f68e",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read",
+          "exit_code": 0,
+          "log": "linux/network-20261030-pagination/network_tools_wave__kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read.log",
+          "seconds": 68.74
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/network-20261030-pagination/reports/network-fetch-pages-inline-read.json",
+          "sha256": "47f60d089649b10c160c347168d652fa59616b53cd769e3c5cf2e9b251345913",
+          "case": "network-fetch-pages-inline-read",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "windows",
+      "phase": "network-20261030-direct-pages",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "source_snapshot": {
+        "file": "source/network-20261030-direct-pages-source.json",
+        "sha256": "40376661c40ee72bbb8f28d4be9763272e543929958b84c8c475d408a9663606"
+      },
+      "harness": {
+        "file": "windows/network-20261030-direct-pages/test-binary.json",
+        "sha256": "66623b81af655c3358835c966f12cec0a2e39a42c588f37bde0ef492d348f24c"
+      },
+      "harness_source": {
+        "file": "windows/network-20261030-direct-pages/harness-source.json",
+        "sha256": "2f5f0326cca74e0373cff10010c4c656362132c544c8f91736569601c2d5c867"
+      },
+      "inventory": 115,
+      "provider_direct_fixture_profile": true,
+      "passed": 1,
+      "failed": 0,
+      "seconds": 55.67,
+      "run_logs": [
+        {
+          "file": "windows/network-20261030-direct-pages/network_tools_wave__kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read.log",
+          "sha256": "2d2d155b1dc2f7d470aa500d1b0d38fbe0a63c3086532a63cededaba468b1b1e",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read",
+          "exit_code": 0,
+          "log": "windows/network-20261030-direct-pages/network_tools_wave__kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read.log",
+          "seconds": 55.67
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/network-20261030-direct-pages/reports/network-fetch-pages-direct.json",
+          "sha256": "28c30d58c957e82692c8d87ddfcff13ececd0e30c04716ed78328b515e460a40",
+          "case": "network-fetch-pages-direct",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "network-20261030-direct-pages",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "source_snapshot": {
+        "file": "source/network-20261030-direct-pages-source.json",
+        "sha256": "40376661c40ee72bbb8f28d4be9763272e543929958b84c8c475d408a9663606"
+      },
+      "harness": {
+        "file": "linux/network-20261030-direct-pages/test-binary.json",
+        "sha256": "0ad96a4804e2943eb6f0de1724fddd88826e83b107f4d0ac331b8b14bf4b8aa7"
+      },
+      "harness_source": {
+        "file": "linux/network-20261030-direct-pages/harness-source.json",
+        "sha256": "1ff94c7738597838b22d48f34e195e1d477f4a404c3ab266d0b0764415469ea8"
+      },
+      "inventory": 115,
+      "provider_direct_fixture_profile": true,
+      "passed": 1,
+      "failed": 0,
+      "seconds": 74.72,
+      "run_logs": [
+        {
+          "file": "linux/network-20261030-direct-pages/network_tools_wave__kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read.log",
+          "sha256": "3f84b72dd978ed18b90f01b5cd6486025950decad145a8e92ff85b3ff88f7c58",
+          "test": "network_tools_wave::kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read",
+          "exit_code": 0,
+          "log": "linux/network-20261030-direct-pages/network_tools_wave__kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read.log",
+          "seconds": 74.72
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/network-20261030-direct-pages/reports/network-fetch-pages-direct.json",
+          "sha256": "8d2e14c53fc9a5c634ecb1c3c959f7030c6da898c5495f1f3a11d1202afc7a95",
+          "case": "network-fetch-pages-direct",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    }
+  ],
+  "all_inventory_entrypoints_run": false,
+  "complete_153": false
+}

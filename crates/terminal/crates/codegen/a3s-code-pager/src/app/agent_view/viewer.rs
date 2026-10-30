@@ -27,18 +27,39 @@ pub(crate) enum IdleEnterQuote {
 impl AgentView {
     // ── Line viewer methods ────────────────────────────────────────────
 
-    /// Open the line viewer for a file path with optional initial line range.
+    /// Open a workspace file in the line viewer with an optional initial line range.
     pub(in crate::app) fn open_line_viewer(
         &mut self,
         path: &std::path::Path,
         initial_range: Option<std::ops::Range<usize>>,
     ) {
-        // Resolve path relative to cwd.
         let full_path = if path.is_relative() {
             self.session.cwd.join(path)
         } else {
             path.to_path_buf()
         };
+        let resolved = match full_path.canonicalize() {
+            Ok(resolved) => resolved,
+            Err(_) => {
+                self.prompt.textarea.cancel_undo_group();
+                self.show_toast(&format!("File not found or unreadable: {}", path.display()));
+                return;
+            }
+        };
+        // Canonicalization also covers a previously valid file reference redirected through a link.
+        let inside_workspace = self
+            .session
+            .cwd
+            .canonicalize()
+            .is_ok_and(|root| resolved.starts_with(root));
+        if !inside_workspace {
+            self.prompt.textarea.cancel_undo_group();
+            self.show_toast(&format!(
+                "File reference is outside the workspace: {}",
+                path.display()
+            ));
+            return;
+        }
 
         // Get the element ID of the last file ref element (just created).
         let element_id = self
@@ -57,8 +78,8 @@ impl AgentView {
             }
             self.line_viewer = Some(viewer);
         } else {
-            // The file couldn't be read, so cancel the undo group
             self.prompt.textarea.cancel_undo_group();
+            self.show_toast(&format!("File not found or unreadable: {}", path.display()));
         }
     }
 

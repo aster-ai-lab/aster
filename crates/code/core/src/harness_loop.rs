@@ -768,7 +768,9 @@ impl MutationLedger {
                 && result.effects.completeness == a3s_effect::ToolObservationCompleteness::Complete
             {
                 match result.outcome {
-                    a3s_effect::ToolExecutionOutcome::Failed => {
+                    a3s_effect::ToolExecutionOutcome::Failed
+                        if !unchanged_file_identity(change.before.as_ref(), &change.after) =>
+                    {
                         failed_changed |= self
                             .failed_effect_paths
                             .insert(change.path.clone(), change.after.clone())
@@ -852,7 +854,12 @@ impl MutationLedger {
         if path.is_empty() || crate::porcelain::is_harness_path(path) {
             return;
         }
-        if after.kind == a3s_effect::ToolFileKind::Directory && before == Some(after) {
+        // A stat delta may only be timestamp or sandbox ACL bookkeeping.
+        // Identical typed states cannot introduce a new mutation, but must
+        // still reconcile an earlier record for this path.
+        if unchanged_file_identity(before, after)
+            && !self.records.iter().any(|record| record.path == path)
+        {
             return;
         }
         // A typed before of absence is the run's start for this path, unless
@@ -1531,6 +1538,19 @@ fn append_effect_field(canonical: &mut Vec<u8>, field: &[u8]) {
     canonical.extend_from_slice(field);
 }
 
+fn unchanged_file_identity(
+    before: Option<&a3s_effect::ToolFileIdentityV1>,
+    after: &a3s_effect::ToolFileIdentityV1,
+) -> bool {
+    use a3s_effect::ToolFileKind;
+    before == Some(after)
+        && match after.kind {
+            ToolFileKind::Missing | ToolFileKind::Directory => true,
+            ToolFileKind::File | ToolFileKind::Symlink => after.content_digest.is_some(),
+            ToolFileKind::Unknown => false,
+        }
+}
+
 #[cfg(test)]
 mod receipt_tests;
 
@@ -1540,6 +1560,9 @@ mod receipt_restore_tests;
 
 #[cfg(test)]
 mod background_receipt_tests;
+
+#[cfg(test)]
+mod unchanged_receipt_tests;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CompletionGate {
@@ -1689,7 +1712,10 @@ fn host_contract_next_step(
     if applicable.is_empty() {
         return " No admitted host contract covers every current mutation. Restore out-of-scope changes or ask the host to revise its contract; do not invent a checker or waiver.".into();
     }
-    format!(" Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): {}",Value::Array(applicable))
+    format!(
+        " Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): {}",
+        Value::Array(applicable)
+    )
 }
 
 /// The mutation digest named by an unbound-mutation gate message from
@@ -1787,6 +1813,26 @@ impl MutationObservationV1 {
             schema: MUTATION_OBSERVATION_SCHEMA.to_string(),
             path: path.into(),
             status: "unavailable".to_string(),
+            workspace_revision: None,
+            items: Vec::new(),
+        }
+    }
+
+    pub fn unavailable_with_reason(path: impl Into<String>, reason: impl Into<String>) -> Self {
+        Self {
+            schema: MUTATION_OBSERVATION_SCHEMA.to_string(),
+            path: path.into(),
+            status: "unavailable".to_string(),
+            workspace_revision: None,
+            items: vec![reason.into()],
+        }
+    }
+
+    pub fn persisted(path: impl Into<String>) -> Self {
+        Self {
+            schema: MUTATION_OBSERVATION_SCHEMA.to_string(),
+            path: path.into(),
+            status: "persisted".to_string(),
             workspace_revision: None,
             items: Vec::new(),
         }

@@ -328,6 +328,9 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
     )
     .await;
     drop(writer);
+    drop(log);
+    source.close().await;
+    drop(source);
     let retained = workspace.path().join("original-source");
     std::fs::rename(&directory, &retained).unwrap();
     refuses(
@@ -340,6 +343,7 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
     .await;
     assert!(!directory.exists());
     std::fs::rename(retained, &directory).unwrap();
+    let log = a3s_effect::FileLog::open(&directory).unwrap();
     let fact_file = directory.join(format!("{thread}.jsonl"));
     let original_bytes = std::fs::read(&fact_file).unwrap();
     let mut changed = log.read(&thread).unwrap();
@@ -388,7 +392,6 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
     assert!(read_workspace_facts(target_workspace.path(), "fork-target")
         .unwrap()
         .is_empty());
-    source.close().await;
     agent.close().await;
 }
 

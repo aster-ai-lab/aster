@@ -1310,6 +1310,10 @@ pub(super) fn dispatch_send_prompt_submission(
 /// Enqueue a bash command and try to drain immediately.
 /// Bash commands go through the same enqueue/drain pipeline as normal prompts, just with `QueueEntryKind::BashCommand`. No scrollback block is pushed here; the execute block from the shell IS the visual entry.
 pub(super) fn dispatch_send_bash_command(app: &mut AppView, command: String) -> Vec<Effect> {
+    if app.is_a3s_code {
+        app.show_toast("Direct shell commands are unavailable with the Code backend.");
+        return vec![];
+    }
     if app.reconnect_pending {
         app.show_toast(RECONNECTING_NOTICE);
         return vec![];

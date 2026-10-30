@@ -1,0 +1,39 @@
+{
+  "unix": 1792905310.183293,
+  "exact_link_process_alive": false,
+  "native-link-result.json": {
+    "unix": 1792905305.1101425,
+    "phase": "linked",
+    "gpu_math_executed": false,
+    "model_math_changed": false,
+    "performance_claimed": false,
+    "gpu_qualified": false,
+    "links": [
+      {
+        "profile": "control",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-serve-profile-v168/ds41_generate.control",
+        "bytes": 253082432,
+        "sha256": "99f3eee8c7eeee54c304120db50e8e632a7c001f9ac90fadf0983040fef92c25"
+      },
+      {
+        "profile": "profile",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-serve-profile-v168/ds41_generate.profile",
+        "bytes": 253082432,
+        "sha256": "a6a222e67b2a59741098576e135c58def919979ad5b9dc039c9254a939bdf42c"
+      }
+    ],
+    "current": "profile",
+    "control_binary_byte_equal": true,
+    "binary": {
+      "profile": "profile",
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-serve-profile-v168/ds41_generate.profile",
+      "bytes": 253082432,
+      "sha256": "a6a222e67b2a59741098576e135c58def919979ad5b9dc039c9254a939bdf42c"
+    },
+    "only_generator_replaced": true,
+    "all_original_GPU_archives_unchanged": true,
+    "invalid_modes_refused": 8,
+    "finished_unix": 1792905308.7159016
+  },
+  "worker.log": ""
+}

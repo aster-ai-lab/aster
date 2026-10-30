@@ -1,0 +1,17 @@
+
+running 1 test
+test views::model_config::document::tests::user_home_uses_userprofile_when_home_is_empty ... 
+thread 'views::model_config::document::tests::user_home_uses_userprofile_when_home_is_empty' (36799) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs:1101:9:
+assertion `left == right` failed
+  left: "C:\\Users\\ada/.a3s/config.acl"
+ right: "C:\\Users\\ada\\.a3s\\config.acl"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    views::model_config::document::tests::user_home_uses_userprofile_when_home_is_empty
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.05s
+

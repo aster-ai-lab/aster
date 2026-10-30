@@ -1,0 +1,6 @@
+{"platform": "win32", "source_pair": "aster-cli-pair-v1:cce6babdd0286057a56ad1677bb6154237444994:x86_64-pc-windows-msvc", "cases": [{"case": "invalid-acl", "exit_code": 1, "timed_out": false, "seconds": 0.438, "stdout_sha256": "768a0bbe813720ae257a9d1931b02903c62a19600ae562a9d1d9aebbeb638014", "stderr_sha256": "8c30eefbfb3d905a9d4b8ac2a952046bbe78004d9da2a71c9137ffd11f52e532", "tool_calls": 0, "model_turns": 0, "result": "fail", "redacted_diagnostic": "Error: Couldn't initialize: Cannot load trusted ACL configuration: load A3S ACL: failed to parse merged A3S ACL: Config error: Failed to parse ACL: Parse error at line 2, column 1: Unexpected end of input. Configure providers and default_model in ~/.a3s/config.acl, or explicitly select a reviewed file with `A3S_CONFIG=/path/to/config.acl just code`.\n"}]}
+Traceback (most recent call last):
+  File "D:\code\aster\.tmp\tui-acceptance-20261029\docs\evidence\tui\2026-10-28-full-acceptance\source\native_cli_boundary_probe.py", line 183, in <module>
+    assert report['all_passed'], 'retained native CLI boundary failure'
+           ~~~~~~^^^^^^^^^^^^^^
+AssertionError: retained native CLI boundary failure

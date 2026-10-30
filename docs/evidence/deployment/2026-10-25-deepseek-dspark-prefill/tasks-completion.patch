@@ -1,0 +1,10 @@
+--- a/specs/015-official-power-gpu-deployment/tasks.md
++++ b/specs/015-official-power-gpu-deployment/tasks.md
+@@ -49,5 +49,5 @@
+ - [x] T013i Unify Prism/Xolotl OpenAI tool requests and owned SSE decoding; replace blanket local-model tool-policy refusal with an explicit validated backend capability; fix native DSML forced-call envelope and buffered reasoning replay. Qualify 157 Rust + 17 bridge tests and deploy one binary to all seven Power adapters. Public acceptance: 8 full tool roundtrips, 30 completed HTTP 200 responses, two groups of four concurrent Hi-with-tools requests, and two confirmed native cancellations with admission gauges drained. Evidence: `docs/evidence/deployment/2026-10-25-deepseek-public-e2e/OUTCOME.md`.
+ - [x] T013j Unify WorkBuddy queuePosition/queueTotal replay annotations at Gateway; retain nested tool arguments and prove message 25, native/proxy and JSON/SSE paths. Evidence: docs/evidence/deployment/2026-10-25-workbuddy-queue-metadata/OUTCOME.md (46 focused Rust tests; 22 public completed requests; both Prism and DeepSeek).
+ 
+-- [ ] T013k Complete typed, measured DSpark integration through Power ACL and owned runtime; compare actual accepted drafts, generation speed, correctness and WorkBuddy JSON/SSE while preserving the V3 weights and 1M context.
+-- [ ] T013l Optimize actual cold 1M prefill with exact routing; retain same-fixture cold native timings and correct retrieval, public-gateway replay, resource limits and final official healthy profile.
++- [x] T013k Complete typed, measured DSpark integration through Power ACL and owned runtime; compare actual accepted drafts, generation speed, correctness and WorkBuddy JSON/SSE while preserving the V3 weights and 1M context.
++- [x] T013l Optimize actual cold 1M prefill with exact routing; retain same-fixture cold native timings and correct retrieval, public-gateway replay, resource limits and final official healthy profile.

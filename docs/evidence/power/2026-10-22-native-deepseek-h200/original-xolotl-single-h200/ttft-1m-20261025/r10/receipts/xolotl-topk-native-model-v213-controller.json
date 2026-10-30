@@ -1,0 +1,38 @@
+{
+  "unix": 1792911131.5499523,
+  "phase": "requires_inspection",
+  "profiles": [
+    "control_a",
+    "topk",
+    "control_b"
+  ],
+  "maximum_task_H200": 2,
+  "formal_service_changed": false,
+  "candidate_promoted": false,
+  "goal_complete": false,
+  "model_speed_claimed": false,
+  "native_binary_sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195",
+  "flag_modes": [
+    "0",
+    "1",
+    "0"
+  ],
+  "ordinary_requests_per_profile": 40,
+  "fullwindow_calls_per_profile": 20,
+  "actual1m_calls_per_profile": 18,
+  "output_tokens": 1024,
+  "acceptance_changed": false,
+  "completed_profiles": [],
+  "formal_UID": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "formal_health_status": 200,
+  "formal_health_checked_unix": 1792911133.9155424,
+  "profile": "control_a",
+  "service_phase": "serving",
+  "service_supervisor_alive": true,
+  "observed_unix": 1792911195.4524233,
+  "client_phase": "cold_long",
+  "client_tests": 20,
+  "client_alive": true,
+  "error": "RuntimeError: independent exact formal C11 changed; inspect before more experimental work",
+  "finished_unix": 1792911217.5762765
+}

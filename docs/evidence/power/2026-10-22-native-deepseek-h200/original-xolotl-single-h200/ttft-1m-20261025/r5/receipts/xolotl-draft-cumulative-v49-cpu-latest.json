@@ -1,0 +1,23 @@
+{
+  "unix": 1792872007.9447534,
+  "phase": "passed",
+  "gpu_executed": false,
+  "generator_compiled": false,
+  "runs": [
+    {
+      "name": "release",
+      "returncode": 0,
+      "checks": 240,
+      "stdout": "PASS 240 strict-mode, draft-prefix, nonfinite and boundary checks"
+    },
+    {
+      "name": "asan-ubsan",
+      "returncode": 0,
+      "checks": 240,
+      "stdout": "PASS 240 strict-mode, draft-prefix, nonfinite and boundary checks"
+    }
+  ],
+  "unique_checks": 240,
+  "sanitizers_zero_errors": true,
+  "finished_unix": 1792872010.1025844
+}

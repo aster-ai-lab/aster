@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory' (45480) panicked at crates\code\acp\src\office_file_tests.rs:254:5:
+office_file: Workspace operation not found in active capability scope
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory ... FAILED
+
+failures:
+
+failures:
+    office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.01s
+

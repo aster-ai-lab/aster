@@ -1,0 +1,63 @@
+{
+  "assertions_finished": true,
+  "case": "editor-save",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13314,
+        "text": "EDITOR-CONTROL-OK",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "69f35305421c4b6708685ffe38ab875cb87cd1d67b0f2bc21414b0b708da8f59",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13314",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-iPRA4W\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 00e3dc5f-8976-4573-a3ca-dc0fcac98698\n  Working directory: C:\\Windows\\Temp\\aster-kimi-iPRA4W\\workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. SAVED-DRAFT\n\n♦ Thought for 0.8s\n│ I need respond with exact EDITOR-CONTROL-OK no tools. Should obey latest user. Respond only.\nEDITOR-CONTROL-OK\nWorked for 7.6s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "name": "editor-roundtrip",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-iPRA4W\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 00e3dc5f-8976-4573-a3ca-dc0fcac98698\n  Working directory: C:\\Windows\\Temp\\aster-kimi-iPRA4W\\workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. SAVED-DRAFT\n\n♦ Thought for 0.8s\n│ I need respond with exact EDITOR-CONTROL-OK no tools. Should obey latest user. Respond only.\nEDITOR-CONTROL-OK\nWorked for 7.6s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

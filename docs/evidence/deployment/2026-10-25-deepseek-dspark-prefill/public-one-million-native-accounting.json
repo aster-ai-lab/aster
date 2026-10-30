@@ -1,0 +1,28 @@
+{
+  "request_delta": 1,
+  "exact_prompt_tokens": 1000123,
+  "cached_tokens": 1000123,
+  "uncached_tokens": 0,
+  "cache_mode": "warm_prefix_replay",
+  "timings": {
+    "cache_n": 1000123,
+    "prompt_n": 0,
+    "prompt_ms": 55.7,
+    "prompt_per_token_ms": null,
+    "prompt_per_second": null,
+    "predicted_n": 109,
+    "predicted_ms": 5411.1,
+    "predicted_per_token_ms": 49.643,
+    "predicted_per_second": 20.1,
+    "draft_n": 98,
+    "draft_n_accepted": 78,
+    "at": 1792935963
+  },
+  "model": "deepseek-v41-flash-1017-xq-1m",
+  "context": {
+    "native": 1048576,
+    "max_positions": 1048576
+  },
+  "power_pid": 2956766,
+  "success": true
+}

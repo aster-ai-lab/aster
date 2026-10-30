@@ -1,0 +1,147 @@
+{
+  "unix": 1792899597.7473433,
+  "gpu": {
+    "product_name": "NVIDIA H200",
+    "uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+    "clocks": {
+      "graphics_clock": "1980 MHz",
+      "sm_clock": "1980 MHz",
+      "mem_clock": "3201 MHz",
+      "video_clock": "1545 MHz"
+    },
+    "applications_clocks": {
+      "graphics_clock": "Requested functionality has been deprecated",
+      "mem_clock": "Requested functionality has been deprecated"
+    },
+    "default_applications_clocks": {
+      "graphics_clock": "Requested functionality has been deprecated",
+      "mem_clock": "Requested functionality has been deprecated"
+    },
+    "max_clocks": {
+      "graphics_clock": "1980 MHz",
+      "sm_clock": "1980 MHz",
+      "mem_clock": "3201 MHz",
+      "video_clock": "1545 MHz"
+    },
+    "gpu_power_readings": {
+      "power_state": "Requested functionality has been deprecated",
+      "average_power_draw": "405.30 W",
+      "instant_power_draw": "408.81 W",
+      "current_power_limit": "700.00 W",
+      "requested_power_limit": "700.00 W",
+      "default_power_limit": "700.00 W",
+      "min_power_limit": "200.00 W",
+      "max_power_limit": "700.00 W"
+    },
+    "temperature": {
+      "gpu_temp": "48 C",
+      "gpu_temp_tlimit": "39 C",
+      "gpu_temp_max_tlimit_threshold": "-8 C",
+      "gpu_temp_slow_tlimit_threshold": "-2 C",
+      "gpu_temp_max_gpu_tlimit_threshold": "0 C",
+      "gpu_target_temperature": "N/A",
+      "memory_temp": "40 C",
+      "gpu_temp_max_mem_tlimit_threshold": "0 C"
+    },
+    "utilization": {
+      "gpu_util": "98 %",
+      "memory_util": "14 %",
+      "encoder_util": "0 %",
+      "decoder_util": "0 %",
+      "jpeg_util": "0 %",
+      "ofa_util": "0 %"
+    },
+    "fb_memory_usage": {
+      "total": "143771 MiB",
+      "reserved": "345 MiB",
+      "used": "141413 MiB",
+      "free": "2014 MiB"
+    },
+    "compute_mode": "Default",
+    "clocks_event_reasons": {
+      "clocks_event_reason_gpu_idle": "Not Active",
+      "clocks_event_reason_applications_clocks_setting": "Not Active",
+      "clocks_event_reason_sw_power_cap": "Not Active",
+      "clocks_event_reason_hw_slowdown": "Not Active",
+      "clocks_event_reason_hw_thermal_slowdown": "Not Active",
+      "clocks_event_reason_hw_power_brake_slowdown": "Not Active",
+      "clocks_event_reason_sync_boost": "Not Active",
+      "clocks_event_reason_sw_thermal_slowdown": "Not Active",
+      "clocks_event_reason_display_clocks_setting": "Not Active"
+    },
+    "clocks_event_reasons_counters": {
+      "clocks_event_reasons_counters_sw_power_cap": "1791464188098 us",
+      "clocks_event_reasons_counters_sync_boost": "0 us",
+      "clocks_event_reasons_counters_sw_therm_slowdown": "0 us",
+      "clocks_event_reasons_counters_hw_therm_slowdown": "0 us",
+      "clocks_event_reasons_counters_hw_power_brake": "0 us"
+    }
+  },
+  "gpu_policy_changed": false,
+  "profiling_tools": {
+    "ncu": "/usr/local/bin/ncu",
+    "nsys": "/usr/local/cuda/bin/nsys",
+    "perf": null
+  },
+  "inference_sent": false,
+  "phase_log_snapshot": {
+    "bytes": 63635,
+    "sha256": "6a88442cc7a2d37edc6589e146034057985496c532c9039388f1e92093d937d5",
+    "phases": [
+      "aster prefill phase: phase=columns_end total=1047544 offset=0 width=1024 monotonic_ms=7128647427.641",
+      "aster prefill phase: phase=inputs_begin total=1047544 offset=0 width=1024 monotonic_ms=7128647427.657",
+      "aster prefill phase: phase=inputs_end total=1047544 offset=0 width=1024 monotonic_ms=7128647589.735",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=0 width=0 monotonic_ms=7128647589.770",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=0 width=1 monotonic_ms=7128647653.219",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=0 width=14 monotonic_ms=7128649061.137",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=0 width=39 monotonic_ms=7128650520.161",
+      "aster prefill phase: phase=progress total=1047544 offset=1024 width=1047544 monotonic_ms=7128650581.252",
+      "aster prefill phase: phase=columns_begin total=1047544 offset=1024 width=8192 monotonic_ms=7128650581.285",
+      "aster prefill phase: phase=columns_end total=1047544 offset=1024 width=8192 monotonic_ms=7128650591.108",
+      "aster prefill phase: phase=inputs_begin total=1047544 offset=1024 width=8192 monotonic_ms=7128650591.128",
+      "aster prefill phase: phase=inputs_end total=1047544 offset=1024 width=8192 monotonic_ms=7128650838.681",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=1024 width=0 monotonic_ms=7128650838.710",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=1024 width=1 monotonic_ms=7128651029.215",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=1024 width=14 monotonic_ms=7128657563.766",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=1024 width=39 monotonic_ms=7128658913.724",
+      "aster prefill phase: phase=progress total=1047544 offset=9216 width=1047544 monotonic_ms=7128658913.764",
+      "aster prefill phase: phase=columns_begin total=1047544 offset=9216 width=8192 monotonic_ms=7128658913.778",
+      "aster prefill phase: phase=columns_end total=1047544 offset=9216 width=8192 monotonic_ms=7128658913.781",
+      "aster prefill phase: phase=inputs_begin total=1047544 offset=9216 width=8192 monotonic_ms=7128658913.784",
+      "aster prefill phase: phase=inputs_end total=1047544 offset=9216 width=8192 monotonic_ms=7128659160.501",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=9216 width=0 monotonic_ms=7128659160.527",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=9216 width=1 monotonic_ms=7128659449.366",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=9216 width=14 monotonic_ms=7128666100.598",
+      "aster prefill phase: phase=layer_begin total=1047544 offset=9216 width=39 monotonic_ms=7128667472.481",
+      "aster prefill phase: phase=progress total=1047544 offset=17408 width=1047544 monotonic_ms=7128667472.520",
+      "aster prefill phase: phase=progress total=1047544 offset=25600 width=1047544 monotonic_ms=7128675575.844",
+      "aster prefill phase: phase=progress total=1047544 offset=33792 width=1047544 monotonic_ms=7128683550.774",
+      "aster prefill phase: phase=progress total=1047544 offset=41984 width=1047544 monotonic_ms=7128691487.556",
+      "aster prefill phase: phase=progress total=1047544 offset=50176 width=1047544 monotonic_ms=7128699841.014",
+      "aster prefill phase: phase=progress total=1047544 offset=58368 width=1047544 monotonic_ms=7128708456.957",
+      "aster prefill phase: phase=progress total=1047544 offset=66560 width=1047544 monotonic_ms=7128716318.195",
+      "aster prefill phase: phase=progress total=1047544 offset=74752 width=1047544 monotonic_ms=7128723923.801",
+      "aster prefill phase: phase=progress total=1047544 offset=82944 width=1047544 monotonic_ms=7128731061.574",
+      "aster prefill phase: phase=progress total=1047544 offset=91136 width=1047544 monotonic_ms=7128739233.996",
+      "aster prefill phase: phase=progress total=1047544 offset=99328 width=1047544 monotonic_ms=7128746780.456",
+      "aster prefill phase: phase=progress total=1047544 offset=107520 width=1047544 monotonic_ms=7128754278.371",
+      "aster prefill phase: phase=progress total=1047544 offset=115712 width=1047544 monotonic_ms=7128763305.842",
+      "aster prefill phase: phase=progress total=1047544 offset=123904 width=1047544 monotonic_ms=7128772256.906",
+      "aster prefill phase: phase=progress total=1047544 offset=132096 width=1047544 monotonic_ms=7128780870.919",
+      "aster prefill phase: phase=progress total=1047544 offset=140288 width=1047544 monotonic_ms=7128790086.666",
+      "aster prefill phase: phase=progress total=1047544 offset=148480 width=1047544 monotonic_ms=7128799803.064",
+      "aster prefill phase: phase=progress total=1047544 offset=156672 width=1047544 monotonic_ms=7128809650.029",
+      "aster prefill phase: phase=progress total=1047544 offset=164864 width=1047544 monotonic_ms=7128819237.587",
+      "aster prefill phase: phase=progress total=1047544 offset=173056 width=1047544 monotonic_ms=7128828936.173",
+      "aster prefill phase: phase=progress total=1047544 offset=181248 width=1047544 monotonic_ms=7128838575.934",
+      "aster prefill phase: phase=progress total=1047544 offset=189440 width=1047544 monotonic_ms=7128848623.936",
+      "aster prefill phase: phase=progress total=1047544 offset=197632 width=1047544 monotonic_ms=7128858861.105"
+    ],
+    "completed_prompt_phases": [
+      "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+      "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.27 s)",
+      "serve: prompt phases: 132097 new = 132097 batch (134.35 s: dense 56.45, experts 73.82, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+      "serve: prompt phases: 151 new = 151 batch (1.15 s: dense 0.15, experts 0.89, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+    ]
+  }
+}

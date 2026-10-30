@@ -1,0 +1,24 @@
+{
+  "scope": "cargo fmt --all -- --check; raw private-submodule diffs remain only in target",
+  "differenceFiles": [
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_headless_config.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/lib.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/local_memory.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/local_memory_tests.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/member_session.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/org_login.rs",
+    "/Users/roylin/code/aster/apps/studio/src-tauri/src/preferences_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/attempt_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/engineering_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/goal_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/memory_sessions_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/review_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/session_catalog.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/session_catalog_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent/turn_terminal_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/run_observation_agent_tests.rs",
+    "/Users/roylin/code/aster/crates/code/core/src/tools/builtin/edit.rs",
+    "/Users/roylin/code/aster/crates/code/core/src/tools/builtin/patch.rs"
+  ]
+}

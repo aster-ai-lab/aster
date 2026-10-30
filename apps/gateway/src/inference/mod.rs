@@ -4,8 +4,12 @@ mod access_error;
 mod authorization;
 mod console_catalog;
 mod decision;
+#[cfg(feature = "neural")]
+mod decision_apofasi;
 mod decision_cache;
+mod decision_flights;
 mod decision_plane;
+mod decision_transport;
 mod distributed_serving;
 mod fast_model;
 mod identity;
@@ -37,10 +41,13 @@ pub(crate) use decision::{
     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
     DECISION_REQUEST_LIMIT_BYTES,
 };
+#[cfg(feature = "neural")]
+pub(crate) use decision_apofasi::ApofasiDecisionService;
 pub(crate) use decision_cache::{
     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
 };
-pub(crate) use decision_plane::{DecisionPlane, HttpDecisionTransport};
+pub(crate) use decision_plane::DecisionPlane;
+pub(crate) use decision_transport::HttpDecisionTransport;
 pub(crate) use distributed_serving::{
     DistributedExecutionRequest, DistributedInferenceResponse, DistributedServingError,
     DistributedServingOrchestrator, DistributedWorkerEndpoint, PowerDistributedClient,

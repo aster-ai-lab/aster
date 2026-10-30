@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::non_utf8_source_fails_closed_before_conflict_policy' (6824) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:902:5:
+assertion failed: matches!(plan_fix(request(temp.path(), "/bin/zsh"), &report(), &terminal()),
+    Err(FixError::Managed(a3s_code_config::managed_text::ManagedConfigError::UnsafePath
+    { .. })))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::non_utf8_source_fails_closed_before_conflict_policy ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::non_utf8_source_fails_closed_before_conflict_policy
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

@@ -1,0 +1,116 @@
+{
+  "at_epoch": 1792927609.6216416,
+  "power": {
+    "status": "ok",
+    "loaded_models": 1
+  },
+  "admission": {
+    "active_limit": 1,
+    "active": 0,
+    "waiting": 0
+  },
+  "native": {
+    "status": "ok",
+    "max_context": 1048576,
+    "model": "deepseek-v41-flash-1017-xq-1m",
+    "loaded": true
+  },
+  "native_idle": true,
+  "gateway_ready": true,
+  "gateway_snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 47,
+    "snapshot_digest": "sha256:fcdef760a3a40df3d075dc137c645b7ca678777a83fa499e7809312bdad0f620"
+  },
+  "power_pid": 2791588,
+  "engine_pid": 2796245,
+  "gpu6_exclusive": true,
+  "other_services": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "other_service_pids_unchanged": true,
+  "speech_health": {
+    "18300": 200,
+    "18301": 200
+  },
+  "registry_model": {
+    "id": "deepseek-v41-flash-1017-xq-1m",
+    "object": "model",
+    "created": 1792927374,
+    "owned_by": "local",
+    "context_length": 1048576,
+    "format": "gguf",
+    "size_bytes": 162954903552,
+    "sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389"
+  },
+  "checks": {
+    "power_loaded": true,
+    "admission_idle": true,
+    "native_loaded_1m": true,
+    "native_idle": true,
+    "gateway_ready": true,
+    "gpu6_exclusive": true,
+    "other_services_preserved": true,
+    "speech_healthy": true
+  },
+  "all_passed": true
+}

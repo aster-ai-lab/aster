@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\189982670423c6c055335d5e701b491d295583e5-20261029072103673",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "c213f0e349a3feb06cec636c16c51f62fce885c4d6685c37e5b164eef614dbf4",
+      "bytes": 323998720
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "6f166a90a0bebc13b8b67ae931c6cb2da78906095a5e0f6bd2cd742758b5f37e",
+      "bytes": 185447936
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-startup-errors-windows-build.jsonl",
+  "created_at": "2026-10-29T07:21:11.9394040Z"
+}

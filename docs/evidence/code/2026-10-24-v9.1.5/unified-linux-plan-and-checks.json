@@ -1,0 +1,38 @@
+{
+  "user_scope": "CLI has only macOS, Linux and Windows; no independent Kylin archive or channel",
+  "linux_baseline": "one x86_64 glibc2.31 build",
+  "tests": {
+    "updater": 2,
+    "linux_contracts": 13,
+    "pair_delivery": 10,
+    "release_assembly": 2
+  },
+  "checks": {
+    "linux-contracts": {
+      "exit_code": 0,
+      "raw_sha256": "c9a18d57f9448ada05a4ee583db7c10d2cd7335ef80507d4afcf9c95024670ec",
+      "normalized_sha256": "c9a18d57f9448ada05a4ee583db7c10d2cd7335ef80507d4afcf9c95024670ec"
+    },
+    "pair-delivery": {
+      "exit_code": 0,
+      "raw_sha256": "0f0f43738d93b89a369baf55a5772d84c422f1623e5174809d1b23ea6791684a",
+      "normalized_sha256": "0f0f43738d93b89a369baf55a5772d84c422f1623e5174809d1b23ea6791684a"
+    },
+    "release-assembly": {
+      "exit_code": 0,
+      "raw_sha256": "bdae78667e7c800cd9a263e09dab02e25faa11f8571d0a9ae61cf7dd98a0f3c2",
+      "normalized_sha256": "bdae78667e7c800cd9a263e09dab02e25faa11f8571d0a9ae61cf7dd98a0f3c2"
+    },
+    "workflow-lint": {
+      "exit_code": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "updater_raw_sha256": "dba8d6b06af4be8865fc88060872e35af9b312359de93a04cfb48eb161bf0a0d",
+  "updater_normalized_sha256": "1f355916769c146c6672394a75ae85845b0ee6bc1abe69351c137ca580afe7bc",
+  "artifact_reuse": "existing artifact_run_id skips preflight and compilation and binds the draft target to the original build commit; hermetic publisher test proves this and refuses missing/retired archives",
+  "workspace_ci": "known Studio baseline gaps retained; cheap format gate moved ahead of expensive guest compilation",
+  "previous_pair": "3c601c08 is historical after the compiled updater changes; current three-platform bytes still require build and qualification",
+  "scope": "Core production code unchanged; no repeat of Core741 is needed for this updater-only behavior change; no real-model performance claim"
+}

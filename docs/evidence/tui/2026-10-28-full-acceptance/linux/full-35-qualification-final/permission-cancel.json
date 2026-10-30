@@ -1,0 +1,52 @@
+{
+  "case": "permission-cancel",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:32b8c01e8224e33564c3f38d03c84dffcd465d95:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "permission-cancel",
+      "detail": "real permission card dismissed; file absent before and after rejection/cancellation",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Y9SGpb/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool once to create side-effect.txt containing 'permission-test'. If the request is     1:32 PM    \n       rejected or cancelled, do not retry and do not use another tool; just report that it was not                     \n       written.                                                                                                         \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 3.5s                                                                                                 \n                                                                                                                        \n     ◆ Creating side-effect.txt                                                                                         \n                                                                                                                        \n     denied                                                                                                  1:32 PM    \n                                                                                                                        \n     Worked for 8.1s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13339,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 7,
+          "digest": "3c8330bc0f1487d8a68b45ba7e8d18b2c65a33c7b4e87bb991a2b0a8e9c1c9d4"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

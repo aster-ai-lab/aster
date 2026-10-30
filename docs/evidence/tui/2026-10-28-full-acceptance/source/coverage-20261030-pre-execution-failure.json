@@ -1,0 +1,12 @@
+{
+  "classification": "harness filesystem portability error before first native case",
+  "windows_phase": "coverage-20261030-native",
+  "windows_error": "OSError Errno 22: module namespace :: used verbatim in log filename",
+  "windows_native_cases_started": 0,
+  "linux_phase": "coverage-20261030-native",
+  "linux_termination": "runner and its cargo child terminated during compilation after confirming exact PIDs 2148 and 4399; no native case started",
+  "correction": "keep exact frozen test identifiers; encode namespace separators as __ only in log filenames",
+  "product_binaries_changed": false,
+  "tests_prompts_timeouts_graders_changed": false,
+  "retry_phase": "coverage-20261030-portable"
+}

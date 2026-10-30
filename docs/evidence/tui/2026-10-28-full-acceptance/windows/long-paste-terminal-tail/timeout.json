@@ -1,0 +1,15 @@
+{
+  "status": "input-stall-180s",
+  "observed_at": "2026-10-29T07:11:02.4018294+08:00",
+  "test_pid": 48900,
+  "children": [
+    {
+      "pid": 54036,
+      "path": "D:\\code\\aster\\target\\debug\\aster.exe",
+      "start": "2026-10-29T07:08:07.6808337+08:00",
+      "cpu_seconds": 118.34375,
+      "user_cpu_seconds": 117.921875,
+      "kernel_cpu_seconds": 0.421875
+    }
+  ]
+}

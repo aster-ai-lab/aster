@@ -1,0 +1,43 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/use/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests src/lib.rs (target-power/debug/deps/a3s_power-65f37d3f6bb16005)
+
+running 12 tests
+test api::health::managed_tests::managed_xolotl_without_a_live_engine_cannot_report_http_health_ok ... ok
+test cli::xolotl_inline_tests::workload_acl_environment_is_an_explicit_exclusive_input ... ok
+test cli::xolotl_inline_tests::xolotl_inline_acl_is_explicit_bounded_and_uses_the_native_schema ... ok
+test config::acl::kv_fp4_tests::xolotl_fp4_kv_acl_is_opt_in_and_rejects_coercion ... ok
+test config::acl::kv_fp4_tests::xolotl_fp4_kv_preserves_acl_block_last_assignment_semantics ... ok
+test config::acl::managed_tests::xolotl_managed_acl_round_trip_preserves_the_exact_runtime_binding ... ok
+test config::acl::managed_tests::xolotl_managed_acl_schema_refuses_unknown_or_missing_authority_fields ... ok
+test config::acl::managed_tests::xolotl_tuning_native_acl_round_trip_and_closed_schema ... ok
+test config::acl::tests::xolotl_block_is_omitted_until_it_changes_and_then_round_trips ... ok
+test server::router::tests::xolotl_long_context_body_reaches_model_admission_and_retains_a_finite_bound ... ok
+test server::xolotl_startup_tests::managed_xolotl_startup_cannot_route_a_foreign_manifest_into_a_ready_worker ... ok
+test server::xolotl_startup_tests::managed_xolotl_startup_refuses_disabled_or_unregistered_model ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 2002 filtered out; finished in 0.75s
+

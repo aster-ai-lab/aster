@@ -9,7 +9,7 @@ use std::sync::Arc;
 use a3s_code_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use agent_client_protocol as acp;
 use agent_client_protocol::Client;
-use tokio::sync::{watch, Mutex, OwnedMutexGuard};
+use tokio::sync::{Mutex, OwnedMutexGuard, watch};
 use tokio::task::JoinHandle;
 
 use crate::config::LaunchConfig;
@@ -26,6 +26,8 @@ mod inspection_commands;
 mod local_embedding;
 mod memory_management;
 mod models;
+#[cfg(test)]
+mod native_send_now_tests;
 mod permission_ask;
 mod permission_state;
 mod protocol;
@@ -44,8 +46,8 @@ use emit::{progress_duration_ms, progress_tokens_used, subagent_finished_update}
 use extensions::answer_wiki_search;
 #[cfg(test)]
 use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
-use host_methods::{session_tooling_projection, HostMethod};
-use models::{effort_guideline, effort_limits, EffortLimits};
+use host_methods::{HostMethod, session_tooling_projection};
+use models::{EffortLimits, effort_guideline, effort_limits};
 #[cfg(test)]
 use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
 #[cfg(test)]
@@ -58,7 +60,9 @@ use permission_ask::{
 use permission_ask::{
     permission_response_always, permission_response_approved, question_permission_options,
 };
-use permission_state::{PermissionPosture, ResearchGate, SessionPermissions};
+use permission_state::{
+    ClientPermissionRules, PermissionPosture, ResearchGate, SessionPermissions,
+};
 #[cfg(test)]
 use sampling::resolve_consent_session;
 use sampling::serve_sampling_consent;
@@ -587,6 +591,7 @@ pub struct A3sCodeAgent {
     /// Trusted launcher instructions from initialize, kept separate from the
     /// workspace configuration and applied whenever a session is opened.
     client_rules: RefCell<Option<String>>,
+    client_permissions: RefCell<ClientPermissionRules>,
     /// This process created `~/.a3s/config.acl`. The pager opens `/config`.
     first_run_config: bool,
 }
@@ -650,6 +655,7 @@ impl A3sCodeAgent {
             workspace_admission: Default::default(),
             client_reads_files: std::cell::Cell::new(false),
             client_rules: RefCell::new(None),
+            client_permissions: RefCell::new(ClientPermissionRules::default()),
             first_run_config: false,
         }
     }
@@ -1046,6 +1052,10 @@ mod attempt_tests;
 mod structured_output_tests;
 
 #[cfg(test)]
+#[path = "agent/question_cancel_tests.rs"]
+mod question_cancel_tests;
+
+#[cfg(test)]
 pub(crate) use tests::test_launch;
 
 #[cfg(test)]
@@ -1090,3 +1100,11 @@ mod run_observation_agent_tests;
 #[cfg(test)]
 #[path = "agent/permission_state_tests.rs"]
 mod permission_state_tests;
+
+#[cfg(test)]
+#[path = "agent/client_permission_tests.rs"]
+mod client_permission_tests;
+
+#[cfg(test)]
+#[path = "agent/turn_input_tests.rs"]
+mod turn_input_tests;

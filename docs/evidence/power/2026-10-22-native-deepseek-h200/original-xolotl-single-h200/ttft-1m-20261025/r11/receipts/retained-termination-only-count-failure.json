@@ -1,0 +1,42 @@
+{
+  "unix": 1792921562.740078,
+  "phase": "passed",
+  "client": "installed WorkBuddy CLI",
+  "gui_test_passed": false,
+  "base_url": "http://10.102.93.68/v1",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "tools_profile": [
+    "WebSearch"
+  ],
+  "no_session_persistence": true,
+  "public_search_only": true,
+  "search_tool_roundtrip_passed": false,
+  "raw_output_publication_permitted": false,
+  "client_pid": 187532,
+  "events": 73,
+  "search_calls": 3,
+  "elapsed_seconds": 18.453999999910593,
+  "repeated_search_workflow_terminated": true,
+  "successful_authenticated_search_tested": false,
+  "reply": "\u56db\u6b21 WebSearch \u5df2\u6309\u987a\u5e8f\u9010\u8f6e\u6267\u884c\u5b8c\u6bd5\uff0cquery \u5b8c\u5168\u76f8\u540c\uff0c\u4f46\u56db\u6b21\u5747\u8fd4\u56de\u540c\u4e00\u9519\u8bef\u201cAuthentication required for web search\u201d\uff0c\u672a\u83b7\u5f97\u4efb\u4f55\u641c\u7d22\u7ed3\u679c\u3002",
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 13449,
+    "duration_api_ms": 13448,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 33823,
+      "output_tokens": 179,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25326,
+      "cache_creation": null,
+      "server_tool_use": null,
+      "service_tier": null
+    }
+  },
+  "client_exit_code": 0,
+  "seconds": 18.828999999910593,
+  "first_output_seconds": 18.188000000081956,
+  "finished_unix": 1792921581.556345
+}

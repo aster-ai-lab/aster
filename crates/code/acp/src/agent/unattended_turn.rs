@@ -224,7 +224,7 @@ impl A3sCodeAgent {
                         .gate_digest
                         .context("host admission bind missing mutation digest")?;
                     session.record_verification_reports([host_verification_report(&digest)]);
-                    prompt = bind_continuation(&digest);
+                    prompt = bind_continuation(&digest, facts.last_error.as_deref());
                 }
                 HostAdmissionStep::SameDigestStillOpen => {
                     let digest = facts.gate_digest.unwrap_or_default();

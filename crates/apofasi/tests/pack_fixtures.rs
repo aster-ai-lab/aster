@@ -4,8 +4,8 @@
 //! checkpoint. HF tokenizer parity lives in `pack_hf_parity` (opt-in).
 
 use a3s_apofasi::{
-    pack_question, ByteTokenizer, Criteria, DecisionKind, Question, SequenceConfig, SpecialTokens,
-    State,
+    pack_question, pack_question_with_truncation, ByteTokenizer, Criteria, DecisionKind, Question,
+    SequenceConfig, SpecialTokens, State, StateTruncation,
 };
 use indexmap::IndexMap;
 use serde_json::json;
@@ -96,4 +96,94 @@ fn fixture_score_levels_are_indexed() {
     .unwrap();
     assert_eq!(packed.option_labels, ["0", "1"]);
     assert!(packed.input_ids.len() <= 256);
+}
+
+fn score_question() -> Question {
+    Question::new(
+        DecisionKind::Score,
+        json!("Urgency"),
+        Some(Criteria::Score(vec![json!("low"), json!("high")])),
+    )
+    .unwrap()
+}
+
+fn small_sequence() -> SequenceConfig {
+    SequenceConfig {
+        max_len: 96,
+        head_max_len: 32,
+        option_cap: 48,
+    }
+}
+
+#[test]
+fn state_budget_boundary_is_exact() {
+    let base = pack_question(
+        &ByteTokenizer,
+        specials(),
+        "[MASK]",
+        &State::Text("x".into()),
+        "urgency",
+        &score_question(),
+        small_sequence(),
+    )
+    .unwrap();
+    let room = small_sequence().max_len - base.input_ids.len() + 1;
+    for (len, accepted) in [(room - 1, true), (room, true), (room + 1, false)] {
+        let result = pack_question_with_truncation(
+            &ByteTokenizer,
+            specials(),
+            "[MASK]",
+            &State::Text("x".repeat(len)),
+            "urgency",
+            &score_question(),
+            small_sequence(),
+            StateTruncation::Reject,
+        );
+        assert_eq!(result.is_ok(), accepted, "state length {len}, room {room}");
+    }
+}
+
+#[test]
+fn reject_reports_state_overflow() {
+    let error = pack_question_with_truncation(
+        &ByteTokenizer,
+        specials(),
+        "[MASK]",
+        &State::Text("old history old history old history old history and the latest task".into()),
+        "urgency",
+        &score_question(),
+        small_sequence(),
+        StateTruncation::Reject,
+    )
+    .unwrap_err();
+    assert!(matches!(
+        error,
+        a3s_apofasi::Error::StateOverflow { max_len: 96, .. }
+    ));
+}
+
+#[test]
+fn recent_state_is_preserved_and_marked_when_truncated() {
+    let packed = pack_question_with_truncation(
+        &ByteTokenizer,
+        specials(),
+        "[MASK]",
+        &State::Text("old history old history old history old history and the latest task".into()),
+        "urgency",
+        &score_question(),
+        small_sequence(),
+        StateTruncation::TailAndMark,
+    )
+    .unwrap();
+    assert!(packed.state_truncated);
+    let text: String = packed
+        .input_ids
+        .iter()
+        .filter_map(|id| {
+            id.checked_sub(16)
+                .and_then(|code| char::from_u32(code % 50_000))
+        })
+        .collect();
+    assert!(text.contains("history is partial"), "{text}");
+    assert!(text.contains("latest task"), "{text}");
 }

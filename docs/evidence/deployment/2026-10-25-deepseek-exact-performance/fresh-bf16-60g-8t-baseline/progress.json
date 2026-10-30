@@ -1,0 +1,11 @@
+{
+  "at_epoch": 1792920814.9988477,
+  "stage": "complete",
+  "profile": "Fresh baseline: exact routing, BF16 KV, 8 threads, 60 GiB arena, PCIe 0.75",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 5.4
+  },
+  "prefill_median": 658.8,
+  "full_one_million_completed": false
+}

@@ -1,0 +1,57 @@
+
+running 1 test
+test tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope ... ORACLE case=tool-wave-patch name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=tool-wave-patch name=permission-answer result=pass detail=answered a real permission card
+
+thread 'tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope' (9851) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:715:13:
+live turn failed
+                                                                                                                        
+  /t/aster-kimi-TCjq49/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Read request-single.json once. Call patch exactly once with its exact JSON object as arguments.      12:35 PM    
+       After a successful patch, use read on alpha.txt to independently verify its exact contents. Do not               
+       use write, edit or bash.                                                                                         
+                                                                                                                        
+                                                                                                                        
+     ◈ Read 1 file                                                                                                      
+                                                                                                                        
+     ◆ Edit alpha.txt                                                                                                   
+                                                                                                                        
+     ◈ Read 1 file                                                                                                      
+                                                                                                                        
+     Patched alpha.txt and independently verified its exact contents:                                       12:35 PM    
+                                                                                                                        
+     FIRST-f6ceaf4d-cb76-437c-ab2a-a527dbb3245e                                                                         
+                                                                                                                        
+     The file ends with an LF newline.                                                                                  
+                                                                                                                        
+  ┃  Turn failed in 18s: completion gate: workspace mutation                                                            
+  ┃  26145fb86c1773d201cb6c276a224f07cbbd236927a6ee44c50d091ab621c713 (alpha.txt) has no bound Passed verification      
+  ┃  and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with    
+  ┃  required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0    
+  ┃  and includes `test -f alpha.txt` with the check that proves the change, for example `test -f alpha.txt && <test    
+  ┃  command>`.                                                                                                         
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 76 filtered out; finished in 25.35s
+

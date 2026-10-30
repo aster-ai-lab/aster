@@ -1,0 +1,57 @@
+
+running 1 test
+
+thread 'disk_usage_cmd::tests::collect_report_joins_registry_and_flags_untracked' (54668) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\disk_usage_cmd\tests.rs:119:5:
+assertion failed: `(left == right)`
+
+Diff < left / right > :
+ [
+     WorktreeUsage {
+         bytes: Some(
+             65536,
+         ),
+         kind: Session,
+         registration: Tracked(
+             TrackedRow {
+                 id: "wt-tracked",
+                 status: Alive,
+                 created_at: 0,
+                 last_accessed_at: None,
+                 label: Some(
+                     "my-feature",
+                 ),
+                 repo_name: "repo",
+                 git_ref: None,
+             },
+         ),
+         last_modified_at: Some(
+             1793250814,
+         ),
+<        path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpDWduOV\\grok-home\\worktrees\\a3s\\wt-tracked",
+>        path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpDWduOV\\grok-home\\worktrees/a3s/wt-tracked",
+     },
+     WorktreeUsage {
+         bytes: Some(
+             4096,
+         ),
+         kind: Session,
+         registration: Untracked,
+         last_modified_at: Some(
+             1793250814,
+         ),
+<        path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpDWduOV\\grok-home\\worktrees\\a3s\\wt-untracked",
+>        path: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpDWduOV\\grok-home\\worktrees/a3s/wt-untracked",
+     },
+ ]
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test disk_usage_cmd::tests::collect_report_joins_registry_and_flags_untracked ... FAILED
+
+failures:
+
+failures:
+    disk_usage_cmd::tests::collect_report_joins_registry_and_flags_untracked
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.09s
+

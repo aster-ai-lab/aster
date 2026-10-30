@@ -1116,7 +1116,13 @@ impl AgentView {
             layout_params.prompt_height =
                 prompt_height.min(AgentViewLayout::rows_available_for_prompt(layout_params));
         }
-        let mut layout = AgentViewLayout::compute(layout_params);
+        let mut layout = if elicitation_view_h > 0
+            && elicitation_view_h > AgentViewLayout::rows_available_for_prompt(layout_params)
+        {
+            AgentViewLayout::compute_for_elicitation(layout_params)
+        } else {
+            AgentViewLayout::compute(layout_params)
+        };
         let search_active =
             self.scrollback_search.is_some() && self.active_pane == AgentPane::Scrollback;
         let search_reserved_rows =

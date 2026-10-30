@@ -1,4 +1,4 @@
-#![cfg(not(feature = "ui"))]
+#![cfg(all(target_os = "macos", not(feature = "ui")))]
 
 pub mod agent_context;
 pub mod aster;

@@ -228,15 +228,16 @@ async fn compaction_uses_admitted_source_in_actual_next_input() {
             client.clone(),
             &options(Arc::new(MemorySessionStore::new()), client.clone())
                 .with_work_policy(policy.clone())
-                .with_auto_compact(false)
-                .with_max_context_tokens(12_288),
+                .with_auto_compact(true)
+                .with_auto_compact_threshold(0.5)
+                .with_max_context_tokens(16_384),
         )
         .unwrap();
     finish_stream(
         &session,
         &format!(
             "## Goal\nVerify the existing callers\n{}",
-            "reference data ".repeat(100)
+            "reference data ".repeat(3_000)
         ),
     )
     .await;

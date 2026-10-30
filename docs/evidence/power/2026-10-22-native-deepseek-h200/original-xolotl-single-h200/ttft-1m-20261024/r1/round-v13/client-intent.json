@@ -1,0 +1,31 @@
+{
+  "unix": 1792852924.6060987,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v13/qualification-ttft-v13",
+  "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "request-worker.py",
+      "bytes": 5154,
+      "sha256": "5674dcfb44475993d31fbba9703f0f561014f57457d6f120a2894ffd1731f18c"
+    },
+    {
+      "file": "request-plan.json",
+      "bytes": 464,
+      "sha256": "23169d4807e492f49d1078d00697a442e0e1203d0ad56f0e460527eebc3c9260"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    }
+  ],
+  "process": {
+    "pid": 790148,
+    "start_ticks": 277971862,
+    "uid": 10250,
+    "unix": 1792852933.6962438,
+    "budget_seconds": 1100
+  }
+}

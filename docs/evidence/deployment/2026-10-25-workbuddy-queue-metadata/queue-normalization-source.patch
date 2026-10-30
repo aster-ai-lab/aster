@@ -1,0 +1,78 @@
+--- a/apps/gateway/src/inference/openai_message_annotations.rs
++++ b/apps/gateway/src/inference/openai_message_annotations.rs
+@@ -15,6 +15,8 @@
+     "stepSeq",
+     "traceId",
+     "argumentsDisplayText",
++    "queuePosition",
++    "queueTotal",
+     "rawUsage",
+     "usage",
+ ];
+--- a/apps/gateway/src/inference/openai_message_annotations_tests.rs
++++ b/apps/gateway/src/inference/openai_message_annotations_tests.rs
+@@ -36,7 +36,7 @@
+         ),
+         (
+             2,
+-            json!({"model":"ui-display","requestModelId":"ui-model-id","requestModelName":"ui-model-name","stepSeq":4,"traceId":"ui-trace","argumentsDisplayText":"ui-display-arguments"}),
++            json!({"model":"ui-display","requestModelId":"ui-model-id","requestModelName":"ui-model-name","stepSeq":4,"traceId":"ui-trace","argumentsDisplayText":"ui-display-arguments","queuePosition":1,"queueTotal":2}),
+         ),
+         (
+             3,
+@@ -177,3 +177,44 @@
+         OpenAiRequestError::BodyTooLarge
+     );
+ }
++
++#[tokio::test]
++async fn queue_annotations_on_message_25_preserve_tool_replay_for_native_and_proxy_dispatch() {
++    let mut history = Vec::new();
++    for turn in 0..12 {
++        history.push(json!({"role":"user","content":format!("calibration {turn}")}));
++        history.push(json!({"role":"assistant","content":"acknowledged"}));
++    }
++    history.extend([
++        json!({"role":"user","content":"inspect queue data"}),
++        json!({"role":"assistant","content":null,"reasoning_content":"retained","tool_calls":[{"id":"call-queue","type":"function","function":{"name":"inspect_queue","arguments":"{\"queuePosition\":3,\"queueTotal\":9}"}}]}),
++        json!({"role":"tool","tool_call_id":"call-queue","content":"semantic queuePosition and queueTotal"}),
++        json!({"role":"user","content":"finish"}),
++    ]);
++    for stream in [false, true] {
++        let expected = json!({"model":"client-alias","messages":history,"stream":stream,
++            "metadata":{"queuePosition":5,"queueTotal":7}});
++        let mut annotated = expected.clone();
++        annotated["messages"][25]["queuePosition"] = json!(1);
++        annotated["messages"][25]["queueTotal"] = json!(2);
++        let bytes = Bytes::from(serde_json::to_vec(&annotated).unwrap());
++        let native = collect_json_body(&headers(), Full::new(bytes.clone()))
++            .await
++            .unwrap();
++        let proxy = collect_proxy_json_body(&headers(), Full::new(bytes))
++            .await
++            .unwrap();
++        assert_eq!(
++            serde_json::from_slice::<Value>(native.body_bytes()).unwrap(),
++            expected
++        );
++        assert_eq!(proxy.into_body(), native.clone().into_body());
++        for target in ["deepseek-v41-flash-1017-xq-1m", "prism-27b"] {
++            let routed: Value =
++                serde_json::from_slice(&native.routed_body(target, None).unwrap()).unwrap();
++            assert_eq!(routed["model"], target);
++            assert_eq!(routed["messages"], expected["messages"]);
++            assert_eq!(routed["metadata"], expected["metadata"]);
++        }
++    }
++}
+--- a/apps/gateway/src/inference/prefix_affinity/tests.rs
++++ b/apps/gateway/src/inference/prefix_affinity/tests.rs
+@@ -82,6 +82,8 @@
+         "stepSeq",
+         "traceId",
+         "argumentsDisplayText",
++        "queuePosition",
++        "queueTotal",
+         "rawUsage",
+         "usage",
+     ] {

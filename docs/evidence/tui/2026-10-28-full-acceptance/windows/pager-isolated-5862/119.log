@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::sent_message::tests::bullet_and_label_styles_follow_running_and_selection' (36348) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\sent_message_tests.rs:403:9:
+assertion `left == right` failed: selected=true
+  left: [Style::new().fg(Color::Reset).bold(), Style::new().dim()]
+ right: [Style::new().bold().dim(), Style::new().dim()]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::sent_message::tests::bullet_and_label_styles_follow_running_and_selection ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::sent_message::tests::bullet_and_label_styles_follow_running_and_selection
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

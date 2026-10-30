@@ -1,0 +1,15 @@
+{
+  "source_pair": "aster-cli-pair-v1:d027629c78e5b0923727fadaae5ba3d8bd41c742:x86_64-pc-windows-msvc",
+  "tests": [
+    {
+      "test": "forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-error-qualified-pair/kimi_form_type_bounds_choice_and_required_errors_keep_edits.log"
+    },
+    {
+      "test": "forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-error-qualified-pair/kimi_long_form_small_window_reaches_fields_submit_and_cancel.log"
+    }
+  ]
+}

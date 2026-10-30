@@ -1,0 +1,59 @@
+
+running 8 tests
+ORACLE case=allow-once name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=settled-turn result=pass detail=facts=25 model_turns=6 prompt_tokens=85500
+ORACLE case=allow-once name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=allow-once name=quit result=pass detail=exit 0
+test kimi_tui_allow_once_writes_and_verifies_actual_workspace_bytes ... ok
+ORACLE case=goal name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=goal name=goal-create result=pass detail=actual Core goal.created fact preserves the objective
+ORACLE case=goal name=/goal pause result=pass detail=a3s.goal.paused
+ORACLE case=goal name=/goal resume result=pass detail=a3s.goal.resumed
+ORACLE case=goal name=/goal clear result=pass detail=a3s.goal.cancelled
+ORACLE case=goal name=quit result=pass detail=exit 0
+test kimi_tui_durable_goal_controls_persist_real_facts ... ok
+ORACLE case=expand name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=expand name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=28486
+ORACLE case=expand name=expand-content result=pass detail=unseen last tool-output line appears only after /expand
+ORACLE case=expand name=quit result=pass detail=exit 0
+test kimi_tui_expands_actual_folded_tool_output ... ok
+ORACLE case=interrupt name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=interrupt name=interrupt result=pass detail=Ctrl+C settles an admitted bash call; no delayed write after eight seconds
+ORACLE case=interrupt name=quit result=pass detail=exit 0
+test kimi_tui_interrupts_a_running_tool_without_late_side_effects ... ok
+ORACLE case=coding name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+
+thread 'kimi_tui_multiturn_edits_and_runs_the_real_checker' (45916) panicked at crates\code\acp\tests\aster_tui_live_e2e\driver.rs:440:17:
+assertion `left == right` failed: submitted prompt bytes differ from the fixed test input
+  left: ["Read-only review of exactly calc.ps1 and check.ps1 in the workspace. The user's goal is to understand both defects; do not edit files, run shell commands, or delegate. Identify the defect in each script, with file and line evidence, correctness impact, and the smallest conceptual fix. Do not inspect unrelated files.", "Read calc.ps1 and check.ps1. Explain both defects. Do not edit any file or run shell commands yet."]
+ right: ["Read calc.ps1 and check.ps1. Explain both defects. Do not edit any file or run shell commands yet."]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test kimi_tui_multiturn_edits_and_runs_the_real_checker ... FAILED
+ORACLE case=permission-reject name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=permission-reject name=permission-reject result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-reject name=quit result=pass detail=exit 0
+ORACLE case=permission-cancel name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=permission-cancel name=permission-cancel result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-cancel name=quit result=pass detail=exit 0
+test kimi_tui_permission_reject_and_cancel_leave_no_side_effect ... ok
+ORACLE case=read name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=read name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27053
+ORACLE case=read name=live-read result=pass detail=actual read receipt and unseen file token in settled assistant reply
+ORACLE case=read name=quit result=pass detail=exit 0
+test kimi_tui_reads_actual_workspace_bytes ... ok
+ORACLE case=write-verify name=source-pair result=pass detail=aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc
+ORACLE case=write-verify name=settled-turn result=pass detail=facts=20 model_turns=6 prompt_tokens=84917
+ORACLE case=write-verify name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=write-verify name=quit result=pass detail=exit 0
+test kimi_tui_writes_and_verifies_actual_workspace_bytes ... ok
+
+failures:
+
+failures:
+    kimi_tui_multiturn_edits_and_runs_the_real_checker
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 412.77s
+

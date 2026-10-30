@@ -1,0 +1,6 @@
+
+running 1 test
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5315 filtered out; finished in 2.16s
+

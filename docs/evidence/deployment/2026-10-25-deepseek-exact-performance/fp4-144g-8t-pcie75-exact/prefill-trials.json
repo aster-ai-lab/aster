@@ -1,0 +1,140 @@
+[
+  {
+    "wall_seconds": 32.82770833198447,
+    "request_sha256": "405ce7578fc21c547307933f938a71f34130ed06a1fb9f78534c05c7c1cb56cf",
+    "request_utf8_bytes": 91471,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-b45e96c72ef949089cc198ef",
+      "object": "chat.completion",
+      "created": 1792918546,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary entries filler. But truncated prefill timing exercise. Reply exactly OK. So final OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16864,
+        "completion_tokens": 40,
+        "total_tokens": 16904,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16864,
+        "prompt_ms": 29618.8,
+        "prompt_per_token_ms": 1.756,
+        "prompt_per_second": 569.4,
+        "predicted_n": 40,
+        "predicted_ms": 2430.6,
+        "predicted_per_token_ms": 60.765,
+        "predicted_per_second": 16.5,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 0,
+    "correct": true
+  },
+  {
+    "wall_seconds": 30.466531301033683,
+    "request_sha256": "f4931483d17cf02356739213fdc2ac408d42d79e5310fe54c56689e2989769b4",
+    "request_utf8_bytes": 91471,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-55657a25809d4a0e8e992227",
+      "object": "chat.completion",
+      "created": 1792918579,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary entries filler. But truncated prefill timing exercise. Reply exactly OK. So final OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16862,
+        "completion_tokens": 40,
+        "total_tokens": 16902,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16862,
+        "prompt_ms": 27194.6,
+        "prompt_per_token_ms": 1.613,
+        "prompt_per_second": 620.0,
+        "predicted_n": 40,
+        "predicted_ms": 2433.8,
+        "predicted_per_token_ms": 60.845,
+        "predicted_per_second": 16.4,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 1,
+    "correct": true
+  },
+  {
+    "wall_seconds": 29.826351177005563,
+    "request_sha256": "e7f504f16ad6c5372d39c080737e3e7d8b8f8de13d5a1489e18ccebc858a87e9",
+    "request_utf8_bytes": 91471,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-31d55fdbaaf54ce88b26f168",
+      "object": "chat.completion",
+      "created": 1792918610,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary entries filler. But final instruction: truncated prefill timing exercise. Reply exactly OK. So just OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16867,
+        "completion_tokens": 43,
+        "total_tokens": 16910,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16867,
+        "prompt_ms": 26390.8,
+        "prompt_per_token_ms": 1.565,
+        "prompt_per_second": 639.1,
+        "predicted_n": 43,
+        "predicted_ms": 2651.2,
+        "predicted_per_token_ms": 61.656,
+        "predicted_per_second": 16.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 2,
+    "correct": true
+  }
+]

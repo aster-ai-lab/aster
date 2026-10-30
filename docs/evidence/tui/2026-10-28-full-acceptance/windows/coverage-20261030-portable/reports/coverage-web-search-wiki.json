@@ -1,0 +1,357 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-web-search-wiki",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-wiki-search.json"
+          },
+          "id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13337,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+            "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+            "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"engines\\\":[\\\"wiki\\\"],\\\"format\\\":\\\"json\\\",\\\"limit\\\":2,\\\"query\\\":\\\"Rust programming language\\\",\\\"timeout\\\":15}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-wiki-search.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":136},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":136,\"projected_bytes\":136,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"projected_digest\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"repeat_key\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"content_ref\":\"inline:sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:de4498216f8f8bc9639ac0c0778b91adba68d10e795bb3fabca817f3a83bd79a\"}",
+        "prepared_digest": "sha256:069f6b0a7f861088f5f6a3ec2adb975f5f564999820e2fa087e704aeeb16945f",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "engines": [
+              "wiki"
+            ],
+            "format": "json",
+            "limit": 2,
+            "query": "Rust programming language",
+            "timeout": 15
+          },
+          "id": "call_30a11a0137834ae28020d017aad28cc1",
+          "name": "web_search"
+        },
+        "has_text": false,
+        "prompt_tokens": 13541,
+        "text": null,
+        "tool": "web_search"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+            "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_30a11a0137834ae28020d017aad28cc1",
+          "turn": 1
+        },
+        "tool": "web_search"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+            "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_30a11a0137834ae28020d017aad28cc1",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"[\\n  {\\n    \\\"title\\\": \\\"Rust (programming language)\\\",\\n    \\\"url\\\": \\\"https://en.wikipedia.org/wiki/Rust_(programming_language)\\\",\\n    \\\"content\\\": \\\"Rust is a general-purpose programming language that emphasizes performance, type safety, concurrency, and memory safety. Rust supports multiple programming\\\",\\n    \\\"engines\\\": [\\n      \\\"Wikipedia\\\"\\n    ],\\n    \\\"score\\\": 1.2,\\n    \\\"published_date\\\": null\\n  },\\n  {\\n    \\\"title\\\": \\\"Outline of the Rust programming language\\\",\\n    \\\"url\\\": \\\"https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language\\\",\\n    \\\"content\\\": \\\"topical guide to Rust: Rust is a multi-paradigm programming language emphasizing performance, memory safety, and concurrency. Rust was initially developed\\\",\\n    \\\"engines\\\": [\\n      \\\"Wikipedia\\\"\\n    ],\\n    \\\"score\\\": 1.1806451612903226,\\n    \\\"published_date\\\": null\\n  }\\n]\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"status\":\"partial\",\"engine_selection_source\":\"request\",\"selected_engines\":[\"wiki\"],\"source_anchors\":[\"https://en.wikipedia.org/wiki/Rust_(programming_language)\",\"https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language\"],\"engine_fallback\":null,\"notices\":[\"Search exhausted the available tiers before the structural retrieval requirements were met.\"],\"search_fallback\":{\"trigger\":\"retrieval_requirements\",\"mode\":\"tiered\",\"attempted\":false,\"engines\":[\"wiki\"],\"successful\":false,\"failures\":[]},\"retrieval_health\":{\"usable_result_count\":10,\"invalid_result_count\":0,\"unique_host_count\":1,\"contributing_engine_count\":1,\"consensus_result_count\":0,\"attempted_engine_count\":1,\"successful_engine_count\":1,\"empty_engine_count\":0,\"failed_engine_count\":0,\"timed_out_engine_count\":0,\"rejected_engine_count\":0,\"circuit_open_engine_count\":0},\"retrieval_requirements\":{\"min_usable_results\":2,\"min_unique_hosts\":2,\"min_contributing_engines\":2,\"min_consensus_results\":0},\"search_tiers\":[{\"tier\":\"http_rss\",\"combined_health\":{\"usable_result_count\":10,\"invalid_result_count\":0,\"unique_host_count\":1,\"contributing_engine_count\":1,\"consensus_result_count\":0,\"attempted_engine_count\":1,\"successful_engine_count\":1,\"empty_engine_count\":0,\"failed_engine_count\":0,\"timed_out_engine_count\":0,\"rejected_engine_count\":0,\"circuit_open_engine_count\":0},\"decision\":\"continue\",\"decision_source\":\"retrieval_requirements\"}],\"engine_outcomes\":[{\"engine\":\"Wikipedia\",\"shortcut\":\"wiki\",\"provider\":null,\"kind\":\"success\",\"result_count\":10,\"duration_ms\":669,\"failure_kind\":null,\"retry_after_seconds\":null}],\"search_metrics\":{\"total_requests\":1,\"successes\":1,\"failures\":0,\"transient_failures\":0,\"permanent_failures\":0,\"success_rate\":100.0,\"transient_failure_rate\":0.0,\"error_counts\":{},\"latency_p50_ms\":669,\"latency_p95_ms\":669,\"latency_p99_ms\":669},\"search_coalescing\":{\"max_in_flight\":1024,\"in_flight\":0,\"leader_requests\":1,\"shared_requests\":0,\"bypassed_requests\":0,\"abandoned_requests\":0},\"engine_errors\":[],\"engine_failures\":[],\"available_result_count\":2,\"returned_result_count\":2,\"output_limited\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":814,\"projected_bytes\":814,\"original_estimated_tokens\":204,\"projected_estimated_tokens\":204,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"projected_digest\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"repeat_key\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"content_ref\":\"inline:sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:558ff1a054a8a5ca46060011b5cab62fa82908976154c978dc8c2b8cd909edc1\"}",
+        "prepared_digest": "sha256:1edba983d72ce6fbb31ec19f98ac1090ec3bcb65a710da92d79bd0dba2f12af2",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13925,
+        "text": "1. **Rust (programming language)**  \n   https://en.wikipedia.org/wiki/Rust_(programming_language)\n\n2. **Outline of the Rust programming language**  \n   https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "efb7ec072e12e5ebda8ff277bfb3d722b89643e7641aec1e0245067557bb74d9",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:b553ef19b30b19b407178b194138fc946738940d3e4189fc3c1af9510560dffd",
+          "sha256:40723ea658b49e3e8713c6e14638f9cd4fb9b8c0c48665943c15b35b83601fc3"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40803",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-UWuVT8\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-wiki-search.json once. Call web_search exactly once with its exact JSON object as        1:45 PM           arguments. Report the actual returned titles and source URLs. Do not retry, switch engines, invent                      results or call other tools.                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file, Searched 1 website                                                                                                                                                                                                               1. Rust (programming language)                                                                          1:45 PM            https://en.wikipedia.org/wiki/Rust_(programming_language)                                                                                                                                                                                    2. Outline of the Rust programming language                                                                                https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language                                                                                                                                                                       Worked for 21s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the explicit anonymous wiki engine returns one or two real structured search rows with titles and HTTP source URLs; failures remain failures without engine substitution",
+      "name": "real-public-wiki-search",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-UWuVT8\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-wiki-search.json once. Call web_search exactly once with its exact JSON object as        1:45 PM           arguments. Report the actual returned titles and source URLs. Do not retry, switch engines, invent                      results or call other tools.                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file, Searched 1 website                                                                                                                                                                                                               1. Rust (programming language)                                                                          1:45 PM            https://en.wikipedia.org/wiki/Rust_(programming_language)                                                                                                                                                                                    2. Outline of the Rust programming language                                                                                https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language                                                                                                                                                                       Worked for 21s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-web-search-wiki",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-wiki-search.json"
+              },
+              "id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13337,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+                "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+                "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0f30d98571144ea5ad05f9b9e06793e8",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"engines\\\":[\\\"wiki\\\"],\\\"format\\\":\\\"json\\\",\\\"limit\\\":2,\\\"query\\\":\\\"Rust programming language\\\",\\\"timeout\\\":15}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-wiki-search.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":136},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":136,\"projected_bytes\":136,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"projected_digest\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"repeat_key\":\"sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"content_ref\":\"inline:sha256:8b56a09b461fefe3ad7796efd89847a46bf6052a545073993a8ce35801829d99\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:de4498216f8f8bc9639ac0c0778b91adba68d10e795bb3fabca817f3a83bd79a\"}",
+            "prepared_digest": "sha256:069f6b0a7f861088f5f6a3ec2adb975f5f564999820e2fa087e704aeeb16945f",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "engines": [
+                  "wiki"
+                ],
+                "format": "json",
+                "limit": 2,
+                "query": "Rust programming language",
+                "timeout": 15
+              },
+              "id": "call_30a11a0137834ae28020d017aad28cc1",
+              "name": "web_search"
+            },
+            "has_text": false,
+            "prompt_tokens": 13541,
+            "text": null,
+            "tool": "web_search"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+                "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_30a11a0137834ae28020d017aad28cc1",
+              "turn": 1
+            },
+            "tool": "web_search"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a0e41baf-ec3f-45a8-b03d-206411956408",
+                "thread_id": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_30a11a0137834ae28020d017aad28cc1",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"[\\n  {\\n    \\\"title\\\": \\\"Rust (programming language)\\\",\\n    \\\"url\\\": \\\"https://en.wikipedia.org/wiki/Rust_(programming_language)\\\",\\n    \\\"content\\\": \\\"Rust is a general-purpose programming language that emphasizes performance, type safety, concurrency, and memory safety. Rust supports multiple programming\\\",\\n    \\\"engines\\\": [\\n      \\\"Wikipedia\\\"\\n    ],\\n    \\\"score\\\": 1.2,\\n    \\\"published_date\\\": null\\n  },\\n  {\\n    \\\"title\\\": \\\"Outline of the Rust programming language\\\",\\n    \\\"url\\\": \\\"https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language\\\",\\n    \\\"content\\\": \\\"topical guide to Rust: Rust is a multi-paradigm programming language emphasizing performance, memory safety, and concurrency. Rust was initially developed\\\",\\n    \\\"engines\\\": [\\n      \\\"Wikipedia\\\"\\n    ],\\n    \\\"score\\\": 1.1806451612903226,\\n    \\\"published_date\\\": null\\n  }\\n]\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"status\":\"partial\",\"engine_selection_source\":\"request\",\"selected_engines\":[\"wiki\"],\"source_anchors\":[\"https://en.wikipedia.org/wiki/Rust_(programming_language)\",\"https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language\"],\"engine_fallback\":null,\"notices\":[\"Search exhausted the available tiers before the structural retrieval requirements were met.\"],\"search_fallback\":{\"trigger\":\"retrieval_requirements\",\"mode\":\"tiered\",\"attempted\":false,\"engines\":[\"wiki\"],\"successful\":false,\"failures\":[]},\"retrieval_health\":{\"usable_result_count\":10,\"invalid_result_count\":0,\"unique_host_count\":1,\"contributing_engine_count\":1,\"consensus_result_count\":0,\"attempted_engine_count\":1,\"successful_engine_count\":1,\"empty_engine_count\":0,\"failed_engine_count\":0,\"timed_out_engine_count\":0,\"rejected_engine_count\":0,\"circuit_open_engine_count\":0},\"retrieval_requirements\":{\"min_usable_results\":2,\"min_unique_hosts\":2,\"min_contributing_engines\":2,\"min_consensus_results\":0},\"search_tiers\":[{\"tier\":\"http_rss\",\"combined_health\":{\"usable_result_count\":10,\"invalid_result_count\":0,\"unique_host_count\":1,\"contributing_engine_count\":1,\"consensus_result_count\":0,\"attempted_engine_count\":1,\"successful_engine_count\":1,\"empty_engine_count\":0,\"failed_engine_count\":0,\"timed_out_engine_count\":0,\"rejected_engine_count\":0,\"circuit_open_engine_count\":0},\"decision\":\"continue\",\"decision_source\":\"retrieval_requirements\"}],\"engine_outcomes\":[{\"engine\":\"Wikipedia\",\"shortcut\":\"wiki\",\"provider\":null,\"kind\":\"success\",\"result_count\":10,\"duration_ms\":669,\"failure_kind\":null,\"retry_after_seconds\":null}],\"search_metrics\":{\"total_requests\":1,\"successes\":1,\"failures\":0,\"transient_failures\":0,\"permanent_failures\":0,\"success_rate\":100.0,\"transient_failure_rate\":0.0,\"error_counts\":{},\"latency_p50_ms\":669,\"latency_p95_ms\":669,\"latency_p99_ms\":669},\"search_coalescing\":{\"max_in_flight\":1024,\"in_flight\":0,\"leader_requests\":1,\"shared_requests\":0,\"bypassed_requests\":0,\"abandoned_requests\":0},\"engine_errors\":[],\"engine_failures\":[],\"available_result_count\":2,\"returned_result_count\":2,\"output_limited\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":814,\"projected_bytes\":814,\"original_estimated_tokens\":204,\"projected_estimated_tokens\":204,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"projected_digest\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"repeat_key\":\"sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"content_ref\":\"inline:sha256:4f6dbac0ee7120a31ce6b34bb0ca5aa976d568d5ef288d2c1edb582c6166f7b0\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:558ff1a054a8a5ca46060011b5cab62fa82908976154c978dc8c2b8cd909edc1\"}",
+            "prepared_digest": "sha256:1edba983d72ce6fbb31ec19f98ac1090ec3bcb65a710da92d79bd0dba2f12af2",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13925,
+            "text": "1. **Rust (programming language)**  \n   https://en.wikipedia.org/wiki/Rust_(programming_language)\n\n2. **Outline of the Rust programming language**  \n   https://en.wikipedia.org/wiki/Outline_of_the_Rust_programming_language",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "efb7ec072e12e5ebda8ff277bfb3d722b89643e7641aec1e0245067557bb74d9",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:b553ef19b30b19b407178b194138fc946738940d3e4189fc3c1af9510560dffd",
+              "sha256:40723ea658b49e3e8713c6e14638f9cd4fb9b8c0c48665943c15b35b83601fc3"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "1dd9b5f6-abb1-4e89-9b29-912580227faa"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

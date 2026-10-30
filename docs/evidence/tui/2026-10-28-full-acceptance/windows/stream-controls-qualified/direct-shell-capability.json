@@ -1,0 +1,27 @@
+{
+  "case": "direct-shell-capability",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "direct-shell-refusal",
+      "detail": "backend explicitly refuses the direct-command surface before any model request or file effect",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-XiH93D\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Direct shell commands are unavailable with the Code backend.                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ > [IO.File]::WriteAllText('direct-shell.txt', 'DIRECT-SHELL-047102e7-e090-4cb6-b62e-b5955ba88ff2'); Write-Output │    │   'DIRECT-SHELL-047102e7-e090-4cb6-b62e-b5955ba88ff2'                                                            │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                      "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

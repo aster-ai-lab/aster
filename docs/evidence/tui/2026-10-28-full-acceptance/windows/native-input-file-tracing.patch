@@ -1,0 +1,83 @@
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
+index 7f75ad77a..d0c041052 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
+@@ -3272,6 +3272,18 @@ async fn drain_and_process(
+         .into_iter()
+         .map(|event| normalize_input_event(event, live_input_started_at))
+         .collect::<Vec<_>>();
++    #[cfg(windows)]
++    input_diagnostic(
++        "input_batch_ready",
++        coalesced.len(),
++        coalesced
++            .iter()
++            .map(|event| match &event.event {
++                Event::Paste(text) => text.len(),
++                _ => 0,
++            })
++            .sum::<usize>(),
++    );
+     let mut handled: u32 = 0;
+     let suspend_armed_after_event = std::cell::Cell::new(false);
+     let mut handle_one = |routed: &RoutedInputEvent| -> bool {
+@@ -3445,6 +3457,10 @@ async fn drain_and_process(
+     };
+     for routed in &coalesced {
+         handled = handled.saturating_add(1);
++        #[cfg(windows)]
++        if handled == 1 || handled.is_multiple_of(1_000) {
++            input_diagnostic("input_event_start", handled as usize, coalesced.len());
++        }
+         if handle_one(routed) {
+             return DrainResult {
+                 needs_draw,
+@@ -3454,6 +3470,10 @@ async fn drain_and_process(
+                 handled,
+             };
+         }
++        #[cfg(windows)]
++        if handled == 1 || handled.is_multiple_of(1_000) {
++            input_diagnostic("input_event_end", handled as usize, coalesced.len());
++        }
+         if suspend_armed_after_event.get() {
+             break;
+         }
+@@ -3466,6 +3486,26 @@ async fn drain_and_process(
+         handled,
+     }
+ }
++#[cfg(windows)]
++fn input_diagnostic(phase: &str, count: usize, extra: usize) {
++    use std::io::Write;
++    let Some(home) = std::env::var_os("GROK_HOME") else {
++        return;
++    };
++    let path = std::path::PathBuf::from(home).join("input-diagnostic.log");
++    if let Ok(mut file) = std::fs::OpenOptions::new()
++        .create(true)
++        .append(true)
++        .open(path)
++    {
++        let now = std::time::SystemTime::now()
++            .duration_since(std::time::UNIX_EPOCH)
++            .unwrap()
++            .as_millis();
++        let _ = writeln!(file, "{now} {phase} {count} {extra}");
++    }
++}
++
+ /// Timeout for the first extension round (detection).
+ /// If no event arrives within this window the batch was a normal keystroke.
+ const PASTE_DETECT_TIMEOUT: Duration = Duration::from_millis(2);
+@@ -3538,6 +3578,10 @@ pub(super) fn drain_immediate(
+     }
+ }
+ /// Minimum key events in a run to trigger paste coalescing.
++#[cfg(test)]
++#[path = "event_loop/native_paste_tests.rs"]
++mod native_paste_tests;
++
+ const PASTE_COALESCE_THRESHOLD: usize = 3;
+ /// Minimum run length for the Windows path-shape coalesce branch.
+ /// Covers the shortest realistic dropped image path (`C:\x.png`, `/a.png`) while leaving short typed prose alone.

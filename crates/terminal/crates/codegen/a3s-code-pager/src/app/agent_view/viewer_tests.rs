@@ -984,3 +984,50 @@ fn show_bg_task_viewer_restores_resume() {
     assert_eq!(viewer.list_state.selected_id(), selected_id);
     assert_eq!(viewer.selected_plain_text(), "two");
 }
+
+#[test]
+fn file_viewer_reports_unreadable_reference() {
+    let root = tempfile::tempdir().unwrap();
+    let mut agent = make_agent();
+    agent.session.cwd = root.path().to_path_buf();
+
+    agent.open_line_viewer(std::path::Path::new("missing.txt"), None);
+
+    assert!(agent.line_viewer.is_none());
+    assert_eq!(
+        agent.toast.as_ref().map(|(message, _)| message.as_str()),
+        Some("File not found or unreadable: missing.txt")
+    );
+}
+
+#[test]
+fn file_viewer_refuses_outside_reference() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::write(root.path().join("outside.txt"), "outside").unwrap();
+    let mut agent = make_agent();
+    agent.session.cwd = workspace;
+
+    agent.open_line_viewer(std::path::Path::new("../outside.txt"), None);
+
+    assert!(agent.line_viewer.is_none());
+    assert_eq!(
+        agent.toast.as_ref().map(|(message, _)| message.as_str()),
+        Some("File reference is outside the workspace: ../outside.txt")
+    );
+}
+
+#[test]
+fn file_viewer_opens_workspace_file() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("inside.txt"), "inside\n").unwrap();
+    let mut agent = make_agent();
+    agent.session.cwd = root.path().to_path_buf();
+
+    agent.open_line_viewer(std::path::Path::new("inside.txt"), None);
+
+    let viewer = agent.line_viewer.as_ref().expect("workspace file opens");
+    assert_eq!(viewer.path, root.path().join("inside.txt"));
+    assert!(agent.toast.is_none());
+}

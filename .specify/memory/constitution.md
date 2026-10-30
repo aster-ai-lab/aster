@@ -222,8 +222,22 @@ sheet is the only edge travel. The contract is `DESIGN.md` §6
 - Never commit another session's in-flight edits. Stage files
   individually and verify `git diff --cached --name-only` first.
   Do not commit unless the user asked.
+- `.gitattributes` owns cross-platform line endings: UTF-8/LF source text,
+  CRLF Windows command-file checkouts, and exact-byte `-text` evidence and
+  fixtures. Investigate whole-file staging churn before committing; never
+  sweep unrelated edits into renormalization. Development standards §10
+  defines the compatibility checks and explicit encoding exceptions.
 
 ## Development Workflow
+
+`AGENTS.md` carries the actionable Rust and cross-platform implementation and
+review rules; development standards §17 explains the Microsoft adaptation.
+Apply them to new and materially changed handwritten code within
+the owning path's regime. Record confirmed legacy findings and coverage limits;
+do not infer whole-tree compliance from searches or lint success. This workflow
+does not authorize a public API, workspace, allocator, or toolchain migration.
+Preserve supported target baselines and record native verification for affected
+platforms; cross-compilation does not establish runtime compatibility.
 
 A behavior change lands with its hermetic test and, when recorded,
 `docs/evidence/<domain>/<date-slug>/OUTCOME.md`. A structural

@@ -1,0 +1,1203 @@
+{
+  "files": 150,
+  "failures": [],
+  "entries": [
+    {
+      "path": "Cargo.lock",
+      "bytes": 584650,
+      "binary": false,
+      "sha256": "ab5dbf11766e4227ca0389de194ff37c874d62efd84e47c3c2d1b74e9bcb0423",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 17107,
+      "binary": false,
+      "sha256": "3dce85cd1ec297fe567d4b61f8d468d1854a91fdef06149a25c0c4710720a0b7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/client_permission_tests.rs",
+      "bytes": 6408,
+      "binary": false,
+      "sha256": "c84dd8a9ece024d1c682c76f4db38d6d66070bbb7eb718ffb5e595add3ba8b8b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/native_send_now_tests.rs",
+      "bytes": 5583,
+      "binary": false,
+      "sha256": "f2f5bf9ea4e0c068b2289718ed6ef61ac85a3434917d70d413dbf8a68e5bd2f9",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/permission_state.rs",
+      "bytes": 7908,
+      "binary": false,
+      "sha256": "04c3b4daf94f01f6deb57e7d2a0f498be2116a5c547db2e7ef48dbd60f2b57ee",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_open.rs",
+      "bytes": 29472,
+      "binary": false,
+      "sha256": "286926d21b887d51b2956e437beea9efb847921b4ccce7dda8826a5d5400c75b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/turn.rs",
+      "bytes": 37366,
+      "binary": false,
+      "sha256": "75176e4e67e9161686c198d46d540edd597ce70cd3e029b2e72a353e5c740beb",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/turn_input_tests.rs",
+      "bytes": 4494,
+      "binary": false,
+      "sha256": "546e53371f116b44e354d42d3520700fcd98d89fda4fb174d0b0250349d3f726",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "bytes": 62224,
+      "binary": false,
+      "sha256": "63fa0cfaf44d97d49035ad86b9fb011bb703bb41ba0c0e47367cc7617eb52c40",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "bytes": 112571,
+      "binary": false,
+      "sha256": "7ce3f0d0f5db63e9acc778a86dad650751eece5441a1b7f3ed0835bf747ac26a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/approval_learning/tests.rs",
+      "bytes": 7210,
+      "binary": false,
+      "sha256": "7bfd953618c8c4a8bf5334218b58a7bb84224646837547dc46e063db1e4d044a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/approval_learning.rs",
+      "bytes": 14743,
+      "binary": false,
+      "sha256": "180e6566034f9166bc0b7023c0df564680f85c0ff4058fd31f57fc5cfdb2101c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/cursor_account.rs",
+      "bytes": 48295,
+      "binary": false,
+      "sha256": "0a1ffbf675508eb66ae64e2b559f185bedaf69f88554e43e5e64fd48f6fd64e1",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/document_read_tests.rs",
+      "bytes": 26285,
+      "binary": false,
+      "sha256": "0a7521e2e4888fb216b930a120f9e13e55b734ec39635929d7033d920670eeb3",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/document_run_tests.rs",
+      "bytes": 22797,
+      "binary": false,
+      "sha256": "2cbd6672b25e54c22411d45c418345df3258103ae9ad8f38cac134ae6bb8538f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/host_context.rs",
+      "bytes": 19751,
+      "binary": false,
+      "sha256": "97e651a346a153e6f48e7a44d91135bed0ab2f761c47834a6728280488e174cc",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/host_context_limits_tests.rs",
+      "bytes": 486,
+      "binary": false,
+      "sha256": "70f3ae13bc01c120fd45b3c2dcae44647f1e91913a47fec9dba4b645ebc6a539",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/lib.rs",
+      "bytes": 2039,
+      "binary": false,
+      "sha256": "e34db8058b44745eb7ce826d6d271c8583003c9030716ac052082139713070e0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/office_file_tests.rs",
+      "bytes": 27119,
+      "binary": false,
+      "sha256": "4c0e84cf6de2c2a45cc57b1ffd303fc920251ca85135feacbcaaea365f0907b5",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/office_read_governed_tests.rs",
+      "bytes": 5081,
+      "binary": false,
+      "sha256": "91dd642bd5d6785a3d559f851f498907e368a213068e61c0eb6e9fe8068e8772",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/plugin_selection_tests.rs",
+      "bytes": 34188,
+      "binary": false,
+      "sha256": "0c50f0930e2a843ab496a645b0128f23e306d9465ceb66339e4849eb1d8d66a7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/run_observation_agent_tests.rs",
+      "bytes": 15344,
+      "binary": false,
+      "sha256": "01de6027365b67ad99865c5bd45669ad981bed59120f3a6884a8da8333ada906",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/test_support.rs",
+      "bytes": 1408,
+      "binary": false,
+      "sha256": "6807c521c65b275fa6e960577c96639c647953f4e9be1165be48273b57c95f51",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/turn_cancel.rs",
+      "bytes": 3865,
+      "binary": false,
+      "sha256": "1922724998de7db126e1704656b47fa9cb0c021aeb7579c5e193662be58fce38",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "bytes": 4005,
+      "binary": false,
+      "sha256": "a8896f0cbfd36e1c1653d391627425c29fbf8887f64d85891aea63c276dd8aaf",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "bytes": 27644,
+      "binary": false,
+      "sha256": "fdf8bde6d0010139d2c4e8bca50a07a28ced154cb44c6ca700b6c37a9f14a9ae",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "bytes": 15897,
+      "binary": false,
+      "sha256": "8d0c467251014d51f795442507bd45be9e85746fcabd0bca3006be22ce4c1b56",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "bytes": 7888,
+      "binary": false,
+      "sha256": "a31997e7bc9cb9cff0334b7c03648d2f08bfee05defaac1fddf6703af8ca2b96",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs",
+      "bytes": 9201,
+      "binary": false,
+      "sha256": "b9c5a78f76a7d60eae402a252dd81dbc1aca8dd80453de044fb8149c4136f6de",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/reading_controls.rs",
+      "bytes": 4433,
+      "binary": false,
+      "sha256": "b32ed1c7a260ea2ba5976f62718c9c0b47e6b55e9675c9dcb0041956a360b4cf",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/stream_controls.rs",
+      "bytes": 6501,
+      "binary": false,
+      "sha256": "154571201010c7704b1025bd6156dc316afd2c2feb3138c45eb1ab2ae4d72976",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs",
+      "bytes": 15422,
+      "binary": false,
+      "sha256": "bb54b2a019b228d58a82d18e89064beb82d773c3f6015abd6dbf2fb5f442cde8",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "bytes": 3918,
+      "binary": false,
+      "sha256": "5c6063645be3504ecd9b4aef3b0a8efe7285a8698b19761a2a3d3efa10f3ea6a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_facade.rs",
+      "bytes": 29732,
+      "binary": false,
+      "sha256": "3f19eea38e064afae3fa29542a3dc5b470bd31ec9c85bf1904a4a29785603c91",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/compact/source_carry.rs",
+      "bytes": 10690,
+      "binary": false,
+      "sha256": "f13fd993dee6c7f5442bcd1da0a573137a3221a62e849bb824f0aba677b63657",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/compact.rs",
+      "bytes": 5152,
+      "binary": false,
+      "sha256": "7bdb6714d1934758b674d08e8a3d3c278819f52f6f18332f9faef975573bccec",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/durable_read.rs",
+      "bytes": 1640,
+      "binary": false,
+      "sha256": "4e61890d89b137211eaba5a5a4c6f8a007c50663b55e20e8d135a9e14ee55c50",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/durable_source.rs",
+      "bytes": 13066,
+      "binary": false,
+      "sha256": "18bbd633d5bf2559212d3f86896a87d4318511c716e817acf9e6c6815f660f55",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/fork_admission.rs",
+      "bytes": 22852,
+      "binary": false,
+      "sha256": "c88d0ec26683e8af9b12b1ba1d2e15421e6f0901b2f7c7f9b04c06fb7d3c8ebf",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "bytes": 61409,
+      "binary": false,
+      "sha256": "5ead8fbfa97d016cab5a5cf4661d3195077c4db0f65b0a02f2bbf65cd50144f0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs",
+      "bytes": 9703,
+      "binary": false,
+      "sha256": "a2f2b3f70bfbd701d08957459fcd6112f2d8309db02b1e844d09fd3df51e3c36",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/stream.rs",
+      "bytes": 38837,
+      "binary": false,
+      "sha256": "9f9194b6fcf45b1e88d11835599c23cfd8ebdddeaf7c8c25ab12a4ef79c58b8f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/harness_loop/receipt_tests.rs",
+      "bytes": 13025,
+      "binary": false,
+      "sha256": "78025a5e68ab5b0f71b18a5db8bf11642f9bbff35ac2f3873a52e5f2c0659876",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/harness_loop/unchanged_receipt_tests.rs",
+      "bytes": 5515,
+      "binary": false,
+      "sha256": "8c384cfb2bfb6a5388bb23fb523a759a366e1c7258bc0a92047700f6610d027c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/harness_loop.rs",
+      "bytes": 74617,
+      "binary": false,
+      "sha256": "1603655a2f3d0e4284bb709070a8519e23d4cfff9eb3f2680840152c8f5637f7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/porcelain/windows_tests.rs",
+      "bytes": 6459,
+      "binary": false,
+      "sha256": "e61e73d4bce3f24f2dfc1df3a9bfa36a4df0ca12e1a8efb21714c2135eaf5687",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/run/unresolved_terminal_tests.rs",
+      "bytes": 1585,
+      "binary": false,
+      "sha256": "e927de5e02752da2111105ef9220ef134dbb1a5df08cdc753595e1e64504fb5f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/run.rs",
+      "bytes": 31160,
+      "binary": false,
+      "sha256": "42edd9bc8209703cf030894f3550090a2087ad58ab1fd8ed0fbf0d2170b33328",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/read/line_endings_tests.rs",
+      "bytes": 3767,
+      "binary": false,
+      "sha256": "d8eb2f86edb40cded2125d6d6bddca89bade31674a8edd797970a750c84714c7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/read.rs",
+      "bytes": 53670,
+      "binary": false,
+      "sha256": "2f412e9748833598f1c9f4a7565a0b5f93a39f22f893568dece6f6f2a17e20bd",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/exit_code_tests.rs",
+      "bytes": 2368,
+      "binary": false,
+      "sha256": "c04f42eebc3c453558c6031d7d5b80545bd04e4f9f66962afa80d76f760d7185",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/mod.rs",
+      "bytes": 31645,
+      "binary": false,
+      "sha256": "ea614774d631327ac510f62080f05079e705cf968e93a2dfc13b0c83ba15bfe2",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/registry.rs",
+      "bytes": 33959,
+      "binary": false,
+      "sha256": "a7ccbb9988e00003172bcdeae2bf15a87b1f2bccfca4781e09e891555a5c877b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/local.rs",
+      "bytes": 56117,
+      "binary": false,
+      "sha256": "7c83426901aa956738fe82d853d2a63113c9d8477f0a45361022fe049d911bf0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/manifest.rs",
+      "bytes": 53205,
+      "binary": false,
+      "sha256": "d1012d700efae983b94a0e0e271e52b75a9262a312b35fd949bfbb3b383ca1d5",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/mod.rs",
+      "bytes": 22468,
+      "binary": false,
+      "sha256": "3271208efdc9d6aea18c88fae956ac216484479303528a9b3bad5af5c377e5bb",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/read_overlay.rs",
+      "bytes": 6124,
+      "binary": false,
+      "sha256": "a73d8d362460675b9ade265aaaa0ae3a66fdd3a085b1bcac940e91b5a10840ce",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/services/path_display_tests.rs",
+      "bytes": 1385,
+      "binary": false,
+      "sha256": "bd77633c19668bfe1729feebc32d4947ee3903de3f21a316673fddeb5a954552",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/workspace/services.rs",
+      "bytes": 40417,
+      "binary": false,
+      "sha256": "7529bf18d02950a691123cfc58c8142b67001f4fcac78e34d4ac111cb40f8911",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs",
+      "bytes": 49026,
+      "binary": false,
+      "sha256": "8d0da8d86041401b784e31c6b1edef68fcb73fab62cc08d90dba56c4e34c840d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/permission_rules_tests.rs",
+      "bytes": 925,
+      "binary": false,
+      "sha256": "009a79f56bced02649e0ca801a6ea75ab781462c1486f3665bda68a34b42b82b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs",
+      "bytes": 84787,
+      "binary": false,
+      "sha256": "619e868275d1573d64eeabbdcc9b430290705f70da276c326cdd4e586cefea32",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/mod.rs",
+      "bytes": 87679,
+      "binary": false,
+      "sha256": "5b720842817e8eafee24f242cf7854925c29a047a87d921fae70767a465bd8cc",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_mode.rs",
+      "bytes": 30925,
+      "binary": false,
+      "sha256": "7f8c9f7e707dcd9692dd6e2b8d29ec64683cc87dab3f3afa82c049c80d65d314",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_transition_order.rs",
+      "bytes": 1023,
+      "binary": false,
+      "sha256": "47c01f6a3e92aae783f343f7eaf953dfa8587c2041f837e1667aa5f4e989459f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/modes.rs",
+      "bytes": 43830,
+      "binary": false,
+      "sha256": "00843a9bcdd22223c6007730de8be3bfca8087593ecb5d6e334615e40e00fa66",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs",
+      "bytes": 91439,
+      "binary": false,
+      "sha256": "fdff31849d6b2254179d47b2b7bfdc7c74c29eca6faa6a8f215816bd50ab8e4f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "bytes": 44085,
+      "binary": false,
+      "sha256": "818794797e792fc58ff69f1e9f7379a077e4208018935c7b63521ecceb8c399c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/modes_code.rs",
+      "bytes": 1424,
+      "binary": false,
+      "sha256": "f0b6642d456d323e77cb93ad89097fcf59edaa1bdec1dd82be500d231f77b09e",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/prompt/code_command_refusal.rs",
+      "bytes": 3643,
+      "binary": false,
+      "sha256": "7c6603163f1d1c7a3cabb4571500d5a0ab9763985ec284e3c1d3633b51784473",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "bytes": 72828,
+      "binary": false,
+      "sha256": "78eb70e2360ed0bd213e6906b345ef4f74f4664be2962109d6aca9e528e9a752",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/permission_toggle_tests.rs",
+      "bytes": 508,
+      "binary": false,
+      "sha256": "fb165cc6b313a9faa69fdd199456540eab00afa041df9398149399dca47e1d8c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop/native_paste_tests.rs",
+      "bytes": 5312,
+      "binary": false,
+      "sha256": "ead1862bb0c12e478fe97764e2e51fb4aa020f4910adc48bf460edf924e815a7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs",
+      "bytes": 268034,
+      "binary": false,
+      "sha256": "ef215498950d3f03550bd617177521a62daa4f6c86660a474dd81e89e072a35d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/mod.rs",
+      "bytes": 102931,
+      "binary": false,
+      "sha256": "0f171cc40cb26931b425230d01a1075d3dcd7e4b4ced0b143c0507d4fb5e5154",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/headless/permission_rules_tests.rs",
+      "bytes": 663,
+      "binary": false,
+      "sha256": "700789e6d843cae870ce766023e339329796ee8d87a2c4a85c1e9e519ca8df23",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs",
+      "bytes": 72343,
+      "binary": false,
+      "sha256": "efe03bfab82aa954720eefaa83406a7d50e1864d52308f8e9c55c336363dcb23",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/shortcuts_help.rs",
+      "bytes": 59679,
+      "binary": false,
+      "sha256": "7c4cf2a9f872a3572d8b2a7f491de0e6cd7eb774147368453dbfd6a57d9e49bf",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/shortcuts_help_backend_tests.rs",
+      "bytes": 3853,
+      "binary": false,
+      "sha256": "5795d00bc2cfcf340985dd872972fdcc355f5ed540bbcfac1791ea26c0bbdaa3",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/CHANGELOG.md",
+      "bytes": 35686,
+      "binary": false,
+      "sha256": "e104cedc1a163ccfe04c90c6b7e92077d6edcd7e4a51117696586ecd336bf894",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/Cargo.toml",
+      "bytes": 3432,
+      "binary": false,
+      "sha256": "cec174211c9b524259e29e019ebcaf0b5bbe5f1c00284e16bdee44fb98065ff5",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/LICENSE",
+      "bytes": 1062,
+      "binary": false,
+      "sha256": "3fea97e00df9a8e30027f4298d6941b6970c542ffd49de68b4a2bcafedcbfe02",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/README-Aster.md",
+      "bytes": 902,
+      "binary": false,
+      "sha256": "84441884f50331549b8faea178b6e081e390a81aaebd561a36f4316162904ba5",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/README.md",
+      "bytes": 8158,
+      "binary": false,
+      "sha256": "b6e899e8e39b7b4e29c9bbb4c40377ebc82914bd0fd859a1b559c9484bf0fa75",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/.gitignore",
+      "bytes": 5,
+      "binary": false,
+      "sha256": "3c4dbff9eeda9410a0b9eb423472981db8997d666388b4cd2424700c3974d64b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/CONTRIBUTING.md",
+      "bytes": 2007,
+      "binary": false,
+      "sha256": "f8be1dd11a78ca34cccf47f26ea75d42bc81caae79b64cbd8c1a47b40d8f4aaa",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/crossterm_c.png",
+      "bytes": 9472,
+      "binary": true,
+      "sha256": "badfec371826c1b6ccab04bbe82edbe547c3f1f2f4ebe23e6e12b64a210550d2"
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/crossterm_full.png",
+      "bytes": 12334,
+      "binary": true,
+      "sha256": "31cbc36cd519e5c8cd3e1c0b098dc0226f983c0b0fbfb834e0063988b69ad1e7"
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/crossterm_full.svg",
+      "bytes": 6926,
+      "binary": false,
+      "sha256": "5efb9b9946520ee99696178c339c5a7532486af160e49346fc39a199712720d1",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/docs/know-problems.md",
+      "bytes": 658,
+      "binary": false,
+      "sha256": "4cf830bdb07b2327f3477f581a890a6978da9291937856fe055914edd3a5545d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/README.md",
+      "bytes": 1449,
+      "binary": false,
+      "sha256": "8d45c7e3a50e53a995058d295a993e2a42dc67d68f9d3fc1b428821b3ee01bcc",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-match-modifiers.rs",
+      "bytes": 1771,
+      "binary": false,
+      "sha256": "4ae0061737b850b855bee43e15977f80830f899326b2c28b1215a1e7e8a219b9",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-poll-read.rs",
+      "bytes": 1548,
+      "binary": false,
+      "sha256": "651f3ce32033fe2f432f4e6361448800aca17a4ceb8ee27ecfc0018f7bdffbd5",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-read-char-line.rs",
+      "bytes": 1003,
+      "binary": false,
+      "sha256": "333e8600a1f5aa71f6eb8926a6b1d68def884ed18846cd1854cfc38ae0a26591",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-read.rs",
+      "bytes": 2903,
+      "binary": false,
+      "sha256": "a4b16d0f717551cc6d04425ef18cda57c0a0600123c4963471bf60e0134a4b91",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-stream-async-std.rs",
+      "bytes": 1914,
+      "binary": false,
+      "sha256": "2c188dc2b2469864fef447c26cbf96df767bfa7cec595e9d9450041e94b626b7",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/event-stream-tokio.rs",
+      "bytes": 1894,
+      "binary": false,
+      "sha256": "c94b1c8b6d7d7b50b54f09c3add7b900a7f2374c83841b4ee38e561c6694ef95",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/is_tty.rs",
+      "bytes": 378,
+      "binary": false,
+      "sha256": "23eabedb24a42351367eac52d01e76eff94315736e8bdb4d8baea1be9fd94b64",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/key-display.rs",
+      "bytes": 1260,
+      "binary": false,
+      "sha256": "55c3223f986d2cc9df9f866f20b0b08a34512e397908d9feabe1c3ecc8493c78",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/examples/stderr.rs",
+      "bytes": 2170,
+      "binary": false,
+      "sha256": "1750245223741115bff2031e2c8292cb02a5899545ec7c32eb7b0f9f66cf8452",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/ansi_support.rs",
+      "bytes": 1788,
+      "binary": false,
+      "sha256": "448fb698820e6ec484ca9af2fb1787bd116151bd7ecc094619fb6d6fb82c26f0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/command.rs",
+      "bytes": 10668,
+      "binary": false,
+      "sha256": "c02719a4f87a53bdca53be3f2bfba21b0dcaa76cbec3f2980a47fe3391d33e54",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/cursor/sys/unix.rs",
+      "bytes": 1655,
+      "binary": false,
+      "sha256": "58a01b9ff63dabf2643bcdf061a30c53004ea3a2901ac63df32295ad0d7a49f4",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/cursor/sys/windows.rs",
+      "bytes": 9065,
+      "binary": false,
+      "sha256": "c9efa8f6ace2a30bd5bcfdfdb9f488cf6470030a21c877f7f93c2176f158b015",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/cursor/sys.rs",
+      "bytes": 531,
+      "binary": false,
+      "sha256": "ba420a9c7e3d7a5f3c63d9477e6f203b41ffd179e905783b0d6e99453a097e17",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/cursor.rs",
+      "bytes": 14949,
+      "binary": false,
+      "sha256": "7ce886a1773eeeeed53604ff6f36aeaaa78fbd9ada6fffde884e71f42bbcc5b3",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/filter.rs",
+      "bytes": 3664,
+      "binary": false,
+      "sha256": "b0a03035eacfd0afab05b5a2fdc49cce91338a0a5a6a070acb0c53fbec18edce",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/read.rs",
+      "bytes": 14016,
+      "binary": false,
+      "sha256": "402b39ac6f7fae74b9df4bab190bede71bc939a93bb913b2c7fb6be027eba55e",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/source/unix/mio.rs",
+      "bytes": 8797,
+      "binary": false,
+      "sha256": "3bda10987ebf4d1a2e894324b98931b27b005245fd5874d5753c59d83f8c884c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/source/unix/tty.rs",
+      "bytes": 9717,
+      "binary": false,
+      "sha256": "761ce3367e87d587cb0a9411b6cdcb8b72a55130b440c49f6cb73a2529166d97",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/source/unix.rs",
+      "bytes": 283,
+      "binary": false,
+      "sha256": "eae47fa335a8e687bbe3361c7ec67db16f2ced39b98c8849df48bd177b2c1f25",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/source/windows.rs",
+      "bytes": 3538,
+      "binary": false,
+      "sha256": "a001ff36a047bf0b1292de5a90231e4b3099031b37730a16729feaa71f6e8c00",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/source.rs",
+      "bytes": 910,
+      "binary": false,
+      "sha256": "6cfc4352a947939a1a6995301c6d62a39aeb30ca38d25024f9a0b73a686d28fe",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/stream.rs",
+      "bytes": 4946,
+      "binary": false,
+      "sha256": "7a1260d2146dee9e476f1d4da43132829bbc05f4352539be45c17aaa413580e9",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/unix/parse.rs",
+      "bytes": 53707,
+      "binary": false,
+      "sha256": "016bb53ef3654af83bfac2eea52a6a50cc38b546a1b35234c23426f2a8688891",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/unix/waker/mio.rs",
+      "bytes": 992,
+      "binary": false,
+      "sha256": "b804a0fc038efd7e4c330c728631c4fb993f61462b7c95922dbcca347ef26d83",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/unix/waker/tty.rs",
+      "bytes": 653,
+      "binary": false,
+      "sha256": "ce88dd899de0dfb864c3746aa50d33c7cdd6a7a6a2a2c4b0be8ec6b40c1ef27a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/unix/waker.rs",
+      "bytes": 247,
+      "binary": false,
+      "sha256": "ee4a3919a6efd345c36b439646b34d8d653949d002b0151816b7dc75a5037a00",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/unix.rs",
+      "bytes": 105,
+      "binary": false,
+      "sha256": "d59069208030bf35a8c49868f0afaef619b65f761abd7249c267f97226cc9d4a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/windows/parse/alt_code_tests.rs",
+      "bytes": 2143,
+      "binary": false,
+      "sha256": "7058a72985957e82d5f5d384261e92427c046e1f9f989971548503f39918ce2a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/windows/parse.rs",
+      "bytes": 15257,
+      "binary": false,
+      "sha256": "54bfa074bbfde876aa27a70acff58e0ed0c8329418e7c5997fb8254ae1150cb9",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/windows/poll.rs",
+      "bytes": 2459,
+      "binary": false,
+      "sha256": "758b62859494a4899bbc5cac5cbda4fb64546fbf86f61158a392287a2b93f803",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/windows/waker.rs",
+      "bytes": 1116,
+      "binary": false,
+      "sha256": "482694d0c7c4958389888cf4936ef232726f98c01456537ae85cad28fab50f46",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys/windows.rs",
+      "bytes": 1659,
+      "binary": false,
+      "sha256": "7dac602a97be6ddb3549503f243538b9f26f1f2fbadf72676b4159271cf886ac",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/sys.rs",
+      "bytes": 239,
+      "binary": false,
+      "sha256": "83178ce09bde11cebbd0e88d4b8bfa04b9ca09c063e9fe6ddc42b0a9f7f30f94",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event/timeout.rs",
+      "bytes": 2570,
+      "binary": false,
+      "sha256": "3925941551c65ee91d73c9a6329ae04a4e25993a3592dfab02d3eb866ada6004",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/event.rs",
+      "bytes": 47009,
+      "binary": false,
+      "sha256": "87b16e2ea267479ee043458b2f58aff6610c63f1e86b94161f4c38953aeda513",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/lib.rs",
+      "bytes": 10593,
+      "binary": false,
+      "sha256": "85070938a40a79731381fd850516f751132b93335302b2dd00a177a17a28c1cc",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/macros.rs",
+      "bytes": 11979,
+      "binary": false,
+      "sha256": "604cb27d415b5ad60bcd95924286bf49d96da8ed186819886c806d3a04157aa4",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/attributes.rs",
+      "bytes": 3955,
+      "binary": false,
+      "sha256": "b6fcf6c4078b3766dd357a519ec188f78a64566fd805c93c9bc64bf1a521a64d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/content_style.rs",
+      "bytes": 1115,
+      "binary": false,
+      "sha256": "d66fe8512fb24a3c6da1e5643d3de67f490095dc1ecb0b9de7ab6483d96cf53e",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/styled_content.rs",
+      "bytes": 1880,
+      "binary": false,
+      "sha256": "a2767a96d4cf32ebc34291be68e3f34b51f3f92bb15800e157eaea3ee6bfcfbe",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/stylize.rs",
+      "bytes": 6733,
+      "binary": false,
+      "sha256": "513a0606ac5bbcfcaa5ae2a24d800719df91df978d3c460266b2a71ce120eecd",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/sys/windows.rs",
+      "bytes": 8406,
+      "binary": false,
+      "sha256": "faed0c37988eb4c8dfae350ad7e467e1b99fe9bf93e3f4e4d0f0b68f7d625971",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/sys.rs",
+      "bytes": 40,
+      "binary": false,
+      "sha256": "903a72d85b9e8f8338c07e1fed63bbe60b17c4f55717235a991e644ec9fe23c8",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/types/attribute.rs",
+      "bytes": 6136,
+      "binary": false,
+      "sha256": "f1fb3b1f2c721c4c85a2b9fed7a94e52ef91f8d20e362192aebf8a1cf5fb28be",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/types/color.rs",
+      "bytes": 16782,
+      "binary": false,
+      "sha256": "8726a8c7bdc3923d581af8080ff7b064fb10df2cad93f3ad0cc09c58f2f17956",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/types/colored.rs",
+      "bytes": 9868,
+      "binary": false,
+      "sha256": "e03130834362f5b0f4e89decd269204a101a3f6abb83e3f9684c02a9cd3008dd",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/types/colors.rs",
+      "bytes": 6116,
+      "binary": false,
+      "sha256": "413d455e4ea18e34bb034cd751b2bafe526de142609d6953f4b31c6fdeaadf81",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style/types.rs",
+      "bytes": 138,
+      "binary": false,
+      "sha256": "a67aa3d3a6d3aa0146da820c48d1cbed707126e1ba29aef24aa9aa711f07cb3e",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/style.rs",
+      "bytes": 18122,
+      "binary": false,
+      "sha256": "bdf2465c098113fcd4ac7124b3ac62778d5590d474fd1c8ce4cf3cbd084abcde",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/terminal/sys/file_descriptor.rs",
+      "bytes": 4095,
+      "binary": false,
+      "sha256": "dfe7c23834cb47ca9531db0bb6b20c4ff6fc433ce3b433e0ce3da4d8ad1ede74",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/terminal/sys/unix.rs",
+      "bytes": 9767,
+      "binary": false,
+      "sha256": "a96da6325edc3a8f0136e25184d464aaba10f850c591a6eb37281a4c28716c1b",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/terminal/sys/windows.rs",
+      "bytes": 13950,
+      "binary": false,
+      "sha256": "9854180b52eca2335d329ab5a0382c2f88a8ee20f7f7c18b0211210a39617508",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/terminal/sys.rs",
+      "bytes": 728,
+      "binary": false,
+      "sha256": "aac896a84c47fb830f71f3cf3627db6a4ca67e51c289a54297ee66b6b191e9e9",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/terminal.rs",
+      "bytes": 17532,
+      "binary": false,
+      "sha256": "5430654a512812e1803a17d3f47357ed9b039dccde38d2ed31b9efc5b152580a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/third-party/crossterm/src/tty.rs",
+      "bytes": 1540,
+      "binary": false,
+      "sha256": "2586695bed85f0b8aa84f49dd80fe973f4a78258d43d37a0bb709e87f74394d0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "docs/migration.md",
+      "bytes": 43052,
+      "binary": false,
+      "sha256": "dde6b36e5edd1c2165f78775b4e267f36fb6227c667e9cf6723130edcc1bb534",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "docs/source-manifest.json",
+      "bytes": 183452,
+      "binary": false,
+      "sha256": "27da0159d4540db4ae534a8bf8a706964919f13afb6c49cc5e0aa45d1e486e7d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "scripts/cli_pair_build.rs",
+      "bytes": 2622,
+      "binary": false,
+      "sha256": "404cccf2f0f05f74274bdfa40b8fd0837c9e35d570cd7330b882827d5086128b",
+      "cr_bytes": 0,
+      "bom": false
+    }
+  ],
+  "note": "Source-only audit; retained evidence and fixtures are not normalized."
+}

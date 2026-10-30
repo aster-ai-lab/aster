@@ -260,6 +260,46 @@ async fn unknown_session_kind_is_never_invented_for_a_filtered_view() {
 }
 
 #[tokio::test]
+async fn persisted_session_kind_filters_without_guessing_legacy_records() {
+    let root = tempfile::tempdir().expect("workspace");
+    legacy_fact(root.path(), "unknown-kind", "not a kind classifier");
+    for (id, kind) in [
+        (
+            "interactive",
+            a3s_code_core::session_folder::SessionKind::Interactive,
+        ),
+        (
+            "headless",
+            a3s_code_core::session_folder::SessionKind::Headless,
+        ),
+    ] {
+        a3s_code_core::session_folder::prepare_session_home_with_kind(root.path(), id, kind)
+            .expect("typed session home");
+    }
+    let agent = agent_at(root.path());
+    let interactive = list(&agent, json!({"headless":"exclude"})).await;
+    assert_eq!(interactive["sessions"].as_array().expect("rows").len(), 1);
+    assert_eq!(interactive["sessions"][0]["id"], "interactive");
+    assert_eq!(interactive["sessions"][0]["sessionKind"], "interactive");
+    assert_eq!(
+        interactive["_meta"]["a3sCode/sessionCatalog"]["incomplete"],
+        true
+    );
+    assert_eq!(
+        interactive["_meta"]["a3sCode/sessionCatalog"]["unclassifiedPageEntries"],
+        1
+    );
+
+    let headless = list(&agent, json!({"headless":"only"})).await;
+    assert_eq!(headless["sessions"].as_array().expect("rows").len(), 1);
+    assert_eq!(headless["sessions"][0]["id"], "headless");
+    assert_eq!(headless["sessions"][0]["sessionKind"], "headless");
+
+    let all = list(&agent, json!({"headless":"include"})).await;
+    assert_eq!(all["sessions"].as_array().expect("rows").len(), 3);
+}
+
+#[tokio::test]
 async fn chat_facet_does_not_read_or_mislabel_code_sessions() {
     let root = tempfile::tempdir().expect("workspace");
     std::fs::create_dir(root.path().join(".a3s")).expect("state");

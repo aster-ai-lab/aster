@@ -1,0 +1,26 @@
+{
+  "unix": 1792872001.3488667,
+  "phase": "drain_requested",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "clients": [
+    {
+      "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-indexer-mask-v44/qualification-suite-v45",
+      "phase": "passed",
+      "exact_client_alive": false,
+      "observed_unix": 1792872008.690738
+    }
+  ],
+  "signal": {
+    "unix": 1792872011.237097,
+    "signal": "SIGTERM",
+    "exact_supervisor": {
+      "pid": 2961,
+      "start_ticks": 314862247,
+      "uid": 10250,
+      "unix": 1792869146.5926323,
+      "deadline_seconds": 15439
+    },
+    "idle_slots": 2
+  }
+}

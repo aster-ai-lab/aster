@@ -1,0 +1,672 @@
+{
+  "assertions_finished": true,
+  "case": "network-fetch-pages-direct",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-first.json"
+          },
+          "id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13330,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"max_chars\\\":17,\\\"offset\\\":0,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/text\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-first.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":143},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":143,\"projected_bytes\":143,\"original_estimated_tokens\":36,\"projected_estimated_tokens\":36,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"projected_digest\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"repeat_key\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"content_ref\":\"inline:sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8ddfac59887c347133486dd4da4e270fcb8d794993d8596e4ae32e6ba1dfb0a8\"}",
+        "prepared_digest": "sha256:aaada835b70049090855def74f5015aac1b7ad2a12cc7061b3eff550ef0044b4",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "format": "text",
+            "max_chars": 17,
+            "offset": 0,
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/text"
+          },
+          "id": "call_8bd5346f33b148ea967cc04d85bd3104",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13528,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_8bd5346f33b148ea967cc04d85bd3104",
+          "turn": 1
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_8bd5346f33b148ea967cc04d85bd3104",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"分页-FETCH-中文-bec41\\n\\n... (more fetched content available; continue with offset=17)\\nFull fetched text: a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728 (`read` pages it and `search` with mode=grep searches it without fetching again)\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/text\"],\"document_kind\":\"text\",\"content_type\":\"text/plain\",\"range\":{\"offset\":0,\"requested_max_chars\":17,\"applied_max_chars\":17,\"returned_chars\":17,\"total_chars\":260,\"next_offset\":17,\"eof\":false,\"limit_clamped\":false},\"artifact_uri\":\"a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":282,\"projected_bytes\":282,\"original_estimated_tokens\":71,\"projected_estimated_tokens\":71,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"projected_digest\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"repeat_key\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"content_ref\":\"inline:sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:040f1950fcaaa9b381a82ac8101e384af6e4ecf4bd537d899313d4f2f6aca0fe\"}",
+        "prepared_digest": "sha256:93242dbd1a684d3071cae3b4f277419a06bcbe12b94986f58c8249f748643942",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13779,
+        "text": "Actual page: `分页-FETCH-中文-bec41`  \nContinuation offset: `17`",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "1441c080ea568908508ffcb8cc905be1412181f57e5fca2a3a9aeda67790450f",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:726a5dc243bf12093882acc8c9415e326f5fc8c2032fcad81df46c3d725e35ed",
+          "sha256:164a965ef00cdf4c377f9a6c755bb9d5e19ec9b469fad2d17f1b3b90fa46fd75"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-second.json"
+          },
+          "id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13869,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 17,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"max_chars\\\":1000,\\\"offset\\\":17,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/text\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-second.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":146},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":146,\"projected_bytes\":146,\"original_estimated_tokens\":37,\"projected_estimated_tokens\":37,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"projected_digest\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"repeat_key\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"content_ref\":\"inline:sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a5af8a75bdda0d56aca69f29afa8b8eab25113a8c83e283a85737110c6fd2f97\"}",
+        "prepared_digest": "sha256:8ab60e675e720c5cbafca23c04c4cebd4f800ad519904eef81986f12080f21d1",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 18,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "format": "text",
+            "max_chars": 1000,
+            "offset": 17,
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/text"
+          },
+          "id": "call_353c874e8d7c4e75adbcf25e1428b204",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 14023,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 19,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_353c874e8d7c4e75adbcf25e1428b204",
+          "turn": 2
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 20,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+            "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_353c874e8d7c4e75adbcf25e1428b204",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdefFull fetched text: a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728 (`read` pages it and `search` with mode=grep searches it without fetching again)\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/text\"],\"document_kind\":\"text\",\"content_type\":\"text/plain\",\"range\":{\"offset\":17,\"requested_max_chars\":1000,\"applied_max_chars\":1000,\"returned_chars\":243,\"total_chars\":260,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":\"a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":460,\"projected_bytes\":460,\"original_estimated_tokens\":115,\"projected_estimated_tokens\":115,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"projected_digest\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"repeat_key\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"content_ref\":\"inline:sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:819f98b882c8fb9f41559ca5c5f43dd4370a84fa9b14c8e77b653976e0219ac2\"}",
+        "prepared_digest": "sha256:bf13a37105489ef74815348a5995983963099ba472ac900969c7ab1290ef8130",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 21,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14379,
+        "text": "Actual remaining page:\n```text\n28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef\n```\n\nEOF: reached; no continuation offset was returned.",
+        "tool": null
+      },
+      "seq": 22,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "18642278634d3e001d56d447890daa3ace7c1c1e7993dc9e22a2358f83e5e904",
+          "seq": 22
+        },
+        "receipt_keys": [
+          "sha256:e171e76c04e17589401307fd5331636a614c7fec1aae8e91eb876b761216333f",
+          "sha256:892c28e5d2ca5b7313f1efbb3b93bf866520fa714c496c06ae83a339876d5bc6"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 23,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40637",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-MuTIC6\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-fetch-first.json once. Call web_fetch exactly once with its exact JSON object as         2:29 PM           arguments. Report the actual page and continuation offset. Do not retry or call other tools.                                                                                                                                                                                                                                                                          ♦ Read 1 file, Fetched 1 website                                                                                                                                                                                                                Actual page: 分页-FETCH-中文-bec41                                                                      2:29 PM         Continuation offset: 17                                                                                                                                                                                                                         Worked for 21s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=10 model_turns=3 prompt_tokens=42271",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-MuTIC6\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-fetch-second.json once. Call web_fetch exactly once with its exact JSON object as        2:29 PM           arguments. Report the actual remaining page and EOF. Do not retry or call other tools.                                                                                                                                                                                                                                                                                ♦ Read 1 file, Fetched 1 website                                                                                                                                                                                                                Actual remaining page:                                                                                  2:30 PM                                                                                                                           █     28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-             █     0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-             █     bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef                                                             █                                                                                                                       █     EOF: reached; no continuation offset was returned.                                                                █                                                                                                                       █     Worked for 29s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "two real HTTP requests return exact Unicode character slices 0..17 and 17..EOF, preserving total length, source and retained artifact identity; this independent case does not bypass or relabel the Windows artifact-read denial",
+      "name": "web-fetch-direct-unicode-pages",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-MuTIC6\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-fetch-second.json once. Call web_fetch exactly once with its exact JSON object as        2:29 PM           arguments. Report the actual remaining page and EOF. Do not retry or call other tools.                                                                                                                                                                                                                                                                                ♦ Read 1 file, Fetched 1 website                                                                                                                                                                                                                Actual remaining page:                                                                                  2:30 PM                                                                                                                           █     28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-             █     0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-             █     bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef                                                             █                                                                                                                       █     EOF: reached; no continuation offset was returned.                                                                █                                                                                                                       █     Worked for 29s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "network-fetch-pages-direct",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-first.json"
+              },
+              "id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13330,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_ec7c7d6ec0304e969e03ba31be6acb0c",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"max_chars\\\":17,\\\"offset\\\":0,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/text\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-first.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":143},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":143,\"projected_bytes\":143,\"original_estimated_tokens\":36,\"projected_estimated_tokens\":36,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"projected_digest\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"repeat_key\":\"sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"content_ref\":\"inline:sha256:35cac065b218d3eb4735ece9ec4351bb139d4f3e4cdb8e0dceebc35fc90ac1a2\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8ddfac59887c347133486dd4da4e270fcb8d794993d8596e4ae32e6ba1dfb0a8\"}",
+            "prepared_digest": "sha256:aaada835b70049090855def74f5015aac1b7ad2a12cc7061b3eff550ef0044b4",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "format": "text",
+                "max_chars": 17,
+                "offset": 0,
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/text"
+              },
+              "id": "call_8bd5346f33b148ea967cc04d85bd3104",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13528,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_8bd5346f33b148ea967cc04d85bd3104",
+              "turn": 1
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b9eb850b-e082-40f5-97d2-9ecba7420ebc",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_8bd5346f33b148ea967cc04d85bd3104",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"分页-FETCH-中文-bec41\\n\\n... (more fetched content available; continue with offset=17)\\nFull fetched text: a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728 (`read` pages it and `search` with mode=grep searches it without fetching again)\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/text\"],\"document_kind\":\"text\",\"content_type\":\"text/plain\",\"range\":{\"offset\":0,\"requested_max_chars\":17,\"applied_max_chars\":17,\"returned_chars\":17,\"total_chars\":260,\"next_offset\":17,\"eof\":false,\"limit_clamped\":false},\"artifact_uri\":\"a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":282,\"projected_bytes\":282,\"original_estimated_tokens\":71,\"projected_estimated_tokens\":71,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"projected_digest\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"repeat_key\":\"sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"content_ref\":\"inline:sha256:6229f339583a1ad70d986edb3b180786bb0bfb532409cc9b960d7af006c15193\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:040f1950fcaaa9b381a82ac8101e384af6e4ecf4bd537d899313d4f2f6aca0fe\"}",
+            "prepared_digest": "sha256:93242dbd1a684d3071cae3b4f277419a06bcbe12b94986f58c8249f748643942",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13779,
+            "text": "Actual page: `分页-FETCH-中文-bec41`  \nContinuation offset: `17`",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "1441c080ea568908508ffcb8cc905be1412181f57e5fca2a3a9aeda67790450f",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:726a5dc243bf12093882acc8c9415e326f5fc8c2032fcad81df46c3d725e35ed",
+              "sha256:164a965ef00cdf4c377f9a6c755bb9d5e19ec9b469fad2d17f1b3b90fa46fd75"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-second.json"
+              },
+              "id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13869,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 17,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_1c68d5e3d4a24afdbfeddd93cc2a6c94",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"max_chars\\\":1000,\\\"offset\\\":17,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/text\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-second.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":146},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":146,\"projected_bytes\":146,\"original_estimated_tokens\":37,\"projected_estimated_tokens\":37,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"projected_digest\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"repeat_key\":\"sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"content_ref\":\"inline:sha256:af9c8ef5ed28025357337596664134100ad5f35b09cdd28cc59f9deea68cb72e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a5af8a75bdda0d56aca69f29afa8b8eab25113a8c83e283a85737110c6fd2f97\"}",
+            "prepared_digest": "sha256:8ab60e675e720c5cbafca23c04c4cebd4f800ad519904eef81986f12080f21d1",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 18,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "format": "text",
+                "max_chars": 1000,
+                "offset": 17,
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/text"
+              },
+              "id": "call_353c874e8d7c4e75adbcf25e1428b204",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 14023,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 19,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_353c874e8d7c4e75adbcf25e1428b204",
+              "turn": 2
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 20,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-920f434b-87b5-4be6-a418-6e53c21ea9da",
+                "thread_id": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_353c874e8d7c4e75adbcf25e1428b204",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdefFull fetched text: a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728 (`read` pages it and `search` with mode=grep searches it without fetching again)\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/text\"],\"document_kind\":\"text\",\"content_type\":\"text/plain\",\"range\":{\"offset\":17,\"requested_max_chars\":1000,\"applied_max_chars\":1000,\"returned_chars\":243,\"total_chars\":260,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":\"a3s://tool-output/web_fetch/0cff56bc69e0e269e2a02c108d800a097fda43a9ffd316ab8e244e6b9a8df728\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":460,\"projected_bytes\":460,\"original_estimated_tokens\":115,\"projected_estimated_tokens\":115,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"projected_digest\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"repeat_key\":\"sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"content_ref\":\"inline:sha256:5444288ae8c70307ce6fef6de300568f20846b66bc60d39c5006188c07f29e72\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:819f98b882c8fb9f41559ca5c5f43dd4370a84fa9b14c8e77b653976e0219ac2\"}",
+            "prepared_digest": "sha256:bf13a37105489ef74815348a5995983963099ba472ac900969c7ab1290ef8130",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 21,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14379,
+            "text": "Actual remaining page:\n```text\n28c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef分页-FETCH-中文-bec4128c-aec4-42bf-b8ac-11b18f6e85b5-0123456789abcdef\n```\n\nEOF: reached; no continuation offset was returned.",
+            "tool": null
+          },
+          "seq": 22,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "18642278634d3e001d56d447890daa3ace7c1c1e7993dc9e22a2358f83e5e904",
+              "seq": 22
+            },
+            "receipt_keys": [
+              "sha256:e171e76c04e17589401307fd5331636a614c7fec1aae8e91eb876b761216333f",
+              "sha256:892c28e5d2ca5b7313f1efbb3b93bf866520fa714c496c06ae83a339876d5bc6"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 23,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "2f26fcf2-b665-4b80-a6cd-5ef13c4b034e"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

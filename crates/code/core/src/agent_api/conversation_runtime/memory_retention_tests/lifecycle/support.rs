@@ -400,7 +400,10 @@ impl Fixture {
             session.config.budget_guard.as_ref().unwrap(),
             &original_guard
         ));
-        assert_eq!(session.workspace, workspace.path().canonicalize().unwrap());
+        assert_eq!(
+            session.workspace.canonicalize().unwrap(),
+            workspace.path().canonicalize().unwrap()
+        );
         assert_eq!(
             session.memory().unwrap().llm_extraction_enabled(),
             !disabled

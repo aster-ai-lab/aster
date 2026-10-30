@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'document_read::run_tests::denied_read_and_forged_owner_input_cannot_pin_a_native_resource' (47304) panicked at crates\code\acp\src\test_support.rs:13:28:
+expected an actual failed tool result: Invalid arguments for tool 'studio_document_read': $: Additional properties are not allowed ('runId' was unexpected) [permanent - change the arguments before retrying]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test document_read::run_tests::denied_read_and_forged_owner_input_cannot_pin_a_native_resource ... FAILED
+
+failures:
+
+failures:
+    document_read::run_tests::denied_read_and_forged_owner_input_cannot_pin_a_native_resource
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.42s
+

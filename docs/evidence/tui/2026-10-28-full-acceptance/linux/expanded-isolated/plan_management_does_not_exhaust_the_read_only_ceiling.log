@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'agent_api::tests::long_horizon_capabilities::plan_management_does_not_exhaust_the_read_only_ceiling' (5329) panicked at crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs:166:5:
+assertion `left == right` failed
+  left: "export const A2 = 2;\n"
+ right: "export const A2 = 4;\n"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::long_horizon_capabilities::plan_management_does_not_exhaust_the_read_only_ceiling ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::long_horizon_capabilities::plan_management_does_not_exhaust_the_read_only_ceiling
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 0.92s
+

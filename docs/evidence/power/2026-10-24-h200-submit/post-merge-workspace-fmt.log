@@ -1,0 +1,7 @@
+error: couldn't read `/mnt/d/code/aster/.wt-h200-native-integration/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs`: No such file or directory (os error 2)
+   --> /mnt/d/code/aster/.wt-h200-native-integration/apps/studio/src-tauri/src/app_updater.rs:129:1
+    |
+129 | mod os_feed_tests;
+    | ^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `os_feed_tests`: /mnt/d/code/aster/.wt-h200-native-integration/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs does not exist

@@ -1,0 +1,30 @@
+{
+  "unix": 1792872622.8829114,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "generator_cpu_build_worker.py",
+      "bytes": 4175,
+      "sha256": "5fc15da4ea9fddd5c83a9ce30b734a949af0e3c7fc18372e3bd740513dc2f4c3"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "generator-build-plan.json",
+      "bytes": 2581,
+      "sha256": "2ebcdad607c961e785f37f7f865cafa1acbf104acf1db5afb75a05501cbb74fc"
+    }
+  ],
+  "process": {
+    "pid": 896609,
+    "start_ticks": 279941691,
+    "uid": 10250,
+    "unix": 1792872631.9788103,
+    "budget_seconds": 220
+  }
+}

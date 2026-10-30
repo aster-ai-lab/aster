@@ -1,0 +1,37 @@
+
+running 3 tests
+ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-pc-windows-msvc
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27122
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27840
+
+thread 'tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results' (9576) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:57:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... FAILED
+ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-pc-windows-msvc
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27177
+
+thread 'tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers' (55864) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:118:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 7
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... FAILED
+ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once' (37572) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:185:9:
+send-now failed
+                                                                                                                          C:\W\T\aster-kimi-peqF7R\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started');  10:39 AM           Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED.                     Do not call any other tool.                                                                                                                                                                                                                                                                                                                                           ♦ Thought for 4.7s                                                                                                      ♦ Run [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late…                                                                                                                                                                                                                                                         > Reply only SEND-NOW-OWNED. Do not call any tool.                                                     10:39 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.4s                                                                                                                                                                                                                              ORIGINAL-COMPLETED                                                                                     10:39 AM                                                                                                                              │  Turn failed in 24s: completion gate: workspace mutation                                                              │  3a1524cea3eaa1ae10cdfe3e52b0a842b1902f8a4a482f2e2e179de1d0ce0b5d (late.txt, started.txt) has no bound Passed         │  verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to          │  this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash`          │  command that exits 0 and includes `test -f late.txt` with the check that proves the change, for example `test        │  -f late.txt && <test command>`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           
+test tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results
+    tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers
+    tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 31 filtered out; finished in 104.33s
+

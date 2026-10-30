@@ -145,6 +145,8 @@ async fn prove_snapshot_source(file: bool) {
         let before = calls.load(Ordering::SeqCst);
         session.close().await;
         agent.close().await;
+        drop(session);
+        drop(agent);
         let store: Arc<dyn SessionStore> = if file {
             Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
         } else {

@@ -1,0 +1,14 @@
+{
+  "unix": 1792935197.6912878,
+  "phase": "fetched_exact",
+  "source": "https://github.com/Indras-Mirror/Xolotl",
+  "commit": "0b9a0fc86dc55388c8c737bdc5fbccccf7273927",
+  "archive_url": "https://codeload.github.com/Indras-Mirror/Xolotl/zip/0b9a0fc86dc55388c8c737bdc5fbccccf7273927",
+  "archive_bytes": 55543526,
+  "archive_sha256": "0af4e10b98f555289b9ef1f3b00b1a0aeb1154feca8c43ecc6586a48197414ac",
+  "active_build_changed": false,
+  "model_requests_sent": false,
+  "new_git_repository_created": false,
+  "source_files": 4091,
+  "archive_or_binary_assets_published": false
+}

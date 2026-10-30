@@ -1,0 +1,95 @@
+[
+  {
+    "name": "toolchain",
+    "command": [
+      "rustup",
+      "show",
+      "active-toolchain"
+    ],
+    "exit_code": 0,
+    "bytes": 82,
+    "preview": [
+      "1.97.1-x86_64-pc-windows-msvc (overridden by 'D:\\code\\aster\\rust-toolchain.toml')"
+    ]
+  },
+  {
+    "name": "format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "bytes": 809,
+    "preview": [
+      "文件名或扩展名太长。 (os error 206)",
+      "This utility formats all bin and lib files of the current crate using rustfmt.",
+      "",
+      "Usage: cargo fmt [OPTIONS] [-- <rustfmt_options>...]",
+      "",
+      "Arguments:",
+      "  [rustfmt_options]...  Options passed to rustfmt",
+      "",
+      "Options:",
+      "  -q, --quiet",
+      "          No output printed to stdout",
+      "  -v, --verbose",
+      "          Use verbose output",
+      "      --version"
+    ]
+  },
+  {
+    "name": "governance-regime",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+      "-B",
+      "tests/governance_regime.py"
+    ],
+    "exit_code": 1,
+    "bytes": 666,
+    "preview": [
+      "..F.",
+      "======================================================================",
+      "FAIL: test_obligation_regressions_are_rejected (__main__.GovernanceRegimeTest.test_obligation_regressions_are_rejected)",
+      "----------------------------------------------------------------------",
+      "Traceback (most recent call last):",
+      "  File \"D:\\code\\aster\\tests\\governance_regime.py\", line 140, in test_obligation_regressions_are_rejected",
+      "    with self.assertRaises(RegimeError) as caught:",
+      "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "AssertionError: RegimeError not raised",
+      "",
+      "----------------------------------------------------------------------",
+      "Ran 4 tests in 0.019s",
+      "",
+      "FAILED (failures=1)"
+    ]
+  },
+  {
+    "name": "workspace-dependencies",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+      "-B",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 1,
+    "bytes": 2413,
+    "preview": [
+      "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+      "package:   D:\\code\\aster\\apps\\gateway\\Cargo.toml",
+      "workspace: D:\\code\\aster\\Cargo.toml",
+      "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+      "package:   D:\\code\\aster\\crates\\power\\Cargo.toml",
+      "workspace: D:\\code\\aster\\Cargo.toml",
+      ".warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+      "package:   D:\\code\\aster\\apps\\gateway\\Cargo.toml",
+      "workspace: D:\\code\\aster\\Cargo.toml",
+      "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+      "package:   D:\\code\\aster\\crates\\power\\Cargo.toml",
+      "workspace: D:\\code\\aster\\Cargo.toml",
+      ".Ewarning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+      "package:   D:\\code\\aster\\apps\\gateway\\Cargo.toml"
+    ]
+  }
+]

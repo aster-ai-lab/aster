@@ -1,0 +1,23 @@
+{
+  "schema": "aster.tui.native-cli-boundaries.v1",
+  "platform": "linux",
+  "model": "kimi/k3.1-pro",
+  "source_pair": "aster-cli-pair-v1:cce6babdd0286057a56ad1677bb6154237444994:x86_64-unknown-linux-gnu",
+  "cases": [
+    {
+      "case": "non-tty-permission",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 14.339,
+      "stdout_sha256": "63d0c8ec31f2483582a3715111f560ea2c96544edba3d08756990786fca4c96e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": 0,
+      "model_turns": 1,
+      "result": "fail",
+      "redacted_diagnostic": ""
+    }
+  ],
+  "script_sha256": "b7dd134ae84e36fe30403fdf927cc1f48c26f1cd199367482b6e80497d778394",
+  "config_unchanged": true,
+  "all_passed": false
+}

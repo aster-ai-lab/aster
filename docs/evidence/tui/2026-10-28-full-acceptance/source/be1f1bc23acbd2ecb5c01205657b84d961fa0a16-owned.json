@@ -1,0 +1,28 @@
+{
+  "source_pair_digest": "be1f1bc23acbd2ecb5c01205657b84d961fa0a16",
+  "base": "a21925eef70d1ee80ced350bb851926b7f64e2c5",
+  "bytes": 53189,
+  "sha256": "ee90a757288ee1d35bd099f05bb1c5e446546695353f0b7df7e2cdfdf40e6da4",
+  "tracked_paths": [
+    "crates/code/acp/tests/aster_tui_live_e2e.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+    "crates/code/core/prompts/common/runtime_contract.md",
+    "crates/code/core/src/agent_api/tests/fact_log.rs",
+    "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+    "crates/code/core/src/fact_control/tool_history_tests.rs",
+    "crates/code/core/src/fact_control/tool_results.rs",
+    "crates/code/core/src/tools/builtin/bash.rs",
+    "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+    "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs"
+  ],
+  "new_paths": [
+    "crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs"
+  ],
+  "reverse_check": "passed",
+  "created_utc": "2026-10-29T14:49:10.244909+00:00"
+}

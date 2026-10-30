@@ -1,0 +1,35 @@
+{
+  "out": "/data/deepseek-v41-xq-1017/native-kv-144g-24t-pcie0-exact-20261025",
+  "profile": "Exact routing + packed KV; 24 threads, 144 GiB arena, PCIe 0.00",
+  "routes": [
+    "default"
+  ],
+  "decode_trials": 7,
+  "prefill": true,
+  "tuning": {
+    "context_tokens": 1048576,
+    "cpu_threads": 24,
+    "arena_gib": 144,
+    "prompt_batch": 8192,
+    "prefill_chunk": 512,
+    "pcie_bp": 0,
+    "tier_batch_pcie_bp": 10000
+  },
+  "exact_startup_route_biases": [
+    0,
+    0,
+    0
+  ],
+  "kv_fp4": true,
+  "active_acl_sha256": "622336d46f8c20b3829671e97b1e4d2ccc8626465b73b04db6eeafc7ad556942",
+  "power_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+  "source_fingerprint": "c6be3cc41e94cab5ace30210d8a8e123a69c0ee80d67eee0cc7120c93c2cd0e0",
+  "gpu_uuid": "GPU-ab93a347-c678-1d71-0e85-0f520463debe",
+  "deployment_receipt": "native-exact-resource-144g-24t-pcie0-deployment.json",
+  "public_gateway_queue_compat_sha256": "17d6d7c86ce2680503d56f6d1c1d33177e89bdc851d302ddfd16ea4d7036a674",
+  "stream_io": true,
+  "arena_load_diagnostics": [
+    "arena: pinned (cudaHostRegister PORTABLE ok; MAP_HUGETLB unavailable (needed 72899 2 MiB pages, vm.nr_hugepages=0); transparent huge pages requested (MADV_HUGEPAGE))",
+    "tier: 0 experts in VRAM, 0 on the remote card (0.0 GiB), 15360 in the RAM arena (142.4 GiB), 0 file tier; seeded in 75.4 s"
+  ]
+}

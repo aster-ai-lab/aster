@@ -1,0 +1,134 @@
+{
+  "case": "send-now-cancel-ownership",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "send-now-owner",
+      "detail": "the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-W82K5e\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started');   6:13 PM           Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED.                     Do not call any other tool.                                                                                                                                                                                                                                                                                                                                           ♦ Thought for 4.9s                                                                                                      ♦ Run [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late…                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #1 Reply only SEND-NOW-OWNED. Do not call any tool.                                                                                                                                                                                           ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+;:queue  │  Ctrl+x:shortcuts                                                                                                                                                                                          "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13355,
+        "has_text": false,
+        "tool": "bash",
+        "call": {
+          "id": "call_b6d75b6162f54c639f5e922c48499966",
+          "name": "bash",
+          "args": {
+            "command": "[IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late')"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_b6d75b6162f54c639f5e922c48499966",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ef18a813-bc5a-43f9-9b13-6cd25663b0d5",
+            "thread_id": "a12d72c7-7bc9-4a0f-98d7-db76fc2b1902",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_b6d75b6162f54c639f5e922c48499966",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ef18a813-bc5a-43f9-9b13-6cd25663b0d5",
+            "thread_id": "a12d72c7-7bc9-4a0f-98d7-db76fc2b1902",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:d5dda8cc53a2875aa8b31f0cd64e476d054e52163456e9139809066da5be5adf",
+        "outcome": "cancelled",
+        "effects": {
+          "changes": [
+            {
+              "path": "started.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:03494afd4248c42f5fa1237bf2eeebe751ab8d9c977d55405fcb17469dbd91f8",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:ce52c10932bcfc3a1d65138ffc74cd53d8150e3703a0ede84fe81b4a844e10e3"
+          ]
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "(Response interrupted by the user.)"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13615,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "SEND-NOW-OWNED"
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

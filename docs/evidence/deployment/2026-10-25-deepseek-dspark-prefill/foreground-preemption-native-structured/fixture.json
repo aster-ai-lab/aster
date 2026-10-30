@@ -1,0 +1,14 @@
+{
+  "tokenizer_image": "sha256:2ab62ae681d4d60b99f4f85f935acaeb0d327eddb42d4ba7f66d6a21126ab1d3c",
+  "rendered_prompt_tokens": 1000123,
+  "prompt_utf8_bytes": 5357485,
+  "prompt_sha256": "539aadd60c25d9abfbfc4defab2a3c658b9abc9e78cd45355b3b0930bdd12489",
+  "expected": {
+    "EARLY": "violet-7391-copper",
+    "MIDDLE": "silver-4826-orchid",
+    "LATE": "amber-9153-lantern"
+  },
+  "expected_exact": "EARLY=violet-7391-copper;MIDDLE=silver-4826-orchid;LATE=amber-9153-lantern",
+  "construction_seconds": 1.2551783829694614,
+  "inference_performed": false
+}

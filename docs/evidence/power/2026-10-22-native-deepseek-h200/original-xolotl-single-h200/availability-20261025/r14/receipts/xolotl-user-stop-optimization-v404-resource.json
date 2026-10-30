@@ -1,0 +1,47 @@
+{
+  "unix": 1792938144.4835286,
+  "phase": "stop_command_returned",
+  "reason": "User: 就这么部署就行了，不优化了",
+  "optimization_uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+  "formal_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+  "formal_changed": false,
+  "goal_complete": false,
+  "result": {
+    "unix": 1792938156.2247484,
+    "stopped_name": "aster-xolotl-1mc15-4cde736558c0-49555809",
+    "stopped_uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+    "stop_exit": 0,
+    "checked": [
+      {
+        "role": "optimization",
+        "kind": "rjob",
+        "name": "aster-xolotl-1mc15-4cde736558c0-49555809",
+        "uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+        "phase": "Running"
+      },
+      {
+        "role": "optimization",
+        "kind": "replica",
+        "name": "aster-xolotl-1mc15-4cde736558c0-49555809-2mfpn",
+        "uid": "6e97b991-e021-4cdc-8ac9-09941b6f1233",
+        "phase": "Running"
+      },
+      {
+        "role": "formal",
+        "kind": "rjob",
+        "name": "aster-xolotl-1mc14-3458a0d96e5c-82243851",
+        "uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+        "phase": "Running"
+      },
+      {
+        "role": "formal",
+        "kind": "replica",
+        "name": "aster-xolotl-1mc14-3458a0d96e5c-82243851-mbshx",
+        "uid": "2ba55965-9fff-4c73-bf4e-f3006c7d1f6d",
+        "phase": "Running"
+      }
+    ],
+    "formal_VIP_preserved": true,
+    "formal_health_loaded": true
+  }
+}

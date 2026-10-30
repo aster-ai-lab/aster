@@ -1,0 +1,100 @@
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs b/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs
+index f37bbdcb1..82e1735b7 100644
+--- a/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs
++++ b/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs
+@@ -1,14 +1,16 @@
+ #![cfg(test)]
+ 
+ use super::driver::LiveTui;
++use std::time::{Duration, Instant};
+ 
+-fn paste_draft(tui: &mut LiveTui, text: &str) {
++fn paste_draft(tui: &mut LiveTui, text: &str, visible_tail: &str) {
+     tui.bytes(b"\x1b[200~");
+     tui.bytes(text.as_bytes());
+     tui.bytes(b"\x1b[201~");
+     tui.bytes(b"\x1b[F");
+     let prefix: String = text.chars().take(40).collect();
+     tui.wait_for(&prefix, 8);
++    tui.wait_for(visible_tail, 8);
+     tui.pump(150);
+ }
+ 
+@@ -17,6 +19,29 @@ fn key(tui: &mut LiveTui, sequence: &[u8]) {
+     tui.pump(200);
+ }
+ 
++fn wait_absent(tui: &mut LiveTui, text: &str) {
++    let started = Instant::now();
++    let deadline = started + Duration::from_secs(8);
++    loop {
++        let screen = tui.physical_screen();
++        if !screen.contains(text) {
++            tui.record(
++                "draft-redraw",
++                &format!(
++                    "one key operation removes {text:?}; additional display wait={} ms",
++                    started.elapsed().as_millis()
++                ),
++            );
++            return;
++        }
++        assert!(
++            Instant::now() < deadline,
++            "draft still contains {text:?}\n{screen}"
++        );
++        tui.pump(40);
++    }
++}
++
+ #[test]
+ #[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
+ fn kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text() {
+@@ -26,12 +51,12 @@ fn kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text() {
+     tui.session_id();
+     tui.dismiss();
+     let expected = "Reply with INPUT-EDIT-OK. Do not call tools. 数据 中文 e\u{301} RIGHT";
+-    paste_draft(&mut tui, &expected.replace("RIGHT", "WRONG"));
++    paste_draft(&mut tui, &expected.replace("RIGHT", "WRONG"), "WRONG");
+     key(&mut tui, b"\x17");
+-    assert!(!tui.physical_screen().contains("WRONG"));
+-    paste_draft(&mut tui, "RIGHT");
++    wait_absent(&mut tui, "WRONG");
++    paste_draft(&mut tui, "RIGHT", "RIGHT");
+     key(&mut tui, b"\x1a");
+-    assert!(!tui.physical_screen().contains("RIGHT"));
++    wait_absent(&mut tui, "RIGHT");
+     key(&mut tui, b"\x1bz");
+     tui.wait_for("RIGHT", 8);
+     tui.record(
+@@ -40,7 +65,7 @@ fn kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text() {
+     );
+ 
+     key(&mut tui, b"\x13");
+-    assert!(!tui.physical_screen().contains("数据"));
++    wait_absent(&mut tui, "数据");
+     key(&mut tui, b"\x13");
+     tui.wait_for("RIGHT", 8);
+     tui.record(
+@@ -52,10 +77,10 @@ fn kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text() {
+     tui.bytes(b"BROKEN");
+     tui.wait_for("BROKEN", 8);
+     key(&mut tui, b"\x15");
+-    assert!(!tui.physical_screen().contains("BROKEN"));
++    wait_absent(&mut tui, "BROKEN");
+     key(&mut tui, b"\x05");
+     key(&mut tui, b"\x03");
+-    assert!(!tui.physical_screen().contains("数据"));
++    wait_absent(&mut tui, "数据");
+     key(&mut tui, b"\x1a");
+     tui.wait_for("RIGHT", 8);
+     assert!(!tui
+@@ -120,7 +145,7 @@ fn kimi_external_editor_save_and_failures_preserve_draft_and_terminal() {
+         tui.wait_for("Aster", 45);
+         tui.session_id();
+         tui.dismiss();
+-        paste_draft(&mut tui, original);
++        paste_draft(&mut tui, original, "ORIGINAL-DRAFT");
+         let before = tui.facts().len();
+         key(&mut tui, b"\x07");
+         let expected = if outcome == "save" {

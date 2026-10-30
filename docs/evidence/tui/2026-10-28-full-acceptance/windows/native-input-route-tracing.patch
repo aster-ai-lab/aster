@@ -1,0 +1,35 @@
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
+index 7f75ad77a..35b0f0976 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs
+@@ -3272,6 +3272,8 @@ async fn drain_and_process(
+         .into_iter()
+         .map(|event| normalize_input_event(event, live_input_started_at))
+         .collect::<Vec<_>>();
++    #[cfg(windows)]
++    tracing::warn!(target: "aster.input_diagnostic", event_count = coalesced.len(), paste_bytes = coalesced.iter().map(|event| match &event.event { Event::Paste(text) => text.len(), _ => 0 }).sum::<usize>(), "input_batch_ready");
+     let mut handled: u32 = 0;
+     let suspend_armed_after_event = std::cell::Cell::new(false);
+     let mut handle_one = |routed: &RoutedInputEvent| -> bool {
+@@ -3445,6 +3447,10 @@ async fn drain_and_process(
+     };
+     for routed in &coalesced {
+         handled = handled.saturating_add(1);
++        #[cfg(windows)]
++        if handled == 1 || handled.is_multiple_of(1_000) {
++            tracing::warn!(target: "aster.input_diagnostic", event_index = handled, event_count = coalesced.len(), "input_event_start");
++        }
+         if handle_one(routed) {
+             return DrainResult {
+                 needs_draw,
+@@ -3454,6 +3460,10 @@ async fn drain_and_process(
+                 handled,
+             };
+         }
++        #[cfg(windows)]
++        if handled == 1 || handled.is_multiple_of(1_000) {
++            tracing::warn!(target: "aster.input_diagnostic", event_index = handled, event_count = coalesced.len(), "input_event_end");
++        }
+         if suspend_armed_after_event.get() {
+             break;
+         }

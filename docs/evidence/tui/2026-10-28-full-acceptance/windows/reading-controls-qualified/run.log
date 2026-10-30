@@ -1,0 +1,14 @@
+
+running 1 test
+ORACLE case=reading-navigation name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=reading-navigation name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=28016
+ORACLE case=reading-navigation name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=14614
+ORACLE case=reading-navigation name=find-positions result=pass detail=all three independently placed tool-output matches become visible in order, reverse order and wraparound
+ORACLE case=reading-navigation name=jump-first result=pass detail=selecting the first actual turn moves the viewport to its prompt, away from the second turn
+ORACLE case=reading-navigation name=jump-cancel result=pass detail=previewing the other turn and cancelling restores the original first-turn viewport
+ORACLE case=reading-navigation name=vim-and-resize result=pass detail=Vim top/bottom navigation changes actual transcript positions and remains reachable across three PTY sizes
+ORACLE case=reading-navigation name=quit result=pass detail=exit 0
+test reading_controls::kimi_find_match_positions_jump_cancel_and_vim_navigation ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 28 filtered out; finished in 36.10s
+

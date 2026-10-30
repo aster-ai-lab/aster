@@ -1,0 +1,29 @@
+{
+  "unix": 1792929638.8944325,
+  "phase": "observed",
+  "original_bytes": 434952,
+  "control_bytes": 434952,
+  "changed_sections": [
+    {
+      "section": ".strtab",
+      "original": {
+        "bytes": 34775,
+        "sha256": "c22db2df13d41742f19aef52d87d492b9f9ddbedf3751f4576d3a71ee75ffe23"
+      },
+      "control": {
+        "bytes": 34775,
+        "sha256": "6e631b2b1c8c43c712f4f65491946470b2ff9b6b54320aefcabb5b291204e85c"
+      },
+      "original_only_strings": [
+        "tmpxft_000118cd_00000000-6_ggml-cuda.cudafe1.cpp"
+      ],
+      "control_only_strings": [
+        "tmpxft_0000182b_00000000-6_ggml-cuda.cudafe1.cpp"
+      ]
+    }
+  ],
+  "total_sections_original": 215,
+  "total_sections_control": 215,
+  "new_GPU_work": false,
+  "byte_identity_gate_weakened": false
+}

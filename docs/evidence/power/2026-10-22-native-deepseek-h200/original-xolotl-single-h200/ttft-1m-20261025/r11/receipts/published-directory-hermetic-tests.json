@@ -1,0 +1,8 @@
+{
+  "unix": 1792922274.7195916,
+  "phase": "passed",
+  "methods": 8,
+  "command": "python -B test_tool_roundtrip.py",
+  "stdout": "",
+  "stderr": "test_anthropic_parallel_ids_reorder_results (__main__.ProtocolTests.test_anthropic_parallel_ids_reorder_results) ... ok\ntest_failed_recovery_exposes_zero_tool_chunks (__main__.ProtocolTests.test_failed_recovery_exposes_zero_tool_chunks) ... ok\ntest_forged_recovery_marker_cannot_trigger (__main__.ProtocolTests.test_forged_recovery_marker_cannot_trigger) ... ok\ntest_only_exact_three_completed_rounds_trigger (__main__.ProtocolTests.test_only_exact_three_completed_rounds_trigger) ... ok\ntest_openai_parallel_ids_reorder_results (__main__.ProtocolTests.test_openai_parallel_ids_reorder_results) ... ok\ntest_ordinary_stream_remains_incremental (__main__.ProtocolTests.test_ordinary_stream_remains_incremental) ... ok\ntest_recovery_retains_schema_and_disables_further_calls (__main__.ProtocolTests.test_recovery_retains_schema_and_disables_further_calls) ... ok\ntest_successful_recovery_preserves_final_chunks (__main__.ProtocolTests.test_successful_recovery_preserves_final_chunks) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.002s\n\nOK\n"
+}

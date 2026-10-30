@@ -1,0 +1,72 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling windows-sys v0.61.2
+   Compiling windows-sys v0.60.2
+   Compiling windows-core v0.61.2
+   Compiling windows-collections v0.2.0
+   Compiling windows-future v0.2.1
+   Compiling windows-numerics v0.2.0
+   Compiling windows v0.61.3
+   Compiling socket2 v0.6.4
+   Compiling mio v1.2.1
+   Compiling tokio v1.53.3
+   Compiling a3s-tty-utils v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-tty-utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.16s
+     Running unittests src\lib.rs (target\debug\deps\a3s_tty_utils-d8bac5a68345c233.exe)
+
+running 39 tests
+test bundled_git::tests::absent_payload_is_none ... ok
+test bundled_git::tests::arm64_payload_helper_dir_is_clangarm64 ... ok
+test bundled_git::tests::bundled_git_at_reports_one_version_dir ... ok
+test bundled_git::tests::complete_older_payload_beats_launcher_only_newer_one ... ok
+test bundled_git::tests::dll_dir_is_the_helper_trees_bin ... ok
+test bundled_git::tests::explicit_only_never_resurrects_the_process_path ... ok
+test bundled_git::tests::helper_dir_is_where_git_upload_pack_lives ... ok
+test bundled_git::tests::hidden_entries_are_not_versions ... ok
+test bundled_git::tests::picks_the_highest_complete_version ... ok
+test bundled_git::tests::prepend_honors_explicit_path_and_removal ... ok
+test bundled_git::tests::usable_older_payload_beats_newer_one_with_helpers_but_no_dlls ... ok
+test bundled_git::tests::version_key_is_numeric_not_lexical ... ok
+test child_wait::tests::huge_timeout_is_capped_to_the_poll_quantum ... ok
+test child_wait::tests::initial_and_later_poll_errors_return_without_cleanup_work ... ok
+test child_wait::tests::status_after_waits_stops_all_further_work ... ok
+test child_wait::tests::status_at_the_final_deadline_poll_wins ... ok
+test child_wait::tests::timeout_performs_one_final_poll ... ok
+test child_wait::tests::zero_timeout_has_two_boundary_polls_and_no_wait ... ok
+test process_resources::tests::a_running_process_reports_its_own_gauges ... ok
+test process_resources::tests::cpu_and_start_time_readers_report_this_process ... ok
+test process_resources::tests::the_memory_only_sample_leaves_open_files_unset ... ok
+test runtime::tests::apply_blocking_pool_builds_and_prewarms ... ok
+test runtime::tests::cap_clamps_many_core_hosts ... ok
+test runtime::tests::cap_is_identity_at_or_below_max ... ok
+test runtime::tests::capped_worker_threads_stays_in_bounds ... ok
+test runtime::tests::keep_alive_overflows_instant_add ... ok
+test runtime::tests::prewarm_times_out_and_releases_workers ... ok
+test tests::dup_tui_stderr_without_redirect_returns_writable_file ... ok
+test tests::git_command_locking_matches_reader_except_optional_locks_flag ... ok
+test tests::is_wsl_detects_wsl1_osrelease ... ok
+test tests::is_wsl_detects_wsl2_osrelease ... ok
+test tests::is_wsl_detects_wsl_distro_name ... ok
+test tests::is_wsl_detects_wsl_interop ... ok
+test tests::is_wsl_env_var_match_is_exact_key_not_substring ... ok
+test tests::is_wsl_osrelease_match_is_case_insensitive ... ok
+test tests::is_wsl_rejects_native_linux ... ok
+test tests::is_wsl_rejects_when_osrelease_missing ... ok
+test tests::pager_env_has_expected_keys ... ok
+test tests::process_group_kill_terminates_attached_child ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s
+
+   Doc-tests a3s_tty_utils
+
+running 2 tests
+test crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs - (line 15) - compile ... ok
+test crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs - (line 28) - compile ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+all doctests ran in 2.06s; merged doctests compilation took 1.70s

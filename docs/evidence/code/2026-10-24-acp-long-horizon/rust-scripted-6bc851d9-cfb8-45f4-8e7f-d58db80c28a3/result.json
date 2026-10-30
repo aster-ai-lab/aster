@@ -1,0 +1,420 @@
+{
+  "child_cleanup": {
+    "Ok": null
+  },
+  "metadata": {
+    "acp_sha256": "bded198cf581bd7b29dd7083f3872823756979c750167341b0dcfb2943b9b15c",
+    "aster_sha256": "32f66f4441aae9334d947de4cb9a9bdd4622a897fe2d0ac769d486cca57cbe93",
+    "baseline": {
+      "changelog_present": false,
+      "checker_unchanged": true,
+      "compile_ok": true,
+      "correct": false,
+      "current_files": {
+        "README.md": "3c388843bdb75ece01b932a9fe3d5d67941400c4e83e0e0fe7a487852ebb5841",
+        "calc.rs": "d21293649a44776c9c6fab0fa38a2610156ad14aad5bafa0ed197e6adc9a6b32",
+        "display.rs": "93c46091b76e6d83c555f8774d35609a4821563d659e19f9b8c849c055aded29",
+        "input.rs": "b24c2ca9ef409ec80ebae1b3087b32c4a966f75cd42982f37ad8aaee30268149",
+        "lib.rs": "31b48cb8a30adeeb847205a6a8094ae415fdac446684a8fd26f01f8fef359058",
+        "notes.txt": "40f640c939db9133652e3b0440c9fd974c7f9cbcef4240c008baa4344b2c2863"
+      },
+      "diagnostic": "A3S_ORACLE_COMPILE_OK\n\nrunning 4 tests\ntest fixture::tests::formats_cents ... FAILED\ntest fixture::tests::quantity_rejects_zero ... FAILED\ntest fixture::tests::rounds_half_up ... FAILED\ntest independent_contract ... FAILED\n\nfailures:\n\n---- fixture::tests::formats_cents stdout ----\n\nthread 'fixture::tests::formats_cents' (13) panicked at /workspace/lib.rs:8:34:\nassertion `left == right` failed\n  left: \"1.9\"\n right: \"1.09\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- fixture::tests::quantity_rejects_zero stdout ----\n\nthread 'fixture::tests::quantity_rejects_zero' (14) panicked at /workspace/lib.rs:6:42:\nassertion `left == right` failed\n  left: Ok(0)\n right: Err(\"invalid quantity\")\n\n---- fixture::tests::rounds_half_up stdout ----\n\nthread 'fixture::tests::rounds_half_up' (15) panicked at /workspace/lib.rs:7:35:\nassertion `left == right` failed\n  left: Ok(5)\n right: Ok(6)\n\n---- independent_contract stdout ----\n\nthread 'independent_contract' (16) panicked at acceptance.rs:4:68:\nassertion `left == right` failed\n  left: Ok(0)\n right: Err(\"invalid quantity\")\n\n\nfailures:\n    fixture::tests::formats_cents\n    fixture::tests::quantity_rejects_zero\n    fixture::tests::rounds_half_up\n    independent_contract\n\ntest result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "protected_unchanged": true,
+      "tests_ok": false
+    },
+    "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+    "frozen_pair_directory": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/target/qualification/rust-scripted-6bc851d9-cfb8-45f4-8e7f-d58db80c28a3",
+    "identity_unchanged": true,
+    "initial_exit_code_bound": true,
+    "relay": {
+      "listener_closed": true,
+      "protected_response_failures": 0,
+      "rejected": 0,
+      "rejection_reasons": {},
+      "requests": [
+        {
+          "message_bytes": 5750,
+          "messages": 2,
+          "role_bytes": {
+            "system": 3224,
+            "user": 2523
+          },
+          "sequence": 1,
+          "serialized_request_bytes": 5805,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "4096": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "65536": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d"
+          },
+          "system_sha256": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+          "tool_schema_bytes": 0,
+          "tools": 0,
+          "tools_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "message_bytes": 6262,
+          "messages": 4,
+          "role_bytes": {
+            "assistant": 70,
+            "system": 3224,
+            "user": 2963
+          },
+          "sequence": 2,
+          "serialized_request_bytes": 6317,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "4096": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "65536": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d"
+          },
+          "system_sha256": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+          "tool_schema_bytes": 0,
+          "tools": 0,
+          "tools_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "message_bytes": 6774,
+          "messages": 6,
+          "role_bytes": {
+            "assistant": 140,
+            "system": 3224,
+            "user": 3403
+          },
+          "sequence": 3,
+          "serialized_request_bytes": 6829,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "4096": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+            "65536": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d"
+          },
+          "system_sha256": "2762f0c7075ee1c16269c3efc2b4a971ddd8eff84deeaf90603520e2607f6d2d",
+          "tool_schema_bytes": 0,
+          "tools": 0,
+          "tools_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "message_bytes": 23110,
+          "messages": 2,
+          "role_bytes": {
+            "system": 22840,
+            "user": 267
+          },
+          "sequence": 4,
+          "serialized_request_bytes": 65989,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2"
+          },
+          "system_sha256": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        },
+        {
+          "message_bytes": 24292,
+          "messages": 4,
+          "role_bytes": {
+            "assistant": 207,
+            "system": 22840,
+            "tool": 973,
+            "user": 267
+          },
+          "sequence": 5,
+          "serialized_request_bytes": 67171,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2"
+          },
+          "system_sha256": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        },
+        {
+          "message_bytes": 26823,
+          "messages": 6,
+          "role_bytes": {
+            "assistant": 501,
+            "system": 23987,
+            "tool": 2061,
+            "user": 267
+          },
+          "sequence": 6,
+          "serialized_request_bytes": 69702,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "f0684654d9133417e5994a76c45181e5d77753fc7bc97e182687b9ac3289e2da"
+          },
+          "system_sha256": "f0684654d9133417e5994a76c45181e5d77753fc7bc97e182687b9ac3289e2da",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        },
+        {
+          "message_bytes": 29384,
+          "messages": 14,
+          "role_bytes": {
+            "assistant": 1935,
+            "system": 24034,
+            "tool": 3133,
+            "user": 267
+          },
+          "sequence": 7,
+          "serialized_request_bytes": 72263,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "024399c2eaada50be7bfb3219acaaa6c8725e1a0c282756268392631659b8d22"
+          },
+          "system_sha256": "024399c2eaada50be7bfb3219acaaa6c8725e1a0c282756268392631659b8d22",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        },
+        {
+          "message_bytes": 30088,
+          "messages": 16,
+          "role_bytes": {
+            "assistant": 2243,
+            "system": 24034,
+            "tool": 3527,
+            "user": 267
+          },
+          "sequence": 8,
+          "serialized_request_bytes": 72967,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "1666b2a7d726b6ffb38573ac5f4628b8fc11e3ba49aa00d7403bb8abe8772d90"
+          },
+          "system_sha256": "1666b2a7d726b6ffb38573ac5f4628b8fc11e3ba49aa00d7403bb8abe8772d90",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        },
+        {
+          "message_bytes": 29576,
+          "messages": 18,
+          "role_bytes": {
+            "assistant": 2537,
+            "system": 22840,
+            "tool": 3913,
+            "user": 267
+          },
+          "sequence": 9,
+          "serialized_request_bytes": 72455,
+          "shape_complete": true,
+          "system_prefix_sha256": {
+            "16384": "679b3fdaf6d7bedc432bc00679c501b1f8fee0ecbd8e3e6a99af128ec137c44e",
+            "4096": "d0d7ac975b100b2744e17410d585032410a5f85a658f44568f316284afa2be8c",
+            "65536": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2"
+          },
+          "system_sha256": "4d7dd8a7ac098d5fcc543cbd16fbdb4a327d58a3379867b45be5875ee4b07fd2",
+          "tool_schema_bytes": 42761,
+          "tools": 24,
+          "tools_sha256": "05d4ed354796f4c0647d0dc927a7285d2a1fac4d2d0e1b535316f28c13fbb1f6"
+        }
+      ],
+      "response_bytes": 3989,
+      "responses": {
+        "1": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "2": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "3": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "4": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "5": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "6": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "7": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "8": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        },
+        "9": {
+          "http_status": 200,
+          "state": "present",
+          "usage": {
+            "cache_miss_tokens": null,
+            "cache_read_tokens": null,
+            "completion_tokens": 1,
+            "prompt_tokens": 1,
+            "reasoning_tokens": null,
+            "total_tokens": 2
+          }
+        }
+      },
+      "statuses": {
+        "200": 9
+      },
+      "transport_failures": 0,
+      "upstream_calls": 9
+    },
+    "repair_mode": "four independent write calls in one completion; no fixed per-module repair order",
+    "runtime_after": {
+      "bytes": 1036857921,
+      "entries": 7269,
+      "sha256": "db85f2c179d2dc383b29a26d2a6f4738f7d25f6d93387a13f6a43ade465cc902"
+    },
+    "runtime_before": {
+      "bytes": 1036857921,
+      "entries": 7269,
+      "sha256": "db85f2c179d2dc383b29a26d2a6f4738f7d25f6d93387a13f6a43ade465cc902"
+    },
+    "scope": "LH01 H1 controlled model; no real LLM qualification",
+    "scripted": {
+      "auxiliary_requests": 3,
+      "initial_exit_code": 1,
+      "main_steps": 6,
+      "repair_masked_check": true,
+      "requests": 9,
+      "saw_exact_contract_advice": true,
+      "saw_initial_exit_code": true
+    },
+    "usage_bound": true,
+    "usage_fixture": "each actual controlled generation reports 1 input and 1 output; includes auxiliary requests; not a tokenizer or real cost measurement"
+  },
+  "oracle": {
+    "Ok": {
+      "changelog_present": true,
+      "checker_unchanged": true,
+      "compile_ok": true,
+      "correct": true,
+      "current_files": {
+        "CHANGELOG.md": "bc2f51991a0d2feb6defa07d17d0d4f42df98208b1243e61f2c4136ad91a672f",
+        "README.md": "3c388843bdb75ece01b932a9fe3d5d67941400c4e83e0e0fe7a487852ebb5841",
+        "calc.rs": "518319670f8e268636ffd56c3baa555bc5a831e8ec02b6b8bc78c7c82b0cd838",
+        "display.rs": "29804d05b0c2289c541b8fef029972e729330b1c959d92715d151ff8e5ceb4a5",
+        "input.rs": "d8b5f94f15a112b3482b5927ebbfd969537135802afbb7b5baa2e8a00ee543f2",
+        "lib.rs": "31b48cb8a30adeeb847205a6a8094ae415fdac446684a8fd26f01f8fef359058",
+        "notes.txt": "40f640c939db9133652e3b0440c9fd974c7f9cbcef4240c008baa4344b2c2863"
+      },
+      "diagnostic": "A3S_ORACLE_COMPILE_OK\n\nrunning 4 tests\ntest fixture::tests::formats_cents ... ok\ntest fixture::tests::quantity_rejects_zero ... ok\ntest fixture::tests::rounds_half_up ... ok\ntest independent_contract ... ok\n\ntest result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "protected_unchanged": true,
+      "tests_ok": true
+    }
+  },
+  "oracle_execution": "independent quiescent snapshot in qualified Linux VM after ACP reaped; never execute model code on host",
+  "overflow": false,
+  "pass": true,
+  "permission_requests": 7,
+  "prompt_ms": 25266,
+  "prompt_result": {
+    "Ok": "Repaired input.rs, calc.rs and display.rs, added CHANGELOG.md, and ran the exact local check successfully. Protected files were preserved."
+  },
+  "rpc_errors": [],
+  "tool_calls": 8,
+  "tools_terminal": true,
+  "wire_checks": {
+    "bound_verified_outcome": true,
+    "exact_checks": [
+      {
+        "event": 10,
+        "exit_code": 1,
+        "output": "\nrunning 3 tests\ntest tests::formats_cents ... FAILED\ntest tests::quantity_rejects_zero ... FAILED\ntest tests::rounds_half_up ... FAILED\n\nfailures:\n\n---- tests::formats_cents stdout ----\n\nthread 'tests::formats_cents' (14) panicked at lib.rs:8:34:\nassertion `left == right` failed\n  left: \"1.9\"\n right: \"1.09\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- tests::quantity_rejects_zero stdout ----\n\nthread 'tests::quantity_rejects_zero' (15) panicked at lib.rs:6:42:\nassertion `left == right` failed\n  left: Ok(0)\n right: Err(\"invalid quantity\")\n\n---- tests::rounds_half_up stdout ----\n\nthread 'tests::rounds_half_up' (16) panicked at lib.rs:7:35:\nassertion `left == right` failed\n  left: Ok(5)\n right: Ok(6)\n\n\nfailures:\n    tests::formats_cents\n    tests::quantity_rejects_zero\n    tests::rounds_half_up\n\ntest result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+        "status": "failed"
+      },
+      {
+        "event": 31,
+        "exit_code": 0,
+        "output": "\nrunning 3 tests\ntest tests::formats_cents ... ok\ntest tests::quantity_rejects_zero ... ok\ntest tests::rounds_half_up ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+        "status": "completed"
+      }
+    ],
+    "final_passing_check": true,
+    "initial_failed_check": true
+  },
+  "workflow_pass": true
+}

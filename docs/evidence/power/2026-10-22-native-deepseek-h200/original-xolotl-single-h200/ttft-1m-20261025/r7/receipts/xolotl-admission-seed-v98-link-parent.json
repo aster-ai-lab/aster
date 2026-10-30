@@ -1,0 +1,78 @@
+{
+  "link_cwd": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build",
+  "control_link": [
+    "/usr/bin/c++",
+    "-O3",
+    "-DNDEBUG",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_cuda_policy.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_pipeline.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_conversation.cpp.o",
+    "CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_dspark.cpp.o",
+    "-o",
+    "ds41_generate",
+    "-L/usr/local/cuda/targets/x86_64-linux/lib",
+    "-Wl,-rpath,/usr/local/cuda-12.6/targets/x86_64-linux/lib",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/libds41_dense.a",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_moe.cpp.o",
+    "libds41_moe_cuda.a",
+    "libds41_conv_pool.a",
+    "ggml/src/libggml.a",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/lightning-indexer.cu.o",
+    "ggml/src/ggml-cuda/libggml-cuda.a",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublas.so",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libculibos.a",
+    "/usr/lib/x86_64-linux-gnu/libnccl.so",
+    "libds41_transcode.a",
+    "libstrata_engine.a",
+    "libstrata_kernels.a",
+    "libstrata_core.a",
+    "libstrata_kernels_cpu.a",
+    "ggml/src/libggml-cpu.a",
+    "libstrata_mmq.a",
+    "/usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so",
+    "libstrata_mmq_w4a4.a",
+    "ggml/src/libggml-base.a",
+    "-lm",
+    "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcudart.so",
+    "-ldl",
+    "/usr/lib/x86_64-linux-gnu/librt.a",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-lrt",
+    "-lpthread",
+    "-ldl"
+  ],
+  "control_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "original_host_object": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp.o",
+  "candidate_host_object": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+  "cpu_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49",
+  "inputs": [
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp.o",
+      "bytes": 527888,
+      "sha256": "5b0ec921f27513053f5b5ab38d7aa056bd5cfebebf1fe4198182191a4e8dc771"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/ds41_generate",
+      "bytes": 253077656,
+      "sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/libds41_dense.a",
+      "bytes": 777218,
+      "sha256": "5209a3cf0a35bb3b44cc99e239bb1e72a6f9beab00f9f7debda4c38c7fde9724"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/lightning-indexer.cu.o",
+      "bytes": 2559016,
+      "sha256": "230d706e6e3111786b97fb5e1c408418b3116d512f8fbf142df6029fd6f54349"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+      "bytes": 529632,
+      "sha256": "aac14c316ecaccbb3294de23927bcbc713264fa1263c99e037b82db6b5bc1a3b"
+    }
+  ]
+}

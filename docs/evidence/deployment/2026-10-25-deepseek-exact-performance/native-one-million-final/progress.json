@@ -1,0 +1,35 @@
+{
+  "at_epoch": 1792926162.2794163,
+  "stage": "complete",
+  "ttft_seconds": 4018.8915183490026,
+  "first_content_seconds": 4022.3777315859916,
+  "success": true,
+  "full_one_million_completed": true,
+  "retrieval_passed": true,
+  "content": "EARLY=violet-7391-copper;MIDDLE=silver-4826-orchid;LATE=amber-9153-lantern",
+  "usage": {
+    "prompt_tokens": 1000123,
+    "completion_tokens": 98,
+    "total_tokens": 1000221,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 1000123,
+    "prompt_ms": 4015662.0,
+    "prompt_per_token_ms": 4.015,
+    "prompt_per_second": 249.1,
+    "predicted_n": 98,
+    "predicted_ms": 5201.4,
+    "predicted_per_token_ms": 53.076,
+    "predicted_per_second": 18.8,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "wall_seconds": 4024.211153202981,
+  "events": 98,
+  "finish_reason": "stop",
+  "fixture_sha256": "539aadd60c25d9abfbfc4defab2a3c658b9abc9e78cd45355b3b0930bdd12489"
+}

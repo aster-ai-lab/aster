@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-10-29T06:50:48.5703824+08:00",
+  "case": "long-unicode-paste",
+  "source_pair": "fb465994a5277337843bd4580b6d153eccd61f8a",
+  "platform": "windows",
+  "status": "external-input-stall-deadline",
+  "started_at": "2026-10-29T06:46:24.0055546+08:00",
+  "elapsed_seconds": 264.5697733,
+  "cpu_seconds": 131.390625,
+  "user_cpu_seconds": 130.65625,
+  "kernel_cpu_seconds": 0.734375,
+  "app_pid": 17024,
+  "parent_test_pid": 16904,
+  "workspace": "C:\\Windows\\Temp\\aster-kimi-IWRqh3\\workspace",
+  "action": "terminate the verified test-owned TUI tree after over 180 seconds without a settled long-paste turn; preserve failure and diagnose harness versus product"
+}

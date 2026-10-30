@@ -1,0 +1,267 @@
+{
+  "run_id": "a3s-test-92012-1",
+  "suite": "aster-documentation-mobile",
+  "status": "failed",
+  "scenarios": [
+    {
+      "id": "mobile-directory-and-diagram",
+      "name": "Mobile project directory, SVG scrolling and adjacent-page navigation",
+      "surface": "web",
+      "status": "failed",
+      "duration_ms": 4339,
+      "steps": [
+        {
+          "id": "mobile",
+          "status": "passed",
+          "duration_ms": 603,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 844,
+                "mobile": false,
+                "width": 390
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "project",
+          "status": "passed",
+          "duration_ms": 240,
+          "attempts": 1,
+          "output": {
+            "summary": "page opened",
+            "data": {
+              "data": {
+                "title": "理解 Aster 的 Harness · Aster 文档",
+                "url": "http://127.0.0.1:4192/docs/code/"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-closed",
+          "status": "passed",
+          "duration_ms": 188,
+          "attempts": 1,
+          "output": {
+            "summary": "target collapsed state matched",
+            "data": {
+              "actual": false,
+              "expected": false,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "open-directory",
+          "status": "passed",
+          "duration_ms": 379,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation > summary"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-open",
+          "status": "passed",
+          "duration_ms": 189,
+          "attempts": 1,
+          "output": {
+            "summary": "target expanded state matched",
+            "data": {
+              "actual": true,
+              "expected": true,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow",
+          "status": "passed",
+          "duration_ms": 395,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation a[href='../code/workflow/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-heading",
+          "status": "passed",
+          "duration_ms": 188,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "一个任务如何运行",
+              "expected": "一个任务如何运行",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "new-page-directory-closed",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target collapsed state matched",
+            "data": {
+              "actual": false,
+              "expected": false,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "scrollable-diagram",
+          "status": "passed",
+          "duration_ms": 192,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "read-diagram",
+          "status": "passed",
+          "duration_ms": 573,
+          "attempts": 1,
+          "output": {
+            "summary": "mouse wheel dispatched",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "result": {
+                  "accepted": true,
+                  "tagName": "rect"
+                }
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-mobile",
+          "status": "passed",
+          "duration_ms": 206,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": ".a3s-test/runs/a3s-test-92012-1/mobile-directory-and-diagram/screenshots/workflow-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/workflow-mobile.png",
+                "path": ".a3s-test/runs/a3s-test-92012-1/mobile-directory-and-diagram/screenshots/workflow-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "next-comparison",
+          "status": "passed",
+          "duration_ms": 387,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../code/comparison/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "comparison-heading",
+          "status": "failed",
+          "duration_ms": 187,
+          "attempts": 1,
+          "output": null,
+          "error": {
+            "code": "test.assert.rendered_text",
+            "message": "expected rendered text \"与其他 Harness 的区别\", received \"一个任务如何运行\""
+          }
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    }
+  ]
+}

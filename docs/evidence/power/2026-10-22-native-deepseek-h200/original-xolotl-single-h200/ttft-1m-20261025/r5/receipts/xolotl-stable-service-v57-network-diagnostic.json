@@ -1,0 +1,40 @@
+{
+  "unix": 1792876920.6946487,
+  "service_exit": 0,
+  "service": {
+    "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+    "spec": {
+      "allocateLoadBalancerNodePorts": false,
+      "clusterIP": "10.68.85.120",
+      "clusterIPs": [
+        "10.68.85.120"
+      ],
+      "externalTrafficPolicy": "Cluster",
+      "internalTrafficPolicy": "Cluster",
+      "ipFamilies": [
+        "IPv4"
+      ],
+      "ipFamilyPolicy": "SingleStack",
+      "ports": [
+        {
+          "appProtocol": "http",
+          "name": "openai-http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": 30003
+        }
+      ],
+      "selector": {
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc6-43da44c9b0a4-57982995"
+      },
+      "sessionAffinity": "None",
+      "type": "LoadBalancer"
+    }
+  },
+  "http://100.101.194.241:30003/health": {
+    "error": "URLError: <urlopen error timed out>"
+  },
+  "http://10.102.93.68/health": {
+    "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+  }
+}

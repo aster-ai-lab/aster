@@ -417,6 +417,8 @@ impl TokenBudgetBody {
                 &attribution,
                 usage.resolved_total().unwrap_or(0),
                 self.status,
+                usage.prompt,
+                usage.completion,
             );
         }
         self.observed_tokens = None;

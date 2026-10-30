@@ -1,0 +1,50 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs:1:
+ #![cfg(test)]
+ 
+ use super::{driver::LiveTui, questions_and_forms::named_tool_output};
+[31m-use serde_json::{Value, json};
+(B[m[32m+use serde_json::{json, Value};
+(B[m use std::collections::BTreeSet;
+ use std::time::{Duration, Instant};
+ 
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs:389:
+     let facts = tui.settle_turn(before, prompt, None);
+     let result = named_tool_output(&facts, "ask_user_form");
+     assert_eq!(result["is_error"], true);
+[31m-    assert!(
+(B[m[31m-        !result["text"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .contains("DEFAULT-NOT-SUBMITTED")
+(B[m[31m-    );
+(B[m[32m+    assert!(!result["text"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .contains("DEFAULT-NOT-SUBMITTED"));
+(B[m     assert_eq!(std::fs::read(&path).unwrap(), source);
+     tui.record("form-cancel-no-default-values", "the actual cancelled tool returns an error, never returns the prefilled default as accepted values, and preserves the form source bytes");
+     let facts = tui.turn(
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs:523:
+     tui.launch(&["--yolo", "--deny", "Write(*)"]);
+     tui.wait_for("Aster", 45);
+     let facts = tui.turn("Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other tools. Report the actual result.", None);
+[31m-    assert!(
+(B[m[31m-        facts
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|f| f["type"] == "tool.prepared"
+(B[m[31m-                && f["payload"]["prepared"]["tool_name"] == "write")
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        facts
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|f| f["type"] == "tool.result" && f["payload"]["receipt"]["outcome"] == "denied")
+(B[m[31m-    );
+(B[m[32m+    assert!(facts
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|f| f["type"] == "tool.prepared" && f["payload"]["prepared"]["tool_name"] == "write"));
+(B[m[32m+    assert!(facts
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|f| f["type"] == "tool.result" && f["payload"]["receipt"]["outcome"] == "denied"));
+(B[m     assert_eq!(std::fs::read(&file).unwrap(), token.as_bytes());
+     tui.record(
+         "explicit-deny",

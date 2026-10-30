@@ -1,0 +1,23 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+.warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+..warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+...
+----------------------------------------------------------------------
+Ran 6 tests in 2.176s
+
+OK

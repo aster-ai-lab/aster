@@ -1,0 +1,161 @@
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -39,6 +39,7 @@
+ //
+ // Load the real model only through tools/ds4/memguard.sh (RAM cap + the shared GPU lock).
+ #include "ds41_conversation.hpp"
++#include "aster_prefill_policy.hpp"
+ #include "ds41_cuda_policy.hpp"
+ #include "ds41_dense.hpp"
+ #include "ds41_exec.hpp"
+@@ -394,6 +395,10 @@
+ }  // namespace
+ 
+ int main(int argc, char ** argv) {
++    bool prefill_qos = false;
++    if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_QOS"), prefill_qos)) {
++        std::fprintf(stderr, "ASTER_XQ_PREFILL_QOS must be 0 or 1\n"); return 2;
++    }
+     if (!std::getenv("DS41_GGML_DEBUG"))
+         ggml_log_set([](ggml_log_level lv, const char * text, void *) { if (lv != GGML_LOG_LEVEL_DEBUG) std::fputs(text, stderr); }, nullptr);
+     Args a;
+@@ -1220,8 +1225,30 @@
+         if (!head_logits(dense_row0 + (lo - row0), hi - lo, tail_logits.data() + (size_t) (lo - t0) * nv)) return false;
+         return true;
+     };
++    int bcap_have[3] = {0, 0, 0};
+     int bcap_n = 0, bcap_got = 0;  // serve DSpark seed captured from a layer-major batch (see the layer loop below)
+     std::vector<float> bcap_vh;    // [bcap_n][3 * n_embd], as pass_v's vh
++    // Capture the complete last seed window across batch boundaries, including the
++    // sequential one-token remainder. All three hidden taps must cover every row.
++    auto capture_seed = [&](Ds41Dense & current, int layer, int total, int begin, int width) -> bool {
++        if (bcap_n <= 0) return true;
++        int j = 0; while (j < 3 && layer != dm_layers[j]) ++j;
++        if (j == 3) return true;
++        const auto slice = aster_prefill::tail_slice(total, bcap_n, begin, width);
++        if (slice.count == 0) return true;
++        if (!current.read_state_cols(slice.column, slice.count, vx)) { ferr = current.last_error(); return false; }
++        const size_t HC = vx.size() / ((size_t) slice.count * n_embd);
++        for (int t = 0; t < slice.count; ++t) {
++            float * dst = bcap_vh.data() + (size_t) (slice.destination + t) * 3 * n_embd + (size_t) j * n_embd;
++            for (size_t h = 0; h < HC; ++h) {
++                const float * xs = vx.data() + ((size_t) t * HC + h) * n_embd;
++                for (int64_t d = 0; d < n_embd; ++d) dst[d] += xs[d] / (float) HC;
++            }
++        }
++        bcap_have[j] += slice.count;
++        bcap_got = std::min({bcap_have[0], bcap_have[1], bcap_have[2]});
++        return true;
++    };
+     // the layer-major batch width for THIS turn: PB, clamped per request by the VRAM actually free (the --serve loop
+     // sets it; a one-shot run keeps PB)
+     int pb_cap = PB;
+@@ -1260,6 +1287,13 @@
+             if (PB > 1 && n - c0 >= 2) {
+                 // ---- layer-major: up to B tokens of every layer, the experts run once per layer over the whole batch
+                 int B = std::min(pb_cap, n - c0);
++                if (prefill_qos) B = aster_prefill::initial_width(B, c0, n);
++                // Poll control before allocating columns. A waiting short request
++                // needs only the exact replay floor, rather than another full batch.
++                if (feed_yield && c0 + B < n) {
++                    const int cap = prefill_qos ? aster_prefill::yield_width(B, c0, SB, enc_skip ? ER : 0) : B;
++                    if (feed_yield(c0, cap)) { B = cap; yield_here = true; }
++                }
+                 // The batch must FIT: its state columns (~0.31 MiB a column) and its graph (~0.17 MiB a column,
+                 // 8192 -> 1424 MiB) come out of whatever is left after everything else sharing the card (a
+                 // desktop's STT server, DSpark's 2.9 GB, the dense half).  A batch that does not fit is retried at
+@@ -1307,7 +1341,9 @@
+                 // enc-skip: columns whose global position is before `pos0 + n - ER` are phase A (layers past layer 20
+                 // are never read for them), rounded DOWN to a sub-batch boundary so a straddling sub-batch still runs
+                 // the full path (more work, never wrong); the last sub-batches holding the final token are always full.
+-                if (feed_yield && c0 + B < n) yield_here = feed_yield(c0, B);
++                // An allocation fallback below the replay floor cannot publish a
++                // partial prefix; finish the read and release the reservation normally.
++                if (yield_here && enc_skip && c0 > 0 && B < ER) yield_here = false;
+                 const int n_cut = yield_here ? c0 + B : n;   // (the read's end, as far as enc-skip is concerned)
+                 int cut = 0;
+                 if (enc_skip) {
+@@ -1315,6 +1351,9 @@
+                     const int64_t ta = (int64_t) pos0 + n_cut - ER - gpos;
+                     cut = ta <= 0 ? 0 : ta >= B ? B : (int) ta;
+                     cut = (cut / SB) * SB;
++                    // A complete first checkpoint can yield to a request that
++                    // arrived during this batch, without another replay batch.
++                    if (prefill_qos && c0 == 0 && n > 8192) cut = 0;
+                     if (!enc_reported) { enc_reported = true; std::fprintf(stderr, "enc-skip: first batch B=%d, cut=%d (phase A %d cols, phase B %d)\n", B, cut, cut, B - cut); }
+                 }
+                 double t0 = now_ms();
+@@ -1371,24 +1410,7 @@
+                         const int sn = std::min(SB, B - s);
+                         if (!cur_dense->finish_span(l, s, sn)) { ferr = cur_dense->last_error(); return false; }
+                     }
+-                    // serve DSpark seed (bcap_n > 0): the main_hidden rows of the batch's last bcap_n tokens - pass_v's
+-                    // HC-mean of the state leaving dm_layers[j] - read here, so the tail need not re-run as passes
+-                    if (bcap_n > 0 && c0 + B == n) {
+-                        for (int j = 0; j < 3; ++j) {
+-                            if (l != dm_layers[j]) continue;
+-                            const int cn = std::min(bcap_n, B);
+-                            bcap_got = cn;
+-                            if (!cur_dense->read_state_cols(B - cn, cn, vx)) { ferr = cur_dense->last_error(); return false; }
+-                            const size_t HC = vx.size() / ((size_t) cn * n_embd);
+-                            for (int t = 0; t < cn; ++t) {
+-                                float * dst = bcap_vh.data() + (size_t) (bcap_n - cn + t) * 3 * n_embd + (size_t) j * n_embd;
+-                                for (size_t h = 0; h < HC; ++h) {
+-                                    const float * xs = vx.data() + ((size_t) t * HC + h) * n_embd;
+-                                    for (int64_t d = 0; d < n_embd; ++d) dst[d] += xs[d] / (float) HC;
+-                                }
+-                            }
+-                        }
+-                    }
++                    if (!capture_seed(*cur_dense, l, n, c0, B)) return false;
+                 }
+                 fd_dense += now_ms() - t0;
+                 const double tl = now_ms();
+@@ -1409,6 +1431,8 @@
+                     std::fprintf(stderr, "vram trace: batch at %d (B %d) done: free %.2f GiB; %s\n", pos0 + c0, B,
+                                  tf / 1073741824.0, dense.vram_ledger().c_str());
+                 }
++                if (prefill_qos && c0 == 0 && n > 8192 && !yield_here && feed_yield && c0 + B < n)
++                    yield_here = feed_yield(c0, B);
+                 c0 += B;
+             } else {
+                 // ---- the sequential chunk path (unchanged): one pass of up to NP tokens through every layer
+@@ -1453,6 +1477,7 @@
+                     t0 = now_ms();
+                     fd_tier += t0 - t1;
+                     if (!cur_dense->finish(l, crouted.data())) { ferr = cur_dense->last_error(); return false; }
++                    if (!capture_seed(*cur_dense, l, n, c0, m)) return false;
+                 }
+                 fd_dense += now_ms() - t0;
+                 const double tl = now_ms();
+@@ -2418,8 +2443,11 @@
+             if (!by_step && defer_vram && cache_open && dh >= 2) {
+                 static const int keep_max = std::getenv("STRATA_SERVE_KEEP_MAX") ? std::atoi(std::getenv("STRATA_SERVE_KEEP_MAX")) : 4096;
+                 if (Ds41MoeTier::keep_cache_mode() && dh <= keep_max && !mc.cpu_only) {
+-                    const double need = (4.3 * 1073741824.0 + 0.95 * 1048576.0 * (double) std::min(dh, PB)) +
+-                                        a.vram_margin_gib * 1073741824.0;
++                    const double need = aster_prefill::reservation_bytes(std::min(dh, PB),
++                                        (double) dense.span_graph_bytes(total, SB), a.vram_margin_gib);
++                    if (!std::isfinite(need)) {
++                        std::printf("ERR prefill graph reservation is invalid\n"); std::fflush(stdout); continue;
++                    }
+                     std::string kerr;
+                     int64_t g = 0; bool shrink_ok = true;
+                     for (int st = 0; st < pipe.n_stages(); ++st) {
+@@ -2554,6 +2582,7 @@
+             const double tph0 = now_ms();
+             const double fd0[3] = { fd_dense, fd_tier, fd_logits };   // this request's batch split (stderr)
+             bcap_n = bcap; bcap_got = 0;
++            std::fill_n(bcap_have, 3, 0);
+             if (bcap > 0) bcap_vh.assign((size_t) bcap * 3 * n_embd, 0.0f);
+             auto feed_mixed = [&]() -> bool {   // the read's rows go into the windows, up to 16 - the decoding rows each
+                 Mix mx;
+@@ -2682,7 +2711,7 @@
+                             ferr = "DSpark step: " + dsp->last_error(); ok = false; break;
+                         }
+                     }
+-                    if (bcap_got < 1) { ferr = "DSpark batch seed captured nothing"; ok = false; }
++                    if (bcap_got != bcap) { ferr = "DSpark batch seed window is incomplete"; ok = false; }
+                 }
+                 for (int i0 = total - sp_tail; ok && bcap == 0 && i0 < total; i0 += 16) {
+                         if (stop_prefill()) { ok = false; break; }

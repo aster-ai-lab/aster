@@ -1,0 +1,19 @@
+{
+  "rustSnippets": 41,
+  "syntaxFailures": [],
+  "statementFragments": [
+    "target/web-handbook-rust/2.rs",
+    "target/web-handbook-rust/6.rs",
+    "target/web-handbook-rust/8.rs",
+    "target/web-handbook-rust/12.rs",
+    "target/web-handbook-rust/31.rs",
+    "target/web-handbook-rust/32.rs",
+    "target/web-handbook-rust/37.rs",
+    "target/web-handbook-rust/38.rs"
+  ],
+  "markdownTables": 14,
+  "jsonBlocks": 14,
+  "repositoryReferences": 106,
+  "missingReferences": [],
+  "scope": "rustfmt parsing, JSON parsing, local reference existence; no Rust type check or execution"
+}

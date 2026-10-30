@@ -1,0 +1,12 @@
+--- v52/serve_ds41.py
++++ v148/serve_ds41.py
+@@ -37,6 +37,9 @@
+ import dsv41_encoding as E  # noqa: E402
+ from serve import frontend as F  # noqa: E402
+ from serve import server as S  # noqa: E402
++
++from aster_literal_scan import install as _install_literal_scan
++_aster_literal_scan = _install_literal_scan(F, S)
+ 
+ # ---- tokenizer: the server builds ST.Tokenizer(tokens, merges, types); give it V4.1's pre-split
+ _Tok = ST.Tokenizer

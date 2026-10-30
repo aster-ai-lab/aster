@@ -1,0 +1,363 @@
+
+running 10 tests
+test kimi_tui_allow_once_writes_and_verifies_actual_workspace_bytes ... ORACLE case=allow-once name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=allow-once name=settled-turn result=pass detail=facts=23 model_turns=6 prompt_tokens=84626
+ORACLE case=allow-once name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=allow-once name=quit result=pass detail=exit 0
+ok
+test kimi_tui_durable_goal_controls_persist_real_facts ... ORACLE case=goal name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=goal name=goal-create result=pass detail=actual Core goal.created fact preserves the objective
+ORACLE case=goal name=/goal pause result=pass detail=a3s.goal.paused
+
+thread 'kimi_tui_durable_goal_controls_persist_real_facts' (9693) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:356:13:
+missing fact a3s.goal.resumed
+                                                                                                                        
+  /t/aster-kimi-76nIXG/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ /goal pause                                                                                           5:54 PM    
+                                                                                                                        
+                                                                                                                        
+     Worked for 0.2s                                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ i/goal resume                                                                                                  │  
+  │                                                                                                                  │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test kimi_tui_expands_actual_folded_tool_output ... ORACLE case=expand name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=expand name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=28243
+ORACLE case=expand name=expand-content result=pass detail=unseen last tool-output line appears only after /expand
+ORACLE case=expand name=quit result=pass detail=exit 0
+ok
+test kimi_tui_interrupts_a_running_tool_without_late_side_effects ... ORACLE case=interrupt name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+
+thread 'kimi_tui_interrupts_a_running_tool_without_late_side_effects' (11260) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:356:13:
+missing fact tool.prepared
+                                                                                                                        
+  /t/aster-kimi-OqTwMZ/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ /yolo                                                                                                          │  
+  │   iUse the bash tool to run sleep 6; printf LATE > late.txt. Do not run another command. This test will          │  
+  │   interrupt that operation.                                                                                      │  
+  │                                                                                                                  │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+FAILED
+test kimi_tui_multiturn_edits_and_runs_the_real_checker ... ORACLE case=coding name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+
+thread 'kimi_tui_multiturn_edits_and_runs_the_real_checker' (12532) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:251:9:
+timeout waiting for "Session ID"
+                                                                                                                        
+  /t/aster-kimi-6X8O2d/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ /yolo                                                                                                          │  
+  │   i/session-info                                                                                                 │  
+  │                                                                                                                  │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+FAILED
+test kimi_tui_native_form_validates_submits_and_cancels ... ORACLE case=form-submit name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=form-submit name=form-required result=pass detail=native required-field validation blocks empty submission
+ORACLE case=form-submit name=form-range result=pass detail=native numeric validation blocks amount 6
+ORACLE case=form-submit name=form-submit result=pass detail=actual ACP/Core tool receipt contains Ada, 4 and true
+
+thread 'kimi_tui_native_form_validates_submits_and_cancels' (13203) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:534:13:
+/quit did not exit
+FAILED
+test kimi_tui_offered_commands_have_observable_effects ... ORACLE case=surface name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=surface name=welcome-60x20 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=welcome-80x24 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=welcome-120x40 result=pass detail=visible Aster welcome after actual PTY resize
+ORACLE case=surface name=palette-settings result=pass detail=Open the settings modal
+ORACLE case=surface name=palette-config result=pass detail=Add and configure providers and models
+ORACLE case=surface name=palette-new result=pass detail=Start a new session
+ORACLE case=surface name=palette-effort result=pass detail=Set reasoning effort
+ORACLE case=surface name=palette-goal result=pass detail=durable goal
+ORACLE case=surface name=palette-compact result=pass detail=Compact conversation history
+ORACLE case=surface name=palette-model result=pass detail=Switch the active model
+ORACLE case=surface name=palette-context result=pass detail=View context usage
+ORACLE case=surface name=palette-jump result=pass detail=Jump to a turn
+ORACLE case=surface name=palette-edit-prompt result=pass detail=external editor
+ORACLE case=surface name=palette-session-info result=pass detail=Show session info
+ORACLE case=surface name=palette-export result=pass detail=Export the current conversation
+ORACLE case=surface name=palette-copy result=pass detail=Copy last response
+ORACLE case=surface name=palette-find result=pass detail=Search the conversation scrollback
+ORACLE case=surface name=palette-theme result=pass detail=Switch the color theme
+ORACLE case=surface name=palette-yolo result=pass detail=skip all permission prompts
+ORACLE case=surface name=palette-vim-mode result=pass detail=vim-style scrollback
+ORACLE case=surface name=palette-multiline result=pass detail=multiline input mode
+ORACLE case=surface name=palette-compact-mode result=pass detail=less padding, more content
+ORACLE case=surface name=palette-timestamps result=pass detail=message timestamps
+ORACLE case=surface name=palette-toggle-mouse-reporting result=pass detail=terminal mouse reporting
+ORACLE case=surface name=palette-minimal result=pass detail=scrollback-native
+ORACLE case=surface name=palette-timeline result=pass detail=timeline sidebar
+ORACLE case=surface name=palette-doctor result=pass detail=show available fixes
+ORACLE case=surface name=palette-home result=pass detail=welcome screen
+ORACLE case=surface name=palette-delete result=pass detail=Delete this session
+ORACLE case=surface name=palette-help result=pass detail=Browse commands and keyboard shortcuts
+ORACLE case=surface name=palette-quit result=pass detail=Quit the application
+ORACLE case=surface name=/doctor result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/goal status result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/compact result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/help result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/settings result=pass detail=actual command result; no model turn
+ORACLE case=surface name=/config result=pass detail=actual command result; no model turn
+ORACLE case=surface name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26776
+ORACLE case=surface name=live-transcript result=pass detail=unseen file content in actual Kimi reply
+ORACLE case=surface name=export result=pass detail=actual transcript file contains Kimi reply
+ORACLE case=surface name=copy result=pass detail=actual copied reply bytes
+ORACLE case=surface name=session-info result=pass detail=same persisted session after a live turn
+ORACLE case=surface name=context result=pass detail=actual context report after a live turn
+ORACLE case=surface name=find result=pass detail=search locates actual assistant transcript token
+ORACLE case=surface name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13534
+
+thread 'kimi_tui_offered_commands_have_observable_effects' (13886) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:251:9:
+timeout waiting for "Jump to which turn?"
+                                                                                                                        
+  /t/aster-kimi-KSrL2P/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ i/jump                                                                                                5:59 PM    
+                                                                                                                        
+                                                                                                                        
+  ┃  ◆ Thinking…                                                                                                        
+  ┃                                                                                                                     
+  ┃  I need interpret latest user "i/jump". Should likely context? User says read transcript exact                      
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+    ⠧ Thinking… 2.6s                                                                                9.7s ⇣13.5k [stop]  
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                 
+                                                                                                                        
+FAILED
+test kimi_tui_permission_reject_and_cancel_leave_no_side_effect ... ORACLE case=permission-reject name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+
+thread 'kimi_tui_permission_reject_and_cancel_leave_no_side_effect' (16921) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:251:9:
+timeout waiting for "Yes, proceed"
+                                                                                                                        
+  /t/aster-kimi-5mjcaG/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ iUse the write tool once to create side-effect.txt containing 'permission-test'. If the request is rejected or │  
+  │   cancelled, do not retry and do not use another tool; just report that it was not written.                      │  
+  │                                                                                                                  │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+FAILED
+test kimi_tui_reads_actual_workspace_bytes ... ORACLE case=read name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+ORACLE case=read name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26786
+ORACLE case=read name=live-read result=pass detail=actual read receipt and unseen file token in settled assistant reply
+
+thread 'kimi_tui_reads_actual_workspace_bytes' (22112) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:534:13:
+/quit did not exit
+FAILED
+test kimi_tui_writes_and_verifies_actual_workspace_bytes ... ORACLE case=write-verify name=source-pair result=pass detail=aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu
+
+thread 'kimi_tui_writes_and_verifies_actual_workspace_bytes' (22325) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:251:9:
+timeout waiting for "Session ID"
+                                                                                                                        
+  /t/aster-kimi-OdiTd2/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ /yolo                                                                                                          │  
+  │   i/session-info                                                                                                 │  
+  │                                                                                                                  │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+FAILED
+
+failures:
+
+failures:
+    kimi_tui_durable_goal_controls_persist_real_facts
+    kimi_tui_interrupts_a_running_tool_without_late_side_effects
+    kimi_tui_multiturn_edits_and_runs_the_real_checker
+    kimi_tui_native_form_validates_submits_and_cancels
+    kimi_tui_offered_commands_have_observable_effects
+    kimi_tui_permission_reject_and_cancel_leave_no_side_effect
+    kimi_tui_reads_actual_workspace_bytes
+    kimi_tui_writes_and_verifies_actual_workspace_bytes
+
+test result: FAILED. 2 passed; 8 failed; 0 ignored; 0 measured; 0 filtered out; finished in 656.60s
+

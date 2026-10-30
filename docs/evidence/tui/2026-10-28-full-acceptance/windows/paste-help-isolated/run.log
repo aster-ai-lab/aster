@@ -1,0 +1,55 @@
+
+running 1 test
+ORACLE case=paste-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_paste_help_matches_text_only_backend' (54660) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:172:9:
+Code shortcut help advertises unsupported "clipboard images":                                                                                                                         
+  C:\W\T\aster-kimi-sRO3II\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Paste images (and text) from the clipboard                                  │                    
+                    │  Ctrl+v / Alt+v                                                              │                    
+                    │                                                                              │                    
+                    │  Pastes clipboard images into the prompt as chips, and plain text as typed.  │                    
+                    │                                                                              │                    
+                    │  Prefer Ctrl+V. Use Alt+V as a fallback when Ctrl+V fails (some terminals    │                    
+                    │  or configs drop image clipboards; older Windows Terminal versions only      │                    
+                    │  pasted text).                                                               │                    
+                    │                                                                              │                    
+                    │  You can also drag an image file from Explorer into the prompt.              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test input_controls::kimi_paste_help_matches_text_only_backend ... FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_paste_help_matches_text_only_backend
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 3.78s
+

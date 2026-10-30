@@ -1,0 +1,73 @@
+{
+  "unix": 1792859152.8179774,
+  "gpu_executed": false,
+  "cpu-preflight-result.json": {
+    "phase": "passed",
+    "unix": 1792859073.422378,
+    "gpu_execution": false,
+    "tests": [
+      {
+        "name": "upstream-security",
+        "exit_code": 0
+      },
+      {
+        "name": "upstream-ds41",
+        "exit_code": 0
+      },
+      {
+        "name": "exact-memo-hermetic",
+        "exit_code": 0
+      },
+      {
+        "name": "actual-fullwindow-tokenizer",
+        "exit_code": 0
+      }
+    ],
+    "finished_unix": 1792859092.142105
+  },
+  "real-tokenizer-benchmark.json": {
+    "unix": 1792859092.0329773,
+    "phase": "passed",
+    "gpu_executed": false,
+    "actual_prompt_tokens": 1048504,
+    "id_sha256": "b9b006a173dc68f8da156b6bd01e0d90c3abdef62f24561475e8b4fa17e5374c",
+    "baseline_seconds": [
+      1.1379217198118567,
+      1.1367416880093515,
+      1.119619234930724
+    ],
+    "baseline_median_seconds": 1.1367416880093515,
+    "memo_fill_seconds": 1.2078722110018134,
+    "memo_hit_seconds": [
+      0.022377182263880968,
+      0.032171064987778664,
+      0.026950878091156483,
+      0.030381998978555202,
+      0.027463261038064957
+    ],
+    "memo_hit_median_seconds": 0.027463261038064957,
+    "literal_unicode_mode_comparisons": 24,
+    "memo_stats": {
+      "entries": 4,
+      "accounted_bytes": 67514,
+      "hits": 12,
+      "misses": 7,
+      "admissions": 7
+    },
+    "scope": "CPU encode only, identical full rendered prompt; no prefix reuse or GPU/end-to-end gain claimed"
+  },
+  "cpu-preflight-process.json": {
+    "pid": 811259,
+    "start_ticks": 278585829,
+    "uid": 10250,
+    "unix": 1792859073.368682,
+    "budget_seconds": 240
+  },
+  "exact_cpu_client_alive": false,
+  "logs": {
+    "cpu-exact-memo-hermetic.stderr.log": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.008s\n\nOK\n",
+    "cpu-actual-fullwindow-tokenizer.stderr.log": "",
+    "cpu-upstream-security.stderr.log": "......../mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc6-43da44c9b0a4/tokenizer-preflight-v21/source/serve/telemetry.py:351: ResourceWarning: unclosed file <_io.TextIOWrapper name='/proc/stat' mode='r' encoding='UTF-8'>\n  f = [int(x) for x in open(\"/proc/stat\").readline().split()[1:]]\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc6-43da44c9b0a4/tokenizer-preflight-v21/source/serve/telemetry.py:334: ResourceWarning: unclosed file <_io.TextIOWrapper name='/proc/cpuinfo' mode='r' encoding='utf-8'>\n  return line.split(\":\", 1)[1].strip()\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n...............\n----------------------------------------------------------------------\nRan 23 tests in 8.254s\n\nOK\n",
+    "cpu-upstream-ds41.stderr.log": ""
+  }
+}

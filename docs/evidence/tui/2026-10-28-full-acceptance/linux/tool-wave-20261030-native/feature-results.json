@@ -1,0 +1,45 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "tests": [
+    {
+      "test": "tool_wave::kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_patch_single_multi_file_and_conflict_preserve_exact_transaction_scope.log"
+    },
+    {
+      "test": "tool_wave::kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_git_fixture_status_diff_branch_and_bad_checkout_are_owned.log"
+    },
+    {
+      "test": "tool_wave::kimi_batch_partial_failure_retains_order_identity_and_successful_items",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-native/kimi_batch_partial_failure_retains_order_identity_and_successful_items.log"
+    },
+    {
+      "test": "tool_wave::kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-native/kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts.log"
+    },
+    {
+      "test": "tool_wave::kimi_plan_program_cannot_promote_its_nested_write_permission",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_plan_program_cannot_promote_its_nested_write_permission.log"
+    },
+    {
+      "test": "tool_wave::kimi_update_plan_replaces_the_real_checklist_and_status_projection",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_update_plan_replaces_the_real_checklist_and_status_projection.log"
+    },
+    {
+      "test": "tool_wave::kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_background_start_tail_stop_terminates_the_owned_process_without_late_write.log"
+    },
+    {
+      "test": "tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-native/kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier.log"
+    }
+  ]
+}

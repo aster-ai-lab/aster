@@ -1,6 +1,9 @@
 //! Closed OpenAI endpoint matching and bounded JSON request collection.
 
 use super::standards::{ModelStandard, StandardAdmission};
+
+#[path = "openai_message_annotations.rs"]
+mod message_annotations;
 use bytes::Bytes;
 use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use http::{HeaderMap, Method, Response, StatusCode};
@@ -198,7 +201,7 @@ pub(crate) struct OpenAiProxyRequest {
 }
 
 impl OpenAiProxyRequest {
-    /// Recover the original validated request bytes unchanged.
+    /// Recover validated request bytes after shared message normalization.
     pub(crate) fn into_body(self) -> Bytes {
         self.body
     }
@@ -226,7 +229,7 @@ impl OpenAiJsonRequest {
             .unwrap_or(false)
     }
 
-    /// Recover the original validated request bytes unchanged.
+    /// Recover validated request bytes after shared message normalization.
     pub(crate) fn into_body(self) -> Bytes {
         self.body
     }
@@ -575,11 +578,12 @@ where
     // MissingModel vs InvalidModel). This replaces the previous two-pass
     // approach (IgnoredAny validation + ProxyJsonMetadata visitor) and
     // halves the JSON parsing work per request on the hot proxy path.
-    let value: serde_json::Value =
+    let mut value: serde_json::Value =
         serde_json::from_slice(&body).map_err(|_| OpenAiRequestError::InvalidJson)?;
-    if !value.is_object() {
-        return Err(OpenAiRequestError::InvalidBodyShape);
-    }
+    let document = value
+        .as_object_mut()
+        .ok_or(OpenAiRequestError::InvalidBodyShape)?;
+    let normalized = message_annotations::normalize(document);
     let model = value
         .get("model")
         .ok_or(OpenAiRequestError::MissingModel)?
@@ -589,6 +593,11 @@ where
     if !valid_model_alias(&model) {
         return Err(OpenAiRequestError::InvalidModel);
     }
+    let body = if normalized {
+        encode_normalized_body(&value)?
+    } else {
+        body
+    };
     Ok(OpenAiProxyRequest { body })
 }
 
@@ -611,9 +620,9 @@ fn validate_prompt_cache_key(value: Option<&serde_json::Value>) -> Result<(), Op
 
 /// Collect and validate one OpenAI JSON request body under the fixed limit.
 ///
-/// The raw bytes and parsed object are retained together. The ordinary proxy
-/// can therefore forward exactly what the client sent, while a later native
-/// dispatch stage can consume the already parsed model alias and document.
+/// Known client replay annotations are removed consistently for native and
+/// proxy dispatch. Requests without annotations retain their original bytes.
+/// The normalized bytes and document always describe the same message history.
 pub(crate) async fn collect_json_body<B>(
     headers: &HeaderMap,
     body: B,
@@ -624,7 +633,7 @@ where
 {
     let body = collect_bounded_json_body(headers, body).await?;
 
-    let document = match serde_json::from_slice::<serde_json::Value>(&body)
+    let mut document = match serde_json::from_slice::<serde_json::Value>(&body)
         .map_err(|_| OpenAiRequestError::InvalidJson)?
     {
         serde_json::Value::Object(document) => document,
@@ -639,8 +648,21 @@ where
         return Err(OpenAiRequestError::InvalidModel);
     }
     validate_prompt_cache_key(document.get("prompt_cache_key"))?;
+    let body = if message_annotations::normalize(&mut document) {
+        encode_normalized_body(&document)?
+    } else {
+        body
+    };
 
     Ok(OpenAiJsonRequest { body, document })
+}
+
+fn encode_normalized_body(value: &impl serde::Serialize) -> Result<Bytes, OpenAiRequestError> {
+    let body = serde_json::to_vec(value).map_err(|_| OpenAiRequestError::InvalidJson)?;
+    if body.len() > OPENAI_REQUEST_BODY_LIMIT {
+        return Err(OpenAiRequestError::BodyTooLarge);
+    }
+    Ok(Bytes::from(body))
 }
 
 async fn collect_bounded_json_body<B>(

@@ -1,0 +1,16 @@
+{
+  "source_pair": "8f6a422022891e74e19e139f5508fec5768a98f1",
+  "base_owned_source": "d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14",
+  "files": [
+    {
+      "name": "aster_tui_live_e2e.rs",
+      "bytes": 3918,
+      "sha256": "5c6063645be3504ecd9b4aef3b0a8efe7285a8698b19761a2a3d3efa10f3ea6a"
+    },
+    {
+      "name": "tool_contracts.rs",
+      "bytes": 10223,
+      "sha256": "d8832f8fd9912b443d0f414995ca456e8b3ce9f22e9a090bc51173c378d03d18"
+    }
+  ]
+}

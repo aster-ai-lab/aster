@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest' (54076) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dock\mod.rs:1893:9:
+   v show 14 more                                                               
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest ... FAILED
+
+failures:
+
+failures:
+    views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

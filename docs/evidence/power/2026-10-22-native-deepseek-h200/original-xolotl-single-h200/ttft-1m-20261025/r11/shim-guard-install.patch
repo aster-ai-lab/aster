@@ -1,0 +1,12 @@
+--- api-adapter-v52/serve_ds41.py
++++ tool-adapter-v267r3/serve_ds41.py
+@@ -651,6 +651,9 @@
+ 
+ S.engine_args = engine_args_ds41
+ 
++from aster_tool_roundtrip import install as _install_tool_roundtrip
++_install_tool_roundtrip(S)
++
+ if __name__ == "__main__":
+     for i, v in enumerate(sys.argv[:-1]):   # paths are the caller's; the server runs from Strata's directory
+         if v in ("--config", "--tokenizer", "--mcp-config"):

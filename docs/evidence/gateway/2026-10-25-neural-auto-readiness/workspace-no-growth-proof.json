@@ -1,0 +1,31 @@
+{
+  "baseline_parent": "57cc7f7be6d10e1b7b884718f0c118eddbc81430",
+  "baseline_drift_proof": "docs/evidence/deployment/2026-10-25-deepseek-dspark-main/baseline-workspace-checks.json",
+  "drift_set_unchanged": true,
+  "drift_set": {
+    "a3s-auth": "CONTENT-DRIFT",
+    "a3s-box-runtime": "CONTENT-DRIFT",
+    "a3s-code-core": "VERSION-DRIFT",
+    "a3s-effect": "CONTENT-DRIFT",
+    "a3s-flow": "CONTENT-DRIFT",
+    "a3s-form-core": "CONTENT-DRIFT",
+    "a3s-libkrun-sys": "DUPLICATE-cloud",
+    "a3s-oci-sdk": "DUPLICATE-aster",
+    "a3s-okf": "CONTENT-DRIFT",
+    "a3s-orm": "CONTENT-DRIFT",
+    "a3s-runtime": "CONTENT-DRIFT",
+    "a3s-sandbox": "CONTENT-DRIFT",
+    "a3s-use": "CONTENT-DRIFT",
+    "a3s-use-ocr": "CONTENT-DRIFT",
+    "libkrunfw-windows": "DUPLICATE-cloud",
+    "vm-memory": "CONTENT-DRIFT"
+  },
+  "remaining_preexisting_format_files": [
+    "apps/gateway/src/entrypoint/native_response.rs",
+    "apps/gateway/src/entrypoint/protocol/http_handler.rs",
+    "apps/gateway/src/entrypoint/protocol/streaming_handler.rs"
+  ],
+  "new_format_failure_files": [],
+  "modified_format_failure_files": [],
+  "ratchet_baseline_edited": false
+}

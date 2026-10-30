@@ -1987,6 +1987,11 @@ pub(crate) fn detect_plan_mode_change_replayed(
     agent.session_mode = mode;
     agent.session_mode_pending = None;
     let historical = is_replay || agent.session.loading_replay;
+    if !historical && was_active && now_active && staged == Some(false) {
+        // An earlier Plan confirmation cannot cancel a newer exit request.
+        agent.plan_mode_pending = Some(false);
+        agent.session_mode_pending = Some(SessionMode::Default);
+    }
     if !historical && (!now_active && (was_active || agent.session_mode == SessionMode::Default)) {
         if staged == Some(true) {
             agent.plan_mode_pending = Some(true);

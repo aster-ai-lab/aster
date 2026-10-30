@@ -1,0 +1,65 @@
+{
+  "publication": {
+    "id": 422913487,
+    "tag_name": "aster-cli-v0.1.3",
+    "target_commitish": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-10-24T18:44:10Z",
+    "html_url": "https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.3",
+    "assets": [
+      {
+        "id": 673011986,
+        "name": "aster-cli-v0.1.3-linux.tar.gz",
+        "size": 114134229,
+        "digest": "sha256:867936cebd428fa392c87f8f5f4f083109975e8ed80f5e7f79a53ddf224a43a5",
+        "state": "uploaded",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.3/aster-cli-v0.1.3-linux.tar.gz"
+      },
+      {
+        "id": 673011983,
+        "name": "aster-cli-v0.1.3-macos.tar.gz",
+        "size": 105054828,
+        "digest": "sha256:351585c491cb4fd8a1abc1ef80e9fb1f6ac70ad3d031e72fd3d78a2b79970396",
+        "state": "uploaded",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.3/aster-cli-v0.1.3-macos.tar.gz"
+      },
+      {
+        "id": 673011968,
+        "name": "aster-cli-v0.1.3-windows.zip",
+        "size": 106082005,
+        "digest": "sha256:8a0d387f369ef63272f2e683ab26d9b1d71dad316099c153a9c8d214177c6d8d",
+        "state": "uploaded",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.3/aster-cli-v0.1.3-windows.zip"
+      },
+      {
+        "id": 673011985,
+        "name": "latest.json",
+        "size": 432,
+        "digest": "sha256:b4692474b720ae7af21ee7179d145d793b1ed77b41b9d9bc7ee0f3b219d3612d",
+        "state": "uploaded",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.3/latest.json"
+      }
+    ]
+  },
+  "tag_source_verified": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+  "qualification": "../2026-10-24-acp-long-horizon/release915three-qualification.json",
+  "actual_counts": {
+    "core_relevant_unchanged": 741,
+    "core_existing_ignored": 2,
+    "actual_acp": 20,
+    "protocol": 10,
+    "h1_independent_audits": 19,
+    "native_windows_install_rollback": 2,
+    "native_mac_install_update": 5,
+    "real_public_channel_updater": 1
+  },
+  "build_origins": {
+    "macos": "local locked release fallback, pinned Rust1.97.1, build951.835s; CI was cancelled after over2h without an archive",
+    "linux": "successful job120922361979 in run40110868267",
+    "windows": "successful job120922362000 in run40110868267"
+  },
+  "broader_goal_complete": false,
+  "workspace_ci_green": false,
+  "credential_rotation_complete": false
+}

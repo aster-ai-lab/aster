@@ -150,8 +150,8 @@ k8s-openapi = { version = "0.26", features = ["latest"], optional = true }
 
 # Self-update
 a3s-updater = { path = "../../crates/updater", version = "=0.3.0" }
-# Lexical System One. Neural checkpoints stay out of the gateway binary.
 a3s-apofasi = { path = "../../crates/apofasi", default-features = false }
+indexmap = "2"
 # Platform PP-OCRv6. The weight bundle is installed at runtime, not vendored.
 a3s-use-bge = { path = "../../crates/bge", default-features = false, features = ["bge-m3", "bge-reranker-v2-m3"] }
 a3s-use-ocr = { path = "../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
@@ -161,6 +161,7 @@ a3s-sentry = { path = "../../crates/sentry", version = "=0.7.0", optional = true
 
 [features]
 default = []
+neural = ["a3s-apofasi/infer", "a3s-apofasi/router"]
 redis = ["dep:redis"]
 kube = ["dep:kube", "dep:k8s-openapi"]
 # Inline wire firewall: a local proxy that masks secrets + runs sentry's detectors on the LLM/MCP wire

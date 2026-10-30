@@ -1,0 +1,349 @@
+{
+  "assertions_finished": true,
+  "case": "network-fetch-redirect",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-redirect.json"
+          },
+          "id": "call_62323e3a310745389d0b9f3c92fe7be1",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13209,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+            "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_62323e3a310745389d0b9f3c92fe7be1",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+            "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_62323e3a310745389d0b9f3c92fe7be1",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/redirect?fixture=not-a-credential\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-redirect.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":146},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":146,\"projected_bytes\":146,\"original_estimated_tokens\":37,\"projected_estimated_tokens\":37,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"projected_digest\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"repeat_key\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"content_ref\":\"inline:sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a051f91b7d3f4079b3b1b419930a43a95d4213cea646d83ec16734f584949418\"}",
+        "prepared_digest": "sha256:1d2e28d475c79850ebe880bfa70e5de5dd458a8a1474dd4e5f3196b35b161671",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "format": "text",
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/redirect?fixture=not-a-credential"
+          },
+          "id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13384,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+            "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+          "turn": 1
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+            "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"# Fixture main\\n\\nFETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40\\n\\n[Target][1]\\n\\n[1]: http://aster-fixture.example.test/target\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/redirect\",\"http://aster-fixture.example.test/main.html\"],\"document_kind\":\"html\",\"content_type\":\"text/html\",\"range\":{\"offset\":0,\"requested_max_chars\":50000,\"applied_max_chars\":50000,\"returned_chars\":122,\"total_chars\":122,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":null,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":126,\"projected_bytes\":126,\"original_estimated_tokens\":32,\"projected_estimated_tokens\":32,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"projected_digest\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"repeat_key\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"content_ref\":\"inline:sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:cd44a965570ba676f6ca5f6e9dc918490c347664908dd69c15019434afdc800d\"}",
+        "prepared_digest": "sha256:2eabf7652688e286853072457af28f80a1ecc316157ea453d38b7a9c0e6a8849",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13578,
+        "text": "**Fetched content:**\n```text\n# Fixture main\n\nFETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40\n\n[Target][1]\n\n[1]: http://aster-fixture.example.test/target\n```\n\n**Final source:** `http://aster-fixture.example.test/target`",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4b1a4b8b23d8f9ab59bd07bcde8e0349d9576253af5dde77369f020b96fe1baf",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:ec52a14ac1edcb4f318b13e68ae2608cbc349c8ca0775cf4bdb8bea9274b924c",
+          "sha256:f1c3417edd6f4eb647c9681fb1b84acfa39368bf95c0163cdd4be1756e49da23"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40171",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-8CJJuj/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-redirect.json once. Call web_fetch exactly once with its exact JSON object as      2:16 PM    \n       arguments. Report the actual fetched content and final source. Do not retry or call other tools.                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n                                                                                                                        \n     Fetched content:                                                                                        2:16 PM    \n                                                                                                                        \n     # Fixture main                                                                                                     \n                                                                                                                        \n     FETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40                                                                    \n                                                                                                                        \n     [Target][1]                                                                                                        \n                                                                                                                        \n     [1]: http://aster-fixture.example.test/target                                                                      \n                                                                                                                        \n     Final source: http://aster-fixture.example.test/target                                                             \n                                                                                                                        \n     Worked for 27s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the actual proxy records the redirect and destination requests; returned content is from the destination and safe metadata retains original/final source paths without query data",
+      "name": "web-fetch-real-redirect-sources",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-8CJJuj/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-redirect.json once. Call web_fetch exactly once with its exact JSON object as      2:16 PM    \n       arguments. Report the actual fetched content and final source. Do not retry or call other tools.                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n                                                                                                                        \n     Fetched content:                                                                                        2:16 PM    \n                                                                                                                        \n     # Fixture main                                                                                                     \n                                                                                                                        \n     FETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40                                                                    \n                                                                                                                        \n     [Target][1]                                                                                                        \n                                                                                                                        \n     [1]: http://aster-fixture.example.test/target                                                                      \n                                                                                                                        \n     Final source: http://aster-fixture.example.test/target                                                             \n                                                                                                                        \n     Worked for 27s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "network-fetch-redirect",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-redirect.json"
+              },
+              "id": "call_62323e3a310745389d0b9f3c92fe7be1",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13209,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+                "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_62323e3a310745389d0b9f3c92fe7be1",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+                "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_62323e3a310745389d0b9f3c92fe7be1",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"format\\\":\\\"text\\\",\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/redirect?fixture=not-a-credential\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-redirect.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":146},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":146,\"projected_bytes\":146,\"original_estimated_tokens\":37,\"projected_estimated_tokens\":37,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"projected_digest\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"repeat_key\":\"sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"content_ref\":\"inline:sha256:5e0b16de7882f0ea3a58950ae9e81e4eef580f4d81b239a9ca13bf866f559e97\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a051f91b7d3f4079b3b1b419930a43a95d4213cea646d83ec16734f584949418\"}",
+            "prepared_digest": "sha256:1d2e28d475c79850ebe880bfa70e5de5dd458a8a1474dd4e5f3196b35b161671",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "format": "text",
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/redirect?fixture=not-a-credential"
+              },
+              "id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13384,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+                "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+              "turn": 1
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2c911fc8-cc66-4408-b53c-bd1cdeec3819",
+                "thread_id": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a6d892932d2648bfa9e00f7fcb7b0ac1",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"# Fixture main\\n\\nFETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40\\n\\n[Target][1]\\n\\n[1]: http://aster-fixture.example.test/target\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/redirect\",\"http://aster-fixture.example.test/main.html\"],\"document_kind\":\"html\",\"content_type\":\"text/html\",\"range\":{\"offset\":0,\"requested_max_chars\":50000,\"applied_max_chars\":50000,\"returned_chars\":122,\"total_chars\":122,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":null,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":126,\"projected_bytes\":126,\"original_estimated_tokens\":32,\"projected_estimated_tokens\":32,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"projected_digest\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"repeat_key\":\"sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"content_ref\":\"inline:sha256:74aeac4332c559e341cb1b4f67c08aa89ad6afb72d5cf0cb4f7fec214397bc67\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:cd44a965570ba676f6ca5f6e9dc918490c347664908dd69c15019434afdc800d\"}",
+            "prepared_digest": "sha256:2eabf7652688e286853072457af28f80a1ecc316157ea453d38b7a9c0e6a8849",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13578,
+            "text": "**Fetched content:**\n```text\n# Fixture main\n\nFETCH-中文-7efc85f0-4cac-4c9e-82f3-e2177d7b2d40\n\n[Target][1]\n\n[1]: http://aster-fixture.example.test/target\n```\n\n**Final source:** `http://aster-fixture.example.test/target`",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "4b1a4b8b23d8f9ab59bd07bcde8e0349d9576253af5dde77369f020b96fe1baf",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:ec52a14ac1edcb4f318b13e68ae2608cbc349c8ca0775cf4bdb8bea9274b924c",
+              "sha256:f1c3417edd6f4eb647c9681fb1b84acfa39368bf95c0163cdd4be1756e49da23"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "e13cd5fd-c037-497a-9ecc-09d3d78ab63f"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

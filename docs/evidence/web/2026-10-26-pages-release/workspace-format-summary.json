@@ -1,0 +1,9 @@
+{
+  "scope": "cargo fmt --all -- --check",
+  "difference_files": [
+    "apps/gateway/src/entrypoint/native_response.rs",
+    "apps/gateway/src/entrypoint/protocol/http_handler.rs",
+    "apps/gateway/src/entrypoint/protocol/streaming_handler.rs"
+  ],
+  "raw_private_source_diffs_retained_only_in_target": true
+}

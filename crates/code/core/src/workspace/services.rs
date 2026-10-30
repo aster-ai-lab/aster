@@ -826,6 +826,12 @@ impl WorkspaceServices {
             return self.workspace_ref.display_root.clone();
         }
 
+        if let Some(root) = &self.local_root {
+            // A slash appended to a Windows verbatim root is a literal path
+            // character. Join native paths through PathBuf instead.
+            return root.join(path.as_str()).display().to_string();
+        }
+
         let root = self.workspace_ref.display_root.trim_end_matches('/');
         if root.is_empty() {
             path.as_str().to_string()
@@ -834,6 +840,10 @@ impl WorkspaceServices {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "services/path_display_tests.rs"]
+mod path_display_tests;
 
 /// Builder for assembling workspace services without constructor arity churn.
 pub struct WorkspaceServicesBuilder {

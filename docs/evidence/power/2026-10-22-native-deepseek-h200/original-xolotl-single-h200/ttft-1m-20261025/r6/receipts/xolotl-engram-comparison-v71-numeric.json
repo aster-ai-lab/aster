@@ -1,0 +1,1427 @@
+{
+  "unix": 1792884442.7037425,
+  "profiles": [
+    {
+      "profile": "gpfs_a",
+      "lines": [
+        {
+          "line": 19,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 20,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.35 s)"
+        },
+        {
+          "line": 21,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.35 s = 51.6 tok/s (experts 4118 hit / 0 cpu / 202 pcie / 0 file)"
+        },
+        {
+          "line": 27,
+          "text": "serve: cache kept for a 8244-token batch (1112 tail slots out, 11364 experts stay)"
+        },
+        {
+          "line": 30,
+          "text": "chunk prof: 80 calls, 155 launches: wall 3373 ms = waits on reads 0 + wave/copy waits 0 + final sync 3104 + other host 269; reader wall 0 ms; GPU grouped kernels 539 ms (resident 363); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 31,
+          "text": "chunk prof MMQ: 435 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 34.3 GB of ternary read = 2046 GB/s"
+        },
+        {
+          "line": 32,
+          "text": "resident MMQ stage: 436 waves, 198778613760 exact D2D bytes"
+        },
+        {
+          "line": 33,
+          "text": "serve: cache regrown: 1112 experts back (0 from the file) in 241 ms"
+        },
+        {
+          "line": 34,
+          "text": "dense prof turn: 500 attn spans: build 20 ms, alloc 43, gpu compute 3184, engram wait 4979, readback 298, upload 318, finish build 1"
+        },
+        {
+          "line": 35,
+          "text": "serve: prompt phases: 8244 new = 8244 batch (17.40 s: dense 8.87, experts 5.54, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 36,
+          "text": "serve: prompt 8244 tokens (0 reused, batch) in 17.40 s = 473.7 tok/s (experts 1332239 hit / 0 cpu / 93361 pcie / 0 file)"
+        },
+        {
+          "line": 43,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 44,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.13 s)"
+        },
+        {
+          "line": 45,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.14 s = 132.9 tok/s (experts 4193 hit / 0 cpu / 127 pcie / 0 file)"
+        },
+        {
+          "line": 52,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 53,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 54,
+          "text": "serve: prompt 8244 tokens (8244 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 61,
+          "text": "serve: cache kept for a 25671-token batch (1123 tail slots out, 11353 experts stay)"
+        },
+        {
+          "line": 62,
+          "text": "chunk prof: 160 calls, 310 launches: wall 7271 ms = waits on reads 0 + wave/copy waits 0 + final sync 5757 + other host 1514; reader wall 0 ms; GPU grouped kernels 1239 ms (resident 750); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 63,
+          "text": "chunk prof MMQ: 793 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 31.9 GB of ternary read = 1877 GB/s"
+        },
+        {
+          "line": 64,
+          "text": "resident MMQ stage: 872 waves, 360849254400 exact D2D bytes"
+        },
+        {
+          "line": 65,
+          "text": "serve: cache regrown: 1123 experts back (0 from the file) in 236 ms"
+        },
+        {
+          "line": 66,
+          "text": "dense prof turn: 1180 attn spans: build 36 ms, alloc 61, gpu compute 7919, engram wait 6281, readback 823, upload 914, finish build 3"
+        },
+        {
+          "line": 67,
+          "text": "serve: prompt phases: 25671 new = 25671 batch (29.12 s: dense 16.11, experts 9.68, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 68,
+          "text": "serve: prompt 25671 tokens (0 reused, batch) in 29.13 s = 881.3 tok/s (experts 3288689 hit / 0 cpu / 230431 pcie / 0 file)"
+        },
+        {
+          "line": 76,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 77,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.12 s)"
+        },
+        {
+          "line": 78,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.13 s = 143.5 tok/s (experts 4205 hit / 0 cpu / 115 pcie / 0 file)"
+        },
+        {
+          "line": 85,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 86,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 87,
+          "text": "serve: prompt 25671 tokens (25671 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 94,
+          "text": "serve: cache kept for a 305-token batch (388 tail slots out, 12088 experts stay)"
+        },
+        {
+          "line": 96,
+          "text": "chunk prof: 40 calls, 60 launches: wall 281 ms = waits on reads 0 + wave/copy waits 0 + final sync 106 + other host 174; reader wall 0 ms; GPU grouped kernels 69 ms (resident 66); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 97,
+          "text": "chunk prof MMQ: 383 sub-runs; PTQ1_0 -> Q2_0 transcode 13 ms GPU (inside the grouped kernels) over 18 sub-runs, 27.1 GB of ternary read = 2017 GB/s"
+        },
+        {
+          "line": 98,
+          "text": "resident MMQ stage: 196 waves, 70793994240 exact D2D bytes"
+        },
+        {
+          "line": 99,
+          "text": "serve: cache regrown: 388 experts back (0 from the file) in 86 ms"
+        },
+        {
+          "line": 100,
+          "text": "dense prof turn: 40 attn spans: build 2 ms, alloc 10, gpu compute 163, engram wait 407, readback 16, upload 0, finish build 0"
+        },
+        {
+          "line": 101,
+          "text": "serve: prompt phases: 305 new = 305 batch (1.81 s: dense 0.61, experts 1.10, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 102,
+          "text": "serve: prompt 305 tokens (0 reused, batch) in 1.82 s = 167.2 tok/s (experts 70901 hit / 0 cpu / 2299 pcie / 0 file)"
+        },
+        {
+          "line": 111,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 112,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.41 s)"
+        },
+        {
+          "line": 113,
+          "text": "serve: prompt 363 tokens (296 reused, batch) in 0.41 s = 163.9 tok/s (experts 15933 hit / 0 cpu / 147 pcie / 0 file)"
+        },
+        {
+          "line": 121,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 122,
+          "text": "serve: prompt phases: 61 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 61 as passes (cache open 0.00 s, seed 0.43 s)"
+        },
+        {
+          "line": 123,
+          "text": "serve: prompt 61 tokens (0 reused, batch) in 0.43 s = 142.7 tok/s (experts 14152 hit / 0 cpu / 488 pcie / 0 file)"
+        },
+        {
+          "line": 130,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 131,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.47 s)"
+        },
+        {
+          "line": 132,
+          "text": "serve: prompt 67 tokens (0 reused, batch) in 0.47 s = 143.3 tok/s (experts 15704 hit / 0 cpu / 376 pcie / 0 file)"
+        },
+        {
+          "line": 139,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 140,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 141,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 148,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 149,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 150,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 157,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 158,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 159,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 166,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 167,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 168,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 175,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 176,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 177,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 184,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 185,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 186,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 193,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 194,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 195,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 202,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 203,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 204,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "lines": [
+        {
+          "line": 19,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 20,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.31 s)"
+        },
+        {
+          "line": 21,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.31 s = 57.3 tok/s (experts 4118 hit / 0 cpu / 202 pcie / 0 file)"
+        },
+        {
+          "line": 27,
+          "text": "serve: cache kept for a 8244-token batch (1112 tail slots out, 11364 experts stay)"
+        },
+        {
+          "line": 30,
+          "text": "chunk prof: 80 calls, 155 launches: wall 3360 ms = waits on reads 0 + wave/copy waits 0 + final sync 3095 + other host 265; reader wall 0 ms; GPU grouped kernels 539 ms (resident 363); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 31,
+          "text": "chunk prof MMQ: 435 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 34.3 GB of ternary read = 2045 GB/s"
+        },
+        {
+          "line": 32,
+          "text": "resident MMQ stage: 436 waves, 198778613760 exact D2D bytes"
+        },
+        {
+          "line": 33,
+          "text": "serve: cache regrown: 1112 experts back (0 from the file) in 241 ms"
+        },
+        {
+          "line": 34,
+          "text": "dense prof turn: 500 attn spans: build 15 ms, alloc 44, gpu compute 3125, engram wait 1089, readback 299, upload 322, finish build 1"
+        },
+        {
+          "line": 35,
+          "text": "serve: prompt phases: 8244 new = 8244 batch (11.02 s: dense 4.92, experts 5.49, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 36,
+          "text": "serve: prompt 8244 tokens (0 reused, batch) in 11.03 s = 747.5 tok/s (experts 1332239 hit / 0 cpu / 93361 pcie / 0 file)"
+        },
+        {
+          "line": 43,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 44,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.13 s)"
+        },
+        {
+          "line": 45,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.13 s = 143.1 tok/s (experts 4193 hit / 0 cpu / 127 pcie / 0 file)"
+        },
+        {
+          "line": 52,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 53,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 54,
+          "text": "serve: prompt 8244 tokens (8244 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 61,
+          "text": "serve: cache kept for a 25671-token batch (1123 tail slots out, 11353 experts stay)"
+        },
+        {
+          "line": 62,
+          "text": "chunk prof: 160 calls, 310 launches: wall 7266 ms = waits on reads 0 + wave/copy waits 0 + final sync 5757 + other host 1509; reader wall 0 ms; GPU grouped kernels 1236 ms (resident 748); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 63,
+          "text": "chunk prof MMQ: 793 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 31.9 GB of ternary read = 1877 GB/s"
+        },
+        {
+          "line": 64,
+          "text": "resident MMQ stage: 872 waves, 360849254400 exact D2D bytes"
+        },
+        {
+          "line": 65,
+          "text": "serve: cache regrown: 1123 experts back (0 from the file) in 251 ms"
+        },
+        {
+          "line": 66,
+          "text": "dense prof turn: 1180 attn spans: build 35 ms, alloc 57, gpu compute 7956, engram wait 1315, readback 785, upload 904, finish build 3"
+        },
+        {
+          "line": 67,
+          "text": "serve: prompt phases: 25671 new = 25671 batch (21.78 s: dense 11.13, experts 9.65, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 68,
+          "text": "serve: prompt 25671 tokens (0 reused, batch) in 21.79 s = 1178.0 tok/s (experts 3288689 hit / 0 cpu / 230431 pcie / 0 file)"
+        },
+        {
+          "line": 76,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 77,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.12 s)"
+        },
+        {
+          "line": 78,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.12 s = 147.9 tok/s (experts 4205 hit / 0 cpu / 115 pcie / 0 file)"
+        },
+        {
+          "line": 85,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 86,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 87,
+          "text": "serve: prompt 25671 tokens (25671 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 94,
+          "text": "serve: cache kept for a 305-token batch (388 tail slots out, 12088 experts stay)"
+        },
+        {
+          "line": 96,
+          "text": "chunk prof: 40 calls, 60 launches: wall 289 ms = waits on reads 0 + wave/copy waits 0 + final sync 106 + other host 183; reader wall 0 ms; GPU grouped kernels 69 ms (resident 67); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 97,
+          "text": "chunk prof MMQ: 383 sub-runs; PTQ1_0 -> Q2_0 transcode 13 ms GPU (inside the grouped kernels) over 18 sub-runs, 27.1 GB of ternary read = 2017 GB/s"
+        },
+        {
+          "line": 98,
+          "text": "resident MMQ stage: 196 waves, 70793994240 exact D2D bytes"
+        },
+        {
+          "line": 99,
+          "text": "serve: cache regrown: 388 experts back (0 from the file) in 90 ms"
+        },
+        {
+          "line": 100,
+          "text": "dense prof turn: 40 attn spans: build 2 ms, alloc 12, gpu compute 163, engram wait 2, readback 18, upload 0, finish build 0"
+        },
+        {
+          "line": 101,
+          "text": "serve: prompt phases: 305 new = 305 batch (1.52 s: dense 0.20, experts 1.20, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 102,
+          "text": "serve: prompt 305 tokens (0 reused, batch) in 1.53 s = 199.1 tok/s (experts 70901 hit / 0 cpu / 2299 pcie / 0 file)"
+        },
+        {
+          "line": 111,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 112,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.36 s)"
+        },
+        {
+          "line": 113,
+          "text": "serve: prompt 363 tokens (296 reused, batch) in 0.36 s = 183.7 tok/s (experts 15933 hit / 0 cpu / 147 pcie / 0 file)"
+        },
+        {
+          "line": 121,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 122,
+          "text": "serve: prompt phases: 61 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 61 as passes (cache open 0.00 s, seed 0.33 s)"
+        },
+        {
+          "line": 123,
+          "text": "serve: prompt 61 tokens (0 reused, batch) in 0.33 s = 183.6 tok/s (experts 14152 hit / 0 cpu / 488 pcie / 0 file)"
+        },
+        {
+          "line": 130,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 131,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.36 s)"
+        },
+        {
+          "line": 132,
+          "text": "serve: prompt 67 tokens (0 reused, batch) in 0.36 s = 183.7 tok/s (experts 15704 hit / 0 cpu / 376 pcie / 0 file)"
+        },
+        {
+          "line": 139,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 140,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 141,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 148,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 149,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 150,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 157,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 158,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 159,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 166,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 167,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 168,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 175,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 176,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 177,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 184,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 185,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 186,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 193,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 194,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 195,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 202,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 203,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 204,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        }
+      ]
+    },
+    {
+      "profile": "gpfs_b",
+      "lines": [
+        {
+          "line": 19,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 20,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.36 s)"
+        },
+        {
+          "line": 21,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.36 s = 50.6 tok/s (experts 4118 hit / 0 cpu / 202 pcie / 0 file)"
+        },
+        {
+          "line": 27,
+          "text": "serve: cache kept for a 8244-token batch (1112 tail slots out, 11364 experts stay)"
+        },
+        {
+          "line": 30,
+          "text": "chunk prof: 80 calls, 155 launches: wall 3372 ms = waits on reads 0 + wave/copy waits 0 + final sync 3100 + other host 273; reader wall 0 ms; GPU grouped kernels 540 ms (resident 363); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 31,
+          "text": "chunk prof MMQ: 435 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 34.3 GB of ternary read = 2045 GB/s"
+        },
+        {
+          "line": 32,
+          "text": "resident MMQ stage: 436 waves, 198778613760 exact D2D bytes"
+        },
+        {
+          "line": 33,
+          "text": "serve: cache regrown: 1112 experts back (0 from the file) in 240 ms"
+        },
+        {
+          "line": 34,
+          "text": "dense prof turn: 500 attn spans: build 15 ms, alloc 59, gpu compute 3148, engram wait 4993, readback 298, upload 318, finish build 1"
+        },
+        {
+          "line": 35,
+          "text": "serve: prompt phases: 8244 new = 8244 batch (14.98 s: dense 8.86, experts 5.53, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 36,
+          "text": "serve: prompt 8244 tokens (0 reused, batch) in 14.99 s = 550.0 tok/s (experts 1332239 hit / 0 cpu / 93361 pcie / 0 file)"
+        },
+        {
+          "line": 43,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 44,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.15 s)"
+        },
+        {
+          "line": 45,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.15 s = 121.0 tok/s (experts 4193 hit / 0 cpu / 127 pcie / 0 file)"
+        },
+        {
+          "line": 52,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 53,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 54,
+          "text": "serve: prompt 8244 tokens (8244 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 61,
+          "text": "serve: cache kept for a 25671-token batch (1123 tail slots out, 11353 experts stay)"
+        },
+        {
+          "line": 62,
+          "text": "chunk prof: 160 calls, 310 launches: wall 7277 ms = waits on reads 0 + wave/copy waits 0 + final sync 5762 + other host 1515; reader wall 0 ms; GPU grouped kernels 1239 ms (resident 750); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 63,
+          "text": "chunk prof MMQ: 793 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 31.9 GB of ternary read = 1877 GB/s"
+        },
+        {
+          "line": 64,
+          "text": "resident MMQ stage: 872 waves, 360849254400 exact D2D bytes"
+        },
+        {
+          "line": 65,
+          "text": "serve: cache regrown: 1123 experts back (0 from the file) in 237 ms"
+        },
+        {
+          "line": 66,
+          "text": "dense prof turn: 1180 attn spans: build 34 ms, alloc 53, gpu compute 7928, engram wait 6236, readback 778, upload 908, finish build 3"
+        },
+        {
+          "line": 67,
+          "text": "serve: prompt phases: 25671 new = 25671 batch (26.80 s: dense 16.01, experts 9.70, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 68,
+          "text": "serve: prompt 25671 tokens (0 reused, batch) in 26.81 s = 957.5 tok/s (experts 3288689 hit / 0 cpu / 230431 pcie / 0 file)"
+        },
+        {
+          "line": 76,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 77,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.12 s)"
+        },
+        {
+          "line": 78,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.12 s = 144.6 tok/s (experts 4205 hit / 0 cpu / 115 pcie / 0 file)"
+        },
+        {
+          "line": 85,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 86,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 87,
+          "text": "serve: prompt 25671 tokens (25671 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 94,
+          "text": "serve: cache kept for a 305-token batch (388 tail slots out, 12088 experts stay)"
+        },
+        {
+          "line": 96,
+          "text": "chunk prof: 40 calls, 60 launches: wall 280 ms = waits on reads 0 + wave/copy waits 0 + final sync 110 + other host 170; reader wall 0 ms; GPU grouped kernels 69 ms (resident 66); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 97,
+          "text": "chunk prof MMQ: 383 sub-runs; PTQ1_0 -> Q2_0 transcode 13 ms GPU (inside the grouped kernels) over 18 sub-runs, 27.1 GB of ternary read = 2017 GB/s"
+        },
+        {
+          "line": 98,
+          "text": "resident MMQ stage: 196 waves, 70793994240 exact D2D bytes"
+        },
+        {
+          "line": 99,
+          "text": "serve: cache regrown: 388 experts back (0 from the file) in 84 ms"
+        },
+        {
+          "line": 100,
+          "text": "dense prof turn: 40 attn spans: build 2 ms, alloc 10, gpu compute 165, engram wait 401, readback 16, upload 0, finish build 0"
+        },
+        {
+          "line": 101,
+          "text": "serve: prompt phases: 305 new = 305 batch (1.83 s: dense 0.60, experts 1.13, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 102,
+          "text": "serve: prompt 305 tokens (0 reused, batch) in 1.84 s = 165.6 tok/s (experts 70901 hit / 0 cpu / 2299 pcie / 0 file)"
+        },
+        {
+          "line": 111,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 112,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.40 s)"
+        },
+        {
+          "line": 113,
+          "text": "serve: prompt 363 tokens (296 reused, batch) in 0.41 s = 165.3 tok/s (experts 15933 hit / 0 cpu / 147 pcie / 0 file)"
+        },
+        {
+          "line": 121,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 122,
+          "text": "serve: prompt phases: 61 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 61 as passes (cache open 0.00 s, seed 0.43 s)"
+        },
+        {
+          "line": 123,
+          "text": "serve: prompt 61 tokens (0 reused, batch) in 0.43 s = 141.7 tok/s (experts 14152 hit / 0 cpu / 488 pcie / 0 file)"
+        },
+        {
+          "line": 130,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 131,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.47 s)"
+        },
+        {
+          "line": 132,
+          "text": "serve: prompt 67 tokens (0 reused, batch) in 0.47 s = 141.7 tok/s (experts 15704 hit / 0 cpu / 376 pcie / 0 file)"
+        },
+        {
+          "line": 139,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 140,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 141,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 148,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 149,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 150,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 157,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 158,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 159,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 166,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 167,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 168,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 175,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 176,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 177,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 184,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 185,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 186,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 193,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 194,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 195,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 202,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 203,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 204,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        }
+      ]
+    },
+    {
+      "profile": "lut_local",
+      "lines": [
+        {
+          "line": 19,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 20,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.53 s)"
+        },
+        {
+          "line": 21,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.53 s = 33.9 tok/s (experts 4118 hit / 0 cpu / 202 pcie / 0 file)"
+        },
+        {
+          "line": 27,
+          "text": "serve: cache kept for a 8244-token batch (1112 tail slots out, 11364 experts stay)"
+        },
+        {
+          "line": 30,
+          "text": "chunk prof: 80 calls, 155 launches: wall 3382 ms = waits on reads 0 + wave/copy waits 0 + final sync 3108 + other host 274; reader wall 0 ms; GPU grouped kernels 540 ms (resident 363); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 31,
+          "text": "chunk prof MMQ: 435 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 34.3 GB of ternary read = 2044 GB/s"
+        },
+        {
+          "line": 32,
+          "text": "resident MMQ stage: 436 waves, 198778613760 exact D2D bytes"
+        },
+        {
+          "line": 33,
+          "text": "serve: cache regrown: 1112 experts back (0 from the file) in 243 ms"
+        },
+        {
+          "line": 34,
+          "text": "dense prof turn: 500 attn spans: build 15 ms, alloc 41, gpu compute 3122, engram wait 115, readback 309, upload 318, finish build 1"
+        },
+        {
+          "line": 35,
+          "text": "serve: prompt phases: 8244 new = 8244 batch (10.09 s: dense 3.95, experts 5.53, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 36,
+          "text": "serve: prompt 8244 tokens (0 reused, batch) in 10.10 s = 816.2 tok/s (experts 1332239 hit / 0 cpu / 93361 pcie / 0 file)"
+        },
+        {
+          "line": 43,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 44,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.12 s)"
+        },
+        {
+          "line": 45,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.12 s = 148.2 tok/s (experts 4193 hit / 0 cpu / 127 pcie / 0 file)"
+        },
+        {
+          "line": 52,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 53,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 54,
+          "text": "serve: prompt 8244 tokens (8244 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 61,
+          "text": "serve: cache kept for a 25671-token batch (1123 tail slots out, 11353 experts stay)"
+        },
+        {
+          "line": 62,
+          "text": "chunk prof: 160 calls, 310 launches: wall 7274 ms = waits on reads 0 + wave/copy waits 0 + final sync 5760 + other host 1515; reader wall 0 ms; GPU grouped kernels 1239 ms (resident 750); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 63,
+          "text": "chunk prof MMQ: 793 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 31.9 GB of ternary read = 1876 GB/s"
+        },
+        {
+          "line": 64,
+          "text": "resident MMQ stage: 872 waves, 360849254400 exact D2D bytes"
+        },
+        {
+          "line": 65,
+          "text": "serve: cache regrown: 1123 experts back (0 from the file) in 253 ms"
+        },
+        {
+          "line": 66,
+          "text": "dense prof turn: 1180 attn spans: build 39 ms, alloc 53, gpu compute 7987, engram wait 249, readback 781, upload 894, finish build 3"
+        },
+        {
+          "line": 67,
+          "text": "serve: prompt phases: 25671 new = 25671 batch (20.75 s: dense 10.08, experts 9.68, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 68,
+          "text": "serve: prompt 25671 tokens (0 reused, batch) in 20.76 s = 1236.6 tok/s (experts 3288689 hit / 0 cpu / 230431 pcie / 0 file)"
+        },
+        {
+          "line": 76,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 77,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.13 s)"
+        },
+        {
+          "line": 78,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.13 s = 140.1 tok/s (experts 4205 hit / 0 cpu / 115 pcie / 0 file)"
+        },
+        {
+          "line": 85,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 86,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 87,
+          "text": "serve: prompt 25671 tokens (25671 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 94,
+          "text": "serve: cache kept for a 305-token batch (388 tail slots out, 12088 experts stay)"
+        },
+        {
+          "line": 96,
+          "text": "chunk prof: 40 calls, 60 launches: wall 291 ms = waits on reads 0 + wave/copy waits 0 + final sync 106 + other host 186; reader wall 0 ms; GPU grouped kernels 69 ms (resident 67); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 97,
+          "text": "chunk prof MMQ: 383 sub-runs; PTQ1_0 -> Q2_0 transcode 13 ms GPU (inside the grouped kernels) over 18 sub-runs, 27.1 GB of ternary read = 2017 GB/s"
+        },
+        {
+          "line": 98,
+          "text": "resident MMQ stage: 196 waves, 70793994240 exact D2D bytes"
+        },
+        {
+          "line": 99,
+          "text": "serve: cache regrown: 388 experts back (0 from the file) in 81 ms"
+        },
+        {
+          "line": 100,
+          "text": "dense prof turn: 40 attn spans: build 2 ms, alloc 15, gpu compute 165, engram wait 3, readback 17, upload 0, finish build 0"
+        },
+        {
+          "line": 101,
+          "text": "serve: prompt phases: 305 new = 305 batch (1.54 s: dense 0.21, experts 1.22, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 102,
+          "text": "serve: prompt 305 tokens (0 reused, batch) in 1.55 s = 196.5 tok/s (experts 70901 hit / 0 cpu / 2299 pcie / 0 file)"
+        },
+        {
+          "line": 111,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 112,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.36 s)"
+        },
+        {
+          "line": 113,
+          "text": "serve: prompt 363 tokens (296 reused, batch) in 0.36 s = 186.0 tok/s (experts 15933 hit / 0 cpu / 147 pcie / 0 file)"
+        },
+        {
+          "line": 121,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 122,
+          "text": "serve: prompt phases: 61 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 61 as passes (cache open 0.00 s, seed 0.32 s)"
+        },
+        {
+          "line": 123,
+          "text": "serve: prompt 61 tokens (0 reused, batch) in 0.32 s = 188.9 tok/s (experts 14152 hit / 0 cpu / 488 pcie / 0 file)"
+        },
+        {
+          "line": 130,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 131,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.36 s)"
+        },
+        {
+          "line": 132,
+          "text": "serve: prompt 67 tokens (0 reused, batch) in 0.36 s = 186.4 tok/s (experts 15704 hit / 0 cpu / 376 pcie / 0 file)"
+        },
+        {
+          "line": 139,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 140,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 141,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 148,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 149,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 150,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 157,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 158,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 159,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 166,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 167,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 168,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 175,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 176,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 177,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 184,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 185,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 186,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 193,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 194,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 195,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 202,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 203,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 204,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        }
+      ]
+    },
+    {
+      "profile": "local_repeat",
+      "lines": [
+        {
+          "line": 19,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 20,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.31 s)"
+        },
+        {
+          "line": 21,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.31 s = 58.7 tok/s (experts 4118 hit / 0 cpu / 202 pcie / 0 file)"
+        },
+        {
+          "line": 27,
+          "text": "serve: cache kept for a 8244-token batch (1112 tail slots out, 11364 experts stay)"
+        },
+        {
+          "line": 30,
+          "text": "chunk prof: 80 calls, 155 launches: wall 3374 ms = waits on reads 0 + wave/copy waits 0 + final sync 3099 + other host 275; reader wall 0 ms; GPU grouped kernels 539 ms (resident 363); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 31,
+          "text": "chunk prof MMQ: 435 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 34.3 GB of ternary read = 2045 GB/s"
+        },
+        {
+          "line": 32,
+          "text": "resident MMQ stage: 436 waves, 198778613760 exact D2D bytes"
+        },
+        {
+          "line": 33,
+          "text": "serve: cache regrown: 1112 experts back (0 from the file) in 236 ms"
+        },
+        {
+          "line": 34,
+          "text": "dense prof turn: 500 attn spans: build 15 ms, alloc 40, gpu compute 3100, engram wait 151, readback 302, upload 318, finish build 1"
+        },
+        {
+          "line": 35,
+          "text": "serve: prompt phases: 8244 new = 8244 batch (10.00 s: dense 3.95, experts 5.46, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 36,
+          "text": "serve: prompt 8244 tokens (0 reused, batch) in 10.01 s = 823.4 tok/s (experts 1332239 hit / 0 cpu / 93361 pcie / 0 file)"
+        },
+        {
+          "line": 43,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 44,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.13 s)"
+        },
+        {
+          "line": 45,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.13 s = 143.2 tok/s (experts 4193 hit / 0 cpu / 127 pcie / 0 file)"
+        },
+        {
+          "line": 52,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 53,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 54,
+          "text": "serve: prompt 8244 tokens (8244 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 61,
+          "text": "serve: cache kept for a 25671-token batch (1123 tail slots out, 11353 experts stay)"
+        },
+        {
+          "line": 62,
+          "text": "chunk prof: 160 calls, 310 launches: wall 7255 ms = waits on reads 0 + wave/copy waits 0 + final sync 5747 + other host 1508; reader wall 0 ms; GPU grouped kernels 1238 ms (resident 750); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s"
+        },
+        {
+          "line": 63,
+          "text": "chunk prof MMQ: 793 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 22 sub-runs, 31.9 GB of ternary read = 1877 GB/s"
+        },
+        {
+          "line": 64,
+          "text": "resident MMQ stage: 872 waves, 360849254400 exact D2D bytes"
+        },
+        {
+          "line": 65,
+          "text": "serve: cache regrown: 1123 experts back (0 from the file) in 242 ms"
+        },
+        {
+          "line": 66,
+          "text": "dense prof turn: 1180 attn spans: build 34 ms, alloc 56, gpu compute 7863, engram wait 203, readback 767, upload 910, finish build 2"
+        },
+        {
+          "line": 67,
+          "text": "serve: prompt phases: 25671 new = 25671 batch (20.53 s: dense 9.90, experts 9.67, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 68,
+          "text": "serve: prompt 25671 tokens (0 reused, batch) in 20.54 s = 1249.9 tok/s (experts 3288689 hit / 0 cpu / 230431 pcie / 0 file)"
+        },
+        {
+          "line": 76,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 77,
+          "text": "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.12 s)"
+        },
+        {
+          "line": 78,
+          "text": "serve: prompt 18 tokens (0 reused, batch) in 0.12 s = 149.8 tok/s (experts 4205 hit / 0 cpu / 115 pcie / 0 file)"
+        },
+        {
+          "line": 85,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 86,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 87,
+          "text": "serve: prompt 25671 tokens (25671 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 94,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 95,
+          "text": "serve: prompt phases: 61 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 61 as passes (cache open 0.00 s, seed 0.33 s)"
+        },
+        {
+          "line": 96,
+          "text": "serve: prompt 61 tokens (0 reused, batch) in 0.33 s = 182.4 tok/s (experts 14161 hit / 0 cpu / 479 pcie / 0 file)"
+        },
+        {
+          "line": 103,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 104,
+          "text": "serve: prompt phases: 67 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 67 as passes (cache open 0.00 s, seed 0.35 s)"
+        },
+        {
+          "line": 105,
+          "text": "serve: prompt 67 tokens (0 reused, batch) in 0.35 s = 189.7 tok/s (experts 15706 hit / 0 cpu / 374 pcie / 0 file)"
+        },
+        {
+          "line": 112,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 113,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 114,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 121,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 122,
+          "text": "serve: prompt phases: 1 new = 1 passes (0.03 s: dense 0.03, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 123,
+          "text": "serve: prompt 63 tokens (62 reused, passes) in 0.03 s = 35.2 tok/s (experts 240 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 128,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 129,
+          "text": "serve: prompt phases: 61 new = 61 passes (0.34 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 130,
+          "text": "serve: prompt 61 tokens (0 reused, passes) in 0.34 s = 181.3 tok/s (experts 15679 hit / 0 cpu / 161 pcie / 0 file)"
+        },
+        {
+          "line": 138,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 139,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 140,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 146,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 147,
+          "text": "serve: prompt phases: 1 new = 1 passes (0.03 s: dense 0.03, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 148,
+          "text": "serve: prompt 63 tokens (62 reused, passes) in 0.03 s = 36.1 tok/s (experts 240 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 153,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 154,
+          "text": "serve: prompt phases: 67 new = 67 passes (0.47 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 155,
+          "text": "serve: prompt 67 tokens (0 reused, passes) in 0.48 s = 141.1 tok/s (experts 17110 hit / 0 cpu / 170 pcie / 0 file)"
+        },
+        {
+          "line": 163,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 164,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)"
+        },
+        {
+          "line": 165,
+          "text": "serve: prompt 61 tokens (61 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        },
+        {
+          "line": 171,
+          "text": "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0"
+        },
+        {
+          "line": 172,
+          "text": "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)"
+        },
+        {
+          "line": 173,
+          "text": "serve: prompt 67 tokens (67 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+        }
+      ]
+    }
+  ],
+  "gpu_snapshot": "GPU-355373e1-1013-8629-4bee-c64f810da5a4, 141693, 1734, 143771, 117.04, 1980, 3201, 0, 0"
+}

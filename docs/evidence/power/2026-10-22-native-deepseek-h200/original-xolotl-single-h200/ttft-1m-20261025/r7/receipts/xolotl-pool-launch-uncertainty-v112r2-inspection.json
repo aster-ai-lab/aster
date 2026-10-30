@@ -1,0 +1,11 @@
+{
+  "unix": 1792892258.8324099,
+  "fresh_resource_phase": "Running",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "observation": {
+    "unix": 1792892266.2305858,
+    "root_exists": false
+  },
+  "service_launched": false,
+  "allocation_submitted": false
+}

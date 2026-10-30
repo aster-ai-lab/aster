@@ -1,0 +1,153 @@
+{
+  "case": "queue-edit-delete-drain",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "queue-effects",
+      "detail": "three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-UHpQEh/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only QUEUED-SECOND-EDITED. Do not call any tools.                                               2:42 PM    \n                                                                                                                        \n                                                                                                                        \n  ┃  ◆ Thinking…                                                                                                        \n  ┃                                                                                                                     \n  ┃  I need obey latest: Reply only QUEUED-SECOND-EDITED no tools. Now                                                  \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n    ⠸ Thinking… 0.8s                                                                                 10s ⇣13.6k [stop]  \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                 \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13331,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_78858a4159dd4da5a06794cdb048d615",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-23eca0bd-3289-45d8-bb74-b59be177caec",
+            "thread_id": "5186bcfd-80d3-4607-ab83-08689a7d0cce",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_78858a4159dd4da5a06794cdb048d615",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-23eca0bd-3289-45d8-bb74-b59be177caec",
+            "thread_id": "5186bcfd-80d3-4607-ab83-08689a7d0cce",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:a7e86aa973820f26fe6e32b3de6b4132bc87d9e76009b592204b1e8f84e0ff9e",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"QUEUE-PROOF-c4005966-f256-4934-9c02-840a2a3976d7\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":48,\"captured_bytes\":48,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"sleep 20; cat queue-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":48,\"projected_bytes\":48,\"original_estimated_tokens\":12,\"projected_estimated_tokens\":12,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b7d4c6dc1c27a0e196da1e13b9dea7e39459fcb17f910131b90ee484e3d297f2\",\"projected_digest\":\"sha256:b7d4c6dc1c27a0e196da1e13b9dea7e39459fcb17f910131b90ee484e3d297f2\",\"repeat_key\":\"sha256:b7d4c6dc1c27a0e196da1e13b9dea7e39459fcb17f910131b90ee484e3d297f2\",\"content_ref\":\"inline:sha256:b7d4c6dc1c27a0e196da1e13b9dea7e39459fcb17f910131b90ee484e3d297f2\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9cebd38ce84bbb08b4977682a25534e0c587595e834f1c21a4848b25f9c3e84e\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13548,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:48ada862cde807ede9e5313020bffea8cc4f639fd62cf9e5fdc2f9ed56104bd6"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "1821f388b0f995916fac4300055337d9205ff127fa8a4a26379c372b270af061"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13622,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 13,
+          "digest": "424ea562a93e208d0a46280900dd5ea6415b80bb302175168328eff645b9a57f"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13678,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 18,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 17,
+          "digest": "c2b58800d5ba790f453c00bc8cf793d5673f802e636f8656d1c4e9c4c2ac8ec5"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

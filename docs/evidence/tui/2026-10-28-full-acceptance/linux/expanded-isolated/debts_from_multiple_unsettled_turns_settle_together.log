@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::long_horizon_capabilities::debts_from_multiple_unsettled_turns_settle_together' (4370) panicked at crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs:1567:10:
+the accumulated debt settles with one verified suite run: Session("completion gate: workspace mutation c314718cad85512959a8fe541918faa4fd91ecb302db18892650df0eb2fd3127 (src/impl.mjs, src/notes.mjs) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): [{\"command\":\"node test.mjs\",\"covers\":[\"src/**\"],\"id\":\"node-suite\"}]")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::long_horizon_capabilities::debts_from_multiple_unsettled_turns_settle_together ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::long_horizon_capabilities::debts_from_multiple_unsettled_turns_settle_together
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 2.29s
+

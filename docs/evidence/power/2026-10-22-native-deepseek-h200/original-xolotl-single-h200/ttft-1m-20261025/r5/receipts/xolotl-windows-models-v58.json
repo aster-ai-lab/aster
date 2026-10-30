@@ -1,0 +1,27 @@
+{
+  "unix": 1792878255.641902,
+  "status": 200,
+  "data": {
+    "object": "list",
+    "data": [
+      {
+        "id": "deepseek-v4.1-flash-1017-xq",
+        "object": "model",
+        "status": {
+          "value": "loaded"
+        },
+        "meta": {
+          "n_ctx": 1048576
+        },
+        "architecture": {
+          "input_modalities": [
+            "text"
+          ],
+          "output_modalities": [
+            "text"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "unix": 1792929251.8231084,
+  "phase": "passed",
+  "CPU_profiles": [
+    {
+      "profile": "release",
+      "passed": true
+    },
+    {
+      "profile": "asan-ubsan",
+      "passed": true
+    }
+  ],
+  "concurrent_stable_lookups_per_profile": 8000,
+  "pre_main_mode_cases": 13,
+  "source_type_changed_and_absence_cases": true,
+  "entry_and_byte_evictions_force_recapture": true,
+  "oversized_signatures_never_stable": true,
+  "GPU_executed": false,
+  "model_executed": false,
+  "formal_changed": false,
+  "source_files": [
+    {
+      "file": "aster_graph_source_type_v338.hpp",
+      "bytes": 1441,
+      "sha256": "22ca0fe02c44b564774ce2e7e75f522b42ced314da99ca1dffb9ca84248c4ad7"
+    },
+    {
+      "file": "graph_source_type_mode_v338.cpp",
+      "bytes": 373,
+      "sha256": "3c5186ff7936ec747cfc08e22de41110919ab9ca609b1be706a9841c4224526b"
+    },
+    {
+      "file": "test_graph_source_type_v338.cpp",
+      "bytes": 1738,
+      "sha256": "b522f59da109e1b67d40b71f7f40cb5a27824207aad9b6365b2f49b3e49da126"
+    }
+  ]
+}

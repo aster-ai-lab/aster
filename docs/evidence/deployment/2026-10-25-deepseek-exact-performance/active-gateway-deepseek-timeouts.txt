@@ -1,0 +1,11 @@
+block /inference/routes/models["deepseek-v4.1-flash"]: keys=["model_id"]
+block /inference/routes/models["deepseek-v4.1-flash"]/targets: keys=["priority", "weight", "service", "upstream_model", "api_key_env"]
+/inference/routes/models["deepseek-v4.1-flash"]/targets.service=String("power-gpu-6-deepseek")
+/inference/routes/models["deepseek-v4.1-flash"]/targets.upstream_model=String("deepseek-v41-flash-1017-xq-1m")
+block /services["power-gpu-6-deepseek"]: keys=[]
+block /services["power-gpu-6-deepseek"]/load_balancer: keys=["servers", "request_timeout", "stream_idle_timeout", "stream_total_timeout", "strategy"]
+object /services["power-gpu-6-deepseek"]/load_balancer.servers[0]: keys=["url"]
+/services["power-gpu-6-deepseek"]/load_balancer.request_timeout=String("7200s")
+/services["power-gpu-6-deepseek"]/load_balancer.stream_idle_timeout=String("5m")
+/services["power-gpu-6-deepseek"]/load_balancer.stream_total_timeout=String("21600s")
+block /services["power-gpu-6-deepseek"]/load_balancer/health_check: keys=["healthy_threshold", "path", "interval", "unhealthy_threshold", "timeout"]

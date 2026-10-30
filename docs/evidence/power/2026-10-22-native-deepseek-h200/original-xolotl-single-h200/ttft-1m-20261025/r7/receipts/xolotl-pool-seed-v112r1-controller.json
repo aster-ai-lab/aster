@@ -1,0 +1,123 @@
+{
+  "unix": 1792891349.4335926,
+  "phase": "requires_inspection",
+  "profiles": [
+    {
+      "profile": "pool_off",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 37.10260251071304,
+          "cold_ttft_seconds": 17.466755617875606,
+          "restored_seconds": 25.522302580066025,
+          "restored_ttft_seconds": 0.018420793116092682,
+          "repeated_seconds": 22.976548321079463,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 52.30066881002858,
+          "cold_ttft_seconds": 29.44372253632173,
+          "restored_seconds": 26.073732452001423,
+          "restored_ttft_seconds": 0.048779203090816736,
+          "repeated_seconds": 23.168938744347543,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1250994282308966,
+        "ttft_p95_seconds": 0.15754788427148014,
+        "api_wall_completion_tok_s": 85.24627193967657,
+        "stream_interval_tok_s_estimate": 94.86655441747784
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 107.95972601091489,
+        "api_wall_completion_tok_s": 75.88014811348981,
+        "stream_interval_tok_s_estimate": 75.90878406361936,
+        "ttft_p50_seconds": 0.010812310501933098,
+        "ttft_min_seconds": 0.01010194281116128,
+        "ttft_max_seconds": 0.011443051043897867
+      }
+    },
+    {
+      "profile": "pool_on",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 33.62289581075311,
+          "cold_ttft_seconds": 14.940016196109354,
+          "restored_seconds": 17.743096912279725,
+          "restored_ttft_seconds": 0.028363704215735197,
+          "repeated_seconds": 14.855859884992242,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 46.123465979937464,
+          "cold_ttft_seconds": 27.07826703088358,
+          "restored_seconds": 17.348084321711212,
+          "restored_ttft_seconds": 0.05694234697148204,
+          "repeated_seconds": 15.2323676222004,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1331204674206674,
+        "ttft_p95_seconds": 0.16394843976013362,
+        "api_wall_completion_tok_s": 81.59944632673421,
+        "stream_interval_tok_s_estimate": 93.2901974790026
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.71292388765141,
+        "api_wall_completion_tok_s": 75.35442619928025,
+        "stream_interval_tok_s_estimate": 75.38407085733421,
+        "ttft_p50_seconds": 0.010500052012503147,
+        "ttft_min_seconds": 0.010207006242126226,
+        "ttft_max_seconds": 0.01165191875770688
+      }
+    }
+  ],
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "goal_complete": false,
+  "performance_300_qualified": false,
+  "resumes": "xolotl-pool-seed-v112-controller.json",
+  "resume_reason": "Retained local Windows atomic-replace refusal; no GPU/client failure or restart",
+  "profile": "pool_off_repeat",
+  "observed_unix": 1792892052.4436846,
+  "service_phase": "stopped",
+  "client_phase": "failed",
+  "client_tests": 13,
+  "error": "RuntimeError: launch_pool_service_v108.frozen.py ('pool_off_repeat',) failed: Traceback (most recent call last):\n  File \"D:\\code\\aster\\target\\h200-native\\launch_pool_service_v108.frozen.py\", line 88, in <module>\n    try:record.update(process=owned(code),phase='launched')\n                              ^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 93, in owned\n    return jump(wrapper,timeout)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 12, in jump\n    if p.returncode:raise RuntimeError('jump failed: '+p.stderr[-3000:])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: jump failed: client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\nTraceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\n  File \"<stdin>\", line 4, in cli\nRuntimeError: owned CLI failed exit 1: error: websocket: bad handshake\n\n\n",
+  "finished_unix": 1792892052.4436846
+}

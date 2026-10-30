@@ -1,0 +1,27 @@
+{
+  "case": "history-help-capability",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:32b8c01e8224e33564c3f38d03c84dffcd465d95:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "capability-help",
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0RuiK1\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                      ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                                        │                                                                              │                                        │  Prompt history                                                              │                                        │  ↑                                                                           │                                        │                                                                              │                                        │  Recalls previously sent prompts.                                            │                                        │                                                                              │                                        │  Press Up on an empty prompt to browse earlier prompts, newest first; each   │                                        │  move live-populates the composer so you can edit and resend.                │                                        │                                                                              │                                        │  With prompts queued, Up moves focus into the queue pane on the last row     │                                        │  instead.                                                                    │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                      ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮    │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

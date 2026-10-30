@@ -1,0 +1,76 @@
+name: Publish aster-cli channel
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Published aster-cli version (x.y.z)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aster-cli-stable
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Publish a verified CLI channel
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "version must be x.y.z" >&2
+            exit 2
+          fi
+          release="aster-cli-v${VERSION}"
+          test "$(gh release view "$release" --json isDraft --jq .isDraft)" = false
+          test "$(gh release view "$release" --json isPrerelease --jq .isPrerelease)" = false
+          gh release download "$release" --pattern latest.json --output latest.json --clobber
+          python3 - "$VERSION" latest.json <<'PY'
+          import json
+          import re
+          import sys
+
+          version, path = sys.argv[1:]
+          with open(path, encoding="utf-8") as source:
+              manifest = json.load(source)
+          if manifest.get("version") != version or manifest.get("tag") != f"aster-cli-v{version}":
+              raise SystemExit("channel manifest identity mismatch")
+          assets = manifest.get("assets")
+          if not isinstance(assets, dict) or set(assets) != {"macos", "linux", "windows"}:
+              raise SystemExit("channel manifest platform set mismatch")
+          for platform, extension in (("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")):
+              entry = assets[platform]
+              expected = f"aster-cli-v{version}-{platform}.{extension}"
+              if entry.get("name") != expected or not re.fullmatch(r"[0-9a-f]{64}", entry.get("sha256", "")):
+                  raise SystemExit(f"channel manifest asset mismatch: {platform}")
+          PY
+          latest_tag="$(gh api "repos/${GH_REPO}/releases/latest" --jq .tag_name)"
+          if [[ "$latest_tag" != v[0-9]* ]]; then
+            echo "repository Latest is not an Aster desktop release: $latest_tag" >&2
+            exit 1
+          fi
+          if gh release view aster-cli-stable >/dev/null 2>&1; then
+            gh release upload aster-cli-stable latest.json --clobber
+          else
+            built="$(gh api "repos/${GH_REPO}/commits/${release}" --jq .sha)"
+            gh release create aster-cli-stable latest.json \
+              --target "$built" \
+              --title "Aster CLI stable channel" \
+              --notes "Rolling CLI channel. latest.json names the current versioned release." \
+              --latest=false
+          fi
+          # Pre-stable installers still resolve repository Latest. Keep their
+          # compatibility manifest current without coupling new clients to it.
+          gh release upload "$latest_tag" latest.json --clobber

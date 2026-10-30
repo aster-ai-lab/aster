@@ -9,6 +9,9 @@ continuations.
   `files=[{path, offset?, limit?}]` and optional `max_output_bytes`; never send
   `file_path` and `files` together. If `metadata.batch.continuation` is non-empty,
   copy that exact array into the next call's `files` and stop when it is empty.
+  Numbered text is a display, not a byte-preserving file representation. When
+  exact bytes matter, verify raw byte lengths and contents or digests with
+  tools; preserve encoding and the presence or absence of a final newline.
 - Honor the current role and task restrictions before using any schema. A tool
   being visible describes a capability; it does not grant permission to mutate
   files or to ignore a read-only, planning, or verification role.

@@ -1,0 +1,128 @@
+{
+  "assertions_finished": false,
+  "case": "read",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13324,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2aecbd85-f2a0-4c36-a508-a39543df3b34",
+            "thread_id": "103107f0-a21c-4e37-b61d-88b97d483b1d"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_641f8118ae11427c812769e93a586dde",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2aecbd85-f2a0-4c36-a508-a39543df3b34",
+            "thread_id": "103107f0-a21c-4e37-b61d-88b97d483b1d"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_641f8118ae11427c812769e93a586dde",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-READ-28108cd0-fb5d-4ebe-a22a-38a2f496ea1e\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:6fa69dccff85616dd8ad4ec7a4fcd020bd1a64ead07b3c09ee129376b54c25a7\",\"content_ref\":\"inline:sha256:6fa69dccff85616dd8ad4ec7a4fcd020bd1a64ead07b3c09ee129376b54c25a7\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":54,\"original_estimated_tokens\":14,\"projected_bytes\":54,\"projected_digest\":\"sha256:6fa69dccff85616dd8ad4ec7a4fcd020bd1a64ead07b3c09ee129376b54c25a7\",\"projected_estimated_tokens\":14,\"repeat_key\":\"sha256:6fa69dccff85616dd8ad4ec7a4fcd020bd1a64ead07b3c09ee129376b54c25a7\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":54,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"read-proof.txt\"]},\"observation_digest\":\"sha256:2afc57a2db2c2ef3b513e888b3c21afcfbd789568f776ffe4629957cab9a6b72\"}",
+        "prepared_digest": "sha256:7385fa299af14a3803b627ea0f7d62169c2dd6ced5f92deee8176e17d583e50f"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13462,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "be73b735336fcf06745131cfaaf279d211b46a1b403c72cd5ba0000b0debabf7",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:05127f163f6e2b4fd803e7429b1268f74af5054098008f9ea1ba9ea7c77d5209"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13528,
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7d6af7fd9d387ae1d578c3390a5422d90055bb46fe13c7458f4a15c99654047d",
+          "seq": 13
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "                                                                                                                        \n  /t/aster-kimi-rQhSUa/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ i/quit                                                                                                6:02 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 4.3s                                                                                                 \n                                                                                                                        \n     Goodbye!                                                                                                6:02 PM    \n                                                                                                                        \n     Worked for 10s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        ",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:eabc7a8cc123c37583ec3f5fb33fbb63e945a059:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=26786",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-rQhSUa/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool to read read-proof.txt. Reply with its exact contents. Do not modify any file or    6:02 PM    \n       call other tools.                                                                                                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-READ-28108cd0-fb5d-4ebe-a22a-38a2f496ea1e                                                          6:02 PM    \n                                                                                                                        \n     Worked for 10s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "actual read receipt and unseen file token in settled assistant reply",
+      "name": "live-read",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-rQhSUa/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool to read read-proof.txt. Reply with its exact contents. Do not modify any file or    6:02 PM    \n       call other tools.                                                                                                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-READ-28108cd0-fb5d-4ebe-a22a-38a2f496ea1e                                                          6:02 PM    \n                                                                                                                        \n     Worked for 10s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    }
+  ],
+  "panicked": true
+}

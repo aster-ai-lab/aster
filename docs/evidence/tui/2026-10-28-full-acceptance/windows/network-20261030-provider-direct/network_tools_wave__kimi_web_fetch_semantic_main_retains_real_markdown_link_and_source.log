@@ -1,0 +1,10 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source ... ORACLE case=network-fetch-main name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=network-fetch-main name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40609
+ORACLE case=network-fetch-main name=web-fetch-real-main-and-link result=pass detail=the real HTTP response is converted to Markdown from its semantic main; unseen Unicode content and the actual link survive while header, footer and script do not; the source anchor matches the request
+ORACLE case=network-fetch-main name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 30.73s
+

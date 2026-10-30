@@ -1,0 +1,715 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-checklist-exit",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-checklist-first.json"
+          },
+          "id": "call_69844d3dac66424aa12157c25379b322",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13336,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_69844d3dac66424aa12157c25379b322",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_69844d3dac66424aa12157c25379b322",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"plan\\\":[{\\\"id\\\":\\\"row-a\\\",\\\"status\\\":\\\"in_progress\\\",\\\"step\\\":\\\"CHECKLIST-FIRST\\\"},{\\\"id\\\":\\\"row-b\\\",\\\"status\\\":\\\"pending\\\",\\\"step\\\":\\\"CHECKLIST-SECOND\\\"},{\\\"id\\\":\\\"row-old\\\",\\\"status\\\":\\\"pending\\\",\\\"step\\\":\\\"CHECKLIST-REMOVED\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-checklist-first.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":237},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":237,\"projected_bytes\":237,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"projected_digest\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"repeat_key\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"content_ref\":\"inline:sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6a1fed5d47d0ac7ee70afe9e9053bae8ca86616a786c05de1623718c85046d44\"}",
+        "prepared_digest": "sha256:2f0b1034711541ac6dfed75c325f59b0d4e505d5891850a27146488c7f36bd81",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "plan": [
+              {
+                "id": "row-a",
+                "status": "in_progress",
+                "step": "CHECKLIST-FIRST"
+              },
+              {
+                "id": "row-b",
+                "status": "pending",
+                "step": "CHECKLIST-SECOND"
+              },
+              {
+                "id": "row-old",
+                "status": "pending",
+                "step": "CHECKLIST-REMOVED"
+              }
+            ]
+          },
+          "id": "call_6782efe5445a481dab40d551061487fb",
+          "name": "update_plan"
+        },
+        "has_text": false,
+        "prompt_tokens": 13567,
+        "text": null,
+        "tool": "update_plan"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_6782efe5445a481dab40d551061487fb",
+          "turn": 1
+        },
+        "tool": "update_plan"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_6782efe5445a481dab40d551061487fb",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Updated plan: 0/3 done · in progress: CHECKLIST-FIRST\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"projected_digest\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"repeat_key\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"content_ref\":\"inline:sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:757f426ed5fcaad9484295829ddc21cc5f47d04b484f6f1354ff319c0fcac700\"}",
+        "prepared_digest": "sha256:2b3385a3bffbaea62d50f58df8fe5e46a8662ccc8dade6dcb7e50815535a2299",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13724,
+        "text": "Updated plan: 0/3 done · in progress: CHECKLIST-FIRST",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "3dcff18271fadc90a38db0d65c359a562ae0631476b66d07397aa56d8d26aee3",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:dea429ac1f1e291be1e40d340225109900c5cb5c58f7f75cdc4a17e7addf2c71",
+          "sha256:d01a86956c271231c7b060b7c1896f06b0a2c11c7375928a12f1c175574360b2"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-checklist-replace.json"
+          },
+          "id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13816,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 17,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"plan\\\":[{\\\"id\\\":\\\"row-b\\\",\\\"status\\\":\\\"completed\\\",\\\"step\\\":\\\"CHECKLIST-SECOND\\\"},{\\\"id\\\":\\\"row-a\\\",\\\"status\\\":\\\"cancelled\\\",\\\"step\\\":\\\"CHECKLIST-FIRST\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-checklist-replace.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":174},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":174,\"projected_bytes\":174,\"original_estimated_tokens\":44,\"projected_estimated_tokens\":44,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"projected_digest\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"repeat_key\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"content_ref\":\"inline:sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:1e906af5c8a81a98966957dda513865ce9662ba4cd9a53368b71db797f31339e\"}",
+        "prepared_digest": "sha256:01491c29e1f6cda49a3f16b6377850570f2ee04bcc8799959a20bd56cbaca622",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 18,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "plan": [
+              {
+                "id": "row-b",
+                "status": "completed",
+                "step": "CHECKLIST-SECOND"
+              },
+              {
+                "id": "row-a",
+                "status": "cancelled",
+                "step": "CHECKLIST-FIRST"
+              }
+            ]
+          },
+          "id": "call_5811f2d2644b4af683b640e42b30747a",
+          "name": "update_plan"
+        },
+        "has_text": false,
+        "prompt_tokens": 13969,
+        "text": null,
+        "tool": "update_plan"
+      },
+      "seq": 19,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_5811f2d2644b4af683b640e42b30747a",
+          "turn": 2
+        },
+        "tool": "update_plan"
+      },
+      "seq": 20,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+            "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_5811f2d2644b4af683b640e42b30747a",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Updated plan: 1/2 done\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":22,\"projected_bytes\":22,\"original_estimated_tokens\":6,\"projected_estimated_tokens\":6,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"projected_digest\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"repeat_key\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"content_ref\":\"inline:sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:32a41296df9c7614ac38d28d6e0da923de208a78182de91791ea999100ddb0a5\"}",
+        "prepared_digest": "sha256:5ecf21c26985889343c91da54277f68952f47f13c639e81fe369ef280e045fce",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 21,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14097,
+        "text": "Updated plan: 1/2 done",
+        "tool": null
+      },
+      "seq": 22,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "01c0f7b392eca84dd64e383dd57a5bb9809016dba48a993d3fba62e297759aed",
+          "seq": 22
+        },
+        "receipt_keys": [
+          "sha256:b41fdcf33b2e7758f84a5c9d2188c43f553cd3845e7f91a0acd0e46097b970bf",
+          "sha256:2ef737d0e7f06d918551c2205326ec1682901264b65bec818b6f4ca9f7d81e4b"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 23,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40627",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-sVkTP9\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-checklist-first.json once. Call update_plan exactly once with its exact JSON object as  12:58 PM           arguments. This is a UI checklist fixture. Report the returned checklist result without performing                      the listed work or calling other tools.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Updated plan: 0/3 done · in progress: CHECKLIST-FIRST                                                  12:59 PM                                                                                                                                 Worked for 23s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "a real update_plan receipt and ACP projection render all three requested checklist rows",
+      "name": "checklist-first-ui",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-sVkTP9\\workspace                                                                        13K / 128K   ┌                                                                                                                    x  │   ▶ CHECKLIST-FIRST                                                                                                │  │   □ CHECKLIST-SECOND                                                                                               │  │   □ CHECKLIST-REMOVED                                                                                              │  └                                                                                                                    ┘                                                                                                                              > Read request-checklist-first.json once. Call update_plan exactly once with its exact JSON object as  12:58 PM           arguments. This is a UI checklist fixture. Report the returned checklist result without performing                      the listed work or calling other tools.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Updated plan: 0/3 done · in progress: CHECKLIST-FIRST                                                  12:59 PM                                                                                                                                 Worked for 23s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ > Build anything                                                                                                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            h:hide done  │  Ctrl+x:shortcuts                                                                                                                                                                                                              "
+    },
+    {
+      "detail": "facts=10 model_turns=3 prompt_tokens=41882",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-sVkTP9\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-checklist-replace.json once. Call update_plan exactly once with its exact JSON object   12:59 PM           as arguments. This replaces the UI checklist fixture. Report the returned result without performing                     the listed work or calling other tools.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Updated plan: 1/2 done                                                                                 12:59 PM   █                                                                                                                       █     Worked for 16s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "replacement removes the old row, changes the order and projects completed/cancelled statuses independently of Plan review mode",
+      "name": "checklist-replacement-ui",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-sVkTP9\\workspace                                                                        14K / 128K   ┌                                                                                                                    x  │   √ CHECKLIST-SECOND                                                                                               │  │   x CHECKLIST-FIRST                                                                                                │ \n └                                                                                                                    ┘                                                                                                                              > Read request-checklist-replace.json once. Call update_plan exactly once with its exact JSON object   12:59 PM           as arguments. This replaces the UI checklist fixture. Report the returned result without performing                     the listed work or calling other tools.                                                                                                                                                                                                                                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   Updated plan: 1/2 done                                                                                 12:59 PM   █                                                                                                                       █     Worked for 16s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ > Build anything                                                                                                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            h:hide done  │  Ctrl+x:shortcuts                                                                                                                                                                                                              "
+    },
+    {
+      "checkpoint": "tool-wave-checklist",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-checklist-first.json"
+              },
+              "id": "call_69844d3dac66424aa12157c25379b322",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13336,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_69844d3dac66424aa12157c25379b322",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_69844d3dac66424aa12157c25379b322",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"plan\\\":[{\\\"id\\\":\\\"row-a\\\",\\\"status\\\":\\\"in_progress\\\",\\\"step\\\":\\\"CHECKLIST-FIRST\\\"},{\\\"id\\\":\\\"row-b\\\",\\\"status\\\":\\\"pending\\\",\\\"step\\\":\\\"CHECKLIST-SECOND\\\"},{\\\"id\\\":\\\"row-old\\\",\\\"status\\\":\\\"pending\\\",\\\"step\\\":\\\"CHECKLIST-REMOVED\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-checklist-first.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":237},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":237,\"projected_bytes\":237,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"projected_digest\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"repeat_key\":\"sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"content_ref\":\"inline:sha256:4b6db475ad8f8391ba4025ba095118cd8fcb5cc9bf337328cc72b34b8082861e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6a1fed5d47d0ac7ee70afe9e9053bae8ca86616a786c05de1623718c85046d44\"}",
+            "prepared_digest": "sha256:2f0b1034711541ac6dfed75c325f59b0d4e505d5891850a27146488c7f36bd81",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "plan": [
+                  {
+                    "id": "row-a",
+                    "status": "in_progress",
+                    "step": "CHECKLIST-FIRST"
+                  },
+                  {
+                    "id": "row-b",
+                    "status": "pending",
+                    "step": "CHECKLIST-SECOND"
+                  },
+                  {
+                    "id": "row-old",
+                    "status": "pending",
+                    "step": "CHECKLIST-REMOVED"
+                  }
+                ]
+              },
+              "id": "call_6782efe5445a481dab40d551061487fb",
+              "name": "update_plan"
+            },
+            "has_text": false,
+            "prompt_tokens": 13567,
+            "text": null,
+            "tool": "update_plan"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_6782efe5445a481dab40d551061487fb",
+              "turn": 1
+            },
+            "tool": "update_plan"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b766358-62fa-4470-a15d-ef7cca23b190",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_6782efe5445a481dab40d551061487fb",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Updated plan: 0/3 done · in progress: CHECKLIST-FIRST\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"projected_digest\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"repeat_key\":\"sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"content_ref\":\"inline:sha256:0e49182a3aeb02778f61c235de58a2f7a16b8568fc4d4aa4713dc75637d3adfa\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:757f426ed5fcaad9484295829ddc21cc5f47d04b484f6f1354ff319c0fcac700\"}",
+            "prepared_digest": "sha256:2b3385a3bffbaea62d50f58df8fe5e46a8662ccc8dade6dcb7e50815535a2299",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13724,
+            "text": "Updated plan: 0/3 done · in progress: CHECKLIST-FIRST",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "3dcff18271fadc90a38db0d65c359a562ae0631476b66d07397aa56d8d26aee3",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:dea429ac1f1e291be1e40d340225109900c5cb5c58f7f75cdc4a17e7addf2c71",
+              "sha256:d01a86956c271231c7b060b7c1896f06b0a2c11c7375928a12f1c175574360b2"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-checklist-replace.json"
+              },
+              "id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13816,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 17,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_86fec90cad8146f49e9bbdefbbb17f34",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"plan\\\":[{\\\"id\\\":\\\"row-b\\\",\\\"status\\\":\\\"completed\\\",\\\"step\\\":\\\"CHECKLIST-SECOND\\\"},{\\\"id\\\":\\\"row-a\\\",\\\"status\\\":\\\"cancelled\\\",\\\"step\\\":\\\"CHECKLIST-FIRST\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-checklist-replace.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":174},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":174,\"projected_bytes\":174,\"original_estimated_tokens\":44,\"projected_estimated_tokens\":44,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"projected_digest\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"repeat_key\":\"sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"content_ref\":\"inline:sha256:5efe60c1efc1b322a0ec329d6085b36bc6dedfa2f6ffb2d06e526ea7959f65c5\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:1e906af5c8a81a98966957dda513865ce9662ba4cd9a53368b71db797f31339e\"}",
+            "prepared_digest": "sha256:01491c29e1f6cda49a3f16b6377850570f2ee04bcc8799959a20bd56cbaca622",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 18,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "plan": [
+                  {
+                    "id": "row-b",
+                    "status": "completed",
+                    "step": "CHECKLIST-SECOND"
+                  },
+                  {
+                    "id": "row-a",
+                    "status": "cancelled",
+                    "step": "CHECKLIST-FIRST"
+                  }
+                ]
+              },
+              "id": "call_5811f2d2644b4af683b640e42b30747a",
+              "name": "update_plan"
+            },
+            "has_text": false,
+            "prompt_tokens": 13969,
+            "text": null,
+            "tool": "update_plan"
+          },
+          "seq": 19,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_5811f2d2644b4af683b640e42b30747a",
+              "turn": 2
+            },
+            "tool": "update_plan"
+          },
+          "seq": 20,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b3d87dcb-0a6a-4e0e-8ef8-118e7e244ecd",
+                "thread_id": "39586df8-a97e-4000-99a8-397c5e2df781"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_5811f2d2644b4af683b640e42b30747a",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Updated plan: 1/2 done\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":22,\"projected_bytes\":22,\"original_estimated_tokens\":6,\"projected_estimated_tokens\":6,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"projected_digest\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"repeat_key\":\"sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"content_ref\":\"inline:sha256:a919fde18d41da240c8772046425c27b3337a929ade25d260a0789ad40f69fba\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:32a41296df9c7614ac38d28d6e0da923de208a78182de91791ea999100ddb0a5\"}",
+            "prepared_digest": "sha256:5ecf21c26985889343c91da54277f68952f47f13c639e81fe369ef280e045fce",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 21,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14097,
+            "text": "Updated plan: 1/2 done",
+            "tool": null
+          },
+          "seq": 22,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "01c0f7b392eca84dd64e383dd57a5bb9809016dba48a993d3fba62e297759aed",
+              "seq": 22
+            },
+            "receipt_keys": [
+              "sha256:b41fdcf33b2e7758f84a5c9d2188c43f553cd3845e7f91a0acd0e46097b970bf",
+              "sha256:2ef737d0e7f06d918551c2205326ec1682901264b65bec818b6f4ca9f7d81e4b"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 23,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "39586df8-a97e-4000-99a8-397c5e2df781"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

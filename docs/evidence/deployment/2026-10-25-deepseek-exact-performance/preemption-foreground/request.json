@@ -1,0 +1,1 @@
+{"messages":[{"content":"Hi. Reply with exactly Hi.","queuePosition":1,"agent":"owned-foreground-proof","queueTotal":2,"role":"user","startsNewUserRequest":true}],"stream":false,"max_tokens":128,"temperature":0,"model":"deepseek-v4.1-flash","seed":42}

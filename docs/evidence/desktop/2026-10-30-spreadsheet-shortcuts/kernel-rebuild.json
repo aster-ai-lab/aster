@@ -1,0 +1,9 @@
+{
+  "source": "packages/office/generated/office-kernel.wasm",
+  "beforeSha256": "d0ccf6224714510c5a5dad16c5a8ff8c0278981e418700e89bdf53c6a3183016",
+  "rebuiltSha256": "6294860a532ac323162dd4ffbc7bd16f81f30e6416dc35709c3bf1e78792b62f",
+  "beforeBytes": 1481411,
+  "rebuiltBytes": 1482777,
+  "includedInLocaleChange": false,
+  "reason": "The existing Office build regenerated the Rust kernel. No Rust kernel source changes belong to the locale fix; keep the committed artifact unchanged."
+}

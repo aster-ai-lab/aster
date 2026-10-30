@@ -1,0 +1,390 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-task-children-traced",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-task-pair.json"
+          },
+          "id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13223,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+            "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+            "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allow_partial_failure\\\":false,\\\"tasks\\\":[{\\\"agent\\\":\\\"explore\\\",\\\"description\\\":\\\"ACCEPTANCE-CHILD-A\\\",\\\"max_steps\\\":4,\\\"prompt\\\":\\\"Use read exactly once to read child-a.txt and reply with its exact contents. Do not call other tools, modify files, or read child-b.txt.\\\"},{\\\"agent\\\":\\\"explore\\\",\\\"description\\\":\\\"ACCEPTANCE-CHILD-B\\\",\\\"max_steps\\\":4,\\\"prompt\\\":\\\"Use read exactly once to read child-b.txt and reply with its exact contents. Do not call other tools, modify files, or read child-a.txt.\\\"}],\\\"timeout_ms\\\":120000}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-task-pair.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":536},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":536,\"projected_bytes\":536,\"original_estimated_tokens\":134,\"projected_estimated_tokens\":134,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"projected_digest\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"repeat_key\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"content_ref\":\"inline:sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:09c532f96417f12bb6e7be9931ba26b3747e66372ae36b9201f04a49f8c1ec4d\"}",
+        "prepared_digest": "sha256:dad23733e3adc0048724d6902e0dd28228cab43885f2f029313d9e10797d8eb7",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allow_partial_failure": false,
+            "tasks": [
+              {
+                "agent": "explore",
+                "description": "ACCEPTANCE-CHILD-A",
+                "max_steps": 4,
+                "prompt": "Use read exactly once to read child-a.txt and reply with its exact contents. Do not call other tools, modify files, or read child-b.txt."
+              },
+              {
+                "agent": "explore",
+                "description": "ACCEPTANCE-CHILD-B",
+                "max_steps": 4,
+                "prompt": "Use read exactly once to read child-b.txt and reply with its exact contents. Do not call other tools, modify files, or read child-a.txt."
+              }
+            ],
+            "timeout_ms": 120000
+          },
+          "id": "call_13cbafc54f1546089af4e4dd06201ff2",
+          "name": "task"
+        },
+        "has_text": false,
+        "prompt_tokens": 13535,
+        "text": null,
+        "tool": "task"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+            "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_13cbafc54f1546089af4e4dd06201ff2",
+          "turn": 1
+        },
+        "tool": "task"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+            "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_13cbafc54f1546089af4e4dd06201ff2",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Executed 2 tasks concurrently:\\n\\n--- Task 1 (explore) [OK] ---\\nTask completed: task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nAgent: explore\\nSession: task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nTask ID: task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nArtifact ID: task-output:task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nArtifact URI: a3s://tasks/task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f/runs/task-da8aab05-b458-432d-af82-a7e04bcb8c4f/output\\nOutput:\\nCHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\\n\\n--- Task 2 (explore) [OK] ---\\nTask completed: task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nAgent: explore\\nSession: task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nTask ID: task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nArtifact ID: task-output:task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nArtifact URI: a3s://tasks/task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/runs/task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/output\\nOutput:\\nCHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654\\n\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"task_count\":2,\"result_count\":2,\"success_count\":2,\"failed_count\":0,\"all_success\":true,\"partial_failure\":false,\"allow_partial_failure\":false,\"timeout_ms\":120000,\"timed_out\":false,\"min_success_count\":null,\"returned_early\":false,\"duration_ms\":15313,\"results\":[{\"task_id\":\"task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"session_id\":\"task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"agent\":\"explore\",\"success\":true,\"error_message\":null,\"output_excerpt\":\"CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\",\"structured\":null,\"source_anchors\":[{\"tool\":\"read\",\"url_or_path\":\"child-a.txt\"}],\"output_bytes\":44,\"truncated_for_context\":false,\"artifact_id\":\"task-output:task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"artifact_uri\":\"a3s://tasks/task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f/runs/task-da8aab05-b458-432d-af82-a7e04bcb8c4f/output\"},{\"task_id\":\"task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"session_id\":\"task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"agent\":\"explore\",\"success\":true,\"error_message\":null,\"output_excerpt\":\"CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654\",\"structured\":null,\"source_anchors\":[{\"tool\":\"read\",\"url_or_path\":\"child-b.txt\"}],\"output_bytes\":51,\"truncated_for_context\":false,\"artifact_id\":\"task-output:task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"artifact_uri\":\"a3s://tasks/task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/runs/task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/output\"}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":971,\"projected_bytes\":971,\"original_estimated_tokens\":243,\"projected_estimated_tokens\":243,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"projected_digest\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"repeat_key\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"content_ref\":\"inline:sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d402ac52275ebca3dcd9fb6453c0b29695826819d6f024c4f156dcf5ec640a49\"}",
+        "prepared_digest": "sha256:4de3f024b0af437b696c6f7722a0ef29b72bc5530eff4e52c2fe0a87c6f46bc6",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14214,
+        "text": "CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\n\nCHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "0e056227f191d0fa6756a2dcfb73d82a669eef696e7db453088c3234a5000b3a",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:4eaf3cd6faff3f3b6743f0e4f8f877ad3889c6dc9aa0c2bf798a12a7e2325929",
+          "sha256:9147031a048ac2b5694395aa04a9f285592b6b22c875a51a89546ecc75207245"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lr09bw/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-task-pair.json once. Call task exactly once with its exact JSON object as arguments.    12:55 PM    \n       Wait for both real children. Report their actual returned outputs in input order. The parent must                \n       not directly read either child file, repeat the task or call other tools.                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Waiting on subagent… 0.0s                                                                      12s ⇣13.5k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow task?                                                                                                        \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40972",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lr09bw/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-task-pair.json once. Call task exactly once with its exact JSON object as arguments.    12:55 PM    \n       Wait for both real children. Report their actual returned outputs in input order. The parent must                \n       not directly read either child file, repeat the task or call other tools.                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Ran 2 subagents                                                                                     \n                                                                                                                        \n     CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264                                                           12:56 PM    \n                                                                                                                        \n     CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654                                                                  \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "{\"end\":{\"child_session_id\":\"task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"duration_ms\":15305,\"output\":\"CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\",\"sessionUpdate\":\"subagent_finished\",\"status\":\"completed\",\"subagent_id\":\"task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"tokens_used\":6557,\"tool_calls\":1,\"turns\":2,\"will_wake\":false},\"parent_session_id\":\"2feba454-1455-48db-9e12-2d66b407dd1f\",\"progress_packets\":3,\"session_id\":\"task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"start\":{\"child_session_id\":\"task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"description\":\"ACCEPTANCE-CHILD-A\",\"parent_session_id\":\"2feba454-1455-48db-9e12-2d66b407dd1f\",\"sessionUpdate\":\"subagent_spawned\",\"subagent_id\":\"task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"subagent_type\":\"explore\"},\"task_id\":\"task-da8aab05-b458-432d-af82-a7e04bcb8c4f\"}",
+      "name": "child-owned-wire-lifecycle",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lr09bw/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-task-pair.json once. Call task exactly once with its exact JSON object as arguments.    12:55 PM    \n       Wait for both real children. Report their actual returned outputs in input order. The parent must                \n       not directly read either child file, repeat the task or call other tools.                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Ran 2 subagents                                                                                     \n                                                                                                                        \n     CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264                                                           12:56 PM    \n                                                                                                                        \n     CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654                                                                  \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "{\"end\":{\"child_session_id\":\"task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"duration_ms\":10265,\"output\":\"CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654\",\"sessionUpdate\":\"subagent_finished\",\"status\":\"completed\",\"subagent_id\":\"task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"tokens_used\":6554,\"tool_calls\":1,\"turns\":2,\"will_wake\":false},\"parent_session_id\":\"2feba454-1455-48db-9e12-2d66b407dd1f\",\"progress_packets\":3,\"session_id\":\"task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"start\":{\"child_session_id\":\"task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"description\":\"ACCEPTANCE-CHILD-B\",\"parent_session_id\":\"2feba454-1455-48db-9e12-2d66b407dd1f\",\"sessionUpdate\":\"subagent_spawned\",\"subagent_id\":\"task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"subagent_type\":\"explore\"},\"task_id\":\"task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\"}",
+      "name": "child-owned-wire-lifecycle",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lr09bw/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-task-pair.json once. Call task exactly once with its exact JSON object as arguments.    12:55 PM    \n       Wait for both real children. Report their actual returned outputs in input order. The parent must                \n       not directly read either child file, repeat the task or call other tools.                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Ran 2 subagents                                                                                     \n                                                                                                                        \n     CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264                                                           12:56 PM    \n                                                                                                                        \n     CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654                                                                  \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "one real task call waits for two distinct successful child sessions, preserves ordered exclusive unseen outputs and source anchors, and the parent consumes both results",
+      "name": "two-real-children-parent-barrier",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lr09bw/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-task-pair.json once. Call task exactly once with its exact JSON object as arguments.    12:55 PM    \n       Wait for both real children. Report their actual returned outputs in input order. The parent must                \n       not directly read either child file, repeat the task or call other tools.                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Ran 2 subagents                                                                                     \n                                                                                                                        \n     CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264                                                           12:56 PM    \n                                                                                                                        \n     CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654                                                                  \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "tool-wave-task-children",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-task-pair.json"
+              },
+              "id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13223,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+                "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+                "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f15d73a9bf8f4c5191280cb13e31dd58",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allow_partial_failure\\\":false,\\\"tasks\\\":[{\\\"agent\\\":\\\"explore\\\",\\\"description\\\":\\\"ACCEPTANCE-CHILD-A\\\",\\\"max_steps\\\":4,\\\"prompt\\\":\\\"Use read exactly once to read child-a.txt and reply with its exact contents. Do not call other tools, modify files, or read child-b.txt.\\\"},{\\\"agent\\\":\\\"explore\\\",\\\"description\\\":\\\"ACCEPTANCE-CHILD-B\\\",\\\"max_steps\\\":4,\\\"prompt\\\":\\\"Use read exactly once to read child-b.txt and reply with its exact contents. Do not call other tools, modify files, or read child-a.txt.\\\"}],\\\"timeout_ms\\\":120000}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-task-pair.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":536},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":536,\"projected_bytes\":536,\"original_estimated_tokens\":134,\"projected_estimated_tokens\":134,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"projected_digest\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"repeat_key\":\"sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"content_ref\":\"inline:sha256:22c8cca3f9c033234ec637106d96b7fd6e79b28dbbd426fd51d45be2e8599214\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:09c532f96417f12bb6e7be9931ba26b3747e66372ae36b9201f04a49f8c1ec4d\"}",
+            "prepared_digest": "sha256:dad23733e3adc0048724d6902e0dd28228cab43885f2f029313d9e10797d8eb7",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allow_partial_failure": false,
+                "tasks": [
+                  {
+                    "agent": "explore",
+                    "description": "ACCEPTANCE-CHILD-A",
+                    "max_steps": 4,
+                    "prompt": "Use read exactly once to read child-a.txt and reply with its exact contents. Do not call other tools, modify files, or read child-b.txt."
+                  },
+                  {
+                    "agent": "explore",
+                    "description": "ACCEPTANCE-CHILD-B",
+                    "max_steps": 4,
+                    "prompt": "Use read exactly once to read child-b.txt and reply with its exact contents. Do not call other tools, modify files, or read child-a.txt."
+                  }
+                ],
+                "timeout_ms": 120000
+              },
+              "id": "call_13cbafc54f1546089af4e4dd06201ff2",
+              "name": "task"
+            },
+            "has_text": false,
+            "prompt_tokens": 13535,
+            "text": null,
+            "tool": "task"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+                "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_13cbafc54f1546089af4e4dd06201ff2",
+              "turn": 1
+            },
+            "tool": "task"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-5e837daa-5603-4f69-b444-bd2c0825fbfd",
+                "thread_id": "2feba454-1455-48db-9e12-2d66b407dd1f"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_13cbafc54f1546089af4e4dd06201ff2",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Executed 2 tasks concurrently:\\n\\n--- Task 1 (explore) [OK] ---\\nTask completed: task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nAgent: explore\\nSession: task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nTask ID: task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nArtifact ID: task-output:task-da8aab05-b458-432d-af82-a7e04bcb8c4f\\nArtifact URI: a3s://tasks/task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f/runs/task-da8aab05-b458-432d-af82-a7e04bcb8c4f/output\\nOutput:\\nCHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\\n\\n--- Task 2 (explore) [OK] ---\\nTask completed: task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nAgent: explore\\nSession: task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nTask ID: task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nArtifact ID: task-output:task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\\nArtifact URI: a3s://tasks/task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/runs/task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/output\\nOutput:\\nCHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654\\n\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"task_count\":2,\"result_count\":2,\"success_count\":2,\"failed_count\":0,\"all_success\":true,\"partial_failure\":false,\"allow_partial_failure\":false,\"timeout_ms\":120000,\"timed_out\":false,\"min_success_count\":null,\"returned_early\":false,\"duration_ms\":15313,\"results\":[{\"task_id\":\"task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"session_id\":\"task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"agent\":\"explore\",\"success\":true,\"error_message\":null,\"output_excerpt\":\"CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\",\"structured\":null,\"source_anchors\":[{\"tool\":\"read\",\"url_or_path\":\"child-a.txt\"}],\"output_bytes\":44,\"truncated_for_context\":false,\"artifact_id\":\"task-output:task-da8aab05-b458-432d-af82-a7e04bcb8c4f\",\"artifact_uri\":\"a3s://tasks/task-run-task-da8aab05-b458-432d-af82-a7e04bcb8c4f/runs/task-da8aab05-b458-432d-af82-a7e04bcb8c4f/output\"},{\"task_id\":\"task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"session_id\":\"task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"agent\":\"explore\",\"success\":true,\"error_message\":null,\"output_excerpt\":\"CHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654\",\"structured\":null,\"source_anchors\":[{\"tool\":\"read\",\"url_or_path\":\"child-b.txt\"}],\"output_bytes\":51,\"truncated_for_context\":false,\"artifact_id\":\"task-output:task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40\",\"artifact_uri\":\"a3s://tasks/task-run-task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/runs/task-cf629293-8b1a-4a71-bfc7-aa4ab5f6fa40/output\"}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":971,\"projected_bytes\":971,\"original_estimated_tokens\":243,\"projected_estimated_tokens\":243,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"projected_digest\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"repeat_key\":\"sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"content_ref\":\"inline:sha256:f70fe21673be8c38cf3c377ed47d8b07926ed029fbd4b1b341fe661d1ed44bcc\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d402ac52275ebca3dcd9fb6453c0b29695826819d6f024c4f156dcf5ec640a49\"}",
+            "prepared_digest": "sha256:4de3f024b0af437b696c6f7722a0ef29b72bc5530eff4e52c2fe0a87c6f46bc6",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14214,
+            "text": "CHILD-A-fe48360e-042a-4942-bcb2-0472589cd264\n\nCHILD-B-中文-b0371bd0-51a0-4778-b719-19735ac8b654",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "0e056227f191d0fa6756a2dcfb73d82a669eef696e7db453088c3234a5000b3a",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:4eaf3cd6faff3f3b6743f0e4f8f877ad3889c6dc9aa0c2bf798a12a7e2325929",
+              "sha256:9147031a048ac2b5694395aa04a9f285592b6b22c875a51a89546ecc75207245"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "2feba454-1455-48db-9e12-2d66b407dd1f"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

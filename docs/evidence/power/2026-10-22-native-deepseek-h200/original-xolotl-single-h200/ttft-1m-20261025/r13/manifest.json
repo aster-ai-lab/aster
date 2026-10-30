@@ -1,0 +1,234 @@
+{
+  "schema": "aster-H200-trace-preparation-r13",
+  "files": [
+    {
+      "file": "helpers/aster_nsys_decode_window_v321.py",
+      "bytes": 3183,
+      "sha256": "71151ac86628d5ff5843f0e5f0aba8cbe858a2d9651f6d86c69c951e0ad92654",
+      "source": "aster_nsys_decode_window_v321.py"
+    },
+    {
+      "file": "helpers/test_nsys_decode_window_v321.py",
+      "bytes": 3255,
+      "sha256": "baef0e63524eac84dce03dcec58cd2b258492c76cc8818461b2747d5623dfc93",
+      "source": "test_nsys_decode_window_v321.py"
+    },
+    {
+      "file": "helpers/aster_nsys_raw_decode_metrics_v386.py",
+      "bytes": 3630,
+      "sha256": "7d708be962a7f8c678a427f67773973f9bd1c4880a0c42871a67c374b6fca89f",
+      "source": "aster_nsys_raw_decode_metrics_v386.py"
+    },
+    {
+      "file": "helpers/test_nsys_raw_decode_metrics_v386.py",
+      "bytes": 3915,
+      "sha256": "99c49c745fc7ffae7764ca1e9f2df95339e65f31de072b42ed9a9a7c597edb41",
+      "source": "test_nsys_raw_decode_metrics_v386.py"
+    },
+    {
+      "file": "helpers/aster_native_resume_v197.py",
+      "bytes": 814,
+      "sha256": "95c5089a0e2b78d8c2083c4818dfbf0858e1dfaba98bf503c70979021a96a0ab",
+      "source": "aster_native_resume_v197.py"
+    },
+    {
+      "file": "helpers/test_native_resume_v197.py",
+      "bytes": 1445,
+      "sha256": "9ab98a984f5b0b00ceee5456866311ca32386a321e285ad30dcd46966a9b7dff",
+      "source": "test_native_resume_v197.py"
+    },
+    {
+      "file": "helpers/test_full_output_protocol_v247.py",
+      "bytes": 1446,
+      "sha256": "1c0a83cc84339053c51e6fd42ce595dfee693df62982c8ed9ebcad786fd51073",
+      "source": "test_full_output_protocol_v247.py"
+    },
+    {
+      "file": "helpers/aster_nsys_lifecycle_v302.py",
+      "bytes": 818,
+      "sha256": "13c31d942a0e29e0a7e6b0716b979cc290518097bef1e820f876ef54ae6620bb",
+      "source": "aster_nsys_lifecycle_v302.py"
+    },
+    {
+      "file": "helpers/test_nsys_lifecycle_v302.py",
+      "bytes": 1601,
+      "sha256": "7c7f729b5608a0fe12c8a85a0814ffc459dd6b8a148202e7d24c63b01c98e20f",
+      "source": "test_nsys_lifecycle_v302.py"
+    },
+    {
+      "file": "retained-parser-attempts/aster_nsys_decode_metrics_v378.py",
+      "bytes": 3486,
+      "sha256": "4427d0cda50aa7b020326583f80efd5100a1dd9de53c013e6dc46b5e94448f46",
+      "source": "aster_nsys_decode_metrics_v378.py"
+    },
+    {
+      "file": "retained-parser-attempts/test_nsys_decode_metrics_v378.py",
+      "bytes": 3165,
+      "sha256": "b1d8e9dc371ebd6c71d51932c42baff22703b4c228e1bbdab732e386978840a9",
+      "source": "test_nsys_decode_metrics_v378.py"
+    },
+    {
+      "file": "retained-parser-attempts/aster_nsys_raw_decode_metrics_v382.py",
+      "bytes": 3637,
+      "sha256": "7424fdc3d0be10fe8688b12ef968f7277b8a33f3f9b4c3b85413eb12b8f44259",
+      "source": "aster_nsys_raw_decode_metrics_v382.py"
+    },
+    {
+      "file": "retained-parser-attempts/test_nsys_raw_decode_metrics_v382.py",
+      "bytes": 3680,
+      "sha256": "e6204f90d5a98ad9b4c86027937a1e25722e4f3e7731dd8f3d8aa73456d2a2dc",
+      "source": "test_nsys_raw_decode_metrics_v382.py"
+    },
+    {
+      "file": "receipts/xolotl-decode-metric-failure-v381.json",
+      "bytes": 2095,
+      "sha256": "3df251a5f2c2df00e32f6bec918ca0e6690d91c7ce73845f67c48c04d6d343f5",
+      "source": "xolotl-decode-metric-failure-v381.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-metric-names-v385.json",
+      "bytes": 4094,
+      "sha256": "a7dd800679af67577ce1ae6c2f9d6e206c5416b396de304e0b43af14b499e7ba",
+      "source": "xolotl-literal-metric-names-v385.json"
+    },
+    {
+      "file": "receipts/xolotl-raw-decode-metric-proof-v388.json",
+      "bytes": 12524,
+      "sha256": "c054b918cbad652e8e751609de19dbb294aa1543e0d7dc34643d94c7b161c03f",
+      "source": "xolotl-raw-decode-metric-proof-v388.json"
+    },
+    {
+      "file": "receipts/xolotl-raw-decode-metric-policy-v382.json",
+      "bytes": 724,
+      "sha256": "ea36c2781473c955724929d9e531956ba199c56265cad55332b595d69268adaf",
+      "source": "xolotl-raw-decode-metric-policy-v382.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-metric-parser-v386-prepared.json",
+      "bytes": 613,
+      "sha256": "7202c62d7b2dfb7fbf36295bbd34dc12fd5fff69085df88aa85bbc530c1704cd",
+      "source": "xolotl-literal-metric-parser-v386-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-explicit-nsys-device-v389.json",
+      "bytes": 3325,
+      "sha256": "267d6269b78c092f2799f5909f4753cc7730029d35d14b499c00cc334b9402a4",
+      "source": "xolotl-explicit-nsys-device-v389.json"
+    },
+    {
+      "file": "receipts/xolotl-C15-manual-profiler-v389-prepared.json",
+      "bytes": 935,
+      "sha256": "69ee730ee79ca647181c6b69655e87f55e787962b8c4e8b75675f82fc3f26f41",
+      "source": "xolotl-C15-manual-profiler-v389-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-upstream-applicability-v398.json",
+      "bytes": 3319,
+      "sha256": "791108906a90dd22425e2f71a9b6e6c11ac592148b0a87adb8d71a97964a6ad5",
+      "source": "xolotl-upstream-applicability-v398.json"
+    },
+    {
+      "file": "receipts/xolotl-live-comparison-checkpoint-v395.json",
+      "bytes": 3968,
+      "sha256": "8ff198da1db6420526e4e72723873e676d2ab4cf594df98522748053e6c9de2d",
+      "source": "xolotl-live-comparison-checkpoint-v395.json"
+    },
+    {
+      "file": "operators/xolotl_nsys_manual_actual1m_worker_v387.frozen.py",
+      "bytes": 18936,
+      "sha256": "27595ffbf9feec42d1260e711a6d82d365625398e32040f9074270eedb88642b",
+      "source": "xolotl_nsys_manual_actual1m_worker_v387.frozen.py"
+    },
+    {
+      "file": "operators/h200_interactive_nsys_worker_v390.py",
+      "bytes": 9148,
+      "sha256": "02a33bbd5c2bba272bda50759c623793aaadfa03bfcf590e6ef84415ccb90e5d",
+      "source": "h200_interactive_nsys_worker_v390.py"
+    },
+    {
+      "file": "operators/manage_c15_nsys_smoke_v390.py",
+      "bytes": 5132,
+      "sha256": "48bb856d9fa0698fc0efc9b26fc09fe12f56be27bd910391dac2046bf629a966",
+      "source": "manage_c15_nsys_smoke_v390.py"
+    },
+    {
+      "file": "operators/manage_c15_manual_actual1m_v391.py",
+      "bytes": 12452,
+      "sha256": "f27302ecf5ff54faa770f7814670fe7d4c1be3ddaaeb246c3c4b1a3d2fa20d36",
+      "source": "manage_c15_manual_actual1m_v391.py"
+    },
+    {
+      "file": "operators/watch_c15_manual_profile_v392.py",
+      "bytes": 4525,
+      "sha256": "2fb943544926c060dca131f4ae22a943adb1fa067d3b3659da7f64061edb2e7a",
+      "source": "watch_c15_manual_profile_v392.py"
+    },
+    {
+      "file": "operators/observe_c15_runtime_v393.py",
+      "bytes": 2759,
+      "sha256": "69776e3a91e6c0542293fae803e4dc2c54a439b6d4ab44b04d7e7f74a89acbfe",
+      "source": "observe_c15_runtime_v393.py"
+    },
+    {
+      "file": "operators/sample_c15_prefill_v394.py",
+      "bytes": 1677,
+      "sha256": "f9dcdcaae52c49b2edc604e8d692263a4ff9957423fcaa987545ca4f55c9078e",
+      "source": "sample_c15_prefill_v394.py"
+    },
+    {
+      "file": "operators/inspect_xolotl_upstream_v396.py",
+      "bytes": 1571,
+      "sha256": "72372590805eff5daf6d5b109f8134191fec8c47a303cfe771d829a6daf11a57",
+      "source": "inspect_xolotl_upstream_v396.py"
+    },
+    {
+      "file": "operators/fetch_xolotl_upstream_v397.py",
+      "bytes": 2301,
+      "sha256": "774e190a8c3bb323c74c0505c98dc3f4cda52d1ccfb3438a64aa4d990f1a0dab",
+      "source": "fetch_xolotl_upstream_v397.py"
+    },
+    {
+      "file": "operators/review_xolotl_upstream_v398.py",
+      "bytes": 3772,
+      "sha256": "6fbd0f629dbf19eeefbd928701d9a4e5d903bceb93417ad78de7ebe65ae71318",
+      "source": "review_xolotl_upstream_v398.py"
+    },
+    {
+      "file": "gpu-probes/h200_interactive_nsys_smoke_v314.cu",
+      "bytes": 2052,
+      "sha256": "cff784d053ec9d56d7fda13c579b9eaad315bc983637806af909cd2240bff203",
+      "source": "h200_interactive_nsys_smoke_v314.cu"
+    },
+    {
+      "file": "receipts/upstream-fetch-provenance.json",
+      "bytes": 578,
+      "sha256": "31bfa33326df7518ad28c91e7d23fc34a6ae6b93de1c64fbbebdb21a9f18302c",
+      "source": null
+    },
+    {
+      "file": "receipts/retained-parser-failures.json",
+      "bytes": 739,
+      "sha256": "6812810510b32300502aab631909af2efdba886ebdab871a111391f82db9ec31",
+      "source": null
+    },
+    {
+      "file": "LICENSE",
+      "bytes": 1093,
+      "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0",
+      "source": "upstream0b9a0fc/LICENSE"
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 4044,
+      "sha256": "0a7544ad1cd2465284b76ae2f96e66898f8536010a3193f7095d749acf8186b7",
+      "source": null
+    },
+    {
+      "file": "receipts/published-helper-tests.json",
+      "bytes": 424,
+      "sha256": "4faf1768ba2c921ac39b8c5661142c501023af4fa015165141d7f2c8f96675dc",
+      "source": null
+    }
+  ],
+  "goal_complete": false
+}

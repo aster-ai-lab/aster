@@ -1,0 +1,60 @@
+{
+  "unix": 1792881460.5041616,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/natural-fixtures-v67-cpu",
+  "gpu_executed": false,
+  "credentials_copied": false,
+  "source_revision": "8372438c81ed4dc5873213b6fc2f32f8b060ae7f",
+  "source_files": [
+    {
+      "file": "docs/development-standards.md",
+      "bytes": 14447,
+      "sha256": "0daf35e411fd687531f053ca42009e658c19fc3a70aebfd1954b5b142f05cb6e"
+    },
+    {
+      "file": ".specify/memory/constitution.md",
+      "bytes": 9728,
+      "sha256": "c497cb942d56a87925b088c12f96967378349c2b6b4c557c374099642a573207"
+    },
+    {
+      "file": "docs/spec-driven-development.md",
+      "bytes": 4142,
+      "sha256": "52cd69adc80a3b37da9e6726a485723e213a2156110ca76c9e0b6a2a650fce71"
+    },
+    {
+      "file": "README.md",
+      "bytes": 6484,
+      "sha256": "e7b7758934de32833e509db8e9e6015e3596aaab96d9a51412e747d6b30189a3"
+    },
+    {
+      "file": "docs/migration.md",
+      "bytes": 35749,
+      "sha256": "d91a0445eb810f3e16373b520185e3155b5644820b44db5f3d91837ddc813711"
+    }
+  ],
+  "files": [
+    {
+      "file": "prepare-plan.json",
+      "bytes": 1198,
+      "sha256": "a122ee43944c6f9ac954492fcf6a7989201b8773a79870a8d8c5f936ae95f92a"
+    },
+    {
+      "file": "corpus.txt",
+      "bytes": 70731,
+      "sha256": "b1f86669ca9157fe6efa114b44400ca7e5ea6db0eb91761f395d3ea2a9bc99bc"
+    },
+    {
+      "file": "prepare-worker.py",
+      "bytes": 4935,
+      "sha256": "16f3c6d704b5732c9e48049735700db730dcf2710c0647e9b484a4644685a452"
+    }
+  ],
+  "process": {
+    "pid": 978949,
+    "start_ticks": 280825452,
+    "uid": 10250,
+    "unix": 1792881469.5983562,
+    "budget_seconds": 120,
+    "namespace": "jump host"
+  }
+}

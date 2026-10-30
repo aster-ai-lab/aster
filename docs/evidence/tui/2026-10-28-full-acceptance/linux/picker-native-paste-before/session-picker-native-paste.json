@@ -1,0 +1,68 @@
+{
+  "assertions_finished": true,
+  "case": "session-picker-native-paste",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13227,
+        "text": "SESSION-READY",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "dc0fcf5483fe1094c9902adff8f5f3f8b4a64c26865632c2bcf9f05de9d060da",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:dc0b1f6c30f7ae609186c1c699a913e1d67bfb76:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13227",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-oOeyNG/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Duplicate title                                                                                       7:43 AM    \n       Remember this exact token for the rest of this session: PICKER-PASTE-4d51422f-df7b-4608-8905-                    \n       9014dca26c1f. Reply only SESSION-READY. Do not call tools.                                                       \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.4s                                                                                                 \n                                                                                                                        \n     SESSION-READY                                                                                           7:43 AM    \n                                                                                                                        \n     Worked for 5.4s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "four terminal picker pastes preserve an initial e without invoking the expand shortcut",
+      "name": "native-paste-first-character",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-oOeyNG/workspace                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n            ╭───────────────────────────────────────────────────────────────────────────────────────────────╮           \n            │                                                                                               │           \n            │                    +                  Aster  0.1.4 (a21925eef70d)                             │           \n            │                   *#        +#        Thanks for trying Aster, give feedback with /feedback!  │           \n            │                  *###                                                                         │           \n            │                +*#####+..........     New worktree                                    ctrl+w  │           \n            │             +*####**####*+   ::::     Resume session                                  ctrl+r  │           \n            │        ...**#####*  +######*+:        Changelog                                               │           \n            │     ....      *###++###*+             Quit                                            ctrl+q  │           \n            │     .:::oo****::+####*                                                                        │           \n            │                  +*#+                                                                         │           \n            │                   *#                                                                          │           \n            │                    +                                                                          │           \n            │                                                                                               │           \n            ╰───────────────────────────────────────────────────────────────────────────────────────────────╯           \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

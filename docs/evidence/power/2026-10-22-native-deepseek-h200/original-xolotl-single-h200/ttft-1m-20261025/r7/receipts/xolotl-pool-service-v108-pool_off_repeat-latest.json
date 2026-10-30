@@ -1,0 +1,61 @@
+{
+  "unix": 1792893033.6033483,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "stopped",
+    "unix": 1792892374.2197204,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+    "lease_ends_unix": 1792910673.5259097,
+    "binary_sha256": "9a684b2442d4b648fff6a73024de5b7bab096657fe45897bf036c7e216895bbf",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 2596,
+      "start_ticks": 712165865,
+      "uid": 10250
+    },
+    "startup_unix": 1792892387.6644928,
+    "last_health_status": 200,
+    "last_health_unix": 1792893003.5437205,
+    "api_reaped": true,
+    "api_exit": 0,
+    "finished_unix": 1792893015.222304
+  },
+  "service-process.json": {
+    "pid": 2458,
+    "start_ticks": 712164516,
+    "uid": 10250,
+    "unix": 1792892374.174955,
+    "deadline_seconds": 18289
+  },
+  "exact_supervisor_alive": false,
+  "numeric_diagnostics": [
+    "serve: prompt 8244 tokens (8244 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)",
+    "serve: cache kept for a 25671-token batch (1205 tail slots out, 11271 experts stay)",
+    "chunk prof: 160 calls, 313 launches: wall 7398 ms = waits on reads 0 + wave/copy waits 0 + final sync 5854 + other host 1545; reader wall 0 ms; GPU grouped kernels 1251 ms (resident 745); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 797 sub-runs; PTQ1_0 -> Q2_0 transcode 17 ms GPU (inside the grouped kernels) over 21 sub-runs, 31.9 GB of ternary read = 1893 GB/s",
+    "resident MMQ stage: 868 waves, 361645977600 exact D2D bytes",
+    "serve: cache regrown: 1205 experts back (0 from the file) in 277 ms",
+    "dense prof turn: 1180 attn spans: build 45 ms, alloc 58, gpu compute 7973, engram wait 6311, readback 853, upload 926, finish build 20",
+    "serve: prompt phases: 25671 new = 25671 batch (26.92 s: dense 16.26, experts 9.67, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 25671 tokens (0 reused, batch) in 26.93 s = 953.2 tok/s (experts 3277853 hit / 0 cpu / 241267 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.11 s)",
+    "serve: prompt 18 tokens (0 reused, batch) in 0.11 s = 162.3 tok/s (experts 4278 hit / 0 cpu / 42 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 12 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 12 as passes (cache open 0.00 s, seed 0.08 s)",
+    "serve: prompt 12 tokens (0 reused, batch) in 0.08 s = 157.5 tok/s (experts 2858 hit / 0 cpu / 22 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 11 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 11 as passes (cache open 0.00 s, seed 0.06 s)",
+    "serve: prompt 11 tokens (0 reused, batch) in 0.06 s = 184.1 tok/s (experts 2632 hit / 0 cpu / 8 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 25671 tokens (25671 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 25671 tokens (25671 reused, batch) in 0.00 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)"
+  ]
+}

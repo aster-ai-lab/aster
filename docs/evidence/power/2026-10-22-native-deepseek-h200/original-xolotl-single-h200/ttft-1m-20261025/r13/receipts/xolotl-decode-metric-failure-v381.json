@@ -1,0 +1,138 @@
+{
+  "schema": [
+    [
+      0,
+      "rawTimestamp",
+      "INTEGER",
+      1,
+      null,
+      0
+    ],
+    [
+      1,
+      "timestamp",
+      "INTEGER",
+      1,
+      null,
+      0
+    ],
+    [
+      2,
+      "typeId",
+      "INTEGER",
+      1,
+      null,
+      0
+    ],
+    [
+      3,
+      "metricId",
+      "INTEGER",
+      1,
+      null,
+      0
+    ],
+    [
+      4,
+      "value",
+      "INTEGER",
+      1,
+      null,
+      0
+    ]
+  ],
+  "types": [
+    [
+      "integer",
+      "integer",
+      18900
+    ]
+  ],
+  "bad_rows": [
+    [
+      39962610,
+      "integer",
+      -28695,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      49962580,
+      "integer",
+      -28711,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      59962551,
+      "integer",
+      -16809,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      69962553,
+      "integer",
+      -28823,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      79962523,
+      "integer",
+      -28835,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      89962461,
+      "integer",
+      -28936,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      99962432,
+      "integer",
+      -28887,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      109962402,
+      "integer",
+      -28862,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      119962372,
+      "integer",
+      -28870,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      129962343,
+      "integer",
+      -28827,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      139962313,
+      "integer",
+      -28856,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ],
+    [
+      149962283,
+      "integer",
+      -28825,
+      "integer",
+      "Compute Warps in Flight [Avg]"
+    ]
+  ],
+  "GPU_executed": false
+}

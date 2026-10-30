@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::remote_vscode_and_unsupported_shell_are_refused' (40512) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:760:5:
+assertion failed: matches!(plan_fix(request(temp.path(), "/bin/zsh"), &report(), &remote),
+    Err(FixError::RemoteSession))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::remote_vscode_and_unsupported_shell_are_refused ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::remote_vscode_and_unsupported_shell_are_refused
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

@@ -1,0 +1,288 @@
+{
+  "case": "allow-once",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-q9lKch/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test  12:56 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run write 0.0s                                                                                9.3s ⇣13.6k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow write?                                                                                                       \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-q9lKch/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test  12:56 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce                                                               \n                                                                                                                        \n     ◆ Thought for 1.0s                                                                                                 \n     ◆ Run test -f result.txt                                                                                           \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run test -f result.txt 0.0s                                                                 13s ⇣14.0k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=19 model_turns=5 prompt_tokens=68818",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-q9lKch/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test  12:56 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce                                                               \n                                                                                                                        \n     ◆ Thought for 1.0s                                                                                                 \n     ◆ Run test -f result.txt                                                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce                                                        12:57 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 21s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "live-write-verify",
+      "detail": "real read/write/shell receipts, exact output bytes and verified terminal",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-q9lKch/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test  12:56 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce                                                               \n                                                                                                                        \n     ◆ Thought for 1.0s                                                                                                 \n     ◆ Run test -f result.txt                                                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce                                                        12:57 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 21s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13355,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_06d009a35c364c258381f6a828b00b8b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_06d009a35c364c258381f6a828b00b8b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:5bde504e0b5f800077fe52c4329ec37b384debfe85b7aa9a03a2d05c0d7c34c9",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"source.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":88},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":88,\"projected_bytes\":88,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"projected_digest\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"repeat_key\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"content_ref\":\"inline:sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d86f3702e1972be90488c74ad9a70639116a4b29a254d35ccd13c18523fb6ee5\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13597,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_5f04504103ed4c7297268fc85faf4555",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_5f04504103ed4c7297268fc85faf4555",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:7f7b0eb47192ab293915da1e7d67509dbb2200264df4cdb254e7badd435fd690",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "result.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:8d7b154994af8f3030949b99820d21e209c7d4d0b082731e396b28b0066f299d",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 47 bytes (1 lines) to /tmp/aster-kimi-q9lKch/workspace/result.txt\\n[mutation observation] path=result.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"result.txt\",\"created\":true,\"after\":\"KIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce\",\"change\":{\"compacted\":false,\"before\":null,\"after\":{\"bytes\":47,\"sha256\":\"8d7b154994af8f3030949b99820d21e209c7d4d0b082731e396b28b0066f299d\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":71,\"projected_bytes\":71,\"original_estimated_tokens\":18,\"projected_estimated_tokens\":18,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5e3a273c1a4f28676f8b3eda9832d89798fff4095368d50b914f61a8f72cc980\",\"projected_digest\":\"sha256:5e3a273c1a4f28676f8b3eda9832d89798fff4095368d50b914f61a8f72cc980\",\"repeat_key\":\"sha256:5e3a273c1a4f28676f8b3eda9832d89798fff4095368d50b914f61a8f72cc980\",\"content_ref\":\"inline:sha256:5e3a273c1a4f28676f8b3eda9832d89798fff4095368d50b914f61a8f72cc980\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"result.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:a4481384a5a7d18d00fda19da26d3185580f0fb9f486cca461c24bfdf58b5a2b\"}"
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13964,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_125f36ab45404f6a96ad6c51a421a626",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_125f36ab45404f6a96ad6c51a421a626",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:e0cc46e9cdaf6e14e56fe15914e97793614dc2bbebd6fbc0a584ddd33830247f",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"test -f result.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:result.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:result.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: result.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"30a5035afae841ab8e407edbe9120d8be17216036c0c3cede0a2c85634bc2640\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13884,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 18,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_64132afd099044c2976b9bf835e9014b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 19,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_64132afd099044c2976b9bf835e9014b",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-43088592-b61a-4dab-ac96-69ea5e604304",
+            "thread_id": "0e83ae8d-c3eb-4e04-936c-92d1b05036f6",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:47ce8558bba873bd6e7fa9c2c366dd6b2ac6eddb3ac630035a9c9ad4c85d76e3",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-0a31cef1-5984-4de7-9c6c-f49aed5b82ce\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"result.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":88},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":88,\"projected_bytes\":88,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"projected_digest\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"repeat_key\":\"sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"content_ref\":\"inline:sha256:efd52c492fc7f3ccdfeb7c03052fc70112bfbee1ec790eef8a688791366cac76\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d86f3702e1972be90488c74ad9a70639116a4b29a254d35ccd13c18523fb6ee5\"}"
+      }
+    },
+    {
+      "seq": 20,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14018,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 21,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "verified",
+        "effect_digest": "30a5035afae841ab8e407edbe9120d8be17216036c0c3cede0a2c85634bc2640",
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:46d4c1a9d1fd51d8fff312ccb5ee8cb648f864947bd0f1bde5e58443feafd248",
+          "sha256:0980c113eb8fa6f8004494faddd5143ac61b1a384922477550246d60c9672a9e",
+          "sha256:7140845ae0b37b2c93ec4a44ed6da638a287b01f4ec1d044e129b1c14e9a8397",
+          "sha256:f561de64c7a0f94f3a4d063ccf80963c317914d8386485aa1049e0c2408f717c"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 20,
+          "digest": "e545945993c617115f41e20806545c6d7a4322d9cd3165d106ecd331e09c3f3f"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

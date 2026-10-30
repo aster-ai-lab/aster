@@ -1,0 +1,21 @@
+
+running 1 test
+test functional::kimi_plan_read_then_yolo_verified_write ... ORACLE case=plan-read-write name=source-pair result=pass detail=aster-cli-pair-v1:9bd49e5ccbb6b131444c4e3d49a67db8ee390f2c:x86_64-unknown-linux-gnu
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26839
+ORACLE case=plan-read-write name=plan-read result=pass detail=explicit plan launch, actual read receipt and unchanged source bytes
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=56792
+
+thread 'functional::kimi_plan_read_then_yolo_verified_write' (8236) panicked at crates/code/acp/tests/aster_tui_live_e2e/functional.rs:131:5:
+assertion `left == right` failed
+  left: "PLAN-READ-3d61d489-77f2-4c2d-ad44-a1a364b964e3\n"
+ right: "PLAN-READ-3d61d489-77f2-4c2d-ad44-a1a364b964e3"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_plan_read_then_yolo_verified_write
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 20 filtered out; finished in 70.51s
+

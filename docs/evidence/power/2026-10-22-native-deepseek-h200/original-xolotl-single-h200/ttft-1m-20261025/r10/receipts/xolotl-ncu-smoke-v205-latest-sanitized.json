@@ -1,0 +1,57 @@
+{
+  "unix": 1792910280.9648895,
+  "alive": false,
+  "result.json": {
+    "unix": 1792910233.3493493,
+    "phase": "failed",
+    "model_forward_executed": false,
+    "service_changed": false,
+    "hardware_counters_collected": false,
+    "compile_command": [
+      "/usr/local/cuda/bin/nvcc",
+      "-O3",
+      "--generate-code=arch=compute_90,code=sm_90",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205/h200_ncu_smoke_v204.cu",
+      "-o",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205/smoke"
+    ],
+    "command": [
+      "/usr/local/bin/ncu",
+      "--target-processes",
+      "all",
+      "--kernel-name-base",
+      "function",
+      "--kernel-name",
+      "aster_h200_counter_smoke",
+      "--launch-count",
+      "1",
+      "--clock-control",
+      "none",
+      "--cache-control",
+      "none",
+      "--metrics",
+      "gpu__time_duration.sum,sm__throughput.avg.pct_of_peak_sustained_elapsed,dram__throughput.avg.pct_of_peak_sustained_elapsed,sm__warps_active.avg.pct_of_peak_sustained_active,dram__bytes_read.sum,dram__bytes_write.sum,smsp__warps_eligible.avg.per_cycle_active,smsp__issue_active.avg.pct_of_peak_sustained_active",
+      "--csv",
+      "--page",
+      "raw",
+      "--log-file",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205/private-ncu.csv",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205/smoke"
+    ],
+    "process": {
+      "pid": 9077,
+      "start_ticks": 713950531,
+      "uid": 10250,
+      "namespace": "optimization pod"
+    },
+    "ncu_returncode": 0,
+    "error": "ValueError: profiler numeric CSV header/data absent",
+    "finished_unix": 1792910235.5353277,
+    "engine_reaped": true,
+    "gpu_idle_after": true
+  },
+  "worker.log": "",
+  "compile.log": "",
+  "smoke.stdout.log": "{\"phase\":\"passed\",\"GPU_executed\":true,\"checked_output_words\":65536,\"model_forward_executed\":false}\n",
+  "smoke.stderr.log": ""
+}

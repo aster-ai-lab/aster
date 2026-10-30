@@ -1,0 +1,27 @@
+{
+  "unix": 1792928960.0733788,
+  "phase": "reproduced",
+  "model_executed": false,
+  "formal_changed": false,
+  "runs": [
+    {
+      "name": "graphs-enabled",
+      "returncode": 3,
+      "stdout": "TYPE 1 REPEAT 0 FIRST 16 EXPECT16\nTYPE 1 REPEAT 1 FIRST 16 EXPECT16\nTYPE 1 REPEAT 2 FIRST 16 EXPECT16\nTYPE 30 REPEAT 0 FIRST 30 EXPECT16\nTYPE 30 REPEAT 1 FIRST 30 EXPECT16\nTYPE 30 REPEAT 2 FIRST 30 EXPECT16\nTYPE 1 REPEAT 0 FIRST 16 EXPECT16\nTYPE 1 REPEAT 1 FIRST 16 EXPECT16\nTYPE 1 REPEAT 2 FIRST 16 EXPECT16\nTYPE 30 REPEAT 0 FIRST 30 EXPECT16\nTYPE 30 REPEAT 1 FIRST 30 EXPECT16\nTYPE 30 REPEAT 2 FIRST 30 EXPECT16\nRESULT runs12 values780 mismatches390\n",
+      "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\n",
+      "expected_returncode": 3
+    },
+    {
+      "name": "graphs-disabled",
+      "returncode": 0,
+      "stdout": "TYPE 1 REPEAT 0 FIRST 16 EXPECT16\nTYPE 1 REPEAT 1 FIRST 16 EXPECT16\nTYPE 1 REPEAT 2 FIRST 16 EXPECT16\nTYPE 30 REPEAT 0 FIRST 16 EXPECT16\nTYPE 30 REPEAT 1 FIRST 16 EXPECT16\nTYPE 30 REPEAT 2 FIRST 16 EXPECT16\nTYPE 1 REPEAT 0 FIRST 16 EXPECT16\nTYPE 1 REPEAT 1 FIRST 16 EXPECT16\nTYPE 1 REPEAT 2 FIRST 16 EXPECT16\nTYPE 30 REPEAT 0 FIRST 16 EXPECT16\nTYPE 30 REPEAT 1 FIRST 16 EXPECT16\nTYPE 30 REPEAT 2 FIRST 16 EXPECT16\nRESULT runs12 values780 mismatches0\n",
+      "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\n",
+      "expected_returncode": 0
+    }
+  ],
+  "original_graphs_enabled_failed": true,
+  "same_binary_graphs_disabled_passed": true,
+  "binary_sha256": "85653e6511da794ccb3366cce3120153054890202da0d7b79bad3d3baa9abafc",
+  "finished_unix": 1792928963.0106971,
+  "GPU_idle_after": true
+}

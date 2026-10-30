@@ -1,0 +1,196 @@
+{
+  "scope": "recover original continuity without forgetting visited states; healthy persisted-host policy transitions on Memory/File",
+  "new_named_core_tests": 10,
+  "new_named_acp_tests": 1,
+  "production_changes": [
+    "fact_control/receipts/refusal.rs: an observation gap clears the old allowance/cycle",
+    "goal_control/facts/run/mutation_progress.rs: coherence is per observation; missing observation does not prove continuity; novelty history retained"
+  ],
+  "red": {
+    "parent": "reanchor-parent-sdk-red.log",
+    "child": "reanchor-child-sdk-red.log",
+    "observed_calls": 18,
+    "stopped_within3s": false,
+    "trusted_deadline_ms": 60000,
+    "external_change_at": 2
+  },
+  "parent_green": "reanchor-parent-sdk-green.log:9 model/9 physical/no denials, stopped before source deadline",
+  "recovery_contracts": "recovery-limits-all-fields.log: four policy fields on Memory/File, three reopen phases each, no model calls on refused phases; explicit trusted extension/reenable permits one new original Run; original policies and cumulative synthetic usage retained",
+  "scope_limits": [
+    "healthy resume; crash between persistence stages, backward clock and non-atomic provider billing not qualified",
+    "opaque durable callbacks still require real return before owner release",
+    "confirmation late/reused IDs and changed-argument/model-derived-output loops remain open",
+    "no real-model speed/cost benefit or deployment claim"
+  ],
+  "actual_current_pair": {
+    "reference": "reanchor-pair-candidate-reference.json",
+    "build_id": "aster-cli-pair-v1:15360782401578f163ae82cbf8e652d651c3d5da:aarch64-apple-darwin",
+    "compiled_local_source_files": 5680,
+    "changed_recorded_sources_at_final_audit": [],
+    "unattended_rust_tests_passed": 19,
+    "unattended_product_workflows": 12,
+    "unattended_auxiliary_tests": 7,
+    "protocol_rust_tests_passed": 10,
+    "protocol_logical_cases_passed": 10,
+    "source_and_artifact_guards_passed": true,
+    "gap_solo_prompt_ms": 3597,
+    "gap_full_suite_prompt_ms": 2660,
+    "gap_model_calls": 9,
+    "gap_successful_original_receipts": 9,
+    "gap_denied_receipts": 0,
+    "gap_independent_audit": "reanchor-original-gap-audit.json",
+    "gap_independent_checks": 8,
+    "goal_basis_audit": "reanchor-stdio-goal-basis.json",
+    "goal_sessions": 6,
+    "settled_goal_slices": 10,
+    "h1_audit": "reanchor-h1-independent-audit.json",
+    "h1_cohort": "/Users/roylin/code/aster/docs/evidence/code/2026-10-24-acp-long-horizon/rust-scripted-a940b208-c270-448f-8a98-a2ea95e4e04a",
+    "h1_independent_checks": 19,
+    "h1_workflow_ms": 31423,
+    "h1_whole_tester_s": 234.572,
+    "h1_generations": 9,
+    "h1_synthetic_total_tokens": 18,
+    "scope": "latest registered paired CLI/ACP with controlled model and actual compiler VM; not a production deployment or real-model performance/cost benefit"
+  },
+  "core_regressions": {
+    "goal": {
+      "log": "reanchor-current-goal.log",
+      "passed": 102,
+      "failed": 0,
+      "ignored": 0
+    },
+    "facts": {
+      "log": "reanchor-current-facts.log",
+      "passed": 206,
+      "failed": 0,
+      "ignored": 0
+    },
+    "goal-control": {
+      "log": "reanchor-current-goal-control.log",
+      "passed": 58,
+      "failed": 0,
+      "ignored": 0
+    },
+    "ownership": {
+      "log": "reanchor-current-ownership.log",
+      "passed": 85,
+      "failed": 0,
+      "ignored": 0
+    },
+    "admission": {
+      "log": "reanchor-current-admission.log",
+      "passed": 65,
+      "failed": 0,
+      "ignored": 1
+    },
+    "tasks": {
+      "log": "reanchor-current-tasks.log",
+      "passed": 158,
+      "failed": 0,
+      "ignored": 1
+    }
+  },
+  "core_groups_overlap": true,
+  "checks": [
+    {
+      "check": "scoped-fmt",
+      "command": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2021",
+        "crates/code/core/src/fact_control.rs",
+        "crates/code/core/src/goal_control.rs",
+        "crates/code/core/src/agent_api/goal_facade/tests/execution.rs",
+        "crates/code/acp/tests/unattended_e2e.rs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "check": "scoped-diff",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/fact_control.rs",
+        "crates/code/core/src/fact_control",
+        "crates/code/core/src/goal_control.rs",
+        "crates/code/core/src/goal_control",
+        "crates/code/core/src/agent_api/goal_facade/tests/execution.rs",
+        "crates/code/core/src/agent_api/goal_facade/tests/execution",
+        "crates/code/acp/tests/unattended_e2e.rs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "check": "workspace-fmt",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1
+    },
+    {
+      "check": "dependencies",
+      "command": [
+        "python3.13",
+        "tests/workspace_dependencies.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "check": "delivery",
+      "command": [
+        "python3.13",
+        "tests/cli_pair_delivery.py"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "recovery_observations": {
+    "policy_fields": [
+      "max_slices",
+      "max_no_progress_slices",
+      "deadline_unix_ms",
+      "automatic_enabled"
+    ],
+    "stores": [
+      "MemorySessionStore",
+      "reopened FileSessionStore"
+    ],
+    "reopen_phases_per_case": 3,
+    "total_reopen_observations": 24,
+    "blocked_phases_model_calls": 0,
+    "synthetic_usage_permitted_runs": [
+      {
+        "policies": [
+          "max_slices",
+          "deadline_unix_ms",
+          "automatic_enabled"
+        ],
+        "before": 21,
+        "after": 42
+      },
+      {
+        "policies": [
+          "max_no_progress_slices"
+        ],
+        "before": 2,
+        "after": 4
+      }
+    ],
+    "original_admissions_immutable": true,
+    "scope": "healthy save/close/resume and explicit trusted policy extension/reenablement only; no crash atomicity or provider billing claim"
+  },
+  "workspace_fmt": {
+    "passed": false,
+    "unrelated_files": 9,
+    "gateway_files": 3,
+    "studio_files": 6,
+    "scope": "recorded formatter output; scoped Code format and diff checks passed"
+  }
+}

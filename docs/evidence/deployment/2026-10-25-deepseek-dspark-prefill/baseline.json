@@ -1,0 +1,105 @@
+{
+  "at_epoch": 1792929943.6416006,
+  "profile": "V3 exact routing; FP4 KV; 24t/144GiB/PCIe0; context1048576",
+  "source_evidence": "../2026-10-25-deepseek-exact-performance",
+  "power_pid": 2791588,
+  "engine_pid": 2796245,
+  "power_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+  "acl_sha256": "622336d46f8c20b3829671e97b1e4d2ccc8626465b73b04db6eeafc7ad556942",
+  "native_1m": {
+    "ttft_seconds": 4018.8915183490026,
+    "first_content_seconds": 4022.3777315859916,
+    "success": true,
+    "full_one_million_completed": true,
+    "retrieval_passed": true,
+    "content": "EARLY=violet-7391-copper;MIDDLE=silver-4826-orchid;LATE=amber-9153-lantern",
+    "reasoning_content": "We need answer only exact format. Need extract labeled verification records. EARLY = violet-7391-copper, MIDDLE = silver-4826-orchid, LATE = amber-9153-lantern. Return EARLY=value;MIDDLE=value;LATE=value. No other text.",
+    "usage": {
+      "prompt_tokens": 1000123,
+      "completion_tokens": 98,
+      "total_tokens": 1000221,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 1000123,
+      "prompt_ms": 4015662.0,
+      "prompt_per_token_ms": 4.015,
+      "prompt_per_second": 249.1,
+      "predicted_n": 98,
+      "predicted_ms": 5201.4,
+      "predicted_per_token_ms": 53.076,
+      "predicted_per_second": 18.8,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    },
+    "wall_seconds": 4024.211153202981,
+    "events": 98,
+    "finish_reason": "stop",
+    "fixture_sha256": "539aadd60c25d9abfbfc4defab2a3c658b9abc9e78cd45355b3b0930bdd12489"
+  },
+  "other_services": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  }
+}

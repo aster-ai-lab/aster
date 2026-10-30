@@ -1,0 +1,76 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.76s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_core-b84e9a3e662ce246.exe)
+
+running 14 tests
+test agent_api::conversation_runtime::memory_retention_tests::detached_and_exact_recovery_register_before_publication_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::explicit_host_typed_writer_remains_a_separate_positive_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::former_matcher_inputs_cannot_grant_writes_in_both_stores ... ok
+original drain wake Memory/Blocking: 5.001s
+original drain wake Memory/Stream: 5.001s
+original drain wake Memory/Detached: 5.001s
+original drain wake Memory/Exact: 5.001s
+original drain wake File/Blocking: 5.001s
+original drain wake File/Stream: 5.001s
+original drain wake File/Detached: 5.001s
+original drain wake File/Exact: 5.001s
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_close_timeout_uses_original_five_second_drain_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_entered_store_results_remain_truthful_in_both_stores ... ok
+all-stage deny observation Memory/Blocking: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Stream: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Detached: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Exact: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Blocking: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Stream: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Detached: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Exact: checks=[("retention-lifecycle", false, 3548), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_failed_empty_disabled_turns_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_original_cancel_before_store_refuses_in_both_stores ... ok
+original callback observations Memory: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+original callback observations File: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::blocking_send_awaits_original_extraction_and_accounts_usage_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::supplemental_original_facade_parts_match_and_aux_keep_guard_usage_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_remember_bytes_require_valid_model_authority_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_worker_joins_original_committer_before_end_and_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::stream_registers_before_end_preserves_fifo_and_immediate_close_in_both_stores ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 5301 filtered out; finished in 12.61s
+

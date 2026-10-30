@@ -842,3 +842,6 @@ mod tests;
 
 #[cfg(test)]
 mod owner_cancel_tests;
+
+#[cfg(test)]
+mod unresolved_terminal_tests;

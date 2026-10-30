@@ -1,0 +1,99 @@
+{
+  "case": "copy-export-contract",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": false,
+  "panicked": true,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1d66861bcae0e166f6bd7c472f384ec6b14071f4:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27053",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-ixQRH7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read first.txt and reply with its exact contents. Do not call other tools   5:50 AM           or modify any file.                                                                                                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   导出-7ef0c4cf-d79a-47de-b769-cba513b3f7a2                                                               5:50 AM                                                                                                                                 Worked for 9.5s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    }
+  ],
+  "last_screen": "                                                                                                                          C:\\W\\T\\aster-kimi-ixQRH7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        5:50 AM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Thought for 1.5s                                                                                                                                                                                                                           │  Turn failed in 10s: Request failed: fact log is busy in another instance. Try sending again.                                                                                                                                              █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           ",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13448,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_faa8ab6cc6be4785946e4765392e482a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4a61739d-aa65-4f44-aaab-c76ded00a822",
+            "thread_id": "d9d71ae4-a67c-4b08-883a-48c7dc4b22c8",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_faa8ab6cc6be4785946e4765392e482a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-4a61739d-aa65-4f44-aaab-c76ded00a822",
+            "thread_id": "d9d71ae4-a67c-4b08-883a-48c7dc4b22c8",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:a262682590255971556dd52174d3484c2437a40de1598ed0afcd36856def0654",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t导出-7ef0c4cf-d79a-47de-b769-cba513b3f7a2\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"first.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":51},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":51,\"projected_bytes\":51,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b8a68635fc6d886bd43d3e9f535143fcf3a453b0c0b4184680694762016c9d8b\",\"projected_digest\":\"sha256:b8a68635fc6d886bd43d3e9f535143fcf3a453b0c0b4184680694762016c9d8b\",\"repeat_key\":\"sha256:b8a68635fc6d886bd43d3e9f535143fcf3a453b0c0b4184680694762016c9d8b\",\"content_ref\":\"inline:sha256:b8a68635fc6d886bd43d3e9f535143fcf3a453b0c0b4184680694762016c9d8b\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f5b4a88d82704ec4d3a18e0ad6f5f1935dd55a63b41c740143362c5d18692b24\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13605,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:531f64ceb0a8c61080a030c2977b00b03337340aad57f64a7448202ecc267f91"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "752bb5d95ac5fe1d5bfc6e1599e440f03355954b5b3a9c8564f28ab209febe74"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

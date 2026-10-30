@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::privacy_banner::tests::each_legal_link_hits_its_own_words' (54372) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\privacy_banner.rs:405:13:
+assertion `left == right` failed: width 200: terms rect is off its word: ["Help improve A3S Code                                                                                                                                                                 [Opt out] [Opt in]", "Off by default. Opt-in to allow A3S Lab to retain coding data, e.g., prompts, traces, & metrics, for training and debugging purposes. Change anytime via settings.", "Read Terms and Privacy Policy."]
+  left: "Privacy Policy"
+ right: "Terms"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::privacy_banner::tests::each_legal_link_hits_its_own_words ... FAILED
+
+failures:
+
+failures:
+    views::privacy_banner::tests::each_legal_link_hits_its_own_words
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

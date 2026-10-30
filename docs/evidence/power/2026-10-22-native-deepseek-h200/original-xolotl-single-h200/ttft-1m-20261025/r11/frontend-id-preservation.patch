@@ -1,0 +1,34 @@
+--- xolotl-trial-source-e9d0826d71c5/source/serve/frontend.py
++++ tool-adapter-v267r3/frontend.py
+@@ -530,6 +530,8 @@
+         content = _check_parts(m.get("content"), f"messages[{i}].content",
+                                TEXT_PARTS + IMAGE_PARTS if images else TEXT_PARTS)
+         out = {"role": role, "content": _parts_of(content) if images else _text_of(content)}
++        if role == "tool" and m.get("tool_call_id") is not None:
++            out["tool_call_id"] = m["tool_call_id"]
+         if m.get("reasoning_content"):
+             out["reasoning_content"] = m["reasoning_content"]
+         if m.get("tool_calls"):
+@@ -538,7 +540,7 @@
+                 fn = c.get("function", c)
+                 if not isinstance(fn, dict):
+                     raise ValueError("tool_calls must be a list of objects (each with a \"function\" object)")
+-                calls.append({"function": {"name": fn.get("name"), "arguments": tool_arguments(fn.get("arguments"))}})
++                calls.append({"id": c.get("id"), "function": {"name": fn.get("name"), "arguments": tool_arguments(fn.get("arguments"))}})
+             out["tool_calls"] = calls
+         messages.append(out)
+     tools = [t.get("function", t) if t.get("type") == "function" else t
+@@ -616,11 +618,11 @@
+             elif kind == "thinking":
+                 reasoning.append(block.get("thinking", ""))
+             elif kind == "tool_use":
+-                calls.append({"function": {"name": block.get("name"), "arguments": tool_arguments(block.get("input"))}})
++                calls.append({"id": block.get("id"), "function": {"name": block.get("name"), "arguments": tool_arguments(block.get("input"))}})
+             elif kind == "tool_result":
+                 # A tool's image (Claude Code's Read of a picture) reaches the encoder like a user's, as the OpenAI
+                 # path's tool messages already do; a text-only result is one string, as before.
+-                messages.append({"role": "tool", "content": _parts_of(_check_parts(
++                messages.append({"role": "tool", "tool_call_id": block.get("tool_use_id"), "content": _parts_of(_check_parts(
+                     block.get("content"), f"messages[{i}].content[{j}].content", TEXT_PARTS + IMAGE_PARTS))})
+         if text or calls or reasoning or parts:
+             # an image sent beside tool results stays in this turn instead of being dropped

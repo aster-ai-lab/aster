@@ -1,0 +1,61 @@
+{
+  "case": "send-now-model-stream",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "send-now-model-owner",
+      "detail": "an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-7OAjRT/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Produce exactly two thousand lines. Each line consists of the uppercase label ITEM, a space, and a   12:48 PM    \n       four digit decimal counter starting at one and increasing by one. Do not call any tool.                          \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.8s                                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only MODEL-CANCEL-NEXT. Do not call any tool.                                                  12:48 PM    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13390,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "e45e6fa1b40df73a0b65e46a4d204c35f8ffd9747a17606598e4f7f7f9e8a0a4"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

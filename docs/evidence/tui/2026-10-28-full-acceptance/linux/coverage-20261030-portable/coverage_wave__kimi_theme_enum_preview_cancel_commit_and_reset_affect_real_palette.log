@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette ... ORACLE case=coverage-theme-enum name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-theme-enum name=theme-preview-cancel result=pass detail=moving from Aster Night to Aster Day previews without persistence; Escape restores exact idle palette and preferences
+ORACLE case=coverage-theme-enum name=theme-commit result=pass detail=Enter commits the canonical grokday value and changes actual rendered terminal colors
+ORACLE case=coverage-theme-enum name=theme-reset-confirm result=pass detail=No preserves the committed Day value and palette; Yes restores the real default Night palette without backend turns
+ORACLE case=coverage-theme-enum name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 49.82s
+

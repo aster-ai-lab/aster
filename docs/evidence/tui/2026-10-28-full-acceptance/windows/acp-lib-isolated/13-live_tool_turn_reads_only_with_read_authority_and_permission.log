@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission' (49352) panicked at crates\code\acp\src\office_read_governed_tests.rs:136:63:
+called `Result::unwrap()` on an `Err` value: Error("expected value", line: 1, column: 1)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission ... FAILED
+
+failures:
+
+failures:
+    office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.35s
+

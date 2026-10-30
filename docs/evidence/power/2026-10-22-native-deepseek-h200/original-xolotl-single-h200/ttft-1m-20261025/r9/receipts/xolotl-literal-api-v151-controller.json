@@ -1,0 +1,41 @@
+{
+  "unix": 1792899436.774695,
+  "phase": "comparison_completed",
+  "formal_service_unchanged": true,
+  "maximum_h200_roles": 2,
+  "model_math_changed": false,
+  "acceptance_changed": false,
+  "goal_complete": false,
+  "gpu_300_qualified": false,
+  "native_binary_sha256": "99f3eee8c7eeee54c304120db50e8e632a7c001f9ac90fadf0983040fef92c25",
+  "profile": "literal",
+  "suite_phase": "failed",
+  "suite_stage": "fullwindow",
+  "suite_alive": false,
+  "suite_error": "RuntimeError: fullwindow qualification failed",
+  "children": {
+    "remainder/request-result.json": {
+      "phase": "passed",
+      "tests": 0,
+      "current_test": null,
+      "error": null
+    },
+    "fullwindow/request-result.json": {
+      "phase": "failed",
+      "tests": 20,
+      "current_test": null,
+      "error": "ValueError: full-window long-output identity differs"
+    }
+  },
+  "observed_unix": 1792905240.7106056,
+  "control_identity_gate_passed": false,
+  "service_phase": "serving",
+  "service_supervisor_alive": true,
+  "client_phase": "passed",
+  "client_tests": 12,
+  "client_alive": false,
+  "literal_identity_gate_passed": false,
+  "model_speed_claimed": false,
+  "candidate_promoted": false,
+  "finished_unix": 1792905240.7236311
+}

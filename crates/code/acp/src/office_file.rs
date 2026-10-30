@@ -605,6 +605,13 @@ pub(crate) fn parent_dir(root: &Path, relative: &str) -> Result<(Dir, std::ffi::
         "file path must stay inside the workspace"
     );
     ensure!(root.is_absolute(), "local workspace root must be absolute");
+    if let Some(parent) = path.parent() {
+        ensure!(
+            root.join(parent).is_dir(),
+            "parent directory does not exist: {}",
+            root.join(parent).display()
+        );
+    }
     let mut anchor = PathBuf::new();
     let mut components = root.components().peekable();
     while components

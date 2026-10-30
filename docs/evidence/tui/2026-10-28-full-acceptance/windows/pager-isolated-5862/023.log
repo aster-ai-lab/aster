@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted' (54356) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\task_icon_mouse_tests.rs:297:5:
+hovered dock row must show [↗][stop]: "   . Run sleep 5                                                  0s [o][stop]  "
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.15s
+

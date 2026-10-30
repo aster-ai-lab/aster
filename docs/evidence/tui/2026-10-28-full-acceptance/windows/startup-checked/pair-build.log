@@ -1,0 +1,9 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling aster v0.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\apps\aster)
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 27.75s

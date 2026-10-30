@@ -1,0 +1,223 @@
+{
+  "unix": 1792928351.7031078,
+  "exact_worker_alive": false,
+  "result": {
+    "schema": "aster-mxfp4-header-gpu-v326",
+    "unix": 1792928267.2964537,
+    "phase": "failed",
+    "model_executed": false,
+    "model_speed_claimed": false,
+    "formal_service_changed": false,
+    "runs": [
+      {
+        "name": "candidate-cuda-compile",
+        "returncode": 0,
+        "seconds": 10.833801947534084
+      },
+      {
+        "name": "original-helper-compile",
+        "returncode": 0,
+        "seconds": 3.7697738548740745
+      },
+      {
+        "name": "MXFP4-helper-compile",
+        "returncode": 0,
+        "seconds": 4.822094031609595
+      },
+      {
+        "name": "original90-driver-compile",
+        "returncode": 0,
+        "seconds": 0.5649776645004749
+      },
+      {
+        "name": "replay270-driver-compile",
+        "returncode": 0,
+        "seconds": 0.6649327427148819
+      },
+      {
+        "name": "graph-launch-observer-compile",
+        "returncode": 0,
+        "seconds": 0.0638814652338624
+      },
+      {
+        "name": "mode-guard-compile",
+        "returncode": 0,
+        "seconds": 0.03172160591930151
+      },
+      {
+        "name": "original-helper-probe-link",
+        "returncode": 0,
+        "seconds": 1.6665831105783582
+      },
+      {
+        "name": "mxfp4-probe-link",
+        "returncode": 0,
+        "seconds": 0.9158595399931073
+      },
+      {
+        "name": "graph-reference-link",
+        "returncode": 0,
+        "seconds": 0.8652430111542344
+      },
+      {
+        "name": "graph-candidate-link",
+        "returncode": 0,
+        "seconds": 0.915568582713604
+      },
+      {
+        "name": "replay-reference-link",
+        "returncode": 0,
+        "seconds": 0.8657192913815379
+      },
+      {
+        "name": "replay-candidate-link",
+        "returncode": 0,
+        "seconds": 0.9658464761450887
+      },
+      {
+        "name": "original144-helper-gate",
+        "returncode": 0,
+        "seconds": 0.36471982579678297
+      },
+      {
+        "name": "mxfp4-helper-gate",
+        "returncode": 0,
+        "seconds": 0.41509635001420975
+      },
+      {
+        "name": "graph-archive-reference",
+        "returncode": 0,
+        "seconds": 0.3643915904685855
+      },
+      {
+        "name": "graph-candidate-off",
+        "returncode": 0,
+        "seconds": 0.36458439379930496
+      },
+      {
+        "name": "graph-premask-no-skip",
+        "returncode": 0,
+        "seconds": 0.3646488804370165
+      },
+      {
+        "name": "graph-existing-mask-skip",
+        "returncode": 0,
+        "seconds": 0.36475054640322924
+      },
+      {
+        "name": "graph-MXFP4-header-on",
+        "returncode": 0,
+        "seconds": 0.3144398611038923
+      },
+      {
+        "name": "replay-archive-reference",
+        "returncode": 1,
+        "seconds": 0.2644353723153472
+      }
+    ],
+    "comparisons": [
+      {
+        "driver": "graph",
+        "profile": "archive-reference",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "full_score_byte_equal_to_archive": true,
+        "mask_first": "0",
+        "skip": "0",
+        "header": "0"
+      },
+      {
+        "driver": "graph",
+        "profile": "candidate-off",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "full_score_byte_equal_to_archive": true,
+        "mask_first": "0",
+        "skip": "0",
+        "header": "0"
+      },
+      {
+        "driver": "graph",
+        "profile": "premask-no-skip",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "full_score_byte_equal_to_archive": true,
+        "mask_first": "1",
+        "skip": "0",
+        "header": "0"
+      },
+      {
+        "driver": "graph",
+        "profile": "existing-mask-skip",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "full_score_byte_equal_to_archive": true,
+        "mask_first": "1",
+        "skip": "1",
+        "header": "0"
+      },
+      {
+        "driver": "graph",
+        "profile": "MXFP4-header-on",
+        "cases": 90,
+        "score_values": 138780,
+        "sha256": "12006c79a231d9088546e8035a70e6201964d598227b8c6ad9342247b535d6ef",
+        "full_score_byte_equal_to_archive": true,
+        "mask_first": "1",
+        "skip": "1",
+        "header": "1"
+      }
+    ],
+    "step_started_unix": 1792928297.8414044,
+    "candidate_cuda_sha256": "59fa3e2e42aed8af81845c623e84281aed569868c5350ce3d3e428c2097547fd",
+    "graph_candidate_sha256": "420a60953fed2070e174591c4ecada54f26eb700422cbf66f3d27cb60fa223a7",
+    "replay_candidate_sha256": "a9b862b1f77a80436a30113b1b2bef6ccfe945f73f6eb838904cfccb76496c2f",
+    "helper_probe_sha256": "eb8c39e56290c2f932d79e4fc0cf4326d5b705e0cddc140d598a2144d1a0ab4a",
+    "actual_float_pairs": 4096,
+    "actual_half_pairs": 4096,
+    "helper_cases": 1152,
+    "original_helper_cases": 144,
+    "error": "RuntimeError: replay-archive-reference exit 1",
+    "finished_unix": 1792928298.1072927,
+    "GPU_idle_after": true
+  },
+  "logs": [
+    {
+      "file": "candidate-cuda-compile.stderr.log",
+      "tail": "dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\n"
+    },
+    {
+      "file": "graph-MXFP4-header-on.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+    },
+    {
+      "file": "graph-archive-reference.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+    },
+    {
+      "file": "graph-candidate-off.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+    },
+    {
+      "file": "graph-existing-mask-skip.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+    },
+    {
+      "file": "graph-premask-no-skip.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\nggml_backend_cuda_graph_compute: CUDA graph warmup complete\nggml_backend_cuda_graph_compute: CUDA graph warmup reset\n"
+    },
+    {
+      "file": "original-helper-compile.stderr.log",
+      "tail": "dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\n"
+    },
+    {
+      "file": "replay-archive-reference.stderr.log",
+      "tail": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nFAIL actual CUDA graph launch was not observed\n"
+    }
+  ],
+  "worker_error": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc12-00686222ad57/mxfp4-header-gpu-v327/worker.py\", line 75, in <module>\n    out=run([str(ROOT/(kind+'-'+binary)),str(dest),mask_first],kind+'-'+name,90,\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc12-00686222ad57/mxfp4-header-gpu-v327/worker.py\", line 25, in run\n    if q.returncode:raise RuntimeError(name+' exit '+str(q.returncode))\nRuntimeError: replay-archive-reference exit 1\n"
+}

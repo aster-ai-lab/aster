@@ -1,0 +1,128 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Checking windows-sys v0.61.2
+   Compiling serde_json v1.0.154
+    Checking icu_normalizer v2.0.0
+   Compiling windows-sys v0.60.2
+    Checking bytes-utils v0.1.4
+   Compiling regex-syntax v0.8.11
+   Compiling a3s-code-version v9.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-version)
+    Checking num-bigint v0.4.6
+    Checking a3s-dirs v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-dirs)
+    Checking windows-sys v0.59.0
+   Compiling async-openai-macros v0.1.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\third-party\async-openai-macros)
+    Checking a3s-circuit-breaker v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-circuit-breaker)
+    Checking rayon v1.12.0
+    Checking itertools v0.12.1
+   Compiling flate2 v1.1.5
+    Checking ttf-parser v0.25.1
+    Checking strict-num v0.1.1
+    Checking a3s-token-estimation v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-token-estimation)
+    Checking a3s-code-image v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-image)
+    Checking a3s-interjection-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-interjection-core)
+    Checking idna_adapter v1.2.1
+    Checking a3s-message-delivery-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-message-delivery-core)
+   Compiling socket2 v0.6.4
+   Compiling tempfile v3.27.0
+    Checking a3s-code-paths v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-paths)
+    Checking tiny-skia-path v0.12.0
+    Checking a3s-code-status-line v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-status-line)
+   Compiling tokio v1.53.3
+   Compiling regex-automata v0.4.18
+    Checking idna v1.1.0
+    Checking simple_asn1 v0.6.3
+    Checking num-rational v0.4.2
+    Checking a3s-hooks-plugins-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-hooks-plugins-types)
+    Checking toml_datetime v0.6.11
+    Checking a3s-agent-lifecycle v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-agent-lifecycle)
+    Checking waitpid-any v0.3.0
+    Checking schemars v1.2.3
+    Checking tracing-subscriber v0.3.23
+    Checking typeshare v1.0.4
+    Checking prod-mc-cli-chat-proxy-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\prod\mc\cli-chat-proxy-types)
+    Checking prometheus-parse v0.2.5
+    Checking tiny-skia v0.12.0
+    Checking a3s-code-workspace-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-types)
+    Checking fontdb v0.23.0
+    Checking jpeg-decoder v0.3.2
+    Checking mio v1.2.1
+    Checking schannel v0.1.28
+   Compiling regex v1.12.4
+    Checking url v2.5.8
+    Checking home v0.5.12
+    Checking jsonwebtoken v10.3.0
+    Checking gix-sec v0.14.1
+    Checking os_info v3.14.0
+    Checking rustybuzz v0.20.1
+   Compiling tokio-util v0.7.19
+   Compiling tokio-rustls v0.26.6
+   Compiling tower v0.5.2
+    Checking office_oxide v0.1.9
+    Checking a3s-tool-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-types)
+    Checking a3s-code-feedback v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-feedback)
+    Checking tracing-opentelemetry v0.33.0
+    Checking tracing-appender v0.2.4
+   Compiling prost-build v0.14.1
+    Checking rustls-native-certs v0.8.2
+    Checking tracing-chrome v0.7.2
+    Checking sentry-types v0.42.0
+    Checking a3s-code-env v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-env)
+    Checking a3s-code-secrets v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-secrets)
+    Checking git2 v0.20.2
+    Checking lsp-types v0.95.1
+    Checking a3s-code-session-events v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-session-events)
+   Compiling h2 v0.4.19
+    Checking gix-discover v0.51.0
+   Compiling tower-http v0.6.8
+    Checking agent-client-protocol-schema v0.11.4
+    Checking gix-transport v0.57.2
+    Checking gix-config v0.56.0
+    Checking a3s-sqlite-journal v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-sqlite-journal)
+    Checking a3s-tool-protocol v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-protocol)
+    Checking webbrowser v1.2.4
+    Checking nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+    Checking a3s-code-models v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-models)
+   Compiling tonic-prost-build v0.14.3
+    Checking num v0.4.3
+    Checking referencing v0.30.0
+    Checking gix-dir v0.25.0
+    Checking pdf_oxide v0.3.74
+    Checking a3s-system-power v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-system-power)
+    Checking gix-protocol v0.61.0
+    Checking sentry-core v0.42.0
+    Checking toml_edit v0.22.27
+    Checking a3s-prompt-queue v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-prompt-queue)
+    Checking a3s-code-file-lock v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-file-lock)
+    Checking async-compression v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking aws-smithy-async v1.2.14
+   Compiling a3s-proto-build v0.0.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\build\a3s-proto-build)
+    Checking a3s-tty-utils v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-tty-utils)
+    Checking backoff v0.4.0
+    Checking a3s-code-compaction v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-code-compaction)
+   Compiling hyper v1.8.1
+    Checking gix-status v0.30.0
+    Checking gix-submodule v0.30.0
+    Checking sentry-backtrace v0.42.0
+    Checking sentry-contexts v0.42.0
+    Checking sentry-debug-images v0.42.0
+    Checking tokio-tungstenite v0.28.0
+error: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `-D unused-imports` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+    Checking opentelemetry_sdk v0.32.1
+    Checking aws-smithy-types v1.4.3
+    Checking a3s-fsnotify v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-fsnotify)
+    Checking a3s-codebase-graph v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-codebase-graph)
+error: could not compile `a3s-tty-utils` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

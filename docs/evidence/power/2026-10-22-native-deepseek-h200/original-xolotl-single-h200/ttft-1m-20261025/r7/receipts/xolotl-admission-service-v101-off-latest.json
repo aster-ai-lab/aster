@@ -1,0 +1,35 @@
+{
+  "unix": 1792889624.26631,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "stopped",
+    "unix": 1792889310.2775478,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+    "lease_ends_unix": 1792910673.5259097,
+    "binary_sha256": "c96e244dc7ffb1ebd56a2039c96506a81d702cd8c9e158c0f50c134edded2a6c",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 354,
+      "start_ticks": 711859482,
+      "uid": 10250
+    },
+    "startup_unix": 1792889323.8366446,
+    "last_health_status": 200,
+    "last_health_unix": 1792889599.1763327,
+    "api_reaped": true,
+    "api_exit": 0,
+    "finished_unix": 1792889610.2046812
+  },
+  "service-process.json": {
+    "pid": 211,
+    "start_ticks": 711858122,
+    "uid": 10250,
+    "unix": 1792889310.2307038,
+    "deadline_seconds": 21353
+  },
+  "exact_supervisor_alive": false
+}

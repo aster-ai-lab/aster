@@ -1,0 +1,11 @@
+
+running 1 test
+test ui_qualified_wave::kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation ... ORACLE case=coverage-markdown-last-match name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=coverage-markdown-last-match name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13344
+ORACLE case=coverage-markdown-last-match name=markdown-last-match-raw result=pass detail=the last real search match selects the terminal assistant answer even when Thinking adds a middle match; the actual Markdown viewer toggles into literal source
+ORACLE case=coverage-markdown-last-match name=markdown-last-match-exact-export result=pass detail=formatting and raw toggles leave canonical assistant UTF-8 export bytes and backend facts unchanged
+ORACLE case=coverage-markdown-last-match name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 98 filtered out; finished in 12.77s
+

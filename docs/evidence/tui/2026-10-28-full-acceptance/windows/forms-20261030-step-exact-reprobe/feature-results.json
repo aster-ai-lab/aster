@@ -1,0 +1,11 @@
+{
+  "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+  "config_unchanged": true,
+  "tests": [
+    {
+      "test": "forms_catalog::kimi_form_step_constraints_reject_off_step_drafts_before_submission",
+      "exit_code": 101,
+      "log": "windows/forms-20261030-step-exact-reprobe/kimi_form_step_constraints_reject_off_step_drafts_before_submission.log"
+    }
+  ]
+}

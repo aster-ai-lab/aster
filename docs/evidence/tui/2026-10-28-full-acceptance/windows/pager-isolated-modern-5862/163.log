@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns' (26052) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\status_line\sanitize_tests.rs:89:9:
+assertion `left == right` failed: a bel-terminated link after plain text
+  left: [(6, 10, "https://example.com/repo")]
+ right: [(7, 11, "https://example.com/repo")]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns ... FAILED
+
+failures:
+
+failures:
+    views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

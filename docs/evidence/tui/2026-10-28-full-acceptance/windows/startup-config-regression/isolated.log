@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback' (43504) panicked at crates\code\acp\src\config\tests\goal_control.rs:80:17:
+failed to parse merged A3S ACL from C:\Users\admin\AppData\Local\Temp\.tmp9Vobbu\.a3s/config.acl, C:\Users\admin\AppData\Local\Temp\.tmpjmw3WT\.a3s/config.acl
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback ... FAILED
+
+failures:
+
+failures:
+    config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 368 filtered out; finished in 0.01s
+

@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::blocks::context_info::tests::bar_and_legend_reconcile_used_with_overhead_excluding_tools' (37064) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\context_info.rs:998:9:
+assertion `left == right` failed
+  left: 0
+ right: 100
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::context_info::tests::bar_and_legend_reconcile_used_with_overhead_excluding_tools ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::context_info::tests::bar_and_legend_reconcile_used_with_overhead_excluding_tools
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

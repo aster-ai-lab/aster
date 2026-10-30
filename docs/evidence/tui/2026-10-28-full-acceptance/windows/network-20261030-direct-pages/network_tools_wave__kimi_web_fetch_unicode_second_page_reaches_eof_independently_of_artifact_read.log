@@ -1,0 +1,11 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read ... ORACLE case=network-fetch-pages-direct name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=network-fetch-pages-direct name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40637
+ORACLE case=network-fetch-pages-direct name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=42271
+ORACLE case=network-fetch-pages-direct name=web-fetch-direct-unicode-pages result=pass detail=two real HTTP requests return exact Unicode character slices 0..17 and 17..EOF, preserving total length, source and retained artifact identity; this independent case does not bypass or relabel the Windows artifact-read denial
+ORACLE case=network-fetch-pages-direct name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 114 filtered out; finished in 55.67s
+

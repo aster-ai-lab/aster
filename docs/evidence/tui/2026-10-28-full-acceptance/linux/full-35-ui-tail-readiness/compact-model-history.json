@@ -1,0 +1,187 @@
+{
+  "case": "compact-model-history",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26848",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-gl9BN0/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read compaction-proof.txt with the read tool. Its exact token is the acceptance key for the task we   2:21 PM    \n       will continue after compaction. Reply with the exact token and keep this task open. Do not modify                \n       files or call other tools.                                                                                       \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899                                                        2:21 PM    \n                                                                                                                        \n     Worked for 7.7s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13633",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-gl9BN0/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact acceptance key you read from compaction-proof.txt earlier in this                2:22 PM    \n       conversation. Do not call tools.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n                                                                                                                        \n     COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899                                                        2:22 PM    \n                                                                                                                        \n     Worked for 4.7s                                                                                                    \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "/compact",
+      "detail": "actual Kimi summary committed; next model request recalls the unseen key without tools in the same session",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-gl9BN0/workspace                                                                            40K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact acceptance key you read from compaction-proof.txt earlier in this                2:22 PM    \n       conversation. Do not call tools.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n                                                                                                                        \n     COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899                                                        2:22 PM    \n                                                                                                                        \n     Worked for 4.7s                                                                                                    \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13677",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-gl9BN0/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact acceptance key you read from compaction-proof.txt earlier in this                2:22 PM    \n       conversation. Do not call tools.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.4s                                                                                                 \n                                                                                                                        \n     COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899                                                        2:22 PM    \n                                                                                                                        \n     Worked for 4.0s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "/compact Preserve the exact acceptance key and the still-open task.",
+      "detail": "actual Kimi summary committed; next model request recalls the unseen key without tools in the same session",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-gl9BN0/workspace                                                                            54K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact acceptance key you read from compaction-proof.txt earlier in this                2:22 PM    \n       conversation. Do not call tools.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.4s                                                                                                 \n                                                                                                                        \n     COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899                                                        2:22 PM    \n                                                                                                                        \n     Worked for 4.0s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13343,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_03e7113937ab4dd0b9f25e009fbc1488",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-cfea5384-2eed-4d8a-ad51-e684fe2138c1",
+            "thread_id": "85826e74-8ed2-44df-9a57-0d382df1b9a1",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_03e7113937ab4dd0b9f25e009fbc1488",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-cfea5384-2eed-4d8a-ad51-e684fe2138c1",
+            "thread_id": "85826e74-8ed2-44df-9a57-0d382df1b9a1",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:d413042c16965796c5f205fc8f98fe97b3b2d5cfaaafbd53288249b4d32c1518",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tCOMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"compaction-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":89},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":89,\"projected_bytes\":89,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e57fe503d25355603258ec0e37422b50a654be8bff5e055e71bec48a93826bb7\",\"projected_digest\":\"sha256:e57fe503d25355603258ec0e37422b50a654be8bff5e055e71bec48a93826bb7\",\"repeat_key\":\"sha256:e57fe503d25355603258ec0e37422b50a654be8bff5e055e71bec48a93826bb7\",\"content_ref\":\"inline:sha256:e57fe503d25355603258ec0e37422b50a654be8bff5e055e71bec48a93826bb7\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:74ffe804fe1a20a44476193b952e60eaff2c9551e76b046622d9ffd42bb242e1\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13505,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:3a3093c474c7e71ba3d434a5fd7603987af9c6e60551d28dfd5801376fda0caf"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "47daf327a705a07e46502b35c194da0becd93ab6120e1f8cde23aba994d29b2a"
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "type": "compaction.done",
+      "payload": {
+        "summary": "## Durable source\nsequence: 2\nschema: a3s.code.execution-identity.v1\ndomain: a3s.code.session-fact-source.v1\ndigest: sha256:1c290e5d2be6e1e5d42f96f7a54b26e6574171b8fc02b13e90cf53385d4bd0b7\nReference only: policy, goal state and accepted progress come from original facts.\n\n## Goal\nRead compaction-proof.txt with the read tool. Its exact token is the acceptance key for the task we will continue after compaction. Reply with the exact token and keep this task open. Do not modify files or call other tools.\n\n## Files Touched\n- `compaction-proof.txt` — Read only; exact acceptance token: `COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899`. No files were modified.\n## Commands Run\n- None. Only the read tool was called, successfully.\n## Errors / Issues\n- None encountered.\n## Current State\nThe file was read and the assistant replied with the exact token, completing those requested actions. The task remains open for continuation after compaction; no subsequent task has been provided."
+      }
+    },
+    {
+      "seq": 14,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13633,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 15,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 14,
+          "digest": "cf97b6cfdca5eb717182b72fde18523f0ac4659b9b5667237c15fca035fc43d0"
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "type": "compaction.done",
+      "payload": {
+        "summary": "## Durable source\nsequence: 2\nschema: a3s.code.execution-identity.v1\ndomain: a3s.code.session-fact-source.v1\ndigest: sha256:1c290e5d2be6e1e5d42f96f7a54b26e6574171b8fc02b13e90cf53385d4bd0b7\nReference only: policy, goal state and accepted progress come from original facts.\n\n## Goal\nRead compaction-proof.txt with the read tool. Its exact token is the acceptance key for the task we will continue after compaction. Reply with the exact token and keep this task open. Do not modify files or call other tools.\n\n## Files Touched\n- `compaction-proof.txt` — Read successfully with the read tool; exact acceptance key: `COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899`. No files modified.\n## Commands Run\n- None. No shell commands were run; only the read tool was used successfully.\n## Errors / Issues\n- None encountered.\n## Current State\nThe file was read, and the exact acceptance key was provided. The subsequent request to repeat the key without calling tools was also completed with `COMPACT-KEY-72108411-1d48-4614-8c34-39ecbc842899`. The task remains open for continuation after compaction; no subsequent task has been provided."
+      }
+    },
+    {
+      "seq": 19,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13677,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 20,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 19,
+          "digest": "e448ae4bb4b2fddf7f2a50155134f1a54de4d100e540ac2cb26116f3997754f4"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

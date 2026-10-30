@@ -1,0 +1,41 @@
+services "auto-prism-pool" {
+  load_balancer {
+    request_timeout = "180s"
+    servers = [{url = "http://127.0.0.1:18200"}, {url = "http://127.0.0.1:18201"}, {url = "http://127.0.0.1:18202"}, {url = "http://127.0.0.1:18203"}, {url = "http://127.0.0.1:18204"}, {url = "http://127.0.0.1:18205"}]
+    strategy = "least-connections"
+    stream_idle_timeout = "5m"
+    health_check {
+      healthy_threshold = 1
+      interval = "5s"
+      path = "/health"
+      timeout = "3s"
+      unhealthy_threshold = 3
+    }
+  }
+}
+models "auto" {
+  model_id = "4f43b073-086d-5908-bad1-b0284c948f5c"
+  targets "fd5202fd-073b-5a51-a5e7-d2bb50633cf7" {
+    api_key_env = "A3S_SUPPLIER_KEY"
+    priority = 0
+    service = "auto-prism-pool"
+    upstream_model = "prism-27b"
+    weight = 1
+  }
+  targets "7290dd47-c92b-54be-8de3-f4c1560cd8c8" {
+    api_key_env = "A3S_SUPPLIER_KEY"
+    priority = 0
+    service = "power-gpu-6-deepseek"
+    upstream_model = "deepseek-v41-flash-1017-xq-1m"
+    weight = 1
+  }
+  routing {
+    competence_floor_bp = 5000
+    decision_model = "prism-27b"
+    decision_protocol = "openai_chat"
+    economy_targets = ["fd5202fd-073b-5a51-a5e7-d2bb50633cf7"]
+    mode = "smart_saving"
+    primary_targets = ["7290dd47-c92b-54be-8de3-f4c1560cd8c8"]
+    simple_probability_threshold_bp = 8000
+  }
+}

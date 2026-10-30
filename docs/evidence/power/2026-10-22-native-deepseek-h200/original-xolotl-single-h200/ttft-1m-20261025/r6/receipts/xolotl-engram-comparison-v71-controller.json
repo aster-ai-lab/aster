@@ -1,0 +1,99 @@
+{
+  "schema": "aster-xolotl-engram-comparison-v71",
+  "unix": 1792882302.2131913,
+  "phase": "requires_inspection",
+  "profiles": [
+    {
+      "profile": "gpfs_a",
+      "cases": [
+        {
+          "case": "technical8244",
+          "actual_input_tokens": 8244,
+          "prompt_sha256": "d1d63f30becc0b8dbd9a9070dac4d3f561ef64e5a11c72ff33d0af675bacf213",
+          "cold_ttft_seconds": 17.470967046916485,
+          "cold_seconds": 17.872124157845974,
+          "replay_ttft_seconds": 0.025412948802113533,
+          "replay_seconds": 0.2071612779982388,
+          "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+          "exact_output_reference_matched": false
+        },
+        {
+          "case": "technical25671",
+          "actual_input_tokens": 25671,
+          "prompt_sha256": "a070217f21ee1ed53372d13857825825987ec98fa4095a6d86051c35b58b9c44",
+          "cold_ttft_seconds": 29.255494167096913,
+          "cold_seconds": 29.531136455014348,
+          "replay_ttft_seconds": 0.05947132594883442,
+          "replay_seconds": 0.271962383762002,
+          "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+          "exact_output_reference_matched": false
+        }
+      ],
+      "natural_tests": 7,
+      "extended_tests": 12,
+      "native_tool_roundtrip_passed": true,
+      "exact_long_output_reference_matched": true,
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.40095672989264,
+        "api_wall_completion_tok_s": 75.57128873329376,
+        "stream_interval_tok_s_estimate": 75.59371478796216,
+        "ttft_p50_seconds": 0.0105631691403687,
+        "ttft_min_seconds": 0.009849349968135357,
+        "ttft_max_seconds": 0.011188515927642584
+      }
+    },
+    {
+      "profile": "local",
+      "cases": [
+        {
+          "case": "technical8244",
+          "actual_input_tokens": 8244,
+          "prompt_sha256": "d1d63f30becc0b8dbd9a9070dac4d3f561ef64e5a11c72ff33d0af675bacf213",
+          "cold_ttft_seconds": 11.10151925496757,
+          "cold_seconds": 11.352556565776467,
+          "replay_ttft_seconds": 0.024589148815721273,
+          "replay_seconds": 0.20558037562295794,
+          "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+          "exact_output_reference_matched": true
+        },
+        {
+          "case": "technical25671",
+          "actual_input_tokens": 25671,
+          "prompt_sha256": "a070217f21ee1ed53372d13857825825987ec98fa4095a6d86051c35b58b9c44",
+          "cold_ttft_seconds": 21.91649690736085,
+          "cold_seconds": 22.147701892070472,
+          "replay_ttft_seconds": 0.061033067759126425,
+          "replay_seconds": 0.29432204086333513,
+          "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+          "exact_output_reference_matched": true
+        }
+      ],
+      "natural_tests": 7,
+      "extended_tests": 12,
+      "native_tool_roundtrip_passed": true,
+      "exact_long_output_reference_matched": true,
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 109.29997751303017,
+        "api_wall_completion_tok_s": 74.94969520028852,
+        "stream_interval_tok_s_estimate": 75.12431513369836,
+        "ttft_p50_seconds": 0.01080095418728888,
+        "ttft_min_seconds": 0.01022000191733241,
+        "ttft_max_seconds": 0.011435574851930141
+      }
+    }
+  ],
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "scope": "Same GPU355/native34f/API f062/S512; only Engram directory changes; fresh processes; source OS cache not evicted",
+  "profile": "gpfs_b",
+  "observed_unix": 1792883023.1704605,
+  "service_phase": "stopped",
+  "client_phase": "passed",
+  "client_tests": 12,
+  "error": "RuntimeError: launch_xolotl_engram_disk_v68.frozen.py ('gpfs_b',) exit1: Traceback (most recent call last):\n  File \"D:\\code\\aster\\target\\h200-native\\launch_xolotl_engram_disk_v68.frozen.py\", line 122, in <module>\n    record['process'] = owned(code)\n                        ^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 93, in owned\n    return jump(wrapper,timeout)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 12, in jump\n    if p.returncode:raise RuntimeError('jump failed: '+p.stderr[-3000:])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: jump failed: client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\nTraceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\n  File \"<stdin>\", line 4, in cli\nRuntimeError: owned CLI failed exit 1: Traceback (most recent call last):\n  File \"<string>\", line 36, in <module>\nRuntimeError: shadow context qualification deadline insufficient\ncommand terminated with exit code 1\n\n\n",
+  "finished_unix": 1792883023.1704605
+}

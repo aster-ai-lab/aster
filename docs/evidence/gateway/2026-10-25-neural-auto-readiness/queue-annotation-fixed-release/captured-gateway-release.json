@@ -1,0 +1,59 @@
+{
+  "exit_code": 0,
+  "source_root": "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "a3s-gateway",
+    "--bin",
+    "a3s-gateway",
+    "--message-format=json-render-diagnostics"
+  ],
+  "compiler_artifact": {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway#a3s-gateway@1.1.1",
+    "manifest_path": "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "a3s-gateway",
+      "src_path": "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": false,
+      "test": false
+    },
+    "features": [
+      "default"
+    ],
+    "filenames": [
+      "/code/aster/target/release/a3s-gateway"
+    ],
+    "executable": "/code/aster/target/release/a3s-gateway",
+    "fresh": false
+  },
+  "unique_dependency_executable": "/code/aster/target/release/deps/a3s_gateway-a938eed19eef781d",
+  "captured_executable": "/data/deepseek-v41-xq-1017/neural-auto-queue-annotation-fixed-release/a3s-gateway",
+  "sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+  "size_bytes": 21064608,
+  "capture_stable": true,
+  "at_epoch": 1792944116.3555834
+}

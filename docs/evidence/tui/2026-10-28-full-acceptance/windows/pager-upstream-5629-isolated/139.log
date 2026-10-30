@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::dashboard::render::tests::render_popup_overlay_registers_close_hit_rect' (26512) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dashboard\render_tests.rs:1363:5:
+close affordance [✗] missing, got: "┌──────────────────────────────────────────────────────────┐\n│ ❱ Sample                                              [x]│\n├──────────────────────────────────────────────────────────┤\n│                                                          │\n│                                                          │\n│                                                          │\n│                                                          │\n│                                                          │\n│                                                          │\n└──────────────────────────────────────────────────────────┘\n"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dashboard::render::tests::render_popup_overlay_registers_close_hit_rect ... FAILED
+
+failures:
+
+failures:
+    views::dashboard::render::tests::render_popup_overlay_registers_close_hit_rect
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

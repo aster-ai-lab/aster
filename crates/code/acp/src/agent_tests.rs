@@ -1212,6 +1212,12 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
         std::fs::set_permissions(&entry, std::fs::Permissions::from_mode(0o755))
             .expect("echo is executable");
     }
+    #[cfg(windows)]
+    let entry = crate::test_support::native_executable_fixture(
+        &root.join("tools"),
+        "echo",
+        "fn main() { println!(\"{{\\\"message\\\":\\\"package ready\\\"}}\"); }",
+    );
     let entry = std::fs::canonicalize(&entry).expect("canonical echo");
     let dropped: acp::NewSessionRequest = serde_json::from_value(serde_json::json!({
         "cwd": root,

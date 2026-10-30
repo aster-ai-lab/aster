@@ -1,0 +1,74 @@
+[
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "HEAD",
+    "removed_token": "dual-adapter",
+    "rejected": true
+  },
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "HEAD",
+    "removed_token": "CLOUD_MIGRATION_COUNT",
+    "rejected": true
+  },
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "HEAD",
+    "removed_token": "#[controller]",
+    "rejected": true
+  },
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "working-tree",
+    "removed_token": "dual-adapter",
+    "rejected": true
+  },
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "working-tree",
+    "removed_token": "CLOUD_MIGRATION_COUNT",
+    "rejected": true
+  },
+  {
+    "file": ".specify/memory/constitution.md",
+    "version": "working-tree",
+    "removed_token": "#[controller]",
+    "rejected": true
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "HEAD",
+    "removed_token": "dual-adapter",
+    "rejected": false
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "HEAD",
+    "removed_token": "CLOUD_MIGRATION_COUNT",
+    "rejected": false
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "HEAD",
+    "removed_token": "#[controller]",
+    "rejected": false
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "working-tree",
+    "removed_token": "dual-adapter",
+    "rejected": false
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "working-tree",
+    "removed_token": "CLOUD_MIGRATION_COUNT",
+    "rejected": false
+  },
+  {
+    "file": "docs/development-standards.md",
+    "version": "working-tree",
+    "removed_token": "#[controller]",
+    "rejected": false
+  }
+]

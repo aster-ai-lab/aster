@@ -1,0 +1,3102 @@
+diff --git a/crates/code/acp/src/agent.rs b/crates/code/acp/src/agent.rs
+index a02dda5c3..273f9708e 100644
+--- a/crates/code/acp/src/agent.rs
++++ b/crates/code/acp/src/agent.rs
+@@ -54,7 +54,9 @@ use permission_ask::{
+ use permission_ask::{
+     permission_response_always, permission_response_approved, question_permission_options,
+ };
+-use permission_state::{PermissionPosture, ResearchGate, SessionPermissions};
++use permission_state::{
++    ClientPermissionRules, PermissionPosture, ResearchGate, SessionPermissions,
++};
+ #[cfg(test)]
+ use sampling::resolve_consent_session;
+ use sampling::serve_sampling_consent;
+@@ -580,6 +582,7 @@ pub struct A3sCodeAgent {
+     /// Trusted launcher instructions from initialize, kept separate from the
+     /// workspace configuration and applied whenever a session is opened.
+     client_rules: RefCell<Option<String>>,
++    client_permissions: RefCell<ClientPermissionRules>,
+     /// This process created `~/.a3s/config.acl`. The pager opens `/config`.
+     first_run_config: bool,
+ }
+@@ -643,6 +646,7 @@ impl A3sCodeAgent {
+             workspace_admission: Default::default(),
+             client_reads_files: std::cell::Cell::new(false),
+             client_rules: RefCell::new(None),
++            client_permissions: RefCell::new(ClientPermissionRules::default()),
+             first_run_config: false,
+         }
+     }
+@@ -813,7 +817,9 @@ impl A3sCodeAgent {
+         let count_guideline = if max_tool_rounds == 0 {
+             "Tool calls have no count limit. Stop when the user's outcome is done.".to_owned()
+         } else {
+-            format!("Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done.")
++            format!(
++                "Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done."
++            )
+         };
+         let guidelines = slots.guidelines.get_or_insert_with(String::new);
+         if !guidelines.is_empty() {
+@@ -978,7 +984,9 @@ impl acp::Agent for A3sCodeAgent {
+         args: acp::InitializeRequest,
+     ) -> acp::Result<acp::InitializeResponse> {
+         let rules = initialize_rules_from_meta(args.meta.as_ref())?;
++        let permissions = ClientPermissionRules::from_meta(args.meta.as_ref())?;
+         *self.client_rules.borrow_mut() = rules;
++        *self.client_permissions.borrow_mut() = permissions;
+         self.client_reads_files
+             .set(args.client_capabilities.fs.read_text_file);
+         let cwd = self.launch.workspace.to_string_lossy().to_string();
+@@ -1572,3 +1580,7 @@ mod run_observation_agent_tests;
+ #[cfg(test)]
+ #[path = "agent/permission_state_tests.rs"]
+ mod permission_state_tests;
++
++#[cfg(test)]
++#[path = "agent/client_permission_tests.rs"]
++mod client_permission_tests;
+diff --git a/crates/code/acp/src/agent/permission_state.rs b/crates/code/acp/src/agent/permission_state.rs
+index 2e08896f6..42a686879 100644
+--- a/crates/code/acp/src/agent/permission_state.rs
++++ b/crates/code/acp/src/agent/permission_state.rs
+@@ -1,5 +1,41 @@
+ use super::*;
+ 
++#[derive(Clone, Default, serde::Deserialize)]
++#[serde(deny_unknown_fields)]
++pub(super) struct ClientPermissionRules {
++    #[serde(default)]
++    allow: Vec<String>,
++    #[serde(default)]
++    deny: Vec<String>,
++}
++
++impl ClientPermissionRules {
++    pub(super) fn from_meta(meta: Option<&acp::Meta>) -> acp::Result<Self> {
++        let Some(value) = meta.and_then(|meta| meta.get("permissionRules")) else {
++            return Ok(Self::default());
++        };
++        if !value.is_object() {
++            return Err(acp::Error::invalid_params().data("permissionRules must be an object"));
++        }
++        let mut rules: Self = serde_json::from_value(value.clone()).map_err(|error| {
++            acp::Error::invalid_params().data(format!("permissionRules: {error}"))
++        })?;
++        for rule in rules.allow.iter_mut().chain(&mut rules.deny) {
++            let trimmed = rule.trim();
++            if trimmed.is_empty() {
++                return Err(acp::Error::invalid_params()
++                    .data("permissionRules must contain non-empty rules"));
++            }
++            *rule = trimmed.to_string();
++        }
++        Ok(rules)
++    }
++
++    pub(super) fn is_empty(&self) -> bool {
++        self.allow.is_empty() && self.deny.is_empty()
++    }
++}
++
+ #[derive(Clone, Copy, Default, PartialEq, Eq)]
+ pub(super) enum PermissionPosture {
+     #[default]
+@@ -80,16 +116,33 @@ impl PermissionPosture {
+ pub(super) struct SessionPermissions {
+     pub(super) posture: PermissionPosture,
+     pub(super) denies: Vec<String>,
++    pub(super) client_rules: ClientPermissionRules,
+     research_admission: bool,
+ }
+ 
+ impl SessionPermissions {
+-    fn policy(&self) -> a3s_code_core::permissions::PermissionPolicy {
+-        if self.research_admission {
++    pub(super) fn with_client_rules(client_rules: ClientPermissionRules) -> Self {
++        Self {
++            client_rules,
++            ..Self::default()
++        }
++    }
++
++    pub(super) fn policy(&self) -> a3s_code_core::permissions::PermissionPolicy {
++        let mut policy = if self.research_admission {
+             crate::host_context::research_policy(self.posture.as_str(), &self.denies)
+         } else {
+             posture_policy(self.posture.as_str(), &self.denies)
++        };
++        for rule in &self.client_rules.deny {
++            policy = policy.deny(rule);
++        }
++        if self.posture != PermissionPosture::Plan && !self.research_admission {
++            for rule in &self.client_rules.allow {
++                policy = policy.allow(rule);
++            }
+         }
++        policy
+     }
+ }
+ 
+@@ -106,6 +159,7 @@ impl LiveSession {
+         let mut next = SessionPermissions {
+             posture,
+             denies: state.denies.clone(),
++            client_rules: state.client_rules.clone(),
+             research_admission: state.research_admission,
+         };
+         next.denies.extend(extra_denies);
+@@ -143,13 +197,11 @@ impl ResearchGate {
+             .permissions
+             .lock()
+             .unwrap_or_else(std::sync::PoisonError::into_inner);
+-        live.session
+-            .set_permission_policy(crate::host_context::research_policy(
+-                state.posture.as_str(),
+-                &state.denies,
+-            ))
+-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+         state.research_admission = true;
++        if let Err(error) = live.session.set_permission_policy(state.policy()) {
++            state.research_admission = false;
++            return Err(acp::Error::internal_error().data(error.to_string()));
++        }
+         Ok(Self {
+             session: Arc::clone(&live.session),
+             permissions: Arc::clone(&live.permissions),
+@@ -165,10 +217,11 @@ impl ResearchGate {
+             .permissions
+             .lock()
+             .unwrap_or_else(std::sync::PoisonError::into_inner);
+-        self.session
+-            .set_permission_policy(posture_policy(state.posture.as_str(), &state.denies))
+-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+         state.research_admission = false;
++        if let Err(error) = self.session.set_permission_policy(state.policy()) {
++            state.research_admission = true;
++            return Err(acp::Error::internal_error().data(error.to_string()));
++        }
+         self.armed = false;
+         Ok(())
+     }
+diff --git a/crates/code/acp/src/agent/session_open.rs b/crates/code/acp/src/agent/session_open.rs
+index 6cf46fc39..f0d5c3020 100644
+--- a/crates/code/acp/src/agent/session_open.rs
++++ b/crates/code/acp/src/agent/session_open.rs
+@@ -295,10 +295,13 @@ impl A3sCodeAgent {
+                 .map_err(|error| acp::Error::internal_error().data(error))?;
+         }
+         let asset_denies = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
++        let permissions =
++            SessionPermissions::with_client_rules(self.client_permissions.borrow().clone());
+         if Self::attach_local_assets(&session, &setup.host, &asset_denies, self.document_bridge())?
++            || !permissions.client_rules.is_empty()
+         {
+             session
+-                .set_permission_policy(posture_policy("default", &[]))
++                .set_permission_policy(permissions.policy())
+                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+         }
+         Ok(LiveSession {
+@@ -306,7 +309,7 @@ impl A3sCodeAgent {
+             session: Arc::new(session),
+             workspace: setup.workspace,
+             model_id: setup.model_id.to_string(),
+-            permissions: Arc::new(std::sync::Mutex::new(SessionPermissions::default())),
++            permissions: Arc::new(std::sync::Mutex::new(permissions)),
+             asset_denies,
+             host: setup.host,
+             plugin_tools: Vec::new(),
+diff --git a/crates/code/acp/src/approval_learning.rs b/crates/code/acp/src/approval_learning.rs
+index dc30c7dc2..a2b556edd 100644
+--- a/crates/code/acp/src/approval_learning.rs
++++ b/crates/code/acp/src/approval_learning.rs
+@@ -255,18 +255,24 @@ fn workspace_key(workspace: &Path) -> String {
+ type Store = BTreeMap<String, Vec<String>>;
+ 
+ fn render_store(store: &Store) -> String {
+-    let mut document = String::new();
+-    for (workspace, rules) in store {
+-        let rules = rules
++    let document = a3s_acl::Document {
++        blocks: store
+             .iter()
+-            .map(|rule| format!("\"{rule}\""))
+-            .collect::<Vec<_>>()
+-            .join(", ");
+-        document.push_str(&format!(
+-            "workspace \"{workspace}\" {{\n  rules = [{rules}]\n}}\n"
+-        ));
+-    }
+-    document
++            .map(|(workspace, rules)| a3s_acl::Block {
++                name: "workspace".into(),
++                labels: vec![workspace.clone()],
++                blocks: vec![],
++                attributes: [(
++                    "rules".into(),
++                    a3s_acl::Value::List(
++                        rules.iter().cloned().map(a3s_acl::Value::String).collect(),
++                    ),
++                )]
++                .into(),
++            })
++            .collect(),
++    };
++    a3s_acl::generate_acl(&document)
+ }
+ 
+ fn parse_store(text: &str) -> anyhow::Result<Store> {
+diff --git a/crates/code/acp/src/approval_learning/tests.rs b/crates/code/acp/src/approval_learning/tests.rs
+index 71c27f431..1e585fcb8 100644
+--- a/crates/code/acp/src/approval_learning/tests.rs
++++ b/crates/code/acp/src/approval_learning/tests.rs
+@@ -1,5 +1,21 @@
+ use super::*;
+ 
++#[test]
++fn workspace_labels_round_trip_native_and_quoted_paths() {
++    let store: Store = [
++        (
++            r"\\?\C:\Work\中文 path\repo".to_string(),
++            vec!["cat".to_string()],
++        ),
++        (
++            "/tmp/aster \"quoted\"\nrepo".to_string(),
++            vec!["git status".to_string()],
++        ),
++    ]
++    .into();
++    assert_eq!(parse_store(&render_store(&store)).unwrap(), store);
++}
++
+ struct Fixture {
+     _root: tempfile::TempDir,
+     store: PathBuf,
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e.rs b/crates/code/acp/tests/aster_tui_live_e2e.rs
+index d4c5d4c0b..9f5a6f780 100644
+--- a/crates/code/acp/tests/aster_tui_live_e2e.rs
++++ b/crates/code/acp/tests/aster_tui_live_e2e.rs
+@@ -17,6 +17,15 @@ mod workflows;
+ #[path = "aster_tui_live_e2e/forms.rs"]
+ mod forms;
+ 
++#[path = "aster_tui_live_e2e/functional.rs"]
++mod functional;
++
++#[path = "aster_tui_live_e2e/lifecycle.rs"]
++mod lifecycle;
++
++#[path = "aster_tui_live_e2e/context_and_input.rs"]
++mod context_and_input;
++
+ use driver::LiveTui;
+ 
+ #[test]
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e/driver.rs b/crates/code/acp/tests/aster_tui_live_e2e/driver.rs
+index a0bba7e26..2068bc76f 100644
+--- a/crates/code/acp/tests/aster_tui_live_e2e/driver.rs
++++ b/crates/code/acp/tests/aster_tui_live_e2e/driver.rs
+@@ -15,8 +15,11 @@ pub(super) struct LiveTui {
+     pub home: PathBuf,
+     config: PathBuf,
+     config_before: Vec<u8>,
++    editable_config: Option<PathBuf>,
++    fixture_env: Vec<(String, String)>,
+     binary: PathBuf,
+     pub editor: Option<String>,
++    pub submit_keys: Vec<u8>,
+     session: Option<String>,
+     secrets: Vec<String>,
+     child: Option<Box<dyn Child + Send + Sync>>,
+@@ -100,12 +103,15 @@ impl LiveTui {
+         );
+         let mut value = Self {
+             config_before: std::fs::read(&config).unwrap(),
++            editable_config: None,
++            fixture_env: Vec::new(),
+             _root: root,
+             workspace,
+             home,
+             config,
+             binary,
+             editor: None,
++            submit_keys: b"\r".to_vec(),
+             session: None,
+             secrets,
+             child: None,
+@@ -124,6 +130,14 @@ impl LiveTui {
+     }
+ 
+     pub fn launch(&mut self, args: &[&str]) {
++        self.launch_inner(args, true);
++    }
++
++    pub fn launch_default(&mut self, args: &[&str]) {
++        self.launch_inner(args, false);
++    }
++
++    fn launch_inner(&mut self, args: &[&str], explicit_normal: bool) {
+         assert!(self.child.is_none());
+         let pair = native_pty_system()
+             .openpty(PtySize {
+@@ -134,7 +148,10 @@ impl LiveTui {
+             })
+             .unwrap();
+         let mut command = CommandBuilder::new(&self.binary);
+-        command.args(["--cwd", self.workspace.to_str().unwrap(), "--no-plan"]);
++        command.args(["--cwd", self.workspace.to_str().unwrap()]);
++        if explicit_normal && !args.contains(&"--plan") {
++            command.arg("--no-plan");
++        }
+         command.args(args);
+         command.cwd(&self.workspace);
+         command.env_clear();
+@@ -160,7 +177,13 @@ impl LiveTui {
+         command.env("APPDATA", self.home.join("AppData/Roaming"));
+         command.env("LOCALAPPDATA", self.home.join("AppData/Local"));
+         command.env("GROK_HOME", self.home.join("grok"));
+-        command.env("A3S_CONFIG", &self.config);
++        command.env(
++            "A3S_CONFIG",
++            self.editable_config.as_ref().unwrap_or(&self.config),
++        );
++        for (name, value) in &self.fixture_env {
++            command.env(name, value);
++        }
+         command.env("A3S_DISABLE_CC_SWITCH", "1");
+         command.env("A3S_DISABLE_GROK_ACCOUNT", "1");
+         command.env("A3S_DISABLE_CURSOR_ACCOUNT", "1");
+@@ -190,6 +213,61 @@ impl LiveTui {
+         self.session = None;
+     }
+ 
++    pub fn use_editable_config(&mut self) -> PathBuf {
++        use a3s_acl::{Block, Value as AclValue};
++        let parsed = a3s_code_core::CodeConfig::from_file(&self.config).unwrap();
++        let (provider, model) = parsed.default_model_config().unwrap();
++        let mut provider_json = serde_json::to_value(provider).unwrap();
++        let attrs = provider_json.as_object_mut().unwrap();
++        attrs.remove("name");
++        attrs.remove("models");
++        let mut model_json = serde_json::to_value(model).unwrap();
++        model_json.as_object_mut().unwrap().remove("id");
++        let attributes = |value: &Value| {
++            value
++                .as_object()
++                .unwrap()
++                .iter()
++                .map(|(k, v)| (k.clone(), fixture_acl_value(v, &self.secrets)))
++                .collect()
++        };
++        let mut document = a3s_acl::parse_acl("default_model = \"kimi/k3.1-pro\"\n").unwrap();
++        document.blocks.push(Block {
++            name: "providers".into(),
++            labels: vec![provider.name.clone()],
++            attributes: attributes(&provider_json),
++            blocks: vec![Block {
++                name: "models".into(),
++                labels: vec![model.id.clone()],
++                blocks: vec![],
++                attributes: attributes(&model_json),
++            }],
++        });
++        document.blocks.push(Block {
++            name: "llm_api_timeout_ms".into(),
++            labels: vec![],
++            blocks: vec![],
++            attributes: [("llm_api_timeout_ms".into(), AclValue::Number(120_000.0))].into(),
++        });
++        let text = a3s_acl::generate_acl(&document);
++        for secret in self.secrets.iter().filter(|s| !s.is_empty()) {
++            assert!(
++                !text.contains(secret),
++                "fixture must never contain a resolved secret"
++            );
++        }
++        let path = self.home.join("editable-config.acl");
++        std::fs::write(&path, text).unwrap();
++        self.fixture_env = self
++            .secrets
++            .iter()
++            .enumerate()
++            .map(|(i, value)| (format!("ASTER_TUI_CONFIG_SECRET_{i}"), value.clone()))
++            .collect();
++        self.editable_config = Some(path.clone());
++        path
++    }
++
+     pub fn bytes(&mut self, bytes: &[u8]) {
+         let writer = self.writer.as_mut().unwrap();
+         writer.write_all(bytes).unwrap();
+@@ -220,6 +298,13 @@ impl LiveTui {
+         out
+     }
+ 
++    pub fn physical_screen(&mut self) -> String {
++        self.screen();
++        let screen = self.parser.screen();
++        let (_, cols) = screen.size();
++        self.redact(&screen.rows(0, cols).collect::<Vec<_>>().join("\n"))
++    }
++
+     pub fn pump(&mut self, millis: u64) -> String {
+         let deadline = Instant::now() + Duration::from_millis(millis);
+         while Instant::now() < deadline {
+@@ -282,11 +367,25 @@ impl LiveTui {
+     pub fn command(&mut self, text: &str) {
+         self.focus_composer();
+         self.bytes(b"\x1b[200~");
+-        self.bytes(text.as_bytes());
++        // ConPTY exposes bare LF as Ctrl+Enter, not a text newline. Send the
++        // native Enter encoding; the pager coalesces the paste back to LF.
++        let paste = if cfg!(windows) {
++            assert!(!text.contains('\r'), "logical live prompts use LF");
++            text.replace('\n', "\r")
++        } else {
++            text.to_owned()
++        };
++        self.bytes(paste.as_bytes());
+         self.bytes(b"\x1b[201~");
+-        let prefix: String = text.chars().take(48).collect();
++        let prefix: String = text
++            .lines()
++            .next()
++            .unwrap_or_default()
++            .chars()
++            .take(48)
++            .collect();
+         self.wait_for(&prefix, 8);
+-        self.bytes(b"\r");
++        self.bytes(&self.submit_keys.clone());
+     }
+ 
+     pub fn literal_command(&mut self, text: &str) {
+@@ -458,6 +557,10 @@ impl LiveTui {
+         let mut answered = false;
+         loop {
+             let screen = self.pump(80);
++            assert!(
++                !screen.contains("Turn failed"),
++                "live turn failed\n{screen}"
++            );
+             if !screen.contains("Yes, proceed") {
+                 answered = false;
+             }
+@@ -495,10 +598,6 @@ impl LiveTui {
+                         "TUI did not become idle after the terminal fact\n{screen}"
+                     );
+                 };
+-                assert!(
+-                    !screen.contains("Turn failed"),
+-                    "live turn failed\n{screen}"
+-                );
+                 self.record(
+                     "settled-turn",
+                     &format!(
+@@ -562,6 +661,58 @@ impl LiveTui {
+         );
+         self.finished = true;
+     }
++
++    pub fn checkpoint_session(&mut self, label: &str) {
++        let facts = self.evidence_facts();
++        self.evidence
++            .push(json!({"checkpoint":label,"session":self.session,"facts":facts}));
++    }
++
++    pub fn permission_answer_count(&self) -> usize {
++        self.evidence
++            .iter()
++            .filter(|entry| entry["name"] == "permission-answer")
++            .count()
++    }
++
++    fn evidence_facts(&self) -> Vec<Value> {
++        self.facts().iter().filter_map(|fact| {
++            let p = &fact["payload"];
++            let payload = match fact["type"].as_str()? {
++                "tool.prepared" => json!({"identity":p["prepared"]["identity"], "tool":p["prepared"]["tool_name"]}),
++                "tool.result" => {
++                    let r = &p["receipt"];
++                    json!({"identity":r["identity"],"prepared_digest":r["prepared_digest"],"outcome":r["outcome"],"effects":r["effects"],"output":r["output"]})
++                }
++                "model.turn" => json!({"prompt_tokens":p["prompt_tokens"],"has_text":p["text"].as_str().is_some_and(|v| !v.is_empty()),"tool":p["call"]["name"]}),
++                "turn.complete" | "a3s.goal.created" | "a3s.goal.paused" | "a3s.goal.resumed" | "a3s.goal.cancelled" | "compaction.done" => p.clone(),
++                _ => return None,
++            };
++            Some(json!({"seq":fact["seq"],"type":fact["type"],"payload":payload}))
++        }).collect()
++    }
++}
++
++fn fixture_acl_value(value: &Value, secrets: &[String]) -> a3s_acl::Value {
++    use a3s_acl::Value as A;
++    match value {
++        Value::Null => A::Null,
++        Value::Bool(v) => A::Bool(*v),
++        Value::Number(v) => A::Number(v.as_f64().unwrap()),
++        Value::String(v) => match secrets.iter().position(|s| !s.is_empty() && s == v) {
++            Some(i) => A::Call(
++                "env".into(),
++                vec![A::String(format!("ASTER_TUI_CONFIG_SECRET_{i}"))],
++            ),
++            None => A::String(v.clone()),
++        },
++        Value::Array(v) => A::List(v.iter().map(|v| fixture_acl_value(v, secrets)).collect()),
++        Value::Object(v) => A::Object(
++            v.iter()
++                .map(|(k, v)| (k.clone(), fixture_acl_value(v, secrets)))
++                .collect(),
++        ),
++    }
+ }
+ 
+ impl Drop for LiveTui {
+@@ -578,20 +729,7 @@ impl Drop for LiveTui {
+         if let Some(dir) = std::env::var_os("A3S_TUI_LIVE_EVIDENCE_DIR") {
+             let dir = PathBuf::from(dir);
+             std::fs::create_dir_all(&dir).unwrap();
+-            let facts: Vec<Value> = self.facts().iter().filter_map(|fact| {
+-                let p = &fact["payload"];
+-                let payload = match fact["type"].as_str()? {
+-                    "tool.prepared" => json!({"identity":p["prepared"]["identity"], "tool":p["prepared"]["tool_name"]}),
+-                    "tool.result" => {
+-                        let r = &p["receipt"];
+-                        json!({"identity":r["identity"],"prepared_digest":r["prepared_digest"],"outcome":r["outcome"],"effects":r["effects"],"output":r["output"]})
+-                    }
+-                    "model.turn" => json!({"prompt_tokens":p["prompt_tokens"],"has_text":p["text"].as_str().is_some_and(|v| !v.is_empty()),"tool":p["call"]["name"]}),
+-                    "turn.complete" | "a3s.goal.created" | "a3s.goal.paused" | "a3s.goal.resumed" | "a3s.goal.cancelled" | "compaction.done" => p.clone(),
+-                    _ => return None,
+-                };
+-                Some(json!({"seq":fact["seq"],"type":fact["type"],"payload":payload}))
+-            }).collect();
++            let facts = self.evidence_facts();
+             let report = json!({"case":self.case,"model":"kimi/k3.1-pro",
+                 "assertions_finished":self.finished,"panicked":std::thread::panicking(),
+                 "oracles":self.evidence,"last_screen":screen,"facts":facts,
+diff --git a/crates/code/core/src/agent_api/session_facade.rs b/crates/code/core/src/agent_api/session_facade.rs
+index 77b1f3359..721fcaace 100644
+--- a/crates/code/core/src/agent_api/session_facade.rs
++++ b/crates/code/core/src/agent_api/session_facade.rs
+@@ -478,8 +478,23 @@ impl AgentSession {
+     /// `history()` is the live in-memory buffer. A resumed session has to show
+     /// the log even when that buffer was never copied into the pager.
+     pub fn durable_transcript(&self) -> Vec<Message> {
+-        crate::fact_control::compaction_transcript(&self.workspace, &self.session_id)
+-            .unwrap_or_default()
++        let slot = self.run_admission.fact_log_slot();
++        let log = match slot.lock() {
++            Ok(slot) => slot.clone(),
++            Err(_) => return Vec::new(),
++        };
++        let Some(log) = log else {
++            return crate::fact_control::compaction_transcript(&self.workspace, &self.session_id)
++                .unwrap_or_default();
++        };
++        // Active runs must read through their existing handle: opening a
++        // second FileLog would contend with the original writer's fence.
++        a3s_effect::LogStore::read(
++            log.as_ref(),
++            &crate::fact_control::thread_for_session(&self.session_id),
++        )
++        .map(|facts| crate::fact_control::compaction_transcript_from_facts(&facts))
++        .unwrap_or_default()
+     }
+ 
+     /// Fork the conversation at fact `seq`: every fact after `seq` is
+diff --git a/crates/code/core/src/agent_api/tests/compact.rs b/crates/code/core/src/agent_api/tests/compact.rs
+index 0e2f5d47f..738f6869c 100644
+--- a/crates/code/core/src/agent_api/tests/compact.rs
++++ b/crates/code/core/src/agent_api/tests/compact.rs
+@@ -55,15 +55,16 @@ impl crate::llm::LlmClient for RecordingCompactClient {
+         ));
+         let (tx, rx) = tokio::sync::mpsc::channel(4);
+         let reply = self.reply.clone();
++        let prompt_tokens = crate::llm::estimate_message_tokens(messages);
+         tokio::spawn(async move {
+             let _ = tx.send(StreamEvent::TextDelta(reply.clone())).await;
+             let _ = tx
+                 .send(StreamEvent::Done(LlmResponse {
+                     message: Message::assistant(&reply),
+                     usage: TokenUsage {
+-                        prompt_tokens: 1024,
++                        prompt_tokens,
+                         completion_tokens: 1,
+-                        total_tokens: 1025,
++                        total_tokens: prompt_tokens + 1,
+                         ..Default::default()
+                     },
+                     stop_reason: None,
+diff --git a/crates/code/core/src/agent_api/tests/compact/source_carry.rs b/crates/code/core/src/agent_api/tests/compact/source_carry.rs
+index 34b135d03..1347e63a0 100644
+--- a/crates/code/core/src/agent_api/tests/compact/source_carry.rs
++++ b/crates/code/core/src/agent_api/tests/compact/source_carry.rs
+@@ -230,14 +230,14 @@ async fn automatic_compaction_uses_admitted_source_in_actual_next_input() {
+                 .with_work_policy(policy.clone())
+                 .with_auto_compact(true)
+                 .with_auto_compact_threshold(0.5)
+-                .with_max_context_tokens(256),
++                .with_max_context_tokens(16_384),
+         )
+         .unwrap();
+     finish_stream(
+         &session,
+         &format!(
+             "## Goal\nVerify the existing callers\n{}",
+-            "reference data ".repeat(100)
++            "reference data ".repeat(3_000)
+         ),
+     )
+     .await;
+diff --git a/crates/code/core/src/agent_api/tests/fact_log.rs b/crates/code/core/src/agent_api/tests/fact_log.rs
+index c889b0606..89cb11edf 100644
+--- a/crates/code/core/src/agent_api/tests/fact_log.rs
++++ b/crates/code/core/src/agent_api/tests/fact_log.rs
+@@ -16,6 +16,7 @@ use tokio_util::sync::CancellationToken;
+ mod child_policy;
+ mod confirmation_snapshot;
+ mod durable_source;
++mod durable_read;
+ mod execution_target;
+ mod final_delivery;
+ mod fork_admission;
+diff --git a/crates/code/core/src/agent_api/tests/fact_log/durable_source.rs b/crates/code/core/src/agent_api/tests/fact_log/durable_source.rs
+index fb32e843a..68dc6e19e 100644
+--- a/crates/code/core/src/agent_api/tests/fact_log/durable_source.rs
++++ b/crates/code/core/src/agent_api/tests/fact_log/durable_source.rs
+@@ -145,6 +145,8 @@ async fn prove_snapshot_source(file: bool) {
+         let before = calls.load(Ordering::SeqCst);
+         session.close().await;
+         agent.close().await;
++        drop(session);
++        drop(agent);
+         let store: Arc<dyn SessionStore> = if file {
+             Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
+         } else {
+diff --git a/crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs b/crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs
+index c4d4208ad..fe1dfcd75 100644
+--- a/crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs
++++ b/crates/code/core/src/agent_api/tests/long_horizon_capabilities/plan_heavy.rs
+@@ -49,7 +49,7 @@ impl crate::llm::LlmClient for PlanHeavyClient {
+                 tool_use(
+                     &format!("ph-read-{call}"),
+                     "read",
+-                    serde_json::json!({ "path": "data/a.mjs" }),
++                    serde_json::json!({ "file_path": "data/a.mjs" }),
+                 )
+             };
+             assistant_tool(block)
+diff --git a/crates/code/core/src/agent_api/tests/stream.rs b/crates/code/core/src/agent_api/tests/stream.rs
+index 538fd3016..593785165 100644
+--- a/crates/code/core/src/agent_api/tests/stream.rs
++++ b/crates/code/core/src/agent_api/tests/stream.rs
+@@ -113,15 +113,30 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
+         .await
+         .unwrap();
+     let mut flushed_before_end = false;
++    let mut write_id = None;
+     while let Some(event) = rx.recv().await {
+         match &event {
+-            AgentEvent::ToolEnd { id, .. } if id == "call-write" => {
++            AgentEvent::ToolStart { id, name } if name == "write" => {
++                assert!(write_id.replace(id.clone()).is_none());
++            }
++            AgentEvent::ToolEnd {
++                id,
++                name,
++                exit_code,
++                ..
++            } if name == "write" => {
++                assert_eq!(
++                    Some(id),
++                    write_id.as_ref(),
++                    "settle the announced host invocation"
++                );
++                assert_eq!(*exit_code, 0);
+                 // Checkpoint commit acks after the event sink drains.
+                 for _ in 0..50 {
+                     tokio::time::sleep(std::time::Duration::from_millis(40)).await;
+                     if let Ok(Some(saved)) = store.load("stream-ckpt-flush-test").await {
+                         let hay = serde_json::to_string(&saved.messages).unwrap_or_default();
+-                        if hay.contains("a3s-ckpt-flush.md") || hay.contains("call-write") {
++                        if hay.contains("a3s-ckpt-flush.md") && hay.contains(id) {
+                             flushed_before_end = true;
+                             break;
+                         }
+@@ -192,14 +207,29 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
+     let mut event_index = 0usize;
+     let mut last_subagent_end = None;
+     let mut parent_tool_end = None;
++    let mut parent_tool_id = None;
+     while let Some(event) = rx.recv().await {
+         match event {
++            AgentEvent::ToolStart { id, name } if name == "task" => {
++                assert!(parent_tool_id.replace(id).is_none());
++            }
+             AgentEvent::SubagentStart { .. } => subagent_starts += 1,
+             AgentEvent::SubagentEnd { .. } => {
+                 subagent_ends += 1;
+                 last_subagent_end = Some(event_index);
+             }
+-            AgentEvent::ToolEnd { id, .. } if id == "call-parallel" => {
++            AgentEvent::ToolEnd {
++                id,
++                name,
++                exit_code,
++                ..
++            } if name == "task" => {
++                assert_eq!(
++                    Some(id),
++                    parent_tool_id,
++                    "settle the announced parent invocation"
++                );
++                assert_eq!(exit_code, 0);
+                 parent_tool_end = Some(event_index);
+             }
+             AgentEvent::End { .. } => break,
+diff --git a/crates/code/core/src/harness_loop.rs b/crates/code/core/src/harness_loop.rs
+index d06d81594..5b6c3edf5 100644
+--- a/crates/code/core/src/harness_loop.rs
++++ b/crates/code/core/src/harness_loop.rs
+@@ -764,7 +764,9 @@ impl MutationLedger {
+                 && result.effects.completeness == a3s_effect::ToolObservationCompleteness::Complete
+             {
+                 match result.outcome {
+-                    a3s_effect::ToolExecutionOutcome::Failed => {
++                    a3s_effect::ToolExecutionOutcome::Failed
++                        if !unchanged_file_identity(change.before.as_ref(), &change.after) =>
++                    {
+                         failed_changed |= self
+                             .failed_effect_paths
+                             .insert(change.path.clone(), change.after.clone())
+@@ -848,6 +850,14 @@ impl MutationLedger {
+         if path.is_empty() || crate::porcelain::is_harness_path(path) {
+             return;
+         }
++        // A stat delta may only be timestamp or sandbox ACL bookkeeping.
++        // Identical typed states cannot introduce a new mutation, but must
++        // still reconcile an earlier record for this path.
++        if unchanged_file_identity(before, after)
++            && !self.records.iter().any(|record| record.path == path)
++        {
++            return;
++        }
+         // A typed before of absence is the run's start for this path, unless
+         // an earlier receipt already showed the path present.
+         if before.is_some_and(|before| before.kind == a3s_effect::ToolFileKind::Missing)
+@@ -1524,6 +1534,19 @@ fn append_effect_field(canonical: &mut Vec<u8>, field: &[u8]) {
+     canonical.extend_from_slice(field);
+ }
+ 
++fn unchanged_file_identity(
++    before: Option<&a3s_effect::ToolFileIdentityV1>,
++    after: &a3s_effect::ToolFileIdentityV1,
++) -> bool {
++    use a3s_effect::ToolFileKind;
++    before == Some(after)
++        && match after.kind {
++            ToolFileKind::Missing | ToolFileKind::Directory => true,
++            ToolFileKind::File | ToolFileKind::Symlink => after.content_digest.is_some(),
++            ToolFileKind::Unknown => false,
++        }
++}
++
+ #[cfg(test)]
+ mod receipt_tests;
+ 
+@@ -1534,6 +1557,9 @@ mod receipt_restore_tests;
+ #[cfg(test)]
+ mod background_receipt_tests;
+ 
++#[cfg(test)]
++mod unchanged_receipt_tests;
++
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum CompletionGate {
+     Allow(CompletionTerminal),
+diff --git a/crates/code/core/src/harness_loop/receipt_tests.rs b/crates/code/core/src/harness_loop/receipt_tests.rs
+index 11f958851..9b0393ff7 100644
+--- a/crates/code/core/src/harness_loop/receipt_tests.rs
++++ b/crates/code/core/src/harness_loop/receipt_tests.rs
+@@ -273,13 +273,24 @@ fn typed_projection_preserves_real_space_unicode_control_and_backslash_paths() {
+         " padded ",
+         "padded",
+         "数据.txt",
++        #[cfg(unix)]
+         "line\nbreak",
++        #[cfg(unix)]
+         "tab\tname",
+         #[cfg(unix)]
+         r"literal\name",
+         #[cfg(unix)]
+         r".a3s\legal-file",
+     ];
++    #[cfg(windows)]
++    for unsupported in ["line\nbreak", "tab\tname"] {
++        assert_eq!(
++            std::fs::write(root.path().join(unsupported), b"must not exist")
++                .unwrap_err()
++                .raw_os_error(),
++            Some(123),
++        );
++    }
+     let mut ledger = MutationLedger::default();
+     for (index, path) in names.iter().enumerate() {
+         let bytes = format!("distinct actual bytes {index}");
+diff --git a/crates/code/core/src/porcelain/windows_tests.rs b/crates/code/core/src/porcelain/windows_tests.rs
+index 737ec49f9..1ad8ccee1 100644
+--- a/crates/code/core/src/porcelain/windows_tests.rs
++++ b/crates/code/core/src/porcelain/windows_tests.rs
+@@ -2,6 +2,87 @@
+ 
+ use super::*;
+ 
++#[tokio::test]
++async fn native_sandbox_read_has_no_completion_debt() {
++    use crate::tools::Tool;
++
++    let base = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap()).join("Temp");
++    let root = tempfile::Builder::new()
++        .prefix("aster-observe-")
++        .tempdir_in(base)
++        .unwrap();
++    let workspace = root.path().join("workspace");
++    std::fs::create_dir(&workspace).unwrap();
++    std::fs::write(workspace.join("proof.txt"), b"READ-ONLY-PROOF").unwrap();
++    let sandbox = crate::sandbox::native::NativeBashSandbox::new(&workspace).unwrap();
++    let context = crate::tools::ToolContext::new(workspace.clone())
++        .with_sandbox(std::sync::Arc::new(sandbox));
++    let before = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    let watch = Watch::start(&workspace).await;
++    let result = crate::tools::builtin::bash::BashTool
++        .execute(&serde_json::json!({"command":"cat proof.txt"}), &context)
++        .await
++        .unwrap();
++    assert!(result.success, "{}", result.content);
++    assert!(result.content.contains("READ-ONLY-PROOF"));
++    let after = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    assert_eq!(before.content_digest, after.content_digest);
++    assert_eq!(before.mode, after.mode);
++    assert_eq!(before.node, after.node);
++    assert_eq!(before.modified, after.modified);
++    let effects = watch.finish_effects_with_revision(&workspace, false).await;
++    assert_eq!(
++        effects.completeness,
++        a3s_effect::ToolObservationCompleteness::Complete
++    );
++    assert!(effects
++        .changes
++        .iter()
++        .all(|change| change.before.as_ref() == Some(&change.after)));
++    let mut ledger = crate::harness_loop::MutationLedger::default();
++    ledger.observe_background_receipt("native-read-fixture", &effects);
++    assert!(
++        ledger.is_empty(),
++        "identical file states must not create verification debt"
++    );
++}
++
++#[test]
++fn actual_powershell_read_keeps_the_observation_stable() {
++    let root = tempfile::tempdir().unwrap();
++    let workspace = root.path().join("workspace");
++    std::fs::create_dir(&workspace).unwrap();
++    std::fs::write(workspace.join("proof.txt"), b"READ-ONLY-PROOF").unwrap();
++    let script = root.path().join("read.ps1");
++    std::fs::write(
++        &script,
++        "Get-Content -LiteralPath (Join-Path $PSScriptRoot 'workspace/proof.txt')\n",
++    )
++    .unwrap();
++    let before = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    let index = index_files(&workspace);
++    let shell = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap())
++        .join("System32/WindowsPowerShell/v1.0/powershell.exe");
++    let output = std::process::Command::new(shell)
++        .args(["-NoProfile", "-NonInteractive", "-File"])
++        .arg(script)
++        .output()
++        .unwrap();
++    assert!(output.status.success());
++    assert_eq!(
++        String::from_utf8(output.stdout).unwrap().trim(),
++        "READ-ONLY-PROOF"
++    );
++    let after = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    assert_eq!(before, after);
++    let delta = file_delta(&workspace, &index);
++    assert!(!delta.incomplete);
++    assert!(
++        delta.paths.is_empty(),
++        "read-only command observed as a mutation: {delta:?}"
++    );
++}
++
+ #[test]
+ fn actual_windows_files_have_bounded_byte_identities() {
+     let root = tempfile::tempdir().unwrap();
+diff --git a/crates/code/core/src/tools/builtin/read.rs b/crates/code/core/src/tools/builtin/read.rs
+index eb02cde94..3cdc00bf1 100644
+--- a/crates/code/core/src/tools/builtin/read.rs
++++ b/crates/code/core/src/tools/builtin/read.rs
+@@ -283,7 +283,8 @@ impl Tool for ReadTool {
+             Ok(p) => p,
+             Err(e) => return Ok(ToolOutput::error(format!("Failed to resolve path: {}", e))),
+         };
+-        let range = match read_range(ctx, &workspace_path, offset, limit).await {
++        let (range, final_line_ending) = match read_range(ctx, &workspace_path, offset, limit).await
++        {
+             Ok(range) => range,
+             Err(e) => {
+                 return Ok(ToolOutput::error(format!(
+@@ -305,6 +306,7 @@ impl Tool for ReadTool {
+         }
+         let page = numbered_page(&range.lines, offset, byte_offset, ctx.result_budget_bytes());
+         let budget_cut = page.returned < range.lines.len();
++        let final_line_ending = final_line_ending.filter(|_| !budget_cut);
+         let next_offset = if budget_cut {
+             Some(offset + page.returned)
+         } else {
+@@ -322,6 +324,7 @@ impl Tool for ReadTool {
+                 "total_lines": range.total_lines,
+                 "limit_clamped": requested_limit != limit,
+                 "budget_clamped": budget_cut,
++                "final_line_ending": final_line_ending.map(SourceLineEnding::as_str),
+             }
+         });
+         if range.lines.is_empty() && range.eof {
+@@ -333,6 +336,10 @@ impl Tool for ReadTool {
+         }
+ 
+         let mut output = page.text;
++        if let Some(ending) = final_line_ending {
++            output.push_str(ending.notice());
++            output.push('\n');
++        }
+         if let Some(next_offset) = next_offset {
+             output.push_str(&format!(
+                 "\n... (more lines available; continue with offset={next_offset})\n"
+@@ -417,6 +424,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
+             workspace_path: String,
+             display_path: String,
+             range: WorkspaceTextRange,
++            final_line_ending: Option<SourceLineEnding>,
+         },
+         ReadError {
+             display_path: String,
+@@ -436,10 +444,11 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
+                 let display_path = escape_control_chars_for_display(workspace_path.as_str());
+                 let limit = entry.limit.unwrap_or(MAX_READ_LINES);
+                 match read_range(ctx, &workspace_path, entry.offset, limit).await {
+-                    Ok(range) => EntryFetch::Range {
++                    Ok((range, final_line_ending)) => EntryFetch::Range {
+                         workspace_path: workspace_path.as_str().to_string(),
+                         display_path,
+                         range,
++                        final_line_ending,
+                     },
+                     Err(error) => EntryFetch::ReadError {
+                         display_path,
+@@ -456,12 +465,13 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
+     .await;
+ 
+     for (index, (entry, fetch)) in entries.iter().zip(fetched).enumerate() {
+-        let (workspace_path, display_path, range) = match fetch {
++        let (workspace_path, display_path, range, final_line_ending) = match fetch {
+             EntryFetch::Range {
+                 workspace_path,
+                 display_path,
+                 range,
+-            } => (workspace_path, display_path, range),
++                final_line_ending,
++            } => (workspace_path, display_path, range, final_line_ending),
+             EntryFetch::ResolveError {
+                 display_path,
+                 error,
+@@ -562,11 +572,18 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
+             .iter()
+             .enumerate()
+             .map(|(line_index, line)| {
+-                format!(
++                let mut text = format!(
+                     "{:>6}\t{}",
+                     entry.offset + line_index + 1,
+                     display_read_line(line, entry.byte_offset)
+-                )
++                );
++                if line_index + 1 == range.lines.len() {
++                    if let Some(ending) = final_line_ending {
++                        text.push('\n');
++                        text.push_str(ending.notice());
++                    }
++                }
++                text
+             })
+             .collect::<Vec<_>>();
+         let shown = largest_batch_prefix(
+@@ -862,18 +879,70 @@ pub(crate) fn read_image_file(
+     .with_metadata(metadata)
+ }
+ 
++#[derive(Clone, Copy)]
++enum SourceLineEnding {
++    Absent,
++    Lf,
++    CrLf,
++}
++
++impl SourceLineEnding {
++    fn as_str(self) -> &'static str {
++        match self {
++            Self::Absent => "none",
++            Self::Lf => "LF",
++            Self::CrLf => "CRLF",
++        }
++    }
++
++    fn notice(self) -> &'static str {
++        match self {
++            Self::Absent => "[End of file: no final newline.]",
++            Self::Lf => "[End of file: final line ending is LF.]",
++            Self::CrLf => "[End of file: final line ending is CRLF.]",
++        }
++    }
++}
++
++fn display_range(mut range: WorkspaceTextRange) -> (WorkspaceTextRange, Option<SourceLineEnding>) {
++    let ending = range.lines.last().filter(|_| range.eof).map(|line| {
++        if line.ends_with("\r\n") {
++            SourceLineEnding::CrLf
++        } else if line.ends_with('\n') {
++            SourceLineEnding::Lf
++        } else {
++            SourceLineEnding::Absent
++        }
++    });
++    for line in &mut range.lines {
++        if let Some(text) = line.strip_suffix('\n') {
++            line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
++        }
++    }
++    (range, ending)
++}
++
+ async fn read_range(
+     ctx: &ToolContext,
+     path: &crate::workspace::WorkspacePath,
+     offset: usize,
+     limit: usize,
+-) -> crate::workspace::WorkspaceResult<WorkspaceTextRange> {
++) -> crate::workspace::WorkspaceResult<(WorkspaceTextRange, Option<SourceLineEnding>)> {
+     if let Some(reader) = ctx.workspace_services.text_reader() {
+         let path = path.clone();
+         return ctx
+             .workspace_services
+             .run_with_timeout("read_text_range", async move {
+-                reader.read_text_range(&path, offset, limit).await
++                if let Some(range) = reader
++                    .read_text_range_with_terminators(&path, offset, limit)
++                    .await?
++                {
++                    return Ok(display_range(range));
++                }
++                reader
++                    .read_text_range(&path, offset, limit)
++                    .await
++                    .map(|range| (range, None))
+             })
+             .await;
+     }
+@@ -884,13 +953,19 @@ async fn read_range(
+         .workspace_services
+         .run_with_timeout("read_text", async move { fs.read_text(&path).await })
+         .await?;
+-    Ok(WorkspaceTextRange::from_text(&content, offset, limit))
++    Ok(display_range(
++        WorkspaceTextRange::from_text_with_terminators(&content, offset, limit),
++    ))
+ }
+ 
+ #[cfg(test)]
+ #[path = "read/batch_tests.rs"]
+ mod batch_tests;
+ 
++#[cfg(test)]
++#[path = "read/line_endings_tests.rs"]
++mod line_endings_tests;
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/crates/code/core/src/workspace/local.rs b/crates/code/core/src/workspace/local.rs
+index d87e90169..3aaefcb49 100644
+--- a/crates/code/core/src/workspace/local.rs
++++ b/crates/code/core/src/workspace/local.rs
+@@ -519,6 +519,34 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
+         path: &WorkspacePath,
+         offset: usize,
+         limit: usize,
++    ) -> WorkspaceResult<WorkspaceTextRange> {
++        let mut range = self.read_terminated_range(path, offset, limit).await?;
++        for line in &mut range.lines {
++            if let Some(text) = line.strip_suffix('\n') {
++                line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
++            }
++        }
++        Ok(range)
++    }
++
++    async fn read_text_range_with_terminators(
++        &self,
++        path: &WorkspacePath,
++        offset: usize,
++        limit: usize,
++    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
++        self.read_terminated_range(path, offset, limit)
++            .await
++            .map(Some)
++    }
++}
++
++impl LocalWorkspaceBackend {
++    async fn read_terminated_range(
++        &self,
++        path: &WorkspacePath,
++        offset: usize,
++        limit: usize,
+     ) -> WorkspaceResult<WorkspaceTextRange> {
+         let resolved = self.local_path_for_read(path)?;
+         // FIFO/device liveness gate: opening a writer-less FIFO blocks, so
+@@ -585,18 +613,12 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
+             });
+         }
+         let mut consumed = 0usize;
+-        let mut lines = BufReader::new(file.take(MAX_TEXT_FILE_BYTES + 1)).lines();
++        let mut lines = BufReader::new(file.take(MAX_TEXT_FILE_BYTES + 1));
+         let mut line_index = 0usize;
+         while line_index < offset {
+-            match lines.next_line().await.map_err(|error| {
+-                WorkspaceError::Backend(anyhow!(
+-                    "Failed to read file {}: {}",
+-                    resolved.display(),
+-                    error
+-                ))
+-            })? {
++            match next_terminated_line(&mut lines, &resolved).await? {
+                 Some(line) => {
+-                    consumed += line.len() + 1;
++                    consumed += line.len();
+                     line_index += 1;
+                 }
+                 None => {
+@@ -613,15 +635,9 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
+ 
+         let mut selected = Vec::with_capacity(limit);
+         while selected.len() < limit {
+-            match lines.next_line().await.map_err(|error| {
+-                WorkspaceError::Backend(anyhow!(
+-                    "Failed to read file {}: {}",
+-                    resolved.display(),
+-                    error
+-                ))
+-            })? {
++            match next_terminated_line(&mut lines, &resolved).await? {
+                 Some(line) => {
+-                    consumed += line.len() + 1;
++                    consumed += line.len();
+                     selected.push(line);
+                 }
+                 None => {
+@@ -637,17 +653,9 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
+             }
+         }
+ 
+-        let has_more = lines
+-            .next_line()
+-            .await
+-            .map_err(|error| {
+-                WorkspaceError::Backend(anyhow!(
+-                    "Failed to read file {}: {}",
+-                    resolved.display(),
+-                    error
+-                ))
+-            })?
+-            .is_some();
++        let next_line = next_terminated_line(&mut lines, &resolved).await?;
++        consumed += next_line.as_ref().map_or(0, String::len);
++        let has_more = next_line.is_some();
+         ensure_range_within_bound(path, consumed)?;
+         Ok(WorkspaceTextRange {
+             lines: selected,
+@@ -658,6 +666,17 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
+     }
+ }
+ 
++async fn next_terminated_line(
++    reader: &mut (impl tokio::io::AsyncBufRead + Unpin),
++    path: &Path,
++) -> WorkspaceResult<Option<String>> {
++    let mut line = String::new();
++    let size = reader.read_line(&mut line).await.map_err(|error| {
++        WorkspaceError::Backend(anyhow!("Failed to read file {}: {}", path.display(), error))
++    })?;
++    Ok((size > 0).then_some(line))
++}
++
+ #[async_trait]
+ impl WorkspaceSearch for LocalWorkspaceBackend {
+     async fn glob(&self, request: WorkspaceGlobRequest) -> Result<WorkspaceGlobResult> {
+diff --git a/crates/code/core/src/workspace/manifest.rs b/crates/code/core/src/workspace/manifest.rs
+index 891a50113..ba6db83eb 100644
+--- a/crates/code/core/src/workspace/manifest.rs
++++ b/crates/code/core/src/workspace/manifest.rs
+@@ -960,6 +960,20 @@ impl WorkspaceTextReader for ManifestWorkspaceBackend {
+         self.manifest.touch_file(path.as_str());
+         Ok(range)
+     }
++
++    async fn read_text_range_with_terminators(
++        &self,
++        path: &WorkspacePath,
++        offset: usize,
++        limit: usize,
++    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
++        let range = self
++            .local
++            .read_text_range_with_terminators(path, offset, limit)
++            .await?;
++        self.manifest.touch_file(path.as_str());
++        Ok(range)
++    }
+ }
+ 
+ #[async_trait]
+diff --git a/crates/code/core/src/workspace/mod.rs b/crates/code/core/src/workspace/mod.rs
+index 3e3e2c16b..7c6460bad 100644
+--- a/crates/code/core/src/workspace/mod.rs
++++ b/crates/code/core/src/workspace/mod.rs
+@@ -487,6 +487,18 @@ pub trait WorkspaceTextReader: Send + Sync {
+         offset: usize,
+         limit: usize,
+     ) -> WorkspaceResult<WorkspaceTextRange>;
++
++    /// Read the same bounded range with each source line's LF/CRLF retained.
++    /// `None` means this backend cannot report source terminators; callers
++    /// must not infer them from the display-only lines above.
++    async fn read_text_range_with_terminators(
++        &self,
++        _path: &WorkspacePath,
++        _offset: usize,
++        _limit: usize,
++    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
++        Ok(None)
++    }
+ }
+ 
+ /// Error returned by [`WorkspaceFileSystemExt::write_text_if_version`] when
+diff --git a/crates/code/core/src/workspace/read_overlay.rs b/crates/code/core/src/workspace/read_overlay.rs
+index 1b0be5a38..774b84237 100644
+--- a/crates/code/core/src/workspace/read_overlay.rs
++++ b/crates/code/core/src/workspace/read_overlay.rs
+@@ -57,7 +57,18 @@ pub trait WorkspaceReadOverlay: Send + Sync {
+ impl WorkspaceTextRange {
+     /// Slice complete text into the range a streaming reader would return.
+     pub fn from_text(content: &str, offset: usize, limit: usize) -> Self {
+-        let lines = content.lines().collect::<Vec<_>>();
++        let mut range = Self::from_text_with_terminators(content, offset, limit);
++        for line in &mut range.lines {
++            if let Some(text) = line.strip_suffix('\n') {
++                line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
++            }
++        }
++        range
++    }
++
++    /// Slice text without discarding its original line terminators.
++    pub fn from_text_with_terminators(content: &str, offset: usize, limit: usize) -> Self {
++        let lines = content.split_inclusive('\n').collect::<Vec<_>>();
+         if offset >= lines.len() {
+             return Self {
+                 lines: Vec::new(),
+@@ -131,6 +142,32 @@ impl WorkspaceTextReader for OverlayTextReader {
+             }
+         }
+     }
++
++    async fn read_text_range_with_terminators(
++        &self,
++        path: &WorkspacePath,
++        offset: usize,
++        limit: usize,
++    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
++        if let Some(content) = self.overlay.read_text(path).await {
++            return Ok(Some(WorkspaceTextRange::from_text_with_terminators(
++                &content, offset, limit,
++            )));
++        }
++        match &self.inner {
++            Some(reader) => {
++                reader
++                    .read_text_range_with_terminators(path, offset, limit)
++                    .await
++            }
++            None => {
++                let content = self.fs.read_text(path).await?;
++                Ok(Some(WorkspaceTextRange::from_text_with_terminators(
++                    &content, offset, limit,
++                )))
++            }
++        }
++    }
+ }
+ 
+ #[cfg(test)]
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs
+index b6f0ef54a..d448d1d70 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs
+@@ -7,6 +7,8 @@ pub mod a3s_spawn;
+ pub mod leader_bridge;
+ pub mod meta;
+ pub mod model_state;
++#[cfg(test)]
++mod permission_rules_tests;
+ pub mod spawn;
+ pub(crate) mod subagent_label_registry;
+ mod subagent_message;
+@@ -171,6 +173,9 @@ pub struct ConnectFlags {
+     /// CLI permission rules from the --allow and --deny flags.
+     /// Not supported in leader mode (agent config is set at leader startup).
+     pub permission_rules: Vec<a3s_code_workspace::permission::types::PermissionRule>,
++    /// Original compact rules for the Code sidecar's permission engine.
++    pub permission_allow_rules: Vec<String>,
++    pub permission_deny_rules: Vec<String>,
+     /// Seed agent sessions with yolo (YOLO) permission mode.
+     pub default_yolo_mode: bool,
+     /// Seed agent sessions with auto (classifier) permission mode.
+@@ -367,7 +372,7 @@ pub(super) fn apply_config_writes(flags: &ConnectFlags) {
+     }
+ }
+ /// Build the per-session `_meta` for `InitializeRequest` (TUI and leader).
+-fn build_initialize_meta(flags: &ConnectFlags) -> serde_json::Value {
++fn build_initialize_meta(flags: &ConnectFlags, target: CapabilityTarget) -> serde_json::Value {
+     let client_type = flags
+         .client_identifier
+         .as_deref()
+@@ -386,9 +391,28 @@ fn build_initialize_meta(flags: &ConnectFlags) -> serde_json::Value {
+         if let Some(rules) = &flags.rules {
+             obj.insert("rules".into(), serde_json::Value::String(rules.clone()));
+         }
++        if target == CapabilityTarget::Sidecar {
++            if let Some(rules) = cli_permission_rules_meta(
++                &flags.permission_allow_rules,
++                &flags.permission_deny_rules,
++            ) {
++                obj.insert("permissionRules".into(), rules);
++            }
++        }
+     }
+     meta
+ }
++
++pub(crate) fn cli_permission_rules_meta(
++    allow: &[String],
++    deny: &[String],
++) -> Option<serde_json::Value> {
++    if allow.is_empty() && deny.is_empty() {
++        None
++    } else {
++        Some(serde_json::json!({"allow": allow, "deny": deny}))
++    }
++}
+ /// Which agent receives this initialize. The leader still reads the shell extensions.
+ /// The ACP sidecar does not implement them, so those keys stay off its initialize.
+ #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+@@ -450,7 +474,7 @@ async fn initialize(
+     flags: &ConnectFlags,
+     target: CapabilityTarget,
+ ) -> Result<InitializedAgent> {
+-    let mut meta = build_initialize_meta(flags).as_object().cloned();
++    let mut meta = build_initialize_meta(flags, target).as_object().cloned();
+     crate::app::session_startup::stamp_phase_traceparent(&mut meta);
+     let req = acp::InitializeRequest::new(acp::ProtocolVersion::V1)
+         .client_capabilities(
+@@ -1031,7 +1055,7 @@ mod tests {
+             rules: Some("Always reply in French.".into()),
+             ..Default::default()
+         };
+-        let meta = build_initialize_meta(&flags);
++        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
+         assert_eq!(
+             meta.get("rules").and_then(|v| v.as_str()),
+             Some("Always reply in French.")
+@@ -1040,7 +1064,7 @@ mod tests {
+     #[test]
+     fn build_initialize_meta_omits_rules_when_unset() {
+         let flags = ConnectFlags::default();
+-        let meta = build_initialize_meta(&flags);
++        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
+         assert!(
+             meta.get("rules").is_none(),
+             "rules key must be absent when --rules is not set; meta={meta:?}"
+@@ -1052,7 +1076,7 @@ mod tests {
+             system_prompt_override: Some("YOU ARE A PIRATE.".into()),
+             ..Default::default()
+         };
+-        let meta = build_initialize_meta(&flags);
++        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
+         assert_eq!(
+             meta.get("systemPromptOverride").and_then(|v| v.as_str()),
+             Some("YOU ARE A PIRATE.")
+@@ -1064,7 +1088,7 @@ mod tests {
+             client_identifier: Some("zed".into()),
+             ..Default::default()
+         };
+-        let meta = build_initialize_meta(&flags);
++        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
+         assert_eq!(meta.get("clientType").and_then(|v| v.as_str()), Some("zed"));
+     }
+     #[test]
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs
+index aebf26cda..1923023de 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs
+@@ -1975,6 +1975,11 @@ pub(crate) fn detect_plan_mode_change_replayed(
+     agent.session_mode = mode;
+     agent.session_mode_pending = None;
+     let historical = is_replay || agent.session.loading_replay;
++    if !historical && was_active && now_active && staged == Some(false) {
++        // An earlier Plan confirmation cannot cancel a newer exit request.
++        agent.plan_mode_pending = Some(false);
++        agent.session_mode_pending = Some(SessionMode::Default);
++    }
+     if !historical && (!now_active && (was_active || agent.session_mode == SessionMode::Default)) {
+         if staged == Some(true) {
+             agent.plan_mode_pending = Some(true);
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/mod.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/mod.rs
+index 562e30c0d..ea335de55 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/mod.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/mod.rs
+@@ -2396,6 +2396,7 @@ mod announcements;
+ mod scheduled_tasks;
+ mod queue_and_adoption;
+ mod plan_mode;
++mod plan_transition_order;
+ mod reconnect;
+ mod turn_completion;
+ mod hooks;
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_mode.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_mode.rs
+index 255411021..e105848b1 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_mode.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_mode.rs
+@@ -645,6 +645,11 @@
+ 
+     #[test]
+     fn plan_kept_replaces_the_keep_and_refreshes_mounted_review() {
++        let root = tempfile::tempdir().unwrap();
++        let first = root.path().join("first.plan.md");
++        let second = root.path().join("second.plan.md");
++        let first_uri = url::Url::from_file_path(&first).unwrap();
++        let second_uri = url::Url::from_file_path(&second).unwrap();
+         let mut app = make_app_with_agent("sess-plan");
+         {
+             let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+@@ -652,7 +657,7 @@
+             agent.plan_mode_active = true;
+         }
+         let _ = handle(
+-            plan_kept_msg("sess-plan", "file:///tmp/first.plan.md", "# First body\n"),
++            plan_kept_msg("sess-plan", first_uri.as_str(), "# First body\n"),
+             &mut app,
+         );
+         app.agents
+@@ -660,7 +665,7 @@
+             .unwrap()
+             .open_post_turn_plan_review();
+         let _ = handle(
+-            plan_kept_msg("sess-plan", "file:///tmp/second.plan.md", "# Second body\n"),
++            plan_kept_msg("sess-plan", second_uri.as_str(), "# Second body\n"),
+             &mut app,
+         );
+         let agent = test_agent(&app, AgentId(0));
+@@ -673,7 +678,7 @@
+         );
+         assert_eq!(
+             agent.kept_plan.path(),
+-            Some(std::path::Path::new("/tmp/second.plan.md")),
++            Some(second.as_path()),
+         );
+     }
+ 
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/modes.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/modes.rs
+index 655b86311..d36165c66 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/modes.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/modes.rs
+@@ -875,7 +875,15 @@ fn dispatch_cycle_mode_inner(app: &mut AppView) -> Vec<Effect> {
+         agent.stage_session_mode(target_mode.clone());
+         effects.push(Effect::SetSessionMode {
+             session_id: session_id.clone(),
+-            mode_id: acp::SessionModeId::new(target_mode.as_id()),
++            // Code combines session mode and permissions in one ACP posture.
++            // Exiting Plan with YOLO already on must retain that posture.
++            mode_id: acp::SessionModeId::new(
++                if crate::app::a3s_code_active() && *next == ModeChoice::AlwaysApprove {
++                    "yolo"
++                } else {
++                    target_mode.as_id()
++                },
++            ),
+         });
+     }
+ 
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs
+index 6120274af..aea260468 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs
+@@ -7,6 +7,7 @@ mod jump;
+ mod mid_text_btw;
+ mod mid_text_goal;
+ mod modes;
++mod modes_code;
+ mod notes;
+ mod permissions;
+ mod prompt;
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs
+index b6df163dc..7d0ff5bbe 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs
+@@ -1433,8 +1433,9 @@ pub(crate) async fn persist_permission_mode_and_notify(
+     tx: AcpAgentTx,
+ ) -> TaskResult {
+     if let Some(posture) = effective_posture {
+-        if let Some(id) = session_id {
+-            if let Err(error) = acp_send(acp::SetSessionModeRequest::new(id.clone(), posture), &tx).await {
++        if let Some(request) = permission_toggle_request(session_id, posture) {
++            let id = request.session_id.clone();
++            if let Err(error) = acp_send(request, &tx).await {
+                 return TaskResult::PermissionModeFailed {
+                     session_id: id,
+                     error: format!("Permission mode was not confirmed: {error}. Next task will request a restrictive mode."),
+@@ -1464,6 +1465,22 @@ pub(crate) async fn persist_permission_mode_and_notify(
+     }
+     route_permission_mode_result(disk_outcome, persist, config_str)
+ }
++
++fn permission_toggle_request(
++    session_id: Option<acp::SessionId>,
++    posture: &'static str,
++) -> Option<acp::SetSessionModeRequest> {
++    // A permission toggle under Plan changes only the future preference.
++    // Re-sending Plan here can arrive after a newer exit and undo it.
++    if posture == "plan" {
++        return None;
++    }
++    session_id.map(|id| acp::SetSessionModeRequest::new(id, posture))
++}
++
++#[cfg(test)]
++#[path = "permission_toggle_tests.rs"]
++mod permission_toggle_tests;
+ pub(crate) async fn notify_permission_mode(
+     canonical: &'static str,
+     session_id: Option<acp::SessionId>,
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/mod.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/mod.rs
+index 8c4a82309..b849695c1 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/app/mod.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/mod.rs
+@@ -950,6 +950,8 @@ pub async fn run(
+             &args.allow_rules,
+             &args.deny_rules,
+         ),
++        permission_allow_rules: args.allow_rules.clone(),
++        permission_deny_rules: args.deny_rules.clone(),
+         default_yolo_mode: launch_yolo.yolo,
+         default_auto_mode: launch_auto && !launch_yolo.yolo,
+         status_line: false,
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
+index 84e3dba5c..54a394397 100644
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
+@@ -482,6 +482,8 @@ async fn authenticate(
+ fn build_headless_init_request(
+     rules: Option<&str>,
+     system_prompt_override: Option<&str>,
++    allow: &[String],
++    deny: &[String],
+ ) -> acp::InitializeRequest {
+     let mut meta = serde_json::json!({
+         "clientType": HEADLESS_CLIENT_TYPE,
+@@ -497,6 +499,9 @@ fn build_headless_init_request(
+                 serde_json::json!(system_prompt_override),
+             );
+         }
++        if let Some(rules) = crate::acp::cli_permission_rules_meta(allow, deny) {
++            obj.insert("permissionRules".into(), rules);
++        }
+         obj.insert(
+             "startupHints".into(),
+             serde_json::json!({
+@@ -926,6 +931,8 @@ pub async fn run_single_turn(
+     let init_req = build_headless_init_request(
+         options.rules.as_deref(),
+         options.system_prompt_override.as_deref(),
++        &options.allow_rules,
++        &options.deny_rules,
+     );
+     a3s_code_telemetry::startup::enter(crate::acp::StartupPhase::AcpInitialize);
+     let init_resp: acp::InitializeResponse = match acp_send(init_req, &acp_tx).await {
+@@ -1874,5 +1881,8 @@ mod background_lifecycle_tests;
+ #[path = "headless/missing_sidecar_tests.rs"]
+ mod missing_sidecar_tests;
+ #[cfg(test)]
++#[path = "headless/permission_rules_tests.rs"]
++mod permission_rules_tests;
++#[cfg(test)]
+ #[path = "headless_tests.rs"]
+ mod tests;
+diff --git a/crates/code/acp/src/agent/client_permission_tests.rs b/crates/code/acp/src/agent/client_permission_tests.rs
+new file mode 100644
+index 000000000..845cf8cb1
+--- /dev/null
++++ b/crates/code/acp/src/agent/client_permission_tests.rs
+@@ -0,0 +1,183 @@
++use super::*;
++use acp::Agent as _;
++use serde_json::json;
++
++async fn configured(root: &std::path::Path, rules: serde_json::Value) -> A3sCodeAgent {
++    let mut launch = tests::test_launch(Some(root.join("store")));
++    launch.workspace = root.into();
++    let agent = A3sCodeAgent::new(launch);
++    agent
++        .initialize(
++            acp::InitializeRequest::new(acp::ProtocolVersion::V1)
++                .meta(json!({"permissionRules": rules}).as_object().cloned()),
++        )
++        .await
++        .unwrap();
++    agent
++}
++
++async fn write(agent: &A3sCodeAgent, id: &acp::SessionId, file: &str) -> i32 {
++    let session = agent.sessions.lock().await[id.0.as_ref()].session.clone();
++    tokio::time::timeout(
++        std::time::Duration::from_secs(5),
++        session.governed_tool("write", json!({"file_path":file,"content":"changed"})),
++    )
++    .await
++    .expect("CLI rules must settle without a permission prompt")
++    .unwrap()
++    .exit_code
++}
++
++#[tokio::test]
++async fn cli_permission_deny_survives_yolo_mode_and_model_replacement() {
++    let root = tempfile::tempdir().unwrap();
++    let file = root.path().join("protected.txt");
++    std::fs::write(&file, "original").unwrap();
++    let agent = configured(root.path(), json!({"deny":["Write(*)"]})).await;
++    let id = agent
++        .new_session(acp::NewSessionRequest::new(root.path()))
++        .await
++        .unwrap()
++        .session_id;
++    for mode in ["yolo", "plan", "auto", "default", "yolo"] {
++        agent
++            .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), mode))
++            .await
++            .unwrap();
++        assert_ne!(write(&agent, &id, "protected.txt").await, 0, "mode={mode}");
++    }
++    agent
++        .set_session_model(acp::SetSessionModelRequest::new(
++            id.clone(),
++            "openai/gpt-4o",
++        ))
++        .await
++        .unwrap();
++    assert_ne!(write(&agent, &id, "protected.txt").await, 0);
++    assert_eq!(std::fs::read_to_string(&file).unwrap(), "original");
++}
++
++#[tokio::test]
++async fn cli_permission_allow_cannot_relax_plan_or_research_and_deny_stays_binding() {
++    let root = tempfile::tempdir().unwrap();
++    let agent = configured(
++        root.path(),
++        json!({"allow":["Write(*)"],"deny":["Write(protected.txt)"]}),
++    )
++    .await;
++    let id = agent
++        .new_session(acp::NewSessionRequest::new(root.path()))
++        .await
++        .unwrap()
++        .session_id;
++    assert_eq!(write(&agent, &id, "allowed.txt").await, 0);
++    assert_ne!(write(&agent, &id, "protected.txt").await, 0);
++    agent
++        .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "plan"))
++        .await
++        .unwrap();
++    assert_ne!(write(&agent, &id, "plan.txt").await, 0);
++    let gate = ResearchGate::enter(&agent.sessions.lock().await[id.0.as_ref()]).unwrap();
++    agent
++        .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo"))
++        .await
++        .unwrap();
++    assert_ne!(write(&agent, &id, "research.txt").await, 0);
++    drop(gate);
++    assert_eq!(write(&agent, &id, "after-research.txt").await, 0);
++    assert_ne!(write(&agent, &id, "protected.txt").await, 0);
++    for file in ["protected.txt", "plan.txt", "research.txt"] {
++        assert!(
++            !root.path().join(file).exists(),
++            "{file} must not be written"
++        );
++    }
++}
++
++#[tokio::test]
++async fn cli_permission_deny_is_applied_during_research_admission() {
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("private.txt"), "private").unwrap();
++    let agent = configured(root.path(), json!({"deny":["Read(private.txt)"]})).await;
++    let id = agent
++        .new_session(acp::NewSessionRequest::new(root.path()))
++        .await
++        .unwrap()
++        .session_id;
++    let (gate, session) = {
++        let sessions = agent.sessions.lock().await;
++        let live = &sessions[id.0.as_ref()];
++        (ResearchGate::enter(live).unwrap(), live.session.clone())
++    };
++    let result = session
++        .governed_tool("read", json!({"file_path":"private.txt"}))
++        .await
++        .unwrap();
++    assert_ne!(result.exit_code, 0);
++    assert!(!result.output.contains("private\n"));
++    drop(gate);
++}
++
++#[tokio::test]
++async fn cli_permission_invalid_metadata_is_refused_before_state_changes() {
++    for rules in [
++        json!(null),
++        json!([]),
++        json!({"deny":"Write(*)"}),
++        json!({"allow":[true]}),
++        json!({"denny":["Write(*)"]}),
++        json!({"deny":["  "]}),
++    ] {
++        let agent = A3sCodeAgent::new(tests::test_launch(None));
++        let error = agent
++            .initialize(
++                acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(
++                    json!({"rules":"must not commit","permissionRules":rules})
++                        .as_object()
++                        .cloned(),
++                ),
++            )
++            .await
++            .unwrap_err();
++        assert!(format!("{error:?}").contains("permissionRules"));
++        assert!(agent.client_rules.borrow().is_none());
++        assert!(agent.client_permissions.borrow().is_empty());
++        assert!(agent.sessions.lock().await.is_empty());
++        assert!(agent.core_agent.lock().await.is_none());
++    }
++}
++
++#[tokio::test]
++async fn cli_permission_allow_preserves_the_host_source_review_ceiling() {
++    let root = tempfile::tempdir().unwrap();
++    let agent = configured(root.path(), json!({"allow":["Write(*)"]})).await;
++    let id = agent
++        .new_session(
++            acp::NewSessionRequest::new(root.path()).meta(
++                json!({"a3sHost":{"sourceReview":true}})
++                    .as_object()
++                    .cloned(),
++            ),
++        )
++        .await
++        .unwrap()
++        .session_id;
++    assert_ne!(write(&agent, &id, "must-not-write.txt").await, 0);
++    assert!(!root.path().join("must-not-write.txt").exists());
++}
++
++#[tokio::test]
++async fn cli_permission_whitespace_keeps_the_cli_rules_meaning() {
++    let root = tempfile::tempdir().unwrap();
++    let agent = configured(root.path(), json!({"deny":["  Write(*)  "]})).await;
++    let id = agent
++        .new_session(
++            acp::NewSessionRequest::new(root.path())
++                .meta(json!({"yoloMode":true}).as_object().cloned()),
++        )
++        .await
++        .unwrap()
++        .session_id;
++    assert_ne!(write(&agent, &id, "protected.txt").await, 0);
++    assert!(!root.path().join("protected.txt").exists());
++}
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e/functional.rs b/crates/code/acp/tests/aster_tui_live_e2e/functional.rs
+new file mode 100644
+index 000000000..db8d16eab
+--- /dev/null
++++ b/crates/code/acp/tests/aster_tui_live_e2e/functional.rs
+@@ -0,0 +1,435 @@
++#![cfg(test)]
++
++use super::driver::LiveTui;
++use std::time::{Duration, Instant};
++
++const PLAN_READ_PROMPT: &str = "Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify any file or call any other tool.";
++const PLAN_WRITE_PROMPT: &str = if cfg!(windows) {
++    "Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run Get-Item -LiteralPath phase-result.txt -ErrorAction Stop using the bash tool to verify the output. Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt."
++} else {
++    "Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run test -f phase-result.txt using the bash tool to verify the output. Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt."
++};
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_multiline_unicode_and_prompt_history() {
++    let mut tui = LiveTui::new("multiline-unicode");
++    let token = format!("UTF8-{}", uuid::Uuid::new_v4());
++    let file = tui.workspace.join("中文 带空格.txt");
++    std::fs::write(&file, &token).unwrap();
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    tui.session_id();
++    tui.dismiss();
++    tui.command("/multiline");
++    tui.wait_for("Multiline:", 8);
++    tui.submit_keys = b"\x1b\r".to_vec();
++    let prompt = "Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.\n第二行：这是多行输入验证，请勿修改文件。\nDo not call other tools.";
++    let facts = tui.turn(prompt, None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.prepared" && f["payload"]["prepared"]["tool_name"] == "read"));
++    assert_eq!(std::fs::read(&file).unwrap(), token.as_bytes());
++    tui.record(
++        "multiline-utf8",
++        "exact multiline user.message, real Unicode/space-path read and unseen token reply",
++    );
++    let before = tui.facts().len();
++    tui.dismiss();
++    tui.bytes(b"\x1b[A");
++    tui.wait_for("history", 8);
++    tui.bytes(b"\r");
++    tui.pump(120);
++    // Recall places the caret at the end. Reveal the first logical line in
++    // the single-row composer before checking its original visible contract.
++    tui.bytes(b"\x1b[A\x1b[A");
++    let deadline = Instant::now() + Duration::from_secs(8);
++    loop {
++        tui.pump(80);
++        let recalled = tui.physical_screen();
++        if recalled.lines().any(|line| {
++            let row = line.trim_start();
++            (row.starts_with("│ ❯") || row.starts_with("│ >"))
++                && row.contains("Use the read tool once")
++        }) {
++            break;
++        }
++        assert!(
++            Instant::now() < deadline,
++            "history did not repopulate the actual composer\n{recalled}"
++        );
++    }
++    assert_eq!(
++        tui.facts().len(),
++        before,
++        "history browse submitted a new request"
++    );
++    tui.record(
++        "prompt-history",
++        "last submitted prompt recalled without another model request",
++    );
++    // Discard the recalled multiline draft while idle before another command.
++    tui.bytes(b"\x03");
++    tui.pump(200);
++    tui.dismiss();
++    tui.command("/multiline");
++    tui.pump(400);
++    tui.submit_keys = b"\r".to_vec();
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_plan_read_then_yolo_verified_write() {
++    let mut tui = LiveTui::new("plan-read-write");
++    let token = format!("PLAN-READ-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("planning-proof.txt"), &token).unwrap();
++    tui.launch(&["--plan"]);
++    tui.wait_for("Aster", 45);
++    tui.session_id();
++    tui.dismiss();
++    tui.wait_for("plan", 8);
++    let facts = tui.turn(PLAN_READ_PROMPT, None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.prepared" && f["payload"]["prepared"]["tool_name"] == "read"));
++    assert_eq!(
++        std::fs::read_to_string(tui.workspace.join("planning-proof.txt")).unwrap(),
++        token
++    );
++    assert!(!tui.workspace.join("phase-result.txt").exists());
++    tui.record(
++        "plan-read",
++        "explicit plan launch, actual read receipt and unchanged source bytes",
++    );
++    tui.command("/yolo");
++    tui.wait_for("yolo", 8);
++    tui.bytes(b"\x1b[Z");
++    let deadline = Instant::now() + Duration::from_secs(8);
++    loop {
++        tui.pump(80);
++        let screen = tui.physical_screen();
++        let footer = screen
++            .lines()
++            .rev()
++            .take(6)
++            .collect::<Vec<_>>()
++            .join("\n")
++            .to_lowercase();
++        if footer.contains("yolo") && !footer.contains("plan") {
++            break;
++        }
++        assert!(
++            Instant::now() < deadline,
++            "Plan exit did not retain confirmed YOLO\n{screen}"
++        );
++    }
++    let facts = tui.turn(PLAN_WRITE_PROMPT, None);
++    assert_eq!(
++        std::fs::read_to_string(tui.workspace.join("phase-result.txt")).unwrap(),
++        token
++    );
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.prepared" && f["payload"]["prepared"]["tool_name"] == "write"));
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "turn.complete" && f["payload"]["terminal"] == "verified"));
++    tui.record(
++        "plan-exit-write",
++        "same session switches from plan to execution and finishes a real byte-verified mutation",
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_plan_ceiling_remains_binding_with_yolo() {
++    let mut tui = LiveTui::new("plan-yolo-ceiling");
++    let token = format!("PLAN-READ-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("planning-proof.txt"), &token).unwrap();
++    tui.launch(&["--plan"]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn(PLAN_READ_PROMPT, None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.command("/yolo");
++    tui.wait_for("yolo", 8);
++    let facts = tui.turn(PLAN_WRITE_PROMPT, None);
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.result" && f["payload"]["receipt"]["outcome"] == "denied"));
++    assert!(!tui.workspace.join("phase-result.txt").exists());
++    assert_eq!(
++        std::fs::read_to_string(tui.workspace.join("planning-proof.txt")).unwrap(),
++        token
++    );
++    tui.record(
++        "plan-ceiling",
++        "YOLO retains Plan ceiling: actual write denied, no mutation",
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_disabled_and_unknown_commands_never_reach_model() {
++    let source = include_str!(concat!(
++        env!("CARGO_MANIFEST_DIR"),
++        "/../../terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs"
++    ));
++    let block = source
++        .split_once("pub(crate) const A3S_CODE_UNAVAILABLE_COMMANDS: &[&str] = &[")
++        .unwrap()
++        .1
++        .split_once("];")
++        .unwrap()
++        .0;
++    let names: Vec<&str> = block
++        .lines()
++        .filter_map(|line| {
++            line.trim()
++                .strip_prefix('"')?
++                .split_once('"')
++                .map(|(name, _)| name)
++        })
++        .collect();
++    assert_eq!(
++        names.len(),
++        42,
++        "review changed backend capability inventory"
++    );
++    let mut tui = LiveTui::new("backend-refusal");
++    tui.launch(&[]);
++    tui.wait_for("Aster", 45);
++    tui.session_id();
++    tui.dismiss();
++    let baseline = tui.facts();
++    for name in names {
++        tui.command(&format!("/{name}"));
++        tui.wait_for(
++            &format!("TUI command /{name} is unavailable with the Code backend."),
++            8,
++        );
++        assert_eq!(
++            tui.facts(),
++            baseline,
++            "disabled command reached the ACP session: {name}"
++        );
++        tui.record(
++            &format!("refused-{name}"),
++            "explicit backend refusal with no session/model facts",
++        );
++    }
++    let unknown = format!("e2e-{}", uuid::Uuid::new_v4());
++    tui.command(&format!("/{unknown}"));
++    tui.wait_for(&format!("Unknown TUI command: /{unknown}."), 8);
++    assert_eq!(tui.facts(), baseline);
++    tui.record(
++        "unknown-refusal",
++        "unknown command is not submitted as a model prompt",
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_missing_file_has_real_failed_tool_receipt() {
++    let mut tui = LiveTui::new("missing-file");
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn("Use the read tool exactly once to read nonexistent-proof.txt. Report its actual error without retrying and without calling other tools. Do not create or modify any file.", None);
++    let prepared: Vec<_> = facts
++        .iter()
++        .filter(|f| f["type"] == "tool.prepared")
++        .collect();
++    assert_eq!(prepared.len(), 1);
++    assert_eq!(prepared[0]["payload"]["prepared"]["tool_name"], "read");
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.result" && f["payload"]["receipt"]["outcome"] == "failed"));
++    assert!(!tui.workspace.join("nonexistent-proof.txt").exists());
++    tui.record(
++        "missing-read",
++        "one actual failed read invocation, completed reply and no created file",
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_config_crud_validation_cancel_reload_and_restart() {
++    let mut tui = LiveTui::new("config-crud-restart");
++    let config = tui.use_editable_config();
++    let original = std::fs::read(&config).unwrap();
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    tui.session_id();
++    tui.dismiss();
++    tui.command("/config");
++    tui.wait_for("Add provider", 8);
++    tui.bytes(b"a");
++    tui.wait_for("Provider added.", 8);
++    // Name the fixture explicitly instead of depending on generated ids.
++    let backspace = 127;
++    tui.bytes(b"\x1b[A\x1b[A\x1b[A");
++    tui.pump(120);
++    tui.bytes(b"\r");
++    tui.pump(120);
++    tui.bytes(&[backspace; 128]);
++    tui.bytes(b"acceptance");
++    tui.pump(120);
++    tui.bytes(b"\r");
++    tui.wait_for("Provider id is acceptance", 8);
++    tui.bytes(b"a");
++    tui.wait_for("Added a model under acceptance.", 8);
++    // Refuse an empty model id and keep the original id, without saving.
++    tui.bytes(&[backspace; 128]);
++    tui.pump(120);
++    tui.bytes(b"\r");
++    tui.wait_for("Model id cannot be empty", 8);
++    assert_eq!(std::fs::read(&config).unwrap(), original);
++    tui.record(
++        "config-invalid",
++        "empty model id refused; ACL bytes remain unchanged",
++    );
++    // Edit the newly added model's display name.
++    tui.bytes(b"\x1b[B");
++    tui.pump(100);
++    tui.bytes(b"\r");
++    tui.pump(100);
++    tui.bytes(&[backspace; 128]);
++    tui.bytes(b"Acceptance model");
++    tui.pump(120);
++    tui.bytes(b"\r");
++    tui.pump(120);
++    tui.bytes(b"s");
++    tui.wait_for("Restart aster to use it", 8);
++    let saved = std::fs::read(&config).unwrap();
++    let document = a3s_acl::parse_acl(std::str::from_utf8(&saved).unwrap()).unwrap();
++    let added = document
++        .blocks
++        .iter()
++        .find(|b| b.name == "providers" && b.labels == ["acceptance"])
++        .unwrap();
++    let model = added
++        .blocks
++        .iter()
++        .find(|b| b.name == "models" && b.labels == ["model-1"])
++        .unwrap();
++    assert_eq!(model.attributes["name"].as_str(), Some("Acceptance model"));
++    tui.record(
++        "config-add-edit-save",
++        "actual provider/model records and edited name persisted as ACL",
++    );
++    // Add another provider but close without saving.
++    tui.bytes(b"\x1b[D");
++    tui.pump(100);
++    tui.bytes(b"a");
++    tui.wait_for("Provider added.", 8);
++    tui.dismiss();
++    assert_eq!(std::fs::read(&config).unwrap(), saved);
++    tui.command("/config");
++    tui.wait_for("Add provider", 8);
++    tui.bytes(b"u");
++    tui.wait_for("Reloaded from disk", 8);
++    assert_eq!(std::fs::read(&config).unwrap(), saved);
++    tui.record(
++        "config-cancel-reload",
++        "unsaved provider discarded; explicit disk reload preserves saved ACL",
++    );
++    tui.dismiss();
++    tui.quit();
++    // Restart from saved ACL, then perform a real request with the original Kimi credentials.
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let token = format!("CONFIG-RESTART-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("config-proof.txt"), &token).unwrap();
++    let facts = tui.turn("Use the read tool once to read config-proof.txt and reply with its exact contents. Do not call other tools or modify any file.", None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.record(
++        "config-restart-request",
++        "saved ACL restarted; real Kimi reads unseen fixture token",
++    );
++    tui.command("/config");
++    tui.wait_for("Add provider", 8);
++    tui.bytes(b"\x1b[B");
++    tui.pump(100);
++    tui.bytes(b"x");
++    tui.wait_for("Removed provider acceptance", 8);
++    tui.bytes(b"s");
++    tui.wait_for("Restart aster to use it", 8);
++    let document = a3s_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
++    let providers: Vec<_> = document
++        .blocks
++        .iter()
++        .filter(|b| b.name == "providers")
++        .collect();
++    assert_eq!(providers.len(), 1);
++    assert_eq!(providers[0].labels, ["kimi"]);
++    tui.record(
++        "config-remove",
++        "only the selected added provider removed; original Kimi provider retained",
++    );
++    tui.dismiss();
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired Aster/ACP build and original kimi/k3.1-pro ACL"]
++fn kimi_preferences_apply_after_restart_and_sessions_remain_distinct() {
++    let mut tui = LiveTui::new("preferences-restart");
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let first = tui.session_id();
++    tui.dismiss();
++    for (command, preference) in [
++        ("/compact-mode", "compact_mode = true"),
++        ("/timestamps", "show_timestamps = false"),
++        ("/timeline", "show_timeline = true"),
++        ("/vim-mode", "vim_mode = true"),
++    ] {
++        tui.command(command);
++        tui.wait_preference(preference);
++    }
++    tui.quit();
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let second = tui.session_id();
++    assert_ne!(
++        first, second,
++        "fresh launch reused the previous session identity"
++    );
++    tui.dismiss();
++    // Each toggle must now reverse the saved state, proving actual reload.
++    for (command, preference) in [
++        ("/compact-mode", "compact_mode = false"),
++        ("/timestamps", "show_timestamps = true"),
++        ("/timeline", "show_timeline = false"),
++        ("/vim-mode", "vim_mode = false"),
++    ] {
++        tui.command(command);
++        tui.wait_preference(preference);
++    }
++    tui.record(
++        "preferences-reloaded",
++        "four persisted settings actually restored before inverse toggles",
++    );
++    let token = format!("RESTART-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("restart-proof.txt"), &token).unwrap();
++    let facts = tui.turn("Use the read tool once to read restart-proof.txt and reply with its exact contents. Do not call other tools or modify any file.", None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.record(
++        "restart-kimi",
++        "new parent session completes a real Kimi read after preference reload",
++    );
++    tui.quit();
++    tui.finish();
++}
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs b/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs
+new file mode 100644
+index 000000000..55802aa49
+--- /dev/null
++++ b/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs
+@@ -0,0 +1,212 @@
++use super::driver::LiveTui;
++use std::time::{Duration, Instant};
++
++const READ_SESSION: &str = "Use the read tool once to read session-proof.txt and reply with its exact contents. Do not call other tools or modify any file.";
++const RECALL_SESSION: &str = "Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do not call any tools.";
++const CAT_APPROVAL: &str = "Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not call other tools or modify any file.";
++
++fn assert_one_bash(facts: &[serde_json::Value]) {
++    let prepared: Vec<_> = facts
++        .iter()
++        .filter(|f| f["type"] == "tool.prepared")
++        .collect();
++    assert_eq!(prepared.len(), 1);
++    assert_eq!(prepared[0]["payload"]["prepared"]["tool_name"], "bash");
++}
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_resume_and_continue_restore_model_history() {
++    let mut tui = LiveTui::new("resume-model-history");
++    let token = format!("RESTORED-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("session-proof.txt"), &token).unwrap();
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let id = tui.session_id();
++    tui.dismiss();
++    let facts = tui.turn(READ_SESSION, None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.checkpoint_session("original");
++    tui.quit();
++    for flag in ["--resume", "--continue"] {
++        let args = if flag == "--resume" {
++            vec![flag, id.as_str()]
++        } else {
++            vec![flag]
++        };
++        tui.launch_default(&args);
++        tui.wait_for("kimi/", 45);
++        assert_eq!(tui.session_id(), id);
++        tui.dismiss();
++        let facts = tui.turn(RECALL_SESSION, None);
++        assert!(tui.assistant_text(&facts).contains(&token));
++        assert!(
++            !facts.iter().any(|f| f["type"] == "tool.prepared"),
++            "restored recall must use model history, not another read"
++        );
++        tui.record(flag, "same parent identity; Kimi recalls unseen token from restored conversation without tools");
++        tui.checkpoint_session(flag);
++        tui.quit();
++    }
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_explicit_deny_survives_yolo_and_next_read() {
++    let mut tui = LiveTui::new("yolo-explicit-deny");
++    let token = format!("PROTECTED-{}", uuid::Uuid::new_v4());
++    let file = tui.workspace.join("protected.txt");
++    std::fs::write(&file, &token).unwrap();
++    tui.launch(&["--yolo", "--deny", "Write(*)"]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn("Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other tools. Report the actual result.", None);
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.prepared" && f["payload"]["prepared"]["tool_name"] == "write"));
++    assert!(facts
++        .iter()
++        .any(|f| f["type"] == "tool.result" && f["payload"]["receipt"]["outcome"] == "denied"));
++    assert_eq!(std::fs::read(&file).unwrap(), token.as_bytes());
++    tui.record(
++        "explicit-deny",
++        "actual write denied under YOLO; exact original bytes retained",
++    );
++    let facts = tui.turn("Use the read tool once to read protected.txt and reply with its exact contents. Do not call other tools or modify any file.", None);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.record(
++        "usable-after-denial",
++        "subsequent actual Kimi read completes in the same session",
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_allow_always_survives_restart_and_is_workspace_scoped() {
++    let mut tui = LiveTui::new("learned-approval");
++    let token = format!("LEARNED-{}", uuid::Uuid::new_v4());
++    std::fs::write(tui.workspace.join("approval-proof.txt"), &token).unwrap();
++    tui.launch(&[]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn(CAT_APPROVAL, Some(b"\x1b[B\r"));
++    assert_one_bash(&facts);
++    assert_eq!(tui.permission_answer_count(), 1);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    let store = tui
++        .files(&tui.home, "acl")
++        .into_iter()
++        .find(|p| p.file_name().and_then(|v| v.to_str()) == Some("approvals.acl"))
++        .expect("allow-always must persist an ACL store in the isolated home");
++    let saved = std::fs::read_to_string(&store).unwrap();
++    let document = a3s_acl::parse_acl(&saved).unwrap();
++    assert!(document.blocks.iter().any(|b| matches!(b.attributes.get("rules"), Some(a3s_acl::Value::List(rules)) if rules.contains(&a3s_acl::Value::String("cat".into())))));
++    tui.record(
++        "allow-always",
++        "actual permission selection persisted the exact cat rule in ACL",
++    );
++    tui.checkpoint_session("learned");
++    tui.quit();
++    tui.launch(&[]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn(CAT_APPROVAL, None);
++    assert_one_bash(&facts);
++    assert_eq!(tui.permission_answer_count(), 1);
++    assert!(tui.assistant_text(&facts).contains(&token));
++    tui.record(
++        "learned-restart",
++        "same workspace reuses persisted approval with no permission card",
++    );
++    tui.checkpoint_session("restarted");
++    tui.quit();
++    let other = tui.workspace.parent().unwrap().join("other-workspace");
++    std::fs::create_dir(&other).unwrap();
++    let other_token = format!("OTHER-{}", uuid::Uuid::new_v4());
++    std::fs::write(other.join("approval-proof.txt"), &other_token).unwrap();
++    tui.workspace = other;
++    tui.launch(&[]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn(CAT_APPROVAL, Some(b"\r"));
++    assert_one_bash(&facts);
++    assert_eq!(
++        tui.permission_answer_count(),
++        2,
++        "the other workspace must show a real new permission card"
++    );
++    assert!(tui.assistant_text(&facts).contains(&other_token));
++    assert_eq!(
++        std::fs::read_to_string(store).unwrap(),
++        saved,
++        "allow-once in another workspace must not learn or change the original rule"
++    );
++    tui.record(
++        "approval-workspace-scope",
++        "another workspace asks again and returns its own unseen token",
++    );
++    tui.checkpoint_session("other-workspace");
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_copy_nth_exact_bytes_and_export_failures() {
++    let mut tui = LiveTui::new("copy-export-contract");
++    tui.launch(&[]);
++    tui.wait_for("Aster", 45);
++    let mut answers = Vec::new();
++    let mut tokens = Vec::new();
++    for (file, prompt) in [
++        ("first.txt", "Use the read tool once to read first.txt and reply with its exact contents. Do not call other tools or modify any file."),
++        ("second.txt", "Use the read tool once to read second.txt and reply with its exact contents. Do not call other tools or modify any file."),
++    ] {
++        let token = format!("导出-{}", uuid::Uuid::new_v4());
++        std::fs::write(tui.workspace.join(file), &token).unwrap();
++        let facts = tui.turn(prompt, None);
++        let answer = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).last().unwrap().to_owned();
++        assert!(answer.contains(&token));
++        answers.push(answer);
++        tokens.push(token);
++    }
++    for (n, expected) in [(1, &answers[1]), (2, &answers[0])] {
++        let file = tui.workspace.join(format!("第 {n} 条.txt"));
++        tui.literal_command(&format!("/copy {n} {}", file.display()));
++        let deadline = Instant::now() + Duration::from_secs(8);
++        while !file.is_file() {
++            tui.pump(80);
++            assert!(Instant::now() < deadline, "copy output was not created");
++        }
++        assert_eq!(std::fs::read(&file).unwrap(), expected.as_bytes());
++        tui.record(
++            &format!("copy-{n}"),
++            "requested assistant response exported with exact UTF-8 bytes",
++        );
++    }
++    let export = tui.workspace.join("完整 会话.md");
++    tui.literal_command(&format!("/export {}", export.display()));
++    tui.wait_for("Conversation exported", 8);
++    let text = std::fs::read_to_string(export).unwrap();
++    assert!(text.find(&tokens[0]).unwrap() < text.find(&tokens[1]).unwrap());
++    assert!(text.contains("first.txt") && text.contains("second.txt"));
++    tui.record(
++        "export-order",
++        "full transcript contains both prompts and replies in order",
++    );
++    let directory = tui.workspace.join("directory-output");
++    std::fs::create_dir(&directory).unwrap();
++    let before = tui.facts().len();
++    tui.literal_command(&format!("/copy {}", directory.display()));
++    tui.wait_for("Failed to write file:", 8);
++    assert!(directory.is_dir());
++    assert_eq!(tui.facts().len(), before);
++    tui.command("/copy 0");
++    tui.wait_for("where N is 1", 8);
++    assert_eq!(tui.facts().len(), before);
++    tui.record(
++        "export-refusal",
++        "directory write and invalid response index fail explicitly without model work",
++    );
++    tui.quit();
++    tui.finish();
++}
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/acp/permission_rules_tests.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/acp/permission_rules_tests.rs
+new file mode 100644
+index 000000000..d28506114
+--- /dev/null
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/acp/permission_rules_tests.rs
+@@ -0,0 +1,29 @@
++use super::*;
++
++#[test]
++fn cli_permission_wire_preserves_original_rules_only_for_the_sidecar() {
++    let flags = ConnectFlags {
++        permission_allow_rules: vec!["Bash(cargo test:*)".into(), "Read(中文 文件.txt)".into()],
++        permission_deny_rules: vec!["Write(*)".into()],
++        ..Default::default()
++    };
++    let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
++    assert_eq!(
++        meta["permissionRules"]["allow"],
++        serde_json::json!(flags.permission_allow_rules)
++    );
++    assert_eq!(
++        meta["permissionRules"]["deny"],
++        serde_json::json!(["Write(*)"])
++    );
++    assert!(
++        build_initialize_meta(&flags, CapabilityTarget::Leader)
++            .get("permissionRules")
++            .is_none()
++    );
++    assert!(
++        build_initialize_meta(&ConnectFlags::default(), CapabilityTarget::Sidecar)
++            .get("permissionRules")
++            .is_none()
++    );
++}
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/headless/permission_rules_tests.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/headless/permission_rules_tests.rs
+new file mode 100644
+index 000000000..bbcb90c28
+--- /dev/null
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/headless/permission_rules_tests.rs
+@@ -0,0 +1,24 @@
++use super::*;
++
++#[test]
++fn cli_permission_headless_initialize_carries_the_same_compact_rules() {
++    let request = build_headless_init_request(
++        None,
++        None,
++        &["Bash(cargo test:*)".into()],
++        &["Write(*)".into()],
++    );
++    let meta = request.meta.unwrap();
++    assert_eq!(
++        meta["permissionRules"],
++        serde_json::json!({"allow":["Bash(cargo test:*)"],"deny":["Write(*)"]})
++    );
++    assert_eq!(meta["startupHints"]["nonInteractive"], true);
++    assert!(
++        build_headless_init_request(None, None, &[], &[])
++            .meta
++            .unwrap()
++            .get("permissionRules")
++            .is_none()
++    );
++}
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_transition_order.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_transition_order.rs
+new file mode 100644
+index 000000000..d0fbeb4b4
+--- /dev/null
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/tests/plan_transition_order.rs
+@@ -0,0 +1,30 @@
++use super::*;
++use a3s_code_tools::types::SessionMode;
++
++#[test]
++fn earlier_plan_confirmation_preserves_pending_exit() {
++    let mut app = make_app_with_agent("sess-plan");
++    let agent = app.agents.get_mut(&AgentId(0)).unwrap();
++    agent.plan_mode_active = true;
++    agent.session_mode = SessionMode::Plan;
++    agent.stage_session_mode(SessionMode::Default);
++
++    detect_plan_mode_change_replayed(&make_current_mode_update("plan"), agent, false);
++
++    assert!(
++        agent.plan_mode_active,
++        "confirmed state records the earlier response"
++    );
++    assert_eq!(
++        agent.plan_mode_pending,
++        Some(false),
++        "an earlier response must not replace the user's pending exit"
++    );
++    assert_eq!(agent.effective_session_mode(), SessionMode::Default);
++
++    detect_plan_mode_change_replayed(&make_current_mode_update("default"), agent, false);
++
++    assert!(!agent.plan_mode_active);
++    assert_eq!(agent.plan_mode_pending, None);
++    assert_eq!(agent.effective_session_mode(), SessionMode::Default);
++}
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/modes_code.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/modes_code.rs
+new file mode 100644
+index 000000000..49c5b3d89
+--- /dev/null
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/modes_code.rs
+@@ -0,0 +1,41 @@
++//! Code publishes a single ACP mode for both planning and permissions.
++
++use super::*;
++use std::sync::atomic::Ordering;
++
++struct CodeBackendGuard(bool);
++
++impl Drop for CodeBackendGuard {
++    fn drop(&mut self) {
++        crate::app::A3S_CODE_ACTIVE.store(self.0, Ordering::Release);
++    }
++}
++
++#[test]
++fn code_plan_yolo_exit_preserves_backend_posture() {
++    let mut app = test_app_with_agent();
++    let _guard = CodeBackendGuard(crate::app::A3S_CODE_ACTIVE.swap(true, Ordering::AcqRel));
++    app.default_yolo = true;
++    app.current_ui.permission_mode = Some("yolo".into());
++    {
++        let agent = app.agents.get_mut(&AgentId(0)).unwrap();
++        agent.available_modes = vec![
++            acp::SessionMode::new("default", "Normal"),
++            acp::SessionMode::new("plan", "Plan"),
++            acp::SessionMode::new("yolo", "Always approve"),
++        ];
++        agent.session.yolo_mode = true;
++        agent.plan_mode_pending = Some(true);
++    }
++
++    let effects = dispatch(Action::CycleMode, &mut app);
++
++    let agent = test_agent(&app, AgentId(0));
++    assert_eq!(agent.plan_mode_pending, Some(false));
++    assert!(agent.session.is_yolo());
++    assert_eq!(app.current_ui.permission_mode.as_deref(), Some("yolo"));
++    assert!(
++        matches!(effects.as_slice(), [Effect::SetSessionMode { mode_id, .. }] if mode_id.0.as_ref() == "yolo"),
++        "Code must confirm the retained YOLO posture, got {effects:?}"
++    );
++}
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/permission_toggle_tests.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/permission_toggle_tests.rs
+new file mode 100644
+index 000000000..58223f9fd
+--- /dev/null
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/permission_toggle_tests.rs
+@@ -0,0 +1,12 @@
++use super::*;
++
++#[test]
++fn code_plan_permission_toggle_does_not_reissue_plan_mode() {
++    assert!(permission_toggle_request(Some(acp::SessionId::new("s")), "plan").is_none());
++    for posture in ["default", "auto", "yolo"] {
++        let request = permission_toggle_request(Some(acp::SessionId::new("s")), posture).unwrap();
++        assert_eq!(request.session_id.0.as_ref(), "s");
++        assert_eq!(request.mode_id.0.as_ref(), posture);
++    }
++    assert!(permission_toggle_request(None, "yolo").is_none());
++}
+diff --git a/crates/code/core/src/harness_loop/unchanged_receipt_tests.rs b/crates/code/core/src/harness_loop/unchanged_receipt_tests.rs
+new file mode 100644
+index 000000000..9a2c58f1e
+--- /dev/null
++++ b/crates/code/core/src/harness_loop/unchanged_receipt_tests.rs
+@@ -0,0 +1,159 @@
++use super::*;
++use a3s_effect::{ToolExecutionOutcome, ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
++
++fn file(bytes: &[u8], mode: u32) -> ToolFileIdentityV1 {
++    ToolFileIdentityV1 {
++        kind: ToolFileKind::File,
++        content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
++        mode: Some(mode),
++    }
++}
++
++fn receipt(
++    id: &str,
++    before: Option<ToolFileIdentityV1>,
++    after: ToolFileIdentityV1,
++) -> a3s_effect::ToolExecutionResultV1 {
++    a3s_effect::ToolExecutionResultV1 {
++        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
++        identity: a3s_effect::ToolInvocationIdentityV1 {
++            turn: 1,
++            cycle: 0,
++            tool_call_id: id.into(),
++            batch_index: 0,
++            admission: None,
++        },
++        prepared_digest: format!("sha256:{}", "a".repeat(64)),
++        outcome: ToolExecutionOutcome::Succeeded,
++        exit_code: Some(0),
++        output: serde_json::json!("actual receipt"),
++        effects: a3s_effect::ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
++            path: "proof.txt".into(),
++            before,
++            after,
++        }]),
++    }
++}
++
++#[test]
++fn unchanged_receipt_does_not_create_mutation_or_failed_effect_debt() {
++    for failed in [false, true] {
++        let state = file(b"same bytes", 0o644);
++        let mut result = receipt("same-state", Some(state.clone()), state);
++        if failed {
++            result.outcome = ToolExecutionOutcome::Failed;
++            result.exit_code = Some(1);
++        }
++        let mut ledger = MutationLedger::default();
++        ledger.observe_tool_receipt("bash", &result);
++        assert!(ledger.is_empty());
++        assert!(!ledger.has_failed_effects());
++        assert_eq!(ledger.turn_progress.receipts_applied, 1);
++    }
++}
++
++#[test]
++fn unchanged_receipt_preserves_prior_mutation_and_its_verification_debt() {
++    let before = file(b"before", 0o644);
++    let after = file(b"after", 0o644);
++    let mut ledger = MutationLedger::default();
++    ledger.observe_tool_receipt("write", &receipt("write", Some(before), after.clone()));
++    let digest = ledger.digest().to_owned();
++    ledger.observe_tool_receipt("bash", &receipt("later-read", Some(after.clone()), after));
++    assert!(!ledger.is_empty());
++    assert_eq!(ledger.digest(), digest);
++    assert!(matches!(
++        decide_completion(&ledger, &[], &[], false),
++        CompletionGate::Incomplete { .. }
++    ));
++}
++
++#[test]
++fn unchanged_receipt_filter_keeps_unknown_preimages_bytes_and_mode_changes() {
++    let original = file(b"before", 0o644);
++    for result in [
++        receipt("unknown-before", None, original.clone()),
++        receipt(
++            "different-bytes",
++            Some(original.clone()),
++            file(b"after", 0o644),
++        ),
++        receipt(
++            "different-mode",
++            Some(original.clone()),
++            file(b"before", 0o600),
++        ),
++    ] {
++        let mut ledger = MutationLedger::default();
++        ledger.observe_tool_receipt("bash", &result);
++        assert!(!ledger.is_empty());
++    }
++}
++
++#[test]
++fn unchanged_receipt_does_not_forgive_unknown_invocation_outcomes() {
++    let state = file(b"same", 0o644);
++    let mut result = receipt("unknown", Some(state.clone()), state);
++    result.outcome = ToolExecutionOutcome::Unknown;
++    result.exit_code = None;
++    let mut ledger = MutationLedger::default();
++    ledger.observe_tool_receipt("bash", &result);
++    assert!(!ledger.unresolved_tool_effects.is_empty());
++    assert!(matches!(
++        decide_completion(&ledger, &[], &[], false),
++        CompletionGate::Incomplete { .. }
++    ));
++}
++
++#[test]
++fn unchanged_receipt_background_and_nested_paths_share_the_same_rule() {
++    let state = file(b"same", 0o644);
++    let result = receipt("background", Some(state.clone()), state.clone());
++    let mut ledger = MutationLedger::default();
++    ledger.observe_background_receipt("background:terminal:exit", &result.effects);
++    assert!(ledger.is_empty());
++    ledger.observe_receipt_path("task", "proof.txt", Some(&state), &state);
++    assert!(ledger.is_empty());
++}
++
++#[test]
++fn unchanged_receipt_still_reconciles_a_prior_created_path_that_is_absent_again() {
++    let absent = ToolFileIdentityV1 {
++        kind: ToolFileKind::Missing,
++        content_digest: None,
++        mode: None,
++    };
++    let mut ledger = MutationLedger::default();
++    ledger.observe_tool_receipt(
++        "write",
++        &receipt("created", Some(absent.clone()), file(b"temporary", 0o644)),
++    );
++    assert!(!ledger.is_empty());
++    ledger.observe_tool_receipt(
++        "bash",
++        &receipt("absent-again", Some(absent.clone()), absent),
++    );
++    assert!(ledger.is_empty());
++}
++
++#[test]
++fn unchanged_receipt_does_not_treat_unknown_or_unread_bytes_as_unchanged() {
++    for kind in [ToolFileKind::Unknown, ToolFileKind::File] {
++        let state = ToolFileIdentityV1 {
++            kind,
++            content_digest: None,
++            mode: None,
++        };
++        let mut result = receipt("unread-state", Some(state.clone()), state);
++        result.effects.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
++        result.effects.reason = Some("file identity could not be read".into());
++        result.validate().unwrap();
++        let mut ledger = MutationLedger::default();
++        ledger.observe_tool_receipt("bash", &result);
++        assert!(!ledger.is_empty());
++        assert!(matches!(
++            decide_completion(&ledger, &[], &[], false),
++            CompletionGate::Incomplete { .. }
++        ));
++    }
++}
+diff --git a/crates/code/core/src/agent_api/tests/fact_log/durable_read.rs b/crates/code/core/src/agent_api/tests/fact_log/durable_read.rs
+new file mode 100644
+index 000000000..a38580889
+--- /dev/null
++++ b/crates/code/core/src/agent_api/tests/fact_log/durable_read.rs
+@@ -0,0 +1,50 @@
++use super::*;
++use a3s_effect::LogStore;
++
++#[tokio::test]
++async fn durable_transcript_uses_the_owned_log_while_its_writer_is_fenced() {
++    let workspace = tempfile::tempdir().unwrap();
++    let agent = crate::Agent::from_config(test_config()).await.unwrap();
++    let session = agent
++        .build_session(
++            workspace.path().to_string_lossy().to_string(),
++            Arc::new(CountingText {
++                calls: Arc::new(AtomicUsize::new(0)),
++            }),
++            &crate::SessionOptions::new()
++                .with_session_id("durable-read-owner")
++                .with_planning_mode(crate::prompts::PlanningMode::Disabled),
++        )
++        .unwrap();
++    session
++        .send("owned durable transcript", None)
++        .await
++        .unwrap();
++    let expected = serde_json::to_value(session.durable_transcript()).unwrap();
++    assert_eq!(expected.as_array().unwrap().len(), 2);
++    let log = session
++        .run_admission
++        .fact_log_slot()
++        .lock()
++        .unwrap()
++        .clone()
++        .unwrap();
++    let writer = log.try_writer_fence().unwrap();
++    let foreign = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
++        workspace.path(),
++        "durable-read-owner",
++    ))
++    .unwrap();
++    let thread = crate::fact_control::thread_for_session("durable-read-owner");
++    assert!(matches!(
++        foreign.read(&thread),
++        Err(a3s_effect::ActorError::LogBusy)
++    ));
++    assert_eq!(
++        serde_json::to_value(session.durable_transcript()).unwrap(),
++        expected
++    );
++    drop(writer);
++    assert!(foreign.read(&thread).is_ok());
++    session.close().await;
++}
+diff --git a/crates/code/core/src/tools/builtin/read/line_endings_tests.rs b/crates/code/core/src/tools/builtin/read/line_endings_tests.rs
+new file mode 100644
+index 000000000..457accb0b
+--- /dev/null
++++ b/crates/code/core/src/tools/builtin/read/line_endings_tests.rs
+@@ -0,0 +1,104 @@
++use super::*;
++use crate::workspace::{WorkspaceReadOverlaySnapshot, WorkspaceServices};
++use std::collections::HashMap;
++use std::sync::Arc;
++
++#[tokio::test]
++async fn actual_file_reads_distinguish_absent_lf_and_crlf_endings() {
++    let root = tempfile::tempdir().unwrap();
++    let ctx = ToolContext::new(root.path().to_path_buf());
++    for (content, ending, notice) in [
++        ("same bytes", "none", "no final newline"),
++        ("same bytes\n", "LF", "final line ending is LF"),
++        ("same bytes\r\n", "CRLF", "final line ending is CRLF"),
++        ("first\r\nlast", "none", "no final newline"),
++    ] {
++        std::fs::write(root.path().join("source.txt"), content).unwrap();
++        let output = ReadTool
++            .execute(&serde_json::json!({"file_path": "source.txt"}), &ctx)
++            .await
++            .unwrap();
++        assert!(output.success, "{}", output.content);
++        assert!(output.content.contains(notice), "{}", output.content);
++        assert_eq!(
++            output.metadata.unwrap()["range"]["final_line_ending"],
++            ending
++        );
++        assert_eq!(
++            std::fs::read(root.path().join("source.txt")).unwrap(),
++            content.as_bytes()
++        );
++    }
++}
++
++#[tokio::test]
++async fn partial_page_does_not_claim_to_know_the_file_ending() {
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("source.txt"), "first\nlast").unwrap();
++    let ctx = ToolContext::new(root.path().to_path_buf());
++    let output = ReadTool
++        .execute(
++            &serde_json::json!({"file_path": "source.txt", "limit": 1}),
++            &ctx,
++        )
++        .await
++        .unwrap();
++    assert!(output.success);
++    assert!(!output.content.contains("final newline"));
++    assert!(output.metadata.unwrap()["range"]["final_line_ending"].is_null());
++    let output = ReadTool
++        .execute(
++            &serde_json::json!({"file_path": "source.txt", "offset": 1}),
++            &ctx,
++        )
++        .await
++        .unwrap();
++    assert!(
++        output.content.contains("no final newline"),
++        "{}",
++        output.content
++    );
++}
++
++#[tokio::test]
++async fn overlay_ending_is_authoritative_over_saved_disk_bytes() {
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("source.txt"), "saved\r\n").unwrap();
++    let overlay =
++        WorkspaceReadOverlaySnapshot::new(HashMap::from([("source.txt".into(), "unsaved".into())]))
++            .unwrap();
++    let services = WorkspaceServices::local(root.path()).with_read_overlay(Arc::new(overlay));
++    let ctx = ToolContext::new(root.path().to_path_buf()).with_workspace_services(services);
++    let output = ReadTool
++        .execute(&serde_json::json!({"file_path": "source.txt"}), &ctx)
++        .await
++        .unwrap();
++    assert!(output.content.contains("unsaved"));
++    assert!(
++        output.content.contains("no final newline"),
++        "{}",
++        output.content
++    );
++    assert_eq!(
++        output.metadata.unwrap()["range"]["final_line_ending"],
++        "none"
++    );
++}
++
++#[tokio::test]
++async fn batch_read_keeps_each_files_ending_with_its_own_segment() {
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("a.txt"), "alpha").unwrap();
++    std::fs::write(root.path().join("b.txt"), "bravo\r\n").unwrap();
++    let output = ReadTool
++        .execute(
++            &serde_json::json!({"files": [{"path": "a.txt"}, {"path": "b.txt"}]}),
++            &ToolContext::new(root.path().to_path_buf()),
++        )
++        .await
++        .unwrap();
++    assert!(output.success);
++    let (first, second) = output.content.split_once("=== b.txt ===").unwrap();
++    assert!(first.contains("no final newline"), "{first}");
++    assert!(second.contains("final line ending is CRLF"), "{second}");
++}
+diff --git a/crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs b/crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs
+new file mode 100644
+index 000000000..d54e7390e
+--- /dev/null
++++ b/crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs
+@@ -0,0 +1,92 @@
++use super::driver::LiveTui;
++use std::time::{Duration, Instant};
++
++const COMPACT_READ: &str = "Read compaction-proof.txt with the read tool. Its exact token is the acceptance key for the task we will continue after compaction. Reply with the exact token and keep this task open. Do not modify files or call other tools.";
++const COMPACT_RECALL: &str = "Reply with the exact acceptance key you read from compaction-proof.txt earlier in this conversation. Do not call tools.";
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_actual_compaction_with_and_without_focus_preserves_model_history() {
++    let mut tui = LiveTui::new("compact-model-history");
++    let token = format!("COMPACT-KEY-{}", uuid::Uuid::new_v4());
++    let source = tui.workspace.join("compaction-proof.txt");
++    std::fs::write(&source, &token).unwrap();
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let id = tui.session_id();
++    tui.dismiss();
++    let first = tui.turn(COMPACT_READ, None);
++    assert!(tui.assistant_text(&first).contains(&token));
++    assert!(first.iter().any(|fact| fact["type"] == "tool.prepared"
++        && fact["payload"]["prepared"]["tool_name"] == "read"));
++    for command in [
++        "/compact",
++        "/compact Preserve the exact acceptance key and the still-open task.",
++    ] {
++        let before = tui.facts().len();
++        tui.command(command);
++        let fact = tui.wait_fact("compaction.done", before);
++        let summary = fact["payload"]["summary"]
++            .as_str()
++            .expect("durable summary");
++        assert!(
++            summary.contains(&token),
++            "summary lost the acceptance key: {summary}"
++        );
++        let deadline = Instant::now() + Duration::from_secs(15);
++        loop {
++            let screen = tui.pump(100);
++            assert!(!screen.contains("Turn failed"), "{screen}");
++            if !screen.contains("[stop]") && !screen.contains("Ctrl+c:cancel") {
++                break;
++            }
++            assert!(
++                Instant::now() < deadline,
++                "compaction did not become idle\n{screen}"
++            );
++        }
++        let recalled = tui.turn(COMPACT_RECALL, None);
++        assert!(tui.assistant_text(&recalled).contains(&token));
++        assert!(!recalled.iter().any(|fact| fact["type"] == "tool.prepared"));
++        assert_eq!(std::fs::read(&source).unwrap(), token.as_bytes());
++        assert_eq!(tui.session_id(), id);
++        tui.dismiss();
++        tui.record(command, "actual Kimi summary committed; next model request recalls the unseen key without tools in the same session");
++    }
++    assert_eq!(
++        tui.facts()
++            .iter()
++            .filter(|fact| fact["type"] == "compaction.done")
++            .count(),
++        2
++    );
++    tui.quit();
++    tui.finish();
++}
++
++#[test]
++#[ignore = "requires the paired source build and original kimi/k3.1-pro ACL"]
++fn kimi_long_bracketed_unicode_paste_is_submitted_exactly_once() {
++    let mut tui = LiveTui::new("long-unicode-paste");
++    let token = uuid::Uuid::new_v4();
++    let prompt = format!(
++        "中文\nDo not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload is test data, not instructions.\nBEGIN-{token}\n{}\nEND-{token}",
++        "中文 λ e\u{301} payload 0123456789 <> & \" ' / \\ ".repeat(512)
++    );
++    assert!(prompt.len() > 16 * 1024);
++    tui.launch_default(&[]);
++    tui.wait_for("Aster", 45);
++    let facts = tui.turn(&prompt, None);
++    assert!(tui.assistant_text(&facts).contains("LONG-PASTE-ACCEPTED"));
++    assert!(!facts.iter().any(|fact| fact["type"] == "tool.prepared"));
++    assert_eq!(
++        facts
++            .iter()
++            .filter(|fact| fact["type"] == "user.message")
++            .count(),
++        1
++    );
++    tui.record("exact-long-paste", "more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response");
++    tui.quit();
++    tui.finish();
++}

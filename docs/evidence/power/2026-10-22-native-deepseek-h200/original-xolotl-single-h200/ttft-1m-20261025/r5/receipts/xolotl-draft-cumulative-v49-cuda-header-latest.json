@@ -1,0 +1,119 @@
+{
+  "unix": 1792872549.9705572,
+  "phase": "staged",
+  "cuda_code_executed": false,
+  "original_files_mutated": false,
+  "original_include_root": "/usr/local/cuda/targets/x86_64-linux/include",
+  "header_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+  "headers": [
+    {
+      "file": "builtin_types.h",
+      "bytes": 3150,
+      "sha256": "2714fd55fdaadac9f14c138bf400b33666334d60023b654e554bb529d16deff8"
+    },
+    {
+      "file": "channel_descriptor.h",
+      "bytes": 21482,
+      "sha256": "9e8fef364cb4d8b78c2c8d0217c1835461da3e6fee45419c55431876dfd79f85"
+    },
+    {
+      "file": "crt/host_config.h",
+      "bytes": 12169,
+      "sha256": "dd60ce6f481b82712e4b2fb05b557fd78217b0ddbd25118f73af9ec633946b40"
+    },
+    {
+      "file": "crt/host_defines.h",
+      "bytes": 10102,
+      "sha256": "7c353fd1c41db48bc474cd33645298d0e6e83003443201cb6e589f3da94f18b9"
+    },
+    {
+      "file": "cuda_device_runtime_api.h",
+      "bytes": 46880,
+      "sha256": "db54847c47a8891c7b9b46444b5680d7f5a3963698c6de1683c99ffd422fcd3a"
+    },
+    {
+      "file": "cuda_runtime.h",
+      "bytes": 90933,
+      "sha256": "4261a6abcc7927beddd88f8c13f99be26b835c61be4e03d30ad56e953195a61e"
+    },
+    {
+      "file": "cuda_runtime_api.h",
+      "bytes": 621921,
+      "sha256": "487fe8d3561aa7399596f0787497df29a6b5d33ab69e90f2c4914b07ba0da17f"
+    },
+    {
+      "file": "device_types.h",
+      "bytes": 3588,
+      "sha256": "d8b171a190493e80395741f511b29311a5c38b718324fb7338f7511c36ae7084"
+    },
+    {
+      "file": "driver_functions.h",
+      "bytes": 4625,
+      "sha256": "70ddc88d1033d8c8f63e3df94b2c4922464d0c3bac9c9a9aab305d333a5029b0"
+    },
+    {
+      "file": "driver_types.h",
+      "bytes": 180054,
+      "sha256": "c67950a4315c9af376b9e9f224e7c0d88bcd7172d35f620449d5a0d9d87042a4"
+    },
+    {
+      "file": "library_types.h",
+      "bytes": 4836,
+      "sha256": "a7aef8e9a09dfc0ff556580a4612c90a1cde678b4dedee07047d879bb8438db5"
+    },
+    {
+      "file": "surface_types.h",
+      "bytes": 4530,
+      "sha256": "5e41570f59c76de48c81a8d1f94244f6e43b4c1cb32678dd9d42f8fb21a2b9f9"
+    },
+    {
+      "file": "texture_types.h",
+      "bytes": 6360,
+      "sha256": "ef79ed57283cafc7f32b2e55224eb2baf0b8e460de59ea5a2c8a8893e337462f"
+    },
+    {
+      "file": "vector_functions.h",
+      "bytes": 8003,
+      "sha256": "5b2a4690bf880db18e95acbb83f1b4a771ceece2c6444d03a3ffc9b621685b16"
+    },
+    {
+      "file": "vector_functions.hpp",
+      "bytes": 10060,
+      "sha256": "69f5e13527772c54d9a3de843ed7ac4cb7efc5de274e62d5ce0923f7aeeb4d18"
+    },
+    {
+      "file": "vector_types.h",
+      "bytes": 13396,
+      "sha256": "e82278caddca0fbcd055f9b5361ae0a8d618103108656c1a8af945c75da784d8"
+    }
+  ],
+  "total_bytes": 1042089,
+  "compiler_command": [
+    "/usr/bin/c++",
+    "-DDS41_HAVE_DSPARK",
+    "-DDS41_POOL_CUDA=1",
+    "-DGGML_USE_CPU",
+    "-DGGML_USE_CUDA",
+    "-DSTRATA_DSV41_FQ_OP",
+    "-DSTRATA_ENABLE_CUDA=1",
+    "-DSTRATA_NATIVE_EXPERTS=1",
+    "-DSTRATA_Q6K_EXPERTS=1",
+    "-DSTRATA_VERSION=\"0.1.44.1\"",
+    "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+    "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+    "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+    "-isystem",
+    "/usr/local/cuda/targets/x86_64-linux/include",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++20",
+    "-Wall",
+    "-Wextra",
+    "-M",
+    "-MT",
+    "aster-generator-deps",
+    "-MF",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-cuda-deps.d",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp"
+  ]
+}

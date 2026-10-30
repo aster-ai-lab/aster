@@ -1,0 +1,31 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "harness_source_digest": "b19065d586f0e577498a8a2acb082deef990d26a",
+  "tests": [
+    {
+      "test": "tool_wave::kimi_patch_with_bound_command_verification_covers_single_multi_and_conflict",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-qualified/kimi_patch_with_bound_command_verification_covers_single_multi_and_conflict.log"
+    },
+    {
+      "test": "tool_wave::kimi_git_summary_contract_diff_branch_and_failed_checkout_are_owned",
+      "exit_code": 101,
+      "log": "linux/tool-wave-20261030-qualified/kimi_git_summary_contract_diff_branch_and_failed_checkout_are_owned.log"
+    },
+    {
+      "test": "tool_wave::kimi_plan_program_denial_uses_the_actual_policy_receipt_without_json_coercion",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-qualified/kimi_plan_program_denial_uses_the_actual_policy_receipt_without_json_coercion.log"
+    },
+    {
+      "test": "tool_wave::kimi_checklist_with_trace_and_restored_composer_keeps_exact_projection",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-qualified/kimi_checklist_with_trace_and_restored_composer_keeps_exact_projection.log"
+    },
+    {
+      "test": "tool_wave::kimi_two_children_with_trace_keep_owned_lifecycle_and_parent_barrier",
+      "exit_code": 0,
+      "log": "linux/tool-wave-20261030-qualified/kimi_two_children_with_trace_keep_owned_lifecycle_and_parent_barrier.log"
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-batch",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-batch-mixed.json"
+          },
+          "id": "call_f3cd04699eb84461a45754a1a67404cb",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13215,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+            "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f3cd04699eb84461a45754a1a67404cb",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+            "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f3cd04699eb84461a45754a1a67404cb",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"invocations\\\":[{\\\"args\\\":{\\\"file_path\\\":\\\"batch-a.txt\\\"},\\\"id\\\":\\\"first\\\",\\\"tool\\\":\\\"read\\\"},{\\\"args\\\":{\\\"file_path\\\":\\\"missing-batch.txt\\\"},\\\"id\\\":\\\"missing\\\",\\\"tool\\\":\\\"read\\\"},{\\\"args\\\":{\\\"file_path\\\":\\\"batch-b.txt\\\"},\\\"id\\\":\\\"last\\\",\\\"tool\\\":\\\"read\\\"}],\\\"max_concurrency\\\":3}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-batch-mixed.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":277},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":277,\"projected_bytes\":277,\"original_estimated_tokens\":70,\"projected_estimated_tokens\":70,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"projected_digest\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"repeat_key\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"content_ref\":\"inline:sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:86920a36e9ee117c4fcad50ecb3f40fbd0d6a772cb85d9be7d56b92a365aa87a\"}",
+        "prepared_digest": "sha256:fb6c6dc0e4b4901988bb25307de7e20d5a1abd07ab8ca5b06c50dbb366042ff7",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "invocations": [
+              {
+                "args": {
+                  "file_path": "batch-a.txt"
+                },
+                "id": "first",
+                "tool": "read"
+              },
+              {
+                "args": {
+                  "file_path": "missing-batch.txt"
+                },
+                "id": "missing",
+                "tool": "read"
+              },
+              {
+                "args": {
+                  "file_path": "batch-b.txt"
+                },
+                "id": "last",
+                "tool": "read"
+              }
+            ],
+            "max_concurrency": 3
+          },
+          "id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+          "name": "batch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13447,
+        "text": null,
+        "tool": "batch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+            "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+          "turn": 1
+        },
+        "tool": "batch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+            "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"--- [1 / step 1: read · first] ---\\n     1\\tBATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733\\n[End of file: no final newline.]\\n\\n--- [2 / step 1: read · missing] ---\\nERROR: Failed to read file /tmp/aster-kimi-Qd4XZM/workspace/missing-batch.txt: Failed to resolve path: No such file or directory (os error 2)\\n\\n--- [3 / step 1: read · last] ---\\n     1\\tBATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62\\n[End of file: no final newline.]\\n\\n\\nBatch completed with 2 successful and 1 failed item(s). Retry only failed indices [1]; do not repeat successful items.\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"evidence_incomplete\":false,\"status\":\"partial_failure\",\"requested_concurrency\":3,\"applied_concurrency\":3,\"execution_mode\":\"parallel\",\"steps\":1,\"highest_step\":1,\"total_count\":3,\"success_count\":2,\"failure_count\":1,\"failed_indices\":[1],\"binding_errors\":[],\"results\":[{\"index\":0,\"step\":1,\"id\":\"first\",\"tool\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":85,\"error_kind\":null,\"metadata\":{\"source_anchors\":[\"batch-a.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":85},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":85,\"projected_bytes\":85,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"projected_digest\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"repeat_key\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"content_ref\":\"inline:sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":1,\"step\":1,\"id\":\"missing\",\"tool\":\"read\",\"success\":false,\"exit_code\":1,\"output_bytes\":134,\"error_kind\":null,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":134,\"projected_bytes\":134,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"projected_digest\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"repeat_key\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"content_ref\":\"inline:sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":2,\"step\":1,\"id\":\"last\",\"tool\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":92,\"error_kind\":null,\"metadata\":{\"source_anchors\":[\"batch-b.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":92},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":92,\"projected_bytes\":92,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"projected_digest\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"repeat_key\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"content_ref\":\"inline:sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":551,\"projected_bytes\":551,\"original_estimated_tokens\":138,\"projected_estimated_tokens\":138,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"projected_digest\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"repeat_key\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"content_ref\":\"inline:sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9e1868c6d85315acb460bd9f97d3c905465f6b9ae437b41ccc2b9cfa771b9363\"}",
+        "prepared_digest": "sha256:3fbc490b72b168f97f6576a8f9a931a1831cdf190db7ca1578f9dafba95d293c",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13797,
+        "text": "1. **first — success:** `BATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733`\n2. **missing — failed:** `missing-batch.txt` could not be read: No such file or directory (os error 2).\n3. **last — success:** `BATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62`",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "1e478ed8a6781289853a0c9468db2461cf4719b04de70867a4ba8f038efb3c1f",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:d92531c38bcfb1f091c1a3dad5ec17ea6fce2ff4ea543b900b9b1f13897a1e51",
+          "sha256:7903096b87bb91c65a1d127da91deaf40f478dcbff6168fd8d073e7b986b288c"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40459",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Qd4XZM/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-batch-mixed.json once. Call batch exactly once with its exact JSON object as            12:36 PM    \n       arguments. Report all three actual outcomes in input order. Do not retry or repeat any item, and do              \n       not call other tools.                                                                                            \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ batch                                                                                                            \n     ◈ Read 3 files · 1 failed                                                                                          \n                                                                                                                        \n     1. first — success: BATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733                                       12:36 PM    \n     2. missing — failed: missing-batch.txt could not be read: No such file or directory (os error 2).                  \n     3. last — success: BATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62                                               \n                                                                                                                        \n     Worked for 18s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "three correlated results retain input order, exact success bytes and one missing-file error; successful items are not repeated",
+      "name": "batch-three-real-outcomes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Qd4XZM/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-batch-mixed.json once. Call batch exactly once with its exact JSON object as            12:36 PM    \n       arguments. Report all three actual outcomes in input order. Do not retry or repeat any item, and do              \n       not call other tools.                                                                                            \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ batch                                                                                                            \n     ◈ Read 3 files · 1 failed                                                                                          \n                                                                                                                        \n     1. first — success: BATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733                                       12:36 PM    \n     2. missing — failed: missing-batch.txt could not be read: No such file or directory (os error 2).                  \n     3. last — success: BATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62                                               \n                                                                                                                        \n     Worked for 18s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "tool-wave-batch",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-batch-mixed.json"
+              },
+              "id": "call_f3cd04699eb84461a45754a1a67404cb",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13215,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+                "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f3cd04699eb84461a45754a1a67404cb",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+                "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f3cd04699eb84461a45754a1a67404cb",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"invocations\\\":[{\\\"args\\\":{\\\"file_path\\\":\\\"batch-a.txt\\\"},\\\"id\\\":\\\"first\\\",\\\"tool\\\":\\\"read\\\"},{\\\"args\\\":{\\\"file_path\\\":\\\"missing-batch.txt\\\"},\\\"id\\\":\\\"missing\\\",\\\"tool\\\":\\\"read\\\"},{\\\"args\\\":{\\\"file_path\\\":\\\"batch-b.txt\\\"},\\\"id\\\":\\\"last\\\",\\\"tool\\\":\\\"read\\\"}],\\\"max_concurrency\\\":3}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-batch-mixed.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":277},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":277,\"projected_bytes\":277,\"original_estimated_tokens\":70,\"projected_estimated_tokens\":70,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"projected_digest\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"repeat_key\":\"sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"content_ref\":\"inline:sha256:86d411fed4fa300e935efbacdfdaf6f7f406a922f2a1507d0283a1a6e8bd115e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:86920a36e9ee117c4fcad50ecb3f40fbd0d6a772cb85d9be7d56b92a365aa87a\"}",
+            "prepared_digest": "sha256:fb6c6dc0e4b4901988bb25307de7e20d5a1abd07ab8ca5b06c50dbb366042ff7",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "invocations": [
+                  {
+                    "args": {
+                      "file_path": "batch-a.txt"
+                    },
+                    "id": "first",
+                    "tool": "read"
+                  },
+                  {
+                    "args": {
+                      "file_path": "missing-batch.txt"
+                    },
+                    "id": "missing",
+                    "tool": "read"
+                  },
+                  {
+                    "args": {
+                      "file_path": "batch-b.txt"
+                    },
+                    "id": "last",
+                    "tool": "read"
+                  }
+                ],
+                "max_concurrency": 3
+              },
+              "id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+              "name": "batch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13447,
+            "text": null,
+            "tool": "batch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+                "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+              "turn": 1
+            },
+            "tool": "batch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-fa7ae2bd-640f-4c87-8fdf-6143e7a3f539",
+                "thread_id": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_4dda542e548d4e97a9b60f64f9a8d03e",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"--- [1 / step 1: read · first] ---\\n     1\\tBATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733\\n[End of file: no final newline.]\\n\\n--- [2 / step 1: read · missing] ---\\nERROR: Failed to read file /tmp/aster-kimi-Qd4XZM/workspace/missing-batch.txt: Failed to resolve path: No such file or directory (os error 2)\\n\\n--- [3 / step 1: read · last] ---\\n     1\\tBATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62\\n[End of file: no final newline.]\\n\\n\\nBatch completed with 2 successful and 1 failed item(s). Retry only failed indices [1]; do not repeat successful items.\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"evidence_incomplete\":false,\"status\":\"partial_failure\",\"requested_concurrency\":3,\"applied_concurrency\":3,\"execution_mode\":\"parallel\",\"steps\":1,\"highest_step\":1,\"total_count\":3,\"success_count\":2,\"failure_count\":1,\"failed_indices\":[1],\"binding_errors\":[],\"results\":[{\"index\":0,\"step\":1,\"id\":\"first\",\"tool\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":85,\"error_kind\":null,\"metadata\":{\"source_anchors\":[\"batch-a.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":85},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":85,\"projected_bytes\":85,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"projected_digest\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"repeat_key\":\"sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"content_ref\":\"inline:sha256:f3606a0a7f14323a2b4bceb4881fab8a1b900081f28a7e7d6163f57bb16b2344\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":1,\"step\":1,\"id\":\"missing\",\"tool\":\"read\",\"success\":false,\"exit_code\":1,\"output_bytes\":134,\"error_kind\":null,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":134,\"projected_bytes\":134,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"projected_digest\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"repeat_key\":\"sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"content_ref\":\"inline:sha256:a95082357f5f646c7446fd75853298225b8d67a760dd1dbe40739dd8c18b4666\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":2,\"step\":1,\"id\":\"last\",\"tool\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":92,\"error_kind\":null,\"metadata\":{\"source_anchors\":[\"batch-b.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":92},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":92,\"projected_bytes\":92,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"projected_digest\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"repeat_key\":\"sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"content_ref\":\"inline:sha256:f4467aecbe70bdeb6390890ad568f2176072eac5a8a0844897d7031b0d949784\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":551,\"projected_bytes\":551,\"original_estimated_tokens\":138,\"projected_estimated_tokens\":138,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"projected_digest\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"repeat_key\":\"sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"content_ref\":\"inline:sha256:033e247652f8d7c694531d01243e46d4b006bdb204b0003d672d69b91e277486\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9e1868c6d85315acb460bd9f97d3c905465f6b9ae437b41ccc2b9cfa771b9363\"}",
+            "prepared_digest": "sha256:3fbc490b72b168f97f6576a8f9a931a1831cdf190db7ca1578f9dafba95d293c",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13797,
+            "text": "1. **first — success:** `BATCH-A-2b68f890-9588-43b7-8fbf-f545fc3d7733`\n2. **missing — failed:** `missing-batch.txt` could not be read: No such file or directory (os error 2).\n3. **last — success:** `BATCH-B-中文-845e80e9-7697-4986-8ba6-d81709243d62`",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "1e478ed8a6781289853a0c9468db2461cf4719b04de70867a4ba8f038efb3c1f",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:d92531c38bcfb1f091c1a3dad5ec17ea6fce2ff4ea543b900b9b1f13897a1e51",
+              "sha256:7903096b87bb91c65a1d127da91deaf40f478dcbff6168fd8d073e7b986b288c"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "1c40f645-c826-41e0-9d7e-63b805c8a9a0"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

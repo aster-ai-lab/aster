@@ -1,0 +1,72 @@
+{
+  "unix": 1792902030.0170465,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-serve-profile-v167",
+  "gpu_executed": false,
+  "original_source_sha256": "47af8a6d48d42d0bd745b59279ed1ed2e907829e4402e4b366e70b6494e4ba7e",
+  "files": [
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 228908,
+      "sha256": "e65f795b5ba3336bfdff2d529101fc950fa3a748dd22d2019f29a3d5ca8cec32"
+    },
+    {
+      "file": "aster_serve_profile.hpp",
+      "bytes": 1120,
+      "sha256": "7f233bb8c78ef0d31eae1ab343f26f0f0a6248c14528f6ed9c8a0a559d894f0c"
+    },
+    {
+      "file": "test_serve_profile.cpp",
+      "bytes": 1723,
+      "sha256": "4f0e43f5feaf97296ec0fd2e54fc0c5d1b4d65ed7715147ab83c226c2fe788ad"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f"
+    },
+    {
+      "file": "build-plan.json",
+      "bytes": 1811,
+      "sha256": "2e7ac60938dd0d5887b4fbaf1e619936db342ac67c5a9b3850f02def9c02cd6f"
+    },
+    {
+      "file": "worker.py",
+      "bytes": 5617,
+      "sha256": "91854b317499d1140a86b9a3d5fc0e613b07b75e9840361a1743883a15012da4"
+    }
+  ],
+  "process": {
+    "pid": 1270898,
+    "start_ticks": 282882406,
+    "uid": 10250,
+    "unix": 1792902039.1375675,
+    "budget_seconds": 260,
+    "namespace": "jump host"
+  }
+}

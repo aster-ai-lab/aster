@@ -1,0 +1,14 @@
+
+running 1 test
+test kimi_tui_native_form_validates_submits_and_cancels ... ORACLE case=form-submit name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=form-submit name=form-required result=pass detail=native required-field validation blocks empty submission
+ORACLE case=form-submit name=form-range result=pass detail=native numeric validation blocks amount 6
+ORACLE case=form-submit name=form-submit result=pass detail=actual ACP/Core tool receipt contains Ada, 4 and true
+ORACLE case=form-submit name=quit result=pass detail=exit 0
+ORACLE case=form-cancel name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=form-cancel name=form-cancel result=pass detail=actual tool result carries the cancelled outcome
+ORACLE case=form-cancel name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 53.11s
+

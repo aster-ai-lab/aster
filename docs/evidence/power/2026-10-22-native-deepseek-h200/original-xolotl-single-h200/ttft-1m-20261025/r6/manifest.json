@@ -1,0 +1,624 @@
+{
+  "schema": "aster-xolotl-engram-comparison-r6-manifest",
+  "unix": 1792884495.687592,
+  "files": [
+    {
+      "file": "receipts/xolotl-active-optimization-config-v85.json",
+      "bytes": 1072,
+      "sha256": "b70fa19afc076b5470d0b736d57046c23b0c32fdd2acbe9e05b3ab178a720937",
+      "source": "xolotl-active-optimization-config-v85.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-comparison-v71-controller.json",
+      "bytes": 5152,
+      "sha256": "76f536508638b772eeff5a1ee86a6e2fd74a722588be88a55937c21de90b29a3",
+      "source": "xolotl-engram-comparison-v71-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-comparison-v71-launch.json",
+      "bytes": 273,
+      "sha256": "bca0a8d0f65aac78e524f0e29888f1f7d021c5ce2ac4e00827d7792eb237e5c6",
+      "source": "xolotl-engram-comparison-v71-launch.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-comparison-v71-numeric.json",
+      "bytes": 67860,
+      "sha256": "41c70a340f5a9e158b95a143fb76dfa54724fc68c4a7cddc8d9fac3e06f3ac62",
+      "source": "xolotl-engram-comparison-v71-numeric.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-comparison-v71r1-controller.json",
+      "bytes": 5641,
+      "sha256": "929ce32e2130069e967f3a19ebd47625f757349e76cd7970a16bc0011b43aa2b",
+      "source": "xolotl-engram-comparison-v71r1-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_a-drain.json",
+      "bytes": 338,
+      "sha256": "25daa38367c805fdbd0931a2f363182db343974dcd39a362b4d3cfb686dd0cac",
+      "source": "xolotl-engram-disk-v68-gpfs_a-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_a-intent.json",
+      "bytes": 7792,
+      "sha256": "4025e56c0e80405a54100c356eb125e3ceb407320c7abed9880c8bc0c1002495",
+      "source": "xolotl-engram-disk-v68-gpfs_a-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_a-latest.json",
+      "bytes": 4255,
+      "sha256": "c20d77afc3bc8eb59e347c0f5e38c4ef71721408f73c790c63793cacce0a6edd",
+      "source": "xolotl-engram-disk-v68-gpfs_a-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_a-qualification-latest.json",
+      "bytes": 6746,
+      "sha256": "423e8efcd17a9bd5a31a16ac163046f628dadc4ef5ce2d238a2560874e15ae19",
+      "source": "xolotl-engram-disk-v68-gpfs_a-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_b-bootstrap-refused.json",
+      "bytes": 7666,
+      "sha256": "e8f4cc10f1c82465674c268c6d3911b123d6d308bc6909cab4bb693618eefa52",
+      "source": "xolotl-engram-disk-v68-gpfs_b-bootstrap-refused.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_b-drain.json",
+      "bytes": 338,
+      "sha256": "b07ba5ebbe885a4fa65f0bf7a1b794d926398414f99daba0cda4f6183839df04",
+      "source": "xolotl-engram-disk-v68-gpfs_b-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_b-intent.json",
+      "bytes": 7941,
+      "sha256": "750d4aa64a31aff35117988d9bcb7b78f4b608f7aa25cb88363473bb864730d3",
+      "source": "xolotl-engram-disk-v68-gpfs_b-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_b-latest.json",
+      "bytes": 4292,
+      "sha256": "698950ffdd56a279c9a8471c886cd549047605f01532e3bb9964e9e4a571d2e7",
+      "source": "xolotl-engram-disk-v68-gpfs_b-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-gpfs_b-qualification-latest.json",
+      "bytes": 6742,
+      "sha256": "be1e8a605ca2e7c554fd915395c205053ee89a494014ec25e671f65b2e6be9b5",
+      "source": "xolotl-engram-disk-v68-gpfs_b-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-local-drain.json",
+      "bytes": 337,
+      "sha256": "11a1d53dedaaae089c6459625364f23a45f97f4e854707be0a528248d64fe5cd",
+      "source": "xolotl-engram-disk-v68-local-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-local-intent.json",
+      "bytes": 7784,
+      "sha256": "3a8420a9852d42ed8f6c07a34b31729a694feed25e8fb4ed2142971f2aceec0b",
+      "source": "xolotl-engram-disk-v68-local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-local-latest.json",
+      "bytes": 4257,
+      "sha256": "5f65208bb1cc9b3b061778d8f6a938d4f55a59aaad84484f33014c67ec42c202",
+      "source": "xolotl-engram-disk-v68-local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-disk-v68-local-qualification-latest.json",
+      "bytes": 6744,
+      "sha256": "bffeb55decc21d3209e98de0c4d7d8bf7c118d059e8523c12ce27982ce6d8b7c",
+      "source": "xolotl-engram-disk-v68-local-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-gpfs_a-intent.json",
+      "bytes": 944,
+      "sha256": "ebf51b08cbeff1d5ff79610f6b405a9fb2d15516e3e894d9fa3a38c90a6c7312",
+      "source": "xolotl-engram-extended-v70-gpfs_a-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-gpfs_a-latest.json",
+      "bytes": 54990,
+      "sha256": "f3a75f441cef6c9e7f6121deb88d10ddb426e1a43f4dcbfd1ceadb1960ed52eb",
+      "source": "xolotl-engram-extended-v70-gpfs_a-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-gpfs_b-intent.json",
+      "bytes": 944,
+      "sha256": "9bb91904e668bf17c063fcc57688c4174939698263dd76c818b62d2d0f36ddd3",
+      "source": "xolotl-engram-extended-v70-gpfs_b-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-gpfs_b-latest.json",
+      "bytes": 54992,
+      "sha256": "825e72ef20e727e554eaa76c1943b8505ec925b43301dca38f81a07bc964fb42",
+      "source": "xolotl-engram-extended-v70-gpfs_b-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-local-intent.json",
+      "bytes": 943,
+      "sha256": "4669d58f10abbb570f00e37e3f02e0f3511741c338c1339e22f615cc59788372",
+      "source": "xolotl-engram-extended-v70-local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-extended-v70-local-latest.json",
+      "bytes": 54988,
+      "sha256": "fd9145c69647fc0857bf88b3ee1f77cc46fd09d6fd790ac19d7c6d1f897a6a8b",
+      "source": "xolotl-engram-extended-v70-local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-build-v73-intent.json",
+      "bytes": 573,
+      "sha256": "8b4b1aa5da53c3ccc7736c0886e75d5a67f5748b1ce22925ecf01c6b765c6aea",
+      "source": "xolotl-engram-fp8-build-v73-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-build-v73-latest.json",
+      "bytes": 7357,
+      "sha256": "f75785871f8a7b4001ea0c73487f09d9590d218f60d4657bda4b6eb62b0c65d2",
+      "source": "xolotl-engram-fp8-build-v73-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-cpu-v72-intent.json",
+      "bytes": 1071,
+      "sha256": "cc1dddefe9184c3fa4ac822bc3e968660e870b178a3121a90893b9facc103fbf",
+      "source": "xolotl-engram-fp8-cpu-v72-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-cpu-v72-latest.json",
+      "bytes": 2378,
+      "sha256": "4578f14022e4ff2fcbf3d4affe9e50c91459ea10253fc511fca79f6fe146d825",
+      "source": "xolotl-engram-fp8-cpu-v72-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-link-v74-intent.json",
+      "bytes": 859,
+      "sha256": "1e9cc91b46b4b0265267c3a869fd877e6b8c9611454705fd2c765b16ad7a02ba",
+      "source": "xolotl-engram-fp8-link-v74-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-link-v74-latest.json",
+      "bytes": 1218,
+      "sha256": "01ce1e17123ec92440cf0108e736fb7a0b63c9c178b60209830a49557b50b513",
+      "source": "xolotl-engram-fp8-link-v74-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-fp8-recipe-discovery-v72.json",
+      "bytes": 9880,
+      "sha256": "cba440acfdd65089d26417a3bfa70d8b7123e2ee4ad02179b8bd3d21bd23a3ea",
+      "source": "xolotl-engram-fp8-recipe-discovery-v72.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-gpfs-b-bootstrap-v71-inspection.json",
+      "bytes": 99,
+      "sha256": "8525fe477deab0285c0b21d89afd281fbf94e947091b4053b8c4eb5445624acc",
+      "source": "xolotl-engram-gpfs-b-bootstrap-v71-inspection.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-gpfs-b-recovery-v71r1-intent.json",
+      "bytes": 698,
+      "sha256": "c8f5e344b318ad4762536fbfae7de54d50e913321e433fc1098732dbdee303af",
+      "source": "xolotl-engram-gpfs-b-recovery-v71r1-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-recovery-v83-intent.json",
+      "bytes": 693,
+      "sha256": "08db34a8b604d3c73c0c19208dc4ccac1b4dae53ca28a9ba5035c4eed145e61e",
+      "source": "xolotl-engram-local-repeat-recovery-v83-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v79-bootstrap-refused.json",
+      "bytes": 10147,
+      "sha256": "18cb6eb8e399a097d936538b8300ec93758d283cec20ef7ef2491c0e673d4852",
+      "source": "xolotl-engram-local-repeat-v79-bootstrap-refused.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v79-local_repeat-intent.json",
+      "bytes": 10426,
+      "sha256": "cc24798c7f50ab0b36be332980c428dbcc8bc0ae63f54ad46a78043d5cddeaa7",
+      "source": "xolotl-engram-local-repeat-v79-local_repeat-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v79-local_repeat-latest.json",
+      "bytes": 1044,
+      "sha256": "7d6a8fc8295fbca18d81331dfef69fc98b61e936c18e561c16db13d4fb2dc593",
+      "source": "xolotl-engram-local-repeat-v79-local_repeat-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v80-local_repeat-intent.json",
+      "bytes": 1240,
+      "sha256": "3a55d7c849baef855d2ba1aa03a8b4bb26c59683e7fae1a3a3e05531480bc055",
+      "source": "xolotl-engram-local-repeat-v80-local_repeat-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v80-local_repeat-latest.json",
+      "bytes": 6750,
+      "sha256": "8f628443642c2c6b77a4b2b60afc1afbc1f09d9bf028e257ec7bdfaa2be3b4de",
+      "source": "xolotl-engram-local-repeat-v80-local_repeat-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v82-controller.json",
+      "bytes": 1428,
+      "sha256": "691096e4d3066fe2711bf38845b638732cc95e2543ca8d86653c2480c0933286",
+      "source": "xolotl-engram-local-repeat-v82-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-local-repeat-v84-controller.json",
+      "bytes": 1355,
+      "sha256": "d73d5aa091a40d5f614dcb3cfc13a43a478a337dbc752a4349a78e10ce2f757d",
+      "source": "xolotl-engram-local-repeat-v84-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-extended-v77-lut_local-intent.json",
+      "bytes": 946,
+      "sha256": "3b5d2801479dfac7eae92879b3da79cf540daf9218ef68d06d61035e7fd27c56",
+      "source": "xolotl-engram-lut-extended-v77-lut_local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-extended-v77-lut_local-latest.json",
+      "bytes": 54998,
+      "sha256": "adc27675b76bf2da57c3cd68c47ffadc35a2e02fc8feb540e694d673fd661de5",
+      "source": "xolotl-engram-lut-extended-v77-lut_local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-natural-v76-lut_local-intent.json",
+      "bytes": 1227,
+      "sha256": "e5aca5a35d7a276f2d77e117aa2ca2672bbfc66522e6f2fa0132278172002c3e",
+      "source": "xolotl-engram-lut-natural-v76-lut_local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-natural-v76-lut_local-latest.json",
+      "bytes": 6749,
+      "sha256": "c65780fc9bb5fcee61d683e0d5953d83ee48b4690511adba9155963223623758",
+      "source": "xolotl-engram-lut-natural-v76-lut_local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-v75-lut_local-drain.json",
+      "bytes": 337,
+      "sha256": "bdf17c560de32643f49397c5873446deba5d223ae8c1b033907dd9b394a4553d",
+      "source": "xolotl-engram-lut-v75-lut_local-drain.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-v75-lut_local-intent.json",
+      "bytes": 10214,
+      "sha256": "a817a7915c892e6f89916f9cee2f7ab2ae19b074726a8198407c76d72472c7fd",
+      "source": "xolotl-engram-lut-v75-lut_local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-v75-lut_local-latest.json",
+      "bytes": 4257,
+      "sha256": "3c2a825a81cadb02e7e182c7c2a9947b1dc2753a1e25166ca55646d1837d23c5",
+      "source": "xolotl-engram-lut-v75-lut_local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-v75-lut_local-qualification-latest.json",
+      "bytes": 6749,
+      "sha256": "fefa4cd20225d9a574b99ee746e99589191be303c5f5039832f26b7dec8fd878",
+      "source": "xolotl-engram-lut-v75-lut_local-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-lut-v78-controller.json",
+      "bytes": 7601,
+      "sha256": "7dfc8faf757cb38aab36093820884456176aa9fee8e89616f6c9b4adac73e1f3",
+      "source": "xolotl-engram-lut-v78-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-gpfs_a-intent.json",
+      "bytes": 1225,
+      "sha256": "66e5cf3f43054b7efa63278bcb12a960046f1d9b90338e52fffa4ea0c2a9e084",
+      "source": "xolotl-engram-natural-v69-gpfs_a-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-gpfs_a-latest.json",
+      "bytes": 6746,
+      "sha256": "42508b3f840758323403491834b35610dc385a123056f31cae224936357c85f9",
+      "source": "xolotl-engram-natural-v69-gpfs_a-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-gpfs_b-intent.json",
+      "bytes": 1226,
+      "sha256": "90bdade4b8b6626e9707d29ab78b5ef7119bfb85ebcd44576d559d8e1e2f1529",
+      "source": "xolotl-engram-natural-v69-gpfs_b-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-gpfs_b-latest.json",
+      "bytes": 6742,
+      "sha256": "95120bc3e14299231d1aae1680189b4effc10887a3cbe4b9556daa30e665426d",
+      "source": "xolotl-engram-natural-v69-gpfs_b-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-local-intent.json",
+      "bytes": 1224,
+      "sha256": "39f2bae3741f81532bf68e93bf72f2e330e5490f499a9120f24e480f1dbc94f5",
+      "source": "xolotl-engram-natural-v69-local-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-natural-v69-local-latest.json",
+      "bytes": 6745,
+      "sha256": "537992b0bda69b3fbdb7a0445a22c5f213b819e52523365e406e654fa6a7d5fc",
+      "source": "xolotl-engram-natural-v69-local-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-transition-v71.json",
+      "bytes": 1720,
+      "sha256": "d72aad4e46b5e0592fcd5de764294231c025a2a318dbef6b2f74a294e859fcde",
+      "source": "xolotl-engram-transition-v71.json"
+    },
+    {
+      "file": "receipts/xolotl-natural-fixtures-v67-intent.json",
+      "bytes": 1824,
+      "sha256": "927e0128a7624751f5e98a36b96d2f8b0f8e163e63d129f3ab1ae628631330c8",
+      "source": "xolotl-natural-fixtures-v67-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-natural-fixtures-v67-latest.json",
+      "bytes": 3596,
+      "sha256": "2211948fa0e3e6d1485baeb2d39ce3d2c540093085af82ffa809bce3cfc50a5a",
+      "source": "xolotl-natural-fixtures-v67-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-readiness-watch-v65-latest.json",
+      "bytes": 484,
+      "sha256": "cec326bd34b24dc5d322de5c23064a9772ab36866e9dd4a155b6bc83d7f8e4aa",
+      "source": "xolotl-readiness-watch-v65-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-short-concurrency-v85-intent.json",
+      "bytes": 1104,
+      "sha256": "97b0ac1bfc7d1fe5817e48ac5a18bd9f90120205ca9565b7132ad444e8b9c217",
+      "source": "xolotl-short-concurrency-v85-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-short-concurrency-v85-latest.json",
+      "bytes": 41964,
+      "sha256": "d70aecc894f7ce68090275144a04f8e660faf78cef83ccb7244df689c8344256",
+      "source": "xolotl-short-concurrency-v85-latest.json"
+    },
+    {
+      "file": "operators/xolotl_natural_fixture_prepare_v67.frozen.py",
+      "bytes": 4935,
+      "sha256": "16f3c6d704b5732c9e48049735700db730dcf2710c0647e9b484a4644685a452",
+      "source": "xolotl_natural_fixture_prepare_v67.frozen.py"
+    },
+    {
+      "file": "operators/stage_xolotl_natural_fixture_v67.frozen.py",
+      "bytes": 3868,
+      "sha256": "dbbb2551469d66b956be4e0a76e325ecbaa99f26913df012e751ad23b346820d",
+      "source": "stage_xolotl_natural_fixture_v67.frozen.py"
+    },
+    {
+      "file": "operators/launch_xolotl_engram_disk_v68.frozen.py",
+      "bytes": 9691,
+      "sha256": "7fc90bd3e2dcd2b400f616480508eaae4d0e7cd612fd54033942bc5e4cc31b8b",
+      "source": "launch_xolotl_engram_disk_v68.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_disk_v68.frozen.py",
+      "bytes": 7022,
+      "sha256": "95206c9708cd741a06ca7119ae8deb6eee10dc5b019198545262ccfca5dc3005",
+      "source": "manage_xolotl_engram_disk_v68.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_natural_prefill_worker_v69.frozen.py",
+      "bytes": 5426,
+      "sha256": "9a17a5bfc3bc6b881c02145496805432ac0c28318b40b1bacb7673e3b0d79346",
+      "source": "xolotl_natural_prefill_worker_v69.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_natural_v69.frozen.py",
+      "bytes": 7648,
+      "sha256": "a4068f56266f44128a941ead51febca3e78f13f2fa95949688f0b864c524fe63",
+      "source": "manage_xolotl_engram_natural_v69.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_extended_v70.frozen.py",
+      "bytes": 7375,
+      "sha256": "d6a94fd6fc644ee52369032b7b1ac859c1d20dec84511d4da8770010f9a519f1",
+      "source": "manage_xolotl_engram_extended_v70.frozen.py"
+    },
+    {
+      "file": "operators/check_xolotl_engram_transition_v71.py",
+      "bytes": 3779,
+      "sha256": "baf63f626926550f70e2a22a963241c78b722bcca1feffbf3342d10b3cf110f0",
+      "source": "check_xolotl_engram_transition_v71.py"
+    },
+    {
+      "file": "operators/run_xolotl_engram_comparison_v71.py",
+      "bytes": 4959,
+      "sha256": "90c46f86631d1929e4b8b6e12b897ab5501c50e6976b93ce1df6caeb16af324e",
+      "source": "run_xolotl_engram_comparison_v71.py"
+    },
+    {
+      "file": "operators/collect_xolotl_engram_numeric_v71.py",
+      "bytes": 3243,
+      "sha256": "3890d5ecb967bcdbeab1584e9600ba6376be7319240ddf5004197533f68dd736",
+      "source": "collect_xolotl_engram_numeric_v71.py"
+    },
+    {
+      "file": "operators/recover_xolotl_unstarted_gpfs_b_v71r1.py",
+      "bytes": 4702,
+      "sha256": "77a19147ad17d48a2ba767b2b4649905fdba62fdaa37394fb2522f5ece04f642",
+      "source": "recover_xolotl_unstarted_gpfs_b_v71r1.py"
+    },
+    {
+      "file": "operators/prepare_xolotl_engram_fp8_lut_v72.py",
+      "bytes": 4129,
+      "sha256": "a17bb8071a5af3e97d315e2c27c2e7d991ddff8cfedb2cfd455570612ca820be",
+      "source": "prepare_xolotl_engram_fp8_lut_v72.py"
+    },
+    {
+      "file": "operators/run_xolotl_engram_fp8_cpu_v72.py",
+      "bytes": 5085,
+      "sha256": "6f74f98ffdcc2f46d11ef0f75e42fdb7b5d0a516f616107d4f39b2421dfabd91",
+      "source": "run_xolotl_engram_fp8_cpu_v72.py"
+    },
+    {
+      "file": "operators/build_xolotl_engram_fp8_cpu_v73.py",
+      "bytes": 7234,
+      "sha256": "a74ca8d136bed74fcc143b7a909af9b9e858f25794e96674cda37214dce15b5d",
+      "source": "build_xolotl_engram_fp8_cpu_v73.py"
+    },
+    {
+      "file": "operators/launch_xolotl_engram_fp8_link_v74.py",
+      "bytes": 4876,
+      "sha256": "3b15d57177c35c53ce62c3c2c8ecd987846bd364a7a5c6f5f9ad09c47a744110",
+      "source": "launch_xolotl_engram_fp8_link_v74.py"
+    },
+    {
+      "file": "operators/launch_xolotl_engram_lut_v75.frozen.py",
+      "bytes": 10182,
+      "sha256": "4149e1a2334c08a22a30f665285e43d6e7152fd4070e91062df066e808ad36b0",
+      "source": "launch_xolotl_engram_lut_v75.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_lut_service_v75.frozen.py",
+      "bytes": 7108,
+      "sha256": "d35d0c0fecedd510dfe85a3d90d2e387f4b7110968c206fa70bb3afea093c7f1",
+      "source": "manage_xolotl_engram_lut_service_v75.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_lut_natural_v76.frozen.py",
+      "bytes": 7638,
+      "sha256": "24ff427f661eb16c83c26a11ded53b8e4b03da3d5a0889531dfb5f1b7dcfe83e",
+      "source": "manage_xolotl_engram_lut_natural_v76.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_lut_extended_v77.frozen.py",
+      "bytes": 7370,
+      "sha256": "5aa37b889b78c602f3d028e4bca39edb3150168031de166702d70f8350e1b9d9",
+      "source": "manage_xolotl_engram_lut_extended_v77.frozen.py"
+    },
+    {
+      "file": "operators/finish_xolotl_engram_and_lut_v78.py",
+      "bytes": 7321,
+      "sha256": "9c19cda8ffcf82c9be7e2d400b41859ea40f07c2df66e54b81f1a727a77c0fbb",
+      "source": "finish_xolotl_engram_and_lut_v78.py"
+    },
+    {
+      "file": "operators/launch_xolotl_engram_local_repeat_v79.frozen.py",
+      "bytes": 10149,
+      "sha256": "1f1004ac7396d9766c5931a46b62d83178e87de5338f8d2f2c5b7d5c6ca77ef2",
+      "source": "launch_xolotl_engram_local_repeat_v79.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_local_repeat_service_v79.frozen.py",
+      "bytes": 7148,
+      "sha256": "1cd96c1034f85e9abc35dd638da870cf5ab875326f262e31276f95f1b4643fc2",
+      "source": "manage_xolotl_engram_local_repeat_service_v79.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_engram_local_repeat_v80.frozen.py",
+      "bytes": 7652,
+      "sha256": "13847e8ea1ec99ff7bb1f35a9c5e70c78931ddb1b6e3738af0ccc510c9cb3ac3",
+      "source": "manage_xolotl_engram_local_repeat_v80.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_short_concurrency_probe_v81.frozen.py",
+      "bytes": 5230,
+      "sha256": "bbb0453a881b774357281074f801a2e67695a60bf8549cf3cdc632caa42c883e",
+      "source": "xolotl_short_concurrency_probe_v81.frozen.py"
+    },
+    {
+      "file": "operators/repeat_xolotl_local_control_v82.py",
+      "bytes": 4334,
+      "sha256": "84cac90197fa08ba504109b433b64251008a562fe5c5bd4421ce939a54e495d7",
+      "source": "repeat_xolotl_local_control_v82.py"
+    },
+    {
+      "file": "operators/recover_xolotl_unstarted_local_repeat_v83.py",
+      "bytes": 2827,
+      "sha256": "0d722b29cf5f34a1492a43c5ac0acf80eda7a91d02aa2336a2cc87404999cd7a",
+      "source": "recover_xolotl_unstarted_local_repeat_v83.py"
+    },
+    {
+      "file": "operators/finish_xolotl_local_repeat_v84.py",
+      "bytes": 2716,
+      "sha256": "278ef815d78bcf10002b506c28ee41e3f1ae16a0a612907dd5d0f74a4a24dfc0",
+      "source": "finish_xolotl_local_repeat_v84.py"
+    },
+    {
+      "file": "operators/manage_xolotl_short_concurrency_v85.py",
+      "bytes": 6372,
+      "sha256": "a27cc57fd4a8e80956f0a9b3d7939fdcc058e84aa548c25d6e6f67225f3e4755",
+      "source": "manage_xolotl_short_concurrency_v85.py"
+    },
+    {
+      "file": "operators/xolotl_trial_common.py",
+      "bytes": 6054,
+      "sha256": "dcc4d92aca526dbcf0653101bb58869fb27ff9719aa7176bbfe9dfdd134676c2",
+      "source": "xolotl_trial_common.py"
+    },
+    {
+      "file": "operators/xolotl_serving_common.py",
+      "bytes": 4608,
+      "sha256": "84644e26e0f308d483150d65f16f3483314bca43067f65deb5b4643e62bf5d7f",
+      "source": "xolotl_serving_common.py"
+    },
+    {
+      "file": "operators/retain_xolotl_engram_comparison_r6.py",
+      "bytes": 16107,
+      "sha256": "ba95c021feaf54c184f5f4dd6e5871e112bf5751b2dbeda7e78c8e8cd1068846",
+      "source": "retain_xolotl_engram_comparison_r6.py"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/ds41_engram.original.cpp",
+      "bytes": 37273,
+      "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b",
+      "source": "engram-fp8-lut-v72/ds41_engram.original.cpp"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/ds41_engram.cpp",
+      "bytes": 43941,
+      "sha256": "860a1df32ace16a898b2f7680b24b5ba7184c40076e21cf2947cf75763405170",
+      "source": "engram-fp8-lut-v72/ds41_engram.cpp"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/fp8_exact_test.cpp",
+      "bytes": 8586,
+      "sha256": "6b8f9ca2d462a44b78c29e98bcb38155a39b8b6674db3b3050d86a1c34294caf",
+      "source": "engram-fp8-lut-v72/fp8_exact_test.cpp"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/engram-fp8-lut-v72.patch",
+      "bytes": 7197,
+      "sha256": "07e33258b8f6e2b7fd99ba24205d092a617b25eb597e1c6cd0f2894f867bc79f",
+      "source": "engram-fp8-lut-v72/engram-fp8-lut-v72.patch"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/source-manifest.json",
+      "bytes": 901,
+      "sha256": "75e4969b8f57eaefa29426b6cb355cf9c489b764d2c3d06471e9b0314d01e6ee",
+      "source": "engram-fp8-lut-v72/source-manifest.json"
+    },
+    {
+      "file": "frozen-candidates/engram-fp8-lut-v72/native_link_worker_v74.py",
+      "bytes": 5365,
+      "sha256": "fca15da745d6bb6f400dbdf9d642ba0138c0ffff3bea96c12608c9981773fc4f",
+      "source": "engram-fp8-lut-v72/native_link_worker_v74.py"
+    },
+    {
+      "file": "fixtures/technical8244.txt",
+      "bytes": 33483,
+      "sha256": "d1d63f30becc0b8dbd9a9070dac4d3f561ef64e5a11c72ff33d0af675bacf213",
+      "source": "public-natural-fixtures-v67/technical8244.txt"
+    },
+    {
+      "file": "fixtures/technical25671.txt",
+      "bytes": 104347,
+      "sha256": "a070217f21ee1ed53372d13857825825987ec98fa4095a6d86051c35b58b9c44",
+      "source": "public-natural-fixtures-v67/technical25671.txt"
+    },
+    {
+      "file": "round-summary.json",
+      "bytes": 52444,
+      "sha256": "41d0154467980a9adedc0f77d3e4dc2ccfa96d41801f1ff059229253769738df",
+      "source": null
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 4600,
+      "sha256": "02aee3f270f261c4e9e62783c2ecf0994158c698567909e212010f07fb337628",
+      "source": null
+    }
+  ]
+}

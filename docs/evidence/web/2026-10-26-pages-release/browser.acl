@@ -1,0 +1,194 @@
+suite "aster-documentation" {
+    version = 1
+
+    scenario "desktop-project-chapters" {
+        name = "Documentation portal, project navigation, diagrams and four chapters"
+        surface = "web"
+        timeout_ms = 60000
+
+        viewport "desktop" { width = 1440 height = 1000 scale = 1 }
+        navigate "portal" { url = "http://127.0.0.1:4193/docs/" }
+        expect "portal-heading" { target = css("main h1") rendered_text = "Aster 技术文档" }
+        click "open-project" { target = css(".project-cards a[href$='code/9.1.6/']") }
+        expect "project-heading" { target = css("main h1") rendered_text = "理解 Aster 的 Harness" }
+        expect "architecture-diagram" { visible = css(".diagram svg.pele-flowchart[role='img']") }
+        click "workflow" { target = css(".chapter-nav a[href$='code/9.1.6/workflow/']") }
+        expect "workflow-heading" { target = css("main h1") rendered_text = "一个任务如何运行" }
+        expect "pele-sequence" { visible = css(".diagram svg.pele-sequence[role='img']") }
+        expect "selected-workflow" { visible = css(".chapter-nav a[aria-current='page'][href$='code/9.1.6/workflow/']") }
+        screenshot "workflow-desktop" { path = "screenshots/workflow-desktop.png" }
+        click "comparison" { target = css(".chapter-nav a[href$='code/9.1.6/comparison/']") }
+        expect "comparison-heading" { target = css("main h1") rendered_text = "与其他 Harness 的区别" }
+        expect "comparison-table" { visible = role("region", "Harness 与编排运行时对比") }
+        click "integration" { target = css(".chapter-nav a[href$='code/9.1.6/integration/']") }
+        expect "integration-heading" { target = css("main h1") rendered_text = "把 Harness 接入宿主" }
+        expect "previous-comparison" { visible = css(".page-navigation a[href$='code/9.1.6/comparison/']") }
+        page_errors "desktop-errors" { path = "evidence/desktop-errors.json" clear = false }
+    }
+
+    scenario "mobile-directory-and-diagram" {
+        name = "Mobile project directory, SVG scrolling and adjacent-page navigation"
+        surface = "web"
+        timeout_ms = 60000
+
+        viewport "mobile" { width = 390 height = 844 scale = 1 }
+        navigate "project" { url = "http://127.0.0.1:4193/docs/code/" }
+        expect "directory-closed" { collapsed = css(".mobile-navigation") }
+        click "open-directory" { target = css(".mobile-navigation > summary") }
+        expect "directory-open" { expanded = css(".mobile-navigation") }
+        click "workflow" { target = css(".mobile-navigation a[href$='code/9.1.6/workflow/']") }
+        expect "workflow-heading" { target = css("main h1") rendered_text = "一个任务如何运行" }
+        expect "new-page-directory-closed" { collapsed = css(".mobile-navigation") }
+        expect "scrollable-diagram" { visible = css(".diagram-scroll svg[role='img']") }
+        wheel "read-diagram" { target = css(".diagram-scroll") delta_x = 340 delta_y = 0 }
+        screenshot "workflow-mobile" { path = "screenshots/workflow-mobile.png" }
+        click "next-comparison" { target = css(".page-navigation a[href$='code/9.1.6/comparison/']") }
+        expect "comparison-heading" { target = css("main h1") rendered_text = "与其他 Harness 的区别" }
+        expect "table-region" { visible = role("region", "Harness 与编排运行时对比") }
+        screenshot "comparison-mobile" { path = "screenshots/comparison-mobile.png" }
+        page_errors "mobile-errors" { path = "evidence/mobile-errors.json" clear = false }
+    }
+
+    scenario "meta-harness-guides" {
+        name = "Meta Harness capability index, seven topics and grouped mobile navigation"
+        surface = "web"
+        timeout_ms = 60000
+
+        viewport "desktop" { width = 1440 height = 1000 scale = 1 }
+        navigate "meta-index" { url = "http://127.0.0.1:4193/docs/code/meta-harness/" }
+        expect "index-heading" { target = css("main h1") rendered_text = "Meta Harness 使用指南" }
+        expect "section-label" { target = css(".chapter-nav .nav-section:has(+ a[href$='code/9.1.6/meta-harness/'])") rendered_text = "Meta Harness" }
+        expect "overview-diagram" { visible = css(".diagram svg.pele-flowchart[role='img']") }
+        screenshot "meta-desktop" { path = "screenshots/meta-harness-desktop.png" }
+        click "composition" { target = css(".table-scroll a[href$='code/9.1.6/meta-harness/composition/']") }
+        expect "composition-heading" { target = css("main h1") rendered_text = "组合默认执行组件" }
+        click "extensions" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/extensions/']") }
+        expect "extensions-heading" { target = css("main h1") rendered_text = "扩展组件和调度方式" }
+        click "context-tools" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/context-tools/']") }
+        expect "context-heading" { target = css("main h1") rendered_text = "接入上下文和工具" }
+        click "agent-directory" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/agent-directory/']") }
+        expect "directory-heading" { target = css("main h1") rendered_text = "从目录加载 Agent" }
+        click "script-toc" { target = css(".docs-toc a[href='#调用目录中的脚本']") }
+        expect "script-section" { visible = css("#调用目录中的脚本") }
+        click "recovery" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/recovery/']") }
+        expect "recovery-heading" { target = css("main h1") rendered_text = "保存会话并恢复执行" }
+        click "verification-resources" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/verification-resources/']") }
+        expect "verification-heading" { target = css("main h1") rendered_text = "提交验证结果并清理资源" }
+        click "durable-work" { target = css(".chapter-nav a[href$='code/9.1.6/meta-harness/durable-work/']") }
+        expect "goal-heading" { target = css("main h1") rendered_text = "让任务分轮执行" }
+        expect "active-goal-page" { visible = css(".chapter-nav a[aria-current='page'][href$='code/9.1.6/meta-harness/durable-work/']") }
+
+        viewport "mobile" { width = 390 height = 844 scale = 1 }
+        click "open-mobile-directory" { target = css(".mobile-navigation > summary") }
+        expect "mobile-directory-open" { expanded = css(".mobile-navigation") }
+        click "mobile-extension-guide" { target = css(".mobile-navigation a[href$='code/9.1.6/meta-harness/extensions/']") }
+        expect "mobile-heading" { target = css("main h1") rendered_text = "扩展组件和调度方式" }
+        expect "code-example" { visible = css(".prose > pre:first-of-type code") }
+        expect "highlighted-token" { visible = css(".prose > pre:first-of-type code > .line:first-child > span:first-child[class^='syntax-']") }
+        screenshot "meta-mobile" { path = "screenshots/meta-harness-mobile.png" }
+        page_errors "meta-errors" { path = "evidence/meta-errors.json" clear = false }
+    }
+
+    scenario "terminal-agent-tutorial" {
+        name = "Twelve tutorial chapters, code highlighting, Pele diagrams and mobile reading"
+        surface = "web"
+        timeout_ms = 60000
+
+        viewport "desktop" { width = 1440 height = 1000 scale = 1 }
+        navigate "tutorial" { url = "http://127.0.0.1:4193/docs/code/tutorial/" }
+        expect "tutorial-heading" { target = css("main h1") rendered_text = "动手做一个终端编码智能体" }
+        expect "tutorial-architecture" { visible = css(".pele-diagram svg.pele-flowchart[role='img']") }
+        screenshot "tutorial-desktop" { path = "screenshots/tutorial-desktop.png" }
+        click "setup" { target = css(".chapter-cards a[href$='code/9.1.6/tutorial/setup/']") }
+        expect "setup-heading" { target = css("main h1") rendered_text = "01 · 跑通第一个工作区会话" }
+        expect "toml-highlighting" { visible = css("pre[data-language='toml'] code > .line:first-child > span:first-child[class^='syntax-']") }
+        click "streaming" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/streaming/']") }
+        expect "streaming-heading" { target = css("main h1") rendered_text = "02 · 接收回复、工具进度和运行终态" }
+        click "tui" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/tui/']") }
+        expect "tui-heading" { target = css("main h1") rendered_text = "03 · 做出可以交互的终端界面" }
+        click "ui-source" { target = css(".docs-toc a[href='#写界面状态和绘制函数']") }
+        screenshot "tui-code" { path = "screenshots/tutorial-tui-code-desktop.png" }
+
+        viewport "mobile" { width = 390 height = 844 scale = 1 }
+        click "open-directory" { target = css(".mobile-navigation > summary") }
+        click "permissions" { target = css(".mobile-navigation a[href$='code/9.1.6/tutorial/permissions/']") }
+        expect "permissions-heading" { target = css("main h1") rendered_text = "04 · 让修改操作先经过确认" }
+        expect "directory-closed" { collapsed = css(".mobile-navigation") }
+        expect "permission-diagram" { visible = css(".pele-diagram svg.pele-flowchart[role='img']") }
+        screenshot "permissions-mobile" { path = "screenshots/tutorial-permissions-mobile.png" }
+        click "verification" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/verification/']") }
+        expect "verification-heading" { target = css("main h1") rendered_text = "05 · 让“修好了”对应一次有效验证" }
+        click "persistence" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/persistence/']") }
+        expect "persistence-heading" { target = css("main h1") rendered_text = "06 · 保存、取消和恢复同一个会话" }
+        click "harness" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/harness/']") }
+        expect "harness-heading" { target = css("main h1") rendered_text = "07 · 给编码助手配置自己的 Harness" }
+        click "context" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/context/']") }
+        expect "context-heading" { target = css("main h1") rendered_text = "08 · 接入项目资料、Skills 和 MCP" }
+        click "tools" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/tools/']") }
+        expect "tools-heading" { target = css("main h1") rendered_text = "09 · 注册自己的工具和目录脚本" }
+        click "memory" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/memory/']") }
+        expect "memory-heading" { target = css("main h1") rendered_text = "10 · 让记忆跟随正确的项目和用户" }
+        click "goals" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/goals/']") }
+        expect "goals-heading" { target = css("main h1") rendered_text = "11 · 把长任务拆成可推进的目标" }
+        click "delivery" { target = css(".page-navigation a[href$='code/9.1.6/tutorial/delivery/']") }
+        expect "delivery-heading" { target = css("main h1") rendered_text = "12 · 收尾资源，并把教程工程验收到位" }
+        screenshot "delivery-mobile" { path = "screenshots/tutorial-delivery-mobile.png" }
+        page_errors "tutorial-errors" { path = "evidence/tutorial-errors.json" clear = false }
+    }
+
+    scenario "products-versions-and-markdown" {
+        name = "Product and version isolation, Markdown tables, ACP and design chapters"
+        surface = "web"
+        timeout_ms = 90000
+
+        viewport "desktop" { width = 1440 height = 1000 scale = 1 }
+        navigate "markdown-page" { url = "http://127.0.0.1:4193/docs/code/9.1.6/reference/orchestration/" }
+        expect "article" { target = css("main h1") rendered_text = "让并行任务遵守同一套预算" }
+        expect "native-markdown-table" { visible = css(".prose table[aria-label='先选一种执行方式']") }
+        expect "table-column" { target = css(".prose table thead th:first-child") rendered_text = "需求" }
+        expect "table-data" { target = css(".prose table tbody tr:first-child td:first-child") rendered_text = "单个或多个委派任务" }
+        screenshot "markdown-desktop" { path = "screenshots/markdown-table-desktop.png" }
+        click "versions" { target = css(".docs-switcher:last-child > summary") }
+        expect "missing-chapter-fallback" { target = css(".docs-switcher:last-child a[href$='code/9.1.5/']") rendered_text = "9.1.5 此版本无本篇，打开版本首页" }
+        click "old-version" { target = css(".docs-switcher:last-child a[href$='code/9.1.5/']") }
+        expect "old-home" { target = css("main h1") rendered_text = "理解 Aster 的 Harness" }
+        expect "old-version-stamp" { target = css(".docs-version") rendered_text = "Aster Code 9.1.5" }
+        click "products" { target = css(".docs-switcher:first-child > summary") }
+        click "acp" { target = css(".docs-switcher:first-child a[href$='acp/9.1.6/']") }
+        expect "acp-home" { target = css("main h1") rendered_text = "把 Aster 接进自己的客户端" }
+        expect "acp-diagram" { visible = css(".pele-diagram svg.pele-flowchart") }
+        expect "right-resources" { visible = css(".docs-toc .docs-resources") }
+        screenshot "acp-desktop" { path = "screenshots/acp-desktop.png" }
+        viewport "mobile" { width = 390 height = 844 scale = 1 }
+        press "page-bottom" { key = "End" }
+        expect "resources-in-flow" { visible = css(".docs-resources") }
+        screenshot "resource-footer" { path = "screenshots/resources-mobile.png" }
+        press "page-top" { key = "Home" }
+        click "mobile-contents" { target = css(".mobile-navigation > summary") }
+        click "office-guide" { target = css(".mobile-navigation a[href$='acp/9.1.6/documents/']") }
+        expect "office-heading" { target = css("main h1") rendered_text = "读取真正的来源，再生成和核对产物" }
+        expect "json-highlighting" { visible = css("pre[data-language='json'] code span[class^='syntax-']") }
+        navigate "philosophy" { url = "http://127.0.0.1:4193/docs/code/9.1.6/design/philosophy/" }
+        expect "philosophy-heading" { target = css("main h1") rendered_text = "设计哲学：让执行方式可变，让结果可以核对" }
+        navigate "rsi" { url = "http://127.0.0.1:4193/docs/code/9.1.6/design/rsi/" }
+        expect "rsi-heading" { target = css("main h1") rendered_text = "为什么 RSI 需要 Meta Harness" }
+        expect "rsi-diagram" { visible = css(".pele-diagram svg.pele-flowchart") }
+        screenshot "rsi-mobile" { path = "screenshots/rsi-mobile.png" }
+        navigate "markdown-mobile" { url = "http://127.0.0.1:4193/docs/code/9.1.6/reference/orchestration/" }
+        expect "mobile-table-region" { visible = css(".table-scroll[tabindex='0'][aria-label='先选一种执行方式']") }
+        screenshot "markdown-mobile-capture" { path = "screenshots/markdown-table-mobile.png" }
+        page_errors "handbook-errors" { path = "evidence/handbook-errors.json" clear = false }
+    }
+
+    scenario "sidebar-retains-position" {
+        name = "Chapter links retain the lower sidebar segment"
+        surface = "web"
+        timeout_ms = 30000
+        viewport "desktop" { width = 1440 height = 1000 scale = 1 }
+        navigate "tutorial" { url = "http://127.0.0.1:4193/docs/code/9.1.6/tutorial/" }
+        click "last-chapter" { target = css(".chapter-nav a[href$='reference/operations/']") }
+        expect "operations-page" { target = css("main h1") rendered_text = "从原始记录判断任务停在哪里" }
+        expect "lower-menu-retained" { in_viewport = css(".chapter-nav a[href$='reference/operations/']") }
+        screenshot "retained-menu" { path = "screenshots/sidebar-retained.png" }
+    }
+}

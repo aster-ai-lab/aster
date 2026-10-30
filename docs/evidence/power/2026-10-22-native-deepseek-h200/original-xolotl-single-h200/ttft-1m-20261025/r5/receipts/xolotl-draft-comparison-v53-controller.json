@@ -1,0 +1,166 @@
+{
+  "unix": 1792875511.2802787,
+  "phase": "needs_inspection",
+  "profiles": [
+    {
+      "profile": "off",
+      "basic": {
+        "profile": "off",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.14015701785683632,
+          "ttft_p95_seconds": 0.16665694199036807,
+          "api_wall_completion_tok_s": 83.20839441347223,
+          "stream_interval_tok_s_estimate": 92.97303745087939
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 37.79646443575621,
+            "seconds": 37.9094479191117,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.204599192366004,
+            "seconds": 0.2498850291594863,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.03402341017499566,
+            "seconds": 0.10448163794353604,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.5267369765788317,
+            "seconds": 1.5579342949204147,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 37.3709914162755,
+            "seconds": 37.40594436507672,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 36.201958381105214,
+            "seconds": 36.5314393681474,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.4683574540540576,
+            "seconds": 1.5004967260174453,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 37.08937223022804,
+            "seconds": 37.44091946305707,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "off",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 108.25283172214404,
+          "api_wall_completion_tok_s": 75.67469478328904,
+          "stream_interval_tok_s_estimate": 75.778257291852,
+          "ttft_p50_seconds": 0.010993270669132471,
+          "ttft_min_seconds": 0.010527053847908974,
+          "ttft_max_seconds": 0.11568434070795774
+        },
+        "reference_matched": false,
+        "failure_log": null
+      }
+    }
+  ],
+  "formal_service_unchanged": true,
+  "ctx1M_configured": true,
+  "actual1M_input_tested": false,
+  "current_profile": "cum010",
+  "service_phase": "serving",
+  "client_phase": "failed",
+  "client_tests": 3,
+  "error": "RuntimeError: native tool/long-output client failed: RuntimeError: cumulative draft changed a matched greedy long output",
+  "finished_unix": 1792876317.4324903
+}

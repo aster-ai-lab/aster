@@ -1,0 +1,29 @@
+{
+  "unix": 1792889221.1417513,
+  "result": {
+    "unix": 1792889124.527517,
+    "phase": "linked",
+    "gpu_math_executed": false,
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "step": "admission-seed-candidate",
+    "control_binary_byte_equal": true,
+    "invalid_startup_modes_rejected": 8,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-admission-seed-v98/ds41_generate",
+      "bytes": 253077760,
+      "sha256": "c96e244dc7ffb1ebd56a2039c96506a81d702cd8c9e158c0f50c134edded2a6c"
+    },
+    "target_acceptance_changed": false,
+    "routing_changed": false,
+    "finished_unix": 1792889129.3200333
+  },
+  "process": {
+    "pid": 178,
+    "start_ticks": 711839549,
+    "uid": 10250,
+    "unix": 1792889124.501917,
+    "budget_seconds": 200
+  },
+  "exact_link_process_alive": false
+}

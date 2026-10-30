@@ -1,0 +1,9 @@
+{
+  "profile": "DSpark depth4 conf0.6 exact FP4; tierbatch0.25 chunk512 1M",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 33.75
+  },
+  "prefill_median": 658.1,
+  "full_one_million_completed": false
+}

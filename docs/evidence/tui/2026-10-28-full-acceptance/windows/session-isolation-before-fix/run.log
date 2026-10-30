@@ -1,0 +1,17 @@
+
+running 1 test
+test functional::kimi_new_session_isolated_from_previous_history_permissions_and_runtime ... ORACLE case=session-isolation name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-pc-windows-msvc
+ORACLE case=session-isolation name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13306
+
+thread 'functional::kimi_new_session_isolated_from_previous_history_permissions_and_runtime' (29672) panicked at crates\code\acp\tests\aster_tui_live_e2e\functional.rs:536:5:
+assertion failed: !info.to_lowercase().contains("yolo")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_new_session_isolated_from_previous_history_permissions_and_runtime
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 49 filtered out; finished in 8.72s
+

@@ -1,0 +1,29 @@
+{
+  "unix": 1792858817.2184522,
+  "events": [
+    {
+      "reason": "Scheduled",
+      "type": "Normal",
+      "count": 1,
+      "first": "2026-10-24T16:14:30Z",
+      "last": "2026-10-24T16:14:30Z",
+      "message": "Successfully assigned ailab-hrprdduanyan/aster-xolotl-1mc6-43da44c9b0a4-57982995-hrwvl to gpu-l-lg-cmc-h-h200-0054.host.h.pjlab.org.cn"
+    },
+    {
+      "reason": "Pulling",
+      "type": "Normal",
+      "count": 1,
+      "first": "2026-10-24T16:14:43Z",
+      "last": "2026-10-24T16:14:43Z",
+      "message": "Pulling image \"registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2\""
+    },
+    {
+      "reason": "Pulling",
+      "type": "Normal",
+      "count": null,
+      "first": "2026-10-24T16:14:43Z",
+      "last": "2026-10-24T16:14:43Z",
+      "message": "Pulling image \"registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2\""
+    }
+  ]
+}

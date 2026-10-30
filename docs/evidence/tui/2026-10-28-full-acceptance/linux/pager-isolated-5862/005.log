@@ -1,0 +1,17 @@
+
+running 1 test
+test doctor_cmd::tests::fake_standalone_facts_compose_through_shared_view ... 
+thread 'doctor_cmd::tests::fake_standalone_facts_compose_through_shared_view' (36740) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/doctor_cmd/tests.rs:250:5:
+assertion `left == right` failed
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    doctor_cmd::tests::fake_standalone_facts_compose_through_shared_view
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.39s
+

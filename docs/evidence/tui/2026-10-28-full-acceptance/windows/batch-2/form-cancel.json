@@ -1,0 +1,156 @@
+{
+  "case": "form-cancel",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1b5b3e3bd374c23f0325bd2e631c24becc0b9214:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "form-cancel",
+      "detail": "actual tool result carries the cancelled outcome",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-vTRTta\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with its exact JSON Render document. If the user      9:39 PM           cancels, do not retry; report the cancellation without calling other tools.                                                                                                                                                                                                                                                                                           ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 1.1s                                                                                                                                                                                                                              The form was cancelled. No further action was taken.                                                    9:39 PM                                                                                                                                 Worked for 19s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13458,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2f276c58d3b9483fac711df9b693f30a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8318b876-0f39-4f78-84bc-79ed31fc2021",
+            "thread_id": "0306e4f0-77d2-4688-b6d8-5d14fc6b5af9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2f276c58d3b9483fac711df9b693f30a",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8318b876-0f39-4f78-84bc-79ed31fc2021",
+            "thread_id": "0306e4f0-77d2-4688-b6d8-5d14fc6b5af9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:eb400aa615895ed8fc01c7853350eb55ce307824847f7c7a21d50cd9cedabf74",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"root\\\":\\\"root\\\",\\\"elements\\\":{\\\"root\\\":{\\\"type\\\":\\\"Card\\\",\\\"props\\\":{\\\"title\\\":\\\"Aster form\\\"},\\\"children\\\":[\\\"name\\\",\\\"amount\\\",\\\"ready\\\",\\\"submit\\\"]},\\\"name\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"type\\\":\\\"text\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}}},\\\"amount\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Amount\\\",\\\"type\\\":\\\"number\\\",\\\"min\\\":1,\\\"max\\\":5,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/amount\\\"}}},\\\"ready\\\":{\\\"type\\\":\\\"Checkbox\\\",\\\"props\\\":{\\\"label\\\":\\\"Ready\\\",\\\"required\\\":true,\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/ready\\\"}}},\\\"submit\\\":{\\\"type\\\":\\\"Button\\\",\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"}}},\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\",\\\"amount\\\":3,\\\"ready\\\":false}}}\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":611},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":611,\"projected_bytes\":611,\"original_estimated_tokens\":153,\"projected_estimated_tokens\":153,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"projected_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"repeat_key\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"content_ref\":\"inline:sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:777134080c293bb6c07f438b4272f08692cc3dd774d5c82097b1288fd0e460ce\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13739,
+        "has_text": false,
+        "tool": "ask_user_form"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_3799e173613c4611bbc920d6b8422570",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8318b876-0f39-4f78-84bc-79ed31fc2021",
+            "thread_id": "0306e4f0-77d2-4688-b6d8-5d14fc6b5af9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "ask_user_form"
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_3799e173613c4611bbc920d6b8422570",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8318b876-0f39-4f78-84bc-79ed31fc2021",
+            "thread_id": "0306e4f0-77d2-4688-b6d8-5d14fc6b5af9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:f0096f9e032bf04ed041302906734fabb39d1192d53e2abf8d8e785daf53c35d",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"form was cancelled by the user\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":30,\"projected_bytes\":30,\"original_estimated_tokens\":8,\"projected_estimated_tokens\":8,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"projected_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"repeat_key\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"content_ref\":\"inline:sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4a1878772b698d27256cceb613430578f7e4d0332b310919afa7902894ce7807\"}"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14024,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 13,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:5f7a689351451f2514a3a3e5512cb89a08fbbabdca03637821df65f48c0b60e6",
+          "sha256:04e8befa5aa5b63af70e9b8b99896cf74fbb76b8ab555db3ff3fd72706d424ee"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 12,
+          "digest": "7ac57cae0463a94ca720bdaf9920705f993100bb0b4e7b0329500e45ac5f7a78"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

@@ -1,0 +1,104 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-markdown-last-match",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13344,
+        "text": "# Viewer heading\n\n**RAW-07c93227-cea9-4281-b60f-f97028f9187e**\n\n- alpha\n- beta",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "e1062e5aa9c3f94f7108b2d47909c36571936d8e085ecf07718ef2c5512aec07",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13344",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DIctbq\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.      1:50 PM           # Viewer heading                                                                                                         …                                                                                                                                                                                                                                                                                                                                                                    ♦ Thought for 1.9s                                                                                                                                                                                                                              Viewer heading                                                                                          1:50 PM                                                                                                                                 RAW-07c93227-cea9-4281-b60f-f97028f9187e                                                                                                                                                                                                        • alpha                                                                                                                 • beta                                                                                                                                                                                                                                          Worked for 5.9s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the last real search match selects the terminal assistant answer even when Thinking adds a middle match; the actual Markdown viewer toggles into literal source",
+      "name": "markdown-last-match-raw",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DIctbq\\workspace                                                                        13K / 128K     ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮      │                                                                                                            [x] │      │  # Viewer heading                                                                                              │      │                                                                                                                │      │  **RAW-07c93227-cea9-4281-b60f-f97028f9187e**                                                                  │      │                                                                                                                │      │  - alpha                                                                                                       │      │  - beta                                                                                                        │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │    ┌ │                                                                                                                │ ┐  │ │                                                                                                                │ │  │ │                                                                                                                │ │  │ │                                                                                                                │ │  │ │                                                                                                                │ │  │ │                                                                                                                │ │  │ │                                                                                                                │ │  └ │                                                                                                                │ ┘    │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │      │                                                                                                                │     ╭│                                                                                                                │╮    │╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯│    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Esc:close  │  Enter:quote  │  /:search  │  f:filter  │  v:select  │  w:wrap  │  r:raw                                                                                                                                                         "
+    },
+    {
+      "detail": "formatting and raw toggles leave canonical assistant UTF-8 export bytes and backend facts unchanged",
+      "name": "markdown-last-match-exact-export",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-DIctbq\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.      1:50 PM           # Viewer heading                                                                                                                                                                                                                                **RAW-07c93227-cea9-4281-b60f-f97028f9187e**                                                                                                                                                                                                    - alpha                                                                                                                 - beta                                                                                                                                                                                                                                                                                                                                                                ♦ Thought for 1.9s                                                                                                                                                                                                                              Viewer heading                                                                                          1:50 PM                                                                                                                                 RAW-07c93227-cea9-4281-b60f-f97028f9187e                                                                                                                                                                                                        • alpha                                                                                                                 • beta                                                                                                                                                                                                                                          Worked for 5.9s                                                                                                                                                                                                                                 Copied to C:\\Windows\\Temp\\aster-kimi-DIctbq\\workspace\\raw-export.txt (78 chars, 6 lines)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-markdown-last-match",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13344,
+            "text": "# Viewer heading\n\n**RAW-07c93227-cea9-4281-b60f-f97028f9187e**\n\n- alpha\n- beta",
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "e1062e5aa9c3f94f7108b2d47909c36571936d8e085ecf07718ef2c5512aec07",
+              "seq": 6
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 7,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "aaf38b96-f1ff-4197-b5ec-2aa069911475"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

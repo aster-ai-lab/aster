@@ -1,0 +1,17 @@
+--- v46/serve_ds41.py
++++ v52/serve_ds41.py
+@@ -358,7 +358,13 @@
+         return json.loads(text, object_pairs_hook=pairs, parse_constant=reject_constant, parse_float=finite_float)
+     raw = body[m.end():].strip()
+     if raw.startswith(("{", "[")):
+-        args = load(raw)
++        decoder = json.JSONDecoder(object_pairs_hook=pairs, parse_constant=reject_constant, parse_float=finite_float)
++        args, end = decoder.raw_decode(raw)
++        # The native model also emits a complete JSON object followed by one
++        # DSML parameter terminator. The JSON is decoded intact; only this exact
++        # outer suffix is accepted. Strings, keys and values are never repaired.
++        if raw[end:].strip() not in ("", P_CLOSE):
++            raise ValueError("unsupported native JSON argument terminator")
+         if not isinstance(args, dict):
+             raise ValueError("JSON tool arguments must be one complete object")
+     else:

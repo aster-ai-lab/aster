@@ -245,11 +245,11 @@ pub(crate) fn plan_decision_definition(plan: &InferenceRoutingPlan) -> DecisionD
             levels: vec![
                 crate::inference::decision::DecisionLevel {
                     id: "simple".into(),
-                    criterion: "one direct step answers it".into(),
+                    criterion: "one direct response, lookup, translation, or explanation completes the request without planning or multi-step analysis".into(),
                 },
                 crate::inference::decision::DecisionLevel {
                     id: "complex".into(),
-                    criterion: "multi-step reasoning is required".into(),
+                    criterion: "multi-step reasoning, comparison, design, debugging, proof, or implementation is required".into(),
                 },
             ],
         },
@@ -433,6 +433,14 @@ pub(crate) fn build_decision_request(
     };
     let invalid =
         |message: &str| crate::inference::decision::DecisionError::Invalid(message.to_string());
+    // The decision observation bound covers the whole request, including
+    // leading system content that is intentionally absent from the rubric.
+    // Large contexts stay on primary rather than overflowing an economy model.
+    let observed = serde_json::to_vec(document)
+        .map_err(|_| invalid("decision observation could not be encoded"))?;
+    if observed.len() > crate::inference::decision::DECISION_REQUEST_LIMIT_BYTES {
+        return Err(invalid("decision observation exceeds the 64 KiB bound"));
+    }
     let empty = Vec::new();
     let messages = document
         .get("messages")
@@ -584,6 +592,7 @@ mod tests {
         InferenceRoutingPlan {
             mode: InferenceRoutingMode::SmartSaving,
             decision_model: Some("platform/decider".into()),
+            decision_protocol: Default::default(),
             economy_targets: Some(target_ids(economy)),
             primary_targets: Some(target_ids(primary)),
             simple_probability_threshold_bp: 8000,
@@ -729,6 +738,7 @@ mod tests {
         let plan = InferenceRoutingPlan {
             mode: InferenceRoutingMode::Branches,
             decision_model: Some("platform/decider".into()),
+            decision_protocol: Default::default(),
             economy_targets: None,
             primary_targets: Some(target_ids(&[2])),
             simple_probability_threshold_bp: 8000,
@@ -773,6 +783,7 @@ mod tests {
         let plan = InferenceRoutingPlan {
             mode: InferenceRoutingMode::FreeFirst,
             decision_model: None,
+            decision_protocol: Default::default(),
             economy_targets: None,
             primary_targets: None,
             simple_probability_threshold_bp: 8000,

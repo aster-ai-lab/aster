@@ -1,0 +1,102 @@
+{
+  "unix": 1792895666.9790795,
+  "exact_cpu_process_alive": false,
+  "build-result.json": {
+    "unix": 1792895623.0570755,
+    "phase": "compiled",
+    "runs": [
+      {
+        "label": "control",
+        "command": [
+          "nice",
+          "-n",
+          "19",
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-control.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-control.o",
+          "bytes": 535384,
+          "sha256": "4894588c1cd86d1207045f57c358dc5e23c1b61302d623a73ccdc82a6454dd22"
+        }
+      },
+      {
+        "label": "candidate",
+        "command": [
+          "nice",
+          "-n",
+          "19",
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+          "bytes": 538968,
+          "sha256": "8ab829c4157968935bb4f95b31b73ebd1b60c6fb3fa6e6db144c30fc496c3715"
+        }
+      }
+    ],
+    "gpu_executed": false,
+    "model_executed": false,
+    "speed_gain_claimed": false,
+    "current": "candidate",
+    "control_object_byte_equal": true,
+    "candidate_object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/generator-candidate.o",
+      "bytes": 538968,
+      "sha256": "8ab829c4157968935bb4f95b31b73ebd1b60c6fb3fa6e6db144c30fc496c3715"
+    },
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "finished_unix": 1792895650.514156
+  },
+  "control-compile.log": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/ds41_generate.cpp: In function \u2018int main(int, char**)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/ds41_generate.cpp:3332:113: warning: format \u2018%ld\u2019 expects argument of type \u2018long int\u2019, but argument 7 has type \u2018int\u2019 [-Wformat=]\n 3332 |             std::fprintf(stderr, \"DSpark totals: verify %.2f ms/pass draft %.2f ms/pass acc %.2f (%ld passes, %ld tokens)\\n\",\n      |                                                                                                               ~~^\n      |                                                                                                                 |\n      |                                                                                                                 long int\n      |                                                                                                               %d\n 3333 |                          sp_vms / sp_pass, sp_dms / sp_pass, (double) sp_acc / sp_pass, sp_pass, gen);\n      |                                                                                                  ~~~             \n      |                                                                                                  |\n      |                                                                                                  int\n",
+  "candidate-compile.log": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/ds41_generate.cpp: In function \u2018int main(int, char**)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134/ds41_generate.cpp:3363:113: warning: format \u2018%ld\u2019 expects argument of type \u2018long int\u2019, but argument 7 has type \u2018int\u2019 [-Wformat=]\n 3363 |             std::fprintf(stderr, \"DSpark totals: verify %.2f ms/pass draft %.2f ms/pass acc %.2f (%ld passes, %ld tokens)\\n\",\n      |                                                                                                               ~~^\n      |                                                                                                                 |\n      |                                                                                                                 long int\n      |                                                                                                               %d\n 3364 |                          sp_vms / sp_pass, sp_dms / sp_pass, (double) sp_acc / sp_pass, sp_pass, gen);\n      |                                                                                                  ~~~             \n      |                                                                                                  |\n      |                                                                                                  int\n",
+  "worker.log": ""
+}

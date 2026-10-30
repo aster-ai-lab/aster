@@ -1,0 +1,27 @@
+{
+  "unix": 1792891607.4004705,
+  "exact_cpu_process_alive": false,
+  "result": {
+    "schema": "aster-nsys-interactive-cpu-protocol-v1",
+    "session": "aster-h200-cpu-v115-2074",
+    "model_inference_performed": false,
+    "started_unix": 1792891571.5495536,
+    "launch": [
+      "/usr/local/cuda/bin/nsys",
+      "launch",
+      "--session-new=aster-h200-cpu-v115-2074",
+      "--trace=osrt",
+      "--wait=primary",
+      "--show-output=true",
+      "/usr/bin/python3",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/nsys-interactive-cpu-v115/application.py"
+    ],
+    "launch_waited_for_target": true,
+    "start_exit": 0,
+    "stop_exit": 0,
+    "launch_exit": 0,
+    "passed": true,
+    "completed_unix": 1792891574.4484692
+  },
+  "worker_log": "{\"passed\": true, \"session\": \"aster-h200-cpu-v115-2074\", \"model_inference_performed\": false}\n"
+}

@@ -1,0 +1,10 @@
+{
+  "path": "specs/015-official-power-gpu-deployment/tasks.md",
+  "sha256": "4714c3dbc77079118a02ae8e5f2980fe737a6423668164a20113dd3b9bdfd908",
+  "completed_tasks": [
+    "- [x] T012 [US1] Measure actual single-4090D prefill/decode/TTFT for the baseline and quality-preserving CPU/RAM-cache/PCIe candidates, retain exact runtime/profile receipts and resource observations, verify a real 1M-window workload and final official healthy deployment.",
+    "- [x] T013e Complete native single-GPU baseline and actual >=1M-input-token validation, then measure tuning improvements with retained exact upstream usage.",
+    "- [x] T013f Packed-KV physical GPU6 numeric round trip, 170 Rust / 18 bridge tests, exact-routing serving, bounded quality, six baseline/candidate prefill/decode/SSE-TTFT cohorts and resource receipts passed. Short-prompt generation median 26.25 token/s versus fresh BF16 5.4 (4.86x). Cold 1,000,123-input-token exact three-needle retrieval passed: 249.1 prefill token/s, 18.8 generation token/s; same full input through public gateway passed with full-prefix cache. Selected 24-thread/144-GiB/PCIe-0/FP4-KV/1M profile restored; final ten public WorkBuddy requests and official model/gateway/runtime health passed. Evidence: docs/evidence/deployment/2026-10-25-deepseek-exact-performance/OUTCOME.md and completion-audit.json."
+  ],
+  "scope_note": "Native bare-metal override honored; superseded Box tasks not marked complete."
+}

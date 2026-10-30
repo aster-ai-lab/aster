@@ -1,0 +1,8 @@
+test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse (test_site.SiteTest.test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse) ... ok
+test_stage_contains_only_public_allowlist_and_project_relative_homepage (test_site.SiteTest.test_stage_contains_only_public_allowlist_and_project_relative_homepage) ... ok
+test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404 (test_site.SiteTest.test_staged_assets_resolve_under_a_project_prefix_and_other_tenants_return_404) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 197.947s
+
+OK

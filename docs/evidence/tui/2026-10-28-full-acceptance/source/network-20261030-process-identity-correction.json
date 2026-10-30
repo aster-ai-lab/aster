@@ -1,0 +1,6 @@
+{
+  "previous_observation": "source/network-20261030-windows-pending-shell-observation.json",
+  "correction": "VCTIP.EXE PID 34784 started at 2026-10-30T13:30:34+08:00, before this ACP started at about 14:09; the matching parent PID was reused, so this process is not evidence of a child of this ACP and is not attributed to the shell hang",
+  "process_modified_or_terminated": false,
+  "product_failure_still_observed": "actual download succeeds; bash prepared has no result through the original 420s deadline; precise blocking stage remains unconfirmed"
+}

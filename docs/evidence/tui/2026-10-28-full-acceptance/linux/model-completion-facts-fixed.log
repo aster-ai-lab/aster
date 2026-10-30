@@ -1,0 +1,36 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling a3s-code-core v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 40s
+     Running unittests src/lib.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/a3s_code_core-840c28faad4accf0)
+
+running 13 tests
+test agent_api::conversation_runtime::typed_interruption_tests::budget_denial_tests::denied_original_budget_stops_once_and_same_session_accepts_reallocated_budget ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::budget_guard_denial_fails_without_cancelling_or_calling_provider ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_with_attachments_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_with_attachments_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::late_token_cancel_cannot_reverse_the_original_sealed_success ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancelled_success_uses_owned_token_after_active_slot_is_cleared ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::model_completion_facts::cancelled_partial_model_has_no_completion_fact_and_next_turn_completes_once ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::ordinary_interruption_words_complete_across_conversation_surfaces ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::provider_error_with_interruption_word_is_failed_without_cancellation ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::public_cancel_keeps_cancellation_and_original_cleanup_error_event ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::tool_budget_forced_stop_remains_distinct_from_host_cancellation ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 5430 filtered out; finished in 3.30s
+

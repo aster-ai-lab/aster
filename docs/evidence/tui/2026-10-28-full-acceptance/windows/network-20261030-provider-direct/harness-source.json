@@ -1,0 +1,9 @@
+{
+  "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+  "runtime_pair_rebuilt": false,
+  "harness_source_digest": "103b1638d3775ff58d7a9f08cfc3fa6e3fd080b1",
+  "harness_snapshot": "source/network-20261030-provider-direct-source.json",
+  "provider_direct_fixture_profile": true,
+  "original_pair_manifest_sha256": "e05e36fee20a19f0ddd34e1c739b69d701d01b57a35326f1faed5ac28f4a9a6f",
+  "test_binary_sha256": "a639e9011120154d33f1e5f98e2365f9fb647571ead9e52e60472dc121ccfaa2"
+}

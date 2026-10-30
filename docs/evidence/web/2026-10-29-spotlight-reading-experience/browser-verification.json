@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "browser": "156.0.8078.73",
+  "viewports": [
+    [
+      1440,
+      1080
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "name": "desktop Spotlight, stable canvas, real token transitions, copy, expansion, rapid selection",
+      "passed": true,
+      "tokenMotions": 63,
+      "canvasHeight": 440
+    },
+    {
+      "name": "all seven walks and 38 original Git excerpts",
+      "passed": true,
+      "stations": 38
+    },
+    {
+      "name": "diagram node explanations remain interactive in expanded view",
+      "passed": true
+    },
+    {
+      "name": "mobile accordion, wrapped prompt text and independently scrollable diagrams",
+      "passed": true,
+      "mobileCode": {
+        "width": 314,
+        "content": 314
+      }
+    },
+    {
+      "name": "reduced motion has no code transition and no diagram playback",
+      "passed": true
+    },
+    {
+      "name": "JavaScript disabled retains all ten prompt explanations and code blocks",
+      "passed": true
+    }
+  ]
+}

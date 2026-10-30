@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates' (36276) panicked at crates\code\acp\src\office_file_tests.rs:204:9:
+write=true allow=true, send=Err(Session("completion gate: workspace mutation d99f40312c711b71303c0db6c9f1f8f98c2ad3ea5c949643bc745741018cc93b (governed-true-true.xlsx) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f governed-true-true.xlsx` with the check that proves the change, for example `test -f governed-true-true.xlsx && <test command>`.")), file_exists=true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates ... FAILED
+
+failures:
+
+failures:
+    office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 1.76s
+

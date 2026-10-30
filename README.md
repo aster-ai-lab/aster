@@ -9,7 +9,7 @@
 
   <p><strong>从模型提案，到可验证的任务交付。</strong></p>
   <p>Rust 编写的智能体执行内核与终端编程工具</p>
-  <p>受控执行 · 事实日志 · 验证闭环 · Rust 嵌入</p>
+  <p>受控执行 · 事实日志 · 验证依据 · Rust 嵌入</p>
 
   <p>
     <a href="https://aster-ai-lab.github.io/aster/">下载官网</a> ·
@@ -44,25 +44,40 @@ Aster 连接你配置的模型，在真实项目中读取文件、修改代码�
 | 执行过什么、结果如何？ | 模型、工具和控制事件写入同一份事实日志。 |
 | 修改是否满足完成条件？ | 内核检查对应本次修改的验证报告，或宿主显式豁免，再判定能否完成。 |
 
+## 先看一张图
+
+你提出目标，界面接收输入。
+ACP 转接协议，Core 调用模型与受控工具。
+原始记录保留执行依据，完成检查决定何时结束。
+自己的 Rust 应用也支持直接接入 Core。
+
+[![Aster 职责总览：用户、界面、ACP、Core、模型与工作区](assets/readme/aster-overview.svg)](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/)
+
+点击图示进入[原理漫游](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/)。
+文档图示使用 [Pele](https://pele.run/) 渲染，支持分步聚焦和完整视图。
+源码漫游使用 Code Hike 高亮本版真实代码，并保留行号。
+GitHub README 显示同一份图示数据生成的静态版本。
+
 ## 快速开始
 
 ### 1. 下载 CLI
 
-从 [最新发布页](https://github.com/aster-ai-lab/aster/releases/latest)下载对应系统的归档，或使用安装脚本自动发现最新版本并校验 SHA-256：
+从 [官网最新安装包](https://aster-ai-lab.github.io/aster/#download)下载对应系统的归档。安装脚本默认发现最新 CLI 版本，也支持指定版本并校验 SHA-256。
+下面的可复现示例安装 CLI v0.1.4：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
+curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin" --version 0.1.4
 ```
 
-Windows 使用 [install.ps1](https://github.com/aster-ai-lab/aster/blob/main/scripts/install.ps1)。
+Windows 使用 [install.ps1](https://github.com/aster-ai-lab/aster/blob/main/scripts/install.ps1)，并传入 `-Version 0.1.4`。
 
 > [!IMPORTANT]
-> 发布包由 `aster` 与 `a3s-code-acp` 组成，请始终将两个程序放在同一目录并成对更新；Windows 对应两个 `.exe` 文件。CLI 默认启动同目录的 ACP 伴随进程，需要指定其他位置时可设置 `A3S_ACP_AGENT_BIN`。
+> 发布包由 `aster` 与 `a3s-code-acp` 组成，请始终将两个程序放在同一目录并成对更新。Windows 对应两个 `.exe` 文件。CLI 默认启动同目录的 ACP 伴随进程，需要指定其他位置时可设置 `A3S_ACP_AGENT_BIN`。
 
 Linux 归档分为两个 glibc 世代：
 
 - `linux`：需要 glibc 2.32 及以上。
-- `kylin`：面向 glibc 2.31 的 x86_64 构建，适用于银河麒麟 V10 SP1、Ubuntu 20.04、Debian 11 等较旧系统。
+- `kylin`：面向 glibc 2.31 的 x86_64 构建。示例系统：银河麒麟 V10 SP1、Ubuntu 20.04、Debian 11。
 
 安装脚本会按本机 glibc 自动选择，`aster update` 使用同一规则。当前发布为未签名构建。
 
@@ -81,7 +96,7 @@ providers "openai" {
 }
 ```
 
-密钥通过环境变量提供。更多配置见 [ACL 示例](crates/code/agent.example.acl)；
+密钥通过环境变量提供。更多配置见 [ACL 示例](crates/code/agent.example.acl)。
 `A3S_CONFIG` 可以指定其他配置文件，终端内的 `/config` 用于管理模型配置。
 
 ### 3. 启动项目
@@ -122,25 +137,27 @@ aster update
 
 ### 卸载
 
-删除 `aster` 与 `a3s-code-acp` 两个程序即可；`~/.a3s` 中的本地配置与数据可保留。
+删除 `aster` 与 `a3s-code-acp` 两个程序即可。`~/.a3s` 中的本地配置与数据可保留。
 
 ## 运行机制
 
 Harness 负责把模型调用接入一个受控的任务过程。
-Aster 的 **Meta Harness** 允许 Rust 宿主组合系统指令、工具、预算、上下文压缩和调度组件，
-同时由内核维持权限与完成条件。
+Aster 的 **Meta Harness** 支持组合系统指令、工具、预算、压缩和调度组件。
+Rust 宿主选择组合，内核维持权限与完成条件。
 
 ### 受控执行循环
 
-模型提出下一步，权限策略决定工具能否执行，结果写入同一份事实日志，
-再由日志驱动后续上下文与动作。需要确认或补充信息时，运行等待对应回答；计时器不能代替用户授权。
+模型提出下一步，权限策略决定工具能否执行。
+结果进入同一份事实日志，后续动作依据日志推进。
+需要确认或补充信息时，运行等待对应回答。
+计时器不能代替用户授权。
 
 ![Aster 受控执行循环：模型提案、权限判定、工具执行、事实日志和完成门禁](assets/readme/task-control-loop.svg)
 
 ### Meta Harness 可组合性
 
 默认装配列表为 `system + tools + budget + compact + infer`。
-列表顺序是装配顺序，不是固定调用顺序；运行时根据日志状态和动作 key 选择下一步。
+列表顺序是装配顺序，不是固定调用顺序。运行时根据日志状态和动作 key 选择下一步。
 宿主可以注册 Rust 组件或提供完整组件树，但不能关闭 Core 的权限与完成门禁。
 
 ![Aster Meta Harness 可组合拆解图：组件插槽、爆炸分层、Moore 组件、组合配方和单一事实日志](assets/readme/meta-harness-assembly.svg)
@@ -148,19 +165,32 @@ Aster 的 **Meta Harness** 允许 Rust 宿主组合系统指令、工具、预�
 ### 扩展入口
 
 提示槽、上下文、Skills、工具、Hooks 和宿主组件承担不同职责，并通过原有会话进入执行过程。
-Skills 提供操作说明，MCP 和动态工具提供实际调用能力；任何扩展都不能自行放宽权限。
+Skills 提供操作说明，MCP 和动态工具提供实际调用能力。任何扩展都不能自行放宽权限。
 
 ![Aster 扩展入口：提示、上下文、技能、工具、Hook 和宿主组件的信任边界](assets/readme/extension-surfaces.svg)
 
 ### 验证、资源收尾与恢复
 
-发生修改后，完成判定需要与本次修改摘要对应的验证证据或宿主显式豁免，
-并等待所属 Run 的资源收尾。事实重放用于恢复控制状态；结果不明的外部副作用仍需单独核实，不能盲目重试。
+发生修改后，完成判定核对当前摘要的验证证据或明确豁免。
+宿主还要等待所属 Run 的资源收尾。
+事实重放恢复控制状态。
+结果不明的外部副作用需要单独核实，再决定是否重试。
 
 ![Aster 验证与恢复：修改摘要、完成门禁、资源寿命、会话恢复和未决外部操作](assets/readme/verification-recovery.svg)
 
+### 长期目标如何分轮完成
+
+目标保存原始要求与计划。
+一次切片执行一个原始 Run。
+下一轮先检查等待、预算和期限。
+全部步骤与效果结清后，目标才支持完成。
+
+[![长期目标：定义、接受计划、tick、执行切片、接受证据与全局完成](assets/readme/durable-goal.svg)](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/long-running/)
+
 进一步阅读：
 
+- [系统提示词源码漫游](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/system-prompts/)：默认文本、宿主插槽与执行约束。
+- [ACP 协议原理](https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/internals/)：请求、事件、确认与无人值守。
 - [Meta Harness](crates/code/manual/META_HARNESS.md)：组件组合与 Rust 嵌入接口。
 - [持续工程与目标](crates/code/manual/DURABLE_ENGINEERING.md)：长期目标、预算和等待条件。
 - [持久记忆](crates/code/manual/DURABLE_MEMORY.md)：记忆隔离、修订与激活边界。
@@ -168,19 +198,21 @@ Skills 提供操作说明，MCP 和动态工具提供实际调用能力；任何
 ## 当前限制
 
 - 需要自行配置可用的模型服务及相应凭据。
-- macOS 原生 Shell 工具目前仍会因 `native_process_lifetime_unqualified` 被拒绝；依赖 Shell 的完整编程流程尚未通过平台资格验证。详见[验证记录](docs/validation.md)。
+- macOS 原生 Shell 工具目前仍会因 `native_process_lifetime_unqualified` 被拒绝。依赖 Shell 的完整编程流程尚未通过平台资格验证。详见[验证记录](docs/validation.md)。
 - 指定项目目录不等于隔离所有本机进程。实际执行边界由宿主策略和沙箱共同决定。
-- 本页的运行机制说明对应当前源码；已发布版本的能力以对应发布说明为准。
+- 本页的运行机制说明对应当前源码。已发布版本的能力以对应发布说明为准。
 
 ## 参与开发
 
 源码构建需要固定 Rust 工具链及仓库内私有组件的读取权限。
 准备方式、构建约定和检查要求见 [仓库约定](AGENTS.md)与[开发规范](docs/development-standards.md)。
 
-桌面开发运行 `just dev`（Aster），保留进程即可使用前端热更新。
-原生开发缓存位于 `target/studio/aster`，与普通 Cargo 检查、测试的构建锁分开。
-首次使用该目录需要建立缓存；显式指定 `CARGO_TARGET_DIR` 时仍使用指定目录。
-开发构建会自动使用 PATH 中已有的 `sccache`，并保留显式设置的 `RUSTC_WRAPPER`；设置为空可停用。
+桌面开发运行 `just dev`（Aster）或 `just dev:toyou`（ToWork），保留进程即可使用前端热更新。
+原生开发缓存分别位于 `target/studio/aster` 和 `target/studio/toyou`，与普通 Cargo 检查、测试的构建锁分开。
+首次使用各自的目录需要建立缓存。显式指定 `CARGO_TARGET_DIR` 时仍使用指定目录。
+开发构建会自动使用 PATH 中已有的 `sccache`，并保留显式设置的 `RUSTC_WRAPPER`。设置为空可停用。
+
+已完成对应租户的原生构建、且开发服务器仍在运行时，可用 `just fork toyou 4319` 打开隔离副窗口而不执行 Cargo。
 Rust 修改仍需重新构建。性能测量与限制见[构建和启动验收记录](docs/evidence/desktop/2026-10-26-build-speed/OUTCOME.md)。
 
 | 修改方向 | 源码入口 |

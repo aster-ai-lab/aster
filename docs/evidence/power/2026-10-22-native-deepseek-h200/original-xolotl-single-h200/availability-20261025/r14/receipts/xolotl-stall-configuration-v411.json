@@ -1,0 +1,50 @@
+{
+  "unix": 1792939058.5133233,
+  "api_process": {
+    "pid": 314,
+    "start_ticks": 736838842,
+    "uid": 10250
+  },
+  "native_process": {
+    "pid": 316,
+    "start_ticks": 736838889,
+    "parent_pid": 314,
+    "namespace": "C14 formal pod"
+  },
+  "settings": {
+    "engine_silence_s": 300,
+    "api_monitor": false,
+    "parallel": 2,
+    "idle_unload_s": 0,
+    "max_tokens": null,
+    "max_context": null
+  },
+  "selected_env": {
+    "STRATA_TEXT_LOG": "0"
+  },
+  "watchdog_dependency": {
+    "psutil_available": true
+  },
+  "native_now": {
+    "state": "S",
+    "cpu_ticks": 140563,
+    "stdin_pipe": "pipe:[731143402]",
+    "stdout_pipe": "pipe:[731143403]",
+    "io": {
+      "rchar": 155842676954,
+      "wchar": 164440,
+      "syscr": 22048865,
+      "syscw": 13580,
+      "read_bytes": 126615552,
+      "write_bytes": 0,
+      "cancelled_write_bytes": 0
+    },
+    "main_wait": "futex_wait_queue_me"
+  },
+  "api_thread_waits": {
+    "do_select": 1,
+    "pipe_read": 1,
+    "do_poll.constprop.0": 2,
+    "futex_wait_queue_me": 1
+  }
+}

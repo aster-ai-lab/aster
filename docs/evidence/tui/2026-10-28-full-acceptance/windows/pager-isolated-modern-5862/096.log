@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'git_info::tests::compute_cwd_git_info_standalone_marker_from_nested_cwd' (53224) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\git_info.rs:575:9:
+assertion `left == right` failed
+  left: Some("~/AppData\\Local\\Temp\\.tmpFo1CBt\\repo")
+ right: Some("C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpFo1CBt\\repo")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test git_info::tests::compute_cwd_git_info_standalone_marker_from_nested_cwd ... FAILED
+
+failures:
+
+failures:
+    git_info::tests::compute_cwd_git_info_standalone_marker_from_nested_cwd
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.29s
+

@@ -1,0 +1,18 @@
+
+running 1 test
+
+thread 'tools::builtin::read::line_endings_tests::batch_read_keeps_each_files_ending_with_its_own_segment' (52376) panicked at crates\code\core\src\tools\builtin\read\line_endings_tests.rs:79:5:
+=== a.txt ===
+     1	alpha
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tools::builtin::read::line_endings_tests::batch_read_keeps_each_files_ending_with_its_own_segment ... FAILED
+
+failures:
+
+failures:
+    tools::builtin::read::line_endings_tests::batch_read_keeps_each_files_ending_with_its_own_segment
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5307 filtered out; finished in 0.01s
+

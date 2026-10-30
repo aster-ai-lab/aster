@@ -1,0 +1,23 @@
+{
+  "unix": 1792890275.9264405,
+  "files": [
+    {
+      "profile": "off",
+      "bytes": 13416,
+      "sha256": "5c4d62601a7e66956eb25673332ab8006c64c1fec325a6e0176ad5933cd61f46"
+    },
+    {
+      "profile": "on",
+      "bytes": 13678,
+      "sha256": "277126846dd177ede651fac4d78b1da3e04de3574ec03e2020b892aa9860b727"
+    },
+    {
+      "profile": "off_repeat",
+      "bytes": 13350,
+      "sha256": "db5b2c1a1c3b71d419106b7d6995c12bde05919b60449b1b05b485b1053c672f"
+    }
+  ],
+  "credential_negative_controls": 1,
+  "credential_occurrences": 0,
+  "only_public_fixture_requests": true
+}

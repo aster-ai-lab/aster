@@ -1,0 +1,18 @@
+{
+  "root": "/code/aster/.wt-deepseek-dspark-main-20261025",
+  "stage": "/data/deepseek-v41-xq-1017/neural-auto-queue-annotation-fixed-release",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "a3s-gateway",
+    "--bin",
+    "a3s-gateway"
+  ]
+}

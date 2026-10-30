@@ -1,0 +1,38 @@
+--- v11/ds41_generate.cpp
++++ v13/ds41_generate.cpp
+@@ -395,6 +395,10 @@
+ }  // namespace
+ 
+ int main(int argc, char ** argv) {
++    bool prefill_qos = false;
++    if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_QOS"), prefill_qos)) {
++        std::fprintf(stderr, "ASTER_XQ_PREFILL_QOS must be 0 or 1\n"); return 2;
++    }
+     if (!std::getenv("DS41_GGML_DEBUG"))
+         ggml_log_set([](ggml_log_level lv, const char * text, void *) { if (lv != GGML_LOG_LEVEL_DEBUG) std::fputs(text, stderr); }, nullptr);
+     Args a;
+@@ -1283,6 +1287,13 @@
+             if (PB > 1 && n - c0 >= 2) {
+                 // ---- layer-major: up to B tokens of every layer, the experts run once per layer over the whole batch
+                 int B = std::min(pb_cap, n - c0);
++                if (prefill_qos) B = aster_prefill::initial_width(B, c0, n);
++                // Poll control before allocating columns. A waiting short request
++                // needs only the exact replay floor, rather than another full batch.
++                if (feed_yield && c0 + B < n) {
++                    const int cap = prefill_qos ? aster_prefill::yield_width(B, c0, SB, enc_skip ? ER : 0) : B;
++                    if (feed_yield(c0, cap)) { B = cap; yield_here = true; }
++                }
+                 // The batch must FIT: its state columns (~0.31 MiB a column) and its graph (~0.17 MiB a column,
+                 // 8192 -> 1424 MiB) come out of whatever is left after everything else sharing the card (a
+                 // desktop's STT server, DSpark's 2.9 GB, the dense half).  A batch that does not fit is retried at
+@@ -1330,7 +1341,9 @@
+                 // enc-skip: columns whose global position is before `pos0 + n - ER` are phase A (layers past layer 20
+                 // are never read for them), rounded DOWN to a sub-batch boundary so a straddling sub-batch still runs
+                 // the full path (more work, never wrong); the last sub-batches holding the final token are always full.
+-                if (feed_yield && c0 + B < n) yield_here = feed_yield(c0, B);
++                // An allocation fallback below the replay floor cannot publish a
++                // partial prefix; finish the read and release the reservation normally.
++                if (yield_here && enc_skip && c0 > 0 && B < ER) yield_here = false;
+                 const int n_cut = yield_here ? c0 + B : n;   // (the read's end, as far as enc-skip is concerned)
+                 int cut = 0;
+                 if (enc_skip) {

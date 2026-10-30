@@ -1,0 +1,33 @@
+{
+  "unix": 1792893288.9398403,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-critical-path-v125",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "binary_sha256": "9a684b2442d4b648fff6a73024de5b7bab096657fe45897bf036c7e216895bbf",
+  "credentials_copied": false,
+  "api_started": false,
+  "diagnostic_only": true,
+  "formal_service_unchanged": true,
+  "context_tokens": 1048576,
+  "files": [
+    {
+      "file": "worker.py",
+      "bytes": 11928,
+      "sha256": "1c53f14e3c69ce8de8c0dae18b7b83fbe372daeaff4056ac1d69725c62d99fa3"
+    },
+    {
+      "file": "plan.json",
+      "bytes": 6986,
+      "sha256": "0d1bc62a112db708790cb838b900b8673a79a9d2258d827c0f6954566777d0ba"
+    }
+  ],
+  "process": {
+    "pid": 3279,
+    "start_ticks": 712257396,
+    "uid": 10250,
+    "unix": 1792893302.9696407,
+    "budget_seconds": 1200,
+    "namespace": "optimization pod"
+  }
+}

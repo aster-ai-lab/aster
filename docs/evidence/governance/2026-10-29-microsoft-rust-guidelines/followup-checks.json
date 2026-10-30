@@ -1,0 +1,77 @@
+[
+  {
+    "name": "workspace-dependencies-isolated-utf8",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+      "-B",
+      "-X",
+      "utf8",
+      "tests/workspace_dependencies.py",
+      "WorkspaceDependenciesTest.test_office_kernel_rebuilds_from_the_workspace"
+    ],
+    "exit_code": 0,
+    "tail": [
+      ".",
+      "----------------------------------------------------------------------",
+      "Ran 1 test in 0.001s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "name": "workspace-dependencies-utf8",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+      "-B",
+      "-X",
+      "utf8",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 0,
+    "tail": [
+      ".warning: unused variable: `path`",
+      "  --> D:\\code\\aster\\apps\\studio\\src-tauri\\build.rs:75:11",
+      "   |",
+      "75 | fn unlock(path: &Path) {",
+      "   |           ^^^^ help: if this is intentional, prefix it with an underscore: `_path`",
+      "   |",
+      "   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default",
+      "",
+      "warning: 1 warning emitted",
+      "",
+      "..",
+      "----------------------------------------------------------------------",
+      "Ran 6 tests in 9.828s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "name": "governance-isolated",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+      "-B",
+      "-X",
+      "utf8",
+      "tests/governance_regime.py",
+      "GovernanceRegimeTest.test_obligation_regressions_are_rejected"
+    ],
+    "exit_code": 1,
+    "tail": [
+      "F",
+      "======================================================================",
+      "FAIL: test_obligation_regressions_are_rejected (__main__.GovernanceRegimeTest.test_obligation_regressions_are_rejected)",
+      "----------------------------------------------------------------------",
+      "Traceback (most recent call last):",
+      "  File \"D:\\code\\aster\\tests\\governance_regime.py\", line 140, in test_obligation_regressions_are_rejected",
+      "    with self.assertRaises(RegimeError) as caught:",
+      "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "AssertionError: RegimeError not raised",
+      "",
+      "----------------------------------------------------------------------",
+      "Ran 1 test in 0.001s",
+      "",
+      "FAILED (failures=1)"
+    ]
+  }
+]

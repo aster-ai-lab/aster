@@ -1,0 +1,540 @@
+{
+  "case": "ls-search-contracts",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27105",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ls exactly once with path='中文 目录' and limit=2. Reply with the exact returned directory       3:46 PM           listing. Do not call any other tool or modify files.                                                                                                                                                                                                                                                                                                                  ♦ Listed 1 dir                                                                                                                                                                                                                                  Directory: \\\\?\\C:\\Windows\\Temp\\aster-kimi-V7XTw2\\workspace\\中文 目录                                    3:47 PM                                                                                                                                 dir          0B  00-subdirectory/ file        64B  01-first.txt                                                                                                                                                                                 2 of 4 entries More entries available; continue with cursor=2                                                                                                                                                                                   Worked for 17s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "ls-bounded-order",
+      "detail": "one actual ls call returns the directory before the first file and omits entries beyond limit=2",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ls exactly once with path='中文 目录' and limit=2. Reply with the exact returned directory       3:46 PM           listing. Do not call any other tool or modify files.                                                                                                                                                                                                                                                                                                                  ♦ Listed 1 dir                                                                                                                                                                                                                                  Directory: \\\\?\\C:\\Windows\\Temp\\aster-kimi-V7XTw2\\workspace\\中文 目录                                    3:47 PM                                                                                                                                 dir          0B  00-subdirectory/ file        64B  01-first.txt                                                                                                                                                                                 2 of 4 entries More entries available; continue with cursor=2                                                                                                                                                                                   Worked for 17s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=27782",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录', context=1 and     3:47 PM           limit=1. Reply with the exact match and its following context line. Do not call any other tool or                       modify files.                                                                                                                                                                                                                                                                                                                                                         ♦ Searched 1 pattern · 1 failed                                                                                                                                                                                                                 Unable to retrieve the match. The search tool returned:                                                 3:47 PM                                                                                                                                 non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or                █     'count'                                                                                                           █                                                                                                                       █     Worked for 27s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "search-unsupported-combination",
+      "detail": "the original content-plus-pagination request is explicitly refused according to the published search contract",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录', context=1 and     3:47 PM           limit=1. Reply with the exact match and its following context line. Do not call any other tool or                       modify files.                                                                                                                                                                                                                                                                                                                                                         ♦ Searched 1 pattern · 1 failed                                                                                                                                                                                                                 Unable to retrieve the match. The search tool returned:                                                 3:47 PM                                                                                                                                 non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or                █     'count'                                                                                                           █                                                                                                                       █     Worked for 27s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=28472",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录' and context=1.     3:47 PM           Omit limit and cursor. Reply with both matches and their following context lines. Do not call any                       other tool or modify files.                                                                                                                                                                                                                                                                                                                                           ♦ Searched 1 pattern                                                                                                                                                                                                                            │中文 目录/01-first.txt:1: SEARCH-ANCHOR                                                                3:48 PM          中文 目录/01-first.txt:2: SEARCH-PROOF-3966f468-5740-4d45-8b96-0ccf43b114de                                            │中文 目录/02-second.txt:1: SEARCH-ANCHOR                                                                                中文 目录/02-second.txt:2: LATER-PROOF-cf726648-b3cd-47c9-9730-1928026f7918                                                                                                                                                                    Worked for 1m5s                                                                                                                                                                                                                                                                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "search-context",
+      "detail": "one scoped content search returns both unknown context tokens and excludes outside content",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录' and context=1.     3:47 PM           Omit limit and cursor. Reply with both matches and their following context lines. Do not call any                       other tool or modify files.                                                                                                                                                                                                                                                                                                                                           ♦ Searched 1 pattern                                                                                                                                                                                                                            │中文 目录/01-first.txt:1: SEARCH-ANCHOR                                                                3:48 PM          中文 目录/01-first.txt:2: SEARCH-PROOF-3966f468-5740-4d45-8b96-0ccf43b114de                                            │中文 目录/02-second.txt:1: SEARCH-ANCHOR                                                                                中文 目录/02-second.txt:2: LATER-PROOF-cf726648-b3cd-47c9-9730-1928026f7918                                                                                                                                                                    Worked for 1m5s                                                                                                                                                                                                                                                                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=29479",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录',                   3:48 PM           output_mode='files_with_matches' and limit=1. Reply with the exact returned page. Do not call any                       other tool or modify files.                                                                                                                                                                                                                                                                                                                                           ♦ Searched 1 pattern                                                                                                                                                                                                                            中文 目录/01-first.txt                                                                                  3:49 PM                                                                                                                                 1 of 2 matching file(s) shown More files available; continue with cursor=1                                                                                                                                                                      Worked for 27s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "search-bounded-page",
+      "detail": "files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='SEARCH-ANCHOR', path='中文 目录',                   3:48 PM           output_mode='files_with_matches' and limit=1. Reply with the exact returned page. Do not call any                       other tool or modify files.                                                                                                                                                                                                                                                                                                                                           ♦ Searched 1 pattern                                                                                                                                                                                                                            中文 目录/01-first.txt                                                                                  3:49 PM                                                                                                                                 1 of 2 matching file(s) shown More files available; continue with cursor=1                                                                                                                                                                      Worked for 27s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=30117",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        15K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268',     3:49 PM           path='中文 目录', context=0 and limit=1. Report its actual no-match result. Do not retry, call                          other tools or modify files.                                                                                                                                                                                                                                                                                                                                          ♦ Searched 1 pattern · 1 failed                                                                                                                                                                                                                 No no-match result was returned. The tool rejected the request with exit code 1:                        3:49 PM                                                                                                                                 non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or                      'count'                                                                                                                                                                                                                                         Worked for 22s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=30797",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        15K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268',     3:49 PM           path='中文 目录' and context=0. Omit limit and cursor. Report its actual no-match result. Do not                        retry, call other tools or modify files.                                                                                                                                                                                                                                                                                                                              ♦ Searched 1 pattern                                                                                                                                                                                                                            No matches found for pattern: NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268                             3:50 PM                                                                                                                                 Worked for 29s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "search-no-match",
+      "detail": "the actual scoped no-match receipt succeeds without returning fixture contents or changing their bytes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-V7XTw2\\workspace                                                                        15K / 128K                                                                                                                                                                                                                                                       > Call search exactly once with mode='grep', query='NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268',     3:49 PM           path='中文 目录' and context=0. Omit limit and cursor. Report its actual no-match result. Do not                        retry, call other tools or modify files.                                                                                                                                                                                                                                                                                                                              ♦ Searched 1 pattern                                                                                                                                                                                                                            No matches found for pattern: NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268                             3:50 PM                                                                                                                                 Worked for 29s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13457,
+        "has_text": false,
+        "tool": "ls"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_e76eebdcba8f4a14b7a2fedd2e8bd158",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ca615c0e-7db9-49cd-a401-ff1cc1477be3",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "ls"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_e76eebdcba8f4a14b7a2fedd2e8bd158",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ca615c0e-7db9-49cd-a401-ff1cc1477be3",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:043fc836d4da0ffce4b63bb79fecaf71de9e452643275b6f83837650732f38a4",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Directory: \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-V7XTw2\\\\workspace\\\\中文 目录\\n\\ndir          0B  00-subdirectory/\\nfile        64B  01-first.txt\\n\\n2 of 4 entries\\nMore entries available; continue with cursor=2\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"page\":{\"offset\":0,\"requested_limit\":2,\"applied_limit\":2,\"returned_items\":2,\"total_items\":4,\"next_cursor\":\"2\",\"truncated\":true,\"limit_clamped\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":201,\"projected_bytes\":201,\"original_estimated_tokens\":51,\"projected_estimated_tokens\":51,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d4f7f942ac2b24a9c41990526ec27595b599baddf5e19f9bac7b267c4ac56bda\",\"projected_digest\":\"sha256:d4f7f942ac2b24a9c41990526ec27595b599baddf5e19f9bac7b267c4ac56bda\",\"repeat_key\":\"sha256:d4f7f942ac2b24a9c41990526ec27595b599baddf5e19f9bac7b267c4ac56bda\",\"content_ref\":\"inline:sha256:d4f7f942ac2b24a9c41990526ec27595b599baddf5e19f9bac7b267c4ac56bda\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:765ea8cb52b5646e4f29bfce7109e722d6071ea603e4216995bd4d5a6b272c57\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13648,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:97aa277d158cdc255f4372001d2080f8247bab1605b496cab7167ea4c4433396"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "420ca52ae31b99cf1e3f2ef177bcab411d0c4e57c4eab23fb0cd027e244d6c72"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13795,
+        "has_text": false,
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_8e1eb70c4cc64da8b8e33540810300e0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-29ac45bd-12f5-4205-a3a8-8ebd9e8d3359",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_8e1eb70c4cc64da8b8e33540810300e0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-29ac45bd-12f5-4205-a3a8-8ebd9e8d3359",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:cfe172b7e0e97b2ee60f5d2e66689953e00fa3cfea873e9c58ea9f189a6af7e9",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or 'count'\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":106,\"projected_bytes\":106,\"original_estimated_tokens\":27,\"projected_estimated_tokens\":27,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"projected_digest\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"repeat_key\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"content_ref\":\"inline:sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:37a7ba9af2daea3ca959c3c302a5442738e3960c945e82589390e17cb1723c8c\"}"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13987,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 17,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:e280d67c28cc0e26289cc06e2cc6d9d563138ce72bdf8282d318775200961264"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 16,
+          "digest": "c90f6fdedb7ef9c0c93e012621b5e8cac4a96a021e4442b0d9c2f6164a0d230e"
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14107,
+        "has_text": false,
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 21,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 3,
+          "cycle": 0,
+          "tool_call_id": "call_b888be6debe447bcb47935ff10d0851d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-d7b2cda5-2297-4fd0-9431-e49585212f13",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 22,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 3,
+          "cycle": 0,
+          "tool_call_id": "call_b888be6debe447bcb47935ff10d0851d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-d7b2cda5-2297-4fd0-9431-e49585212f13",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:935c086b8db39b7f0db4b75e03ba9ee14431cd0ec4a964b7822e9558d98e6182",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\">中文 目录/01-first.txt:1: SEARCH-ANCHOR\\n 中文 目录/01-first.txt:2: SEARCH-PROOF-3966f468-5740-4d45-8b96-0ccf43b114de\\n--\\n>中文 目录/02-second.txt:1: SEARCH-ANCHOR\\n 中文 目录/02-second.txt:2: LATER-PROOF-cf726648-b3cd-47c9-9730-1928026f7918\\n--\\n\\n2 match(es) in 2 file(s)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"中文 目录/01-first.txt\",\"中文 目录/02-second.txt\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":284,\"projected_bytes\":284,\"original_estimated_tokens\":71,\"projected_estimated_tokens\":71,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:acf12f880f2b965539cb89eb3d6a28d14e712e7fa7e5000291b56eb3cfe58602\",\"projected_digest\":\"sha256:acf12f880f2b965539cb89eb3d6a28d14e712e7fa7e5000291b56eb3cfe58602\",\"repeat_key\":\"sha256:acf12f880f2b965539cb89eb3d6a28d14e712e7fa7e5000291b56eb3cfe58602\",\"content_ref\":\"inline:sha256:acf12f880f2b965539cb89eb3d6a28d14e712e7fa7e5000291b56eb3cfe58602\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:69ecde40b134d2fec96955d964921993f412b86f17005eeb38543f90d3e14bdd\"}"
+      }
+    },
+    {
+      "seq": 23,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14365,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 24,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:caaacd2d5b7777399d30905f6360461afb299c852b8c7f74c8ced7e06da9ee3a"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 23,
+          "digest": "d0d9ab5aa1908c34d7c2c650c33b519b3eb3d1b87b84d9542e6056fc93a58f44"
+        }
+      }
+    },
+    {
+      "seq": 27,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14649,
+        "has_text": false,
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 28,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 4,
+          "cycle": 0,
+          "tool_call_id": "call_2842d582c7b14f32ab13dba6bc2a76d8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-7cc3877c-9650-499f-8adc-8d4fc9bda1a3",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 29,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 4,
+          "cycle": 0,
+          "tool_call_id": "call_2842d582c7b14f32ab13dba6bc2a76d8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-7cc3877c-9650-499f-8adc-8d4fc9bda1a3",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:1ebb7a4b3d3578acd769bd6b755bba8a9d7568b9b18c82b7182af12eef33960d",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"中文 目录/01-first.txt\\n\\n1 of 2 matching file(s) shown\\nMore files available; continue with cursor=1\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"output_mode\":\"files_with_matches\",\"sort\":\"path\",\"source_anchors\":[\"中文 目录/01-first.txt\"],\"page\":{\"offset\":0,\"requested_limit\":1,\"applied_limit\":1,\"returned_items\":1,\"total_items\":2,\"next_cursor\":\"1\",\"truncated\":true,\"limit_clamped\":false},\"search\":{\"matching_lines\":2,\"matching_files\":2,\"truncated\":false},\"failed_reads\":0,\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":102,\"projected_bytes\":102,\"original_estimated_tokens\":26,\"projected_estimated_tokens\":26,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:0f81ab19d36e0faf19e5961035e3905a004e03017a6d9082e06323b576825521\",\"projected_digest\":\"sha256:0f81ab19d36e0faf19e5961035e3905a004e03017a6d9082e06323b576825521\",\"repeat_key\":\"sha256:0f81ab19d36e0faf19e5961035e3905a004e03017a6d9082e06323b576825521\",\"content_ref\":\"inline:sha256:0f81ab19d36e0faf19e5961035e3905a004e03017a6d9082e06323b576825521\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a710852e15f066f32a9503a33ffd7aab217ab2b47ab4845f5c3fd1b8cf5e0763\"}"
+      }
+    },
+    {
+      "seq": 30,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14830,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 31,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:8ce46e4969e1ab256f061a66af029bce4e376c53a61ac9179a7e9bfbd52a9d6f"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 30,
+          "digest": "ec397283bb4e6abfb438fecaeeec2400df653b648b474f252f103bc5a1f87cd6"
+        }
+      }
+    },
+    {
+      "seq": 34,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14961,
+        "has_text": false,
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 35,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 5,
+          "cycle": 0,
+          "tool_call_id": "call_88a9132caea646bdb2a7fd89830014db",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-f5d4c3df-81fb-415e-ba41-4a2023e43804",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 36,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 5,
+          "cycle": 0,
+          "tool_call_id": "call_88a9132caea646bdb2a7fd89830014db",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-f5d4c3df-81fb-415e-ba41-4a2023e43804",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:1037360a7fe6e8a8c11f4f580e473592dbfff268f1436f4fac2d3e4f75d3ac0a",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or 'count'\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":106,\"projected_bytes\":106,\"original_estimated_tokens\":27,\"projected_estimated_tokens\":27,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"projected_digest\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"repeat_key\":\"sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"content_ref\":\"inline:sha256:56e5a5f406bb92b1fac2336ca8f87d5e5f418cd621c57bddd0f7bc9389c84ddf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:37a7ba9af2daea3ca959c3c302a5442738e3960c945e82589390e17cb1723c8c\"}"
+      }
+    },
+    {
+      "seq": 37,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 15156,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 38,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:41031b096c5209ef0403c501b2a6a6a32c007b2fba32bf7895bb407d07045279"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 37,
+          "digest": "58a3399e429a1dd7b6ff39313975df3db23672d820739b7644307d2291b8c899"
+        }
+      }
+    },
+    {
+      "seq": 41,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 15303,
+        "has_text": false,
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 42,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 6,
+          "cycle": 0,
+          "tool_call_id": "call_05bec6f75acb4a1d9f8b9ea47b133326",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-3b0807f0-fc19-4ed0-b546-28114edd59a6",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "search"
+      }
+    },
+    {
+      "seq": 43,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 6,
+          "cycle": 0,
+          "tool_call_id": "call_05bec6f75acb4a1d9f8b9ea47b133326",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-3b0807f0-fc19-4ed0-b546-28114edd59a6",
+            "thread_id": "ebfe7f31-edd1-4060-9805-0fa8b62793e2",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:0750bf615e19f9aad967bf9d06638a51589f038f22dc76e2aaae0f326169e3a3",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"No matches found for pattern: NO-MATCH-93cf0bc5-9ead-4fd1-b6a7-64eee6954268\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":75,\"projected_bytes\":75,\"original_estimated_tokens\":19,\"projected_estimated_tokens\":19,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:ef90c80986009c6d94ae95428715fd21e82fe05cd6b761aeec1e4070471ea171\",\"projected_digest\":\"sha256:ef90c80986009c6d94ae95428715fd21e82fe05cd6b761aeec1e4070471ea171\",\"repeat_key\":\"sha256:ef90c80986009c6d94ae95428715fd21e82fe05cd6b761aeec1e4070471ea171\",\"content_ref\":\"inline:sha256:ef90c80986009c6d94ae95428715fd21e82fe05cd6b761aeec1e4070471ea171\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a7e6901f3fb095e4a293a92fe698cb17c761fde6d652d1d79147840383eb33d6\"}"
+      }
+    },
+    {
+      "seq": 44,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 15494,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 45,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:8640d162823e7bb5692188413942cc3ef3db7b60caf538b83e1b734749624f6b"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 44,
+          "digest": "358d72f9c606ba3875620079acb882bffdfe14877687482d6e0c9bedb56f923d"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

@@ -1,0 +1,56 @@
+
+running 1 test
+test forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits ... ORACLE case=form-constraint-edits name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu
+
+thread 'forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits' (21873) panicked at crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs:439:9:
+missing actual field error "required"
+                                                                                                                        
+  /t/aster-kimi-5DG4Hp/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Read constraint-form.json once. Call ask_user_form exactly once with its exact JSON Render document  11:24 AM    
+       and prompt 'Constraint acceptance'. After the user submits, report the returned values without                   
+       calling other tools or modifying files.                                                                          
+                                                                                                                        
+                                                                                                                        
+     ◈ Read 1 file                                                                                                      
+     ◆ ask_user_form                                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+    ◆ Run ask_user_form 9.0s                                                                         30s ⇣13.5k [stop]  
+                                                                                                                        
+  ┃                                                                                                                     
+  ┃  MCP “Aster” requests your input                                                                                    
+  ┃                                                                                                                     
+  ┃  Constraint acceptance · Constraint form                                                                            
+  ┃                                                                                                                     
+  ┃  1 Count (required)                                                                                                 
+  ┃        required                                                                                                     
+  ┃  2 Choice (required)   alpha                                                                                        
+  ┃  3 Enabled (required)  [x]                                                                                          
+  ┃                                                                                                                     
+  ┃  y (●) Accept                                                                                                       
+  ┃  d (○) Decline                                                                                                      
+  ┃                                                                                                                     
+                                                                                                                        
+  Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                           
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 66 filtered out; finished in 36.72s
+

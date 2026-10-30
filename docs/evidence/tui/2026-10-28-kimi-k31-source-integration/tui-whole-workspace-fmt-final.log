@@ -1,0 +1,361 @@
+Diff in /mnt/d/code/aster/apps/gateway/src/entrypoint/native_response.rs:107:
+             let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+             let rate = tokens as f64 / seconds;
+             if let Ok(value) = http::HeaderValue::from_str(&format!("{rate:.2}")) {
+[31m-                response.headers_mut().insert("x-a3s-tokens-per-second", value);
+(B[m[32m+                response
+(B[m[32m+                    .headers_mut()
+(B[m[32m+                    .insert("x-a3s-tokens-per-second", value);
+(B[m             }
+         }
+     }
+Diff in /mnt/d/code/aster/apps/gateway/src/entrypoint/protocol/http_handler.rs:16:
+ use bytes::Bytes;
+ use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
+ use http::{HeaderValue, Response};
+[31m-use hyper::body::Body as _;
+(B[m use http_body_util::BodyExt;
+[32m+use hyper::body::Body as _;
+(B[m use std::sync::Arc;
+ 
+ pub(super) async fn with_inference_metrics(
+Diff in /mnt/d/code/aster/apps/gateway/src/entrypoint/protocol/http_handler.rs:48:
+                         let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+                         let rate = tokens as f64 / seconds;
+                         if let Ok(value) = HeaderValue::from_str(&format!("{rate:.2}")) {
+[31m-                            let mut response = Response::from_parts(parts, ResponseBody::full(bytes));
+(B[m[31m-                            response.headers_mut().insert("x-a3s-tokens-per-second", value);
+(B[m[32m+                            let mut response =
+(B[m[32m+                                Response::from_parts(parts, ResponseBody::full(bytes));
+(B[m[32m+                            response
+(B[m[32m+                                .headers_mut()
+(B[m[32m+                                .insert("x-a3s-tokens-per-second", value);
+(B[m                             return response;
+                         }
+                     }
+Diff in /mnt/d/code/aster/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:331:
+                                         }
+                                         drop(inference_admission);
+                                         drop(service_request);
+[31m-                return track_usage_response(response, usage_lifecycle);
+(B[m[32m+                                        return track_usage_response(response, usage_lifecycle);
+(B[m                                     }
+                                     crate::wire::Gated::Forward {
+                                         body: gated,
+Diff in /mnt/d/code/aster/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:509:
+                     observed_tokens,
+                     attribution,
+                 );
+[31m-                let response = super::http_handler::with_inference_metrics(response, request_start).await;
+(B[m[32m+                let response =
+(B[m[32m+                    super::http_handler::with_inference_metrics(response, request_start).await;
+(B[m                 return track_usage_response(response, usage_lifecycle);
+             }
+             Err(error) => {
+Diff in /mnt/d/code/aster/crates/ocr-model/src/unlimited_import_main.rs:27:
+         values.insert(key, value);
+     }
+     if values.len() != 4 {
+[31m-        eprintln!("Unlimited OCR import requires --request, --request-digest, --archive and --output");
+(B[m[32m+        eprintln!(
+(B[m[32m+            "Unlimited OCR import requires --request, --request-digest, --archive and --output"
+(B[m[32m+        );
+(B[m         return ExitCode::from(2);
+     }
+     let request_path = PathBuf::from(&values["--request"]);
+Diff in /mnt/d/code/aster/crates/ocr-model/src/unlimited_import_main.rs:35:
+     let output = PathBuf::from(&values["--output"]);
+     let result = async {
+         let bytes = read_bounded(&request_path, MAX_UNLIMITED_IMPORT_REQUEST_BYTES as u64)?;
+[31m-        let request = UnlimitedOcrImportRequest::from_admitted_json(
+(B[m[31m-            &bytes,
+(B[m[31m-            &values["--request-digest"],
+(B[m[31m-        )?;
+(B[m[32m+        let request =
+(B[m[32m+            UnlimitedOcrImportRequest::from_admitted_json(&bytes, &values["--request-digest"])?;
+(B[m         import_unlimited_archive(&request, &archive, &output).await
+     }
+     .await;
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:63:
+         .await
+         .map_err(manifest_error)?;
+     if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 1024 * 1024 {
+[31m-        return Err(manifest_error("Unlimited OCR manifest must be a bounded regular file"));
+(B[m[32m+        return Err(manifest_error(
+(B[m[32m+            "Unlimited OCR manifest must be a bounded regular file",
+(B[m[32m+        ));
+(B[m     }
+     let mut bytes = Vec::new();
+     tokio::fs::File::open(manifest_path)
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:76:
+     }
+     let digest = format!("sha256:{:x}", sha2::Sha256::digest(&bytes));
+     if digest != expected_digest {
+[31m-        return Err(manifest_error("Unlimited OCR manifest digest differs from admission"));
+(B[m[32m+        return Err(manifest_error(
+(B[m[32m+            "Unlimited OCR manifest digest differs from admission",
+(B[m[32m+        ));
+(B[m     }
+     let manifest: UnlimitedFileManifest = serde_json::from_slice(&bytes)
+         .map_err(|error| crate::error::PowerError::BackendNotAvailable(error.to_string()))?;
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:86:
+             .iter()
+             .any(|name| !manifest.files.contains_key(*name))
+     {
+[31m-        return Err(manifest_error("Unlimited OCR manifest file set is incomplete"));
+(B[m[32m+        return Err(manifest_error(
+(B[m[32m+            "Unlimited OCR manifest file set is incomplete",
+(B[m[32m+        ));
+(B[m     }
+     for name in UNLIMITED_FILES {
+         let expected = manifest.files.get(name).ok_or_else(|| {
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:104:
+         let metadata = tokio::fs::symlink_metadata(&path)
+             .await
+             .map_err(manifest_error)?;
+[31m-        if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() != expected.bytes {
+(B[m[31m-            return Err(manifest_error("Unlimited OCR file identity differs from admission"));
+(B[m[32m+        if !metadata.is_file()
+(B[m[32m+            || metadata.file_type().is_symlink()
+(B[m[32m+            || metadata.len() != expected.bytes
+(B[m[32m+        {
+(B[m[32m+            return Err(manifest_error(
+(B[m[32m+                "Unlimited OCR file identity differs from admission",
+(B[m[32m+            ));
+(B[m         }
+         let mut file = tokio::fs::File::open(&path).await.map_err(manifest_error)?;
+         let mut digest = sha2::Sha256::new();
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:118:
+             digest.update(&buffer[..count]);
+         }
+         if format!("{:x}", digest.finalize()) != expected.sha256 {
+[31m-            return Err(manifest_error("Unlimited OCR file content differs from admission"));
+(B[m[32m+            return Err(manifest_error(
+(B[m[32m+                "Unlimited OCR file content differs from admission",
+(B[m[32m+            ));
+(B[m         }
+     }
+     Ok(())
+Diff in /mnt/d/code/aster/crates/power/src/server/unlimited_ocr.rs:379:
+         assert_eq!(payload["custom_params"]["page_token_id"], 128827);
+         assert_eq!(payload["custom_params"]["max_page_tokens"], 20000);
+         assert_eq!(
+[31m-            format!("{:x}", sha2::Sha256::digest(
+(B[m[31m-                payload["custom_logit_processor"].as_str().unwrap()
+(B[m[31m-            )),
+(B[m[32m+            format!(
+(B[m[32m+                "{:x}",
+(B[m[32m+                sha2::Sha256::digest(payload["custom_logit_processor"].as_str().unwrap())
+(B[m[32m+            ),
+(B[m             "b680d600a90e3bcfb547eeeb2f7fc10e907b1cec8c73d4025a0b19fb891309e8"
+         );
+         let content = payload["messages"][0]["content"].as_array().unwrap();
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:4973:
+     if !is_resident_session(session_id) {
+         let mut admitted = host.cloned().unwrap_or_else(|| json!({}));
+         if ships_as_tobot() {
+[31m-            if admitted.get("role").and_then(Value::as_str).unwrap_or("").trim().is_empty() {
+(B[m[32m+            if admitted
+(B[m[32m+                .get("role")
+(B[m[32m+                .and_then(Value::as_str)
+(B[m[32m+                .unwrap_or("")
+(B[m[32m+                .trim()
+(B[m[32m+                .is_empty()
+(B[m[32m+            {
+(B[m                 admitted["role"] = json!(TOBOT_ROLE);
+             }
+[31m-            let guidelines = admitted.get("guidelines").and_then(Value::as_str).unwrap_or("");
+(B[m[32m+            let guidelines = admitted
+(B[m[32m+                .get("guidelines")
+(B[m[32m+                .and_then(Value::as_str)
+(B[m[32m+                .unwrap_or("");
+(B[m             if !guidelines.contains(TOBOT_ROLE) {
+                 admitted["guidelines"] = json!(if guidelines.is_empty() {
+                     tobot_guidelines(TOBOT_GUIDELINES)
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/authority.rs:855:
+             br#"{"error":"refresh_refused"}"#.to_vec(),
+         );
+     };
+[31m-    match shared.member_session.replace_token(&token, rotated.as_deref()) {
+(B[m[32m+    match shared
+(B[m[32m+        .member_session
+(B[m[32m+        .replace_token(&token, rotated.as_deref())
+(B[m[32m+    {
+(B[m         Ok(()) => (
+             200,
+             "OK",
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/authority.rs:968:
+             }
+             return response;
+         }
+[31m-        if let Some(response) = crate::org_login::asset(&shared.org_origin(), method, parts.as_slice()) {
+(B[m[32m+        if let Some(response) =
+(B[m[32m+            crate::org_login::asset(&shared.org_origin(), method, parts.as_slice())
+(B[m[32m+        {
+(B[m             return response;
+         }
+         if let Some(response) = member_orgs(method, parts.as_slice(), query, body, shared) {
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/authority.rs:1016:
+                 200,
+                 "OK",
+                 "application/json",
+[31m-                json!({ "origin": shared.org_origin() }).to_string().into_bytes(),
+(B[m[32m+                json!({ "origin": shared.org_origin() })
+(B[m[32m+                    .to_string()
+(B[m[32m+                    .into_bytes(),
+(B[m             );
+         }
+         #[cfg(feature = "tenant-toyou")]
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/code_git.rs:202:
+     )
+     .ok()?;
+     let name = name.trim().to_string();
+[31m-    if name.is_empty() {
+(B[m[31m-        None
+(B[m[31m-    } else {
+(B[m[31m-        Some(name)
+(B[m[31m-    }
+(B[m[32m+    if name.is_empty() { None } else { Some(name) }
+(B[m }
+ 
+ /// `(ahead, behind)` against the upstream. Only meaningful once the branch tracks one.
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/code_git.rs:531:
+ #[cfg(test)]
+ mod tests {
+     use super::{
+[31m-        git_worktrees, validate_branch, validate_cwd, worktree_add_args, worktree_destination,
+(B[m[31m-        GitWorktreeCommand,
+(B[m[32m+        GitWorktreeCommand, git_worktrees, validate_branch, validate_cwd, worktree_add_args,
+(B[m[32m+        worktree_destination,
+(B[m     };
+     use std::fs;
+     use std::path::{Path, PathBuf};
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/macos_app.rs:576:
+     if !output.status.success() {
+         return None;
+     }
+[31m-    String::from_utf8_lossy(&output.stdout).lines().find_map(|line| {
+(B[m[31m-        let start = line.find('"')?;
+(B[m[31m-        let rest = &line[start + 1..];
+(B[m[31m-        let end = rest.find('"')?;
+(B[m[31m-        let identity = &rest[..end];
+(B[m[31m-        identity.starts_with("Developer ID Application").then(|| identity.to_owned())
+(B[m[31m-    })
+(B[m[32m+    String::from_utf8_lossy(&output.stdout)
+(B[m[32m+        .lines()
+(B[m[32m+        .find_map(|line| {
+(B[m[32m+            let start = line.find('"')?;
+(B[m[32m+            let rest = &line[start + 1..];
+(B[m[32m+            let end = rest.find('"')?;
+(B[m[32m+            let identity = &rest[..end];
+(B[m[32m+            identity
+(B[m[32m+                .starts_with("Developer ID Application")
+(B[m[32m+                .then(|| identity.to_owned())
+(B[m[32m+        })
+(B[m }
+ 
+ fn codesign(bundle: &Path, identifier: &str) -> io::Result<()> {
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/macos_app.rs:589:
+     let identity = local_signing_identity().unwrap_or_else(|| "-".to_owned());
+     let output = Command::new("/usr/bin/codesign")
+[31m-        .args(["--force", "--deep", "--sign", &identity, "--identifier", identifier])
+(B[m[32m+        .args([
+(B[m[32m+            "--force",
+(B[m[32m+            "--deep",
+(B[m[32m+            "--sign",
+(B[m[32m+            &identity,
+(B[m[32m+            "--identifier",
+(B[m[32m+            identifier,
+(B[m[32m+        ])
+(B[m         .arg(bundle)
+         .output()?;
+     if output.status.success() {
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/member_session.rs:158:
+             return Err(401);
+         };
+         stored.token = token.trim().to_owned();
+[31m-        if let Some(refresh) = refresh_token.map(str::trim).filter(|value| !value.is_empty()) {
+(B[m[32m+        if let Some(refresh) = refresh_token
+(B[m[32m+            .map(str::trim)
+(B[m[32m+            .filter(|value| !value.is_empty())
+(B[m[32m+        {
+(B[m             stored.refresh_token = refresh.to_owned();
+         }
+         self.write(stored)
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/member_session.rs:564:
+         let path = dir.join("member-session.json");
+         let store = MemberSessionStore::open_at(Some(path.clone()));
+         store
+[31m-            .save(r#"{"token":"a3s_ms_removed.token","display_name":"林","phone":"13800138000"}"#.as_bytes())
+(B[m[32m+            .save(
+(B[m[32m+                r#"{"token":"a3s_ms_removed.token","display_name":"林","phone":"13800138000"}"#
+(B[m[32m+                    .as_bytes(),
+(B[m[32m+            )
+(B[m             .expect("save");
+         assert!(store.has_session());
+ 
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/org_login.rs:995:
+ 
+ /// Opens `GET path` (a one-time stream ticket in the query) without a bearer.
+ pub fn open_event_stream(origin: &str, path: &str) -> io::Result<UpstreamStream> {
+[31m-    let address = resolved_address(origin).ok_or_else(|| {
+(B[m[31m-        io::Error::new(io::ErrorKind::InvalidInput, "org api origin is invalid")
+(B[m[31m-    })?;
+(B[m[32m+    let address = resolved_address(origin)
+(B[m[32m+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "org api origin is invalid"))?;
+(B[m     let mut stream = TcpStream::connect_timeout(&address, Duration::from_secs(2))?;
+     stream.set_read_timeout(Some(UPSTREAM_TIMEOUT))?;
+     stream.set_write_timeout(Some(UPSTREAM_TIMEOUT))?;
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/org_login.rs:1195:
+     }
+     let envelope: serde_json::Value = serde_json::from_slice(&raw).ok()?;
+     let data = envelope.get("data").unwrap_or(&envelope);
+[31m-    let token = data
+(B[m[31m-        .get("token")
+(B[m[31m-        .and_then(|value| value.as_str())?
+(B[m[31m-        .trim();
+(B[m[32m+    let token = data.get("token").and_then(|value| value.as_str())?.trim();
+(B[m     if token.len() < 16 || !token.starts_with("a3s_ms_") {
+         return None;
+     }
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/org_login.rs:1500:
+     use std::thread;
+ 
+     use super::{
+[31m-        asset, forward_member_api, member_token_state, normalize_origin, refresh_member_token, route,
+(B[m[32m+        asset, forward_member_api, member_token_state, normalize_origin, refresh_member_token,
+(B[m[32m+        route,
+(B[m     };
+ 
+     fn read_request(stream: &mut std::net::TcpStream) -> String {
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/org_login.rs:1755:
+         assert_eq!(status, 200, "{content_type}");
+         assert_eq!(content_type, "image/jpeg");
+         assert!(bytes.starts_with(&[0xff, 0xd8, 0xff]));
+[31m-        let (missing, _, _, _) = asset("http://127.0.0.1:9", "GET", &["captcha", "../manifest.json"]).unwrap();
+(B[m[32m+        let (missing, _, _, _) = asset(
+(B[m[32m+            "http://127.0.0.1:9",
+(B[m[32m+            "GET",
+(B[m[32m+            &["captcha", "../manifest.json"],
+(B[m[32m+        )
+(B[m[32m+        .unwrap();
+(B[m         assert_eq!(missing, 404);
+         assert!(asset("http://127.0.0.1:9", "GET", &["mark.png"]).is_none());
+     }
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/preferences_tests.rs:431:
+         std::io::stdout().flush().unwrap();
+     }
+ }
+[31m-
+(B[m 
+Diff in /mnt/d/code/aster/apps/studio/src-tauri/src/providers.rs:776:
+ fn chat_model_for_key(key: &str, timeout_secs: u64) -> Option<String> {
+     let base = gateway_origin();
+     if let Some(body) = curl_get(&format!("{base}/v1/models"), key, timeout_secs) {
+[31m-        if let Some(found) = service_model_ids(&body)
+(B[m[31m-            .and_then(|ids| ids.iter().find_map(|id| admit_chat_model(id)))
+(B[m[32m+        if let Some(found) =
+(B[m[32m+            service_model_ids(&body).and_then(|ids| ids.iter().find_map(|id| admit_chat_model(id)))
+(B[m         {
+             return Some(found);
+         }

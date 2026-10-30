@@ -1,0 +1,104 @@
+{
+  "schema": "aster.tui.form-owner-step-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_pair_digest": "b44752d77fa649bf767498820c1fdb123aaa13ac",
+  "source_snapshot": {
+    "file": "source/forms-20261030-owner-step-initial-source.json",
+    "sha256": "f049da95bca6d0e09d77f5ee680114023b68ad05c4b462cbb4360ac9552b3218"
+  },
+  "same_native_69_entrypoint_inventory": true,
+  "all_69_entrypoints_run": false,
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+      "binaries": [
+        {
+          "name": "a3s-code-acp.exe",
+          "bytes": 185497088,
+          "sha256": "a14090576d4d7c5995613d4cffd670bd40e3760ebf400a0cc26be6239182aedc"
+        },
+        {
+          "name": "aster.exe",
+          "bytes": 324007424,
+          "sha256": "9d0b79bd7b5c7b8e63978ba7c09021e62c94f66a6302b81d77c38777d99dce53"
+        }
+      ],
+      "harness": {
+        "file": "windows/forms-20261030-owner-step-initial/test-binary.json",
+        "sha256": "8385b12c9b4ed9d1c690afa2df7c14f6aa1d2cb4c0c3ec400c5de27cfa89c243"
+      },
+      "library_owner_test": {
+        "file": "windows/forms-20261030-owner-step-initial/owner-library.log",
+        "sha256": "fa4d351cbf718fac47a7ead024bff677bf4dd67f36081ec614334b76ac4e2788"
+      },
+      "native_owner_case": {
+        "file": "windows/forms-20261030-owner-step-initial/reports/form-session-owner.json",
+        "sha256": "c61651ddb1e7c2f978bf0a448347318c6bbb65f161792cf5de0a2316647aee29",
+        "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+        "assertions_finished": true
+      },
+      "native_step_failure": {
+        "file": "windows/forms-20261030-step-exact-reprobe/reports/form-step-constraints.json",
+        "sha256": "6729fcd2bfc5f9c35212905069c0fa7a6e820fb7c8c5b87ff7e3e1b4f4b94009",
+        "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+        "assertions_finished": false,
+        "classification": "product defect: step=2 accepts and returns level=3",
+        "actual_values": {
+          "level": 3.0,
+          "count": 2.0
+        }
+      }
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-unknown-linux-gnu",
+      "binaries": [
+        {
+          "name": "a3s-code-acp",
+          "bytes": 415477512,
+          "sha256": "bf33a35a373839d2b1d93568bcfc99bfa6fcb68685f1049bbc557eddecd20330"
+        },
+        {
+          "name": "aster",
+          "bytes": 1115629216,
+          "sha256": "f12e9a76f7d5f5ff4282ea090c7637e62b1ecbae40a968b846ae0ceec27fe6fc"
+        }
+      ],
+      "harness": {
+        "file": "linux/forms-20261030-owner-step-initial/test-binary.json",
+        "sha256": "a8bc93a6c4f02e2de4341600169a5e510ab30fad7f921f3837c8a9bc68baba30"
+      },
+      "library_owner_test": {
+        "file": "linux/forms-20261030-owner-step-initial/owner-library.log",
+        "sha256": "b03db4248239e4d39434a0faf61a9c4a32ecccb08a72442d5d0f2884603830d9"
+      },
+      "native_owner_case": {
+        "file": "linux/forms-20261030-owner-step-initial/reports/form-session-owner.json",
+        "sha256": "85a8330170f52b5627db27aa4909f2c194433b27df6566fb58c581a19e1f44aa",
+        "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-unknown-linux-gnu",
+        "assertions_finished": true
+      },
+      "native_step_failure": {
+        "file": "linux/forms-20261030-owner-step-initial/reports/form-step-constraints.json",
+        "sha256": "18dc5cd65e97f5bdc54e4a3cf86500217651428001ecc3da8524f6dbb51dbc1f",
+        "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-unknown-linux-gnu",
+        "assertions_finished": false,
+        "classification": "product defect: step=2 accepts and returns level=3",
+        "actual_values": {
+          "level": 3.0,
+          "count": 2.0
+        }
+      }
+    }
+  ],
+  "excluded_model_evaluation": {
+    "file": "windows/forms-20261030-owner-step-initial/reports/form-step-constraints.json",
+    "sha256": "0893c4381780ec46e19e53201ee389a3c2ebc5d86b8b0bd987ff3195bb406861",
+    "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+    "assertions_finished": false,
+    "classification": "model transcription error: invalid JSON document; no native form was opened"
+  },
+  "step_qualified": false,
+  "complete_153": false
+}

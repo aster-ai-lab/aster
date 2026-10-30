@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "sizes": [
+    {
+      "width": 768,
+      "layout": "block",
+      "codePanels": 1,
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "layout": "block",
+      "codePanels": 1,
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "layout": "grid",
+      "codePanels": 1,
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "layout": "grid",
+      "codePanels": 1,
+      "overflow": false
+    }
+  ],
+  "selected": {
+    "opacity": "1",
+    "selected": true
+  }
+}

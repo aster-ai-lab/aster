@@ -1,0 +1,9 @@
+{
+  "unix": 1792871313,
+  "phase": "stopped",
+  "gpu_service_mutated": false,
+  "prior_phase": "waiting_for_exact_v45",
+  "creation_time_verified": true,
+  "pid": 178956,
+  "reason": "Insert actual 1024-token full-window output qualification before draining V44"
+}

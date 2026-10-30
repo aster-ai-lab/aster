@@ -1,5 +1,21 @@
 use super::*;
 
+#[test]
+fn workspace_labels_round_trip_native_and_quoted_paths() {
+    let store: Store = [
+        (
+            r"\\?\C:\Work\中文 path\repo".to_string(),
+            vec!["cat".to_string()],
+        ),
+        (
+            "/tmp/aster \"quoted\"\nrepo".to_string(),
+            vec!["git status".to_string()],
+        ),
+    ]
+    .into();
+    assert_eq!(parse_store(&render_store(&store)).unwrap(), store);
+}
+
 struct Fixture {
     _root: tempfile::TempDir,
     store: PathBuf,

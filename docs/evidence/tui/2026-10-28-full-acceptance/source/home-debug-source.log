@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/snapshot-home-source.py", line 44, in <module>
+    subprocess.run(["git", "apply", "--check", "--reverse", "-"], cwd=root, input=patch, check=True, capture_output=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'apply', '--check', '--reverse', '-']' returned non-zero exit status 1.

@@ -1,0 +1,58 @@
+
+running 1 test
+test functional::kimi_multiline_unicode_and_prompt_history ... ORACLE case=multiline-unicode name=source-pair result=pass detail=aster-cli-pair-v1:589a2967872c9e61354aa648add5d0e9aa5d5d0d:x86_64-unknown-linux-gnu
+ORACLE case=multiline-unicode name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26929
+ORACLE case=multiline-unicode name=multiline-utf8 result=pass detail=exact multiline user.message, real Unicode/space-path read and unseen token reply
+
+thread 'functional::kimi_multiline_unicode_and_prompt_history' (2399) panicked at crates/code/acp/tests/aster_tui_live_e2e/functional.rs:33:5:
+history did not repopulate the actual composer
+                                                                                                                        
+  /t/aster-kimi-fZi0kQ/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.      8:33 PM    
+       第二行：这是多行输入验证，请勿修改文件。                                                                         
+       Do not call other tools.                                                                                         
+                                                                                                                        
+                                                                                                                        
+     ◈ Read 1 file                                                                                                      
+                                                                                                                        
+     UTF8-987b517d-eb31-4843-aa65-18f234787384                                                               8:33 PM    
+                                                                                                                        
+     Worked for 13s                                                                                                     
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─multiline ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_multiline_unicode_and_prompt_history
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 22.36s
+

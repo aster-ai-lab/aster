@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::existing_alias_and_function_conflicts_are_preserved' (35068) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:805:9:
+assertion failed: matches!(plan_fix(request(temp.path(), shell), &report(), &terminal()),
+    Err(FixError::ExistingCustomization { .. }))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::existing_alias_and_function_conflicts_are_preserved ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::existing_alias_and_function_conflicts_are_preserved
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

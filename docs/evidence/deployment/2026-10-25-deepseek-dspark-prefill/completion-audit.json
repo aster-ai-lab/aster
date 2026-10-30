@@ -1,0 +1,62 @@
+{
+  "all_passed": true,
+  "cohorts": [
+    {
+      "profile": "paired-off-baseline",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 26.0,
+      "prefill_tokens_per_second_median": 661.0,
+      "sse_ttft_seconds_median": 26.252042897045612,
+      "drafts_offered": 0,
+      "drafts_accepted": 0
+    },
+    {
+      "profile": "dspark-d4-tier0-chunk512",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 31.35,
+      "prefill_tokens_per_second_median": 632.2,
+      "sse_ttft_seconds_median": 26.93127507501049,
+      "drafts_offered": 474,
+      "drafts_accepted": 394
+    },
+    {
+      "profile": "dspark-d4-tier25-chunk512",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 33.75,
+      "prefill_tokens_per_second_median": 658.1,
+      "sse_ttft_seconds_median": 25.864784782053903,
+      "drafts_offered": 473,
+      "drafts_accepted": 400
+    },
+    {
+      "profile": "dspark-coldA-chunk256-indexer64m",
+      "quality_passed": 5,
+      "warm_decode_trials": 6,
+      "decode_tokens_per_second_median": 34.8,
+      "prefill_tokens_per_second_median": 625.9,
+      "sse_ttft_seconds_median": 27.182995554991066,
+      "drafts_offered": 480,
+      "drafts_accepted": 408
+    }
+  ],
+  "short_decode_ratio": 1.3384615384615384,
+  "cold_prompt_tokens": 1000123,
+  "baseline_cold_prefill_seconds": 4015.662,
+  "optimized_cold_prefill_seconds": 2865.0067000000004,
+  "cold_prefill_speed_ratio": 1.4016239473366676,
+  "optimized_1m_decode_tokens_per_second": 20.7,
+  "one_million_retrieval_passed": true,
+  "public_warm_replay_passed": true,
+  "final_workbuddy_http_requests": 10,
+  "official_healthy": true,
+  "sampler_distribution_cases": 36,
+  "limitations": [
+    "Synthetic repeated archive retrieval; not all real code workloads",
+    "Compound profile and allocator state; no single-knob attribution",
+    "No global quality-equivalence or hardware-limit claim",
+    "Initial strict Hi literal check failed and remains recorded"
+  ]
+}

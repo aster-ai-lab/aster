@@ -1,0 +1,21 @@
+
+running 1 test
+
+thread 'scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color' (53392) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\wrappers\entry_renderer.rs:1046:13:
+assertion failed: `(left == right)`: pending tool must keep the Diamond bullet at tick 0
+
+Diff < left / right > :
+<♦
+>◆
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color ... FAILED
+
+failures:
+
+failures:
+    scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

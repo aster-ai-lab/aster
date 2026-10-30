@@ -1,0 +1,38 @@
+✔ every migrated Pele diagram preserves original labels, node identities, relationships and explanation sources (4054.3543ms)
+✔ Pele guide refuses missing explanations, invalid Mermaid and references to missing nodes (1.7296ms)
+✔ diagram stepping, keyboard bounds and complete view do not start animation timers (116.3805ms)
+✔ requested narration is finite and reduced motion keeps manual controls (158.7313ms)
+✔ responsibility blocks remain separate concepts and stepping does not change other figures (24.7261ms)
+✔ diagram nodes have working pointer and keyboard explanations (22.5805ms)
+✔ Code Hike token colors remain readable on both code backgrounds (1.2783ms)
+✔ source walkthrough works without IntersectionObserver and exposes full reading mode (91.4651ms)
+✔ scroll walkthrough follows an observed narrative without announcing every scroll (71.2184ms)
+✔ static source walks retain every explanation and original code line without JavaScript (4017.5435ms)
+✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (330.1989ms)
+✔ new internal reading paths retain explicit product versions rather than default aliases (340.3809ms)
+✔ published documents, diagram assets and README exports contain Pele with no retired renderer resources (132.8678ms)
+✔ the product catalog refuses unsafe paths, duplicate versions and invalid defaults (2.7651ms)
+✔ two products and two versions keep content, navigation, source refs and defaults isolated (514.7677ms)
+✔ section navigation and chapter cards keep introductory and Meta Harness guides separate (46.7201ms)
+✔ MDX builds deterministically and refuses stale generated pages (28468.3166ms)
+✔ highlighted code preserves every authored character and remains labelled and keyboard-scrollable (2706.256ms)
+✔ the generated syntax palette meets 4.5:1 text contrast against its light background (8.313ms)
+✔ Pele renders current architecture figures with labels and extracted styles (212.7895ms)
+✔ source citations resolve exact lines from the registered Git snapshot and refuse drift (321.8198ms)
+✔ current reading paths expose ordered page sources at fixed revisions in canonical and alias routes (317.5609ms)
+✔ the terminal-agent tutorial has twelve ordered chapters and project-local neighboring pages (219.6464ms)
+✔ generated documents preserve project URLs, active navigation and accessible diagrams without JavaScript (21242.4884ms)
+✔ current Core and ACP coverage indexes match the authoritative public contract sets (15.4935ms)
+✔ default aliases resolve cross-product and version links from their pinned source location (55.4057ms)
+✔ every Markdown table renders as an accessible table instead of pipe-delimited prose (1539.1139ms)
+✔ GFM supports table alignment, escaped pipes, task lists, deletion, links and footnotes (32.4998ms)
+✔ chapter navigation retains its scroll across page loads and isolates product/version state (121.0519ms)
+✔ navigation remains usable when session storage is unavailable or corrupt (62.5682ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57419.7221

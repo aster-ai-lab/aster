@@ -1,0 +1,94 @@
+{
+  "base_commit": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
+  "build": {
+    "source_fingerprint": "c6be3cc41e94cab5ace30210d8a8e123a69c0ee80d67eee0cc7120c93c2cd0e0",
+    "binary_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+    "features": [
+      "server"
+    ],
+    "source_root": "/code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power"
+  },
+  "untracked_source_files": [
+    {
+      "path": "src/api/health_managed_tests.rs",
+      "sha256": "9800d62fdf1cd87d02ae623f1eff0ab4885521e88c1bde1e04cec7d55e595489"
+    },
+    {
+      "path": "src/api/openai/chat_policy_tests.rs",
+      "sha256": "766e73aab97d1fbea85172d61edc1b3bad4f6befc00c0d114fa2bb49fb981609"
+    },
+    {
+      "path": "src/backend/openai_compat/mod.rs",
+      "sha256": "1d496787edcb209df06899aee90f55aa11abfbbd27a06013823ad1ceac93cc3b"
+    },
+    {
+      "path": "src/backend/openai_compat/stream.rs",
+      "sha256": "64c90cfbb9694aec3ca327402a5b9ef3fbe9f0b54761c18ea54cf350d339ef00"
+    },
+    {
+      "path": "src/backend/openai_compat/stream_tests.rs",
+      "sha256": "6248e73b18b7ed517e4812ced1822e844664cc3fe65ee43c9329572f47059ed6"
+    },
+    {
+      "path": "src/backend/openai_compat/tests.rs",
+      "sha256": "b0354b0869ff2e758461419d0b0e24e90747bc5cda8da9475dd7949a6ad51561"
+    },
+    {
+      "path": "src/backend/openai_compat/tool_policy.rs",
+      "sha256": "a91513f89b8ae24b364ff124c1018ce325bf81777b89e36b937bccfab1040e84"
+    },
+    {
+      "path": "src/backend/openai_compat/tool_policy_tests.rs",
+      "sha256": "272d9bb702f5b497bbaabbb9d28b1f09adf656d48b3f9551ed76ebae65caa5a6"
+    },
+    {
+      "path": "src/backend/xolotl/managed.rs",
+      "sha256": "d534e26e43a1d5ae9d4f56d50e24e1ec5f3ee5b36f287b9a5ada418c9a1a6f25"
+    },
+    {
+      "path": "src/backend/xolotl/managed_tests.rs",
+      "sha256": "15dfb060465eccce590efba681d2f7326960de2bcdab8a9c76ba0c1248dfe170"
+    },
+    {
+      "path": "src/backend/xolotl/plan_4090d_tests.rs",
+      "sha256": "8fc2ab752a2d0e86388d8080b6948f8c24f7f2fbb6b568ca54ce9ad1e496fc34"
+    },
+    {
+      "path": "src/backend/xolotl/plan_exact_routing_tests.rs",
+      "sha256": "1b3822af8b27b5503c2aa2da524ee2d670fb708ce9db7651c79cf29a074bf7ab"
+    },
+    {
+      "path": "src/backend/xolotl/plan_kv_fp4_tests.rs",
+      "sha256": "c3d8dc9c01a354347abd87c99e2d810428d6aa2a4075f7c0a004278a0e88df7d"
+    },
+    {
+      "path": "src/backend/xolotl/prepare.rs",
+      "sha256": "7f1750bc0172c27664a4cc8f2c8000b726e58d8bac97295d1cf07ca68f56ac32"
+    },
+    {
+      "path": "src/backend/xolotl/prepare_tests.rs",
+      "sha256": "fa29f1d39e780a12161b5d906478b5f438bdf9e2ca02f958f1cc14448d4ac927"
+    },
+    {
+      "path": "src/backend/xolotl/streaming_tests.rs",
+      "sha256": "df6e1f73c8e760662caa0515dee4fdfa6fb386d6fcf4e6344a9354ece8fca13f"
+    },
+    {
+      "path": "src/cli/xolotl_inline_tests.rs",
+      "sha256": "116041fd313f91a5f5bce96d88610a9da5cd307268a229fcbb24678e6c7ed2bb"
+    },
+    {
+      "path": "src/config/xolotl_kv_fp4_acl_tests.rs",
+      "sha256": "87b7d1bcc22cec31654f06a0789c5ff4ac64b52d071fd577a9bb55fed5ccc54e"
+    },
+    {
+      "path": "src/config/xolotl_managed_acl_tests.rs",
+      "sha256": "217e4ac0ddb6ea254c7d31ff8ec4581cd56b6b4aff4ced146633716d6b058e8a"
+    },
+    {
+      "path": "src/server/xolotl_startup_tests.rs",
+      "sha256": "cc6e5557acc6ecb0f6fd97bcfb01e996068edc1a5de4e0367524b9053bb70638"
+    }
+  ],
+  "patch_sha256": "4e1e3ecb1fcba2043a2f1eb2db003fb876a0c6816e020048a75c38444a2c6d31"
+}

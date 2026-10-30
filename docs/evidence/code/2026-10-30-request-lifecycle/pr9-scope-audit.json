@@ -1,0 +1,324 @@
+{
+  "pr": 9,
+  "reviewed_head": "9d015a60614fcde645c1a38e8a757c97f4339667",
+  "base_main": "e2beb284d3fe99a1fd8b4ad78f13a9988187c9f9",
+  "counts": {
+    "total": 62,
+    "integrated_runtime_and_probe": 10,
+    "historical_evidence": 36,
+    "superseded_source_test_config_docs": 16,
+    "additional_regression_fix": "crates/code/acp/src/config.rs"
+  },
+  "paths": [
+    {
+      "path": "crates/code/core/src/llm/http.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/code/core/src/llm/http/duplex_tests.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/code/core/src/llm/http/response_lifecycle_tests.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/startup_deadline_tests.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs",
+      "resolution": "integrate-runtime",
+      "reason": "Port the cancellation/status and bounded startup changes onto current main; preserve current redirect, Windows transport, permission-rule and a3s protocol changes."
+    },
+    {
+      "path": ".github/actions/checkout-source/action.yml",
+      "resolution": "superseded-private-checkout",
+      "reason": "Current main uses exact parent gitlinks through checkout-studio and checkout-os-backend. Studio checkout test and both tenant CI builds pass; retired Work source identity is not restored."
+    },
+    {
+      "path": ".github/scripts/gitlink-ref.py",
+      "resolution": "superseded-private-checkout",
+      "reason": "Current main uses exact parent gitlinks through checkout-studio and checkout-os-backend. Studio checkout test and both tenant CI builds pass; retired Work source identity is not restored."
+    },
+    {
+      "path": ".github/workflows/backend.yml",
+      "resolution": "superseded-private-checkout",
+      "reason": "Current main uses exact parent gitlinks through checkout-studio and checkout-os-backend. Studio checkout test and both tenant CI builds pass; retired Work source identity is not restored."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "resolution": "superseded-private-checkout",
+      "reason": "Current main uses exact parent gitlinks through checkout-studio and checkout-os-backend. Studio checkout test and both tenant CI builds pass; retired Work source identity is not restored."
+    },
+    {
+      "path": "tests/ci_source_checkout.py",
+      "resolution": "superseded-private-checkout",
+      "reason": "Current main uses exact parent gitlinks through checkout-studio and checkout-os-backend. Studio checkout test and both tenant CI builds pass; retired Work source identity is not restored."
+    },
+    {
+      "path": ".github/workflows/release-aster-cli.yml",
+      "resolution": "superseded-release-routing",
+      "reason": "Keep current product namespaces and published-release compatibility. Do not revert to the old v0.1.2 proposal. Release workflow 5 cases and governance 9 cases pass locally."
+    },
+    {
+      "path": "Cargo.lock",
+      "resolution": "superseded-release-routing",
+      "reason": "Keep current product namespaces and published-release compatibility. Do not revert to the old v0.1.2 proposal. Release workflow 5 cases and governance 9 cases pass locally."
+    },
+    {
+      "path": "apps/aster/Cargo.toml",
+      "resolution": "superseded-release-routing",
+      "reason": "Keep current product namespaces and published-release compatibility. Do not revert to the old v0.1.2 proposal. Release workflow 5 cases and governance 9 cases pass locally."
+    },
+    {
+      "path": "scripts/install.ps1",
+      "resolution": "superseded-release-routing",
+      "reason": "Keep current product namespaces and published-release compatibility. Do not revert to the old v0.1.2 proposal. Release workflow 5 cases and governance 9 cases pass locally."
+    },
+    {
+      "path": "scripts/install.sh",
+      "resolution": "superseded-release-routing",
+      "reason": "Keep current product namespaces and published-release compatibility. Do not revert to the old v0.1.2 proposal. Release workflow 5 cases and governance 9 cases pass locally."
+    },
+    {
+      "path": "apps/aster/src/cli_pair_update.rs",
+      "resolution": "superseded-pair-delivery",
+      "reason": "Current main already carries identity/checksum admission, rollback and CLI/ACP pairing. Current Unix pair-delivery 10 cases pass. Native Windows execution remains unclaimed."
+    },
+    {
+      "path": "apps/aster/tests/cli_update.rs",
+      "resolution": "superseded-pair-delivery",
+      "reason": "Current main already carries identity/checksum admission, rollback and CLI/ACP pairing. Current Unix pair-delivery 10 cases pass. Native Windows execution remains unclaimed."
+    },
+    {
+      "path": "tests/cli_pair_delivery.ps1",
+      "resolution": "superseded-pair-delivery",
+      "reason": "Current main already carries identity/checksum admission, rollback and CLI/ACP pairing. Current Unix pair-delivery 10 cases pass. Native Windows execution remains unclaimed."
+    },
+    {
+      "path": "tests/cli_pair_delivery.py",
+      "resolution": "superseded-pair-delivery",
+      "reason": "Current main already carries identity/checksum admission, rollback and CLI/ACP pairing. Current Unix pair-delivery 10 cases pass. Native Windows execution remains unclaimed."
+    },
+    {
+      "path": "README.md",
+      "resolution": "retain-current-docs",
+      "reason": "Keep current product documentation and benchmark workflow; retained legacy evidence remains attached to the original PR head."
+    },
+    {
+      "path": "crates/code/manual/TERMINAL_BENCH.md",
+      "resolution": "retain-current-docs",
+      "reason": "Keep current product documentation and benchmark workflow; retained legacy evidence remains attached to the original PR head."
+    },
+    {
+      "path": "tests/cli_acp_lifecycle.py",
+      "resolution": "integrate-frozen-native-probe",
+      "reason": "Port the exact original script unchanged. It passes all six cases against the final matching CLI/ACP pair. Full-output review separately found and fixed its missing-ACL false positive; retained before and after replies document that additional check."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/CI_ACCESS.md",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/OUTCOME.md",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/PLAN.md",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/actionlint.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/auth-deadline-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/cancellation_interrupts_non_streaming_body-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/cancellation_interrupts_raw_streaming_error_body-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/cancellation_interrupts_streaming_error_body-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/desktop-update-linux.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/format.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/headless-macos.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/http-and-real-cli-final-linux-arm64.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/http-before-isolated.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/http-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/http-final-macos.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/installer-faults-linux.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/integration-source-equivalence.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/native-launch-boundary.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/pair-build-macos.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/pair-identities-macos.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-cli-before-auth-fix.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-cli-final-linux-arm64.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-cli-final-macos.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-cli-final-macos.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-debug-pair-install-before-message-fix.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/real-debug-pair-install-final.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/remote-backend-blocked.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/remote-rust-blocked.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/s3-fixture.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/source-pin.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/stalled_error_body_preserves_non_retryable_http_status-before.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/startup-macos.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/startup-updater-pair-linux-arm64.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/validated-source.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/work-source-pin.json",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    },
+    {
+      "path": "docs/evidence/code/2026-10-21-issue-followups/logs/workspace-linux.log",
+      "resolution": "retain-historical-evidence",
+      "reason": "Keep every original evidence file on the existing PR head; do not delete the branch or treat its historical binaries as current-main verification."
+    }
+  ]
+}

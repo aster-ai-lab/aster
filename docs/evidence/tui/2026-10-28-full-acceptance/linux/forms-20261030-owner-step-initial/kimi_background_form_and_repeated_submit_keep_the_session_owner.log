@@ -1,0 +1,16 @@
+
+running 1 test
+test forms_catalog::kimi_background_form_and_repeated_submit_keep_the_session_owner ... ORACLE case=form-session-owner name=source-pair result=pass detail=aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-unknown-linux-gnu
+ORACLE case=form-session-owner name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13182
+ORACLE case=form-session-owner name=quit result=pass detail=exit 0
+ORACLE case=form-session-owner name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13234
+ORACLE case=form-session-owner name=background-form-does-not-capture-b result=pass detail=a real pending form on A does not capture B's draft or new model turn
+ORACLE case=form-session-owner name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40270
+ORACLE case=form-session-owner name=repeated-submit-has-one-owned-receipt result=pass detail=two native Enter presses produce exactly one accepted form receipt on A with the unseen host answer
+ORACLE case=form-session-owner name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13290
+ORACLE case=form-session-owner name=other-session-after-submit result=pass detail=B remains usable without receiving A's tool receipt or answer text
+ORACLE case=form-session-owner name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 68 filtered out; finished in 56.37s
+

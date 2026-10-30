@@ -1,0 +1,50 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Checking smallvec v1.16.3
+    Checking windows-sys v0.61.2
+   Compiling windows-implement v0.60.2
+   Compiling windows-interface v0.59.3
+    Checking windows-sys v0.60.2
+    Checking parking_lot_core v0.9.12
+    Checking parking_lot v0.12.5
+    Checking windows-core v0.61.2
+    Checking socket2 v0.6.4
+    Checking windows-numerics v0.2.0
+    Checking windows-collections v0.2.0
+    Checking windows-future v0.2.1
+    Checking mio v1.2.1
+    Checking windows v0.61.3
+    Checking tokio v1.53.3
+    Checking a3s-tty-utils v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-tty-utils)
+error: unused imports: `park_blocking_workers` and `release_parked_workers`
+ --> crates\terminal\crates\codegen\a3s-tty-utils\src\runtime_tests.rs:1:13
+  |
+1 | use super::{park_blocking_workers, release_parked_workers, *};
+  |             ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `-D unused-imports` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+error: unused import: `std::sync::Arc`
+ --> crates\terminal\crates\codegen\a3s-tty-utils\src\runtime_tests.rs:2:5
+  |
+2 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+error: unused import: `std::sync::atomic::AtomicBool`
+ --> crates\terminal\crates\codegen\a3s-tty-utils\src\runtime_tests.rs:3:5
+  |
+3 | use std::sync::atomic::AtomicBool;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: unused import: `std::sync::Mutex`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1194:9
+     |
+1194 |     use std::sync::Mutex;
+     |         ^^^^^^^^^^^^^^^^
+
+error: could not compile `a3s-tty-utils` (lib test) due to 4 previous errors

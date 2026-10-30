@@ -1,0 +1,13 @@
+{
+  "unix": 1792874036.362148,
+  "pid": 186420,
+  "script": "run_xolotl_draft_comparison_v50.frozen.py",
+  "profiles": [
+    "off",
+    "cum010",
+    "cum025",
+    "cum050",
+    "off_repeat"
+  ],
+  "formal_service_unchanged": true
+}

@@ -1,0 +1,14 @@
+{
+  "checkpoint_count": 153,
+  "domain_count": 16,
+  "complete": false,
+  "checkpoint_sha256": "2a52407518e4263c23d7fab5d2df6e80fd7de315fec25ff0c727fd4c17a2d89b",
+  "status_counts": {
+    "explicitly_unavailable": 1,
+    "partial": 60,
+    "pending": 52,
+    "verified_for_listed_contract": 40
+  },
+  "referenced_files_verified": 206,
+  "all_verified_contracts_have_both_platforms": true
+}

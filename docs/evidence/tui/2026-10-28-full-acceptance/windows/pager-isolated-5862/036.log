@@ -1,0 +1,19 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::workspace_session_created_becomes_an_upsert_candidate' (44264) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2458:5:
+assertion failed: matches!(effects.as_slice(),
+    [Effect::WriteWorkspace
+    { mutation: WorkspaceMutation::Upsert(members), .. }] if members.len() ==
+    1 &&
+    members.first().is_some_and(|m| m.key.session_id.as_ref() == "created"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::workspace_session_created_becomes_an_upsert_candidate ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::workspace_session_created_becomes_an_upsert_candidate
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.06s
+

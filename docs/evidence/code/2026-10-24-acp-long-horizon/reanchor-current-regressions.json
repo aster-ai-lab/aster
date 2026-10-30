@@ -1,0 +1,116 @@
+[
+  {
+    "group": "goal",
+    "filter": "agent_api::goal_facade::tests",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "agent_api::goal_facade::tests",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 101.782
+  },
+  {
+    "group": "facts",
+    "filter": "fact_control::",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "fact_control::",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 12.393
+  },
+  {
+    "group": "goal-control",
+    "filter": "goal_control::",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "goal_control::",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 1.364
+  },
+  {
+    "group": "ownership",
+    "filter": "agent_api::conversation_runtime::",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "agent_api::conversation_runtime::",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 28.347
+  },
+  {
+    "group": "admission",
+    "filter": "agent_api::run_admission::",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "agent_api::run_admission::",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 3.032
+  },
+  {
+    "group": "tasks",
+    "filter": "tools::task::tests",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "tools::task::tests",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 16.697
+  }
+]

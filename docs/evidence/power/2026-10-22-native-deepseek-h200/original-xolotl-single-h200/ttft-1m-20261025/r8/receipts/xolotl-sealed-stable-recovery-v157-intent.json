@@ -1,0 +1,23 @@
+{
+  "unix": 1792900137.0538287,
+  "phase": "executed",
+  "label": "stable-recovery-v157",
+  "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc11-6ef84ac5b528/sealed-stable-recovery-v157.py",
+  "bytes": 51244,
+  "sha256": "bacdab6ccd464826c59d8432d7e005f5087aba7966f1d42cbd041b48778220fc",
+  "allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "credentials_copied": false,
+  "inline_exec_payload_replaced": true,
+  "stage": {
+    "staged": true,
+    "bytes": 51244,
+    "sha256": "bacdab6ccd464826c59d8432d7e005f5087aba7966f1d42cbd041b48778220fc"
+  },
+  "result": {
+    "pid": 178,
+    "start_ticks": 733143268,
+    "uid": 10250,
+    "unix": 1792900149.737306,
+    "deadline_seconds": 21562
+  }
+}

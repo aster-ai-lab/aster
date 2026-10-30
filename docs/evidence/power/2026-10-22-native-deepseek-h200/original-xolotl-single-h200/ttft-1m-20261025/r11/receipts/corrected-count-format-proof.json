@@ -1,0 +1,41 @@
+{
+  "unix": 1792921769.955598,
+  "phase": "prompt_qualified",
+  "candidate": "tool-adapter-v267r3",
+  "formal_service_changed": false,
+  "previous_actual_client_observed_calls": 3,
+  "previous_model_incorrectly_reported_calls": 4,
+  "previous_count_fidelity_passed": false,
+  "candidate_live_prompt_probe": {
+    "reply": "COMPLETED=3",
+    "exact_passed": true,
+    "seconds": 2.3119999999180436,
+    "usage": {
+      "prompt_tokens": 595,
+      "completion_tokens": 6,
+      "total_tokens": 601,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "tools_actually_executed": false
+  },
+  "candidate_full_client_E2E_passed": false,
+  "files": [
+    {
+      "name": "frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+    },
+    {
+      "name": "serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+    },
+    {
+      "name": "aster_tool_roundtrip.py",
+      "bytes": 6081,
+      "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af"
+    }
+  ]
+}

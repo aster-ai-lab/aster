@@ -1,0 +1,207 @@
+{
+  "case": "copy-export-contract",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:32b8c01e8224e33564c3f38d03c84dffcd465d95:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27070",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read first.txt and reply with its exact contents. Do not call other tools   1:32 PM           or modify any file.                                                                                                                                                                                                                                                                                                                                                   ♦ Read 1 file                                                                                                                                                                                                                                   导出-39b22aa8-b110-4ea0-a7fd-a05130d391df                                                               1:33 PM                                                                                                                                 Worked for 12s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=7 model_turns=2 prompt_tokens=27556",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        1:33 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   导出-72209db9-544d-4fc2-88ba-0248eb3902bc                                                               1:33 PM                                                                                                                           █     Worked for 16s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "copy-1",
+      "detail": "requested assistant response exported with exact UTF-8 bytes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        1:33 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   导出-72209db9-544d-4fc2-88ba-0248eb3902bc                                                               1:33 PM                                                                                                                           █     Worked for 16s                                                                                                    █                                                                                                                       █     Copied to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\第 1 条.txt (43 chars, 1 line)                              █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "copy-2",
+      "detail": "requested assistant response exported with exact UTF-8 bytes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        1:33 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   导出-72209db9-544d-4fc2-88ba-0248eb3902bc                                                               1:33 PM                                                                                                                           █     Worked for 16s                                                                                                    █                                                                                                                       █     Copied to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\第 1 条.txt (43 chars, 1 line)                              █                                                                                                                       █     Copied to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\第 2 条.txt (43 chars, 1 line)                              █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "export-order",
+      "detail": "full transcript contains both prompts and replies in order",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        1:33 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   导出-72209db9-544d-4fc2-88ba-0248eb3902bc                                                               1:33 PM                                                                                                                           █     Worked for 16s                                                                                                    █                                                                                                                       █     Copied to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\第 1 条.txt (43 chars, 1 line)                              █                                                                                                                       █     Copied to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\第 2 条.txt (43 chars, 1 line)                              █                                                                                                                       █     Conversation exported to C:\\Windows\\Temp\\aster-kimi-WFoodY\\workspace\\完整 会话.md                                 █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "export-refusal",
+      "detail": "directory write and invalid response index fail explicitly without model work",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-WFoodY\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read second.txt and reply with its exact contents. Do not call other        1:33 PM           tools or modify any file.                                                                                                                                                                                                                                                                            ▲                                                                Usage: /copy [N] [file] where N is 1 (latest), 2, 3, ...                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13446,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_355677c8b09244a39f601f50ca208b53",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a03e8ecf-bd21-47e8-8382-ac0f7f70214f",
+            "thread_id": "4a5aebbb-016a-4a56-824c-3a98a99171e4",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_355677c8b09244a39f601f50ca208b53",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-a03e8ecf-bd21-47e8-8382-ac0f7f70214f",
+            "thread_id": "4a5aebbb-016a-4a56-824c-3a98a99171e4",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:c225c65ffd1146ca0908e0da59b1a66a6e05538377dee3aa60a7eb7595299114",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t导出-39b22aa8-b110-4ea0-a7fd-a05130d391df\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"first.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":84},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":84,\"projected_bytes\":84,\"original_estimated_tokens\":21,\"projected_estimated_tokens\":21,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:ed002d33401424bb87e9118ef55b89f6d210b1d60fba04242bd215d6693196a4\",\"projected_digest\":\"sha256:ed002d33401424bb87e9118ef55b89f6d210b1d60fba04242bd215d6693196a4\",\"repeat_key\":\"sha256:ed002d33401424bb87e9118ef55b89f6d210b1d60fba04242bd215d6693196a4\",\"content_ref\":\"inline:sha256:ed002d33401424bb87e9118ef55b89f6d210b1d60fba04242bd215d6693196a4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:24548e97a05b5a344ac06f357fd438fbf8d8fba35502d8d455a32d46305555bd\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13624,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:4e5c17b0f52600579540715d720f881a154d595a06839f03672bae9f9b97dc7a"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "8f312f7612f040712316e1304b1ebc5a918801f18ca9117144f34fcba6264298"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13706,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_e0e8bdabec1a46fe8b81a62678b52523",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ab459310-2940-4f21-8c76-0009f9b2851c",
+            "thread_id": "4a5aebbb-016a-4a56-824c-3a98a99171e4",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_e0e8bdabec1a46fe8b81a62678b52523",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-ab459310-2940-4f21-8c76-0009f9b2851c",
+            "thread_id": "4a5aebbb-016a-4a56-824c-3a98a99171e4",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:e5e8faed9dfabb8884cacf03d90ad4bacb223135ceb9111c64b6108fcabd5a6b",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t导出-72209db9-544d-4fc2-88ba-0248eb3902bc\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"second.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":84},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":84,\"projected_bytes\":84,\"original_estimated_tokens\":21,\"projected_estimated_tokens\":21,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:ba8457c94002afdfbc8893699fa42d592d7eec24bb9a187bb4e30e7535f81665\",\"projected_digest\":\"sha256:ba8457c94002afdfbc8893699fa42d592d7eec24bb9a187bb4e30e7535f81665\",\"repeat_key\":\"sha256:ba8457c94002afdfbc8893699fa42d592d7eec24bb9a187bb4e30e7535f81665\",\"content_ref\":\"inline:sha256:ba8457c94002afdfbc8893699fa42d592d7eec24bb9a187bb4e30e7535f81665\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:49680c5260618003ca04f16cd3cc49b9e256773594a75ecc1d63fbc72ee4b5df\"}"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13850,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 17,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:9004fbdcea0cbfab6e7cf426022de6a76eec9f66dd882ac2c3d25d21cbb14454"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 16,
+          "digest": "4e0dc3bd70efa167f94e131b99d2b5c6f631e112c29da9e18a4f83a513a0d84f"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

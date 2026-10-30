@@ -1,0 +1,41 @@
+{
+  "unix": 1792898972.614621,
+  "phase": "failed",
+  "runs": [
+    {
+      "mode": "control_a",
+      "mark_seconds": 3.1420348091050982,
+      "render_seconds": 0.017705366015434265,
+      "unmark_seconds": 4.456695847213268,
+      "tokenize_seconds": 1.680920708924532,
+      "staged_seconds": 9.297356731258333,
+      "actual_service_encode_seconds": 9.069589776918292,
+      "prompt_tokens": 1047544,
+      "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "literal_spans": 2,
+      "changed": true,
+      "memo": {
+        "entries": 0,
+        "accounted_bytes": 0,
+        "hits": 0,
+        "misses": 0,
+        "admissions": 0
+      },
+      "scanner": null
+    }
+  ],
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "live_service_changed": false,
+  "input_text_retained": false,
+  "unit_methods_passed": 15,
+  "frontend_sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e",
+  "api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+  "literal_map_entries": 1239,
+  "original_metadata_prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+  "prompt_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+  "current": "control_a",
+  "unchanged_upstream_frontend_methods_passed": 25,
+  "error": "RuntimeError: unchanged upstream frontend acceptance failed with exact scanner enabled",
+  "finished_unix": 1792898994.335011
+}

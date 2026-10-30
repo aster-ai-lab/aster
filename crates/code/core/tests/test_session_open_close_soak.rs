@@ -40,11 +40,10 @@ fn offline_config(sessions_dir: &Path) -> CodeConfig {
 fn open_handle_count() -> usize {
     #[cfg(windows)]
     {
-        unsafe extern "system" {
-            fn GetCurrentProcess() -> *mut c_void;
-            fn GetProcessHandleCount(process: *mut c_void, count: *mut u32) -> i32;
-        }
+        use windows_sys::Win32::System::Threading::{GetCurrentProcess, GetProcessHandleCount};
+
         let mut count = 0u32;
+        // SAFETY: the current-process pseudo-handle is valid and count is writable.
         let ok = unsafe { GetProcessHandleCount(GetCurrentProcess(), &mut count) };
         assert_ne!(ok, 0, "GetProcessHandleCount failed");
         count as usize

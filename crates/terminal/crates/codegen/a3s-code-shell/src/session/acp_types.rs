@@ -568,6 +568,9 @@ pub fn model_display_name(
 pub struct SessionInfoResponse {
     pub session_id: String,
     pub cwd: String,
+    /// Canonical permission posture, when the backend publishes it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub permission_posture: Option<String>,
     #[serde(flatten)]
     pub data: SessionInfoData,
 }

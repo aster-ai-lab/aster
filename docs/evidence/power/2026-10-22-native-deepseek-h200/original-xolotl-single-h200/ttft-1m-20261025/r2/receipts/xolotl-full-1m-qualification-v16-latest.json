@@ -1,0 +1,41 @@
+{
+  "unix": 1792854403.5359542,
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v15/qualification-full-1m-v16",
+  "request-result.json": {
+    "schema": "aster-xolotl-full1m-qualification-v12",
+    "unix": 1792854243.8767047,
+    "phase": "failed",
+    "tests": [],
+    "client": "yangchao-dev",
+    "destination": "http://100.97.136.42:30003/v1",
+    "full_1m_length_qualified": false,
+    "actual_prompt_tokens": 1048512,
+    "max_new_tokens": 64,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "624977f6ffeae5f7f28cb5d5d5d3003a5d4e15c3d65fda43d5d90ecb5751317d",
+    "prompt_bytes": 4194004,
+    "record_token_positions": {
+      "begin": 19,
+      "middle": 524245,
+      "end": 1048473
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "current_test": "cold-full1m-three-records",
+    "request_started_unix": 1792854248.662503,
+    "payload_bytes": 4194231,
+    "error": "HTTPError: HTTP Error 400: Bad Request",
+    "finished_unix": 1792854249.7281375
+  },
+  "request-process.json": {
+    "pid": 794003,
+    "start_ticks": 278102872,
+    "uid": 10250,
+    "unix": 1792854243.7964134,
+    "budget_seconds": 3400
+  },
+  "exact_client_alive": false
+}

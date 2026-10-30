@@ -1,0 +1,34 @@
+{
+  "unix": 1792902301.7281845,
+  "phase": "passed",
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "credentials_copied": false,
+  "prompt_tokens": 1047544,
+  "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+  "prompt_body_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+  "api_source_sha256": "6fd2a8b6135fc5e676933f8c729f33dc2bba5849d721cab6d28b6a68a9d43954",
+  "files": [
+    {
+      "file": "prompt.u32le",
+      "bytes": 4190176,
+      "sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4"
+    },
+    {
+      "file": "prompt.csv",
+      "bytes": 4728701,
+      "sha256": "355a6f40dc806449d93c2fc27f6517f6f561d640ba14cfa4cb8a54f4f2aef473"
+    }
+  ],
+  "encoder_seconds": 1.8953343252651393,
+  "expected_record_codes": {
+    "begin": 731927,
+    "middle": 408563,
+    "end": 962814
+  },
+  "context_tokens": 1048576,
+  "profile_completion_tokens": 128,
+  "full_body_unchanged": true,
+  "native_engine_executed": false,
+  "finished_unix": 1792902304.938845
+}

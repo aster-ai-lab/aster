@@ -1,0 +1,101 @@
+{
+  "unix": 1792857252.3065295,
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v15/qualification-full-1m-v17",
+  "request-result.json": {
+    "schema": "aster-xolotl-full1m-qualification-v17",
+    "unix": 1792854863.556175,
+    "phase": "passed",
+    "tests": [
+      {
+        "name": "cold-full1m-three-records",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "usage": {
+          "prompt_tokens": 1048504,
+          "completion_tokens": 17,
+          "total_tokens": 1048521,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "ttft_seconds": 2226.691510024946,
+        "seconds": 2227.2264323290437
+      },
+      {
+        "name": "interleaved-isolation-53",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "53",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "ttft_seconds": 1.1346587310545146,
+        "seconds": 1.198149493895471
+      },
+      {
+        "name": "restored-full1m-three-records",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "usage": {
+          "prompt_tokens": 1048504,
+          "completion_tokens": 17,
+          "total_tokens": 1048521,
+          "prompt_tokens_details": {
+            "cached_tokens": 1048504
+          }
+        },
+        "ttft_seconds": 1.3957692538388073,
+        "seconds": 1.9034643578343093
+      }
+    ],
+    "client": "yangchao-dev",
+    "destination": "http://100.97.136.42:30003/v1",
+    "full_1m_length_qualified": true,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "context_safety_tokens": 8,
+    "actual_prompt_tokens": 1048504,
+    "max_new_tokens": 64,
+    "prompt_plus_output_tokens": 1048568,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "0149634cc9fbae367f049cd432cc316a98454a0f814725e56fce2563b0b77d5f",
+    "prompt_bytes": 4193972,
+    "record_token_positions": {
+      "begin": 19,
+      "middle": 524241,
+      "end": 1048465
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "current_test": "restored-full1m-three-records",
+    "request_started_unix": 1792857096.9425066,
+    "payload_bytes": 4194199,
+    "http_status": 200,
+    "three_position_retrieval_passed": true,
+    "full1m_cache_restore_passed": true,
+    "finished_unix": 1792857098.8501778
+  },
+  "request-process.json": {
+    "pid": 794636,
+    "start_ticks": 278164841,
+    "uid": 10250,
+    "unix": 1792854863.4846764,
+    "budget_seconds": 3400
+  },
+  "exact_client_alive": false
+}

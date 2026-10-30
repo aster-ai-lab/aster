@@ -1,0 +1,59 @@
+{
+  "unix": 1792889847.1164448,
+  "result": {
+    "unix": 1792889785.8929183,
+    "phase": "failed",
+    "gpu_executed": false,
+    "native_linked": false,
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "runs": [
+      {
+        "name": "control",
+        "command": [
+          "nice",
+          "-n",
+          "19",
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/generator-control.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc9-e81ede480e07/admission-seed-cpu-v94/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/generator-control.o",
+          "bytes": 529944,
+          "sha256": "71e8e29a993328327a9b3189acffd5ef7cec4cb1a3b6e1782d0c80a9224358dd"
+        }
+      }
+    ],
+    "unit_tests": [],
+    "step": "candidate-compile",
+    "control_object_byte_equal": true,
+    "error": "RuntimeError: controlled CPU command failed: candidate-compile",
+    "finished_unix": 1792889804.339595
+  },
+  "exact_cpu_process_alive": false,
+  "build-worker.log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/generator_cpu_worker_v105.py\", line 59, in <module>\n    command(args,name+'-compile',env)\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/generator_cpu_worker_v105.py\", line 28, in command\n    raise RuntimeError('controlled CPU command failed: ' + label)\nRuntimeError: controlled CPU command failed: candidate-compile\n",
+  "candidate-compile.log": "e/ds41_conv_pool_dense.hpp:12,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_reuse.hpp:21,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp:49:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_conv_pool.hpp:133:8: error: redefinition of \u2018struct strata::v41::Ds41PoolStats\u2019\n  133 | struct Ds41PoolStats {\n      |        ^~~~~~~~~~~~~\nIn file included from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_reuse.hpp:20,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp:49:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_pool.hpp:133:8: note: previous definition of \u2018struct strata::v41::Ds41PoolStats\u2019\n  133 | struct Ds41PoolStats {\n      |        ^~~~~~~~~~~~~\nIn file included from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_conv_pool_dense.hpp:12,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_reuse.hpp:21,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp:49:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_conv_pool.hpp:144:7: error: redefinition of \u2018class strata::v41::Ds41ConvPool\u2019\n  144 | class Ds41ConvPool {\n      |       ^~~~~~~~~~~~\nIn file included from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_reuse.hpp:20,\n                 from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp:49:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_conv_pool.hpp:144:7: note: previous definition of \u2018class strata::v41::Ds41ConvPool\u2019\n  144 | class Ds41ConvPool {\n      |       ^~~~~~~~~~~~\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp: In function \u2018int main(int, char**)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105/ds41_generate.cpp:3332:113: warning: format \u2018%ld\u2019 expects argument of type \u2018long int\u2019, but argument 7 has type \u2018int\u2019 [-Wformat=]\n 3332 |             std::fprintf(stderr, \"DSpark totals: verify %.2f ms/pass draft %.2f ms/pass acc %.2f (%ld passes, %ld tokens)\\n\",\n      |                                                                                                               ~~^\n      |                                                                                                                 |\n      |                                                                                                                 long int\n      |                                                                                                               %d\n 3333 |                          sp_vms / sp_pass, sp_dms / sp_pass, (double) sp_acc / sp_pass, sp_pass, gen);\n      |                                                                                                  ~~~             \n      |                                                                                                  |\n      |                                                                                                  int\n"
+}

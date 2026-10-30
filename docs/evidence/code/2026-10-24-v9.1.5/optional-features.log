@@ -1,0 +1,325 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/Cargo.toml
+    Checking libc v0.2.186
+    Checking serde_core v1.0.229
+    Checking smallvec v1.15.1
+    Checking lock_api v0.4.14
+    Checking once_cell v1.21.4
+    Checking typenum v1.19.0
+    Checking parking_lot_core v0.9.12
+    Checking getrandom v0.2.16
+    Checking errno v0.3.14
+    Checking rand_core v0.6.4
+    Checking parking_lot v0.12.5
+    Checking generic-array v0.14.7
+    Checking signal-hook-registry v1.4.8
+    Checking serde v1.0.229
+    Checking serde_json v1.0.154
+    Checking socket2 v0.6.4
+    Checking crypto-common v0.1.6
+    Checking mio v1.2.1
+    Checking num-traits v0.2.19
+   Compiling rustix v1.1.5
+    Checking bytes v1.12.1
+    Checking cpufeatures v0.2.17
+    Checking block-buffer v0.10.4
+    Checking tokio v1.53.3
+    Checking indexmap v2.14.0
+    Checking digest v0.10.7
+    Checking concurrent-queue v2.5.0
+    Checking zerocopy v0.8.48
+    Checking tracing-core v0.1.36
+    Checking fastrand v2.3.0
+    Checking phf v0.13.1
+    Checking icu_normalizer v2.0.0
+    Checking event-listener v5.4.1
+    Checking http v1.4.0
+    Checking tracing v0.1.44
+    Checking event-listener-strategy v0.5.4
+    Checking tokio-util v0.7.19
+    Checking string_cache v0.9.0
+    Checking sha2 v0.10.9
+    Checking web_atoms v0.2.3
+    Checking futures-lite v2.6.1
+    Checking idna_adapter v1.2.1
+    Checking simd-adler32 v0.3.7
+    Checking subtle v2.6.1
+    Checking idna v1.1.0
+   Compiling async-io v2.6.0
+    Checking zeroize v1.8.2
+    Checking either v1.15.0
+    Checking miniz_oxide v0.8.9
+    Checking rustls-pki-types v1.14.0
+    Checking getrandom v0.3.4
+    Checking async-lock v3.4.1
+    Checking polling v3.11.0
+    Checking http-body v1.0.1
+    Checking ppv-lite86 v0.2.21
+    Checking num-integer v0.1.46
+    Checking deranged v0.5.5
+    Checking rand_chacha v0.3.1
+    Checking ring v0.17.14
+    Checking flate2 v1.1.5
+    Checking block-padding v0.3.3
+    Checking async-task v4.7.1
+    Checking lazy_static v1.5.0
+   Compiling syn v1.0.109
+    Checking time v0.3.47
+    Checking h2 v0.4.19
+    Checking rustls-webpki v0.103.15
+    Checking inout v0.1.4
+    Checking getrandom v0.4.1
+    Checking rand v0.8.8
+    Checking num-bigint v0.4.6
+    Checking url v2.5.8
+    Checking async-channel v2.5.0
+    Checking piper v0.2.4
+    Checking unicode-ident v1.0.24
+    Checking hyper v1.8.1
+    Checking blocking v1.6.2
+    Checking num-rational v0.4.2
+    Checking proc-macro2 v1.0.106
+    Checking cipher v0.4.4
+    Checking ahash v0.8.12
+    Checking rustls v0.23.46
+    Checking crossbeam-epoch v0.9.20
+    Checking async-executor v1.13.3
+    Checking chrono v0.4.45
+    Checking async-signal v0.2.13
+    Checking num-iter v0.1.45
+    Checking num-complex v0.4.6
+    Checking borrow-or-share v0.2.4
+    Checking event-listener v2.5.3
+   Compiling rustix v0.38.44
+    Checking async-channel v1.9.0
+    Checking tokio-rustls v0.26.6
+    Checking fluent-uri v0.4.1
+    Checking publicsuffix v2.3.0
+   Compiling async-attributes v1.1.2
+    Checking tower v0.5.2
+    Checking num v0.4.3
+    Checking async-process v2.5.0
+    Checking fs-set-times v0.20.3
+    Checking async-global-executor v2.4.1
+    Checking crossbeam-deque v0.8.6
+    Checking hyper-util v0.1.20
+    Checking quote v1.0.45
+    Checking cookie v0.18.2
+    Checking webpki-roots v1.0.9
+    Checking markup5ever v0.38.0
+    Checking sha1 v0.10.6
+    Checking chromiumoxide_types v0.7.0
+    Checking kv-log-macro v1.0.7
+    Checking fs2 v0.4.3
+    Checking heck v0.4.1
+    Checking uuid v1.26.1
+    Checking async-std v1.13.2
+    Checking tower-http v0.6.8
+    Checking chromiumoxide_pdl v0.7.0
+    Checking cap-primitives v4.0.3
+    Checking derive_more v2.1.1
+    Checking cssparser v0.37.0
+    Checking hyper-rustls v0.27.7
+    Checking tungstenite v0.23.0
+    Checking cookie_store v0.21.1
+    Checking async-compression v0.4.19
+    Checking fraction v0.15.3
+    Checking serde_yaml_ng v0.10.0
+    Checking serde_urlencoded v0.7.1
+    Checking http-body-util v0.1.3
+    Checking string_cache v0.8.9
+    Checking markup5ever v0.39.0
+    Checking which v6.0.3
+    Checking zopfli v0.8.3
+    Checking markup5ever v0.14.1
+    Checking html5ever v0.39.0
+    Checking selectors v0.38.0
+    Checking uuid-simd v0.8.0
+    Checking pulldown-cmark v0.13.0
+    Checking cssparser v0.34.0
+    Checking reqwest v0.12.24
+    Checking async-tungstenite v0.27.0
+    Checking chromiumoxide_cdp v0.7.0
+    Checking cap-std v4.0.2
+    Checking anyhow v1.0.104
+    Checking rayon-core v1.13.0
+    Checking html5ever v0.38.0
+    Checking olpc-cjson v0.1.4
+    Checking universal-hash v0.5.1
+    Checking email_address v0.2.9
+    Checking clap_builder v4.6.7
+    Checking which v7.0.3
+    Checking polyval v0.6.2
+    Checking html5ever v0.29.1
+    Checking selectors v0.26.0
+    Checking a3s-use-core v0.2.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/use/core)
+    Checking rayon v1.12.0
+    Checking cap-fs-ext v4.0.2
+    Checking rmp v0.8.14
+    Checking rquickjs-sys v0.11.0
+    Checking dom_query v0.28.0
+    Checking zip v2.4.2
+    Checking jsonschema-value v0.48.5
+    Checking opentelemetry v0.21.0
+    Checking a3s-acl v0.3.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/acl)
+    Checking referencing v0.48.5
+    Checking xml5ever v0.38.0
+    Checking dirs-sys v0.4.1
+    Checking dirs-sys v0.5.0
+    Checking aes v0.8.4
+    Checking sharded-slab v0.1.7
+    Checking tokio-stream v0.1.17
+    Checking tracing-log v0.2.0
+    Checking tracing-serde v0.2.0
+    Checking ordered-float v4.6.0
+    Checking serde_spanned v0.6.9
+    Checking toml_datetime v0.6.11
+    Checking rand_xoshiro v0.6.0
+    Checking bstr v1.12.1
+    Checking strum v0.27.2
+    Checking bytemuck v1.25.2
+    Checking oci-spec v0.10.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/vendor/oci-spec-0.10.0)
+    Checking globset v0.4.18
+    Checking roaring v0.11.1
+    Checking dom_smoothie v0.18.2
+    Checking scraper v0.22.0
+    Checking toml_edit v0.22.27
+    Checking imbl v3.0.0
+    Checking tracing-subscriber v0.3.23
+    Checking opentelemetry_sdk v0.21.2
+    Checking dashmap v6.2.1
+    Checking jsonschema v0.48.5
+    Checking rand v0.10.3
+    Checking clap v4.6.7
+    Checking dirs v6.0.0
+    Checking dirs v5.0.1
+    Checking markup5ever_rcdom v0.38.0+unofficial
+    Checking rquickjs-core v0.11.0
+    Checking rmp-serde v1.3.0
+    Checking ghash v0.5.1
+    Checking cron v0.17.0
+    Checking referencing v0.47.0
+    Checking ctr v0.9.2
+    Checking cbc v0.1.2
+    Checking ecb v0.1.2
+    Checking tempfile v3.27.0
+    Checking xattr v1.6.1
+    Checking a3s-oci-core v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/crates/core)
+    Checking md-5 v0.10.6
+    Checking rust-stemmers v1.2.0
+    Checking bincode v1.3.3
+    Checking quick-xml v0.38.4
+    Checking aead v0.5.2
+    Checking serde_ignored v0.1.14
+    Checking num_cpus v1.17.0
+    Checking filetime v0.2.29
+    Checking memmap2 v0.9.11
+    Checking fsevent-sys v4.1.0
+    Checking ttf-parser v0.25.1
+    Checking notify v8.2.0
+    Checking a3s-vec v0.1.8 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/vec)
+    Checking sha256 v1.6.0
+    Checking lsp-types v0.97.0
+    Checking lopdf v0.42.0
+    Checking tar v0.4.46
+    Checking a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/crates/sdk)
+    Checking a3s-lane v0.5.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/lane)
+    Checking aes-gcm v0.10.3
+    Checking jsonschema v0.47.0
+    Checking a3s-sandbox v0.2.3 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/sandbox)
+    Checking rquickjs v0.11.0
+    Checking a3s-form-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/form-core)
+    Checking htmd v0.5.4
+    Checking chromiumoxide v0.7.0
+    Checking toml v0.8.23
+    Checking ignore v0.4.24
+    Checking a3s-effect v0.2.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/effect)
+    Checking html2text v0.16.7
+    Checking a3s-memory v0.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/memory)
+    Checking a3s-use-browser v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/browser)
+    Checking a3s-flow v2.0.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/flow)
+    Checking a3s-common v0.1.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/common)
+    Checking serde_yaml v0.9.34+deprecated
+    Checking zip v0.6.6
+    Checking a3s-search v3.4.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/search)
+    Checking a3s-code-core v9.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/core)
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:28:26
+   |
+28 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:488:21
+    |
+488 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 11 warnings (run `cargo fix --lib -p a3s-code-core` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 16s

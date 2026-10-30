@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::progress_bar::tests::test_partial_block' (37568) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\progress_bar.rs:136:9:
+assertion `left == right` failed
+  left: Some("▒")
+ right: Some("▌")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::progress_bar::tests::test_partial_block ... FAILED
+
+failures:
+
+failures:
+    views::progress_bar::tests::test_partial_block
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

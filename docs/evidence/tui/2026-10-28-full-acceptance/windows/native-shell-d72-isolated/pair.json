@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\d72c86b71a65fbdde696e8a24e84f6210b95591d-20261029034654475",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "b339c1acb7364c5a63fc336bdf73dd88b0993fd81ca22c6d2007ca5b1cd875c7",
+      "bytes": 323993600
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "d6e9cd9bad38776c639cb0b64adf5315d951cf07c7c018ea07f71d7d9d3a4038",
+      "bytes": 185445376
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-send-now-final-windows-build.jsonl",
+  "created_at": "2026-10-29T03:47:02.6593260Z"
+}

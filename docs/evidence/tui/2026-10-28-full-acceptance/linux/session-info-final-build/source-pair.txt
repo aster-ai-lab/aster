@@ -1,0 +1,1 @@
+aster-cli-pair-v1:a6d8f6a3949c46780a7f7a3965298b283971f40a:x86_64-unknown-linux-gnu

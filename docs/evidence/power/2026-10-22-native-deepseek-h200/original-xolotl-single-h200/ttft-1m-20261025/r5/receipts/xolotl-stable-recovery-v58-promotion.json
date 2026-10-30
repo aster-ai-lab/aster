@@ -1,0 +1,210 @@
+{
+  "unix": 1792878139.664847,
+  "phase": "promoted",
+  "base_url": "http://10.102.93.68/v1",
+  "old_allocation_uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+  "new_allocation_uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+  "same_existing_key": true,
+  "context_tokens": 1048576,
+  "instance_actual_prompt_tokens_qualified": 132097,
+  "engine_profile_full_1m_length_qualified": true,
+  "engine_profile_evidence": "xolotl-indexer-fullwindow-suite-v45-latest.json",
+  "instance_full_1m_execution_tested": false,
+  "native_tool_roundtrip_passed": true,
+  "workbuddy_gui_e2e_passed": false,
+  "speed_300_qualified": false,
+  "lease_ends_unix": 1792898988.8316312,
+  "switch": {
+    "unix": 1792878151.172015,
+    "before": {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "aster.serving/allocation-uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+          "aster.serving/lease-ends-unix": "1792880432.7702465",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"04278df1-210a-4611-8bdc-bf7f5a848dde\",\"aster.serving/lease-ends-unix\":\"1792880432.7702465\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc6-43da44c9b0a4-57982995\",\"uid\":\"04278df1-210a-4611-8bdc-bf7f5a848dde\"}],\"resourceVersion\":\"14547073890\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc6-43da44c9b0a4-57982995\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+          "metallb.universe.tf/address-pool": "bgp-pool-v3",
+          "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+        },
+        "creationTimestamp": "2026-10-24T11:45:48Z",
+        "labels": {
+          "app.kubernetes.io/managed-by": "aster-h200-deployment",
+          "aster-task": "xolotl-single-h200"
+        },
+        "name": "aster-xolotl-api-v3pool-20261024",
+        "namespace": "ailab-hrprdduanyan",
+        "ownerReferences": [
+          {
+            "apiVersion": "rjob.brainpp.cn/v1alpha1",
+            "blockOwnerDeletion": false,
+            "controller": false,
+            "kind": "RJob",
+            "name": "aster-xolotl-1mc6-43da44c9b0a4-57982995",
+            "uid": "04278df1-210a-4611-8bdc-bf7f5a848dde"
+          }
+        ],
+        "resourceVersion": "14548641795",
+        "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+      },
+      "spec": {
+        "allocateLoadBalancerNodePorts": false,
+        "clusterIP": "10.68.85.120",
+        "clusterIPs": [
+          "10.68.85.120"
+        ],
+        "externalTrafficPolicy": "Cluster",
+        "internalTrafficPolicy": "Cluster",
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack",
+        "ports": [
+          {
+            "appProtocol": "http",
+            "name": "openai-http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 30003
+          }
+        ],
+        "selector": {
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc6-43da44c9b0a4-57982995"
+        },
+        "sessionAffinity": "None",
+        "type": "LoadBalancer"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "10.102.93.68"
+            }
+          ]
+        }
+      }
+    },
+    "after": {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "aster.serving/allocation-uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+          "aster.serving/lease-ends-unix": "1792898988.8316312",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"c016efa8-6e71-4501-8aff-08f7335d0b27\",\"aster.serving/lease-ends-unix\":\"1792898988.8316312\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc8-d1480eb0e2fd-90999078\",\"uid\":\"c016efa8-6e71-4501-8aff-08f7335d0b27\"}],\"resourceVersion\":\"14548641795\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc8-d1480eb0e2fd-90999078\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+          "metallb.universe.tf/address-pool": "bgp-pool-v3",
+          "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+        },
+        "creationTimestamp": "2026-10-24T11:45:48Z",
+        "labels": {
+          "app.kubernetes.io/managed-by": "aster-h200-deployment",
+          "aster-task": "xolotl-single-h200"
+        },
+        "name": "aster-xolotl-api-v3pool-20261024",
+        "namespace": "ailab-hrprdduanyan",
+        "ownerReferences": [
+          {
+            "apiVersion": "rjob.brainpp.cn/v1alpha1",
+            "blockOwnerDeletion": false,
+            "controller": false,
+            "kind": "RJob",
+            "name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+            "uid": "c016efa8-6e71-4501-8aff-08f7335d0b27"
+          }
+        ],
+        "resourceVersion": "14554371966",
+        "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+      },
+      "spec": {
+        "allocateLoadBalancerNodePorts": false,
+        "clusterIP": "10.68.85.120",
+        "clusterIPs": [
+          "10.68.85.120"
+        ],
+        "externalTrafficPolicy": "Cluster",
+        "internalTrafficPolicy": "Cluster",
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack",
+        "ports": [
+          {
+            "appProtocol": "http",
+            "name": "openai-http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 30003
+          }
+        ],
+        "selector": {
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078"
+        },
+        "sessionAffinity": "None",
+        "type": "LoadBalancer"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "10.102.93.68"
+            }
+          ]
+        }
+      }
+    },
+    "resource_version_precondition": "14548641795",
+    "pre_switch_generation": "42"
+  },
+  "post_switch_service": {
+    "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+    "resource_version": "14554371966",
+    "selector": {
+      "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078"
+    },
+    "load_balancer": {
+      "ingress": [
+        {
+          "ip": "10.102.93.68"
+        }
+      ]
+    }
+  },
+  "endpoint_object_read_permitted": false,
+  "endpoint_read_failure_previously_observed": "Forbidden: endpoints resource is not allowed for the cluster user",
+  "backend_verified_by_unique_nonce_and_kv_reuse": true,
+  "target_pod_prime": {
+    "content": "42",
+    "usage": {
+      "prompt_tokens": 353,
+      "completion_tokens": 2,
+      "total_tokens": 355,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "direct_target_pod": "100.100.176.103"
+  },
+  "finished_unix": 1792878159.7805288,
+  "windows_forwarding": false,
+  "windows_direct_health": {
+    "status": 200,
+    "loaded": true,
+    "max_context": 1048576
+  },
+  "windows_direct_generation": {
+    "content": "42",
+    "done": true,
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 353,
+      "completion_tokens": 2,
+      "total_tokens": 355,
+      "prompt_tokens_details": {
+        "cached_tokens": 353
+      }
+    },
+    "ttft_seconds": 0.04699999978765845,
+    "seconds": 0.07799999974668026
+  },
+  "previous_card_already_terminal": true
+}

@@ -1,0 +1,36 @@
+{
+  "unix": 1792874653.7074456,
+  "status": 200,
+  "seconds": 2.8853872949257493,
+  "events": [
+    {
+      "id": "chatcmpl-b1efc07432784f32a362b53e",
+      "object": "chat.completion.chunk",
+      "created": 1792874651,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "role": "assistant",
+            "content": ""
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "error": {
+        "type": "server_error",
+        "message": "Extra data: line 1 column 19 (char 18)"
+      }
+    },
+    {
+      "done": true
+    }
+  ],
+  "raw_model_text_lines": [
+    "[strata] raw: '{\"a\": 17, \"b\": 25}</\uff5cDSML\uff5c parameter>\\n</\uff5cDSML\uff5c invoke>\\n'"
+  ],
+  "public_fixture_only": true
+}

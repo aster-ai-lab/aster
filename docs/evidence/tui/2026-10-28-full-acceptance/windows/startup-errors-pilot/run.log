@@ -1,0 +1,17 @@
+
+running 1 test
+ORACLE case=draft-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-pc-windows-msvc
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "WRONG"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "RIGHT"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=undo-redo result=pass detail=word deletion and actual undo/redo restore the intended draft
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "数据"; additional display wait=0 ms
+ORACLE case=draft-edit-controls name=stash-pop result=pass detail=Ctrl+S clears and restores the Unicode draft without submitting it
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "BROKEN"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=draft-redraw result=pass detail=one key operation removes "数据"; additional display wait=1 ms
+ORACLE case=draft-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13443
+ORACLE case=draft-edit-controls name=exact-edited-prompt result=pass detail=cursor/line deletion, clear and undo retain exact UTF-8 bytes in one real model request
+ORACLE case=draft-edit-controls name=quit result=pass detail=exit 0
+test input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 21.02s
+

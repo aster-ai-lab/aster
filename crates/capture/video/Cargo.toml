@@ -21,7 +21,6 @@ doctest = false
 name = "capture-demo"
 path = "src/main.rs"
 
-[workspace]
 
 [profile.dev]
 opt-level = 1

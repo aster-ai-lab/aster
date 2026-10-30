@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::status::set_coding_data_sharing_blocked_by_zdr' (54844) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\status.rs:111:5:
+blocked toast uses ✗ glyph: x Cannot change: Zero Data Retention enabled
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::status::set_coding_data_sharing_blocked_by_zdr ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::status::set_coding_data_sharing_blocked_by_zdr
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

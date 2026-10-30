@@ -1,0 +1,11 @@
+{
+  "at_epoch": 1792918639.9566228,
+  "stage": "complete",
+  "profile": "Exact routing + packed KV; 8 threads, 144 GiB arena, PCIe 0.75",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 18.65
+  },
+  "prefill_median": 620.0,
+  "full_one_million_completed": false
+}

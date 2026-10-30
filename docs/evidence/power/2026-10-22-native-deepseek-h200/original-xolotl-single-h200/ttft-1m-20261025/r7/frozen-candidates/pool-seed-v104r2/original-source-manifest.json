@@ -1,0 +1,18 @@
+{
+  "ds41_conv_reuse.hpp": {
+    "bytes": 19277,
+    "sha256": "aadb728a453397a76b6408761de10d8ad715e36daa7962c72df08ffe56760dfd"
+  },
+  "ds41_conv_pool.hpp": {
+    "bytes": 11190,
+    "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+  },
+  "ds41_conv_pool.cpp": {
+    "bytes": 36012,
+    "sha256": "b72f510acf36522ad78f3eb97ee4a827c57d81f5edd40cf3dc6f12ebe675f552"
+  },
+  "test_ds41_conv_pool.cpp": {
+    "bytes": 19655,
+    "sha256": "8a568e31d15e9e760753914ae8e6577bd5bf4e0eba84b79387dbcfdeeda32536"
+  }
+}

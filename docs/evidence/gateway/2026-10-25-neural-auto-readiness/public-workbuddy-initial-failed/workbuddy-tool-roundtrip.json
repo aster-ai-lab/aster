@@ -1,0 +1,133 @@
+{
+    "at":  "2026-10-25T15:55:43.4556440+00:00",
+    "base_url":  "http://117.162.0.179:8080/v1",
+    "cases":  [
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-auto-json-call.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-named-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-named-sse-call.sse"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-required-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-required-json-call.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-auto-sse-call.sse"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in deepseek-v4.1-flash-hi-tools-sse.sse"
+                  },
+                  {
+                      "case":  "prism-27b-auto-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-auto-json-call.json"
+                  },
+                  {
+                      "case":  "prism-27b-named-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-named-sse-call.sse"
+                  },
+                  {
+                      "case":  "prism-27b-required-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-required-json-call.json"
+                  },
+                  {
+                      "case":  "prism-27b-auto-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-auto-sse-call.sse"
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-json",
+                      "model":  "prism-27b",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "prism-27b-hi-tools-sse",
+                      "model":  "prism-27b",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in prism-27b-hi-tools-sse.sse"
+                  },
+                  {
+                      "case":  "auto-auto-json",
+                      "model":  "auto",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-auto-json-call.json"
+                  },
+                  {
+                      "case":  "auto-named-sse",
+                      "model":  "auto",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-named-sse-call.sse"
+                  },
+                  {
+                      "case":  "auto-required-json",
+                      "model":  "auto",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-required-json-call.json"
+                  },
+                  {
+                      "case":  "auto-auto-sse",
+                      "model":  "auto",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-auto-sse-call.sse"
+                  },
+                  {
+                      "case":  "auto-hi-tools-json",
+                      "model":  "auto",
+                      "stream":  false,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "auto-hi-tools-sse",
+                      "model":  "auto",
+                      "stream":  true,
+                      "passed":  false,
+                      "error":  "HTTP 400; response retained in auto-hi-tools-sse.sse"
+                  }
+              ],
+    "all_passed":  false
+}

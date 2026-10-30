@@ -1,0 +1,221 @@
+{
+  "qualified": true,
+  "checks": {
+    "nine_original_turns": true,
+    "nine_successful_writes": true,
+    "same_original_admission": true,
+    "one_gap_exactly_at_second_write": true,
+    "seven_later_continuous_receipts": true,
+    "two_repeated_after_states": true,
+    "complete_effects": true,
+    "final_source_B": true
+  },
+  "logs": [
+    {
+      "source": "target/q/u-gap/t/a3s-unattended-state-cycle-ws-99186-1792840116117660000/.a3s/sessions/2026-10-24/485dce8f-f3c9-4272-a855-9435fc6a727d/485dce8f-f3c9-4272-a855-9435fc6a727d.jsonl",
+      "sha256": "fdfc634153bf3243e0a3e82249648fc76cb0a5997d4abdf0be7ebe3319d5f99c",
+      "fact_count": 41
+    }
+  ],
+  "receipts": [
+    {
+      "seq": 9,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 13,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:e56242290b3f58614f27e7c534821a78f7eb1a2f5ee21994794a9f129797d9b1",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 17,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 21,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 25,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 29,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 33,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 37,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      }
+    },
+    {
+      "seq": 41,
+      "tool": "write",
+      "outcome": "succeeded",
+      "admission": {
+        "run_id": "run-157459fe-e18a-489e-adb7-87debc5ca046",
+        "thread_id": "485dce8f-f3c9-4272-a855-9435fc6a727d",
+        "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+      },
+      "completeness": "complete",
+      "path": "source.txt",
+      "before": {
+        "kind": "file",
+        "content_digest": "sha256:559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "mode": 33188
+      },
+      "after": {
+        "kind": "file",
+        "content_digest": "sha256:df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "mode": 33188
+      }
+    }
+  ],
+  "scope": "independent post-join original facts: one observed external gap followed by a closed repeated-state window; not real-model cost/performance"
+}

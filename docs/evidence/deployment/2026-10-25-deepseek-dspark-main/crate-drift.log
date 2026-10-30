@@ -1,0 +1,28 @@
+cwd=/code/aster/.wt-deepseek-dspark-main-20261025
+command=['python3', 'tests/crate_drift_report.py', '--baseline', 'tests/crate_drift_baseline.json']
+drift ratchet grew (6 new):
+  a3s-box-runtime: CONTENT-DRIFT
+  a3s-okf: CONTENT-DRIFT
+  a3s-runtime: CONTENT-DRIFT
+  a3s-sandbox: CONTENT-DRIFT
+  a3s-use: CONTENT-DRIFT
+  a3s-use-ocr: CONTENT-DRIFT
+the drift ratchet only shrinks: update the baseline only when drift was removed
+a3s crate lineages: aster=185, api=14, cloud=64
+shared=62 drifted=16 unique=130
+  DRIFT a3s-auth: CONTENT-DRIFT
+  DRIFT a3s-box-runtime: CONTENT-DRIFT
+  DRIFT a3s-code-core: VERSION-DRIFT
+  DRIFT a3s-effect: CONTENT-DRIFT
+  DRIFT a3s-flow: CONTENT-DRIFT
+  DRIFT a3s-form-core: CONTENT-DRIFT
+  DRIFT a3s-libkrun-sys: DUPLICATE-cloud
+  DRIFT a3s-oci-sdk: DUPLICATE-aster
+  DRIFT a3s-okf: CONTENT-DRIFT
+  DRIFT a3s-orm: CONTENT-DRIFT
+  DRIFT a3s-runtime: CONTENT-DRIFT
+  DRIFT a3s-sandbox: CONTENT-DRIFT
+  DRIFT a3s-use: CONTENT-DRIFT
+  DRIFT a3s-use-ocr: CONTENT-DRIFT
+  DRIFT libkrunfw-windows: DUPLICATE-cloud
+  DRIFT vm-memory: CONTENT-DRIFT

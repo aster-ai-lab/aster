@@ -1,0 +1,41 @@
+{
+  "unix": 1792886529.9732244,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc9-e81ede480e07/admission-seed-cpu-v94",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 221472,
+      "sha256": "7a3c2432abaa95add1882a36968adbdebe9725a7827ebbc359b311e9912c79b1"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "generator_cpu_worker_v94.py",
+      "bytes": 3280,
+      "sha256": "276f573c217b605d00ec065a728e8c1ac8dd4da0cd81a685f5dfee088726f7e8"
+    },
+    {
+      "file": "build-plan.json",
+      "bytes": 888,
+      "sha256": "54370cf9218da69e83dbe9515cbe69b3d9bdba546c2d41834471514bd3e8c9b0"
+    }
+  ],
+  "process": {
+    "pid": 1055817,
+    "start_ticks": 281332383,
+    "uid": 10250,
+    "unix": 1792886538.9018993,
+    "budget_seconds": 240,
+    "namespace": "jump host"
+  }
+}

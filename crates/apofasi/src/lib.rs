@@ -87,7 +87,8 @@ pub use schema::{
     SystemOneRequest, SystemOneResponse, TokenUsage,
 };
 pub use sequence::{
-    pack_question, ByteTokenizer, PackedQuestion, SequenceConfig, SpecialTokens, Tokenize,
+    pack_question, pack_question_with_truncation, ByteTokenizer, PackedQuestion, SequenceConfig,
+    SpecialTokens, StateTruncation, Tokenize,
 };
 
 #[cfg(feature = "router")]

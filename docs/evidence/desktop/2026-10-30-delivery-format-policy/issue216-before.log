@@ -1,0 +1,94 @@
+$ vitest run --project renderer src/renderer/pages/agents/workbenchHomeCapabilities.test.ts
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:58292) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/app/__tests__/local-build.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/app/__tests__/-local-build.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/provider.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/-provider.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/work/github-issues-20261030/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/workbenchHomeCapabilities.test.ts (13 tests | 1 failed) 130ms
+   ❯ workbench home composer capabilities (13)
+     × does not turn a text-only request into an extra workbook or image task 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/workbenchHomeCapabilities.test.ts > workbench home composer capabilities > does not turn a text-only request into an extra workbook or image task
+AssertionError: expected '若用户规定了条数或行数，可见回复的非空行必须正好等于该条数：每一条单独成行…' not to contain '在本轮工作区新建一个 xlsx'
+
+- Expected
++ Received
+
+- 在本轮工作区新建一个 xlsx
++ 若用户规定了条数或行数，可见回复的非空行必须正好等于该条数：每一条单独成行并包含该条的对象，不要另写标题行、前言、字数统计或写作说明。若用户规定了字数且该上限能与其他要求同时满足，该上限覆盖全部可见回复，不要另附字数统计或写作说明，直接交付。
++ 若两条要求无法同时满足，不要只执行其中一条，先写一条以问号结尾的问句，请确认保留哪一条，并写明两边的原要求。
++ 用户要求根据表格输出结果时，在本轮工作区新建一个 xlsx，不要只贴 Markdown 表。用户要求趋势图时，除表格外再保存一张图片文件。
++ 校验上传的文档时，完整引用原文句子，不要用省略号。
+
+ ❯ src/renderer/pages/agents/workbenchHomeCapabilities.test.ts:28:33
+     26|     const context = homeTurnContext({ reviewMode: false, artifactTrace…
+     27|     const modelDirectives = context.directives.join('\n')
+     28|     expect(modelDirectives).not.toContain('在本轮工作区新建一个 xlsx')
+       |                                 ^
+     29|     expect(modelDirectives).not.toContain('除表格外再保存一张图片文件')
+     30|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  07:18:23
+   Duration  470ms (environment 44%, tests 30%, transform 14%, setup 11%, worker 1%)
+
+[ELIFECYCLE] Command failed with exit code 1.

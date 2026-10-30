@@ -20,6 +20,7 @@ use chrono::NaiveDate;
 mod catalog;
 pub use catalog::{
     list_workspace_sessions, resolve_workspace_session, SessionCatalog, SessionCatalogEntry,
+    SessionKind,
 };
 
 pub const SESSION_FOLDER_SCHEMA: &str = "a3s.code.session-folder.v1";
@@ -76,6 +77,34 @@ pub fn prepare_session_home(workspace: &Path, session_id: &str) -> Result<Option
         return Ok(None);
     }
     Ok(Some(ensure_session_dir(workspace, session_id)?))
+}
+
+/// Persist an explicit launch surface without changing legacy unmarked sessions.
+pub fn prepare_session_home_with_kind(
+    workspace: &Path,
+    session_id: &str,
+    kind: SessionKind,
+) -> Result<Option<PathBuf>> {
+    let Some(dir) = prepare_session_home(workspace, session_id)? else {
+        return Ok(None);
+    };
+    let marker = dir.join("session.json");
+    let mut body: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(&marker).with_context(|| format!("read {}", marker.display()))?,
+    )?;
+    let Some(fields) = body.as_object_mut() else {
+        bail!("invalid session marker: {}", marker.display());
+    };
+    if let Some(existing) = fields.get("sessionKind") {
+        let existing: SessionKind = serde_json::from_value(existing.clone())?;
+        if existing != kind {
+            bail!("session kind conflicts with the existing marker");
+        }
+    } else {
+        fields.insert("sessionKind".into(), serde_json::to_value(kind)?);
+        write_session_marker(&dir, &body)?;
+    }
+    Ok(Some(dir))
 }
 
 pub fn find_session_dir(workspace: &Path, session_id: &str) -> Result<Option<PathBuf>> {
@@ -238,15 +267,20 @@ fn write_session_json(
         "workspace": workspace.display().to_string(),
         "effect_log": format!("{folder_id}.jsonl"),
     });
-    let bytes = serde_json::to_vec_pretty(&body)?;
+    write_session_marker(dir, &body)?;
+    // A session with no facts yet still has the log the marker names.
+    // Resume admission reads that file; a missing log is not an empty session.
+    create_empty_effect_log(dir, folder_id)?;
+    Ok(())
+}
+
+fn write_session_marker(dir: &Path, body: &serde_json::Value) -> Result<()> {
+    let bytes = serde_json::to_vec_pretty(body)?;
     let temporary = dir.join(".session.json.tmp");
     std::fs::write(&temporary, bytes).with_context(|| format!("write {}", temporary.display()))?;
     set_mode(&temporary, 0o600)?;
     let marker = dir.join("session.json");
     std::fs::rename(&temporary, &marker).with_context(|| format!("rename {}", marker.display()))?;
-    // A session with no facts yet still has the log the marker names.
-    // Resume admission reads that file; a missing log is not an empty session.
-    create_empty_effect_log(dir, folder_id)?;
     Ok(())
 }
 

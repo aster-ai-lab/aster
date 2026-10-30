@@ -1,0 +1,1194 @@
+//! Bash tool - Execute shell commands
+
+use crate::tools::types::{
+    Tool, ToolContext, ToolErrorKind, ToolEventSender, ToolOutput, ToolStreamEvent,
+};
+use crate::workspace::{CommandOutputObserver, CommandOutputSummary, CommandRequest};
+use anyhow::Result;
+use async_trait::async_trait;
+use std::collections::HashMap;
+#[cfg(windows)]
+use std::ffi::OsStr;
+use std::process::Stdio;
+use std::sync::{Arc, Mutex};
+use tokio::process::Command;
+
+pub(crate) mod output_streams;
+#[cfg(windows)]
+pub(crate) mod windows;
+#[cfg(any(windows, test))]
+pub(crate) mod windows_shell;
+#[cfg(windows)]
+pub(crate) use windows::maybe_execute_simple_windows_http_command;
+#[cfg(windows)]
+pub(crate) use windows::{
+    build_powershell_command, encode_powershell_command, windows_host_powershell, CREATE_NO_WINDOW,
+};
+#[cfg(all(test, windows))]
+use windows::{
+    normalize_json_like_literal, parse_simple_windows_http_command, preprocess_windows_command,
+};
+
+/// Default timeout in milliseconds (2 minutes)
+pub(crate) const DEFAULT_TIMEOUT_MS: u64 = 120_000;
+const MIN_TIMEOUT_MS: u64 = 1_000;
+
+/// Adapter that forwards `CommandOutputObserver` deltas to a tool event channel.
+///
+/// Keeps `workspace::CommandRequest` free of `ToolEventSender`. Constructed in
+/// the bash tool when a session has installed an event channel; backend
+/// implementations only see `&dyn CommandOutputObserver`.
+struct ToolEventObserver {
+    tx: Option<ToolEventSender>,
+    summary: Mutex<Option<CommandOutputSummary>>,
+}
+
+#[async_trait]
+impl CommandOutputObserver for ToolEventObserver {
+    async fn on_output_delta(&self, delta: &str) {
+        if let Some(tx) = &self.tx {
+            tx.send(ToolStreamEvent::OutputDelta(delta.to_string()))
+                .await
+                .ok();
+        }
+    }
+
+    async fn on_output_complete(&self, summary: &CommandOutputSummary) {
+        *self.summary.lock().unwrap() = Some(*summary);
+    }
+}
+
+fn with_changed_paths(metadata: serde_json::Value, paths: &[String]) -> serde_json::Value {
+    let mut wrapped = Some(metadata);
+    crate::porcelain::attach(&mut wrapped, paths);
+    wrapped.unwrap_or_else(|| serde_json::json!({}))
+}
+
+pub struct BashTool;
+
+/// Sandbox-shaped failure signals: the command itself was likely fine, the
+/// sandbox denied a capability. The on-failure approval tier (Codex parity):
+/// surface a one-shot escalation SUGGESTION through the model — the retry
+/// must still pass the existing `require_escalated` approval gate, nothing
+/// auto-executes, and escalated runs never see the hint (no retry loop).
+fn sandbox_failure_hint(output: &str) -> Option<&'static str> {
+    const SIGNALS: &[(&str, &str)] = &[
+        ("Operation not permitted", "a syscall was blocked"),
+        ("Permission denied", "a filesystem access was denied"),
+        ("sandbox", "the sandbox rejected the operation"),
+        ("Connection refused", "a network egress was refused"),
+        ("Network is unreachable", "network egress is unavailable"),
+        ("Temporary failure in name resolution", "DNS was refused"),
+        ("Could not resolve host", "DNS was refused"),
+    ];
+    let lower = output.to_lowercase();
+    SIGNALS
+        .iter()
+        .find(|(signal, _)| lower.contains(&signal.to_lowercase()))
+        .map(|(_, why)| *why)
+}
+
+async fn workspace_watch(root: &std::path::Path) -> crate::porcelain::Watch {
+    crate::porcelain::Watch::start(root).await
+}
+
+/// A typed pre-spawn refusal never created a process. Close the span, and
+/// do not attribute paths seen in that window to the command.
+async fn settled_pre_spawn_refusal(
+    ctx: &ToolContext,
+    span: CommandSpan,
+    message: String,
+) -> ToolOutput {
+    let _ = span.finish(ctx).await;
+    ToolOutput::error(message.clone())
+        .with_metadata(serde_json::json!({
+            "exit_code": null,
+            "sandboxed": true,
+            "sandbox_available": true,
+            "command_started": false,
+        }))
+        .with_error_kind(ToolErrorKind::Unsupported { message })
+}
+
+/// A session that dirtied a path owns it. The command is not parsed; ownership
+/// follows the observed delta, including a non-zero exit that still wrote.
+fn claim_dirtied_paths(ctx: &ToolContext, paths: &[String]) {
+    let Some(session_id) = ctx.session_id.as_deref().filter(|id| !id.trim().is_empty()) else {
+        return;
+    };
+    for path in paths {
+        let _ = crate::external_observation::claim_bound_write(
+            Some(session_id),
+            ctx.workspace.as_path(),
+            path,
+        );
+    }
+}
+
+/// One bash invocation's workspace watch plus a PATH `git` witness.
+///
+/// The witness records that this process ran a HEAD-moving git subcommand.
+/// Read-only git (`status`, `ls-files`, `log`) does not own a parallel commit.
+/// A missing witness file means the command removed it, so the revision stays
+/// attributed.
+pub(crate) struct CommandSpan {
+    watch: crate::porcelain::Watch,
+    witness: Option<GitWitness>,
+}
+
+impl CommandSpan {
+    pub(crate) async fn begin(workspace: &std::path::Path) -> Self {
+        Self {
+            watch: workspace_watch(workspace).await,
+            witness: GitWitness::install(workspace),
+        }
+    }
+
+    pub(crate) fn env(
+        &self,
+        base: Option<Arc<HashMap<String, String>>>,
+    ) -> Option<Arc<HashMap<String, String>>> {
+        let Some(witness) = &self.witness else {
+            return base;
+        };
+        let mut merged = base
+            .as_ref()
+            .map(|env| env.as_ref().clone())
+            .unwrap_or_default();
+        witness.apply(&mut merged);
+        Some(Arc::new(merged))
+    }
+
+    pub(crate) async fn finish(self, ctx: &ToolContext) -> Vec<String> {
+        self.finish_observed(ctx).await.paths
+    }
+
+    pub(crate) async fn finish_observed(self, ctx: &ToolContext) -> crate::porcelain::PathDelta {
+        let attribute_revision = self
+            .witness
+            .as_ref()
+            .map(GitWitness::moved_head)
+            .unwrap_or(true);
+        let mut observed = self
+            .watch
+            .finish_observed_with_revision(ctx.workspace.as_path(), attribute_revision)
+            .await;
+        observed
+            .paths
+            .retain(|path| !crate::porcelain::is_harness_path(path));
+        claim_dirtied_paths(ctx, &observed.paths);
+        observed
+    }
+}
+
+struct GitWitness {
+    root: std::path::PathBuf,
+    bin: std::path::PathBuf,
+    witness: std::path::PathBuf,
+}
+
+impl GitWitness {
+    fn install(workspace: &std::path::Path) -> Option<Self> {
+        #[cfg(not(unix))]
+        {
+            let _ = workspace;
+            return None;
+        }
+        #[cfg(unix)]
+        {
+            let unique = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|elapsed| elapsed.as_nanos())
+                .unwrap_or(0);
+            let root = crate::state_root::workspace_state_dir(workspace)
+                .join("loops")
+                .join(format!(
+                    "command-git-witness-{}-{unique}",
+                    std::process::id()
+                ));
+            let bin = root.join("bin");
+            let witness = root.join("seen");
+            if std::fs::create_dir_all(&bin).is_err() {
+                return None;
+            }
+            let script = bin.join("git");
+            // Parse argv here. The user's shell text is not evidence of which
+            // paths moved, and a read-only `git status` must not claim HEAD.
+            let body = r#"#!/bin/sh
+skip_next=0
+moved=0
+for arg in "$@"; do
+  if [ "$skip_next" = 1 ]; then
+    skip_next=0
+    continue
+  fi
+  if [ "$skip_next" = 2 ]; then
+    skip_next=0
+    case "$arg" in
+      -*) ;;
+      *) continue ;;
+    esac
+  fi
+  case "$arg" in
+    -c|-C|--git-dir|--work-tree|--namespace|--super-prefix|--config-env)
+      skip_next=1
+      ;;
+    --exec-path)
+      skip_next=2
+      ;;
+    --git-dir=*|--work-tree=*|--namespace=*|--exec-path=*|--super-prefix=*|--config-env=*|--list-cmds=*)
+      ;;
+    -C*)
+      ;;
+    -*)
+      ;;
+    commit|checkout|switch|reset|merge|rebase|pull|cherry-pick|revert|am)
+      moved=1
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+if [ "$moved" = 1 ] && [ -n "$A3S_CODE_GIT_WITNESS" ]; then
+  printf '%s\n' git >> "$A3S_CODE_GIT_WITNESS" 2>/dev/null || true
+fi
+if [ -n "$A3S_CODE_GIT_REAL_PATH" ]; then
+  PATH=$A3S_CODE_GIT_REAL_PATH
+  export PATH
+fi
+exec git "$@"
+"#;
+            if std::fs::write(&script, body).is_err() {
+                let _ = std::fs::remove_dir_all(&root);
+                return None;
+            }
+            use std::os::unix::fs::PermissionsExt;
+            if std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).is_err() {
+                let _ = std::fs::remove_dir_all(&root);
+                return None;
+            }
+            if std::fs::write(&witness, b"").is_err() {
+                let _ = std::fs::remove_dir_all(&root);
+                return None;
+            }
+            Some(Self { root, bin, witness })
+        }
+    }
+
+    fn apply(&self, env: &mut HashMap<String, String>) {
+        let original = env
+            .get("PATH")
+            .cloned()
+            .or_else(|| std::env::var("PATH").ok())
+            .unwrap_or_default();
+        env.insert(
+            "PATH".to_string(),
+            format!("{}:{original}", self.bin.display()),
+        );
+        env.insert("A3S_CODE_GIT_REAL_PATH".to_string(), original);
+        env.insert(
+            "A3S_CODE_GIT_WITNESS".to_string(),
+            self.witness.display().to_string(),
+        );
+    }
+
+    fn moved_head(&self) -> bool {
+        match std::fs::read_to_string(&self.witness) {
+            Ok(text) => text.contains("git"),
+            Err(_) => true,
+        }
+    }
+}
+
+impl Drop for GitWitness {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.root);
+    }
+}
+
+#[cfg(test)]
+fn changed_paths_from_porcelain(before: &[String], after: &[String]) -> Vec<String> {
+    crate::porcelain::changed_paths(before, after)
+}
+
+#[cfg(windows)]
+fn prepare_windows_command(
+    command: &mut Command,
+    workspace: &std::path::Path,
+    command_env: Option<&HashMap<String, String>>,
+) {
+    command
+        .current_dir(workspace)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .kill_on_drop(true)
+        .creation_flags(CREATE_NO_WINDOW);
+    let policy = command_env.cloned().unwrap_or_default();
+    command.envs(windows_shell::complete_host_powershell_env(
+        &policy,
+        &inherited_host_powershell_env(),
+    ));
+}
+
+/// Non-empty process keys for the host PowerShell defaults. An empty
+/// variable counts as unset. The returned values are not copied onto the
+/// child; key presence stops the defaults from overriding inheritance.
+#[cfg(windows)]
+fn inherited_host_powershell_env() -> HashMap<String, String> {
+    ["PATHEXT", "PYTHONUTF8", "PYTHONIOENCODING"]
+        .into_iter()
+        .filter_map(|key| {
+            let value = std::env::var_os(key).filter(|value| !value.is_empty())?;
+            Some((key.to_string(), value.to_string_lossy().into_owned()))
+        })
+        .collect()
+}
+
+/// Windows `CreateProcess` rejects command lines longer than 32767 characters.
+#[cfg(windows)]
+const MAX_POWERSHELL_COMMAND_CHARS: usize = 30_000;
+
+#[cfg(windows)]
+fn spawn_windows_shell(
+    powershell_program: &OsStr,
+    command: &str,
+    workspace: &std::path::Path,
+    command_env: Option<&HashMap<String, String>>,
+) -> std::io::Result<tokio::process::Child> {
+    let wrapped_command = build_powershell_command(command);
+    let encoded_command = encode_powershell_command(&wrapped_command);
+    let mut powershell = Command::new(powershell_program);
+    powershell.args([
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+    ]);
+    let encoded_line = format!("{powershell_program:?} -EncodedCommand {encoded_command}");
+    let script_file = if encoded_line.encode_utf16().count() <= MAX_POWERSHELL_COMMAND_CHARS {
+        powershell.arg("-EncodedCommand").arg(&encoded_command);
+        None
+    } else {
+        let unique = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|elapsed| elapsed.as_nanos())
+            .unwrap_or(0);
+        let path =
+            std::env::temp_dir().join(format!("a3s-host-{}-{unique}.ps1", std::process::id()));
+        let literal = path.to_string_lossy().replace('\'', "''");
+        // -File does not fail the process when a cmdlet fails. Match
+        // -EncodedCommand, and delete the script when the engine exits.
+        let body = format!(
+            "trap {{ exit 1 }}\nRegister-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {{ Remove-Item -LiteralPath '{literal}' -Force -ErrorAction SilentlyContinue }} | Out-Null\n{wrapped_command}\nif (-not $?) {{ exit 1 }}\n"
+        );
+        std::fs::write(&path, body.as_bytes())?;
+        powershell.arg("-File").arg(&path);
+        Some(path)
+    };
+    prepare_windows_command(&mut powershell, workspace, command_env);
+
+    match crate::tools::process::spawn_tokio_child(&mut powershell) {
+        Ok(child) => {
+            if let Err(error) = bind_host_shell_job(&child) {
+                drop(child);
+                if let Some(path) = script_file {
+                    let _ = std::fs::remove_file(path);
+                }
+                return Err(error);
+            }
+            Ok(child)
+        }
+        Err(source) => {
+            if let Some(path) = script_file {
+                let _ = std::fs::remove_file(path);
+            }
+            Err(std::io::Error::new(
+                source.kind(),
+                format!(
+                    "failed to spawn PowerShell executable {powershell_program:?}: {source}; refusing to reinterpret the command with another shell"
+                ),
+            ))
+        }
+    }
+}
+
+/// Put the host shell in a job that dies with it. `kill_on_drop` only ends
+/// the direct process; a descendant started by that shell would otherwise
+/// keep running and write after cancellation.
+#[cfg(windows)]
+pub(crate) fn bind_windows_process_tree(
+    raw_process: std::os::windows::io::RawHandle,
+    pid: u32,
+) -> std::io::Result<()> {
+    use std::ffi::c_void;
+    use std::mem::{size_of, zeroed};
+    use std::os::windows::io::{AsRawHandle, FromRawHandle, OwnedHandle};
+    use windows_sys::Win32::System::JobObjects::{
+        AssignProcessToJobObject, CreateJobObjectW, JobObjectExtendedLimitInformation,
+        SetInformationJobObject, TerminateJobObject, JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
+        JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
+    };
+    use windows_sys::Win32::System::Threading::{OpenProcess, WaitForSingleObject};
+
+    const SYNCHRONIZE: u32 = 0x0010_0000;
+
+    let raw_job = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null()) };
+    if raw_job.is_null() {
+        return Err(std::io::Error::last_os_error());
+    }
+    let job = unsafe { OwnedHandle::from_raw_handle(raw_job) };
+    let mut limits = unsafe { zeroed::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() };
+    limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+    let size = u32::try_from(size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>())
+        .map_err(|_| std::io::Error::other("Job Object limit structure size overflowed"))?;
+    if unsafe {
+        SetInformationJobObject(
+            job.as_raw_handle(),
+            JobObjectExtendedLimitInformation,
+            (&limits as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION).cast::<c_void>(),
+            size,
+        )
+    } == 0
+    {
+        return Err(std::io::Error::last_os_error());
+    }
+    if unsafe { AssignProcessToJobObject(job.as_raw_handle(), raw_process) } == 0 {
+        return Err(std::io::Error::last_os_error());
+    }
+    let raw_wait = unsafe { OpenProcess(SYNCHRONIZE, 0, pid) };
+    if raw_wait.is_null() {
+        return Err(std::io::Error::last_os_error());
+    }
+    let wait = unsafe { OwnedHandle::from_raw_handle(raw_wait) };
+    std::thread::Builder::new()
+        .name("a3s-host-shell-job".to_string())
+        .spawn(move || {
+            if unsafe { WaitForSingleObject(wait.as_raw_handle(), u32::MAX) } == 0 {
+                let _ = unsafe { TerminateJobObject(job.as_raw_handle(), 1) };
+            }
+        })
+        .map(|_| ())
+}
+
+#[cfg(windows)]
+fn bind_host_shell_job(child: &tokio::process::Child) -> std::io::Result<()> {
+    let Some(raw_process) = child.raw_handle() else {
+        return Ok(());
+    };
+    let Some(pid) = child.id() else {
+        return Ok(());
+    };
+    bind_windows_process_tree(raw_process, pid)
+}
+
+/// Spawn a shell command cross-platform.
+///
+/// - Unix: `bash -c <command>`
+/// - Windows: PowerShell 7 when `pwsh.exe` is a regular file, otherwise the
+///   built-in Windows PowerShell 5.1. The process is placed in a Job Object
+///   that kills descendants when the shell exits, so dropping the child cannot
+///   leave a later side effect. Short commands use `-EncodedCommand`. Commands
+///   that would exceed the 32767-character `CreateProcess` limit use `-File`.
+///   Reparse points, including WindowsApps aliases, are skipped. If the chosen
+///   executable fails to start, the command is not reinterpreted with `cmd`
+///   or the other PowerShell.
+pub(crate) fn spawn_shell(
+    command: &str,
+    workspace: &std::path::Path,
+    command_env: Option<&HashMap<String, String>>,
+) -> std::io::Result<tokio::process::Child> {
+    #[cfg(windows)]
+    {
+        let powershell = windows_host_powershell(workspace).map_err(|error| {
+            std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                format!(
+                    "failed to resolve host PowerShell for workspace {}: {error}",
+                    workspace.display()
+                ),
+            )
+        })?;
+        spawn_windows_shell(powershell.as_os_str(), command, workspace, command_env)
+    }
+    #[cfg(not(windows))]
+    {
+        let mut cmd = Command::new("bash");
+        cmd.arg("-c")
+            .arg(command)
+            .current_dir(workspace)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .kill_on_drop(true);
+        crate::tools::process::configure_process_group(&mut cmd);
+        if let Some(env) = command_env {
+            cmd.envs(env);
+        }
+        crate::tools::process::spawn_tokio_child(&mut cmd)
+    }
+}
+
+#[async_trait]
+impl Tool for BashTool {
+    fn name(&self) -> &str {
+        "bash"
+    }
+
+    fn description(&self) -> &str {
+        "Execute a workspace command using the Bash execution target in <env>. Its OS/shell can differ from the host. Use for running commands, installing packages, and running tests."
+    }
+
+    fn parameters(&self) -> serde_json::Value {
+        serde_json::json!({
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "description": "Required. The exact shell command to execute. Always provide this exact field name: 'command'. Use the OS/shell of the execution target in <env>; require_escalated uses the separately described workspace command runner only after exact-invocation authorization."
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Optional. Timeout in milliseconds. Default: 120000. Values below 1000 are clamped to 1000 to avoid accidental immediate timeouts."
+                },
+                "sandbox_permissions": {
+                    "type": "string",
+                    "enum": ["use_default", "require_escalated", "request_network_grant"],
+                    "default": "use_default",
+                    "description": "Execution boundary. Omit or use 'use_default' for the configured workspace sandbox; this fails closed when no sandbox is installed. Use 'require_escalated' only after a sandbox denial when host execution is necessary; interactive hosts must authorize that request. Use 'request_network_grant' after a network denial: it asks the user to allow exactly one origin (network_grant.host/port) inside the sandbox and then runs the command sandboxed."
+                },
+                "justification": {
+                    "type": "string",
+                    "description": "Required with sandbox_permissions='require_escalated'. Briefly explain why the command cannot run inside the workspace sandbox."
+                },
+                "network_grant": {
+                    "type": "object",
+                    "properties": {
+                        "host": {
+                            "type": "string",
+                            "description": "Exact host to allow (no wildcards). Grant semantics never alias localhost with 127.0.0.1."
+                        },
+                        "port": {
+                            "type": "integer",
+                            "description": "Optional port pin. Omit to allow any port on the host."
+                        }
+                    },
+                    "required": ["host"],
+                    "description": "Required with sandbox_permissions='request_network_grant'. The user must authorize this exact origin."
+                }
+            },
+            "required": ["command"],
+            "examples": [
+                {
+                    "command": "cargo test -p a3s-code-core skill::"
+                },
+                {
+                    "command": "npm test",
+                    "timeout": 300000
+                }
+            ]
+        })
+    }
+
+    fn requires_confirmation(&self, args: &serde_json::Value) -> bool {
+        matches!(
+            args.get("sandbox_permissions").and_then(|v| v.as_str()),
+            Some("require_escalated") | Some("request_network_grant")
+        )
+    }
+
+    fn validate_execution_available(
+        &self,
+        args: &serde_json::Value,
+        ctx: &ToolContext,
+    ) -> Result<()> {
+        // Observation and session-shell control do not start a command.
+        if args
+            .get("command")
+            .and_then(serde_json::Value::as_str)
+            .is_none()
+            || args
+                .get("sandbox_permissions")
+                .and_then(serde_json::Value::as_str)
+                == Some("require_escalated")
+        {
+            return Ok(());
+        }
+        if let Some(sandbox) = &ctx.sandbox {
+            sandbox.validate_execution_available()?;
+        }
+        Ok(())
+    }
+
+    async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
+        if let Some(output) = observe_detached_job(args, ctx).await {
+            return Ok(output);
+        }
+        if let Some(output) = session_shell_control(args, ctx) {
+            return Ok(output);
+        }
+        let command = match args.get("command").and_then(|v| v.as_str()) {
+            Some(c) => c,
+            None => return Ok(ToolOutput::error("command parameter is required")),
+        };
+        let command = prefix_session_cwd(command, ctx);
+        let command = command.as_str();
+        let raw_mode = args
+            .get("sandbox_permissions")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("use_default");
+        let require_escalated = match raw_mode {
+            "use_default" => false,
+            "require_escalated" => {
+                if args
+                    .get("justification")
+                    .and_then(serde_json::Value::as_str)
+                    .is_none_or(|value| value.trim().is_empty())
+                {
+                    return Ok(ToolOutput::error(
+                        "justification is required when sandbox_permissions is require_escalated",
+                    ));
+                }
+                true
+            }
+            // The grant itself is applied right before the sandboxed run
+            // below, so a denied grant never falls through to the host.
+            "request_network_grant" => false,
+            value => {
+                return Ok(ToolOutput::error(format!(
+                    "unsupported sandbox_permissions value: {value}"
+                )));
+            }
+        };
+        let request_network_grant = raw_mode == "request_network_grant";
+        if let Err(error) = self.validate_execution_available(args, ctx) {
+            let message = error.to_string();
+            return Ok(
+                ToolOutput::error(&message).with_error_kind(ToolErrorKind::Unsupported { message })
+            );
+        }
+        if let Some(denied) = refuse_hidden_foreign_write(ctx) {
+            return Ok(denied);
+        }
+
+        let requested_timeout_ms = args
+            .get("timeout")
+            .and_then(|v| v.as_u64())
+            .unwrap_or(DEFAULT_TIMEOUT_MS);
+        let timeout_ms = requested_timeout_ms.max(MIN_TIMEOUT_MS);
+        let event_observer = Arc::new(ToolEventObserver {
+            tx: ctx.event_tx.clone(),
+            summary: Mutex::new(None),
+        });
+        let output_observer = Some(Arc::clone(&event_observer) as Arc<dyn CommandOutputObserver>);
+
+        // The normal path uses the configured workspace sandbox. An explicit
+        // escalation is intentionally routed to the host runner only after the
+        // session permission layer authorizes the exact invocation.
+        if !require_escalated
+            && ctx.sandbox.is_none()
+            && ctx.workspace_services.local_root().is_some()
+            && ctx.has_run_governance()
+        {
+            let message = "default bash execution requires a configured sandbox; refusing to execute the command on the host";
+            let mut denied = ToolOutput::error(message);
+            denied.metadata = Some(serde_json::json!({
+                "exit_code": null,
+                "sandboxed": false,
+                "sandbox_available": false,
+            }));
+            denied.error_kind = Some(ToolErrorKind::Unsupported {
+                message: message.to_string(),
+            });
+            return Ok(denied);
+        }
+        if request_network_grant && ctx.sandbox.is_none() {
+            let message = "request_network_grant requires a configured sandbox";
+            let mut denied = ToolOutput::error(message);
+            denied.metadata = Some(serde_json::json!({
+                "sandboxed": false,
+                "sandbox_available": false,
+            }));
+            denied.error_kind = Some(ToolErrorKind::Unsupported {
+                message: message.to_string(),
+            });
+            return Ok(denied);
+        }
+        if !require_escalated {
+            if let Some(ref sandbox) = ctx.sandbox {
+                // Gate 10: the host confirmation layer has already surfaced
+                // this exact origin to the user (requires_confirmation covers
+                // request_network_grant); apply the digest-pinned grant and
+                // run the command sandboxed under the widened policy.
+                let grant_metadata = if request_network_grant {
+                    match resolve_network_grant(args, Some(sandbox.as_ref())) {
+                        Ok(value) => Some(value),
+                        Err(output) => return Ok(output),
+                    }
+                } else {
+                    None
+                };
+                let span = CommandSpan::begin(ctx.workspace.as_path()).await;
+                let command_env = span.env(ctx.command_env.clone());
+                let execution = sandbox.exec(crate::sandbox::SandboxCommandRequest {
+                    command: command_for_sandbox(command),
+                    guest_workspace: "/workspace".to_string(),
+                    timeout_ms,
+                    output_observer: output_observer.clone(),
+                    env: command_env,
+                });
+                let result = match tokio::time::timeout(
+                    std::time::Duration::from_millis(
+                        timeout_ms.saturating_add(sandbox.execution_overhead_ms()),
+                    ),
+                    execution,
+                )
+                .await
+                {
+                    Ok(Err(error))
+                        if crate::sandbox::native::is_native_process_lifetime_unqualified(
+                            &error,
+                        ) || crate::sandbox::process_host::is_process_host_spawn_refused(
+                            &error,
+                        ) =>
+                    {
+                        // The process does not exist. A later string wrap would
+                        // drop this type and the receipt would book Unknown.
+                        return Ok(settled_pre_spawn_refusal(ctx, span, error.to_string()).await);
+                    }
+                    Ok(result) => result
+                        .map_err(|e| anyhow::anyhow!("Sandbox bash execution failed: {}", e))?,
+                    Err(_) => {
+                        let capture_summary = *event_observer.summary.lock().unwrap();
+                        let capture_metadata = capture_summary.map(|summary| {
+                            serde_json::json!({
+                                "total_bytes": summary.total_bytes,
+                                "captured_bytes": summary.captured_bytes,
+                                "truncated": summary.truncated,
+                                "timed_out": true,
+                            })
+                        });
+                        let mut timed_out = ToolOutput::error(format!(
+                            "[Command timed out after {}ms]",
+                            timeout_ms
+                        ));
+                        timed_out.metadata = Some(with_changed_paths(
+                            serde_json::json!({
+                                "exit_code": null,
+                                "timeout_ms": timeout_ms,
+                                "sandboxed": true,
+                                "output": capture_metadata,
+                            }),
+                            &span.finish(ctx).await,
+                        ));
+                        timed_out.error_kind = Some(ToolErrorKind::Timeout {
+                            op: "bash".to_string(),
+                            duration_ms: timeout_ms,
+                        });
+                        return Ok(timed_out);
+                    }
+                };
+
+                // Combine stdout and stderr the same way the local path does.
+                let streams = output_streams::capture(&result.stdout, &result.stderr);
+                let mut output = result.stdout;
+                if !result.stderr.is_empty() {
+                    output.push_str(&result.stderr);
+                }
+
+                let capture_summary = *event_observer.summary.lock().unwrap();
+                let capture_metadata = capture_summary.map(|summary| {
+                    serde_json::json!({
+                        "total_bytes": summary.total_bytes,
+                        "captured_bytes": summary.captured_bytes,
+                        "truncated": summary.truncated,
+                        "timed_out": summary.timed_out,
+                    })
+                });
+                if result.timed_out {
+                    let mut timed_out = ToolOutput::error(format!(
+                        "{}\n\n[Command timed out after {}ms]",
+                        output, timeout_ms
+                    ));
+                    timed_out.metadata = Some(with_changed_paths(
+                        serde_json::json!({
+                            "exit_code": result.exit_code,
+                            "timeout_ms": timeout_ms,
+                            "sandboxed": true,
+                            "output": capture_metadata,
+                            "shell_output_streams": streams,
+                        }),
+                        &span.finish(ctx).await,
+                    ));
+                    timed_out.error_kind = Some(ToolErrorKind::Timeout {
+                        op: "bash".to_string(),
+                        duration_ms: timeout_ms,
+                    });
+                    return Ok(timed_out);
+                }
+
+                let mut base_metadata = serde_json::json!({
+                    "exit_code": result.exit_code,
+                    "sandboxed": true,
+                    "output": capture_metadata,
+                    "shell_output_streams": streams,
+                });
+                if let Some(grant) = grant_metadata {
+                    base_metadata["network_grant"] = grant;
+                }
+                let changed_paths = span.finish(ctx).await;
+                let mut content = output;
+                if result.exit_code != 0 {
+                    if let Some(why) = sandbox_failure_hint(&content) {
+                        base_metadata["sandbox_failure_hint"] = serde_json::json!(why);
+                        content.push_str(&format!(
+                            "\n\n[The exit looks sandbox-induced ({why}). If the command is \
+                             legitimate, retry once with sandbox_permissions=require_escalated \
+                             and a justification; the host must approve it.]"
+                        ));
+                    }
+                }
+                return Ok(ToolOutput {
+                    content,
+                    success: result.exit_code == 0,
+                    metadata: crate::verification::merge_shell_verification_metadata(
+                        Some(with_changed_paths(base_metadata, &changed_paths)),
+                        Some(ctx.workspace.as_path()),
+                        command,
+                        result.exit_code,
+                        None,
+                    ),
+                    images: vec![],
+                    error_kind: None,
+                    trust: crate::tools::ToolResultTrustV1::WorkspaceData,
+                });
+            }
+        }
+
+        // Capability gating guarantees that `bash` is only registered when the
+        // workspace backend provides a command runner, so this unwrap is sound.
+        let runner = ctx
+            .workspace_services
+            .command_runner()
+            .expect("bash registered without workspace command runner");
+        let span = CommandSpan::begin(ctx.workspace.as_path()).await;
+        let command_env = span.env(ctx.command_env.clone());
+        let result = runner
+            .exec(CommandRequest {
+                command: command.to_string(),
+                timeout_ms,
+                output_observer,
+                env: command_env,
+            })
+            .await
+            .map_err(|e| anyhow::anyhow!("Workspace bash execution failed: {}", e))?;
+        let changed_paths = span.finish(ctx).await;
+
+        let capture_summary = *event_observer.summary.lock().unwrap();
+        let capture_metadata = capture_summary.map(|summary| {
+            serde_json::json!({
+                "total_bytes": summary.total_bytes,
+                "captured_bytes": summary.captured_bytes,
+                "truncated": summary.truncated,
+                "timed_out": summary.timed_out,
+            })
+        });
+
+        if result.timed_out {
+            let mut output = ToolOutput::error(format!(
+                "{}\n\n[Command timed out after {}ms]",
+                result.output, timeout_ms
+            ));
+            output.metadata = crate::verification::merge_shell_verification_metadata(
+                Some(with_changed_paths(
+                    serde_json::json!({
+                        "exit_code": result.exit_code,
+                        "timeout_ms": timeout_ms,
+                        "sandboxed": false,
+                        "output": capture_metadata,
+                    }),
+                    &changed_paths,
+                )),
+                Some(ctx.workspace.as_path()),
+                command,
+                result.exit_code,
+                Some("command timed out"),
+            );
+            output.error_kind = Some(ToolErrorKind::Timeout {
+                op: "bash".to_string(),
+                duration_ms: timeout_ms,
+            });
+            return Ok(output);
+        }
+
+        Ok(ToolOutput {
+            content: result.output,
+            success: result.exit_code == 0,
+            metadata: crate::verification::merge_shell_verification_metadata(
+                Some(with_changed_paths(
+                    serde_json::json!({
+                        "exit_code": result.exit_code,
+                        "sandboxed": false,
+                        "output": capture_metadata,
+                    }),
+                    &changed_paths,
+                )),
+                Some(ctx.workspace.as_path()),
+                command,
+                result.exit_code,
+                None,
+            ),
+            images: vec![],
+            error_kind: None,
+            trust: crate::tools::ToolResultTrustV1::WorkspaceData,
+        })
+    }
+}
+
+/// A command that does not name its files must not hide a path another
+/// session already claimed. A missing session with an empty claim map still
+/// runs; that is observation-after, not a pre-apply session gate.
+fn refuse_hidden_foreign_write(ctx: &ToolContext) -> Option<ToolOutput> {
+    match crate::external_observation::refuse_foreign_workspace_owner(
+        ctx.session_id.as_deref(),
+        &ctx.workspace,
+    ) {
+        Ok(()) => None,
+        Err(error) => Some(ToolOutput::error(error)),
+    }
+}
+
+/// Resolve and apply a host-approved network grant for the bash tool.
+///
+/// The caller has already routed the request through host confirmation
+/// (`requires_confirmation`), so reaching this point means the user approved
+/// exactly this origin. The grant is digest-pinned: if the session policy
+/// moved since the sandbox snapshot the model observed, application refuses
+/// and the model must re-request.
+#[allow(clippy::result_large_err)]
+fn resolve_network_grant(
+    args: &serde_json::Value,
+    sandbox: Option<&dyn crate::sandbox::BashSandbox>,
+) -> Result<serde_json::Value, ToolOutput> {
+    let Some(sandbox) = sandbox else {
+        return Err(ToolOutput::error(
+            "request_network_grant requires a configured sandbox",
+        ));
+    };
+    let grant_args = args.get("network_grant");
+    let host = grant_args
+        .and_then(|g| g.get("host"))
+        .and_then(serde_json::Value::as_str)
+        .map(str::trim)
+        .filter(|host| !host.is_empty());
+    let Some(host) = host else {
+        return Err(ToolOutput::error(
+            "network_grant.host is required when sandbox_permissions is request_network_grant",
+        ));
+    };
+    let port = match grant_args
+        .and_then(|g| g.get("port"))
+        .and_then(|v| v.as_u64())
+    {
+        Some(raw) => match u16::try_from(raw) {
+            Ok(port) => Some(port),
+            Err(_) => {
+                return Err(ToolOutput::error(format!(
+                    "network_grant.port {raw} is out of range"
+                )));
+            }
+        },
+        None => None,
+    };
+    let grant = match a3s_sandbox::NetworkGrant::new(host, port) {
+        Ok(grant) => grant,
+        Err(error) => return Err(ToolOutput::error(error.to_string())),
+    };
+    let Some(base) = sandbox.policy_digest() else {
+        return Err(ToolOutput::error(
+            "this sandbox backend does not expose a policy digest; grants are unavailable",
+        ));
+    };
+    match sandbox.apply_network_grant(grant, &base) {
+        Ok(digest) => Ok(serde_json::json!({
+            "host": host,
+            "port": port,
+            "policy_digest": digest,
+        })),
+        Err(error) => Err(ToolOutput::error(format!(
+            "network grant refused: {error}. Re-check the current policy and re-request."
+        ))),
+    }
+}
+
+/// A detached job shares the workspace and outlives this tool result. The
+/// completion gate waits for the same child slot foreground tasks use.
+async fn observe_detached_job(args: &serde_json::Value, ctx: &ToolContext) -> Option<ToolOutput> {
+    let session_id = ctx.session_id.as_deref()?;
+    crate::shell_session::cwd(session_id)?;
+    if args.get("job_action").and_then(|value| value.as_str()) != Some("detach") {
+        return None;
+    }
+    let command = args.get("command").and_then(|value| value.as_str())?;
+    if let Some(denied) = refuse_hidden_foreign_write(ctx) {
+        return Some(denied);
+    }
+    let watch = crate::porcelain::Watch::start(ctx.workspace.as_path()).await;
+    match crate::shell_session::detach(session_id, command, shell_admission(ctx, command)) {
+        Ok(job_id) => {
+            crate::porcelain::install_workspace_child(&job_id, watch);
+            let session = session_id.to_string();
+            let job = job_id.clone();
+            let workspace = ctx.workspace.clone();
+            tokio::spawn(async move {
+                let mut guard = crate::porcelain::WorkspaceChildGuard::new(&job);
+                loop {
+                    match crate::shell_session::poll(&session, &job) {
+                        Ok(status) if status == "running" => {
+                            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+                        }
+                        _ => break,
+                    }
+                }
+                crate::porcelain::settle_workspace_child_guard(&mut guard, &workspace).await;
+                if let Some(paths) = crate::porcelain::peek_settled_workspace_child(&job) {
+                    claim_dirtied_paths(
+                        &ToolContext::new(workspace.as_path().to_path_buf())
+                            .with_session_id(&session),
+                        &paths,
+                    );
+                }
+            });
+            Some(
+                ToolOutput::success(job_id.clone()).with_metadata(serde_json::json!({
+                    "job_id": job_id,
+                    "workspace_child": job_id,
+                })),
+            )
+        }
+        Err(error) => {
+            drop(watch);
+            Some(ToolOutput::error(error.to_string()))
+        }
+    }
+}
+
+fn session_shell_control(args: &serde_json::Value, ctx: &ToolContext) -> Option<ToolOutput> {
+    let session_id = ctx.session_id.as_deref()?;
+    crate::shell_session::cwd(session_id)?;
+    let action = args.get("job_action").and_then(|value| value.as_str())?;
+    let job_id = args
+        .get("job_id")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    let result = match action {
+        "poll" => crate::shell_session::poll(session_id, job_id),
+        "kill" => crate::shell_session::kill(session_id, job_id).map(|()| "killed".to_string()),
+        _ => {
+            return Some(ToolOutput::error(format!(
+                "unsupported job_action: {action}"
+            )));
+        }
+    };
+    Some(match result {
+        Ok(text) => ToolOutput::success(text),
+        Err(error) => ToolOutput::error(error.to_string()),
+    })
+}
+
+/// Command text handed to the configured sandbox.
+///
+/// Unix sandboxes run a POSIX shell, so the command is unchanged. The Windows
+/// native sandbox runs PowerShell and does not define `test`. A single
+/// `test -f` / `test -e` check becomes a short `Test-Path` script. The full
+/// host compatibility shim is not prepended: AppContainer rejects command
+/// lines that exceed the Windows limit (error 206). Every other command,
+/// including `echo`, is left unchanged. The completion gate still parses the
+/// original `test -f` text from the tool arguments.
+pub(crate) fn command_for_sandbox(command: &str) -> String {
+    #[cfg(windows)]
+    {
+        windows_existence_check(command).unwrap_or_else(|| command.to_string())
+    }
+    #[cfg(not(windows))]
+    {
+        command.to_string()
+    }
+}
+
+#[cfg(windows)]
+fn windows_existence_check(command: &str) -> Option<String> {
+    let tail = command.rsplit("&&").next()?.trim();
+    if tail.contains(['\n', ';', '|', '>']) {
+        return None;
+    }
+    let path = crate::verification::path_from_existence_check_command(tail)?;
+    if path.contains(['\'', '\n', '\r']) {
+        return None;
+    }
+    let path_type =
+        if tail.contains(" -e ") || tail.starts_with("test -e") || tail.contains("[ -e ") {
+            ""
+        } else {
+            " -PathType Leaf"
+        };
+    Some(format!(
+        "if (Test-Path -LiteralPath '{path}'{path_type}) {{ exit 0 }} else {{ exit 1 }}"
+    ))
+}
+
+/// Quote a path for safe single-word interpolation into a POSIX shell
+/// command. The session cwd can contain anything the filesystem allows
+/// (spaces, `$(`, backticks): unquoted interpolation would execute
+/// metacharacters at shell parse time, after every permission surface has
+/// approved a different string.
+fn shell_quote_path(path: &std::path::Path) -> String {
+    let text = path.to_string_lossy();
+    if text.is_empty() {
+        return "''".to_string();
+    }
+    if text
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
+    {
+        return text.into_owned();
+    }
+    format!("'{}'", text.replace('\'', "'\\''"))
+}
+
+fn prefix_session_cwd(command: &str, ctx: &ToolContext) -> String {
+    let Some(session_id) = ctx.session_id.as_deref() else {
+        return command.to_string();
+    };
+    if let Ok(admitted) =
+        crate::shell_session::admit(session_id, command, shell_admission(ctx, command))
+    {
+        let cwd = shell_quote_path(&admitted.cwd);
+        if command.trim().starts_with("cd ") {
+            return format!("cd {cwd}");
+        }
+        return format!("cd {cwd} && {command}");
+    }
+    command.to_string()
+}
+
+/// The shell applies cwd only after admission. A run checker that denies this
+/// command must not move the session, even if an earlier command was allowed.
+fn shell_admission(ctx: &ToolContext, command: &str) -> crate::shell_session::CommandAdmission {
+    let Some(checker) = ctx.run_permission_checker() else {
+        return crate::shell_session::CommandAdmission::Allow;
+    };
+    if checker.check("bash", &serde_json::json!({ "command": command }))
+        == crate::permissions::PermissionDecision::Deny
+    {
+        crate::shell_session::CommandAdmission::Deny
+    } else {
+        crate::shell_session::CommandAdmission::Allow
+    }
+}
+
+#[cfg(test)]
+#[path = "bash/tests.rs"]
+mod tests;

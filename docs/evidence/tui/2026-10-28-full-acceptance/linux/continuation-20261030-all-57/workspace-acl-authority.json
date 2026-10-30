@@ -1,0 +1,228 @@
+{
+  "assertions_finished": true,
+  "case": "workspace-acl-authority",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "trust-proof.txt"
+          },
+          "id": "call_dc7a6e250c9940a588b301ce5dbc88c5",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13197,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b52df8f1-51de-4b09-92ad-643a1d8d2553",
+            "thread_id": "9bc7385d-5c15-436d-aa48-baa58ba32225"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_dc7a6e250c9940a588b301ce5dbc88c5",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b52df8f1-51de-4b09-92ad-643a1d8d2553",
+            "thread_id": "9bc7385d-5c15-436d-aa48-baa58ba32225"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_dc7a6e250c9940a588b301ce5dbc88c5",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tHOST-1a5d18e6-5eaf-4376-af8b-ae63e20d5b47\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"trust-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":82},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":82,\"projected_bytes\":82,\"original_estimated_tokens\":21,\"projected_estimated_tokens\":21,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5bbd1b02729540dcfadf90ca69d3480ca6e5b13d39f243db503f587058bd17f8\",\"projected_digest\":\"sha256:5bbd1b02729540dcfadf90ca69d3480ca6e5b13d39f243db503f587058bd17f8\",\"repeat_key\":\"sha256:5bbd1b02729540dcfadf90ca69d3480ca6e5b13d39f243db503f587058bd17f8\",\"content_ref\":\"inline:sha256:5bbd1b02729540dcfadf90ca69d3480ca6e5b13d39f243db503f587058bd17f8\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a89f5ce984dbc63df82cdaccdc7d2b89496153a66e5f97f4fbc313a8e1d629d4\"}",
+        "prepared_digest": "sha256:104d978e7a49fd29ff713ee6476280bcd25a66aaab297dbbb37be81a9615d95d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13384,
+        "text": "HOST-1a5d18e6-5eaf-4376-af8b-ae63e20d5b47",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "b3f68bcf814eb7e8429094b4e353d530500163da6eaf6a60f0e7bf2bd4faad66",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:20da7d67ccb1c425ce6af466ad142a358b968552cdc296a48290cebc76b55c54"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "content": "REPLACED",
+            "file_path": "protected.txt"
+          },
+          "id": "call_cba6ced7354c422bba497521074249d7",
+          "name": "write"
+        },
+        "has_text": false,
+        "prompt_tokens": 13471,
+        "text": null,
+        "tool": "write"
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-54b00714-2e78-4401-ac34-27c6a0362cb5",
+            "thread_id": "9bc7385d-5c15-436d-aa48-baa58ba32225"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cba6ced7354c422bba497521074249d7",
+          "turn": 2
+        },
+        "tool": "write"
+      },
+      "seq": 14,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-54b00714-2e78-4401-ac34-27c6a0362cb5",
+            "thread_id": "9bc7385d-5c15-436d-aa48-baa58ba32225"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_cba6ced7354c422bba497521074249d7",
+          "turn": 2
+        },
+        "outcome": "denied",
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "prepared_digest": "sha256:9fb0e1bedd9dc7762bc510099185ea2f30785b2baa700775793fb13e0f15acde",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 15,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13691,
+        "text": "The write was denied by the frozen permission policy: `tool_effect_effective_arguments_unapproved`. `protected.txt` was not replaced.",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "6b796f1fb25dc67adf3ef6582001e513f8371fbadea898cba5e05e340fadb14f",
+          "seq": 16
+        },
+        "receipt_keys": [
+          "sha256:5da765d0b89c15f82c6a30e33f91cb76d204c529a27d4a094fee06c71e6079d2"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=10 model_turns=2 prompt_tokens=26581",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-BszOKT/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other  10:19 AM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     HOST-1a5d18e6-5eaf-4376-af8b-ae63e20d5b47                                                              10:19 AM    \n                                                                                                                        \n     Worked for 13s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "a same-name workspace provider and local URL cannot replace the trusted Kimi provider or its credentials",
+      "name": "workspace-provider-boundary",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-BszOKT/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other  10:19 AM    \n       tools or modify any file.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     HOST-1a5d18e6-5eaf-4376-af8b-ae63e20d5b47                                                              10:19 AM    \n                                                                                                                        \n     Worked for 13s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=7 model_turns=2 prompt_tokens=27162",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-BszOKT/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other        10:19 AM    \n       tools. Report the actual result.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 4.6s                                                                                                 \n     ◆ Creating protected.txt                                                                                           \n     ◆ Thought for 3.9s                                                                                                 \n                                                                                                                       █\n     The write was denied by the frozen permission policy: tool_effect_effective_arguments_unapproved.      10:20 AM   █\n     protected.txt was not replaced.                                                                                   █\n                                                                                                                       █\n     Worked for 20s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "workspace content cannot relax the explicit CLI deny under YOLO; original bytes remain",
+      "name": "workspace-host-deny",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-BszOKT/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the write tool exactly once to replace protected.txt with REPLACED. Do not call any other        10:19 AM    \n       tools. Report the actual result.                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 4.6s                                                                                                 \n     ◆ Creating protected.txt                                                                                           \n     ◆ Thought for 3.9s                                                                                                 \n                                                                                                                       █\n     The write was denied by the frozen permission policy: tool_effect_effective_arguments_unapproved.      10:20 AM   █\n     protected.txt was not replaced.                                                                                   █\n                                                                                                                       █\n     Worked for 20s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

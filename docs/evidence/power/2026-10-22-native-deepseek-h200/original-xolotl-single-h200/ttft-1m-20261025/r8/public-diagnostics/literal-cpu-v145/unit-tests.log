@@ -1,0 +1,20 @@
+test_cache_and_node_bounds (test_literal_scan.LiteralScanTests) ... ok
+test_concurrent_calls_keep_exact_outputs (test_literal_scan.LiteralScanTests) ... ok
+test_crossing_priority_uses_original_semantics (test_literal_scan.LiteralScanTests) ... ok
+test_declared_literals_unicode_and_repetitions (test_literal_scan.LiteralScanTests) ... ok
+test_differential_generated_closed_sets (test_literal_scan.LiteralScanTests) ... ok
+test_invalid_bounds_and_closed_startup_flag (test_literal_scan.LiteralScanTests) ... ok
+test_model_map_changes_are_keyed_by_complete_values (test_literal_scan.LiteralScanTests) ... ok
+test_nonstandard_objects_keep_their_original_behavior (test_literal_scan.LiteralScanTests) ... ok
+test_prefix_priority_and_self_overlap (test_literal_scan.LiteralScanTests) ... ok
+test_replacements_cannot_create_a_later_match (test_literal_scan.LiteralScanTests) ... ok
+test_unmark_declared_ranges_never_match_gaps (test_literal_scan.LiteralScanTests) ... ok
+test_unmark_exact_text_and_unicode_spans (test_literal_scan.LiteralScanTests) ... ok
+test_unmark_falls_back_with_unsafe_maps (test_literal_scan.LiteralScanTests) ... ok
+test_unmark_many_markers_and_non_mark_unicode (test_literal_scan.LiteralScanTests) ... ok
+test_unsorted_priority_uses_original (test_literal_scan.LiteralScanTests) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.116s
+
+OK

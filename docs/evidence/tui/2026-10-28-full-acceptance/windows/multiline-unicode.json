@@ -1,0 +1,94 @@
+{
+  "assertions_finished": false,
+  "case": "multiline-unicode",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13464,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ab223014-8493-4eae-b234-c235a43ac4e7",
+            "thread_id": "f91f94ef-0831-466b-9f7f-6e4646136c15"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_51df1536a7ce4e1bb3b8b6bfce95ba85",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ab223014-8493-4eae-b234-c235a43ac4e7",
+            "thread_id": "f91f94ef-0831-466b-9f7f-6e4646136c15"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_51df1536a7ce4e1bb3b8b6bfce95ba85",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tUTF8-8cd12f10-8cfd-48f4-87fc-dd4d65c4a0ca\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:15cca82362ccd821b9345727964736ac89f41014556f0bc802c72a9223f89eb6\",\"content_ref\":\"inline:sha256:15cca82362ccd821b9345727964736ac89f41014556f0bc802c72a9223f89eb6\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":49,\"original_estimated_tokens\":13,\"projected_bytes\":49,\"projected_digest\":\"sha256:15cca82362ccd821b9345727964736ac89f41014556f0bc802c72a9223f89eb6\",\"projected_estimated_tokens\":13,\"repeat_key\":\"sha256:15cca82362ccd821b9345727964736ac89f41014556f0bc802c72a9223f89eb6\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":49,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"中文 带空格.txt\"]},\"observation_digest\":\"sha256:aec09aac247aac4ee30a311956716b65a8a92335752450151b9adad0011d50c5\"}",
+        "prepared_digest": "sha256:37960c3931d247918d5f4909f3aa57c22d387826290914446497825efc14a5cd"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13692,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7a93aaf6f84fd4fbf442396ad4461c393548084fa07f5ce5b99c8d020b3523b2",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:1915cdbb42327fe4b237b5a610fb5310b7c8c6d3c4398c8624529f5c7d432caa"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "                                                                                                                          C:\\W\\T\\aster-kimi-AM9mLK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.第    8:21 PM           二行：这是多行输入验证，请勿修改文件。Do not call other tools.                                                                                                                                                                                                                                                                                                        ♦ Read 1 file                                                                                                                                                                                                                                │  ♦ Thinking…                                                                                                          │                                                                                                                       │  Kimi needs to reply exact contents. Tool shows line numbered: UTF8-8cd12f10-8cfd-48f4-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Thinking… 1.1s                                                                                8.2s ↓13.5k [stop]                                                                                                                            ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─multiline ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                                                                                                                                         ",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:589a2967872c9e61354aa648add5d0e9aa5d5d0d:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    }
+  ],
+  "panicked": true
+}

@@ -1,0 +1,12 @@
+
+running 1 test
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:ce7ec2b50ac8d57011df3f032f1c1d67689ec6c0:x86_64-unknown-linux-gnu
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26687
+ORACLE case=shell-nonzero-contract name=native-nonzero result=pass detail=one real native command preserves exit 7, independent stdout/stderr tokens, exact working directory and unchanged script bytes
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13601
+ORACLE case=shell-nonzero-contract name=failed-tool-recovery result=pass detail=the same session accepts and completes the next no-tool request after the real failed shell call
+ORACLE case=shell-nonzero-contract name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 38.04s
+

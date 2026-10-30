@@ -1,0 +1,1 @@
+{"messages":[{"agent":"owned-preemption-test","content":"Return a JSON object with one key answer, whose integer value is (19*23)-(17*11). No Markdown.","queueTotal":2,"queuePosition":1,"role":"user"}],"stream":false,"max_tokens":512,"temperature":0,"model":"deepseek-v4.1-flash","seed":42}

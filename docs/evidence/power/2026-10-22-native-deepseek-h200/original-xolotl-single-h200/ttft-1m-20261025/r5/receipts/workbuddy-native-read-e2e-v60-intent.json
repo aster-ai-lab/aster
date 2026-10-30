@@ -1,0 +1,11 @@
+{
+  "unix": 1792878173.0728774,
+  "phase": "launched",
+  "worker_sha256": "59f72d405113b494c8a29ad03a984d2023b61226a5c1d8e96b2f9c51174709ab",
+  "public_fixture_sha256": "d7393ca4f48033a47565d9a3db5f6251d86c792b63b2893cd3e2249b58f7cff8",
+  "no_session_persistence": true,
+  "gui_test": false,
+  "tool_profile": "Read only",
+  "pid": 192072,
+  "created_filetime": 134373517730811309
+}

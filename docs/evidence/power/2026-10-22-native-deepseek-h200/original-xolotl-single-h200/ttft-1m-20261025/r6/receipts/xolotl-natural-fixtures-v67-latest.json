@@ -1,0 +1,100 @@
+{
+  "unix": 1792881690.3367,
+  "result": {
+    "schema": "aster-xolotl-natural-fixtures-v67",
+    "unix": 1792881469.6403625,
+    "phase": "passed",
+    "gpu_executed": false,
+    "credentials_copied": false,
+    "fixtures": [
+      {
+        "case": "technical8244",
+        "file": "technical8244.txt",
+        "actual_prompt_tokens": 8244,
+        "prompt_bytes": 33483,
+        "prompt_sha256": "d1d63f30becc0b8dbd9a9070dac4d3f561ef64e5a11c72ff33d0af675bacf213",
+        "prompt_id_sha256": "601ff538cf7bae04188dfb99925d849b2d26c0873487eadd021ae83d40c9de72",
+        "natural_body_tokens": 8055,
+        "boundary_padding_repetitions": 63,
+        "source_revision": "8372438c81ed4dc5873213b6fc2f32f8b060ae7f",
+        "source_files": [
+          {
+            "file": "docs/development-standards.md",
+            "bytes": 14447,
+            "sha256": "0daf35e411fd687531f053ca42009e658c19fc3a70aebfd1954b5b142f05cb6e"
+          },
+          {
+            "file": ".specify/memory/constitution.md",
+            "bytes": 9728,
+            "sha256": "c497cb942d56a87925b088c12f96967378349c2b6b4c557c374099642a573207"
+          },
+          {
+            "file": "docs/spec-driven-development.md",
+            "bytes": 4142,
+            "sha256": "52cd69adc80a3b37da9e6726a485723e213a2156110ca76c9e0b6a2a650fce71"
+          },
+          {
+            "file": "README.md",
+            "bytes": 6484,
+            "sha256": "e7b7758934de32833e509db8e9e6015e3596aaab96d9a51412e747d6b30189a3"
+          },
+          {
+            "file": "docs/migration.md",
+            "bytes": 35749,
+            "sha256": "d91a0445eb810f3e16373b520185e3155b5644820b44db5f3d91837ddc813711"
+          }
+        ],
+        "expected": {
+          "begin": 731927,
+          "middle": 408563,
+          "end": 962814
+        }
+      },
+      {
+        "case": "technical25671",
+        "file": "technical25671.txt",
+        "actual_prompt_tokens": 25671,
+        "prompt_bytes": 104347,
+        "prompt_sha256": "a070217f21ee1ed53372d13857825825987ec98fa4095a6d86051c35b58b9c44",
+        "prompt_id_sha256": "8a23fb5487f2bf725a23a2cd77b71d702f8410fcefedb1fb2dc387fa66b85a24",
+        "natural_body_tokens": 25482,
+        "boundary_padding_repetitions": 64,
+        "source_revision": "8372438c81ed4dc5873213b6fc2f32f8b060ae7f",
+        "source_files": [
+          {
+            "file": "docs/development-standards.md",
+            "bytes": 14447,
+            "sha256": "0daf35e411fd687531f053ca42009e658c19fc3a70aebfd1954b5b142f05cb6e"
+          },
+          {
+            "file": ".specify/memory/constitution.md",
+            "bytes": 9728,
+            "sha256": "c497cb942d56a87925b088c12f96967378349c2b6b4c557c374099642a573207"
+          },
+          {
+            "file": "docs/spec-driven-development.md",
+            "bytes": 4142,
+            "sha256": "52cd69adc80a3b37da9e6726a485723e213a2156110ca76c9e0b6a2a650fce71"
+          },
+          {
+            "file": "README.md",
+            "bytes": 6484,
+            "sha256": "e7b7758934de32833e509db8e9e6015e3596aaab96d9a51412e747d6b30189a3"
+          },
+          {
+            "file": "docs/migration.md",
+            "bytes": 35749,
+            "sha256": "d91a0445eb810f3e16373b520185e3155b5644820b44db5f3d91837ddc813711"
+          }
+        ],
+        "expected": {
+          "begin": 731927,
+          "middle": 408563,
+          "end": 962814
+        }
+      }
+    ],
+    "finished_unix": 1792881470.6998508
+  },
+  "exact_cpu_process_alive": false
+}

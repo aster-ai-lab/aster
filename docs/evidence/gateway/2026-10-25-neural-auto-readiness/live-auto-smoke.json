@@ -1,0 +1,268 @@
+[
+  {
+    "case": "simple",
+    "http_status": 200,
+    "seconds": 2.1795131319668144,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 512,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "b45b209be5a42ccc14d96d98c6c9ddba3634757916bac282e0c50897cf4d737b"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "611835b2b598f450f72babca8fb7c4297fd9726a7d263fa34cc091bd870ddce9",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Hi! I'm ready. How can I help you today?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792943749,
+      "id": "chatcmpl-26eec759-09cf-4f34-8da9-7ff2ac0888e6",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 158.735,
+          "predicted_n": 14,
+          "predicted_per_second": 81.89750212618515,
+          "predicted_per_token_ms": 12.210384615384616,
+          "prompt_ms": 152.029,
+          "prompt_n": 17,
+          "prompt_per_second": 111.82077103710478,
+          "prompt_per_token_ms": 8.942882352941176
+        },
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 17,
+          "total_tokens": 31
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 14,
+        "prompt_tokens": 17,
+        "total_tokens": 31
+      }
+    }
+  },
+  {
+    "case": "simple-replay",
+    "http_status": 200,
+    "seconds": 0.31242447200929746,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 512,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "b45b209be5a42ccc14d96d98c6c9ddba3634757916bac282e0c50897cf4d737b"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "611835b2b598f450f72babca8fb7c4297fd9726a7d263fa34cc091bd870ddce9",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Hi! I'm ready. How can I help you today?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792943750,
+      "id": "chatcmpl-e6459f5f-5137-463b-8571-58d5f1c6bc8f",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 13,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 154.997,
+          "predicted_n": 14,
+          "predicted_per_second": 83.87259108240804,
+          "predicted_per_token_ms": 11.922846153846155,
+          "prompt_ms": 147.335,
+          "prompt_n": 4,
+          "prompt_per_second": 27.149014151423625,
+          "prompt_per_token_ms": 36.83375
+        },
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 17,
+          "total_tokens": 31
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 14,
+        "prompt_tokens": 17,
+        "total_tokens": 31
+      }
+    }
+  },
+  {
+    "case": "complex",
+    "http_status": 200,
+    "seconds": 18.136102675984148,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 512,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "0d4475510b41cbc0af818fbe83883b690f76e3734253f733ea2d340ebe18f3ab"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "85f6939716557b1df18508b4d7617d0628247c92f66bad7b3f4bf4fef8e24aa1",
+      "choices": [
+        {
+          "finish_reason": "length",
+          "index": 0,
+          "message": {
+            "content": "",
+            "reasoning_content": "We need answer. Need derive formula sum first n squares and prove induction. Concise. Need formula. Derivation maybe use telescoping identity? Sum k^2 formula n(n+1)(2n+1)/6. Derive perhaps via recurrence or known identity. Need \"derive formula\" and prove induction. Keep concise. End with formula. Need ensure final ends with formula. We can derive using telescoping: (k+1)^3 - k^3 = 3k^2 + 3k +1. Sum k=1..n: (n+1)^3 -1 = 3 sum k^2 + 3 sum k + n. Solve sum squares. Sum k = n(n+1)/2. Then S_n = [(n+1)^3 -1 - n - 3 n(n+1)/2]/3. Simplify to n(n+1)(2n+1)/6. Then induction proof: base n=1. Assume S_n formula. S_{n+1}=S_n+(n+1)^2. Show equals formula for n+1. Need concise algebra. Let's compute.\n\nAssume S_n = n(n+1)(2n+1)/6. Then S_{n+1}= n(n+1)(2n+1)/6 + (n+1)^2 = (n+1)[ n(2n+1)/6 + (n+1)] = (n+1)[(2n^2+n +6n+6)/6] = (n+1)(2n^2+7n+6)/6. Need equals (n+1)(n+2)(2n+3)/6. Expand (n+2)(2n+3)=2n^2+7n+6 yes. Good.\n\nDerivation telescoping details. Need end with formula. Could include formula at end. Need maybe \"End with formula\" means final line formula. We can write derivation and proof, final formula. Keep concise. Need no extra after formula. Let's craft.\n\nPotential issue derivation: Sum from k=1 to n of (k+1)^3-k^3 = (n+1)^3 -1^3. RHS = sum (3k^2+3k+1) = 3S_n +3 sum k + n. Solve. Sum k formula. Then S_n = ((n+1)^3 -1 - n - ",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792943768,
+      "id": "chatcmpl-5993b3cb-4ece-4b85-92a1-30a5bf7a245a",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 510,
+          "prompt_tokens": 60,
+          "total_tokens": 570
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 510,
+        "prompt_tokens": 60,
+        "total_tokens": 570
+      }
+    }
+  }
+]

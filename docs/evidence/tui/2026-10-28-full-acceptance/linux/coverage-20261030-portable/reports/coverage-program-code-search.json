@@ -1,0 +1,378 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-program-code-search",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-template-code.json"
+          },
+          "id": "call_7f7fa61623534eedbf04854865d5e1c8",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13207,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+            "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_7f7fa61623534eedbf04854865d5e1c8",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+            "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_7f7fa61623534eedbf04854865d5e1c8",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"search\\\"],\\\"inputs\\\":{\\\"glob\\\":\\\"*.rs\\\",\\\"path\\\":\\\"catalog\\\",\\\"query\\\":\\\"CATALOG-ANCHOR\\\"},\\\"limits\\\":{\\\"maxOutputBytes\\\":16000,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"name\\\":\\\"program_code_search\\\",\\\"type\\\":\\\"template\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-template-code.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":252},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":252,\"projected_bytes\":252,\"original_estimated_tokens\":63,\"projected_estimated_tokens\":63,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"projected_digest\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"repeat_key\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"content_ref\":\"inline:sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5e6943d597d1d06ea56590d615aa5bfcbc8f61372afd839edd9b7d3979e59368\"}",
+        "prepared_digest": "sha256:211a05fb5bccfaddfa367a5750a4c6313f021161d69a5467ba4387bcae73ead4",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "search"
+            ],
+            "inputs": {
+              "glob": "*.rs",
+              "path": "catalog",
+              "query": "CATALOG-ANCHOR"
+            },
+            "limits": {
+              "maxOutputBytes": 16000,
+              "maxToolCalls": 2,
+              "timeoutMs": 10000
+            },
+            "name": "program_code_search",
+            "type": "template"
+          },
+          "id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13416,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+            "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+            "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nTemplate program_code_search completed.\\n\\nTool calls: 1\\n1. search (ok, exit_code=0, output_bytes=138)\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"Template program_code_search completed.\\\",\\n  \\\"steps\\\": [\\n    {\\n      \\\"label\\\": \\\"search_code\\\",\\n      \\\"name\\\": \\\"search\\\",\\n      \\\"output\\\": \\\">catalog/module.rs:1: // CATALOG-ANCHOR\\\\n catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\\\\n--\\\\n\\\\n1 match(es) in 1 file(s)\\\",\\n      \\\"text\\\": null,\\n      \\\"exitCode\\\": 0,\\n      \\\"truncated\\\": false,\\n      \\\"originalOutputBytes\\\": 138,\\n      \\\"metadata\\\": {\\n        \\\"source_anchors\\\": [\\n          \\\"catalog/module.rs\\\"\\n        ],\\n        \\\"mode\\\": \\\"grep\\\",\\n        \\\"a3s_tool_result_evidence\\\": {\\n          \\\"schema\\\": \\\"a3s.code.tool-result-evidence.v1\\\",\\n          \\\"original_bytes\\\": 138,\\n          \\\"projected_bytes\\\": 138,\\n          \\\"original_estimated_tokens\\\": 35,\\n          \\\"projected_estimated_tokens\\\": 35,\\n          \\\"token_estimator\\\": \\\"utf8-bytes-ceil-div-4/v1\\\",\\n          \\\"transform_algorithm\\\": \\\"a3s.code.tool-result-transform.v1\\\",\\n          \\\"content_digest\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"projected_digest\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"repeat_key\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"content_ref\\\": \\\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"loss_mode\\\": \\\"none\\\",\\n          \\\"byte_delta\\\": 0,\\n          \\\"estimated_token_delta\\\": 0\\n        },\\n        \\\"a3s_tool_result_transform_binding\\\": {\\n          \\\"schema\\\": \\\"a3s.code.tool-result-transform-binding.v1\\\",\\n          \\\"transform_algorithm\\\": \\\"a3s.code.tool-result-transform.v1\\\",\\n          \\\"policy_digest\\\": \\\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\\\",\\n          \\\"binding_digest\\\": \\\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\\\"\\n        }\\n      }\\n    }\\n  ]\\n}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"program_code_search\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"search\",\"success\":true,\"exit_code\":0,\"output_bytes\":138,\"original_output_bytes\":138,\"truncated\":false,\"start_offset_ms\":14,\"duration_ms\":21,\"metadata\":{\"source_anchors\":[\"catalog/module.rs\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"projected_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"repeat_key\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"content_ref\":\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}],\"type\":\"template\"},\"script_result\":{\"summary\":\"Template program_code_search completed.\",\"steps\":[{\"label\":\"search_code\",\"name\":\"search\",\"output\":\">catalog/module.rs:1: // CATALOG-ANCHOR\\n catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\\n--\\n\\n1 match(es) in 1 file(s)\",\"text\":null,\"exitCode\":0,\"truncated\":false,\"originalOutputBytes\":138,\"metadata\":{\"source_anchors\":[\"catalog/module.rs\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"projected_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"repeat_key\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"content_ref\":\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":1953,\"projected_bytes\":1953,\"original_estimated_tokens\":489,\"projected_estimated_tokens\":489,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"projected_digest\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"repeat_key\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"content_ref\":\"inline:sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4c9ba05892dddcad69333fa2b6648ad77e45bfd8736d50f2c271050bffac4ff4\"}",
+        "prepared_digest": "sha256:57b2c30fc79f5ef77ef8c4abfc8cec85848988a74e9502e8589774e37f57393d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14281,
+        "text": "Actual returned matches:\n\n```text\ncatalog/module.rs:1: // CATALOG-ANCHOR\ncatalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\n\n1 match(es) in 1 file(s)\n```",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "b0a50a1d8caa0ea9e76ecc8a7eacb990fbf34e4381c75e7e058a42d356fc6ebf",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:2eba4f58b399e5fac6eb23944c62e76caf234b5de8a22f02c2a50c4e7483975e",
+          "sha256:be37e8184e7a15398028df9ac182bbac9a0776ccafcf714ad6878ebd5ff3526a"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lcu7q7/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-code.json once. Call program exactly once with its exact JSON object as         1:41 PM    \n       arguments. Report the actual returned matches. Do not retry, modify files or call other tools.                   \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run program 0.0s                                                                               18s ⇣13.4k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow program?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40904",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lcu7q7/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-code.json once. Call program exactly once with its exact JSON object as         1:41 PM    \n       arguments. Report the actual returned matches. Do not retry, modify files or call other tools.                   \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n     ◈ Searched 1 pattern                                                                                               \n                                                                                                                        \n     Actual returned matches:                                                                                1:42 PM    \n                                                                                                                        \n     catalog/module.rs:1: // CATALOG-ANCHOR                                                                             \n     catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f                                               \n                                                                                                                        \n     1 match(es) in 1 file(s)                                                                                           \n                                                                                                                        \n     Worked for 26s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the actual default catalog has exactly two templates; code search dispatches one real search and returns unseen fixture context with its label and complete receipt",
+      "name": "registered-code-search-template",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lcu7q7/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-template-code.json once. Call program exactly once with its exact JSON object as         1:41 PM    \n       arguments. Report the actual returned matches. Do not retry, modify files or call other tools.                   \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ program                                                                                                          \n     ◈ Searched 1 pattern                                                                                               \n                                                                                                                        \n     Actual returned matches:                                                                                1:42 PM    \n                                                                                                                        \n     catalog/module.rs:1: // CATALOG-ANCHOR                                                                             \n     catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f                                               \n                                                                                                                        \n     1 match(es) in 1 file(s)                                                                                           \n                                                                                                                        \n     Worked for 26s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "coverage-program-code-search",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-template-code.json"
+              },
+              "id": "call_7f7fa61623534eedbf04854865d5e1c8",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13207,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+                "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_7f7fa61623534eedbf04854865d5e1c8",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+                "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_7f7fa61623534eedbf04854865d5e1c8",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"search\\\"],\\\"inputs\\\":{\\\"glob\\\":\\\"*.rs\\\",\\\"path\\\":\\\"catalog\\\",\\\"query\\\":\\\"CATALOG-ANCHOR\\\"},\\\"limits\\\":{\\\"maxOutputBytes\\\":16000,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"name\\\":\\\"program_code_search\\\",\\\"type\\\":\\\"template\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-template-code.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":252},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":252,\"projected_bytes\":252,\"original_estimated_tokens\":63,\"projected_estimated_tokens\":63,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"projected_digest\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"repeat_key\":\"sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"content_ref\":\"inline:sha256:edd58d1cbd57a224c2a584f73e0a1723039766ea3b6429ef506f0781956fb789\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5e6943d597d1d06ea56590d615aa5bfcbc8f61372afd839edd9b7d3979e59368\"}",
+            "prepared_digest": "sha256:211a05fb5bccfaddfa367a5750a4c6313f021161d69a5467ba4387bcae73ead4",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "search"
+                ],
+                "inputs": {
+                  "glob": "*.rs",
+                  "path": "catalog",
+                  "query": "CATALOG-ANCHOR"
+                },
+                "limits": {
+                  "maxOutputBytes": 16000,
+                  "maxToolCalls": 2,
+                  "timeoutMs": 10000
+                },
+                "name": "program_code_search",
+                "type": "template"
+              },
+              "id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13416,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+                "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-b6f794c9-c2c9-4f8f-9675-812c0c6767b9",
+                "thread_id": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_62ee8342c6c747a8bfde78a36d1effc3",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nTemplate program_code_search completed.\\n\\nTool calls: 1\\n1. search (ok, exit_code=0, output_bytes=138)\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"Template program_code_search completed.\\\",\\n  \\\"steps\\\": [\\n    {\\n      \\\"label\\\": \\\"search_code\\\",\\n      \\\"name\\\": \\\"search\\\",\\n      \\\"output\\\": \\\">catalog/module.rs:1: // CATALOG-ANCHOR\\\\n catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\\\\n--\\\\n\\\\n1 match(es) in 1 file(s)\\\",\\n      \\\"text\\\": null,\\n      \\\"exitCode\\\": 0,\\n      \\\"truncated\\\": false,\\n      \\\"originalOutputBytes\\\": 138,\\n      \\\"metadata\\\": {\\n        \\\"source_anchors\\\": [\\n          \\\"catalog/module.rs\\\"\\n        ],\\n        \\\"mode\\\": \\\"grep\\\",\\n        \\\"a3s_tool_result_evidence\\\": {\\n          \\\"schema\\\": \\\"a3s.code.tool-result-evidence.v1\\\",\\n          \\\"original_bytes\\\": 138,\\n          \\\"projected_bytes\\\": 138,\\n          \\\"original_estimated_tokens\\\": 35,\\n          \\\"projected_estimated_tokens\\\": 35,\\n          \\\"token_estimator\\\": \\\"utf8-bytes-ceil-div-4/v1\\\",\\n          \\\"transform_algorithm\\\": \\\"a3s.code.tool-result-transform.v1\\\",\\n          \\\"content_digest\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"projected_digest\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"repeat_key\\\": \\\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"content_ref\\\": \\\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\\\",\\n          \\\"loss_mode\\\": \\\"none\\\",\\n          \\\"byte_delta\\\": 0,\\n          \\\"estimated_token_delta\\\": 0\\n        },\\n        \\\"a3s_tool_result_transform_binding\\\": {\\n          \\\"schema\\\": \\\"a3s.code.tool-result-transform-binding.v1\\\",\\n          \\\"transform_algorithm\\\": \\\"a3s.code.tool-result-transform.v1\\\",\\n          \\\"policy_digest\\\": \\\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\\\",\\n          \\\"binding_digest\\\": \\\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\\\"\\n        }\\n      }\\n    }\\n  ]\\n}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"program_code_search\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"search\",\"success\":true,\"exit_code\":0,\"output_bytes\":138,\"original_output_bytes\":138,\"truncated\":false,\"start_offset_ms\":14,\"duration_ms\":21,\"metadata\":{\"source_anchors\":[\"catalog/module.rs\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"projected_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"repeat_key\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"content_ref\":\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}],\"type\":\"template\"},\"script_result\":{\"summary\":\"Template program_code_search completed.\",\"steps\":[{\"label\":\"search_code\",\"name\":\"search\",\"output\":\">catalog/module.rs:1: // CATALOG-ANCHOR\\n catalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\\n--\\n\\n1 match(es) in 1 file(s)\",\"text\":null,\"exitCode\":0,\"truncated\":false,\"originalOutputBytes\":138,\"metadata\":{\"source_anchors\":[\"catalog/module.rs\"],\"mode\":\"grep\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":138,\"projected_bytes\":138,\"original_estimated_tokens\":35,\"projected_estimated_tokens\":35,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"projected_digest\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"repeat_key\":\"sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"content_ref\":\"inline:sha256:5af44cac9f384e355b2a2da07bafb7e592ac893943c6ea8035c139083aa26127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":1953,\"projected_bytes\":1953,\"original_estimated_tokens\":489,\"projected_estimated_tokens\":489,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"projected_digest\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"repeat_key\":\"sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"content_ref\":\"inline:sha256:eddf3492f1f584602888172fc4e4c3930c9571056f2dbcbab021fbab773896a9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4c9ba05892dddcad69333fa2b6648ad77e45bfd8736d50f2c271050bffac4ff4\"}",
+            "prepared_digest": "sha256:57b2c30fc79f5ef77ef8c4abfc8cec85848988a74e9502e8589774e37f57393d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14281,
+            "text": "Actual returned matches:\n\n```text\ncatalog/module.rs:1: // CATALOG-ANCHOR\ncatalog/module.rs:2: // CATALOG-a3ddf39f-9025-4815-bd7c-d0a94c9ab72f\n\n1 match(es) in 1 file(s)\n```",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "b0a50a1d8caa0ea9e76ecc8a7eacb990fbf34e4381c75e7e058a42d356fc6ebf",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:2eba4f58b399e5fac6eb23944c62e76caf234b5de8a22f02c2a50c4e7483975e",
+              "sha256:be37e8184e7a15398028df9ac182bbac9a0776ccafcf714ad6878ebd5ff3526a"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "fa0038e5-c802-435b-9cc2-35064b9ff0e2"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

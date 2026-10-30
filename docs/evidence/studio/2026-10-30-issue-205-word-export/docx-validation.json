@@ -1,0 +1,44 @@
+[
+  {
+    "file": "browser-isolated-accepted/message-actions-EX-03b-iss-349f3-n-with-real-Word-formatting-chromium/issue-205.docx",
+    "bytes": 30116,
+    "headingStyle": "Heading1",
+    "numberedParagraphs": 3,
+    "boldTexts": [
+      "收入增长",
+      "销量增长风险",
+      "成本风险。",
+      "行动建议"
+    ],
+    "sourceParagraphs": [
+      "Word 行内格式对照",
+      "普通段落：收入增长，用于对照。",
+      "销量增长风险：这是有效边界对照。",
+      "成本风险。 后接一个空格的对照。",
+      "行动建议，这是列表粗体对照。",
+      "WORD014-FORMAT-END"
+    ],
+    "zipCrc": "valid"
+  },
+  {
+    "file": "browser-isolated-accepted/message-actions-EX-03b-iss-349f3-n-with-real-Word-formatting-webkit/issue-205.docx",
+    "bytes": 30116,
+    "headingStyle": "Heading1",
+    "numberedParagraphs": 3,
+    "boldTexts": [
+      "收入增长",
+      "销量增长风险",
+      "成本风险。",
+      "行动建议"
+    ],
+    "sourceParagraphs": [
+      "Word 行内格式对照",
+      "普通段落：收入增长，用于对照。",
+      "销量增长风险：这是有效边界对照。",
+      "成本风险。 后接一个空格的对照。",
+      "行动建议，这是列表粗体对照。",
+      "WORD014-FORMAT-END"
+    ],
+    "zipCrc": "valid"
+  }
+]

@@ -1,0 +1,250 @@
+{
+  "assertions_finished": true,
+  "case": "background-session-read-only-owner",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "sleep 6; cat owner-input.txt",
+            "timeout": 120000
+          },
+          "id": "call_5979231f8e3a4a4ea69f8ac063506579",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13203,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c4809f54-b788-48fd-a865-6fb8c3d4429d",
+            "thread_id": "e1e40604-13e0-4037-ac26-b521584fe366"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_5979231f8e3a4a4ea69f8ac063506579",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 8,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c4809f54-b788-48fd-a865-6fb8c3d4429d",
+            "thread_id": "e1e40604-13e0-4037-ac26-b521584fe366"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_5979231f8e3a4a4ea69f8ac063506579",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":47,\"captured_bytes\":47,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":47,\"sha256\":\"e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"sleep 6; cat owner-input.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":47,\"projected_bytes\":47,\"original_estimated_tokens\":12,\"projected_estimated_tokens\":12,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"projected_digest\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"repeat_key\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"content_ref\":\"inline:sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4aeb42710208612ba8e0ce98cb5ba3212e1ded9b458c9b4b6887f4af43fddc00\"}",
+        "prepared_digest": "sha256:b8528e25d1c2d449308105f2bbcb7e761d31360a3b24a81f3f8e6780533e9d83",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 9,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13394,
+        "text": "OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53",
+        "tool": null
+      },
+      "seq": 10,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "11430553ed662be812ce8ce0d74c287b46bdf010ef148678970d34b5dd51fbc4",
+          "seq": 10
+        },
+        "receipt_keys": [
+          "sha256:7248be27014ec17a552903769bd2bf3ed4ade66fd5a5723ecf73dc05688d63ee"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 11,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13203",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Duplicate title                                                                                       9:40 AM    \n       Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-              \n       READY. Do not call tools.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n                                                                                                                        \n     SESSION-READY                                                                                           9:40 AM    \n                                                                                                                        \n     Worked for 5.5s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "the read-only tool request waits in session A while session B has no permission card, output, or log changes",
+      "name": "background-permission-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Duplicate title                                                                                       9:41 AM    \n       Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-              \n       READY. Do not call tools.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     SESSION-READY                                                                                           9:41 AM    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "returning to session A reveals its pending permission card",
+      "name": "background-permission-card-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run sleep 6; cat owner-input.txt. Reply with the exact output. Do   9:41 AM    \n       not call other tools or modify any file.                                                                         \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.1s                                                                                                 \n     ◆ Run sleep 6; cat owner-input.txt                                                                                 \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run sleep 6; cat owner-input.txt 0.1s                                                       16s ⇣13.2k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the approved read completes in session A while session B's screen and byte-identical fact log have no result",
+      "name": "background-tool-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Duplicate title                                                                                       9:41 AM    \n       Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-              \n       READY. Do not call tools.                                                                                        \n                                                                                                                        \n                                                                                                                        \n     SESSION-READY                                                                                           9:41 AM    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=9 model_turns=2 prompt_tokens=26597",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                            26K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run sleep 6; cat owner-input.txt. Reply with the exact output. Do   9:41 AM    \n       not call other tools or modify any file.                                                                         \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.1s                                                                                                 \n     ◆ Run sleep 6; cat owner-input.txt                                                                                 \n     ◆ Thought for 0.5s                                                                                                 \n                                                                                                                        \n     OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53                                                         9:41 AM    \n                                                                                                                        \n     Worked for 30s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "session A alone receives the single tool result and final reply containing the unseen file token; the input file remains unchanged",
+      "name": "background-response-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fE91bm/workspace                                                                            26K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run sleep 6; cat owner-input.txt. Reply with the exact output. Do   9:41 AM    \n       not call other tools or modify any file.                                                                         \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.1s                                                                                                 \n     ◆ Run sleep 6; cat owner-input.txt                                                                                 \n     ◆ Thought for 0.5s                                                                                                 \n                                                                                                                        \n     OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53                                                         9:41 AM    \n                                                                                                                        \n     Worked for 30s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "background-read-only-owner",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "sleep 6; cat owner-input.txt",
+                "timeout": 120000
+              },
+              "id": "call_5979231f8e3a4a4ea69f8ac063506579",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 13203,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c4809f54-b788-48fd-a865-6fb8c3d4429d",
+                "thread_id": "e1e40604-13e0-4037-ac26-b521584fe366"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_5979231f8e3a4a4ea69f8ac063506579",
+              "turn": 1
+            },
+            "tool": "bash"
+          },
+          "seq": 8,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c4809f54-b788-48fd-a865-6fb8c3d4429d",
+                "thread_id": "e1e40604-13e0-4037-ac26-b521584fe366"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_5979231f8e3a4a4ea69f8ac063506579",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":47,\"captured_bytes\":47,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":47,\"sha256\":\"e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"sleep 6; cat owner-input.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":47,\"projected_bytes\":47,\"original_estimated_tokens\":12,\"projected_estimated_tokens\":12,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"projected_digest\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"repeat_key\":\"sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"content_ref\":\"inline:sha256:e02a3a3df3351e4943b0bae7a3c4e33a18de57a9bb18256ed23c688eaaf05b4d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:4aeb42710208612ba8e0ce98cb5ba3212e1ded9b458c9b4b6887f4af43fddc00\"}",
+            "prepared_digest": "sha256:b8528e25d1c2d449308105f2bbcb7e761d31360a3b24a81f3f8e6780533e9d83",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 9,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13394,
+            "text": "OWNER-READ-c6e29ca0-5e5e-4b50-8f05-39196dd51a53",
+            "tool": null
+          },
+          "seq": 10,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "11430553ed662be812ce8ce0d74c287b46bdf010ef148678970d34b5dd51fbc4",
+              "seq": 10
+            },
+            "receipt_keys": [
+              "sha256:7248be27014ec17a552903769bd2bf3ed4ade66fd5a5723ecf73dc05688d63ee"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 11,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "e1e40604-13e0-4037-ac26-b521584fe366"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "aster.tui.native-cli-boundaries.v1",
+  "platform": "linux",
+  "model": "kimi/k3.1-pro",
+  "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu",
+  "cases": [
+    {
+      "case": "unexecutable-companion",
+      "exit_code": 1,
+      "timed_out": false,
+      "seconds": 1.499,
+      "stdout_sha256": "fd704aa915b02b1b2bad3e1ec58d24493ab79d965bbb8d078142d739345c32f0",
+      "stderr_sha256": "4c13ba4139752b870a04b4fcf588656dde2ff14f6f832e54cd4732dfeb5bfa58",
+      "tool_calls": 0,
+      "model_turns": 0,
+      "result": "fail",
+      "redacted_diagnostic": "Error: Couldn't start session: Exec format error (os error 8)\n"
+    }
+  ],
+  "script_sha256": "dda23dbb66855b171bb1b2afbe23e891789ec608ee2415d5e33143917b380e30",
+  "config_unchanged": true,
+  "all_passed": false
+}

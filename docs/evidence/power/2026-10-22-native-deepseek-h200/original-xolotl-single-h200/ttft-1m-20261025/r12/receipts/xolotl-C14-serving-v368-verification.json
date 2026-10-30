@@ -1,0 +1,262 @@
+{
+  "unix": 1792933363.0467758,
+  "phase": "verified_serving",
+  "base_url": "http://10.102.93.68/v1",
+  "allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+  "gpu_uuid": "GPU-ddd0cb62-2b13-caf7-7336-159994b18f02",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354",
+  "runtime": {
+    "unix": 1792933370.547523,
+    "api": {
+      "pid": 314,
+      "start_ticks": 736838842,
+      "uid": 10250
+    },
+    "native": {
+      "pid": 316,
+      "start_ticks": 736838889,
+      "parent_pid": 314,
+      "namespace": "C14 formal pod"
+    },
+    "supervisor": {
+      "pid": 169,
+      "start_ticks": 736837448,
+      "uid": 10250,
+      "unix": 1792930905.5712562,
+      "deadline_seconds": 21386
+    },
+    "files": [
+      {
+        "file": "service-worker.py",
+        "bytes": 8670,
+        "sha256": "ef7ede4e6cf9ec2ca9d4910bd5c033b084309343b18b9db4e67972ef33b783cb"
+      },
+      {
+        "file": "test_tool_roundtrip.py",
+        "bytes": 6253,
+        "sha256": "bd8b4e5afe4513f6052c2e77c4deca621a8021acd3192a76252eb1c3d7dd7e88"
+      },
+      {
+        "file": "test_exact_token_cache.py",
+        "bytes": 4741,
+        "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd"
+      },
+      {
+        "file": "test_strict_native_json.py",
+        "bytes": 1411,
+        "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865"
+      },
+      {
+        "file": "test_combined_adapter.py",
+        "bytes": 4093,
+        "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5"
+      },
+      {
+        "file": "test_hybrid_native_json.py",
+        "bytes": 1721,
+        "sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23"
+      },
+      {
+        "file": "actual-tool-output.json",
+        "bytes": 534,
+        "sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646"
+      },
+      {
+        "file": "prompt-id-controls.json",
+        "bytes": 3753,
+        "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+      },
+      {
+        "file": "service-plan.json",
+        "bytes": 5655,
+        "sha256": "c8be35ac7900312d911fd41be12af35cdbb835f5b210d74e42c63ea1ba9e3470"
+      },
+      {
+        "file": "server-config.json",
+        "bytes": 1822,
+        "sha256": "af346d7b26a8401dbda59d39c55c8ee98b2ba50fafdd6730ea2abfe8ceaee907"
+      },
+      {
+        "file": "source/serve/frontend.py",
+        "bytes": 75157,
+        "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+      },
+      {
+        "file": "source/tools/v41/serve/serve_ds41.py",
+        "bytes": 29569,
+        "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+      },
+      {
+        "file": "source/tools/v41/serve/aster_tool_roundtrip.py",
+        "bytes": 6081,
+        "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af"
+      }
+    ],
+    "plan": {
+      "schema": "aster-xolotl-formal-tool-repair-v284",
+      "binary": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/ds41_generate",
+      "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+      "model_name": "deepseek-v4.1-flash-1017-xq",
+      "lease_ends_unix": 1792952301.9907353,
+      "optimization_gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+      "credential_file_sha256": "1759b9dc5277bfc43590a2ebc4943cd164c2d087235f58d9a7cec3d6b0606644",
+      "selected_qualified_baseline": "Unchanged stable nativefa019 plus exact deployed repaired frontend11215/API5834/toolhelperfda429; no CUDA graph/type/header candidate",
+      "inputs": [
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "bytes": 162954903552,
+          "sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389",
+          "verify_small_sha256": false
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin",
+          "bytes": 122880,
+          "verify_small_sha256": false
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+          "bytes": 5661492320,
+          "verify_small_sha256": false
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/test_exact_token_cache.py",
+          "bytes": 4741,
+          "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/test_strict_native_json.py",
+          "bytes": 1411,
+          "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/test_combined_adapter.py",
+          "bytes": 4093,
+          "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/test_hybrid_native_json.py",
+          "bytes": 1721,
+          "sha256": "7ffdb41d9f7b6e55ac1d8ee100f2a4a83da1374f9c77077c2bb977b76dca9e23",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/actual-tool-output.json",
+          "bytes": 534,
+          "sha256": "69fd6d9720472ff1380b7fccde949634a7efc7355260af415005d6c1dcf52646",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/source/tools/v41/serve/aster_token_cache.py",
+          "bytes": 3765,
+          "sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/source/serve/frontend.py",
+          "bytes": 75157,
+          "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/source/tools/v41/serve/serve_ds41.py",
+          "bytes": 29569,
+          "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/source/tools/v41/serve/aster_tool_roundtrip.py",
+          "bytes": 6081,
+          "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af",
+          "verify_small_sha256": true
+        },
+        {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354/test_tool_roundtrip.py",
+          "bytes": 6253,
+          "sha256": "bd8b4e5afe4513f6052c2e77c4deca621a8021acd3192a76252eb1c3d7dd7e88",
+          "verify_small_sha256": true
+        }
+      ],
+      "engine_env": {
+        "STRATA_NO_LARGEPAGES": "1",
+        "STRATA_SERVE_DSPARK": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+        "STRATA_DSPARK_DEPTH": "5",
+        "STRATA_DSPARK_CONF": "0.45",
+        "STRATA_D3_PF": "0",
+        "STRATA_EXP_MODE_T143": "4",
+        "STRATA_EXP_MODE_T11": "0",
+        "ASTER_XQ_SPLIT_MMVQ": "11",
+        "ASTER_XQ_PASS_GRAPH_MIB": "1024",
+        "ASTER_XQ_DENSE_ASYNC_CHAIN": "0",
+        "DS41_GRAPH_REUSE": "1",
+        "STRATA_TEXT_LOG": "0",
+        "STRATA_SERVE_BATCH_TAIL": "1",
+        "STRATA_SERVE_KEEP_CACHE": "1",
+        "STRATA_SERVE_KEEP_MAX": "1048576",
+        "STRATA_SERVE_KEEP_LRU": "1",
+        "ASTER_XQ_PREFILL_QOS": "1",
+        "MIMO_CHUNK_PROF": "1",
+        "STRATA_DENSE_PROF": "1",
+        "ASTER_XQ_KEEP_MIXED": "1",
+        "ASTER_XQ_RESIDENT_MMQ": "1",
+        "ASTER_XQ_INDEXER_MASK_SKIP": "1",
+        "ASTER_XQ_EXACT_TOKEN_CACHE": "1"
+      },
+      "context_tokens": 1048576,
+      "prefill_batch_tokens": 8192,
+      "conversation_cache_mib": 8192,
+      "conversation_cache_slots": 8,
+      "prefill_chunk_tokens": 128,
+      "api_overlay": "tool-adapter-v267r3",
+      "same_qualified_native": true
+    },
+    "lease_ends_unix": 1792952301.9907353,
+    "health_loaded": true,
+    "context_tokens": 1048576
+  },
+  "same_existing_key": true,
+  "Windows_forwarding": false,
+  "Windows_backend_nonce_verification": {
+    "content": "42",
+    "done": true,
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 353,
+      "completion_tokens": 2,
+      "total_tokens": 355,
+      "prompt_tokens_details": {
+        "cached_tokens": 353
+      }
+    },
+    "ttft_seconds": 0.07800000021234155,
+    "seconds": 0.0940000000409782
+  },
+  "basic_tests_passed": 28,
+  "extended_tests_passed": 12,
+  "strict_132097_passed": true,
+  "actual_1M_input_tested": false,
+  "installed_WorkBuddy_Read_tool_passed": true,
+  "installed_WorkBuddy_repeated_search_calls": 3,
+  "repeated_search_terminated": true,
+  "WorkBuddy_GUI_E2E_passed": false,
+  "successful_authenticated_search_E2E_passed": false,
+  "native_performance_candidate_promoted": false,
+  "goal_complete": false,
+  "short_1024_summary": {
+    "requests": 8,
+    "completion_tokens": 8192,
+    "wall_seconds": 109.3602475267835,
+    "api_wall_completion_tok_s": 74.90838933949644,
+    "stream_interval_tok_s_estimate": 75.01640197660535,
+    "ttft_p50_seconds": 0.010516102192923427,
+    "ttft_min_seconds": 0.009928272105753422,
+    "ttft_max_seconds": 0.01199906412512064
+  },
+  "protocol_proof": "xolotl-formal-C14-tool-protocol-v365-live-probe.json",
+  "client_proofs": [
+    "workbuddy-read-repair-e2e-v366-result.json",
+    "workbuddy-repeated-search-e2e-v367-result.json"
+  ]
+}

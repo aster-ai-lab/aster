@@ -1,0 +1,156 @@
+{
+  "assertions_finished": true,
+  "case": "form-cancel",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13456,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8aca3520-5c85-4eb5-9f0f-06aac502180e",
+            "thread_id": "0e32ec42-d080-484e-b008-17c776af0402"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_77a44659ec0f431a9939a7ad418cfb46",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8aca3520-5c85-4eb5-9f0f-06aac502180e",
+            "thread_id": "0e32ec42-d080-484e-b008-17c776af0402"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_77a44659ec0f431a9939a7ad418cfb46",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"root\\\":\\\"root\\\",\\\"elements\\\":{\\\"root\\\":{\\\"type\\\":\\\"Card\\\",\\\"props\\\":{\\\"title\\\":\\\"Aster form\\\"},\\\"children\\\":[\\\"name\\\",\\\"amount\\\",\\\"ready\\\",\\\"submit\\\"]},\\\"name\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"type\\\":\\\"text\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}}},\\\"amount\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Amount\\\",\\\"type\\\":\\\"number\\\",\\\"min\\\":1,\\\"max\\\":5,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/amount\\\"}}},\\\"ready\\\":{\\\"type\\\":\\\"Checkbox\\\",\\\"props\\\":{\\\"label\\\":\\\"Ready\\\",\\\"required\\\":true,\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/ready\\\"}}},\\\"submit\\\":{\\\"type\\\":\\\"Button\\\",\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"}}},\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\",\\\"amount\\\":3,\\\"ready\\\":false}}}\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"content_ref\":\"inline:sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":611,\"original_estimated_tokens\":153,\"projected_bytes\":611,\"projected_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"projected_estimated_tokens\":153,\"repeat_key\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":611,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"form.json\"]},\"observation_digest\":\"sha256:777134080c293bb6c07f438b4272f08692cc3dd774d5c82097b1288fd0e460ce\"}",
+        "prepared_digest": "sha256:5c449d58c1ee94135cdc0bbb38c683e34bdaa2fc127ba460dffc6dfebe03b524"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13728,
+        "tool": "ask_user_form"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8aca3520-5c85-4eb5-9f0f-06aac502180e",
+            "thread_id": "0e32ec42-d080-484e-b008-17c776af0402"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_fba7141936ee4431bd2c0ba7614b28da",
+          "turn": 1
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8aca3520-5c85-4eb5-9f0f-06aac502180e",
+            "thread_id": "0e32ec42-d080-484e-b008-17c776af0402"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_fba7141936ee4431bd2c0ba7614b28da",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"form was cancelled by the user\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"content_ref\":\"inline:sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":30,\"original_estimated_tokens\":8,\"projected_bytes\":30,\"projected_digest\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"projected_estimated_tokens\":8,\"repeat_key\":\"sha256:88c51f209ee0b0e098a88c93b2008f950b2b154884523cf215eac3ce28f2ba39\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"}},\"observation_digest\":\"sha256:4a1878772b698d27256cceb613430578f7e4d0332b310919afa7902894ce7807\"}",
+        "prepared_digest": "sha256:e94a3ced83e0e72ca6ac30666db8a4017ea66b830a05b0b058ed7c526af31c97"
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13984,
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "2ebe14e4ef3b6ab6271084712f0beea11f67945e546e088d7fdb7c48c63f89c9",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:b4d404b2348cadba9fbda9d49f821a812e67fdd5145006dd0ffe428d3a38f6d8",
+          "sha256:58e72fe1bcc3ab47b0b996c5f1b13b3d9b6bba58220bebc878e0adaea4f0cee3"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:71a97c73e013c7ea34f6134eee5f6b06679e301d:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual tool result carries the cancelled outcome",
+      "name": "form-cancel",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TvxsZx\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with its exact JSON Render document. If the user      4:15 PM           cancels, do not retry; report the cancellation without calling other tools.                                                                                                                                                                                                                                                                                           ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 1.6s                                                                                                                                                                                                                              The form was cancelled. No changes were submitted.                                                      4:15 PM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                / Responding… 0.0s                                                                               17s ↓14.0k [stop]                                                                                                                            ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                                                                                                                                         "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

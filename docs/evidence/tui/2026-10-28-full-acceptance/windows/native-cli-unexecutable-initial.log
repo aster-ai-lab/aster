@@ -1,0 +1,6 @@
+{"platform": "win32", "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-pc-windows-msvc", "cases": [{"case": "unexecutable-companion", "exit_code": 1, "timed_out": false, "seconds": 1.688, "stdout_sha256": "a9e43685315b5743f4499c094b329b4470af9b6dcf79e50137f31e16f8f0515d", "stderr_sha256": "348d86b02ce066ce311a8ed850c638980407242ebce7af31769dfb5f1206aa8c", "tool_calls": 0, "model_turns": 0, "result": "fail", "redacted_diagnostic": "Error: Couldn't start session: \u8be5\u7248\u672c\u7684 %1 \u4e0e\u4f60\u8fd0\u884c\u7684 Windows \u7248\u672c\u4e0d\u517c\u5bb9\u3002\u8bf7\u67e5\u770b\u8ba1\u7b97\u673a\u7684\u7cfb\u7edf\u4fe1\u606f\uff0c\u7136\u540e\u8054\u7cfb\u8f6f\u4ef6\u53d1\u5e03\u8005\u3002 (os error 216)\n"}]}
+Traceback (most recent call last):
+  File "D:\code\aster\.tmp\tui-acceptance-20261029\docs\evidence\tui\2026-10-28-full-acceptance\source\native_cli_boundary_probe.py", line 172, in <module>
+    assert report['all_passed'], 'retained native CLI boundary failure'
+           ~~~~~~^^^^^^^^^^^^^^
+AssertionError: retained native CLI boundary failure

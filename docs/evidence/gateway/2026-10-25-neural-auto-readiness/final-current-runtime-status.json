@@ -1,0 +1,53 @@
+{
+  "at_epoch": 1792944976.9669745,
+  "gateway_pid": "3406639",
+  "gateway_sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+  "snapshot_status": {
+    "schema": "a3s.gateway.managed-snapshot-status.v1",
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "requested": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 51,
+      "snapshot_digest": "sha256:d2f223d8b594500a100ec9e5ee3a2fdee35b818abf0b053e404e9084d3a5aafa"
+    },
+    "state": "applied",
+    "ready": true,
+    "replayed": false,
+    "applied": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 51,
+      "expected_revision": 50,
+      "snapshot_digest": "sha256:d2f223d8b594500a100ec9e5ee3a2fdee35b818abf0b053e404e9084d3a5aafa",
+      "issued_at": "2026-10-25T16:14:01Z",
+      "expires_at": "2026-10-26T04:14:01Z",
+      "applied_at": "2026-10-25T16:14:02.146920053Z"
+    }
+  },
+  "power_pid": "3221770",
+  "power_sha256": "899084c8e07d7da2a902169dd21d6dc4e294352caf7b110c4eded34a78e59d28",
+  "engine_pid": 3226504,
+  "engine_sha256": "a99fe7fc22e10081f67e24a04bb78a3f4d6ea39011951e4f19f52a5bb85cec20",
+  "model_pids": {
+    "prism-27b@0.service": "2073548",
+    "prism-27b@1.service": "2073908",
+    "prism-27b@2.service": "2074263",
+    "prism-27b@3.service": "2074649",
+    "prism-27b@4.service": "2075000",
+    "prism-27b@5.service": "2075354",
+    "a3s-power@0.service": "3845392",
+    "a3s-power@1.service": "3845569",
+    "a3s-power@2.service": "3845745",
+    "a3s-power@3.service": "3845957",
+    "a3s-power@4.service": "3846134",
+    "a3s-power@5.service": "3846431",
+    "a3s-power-deepseek-gpu6.service": "3221770",
+    "qwen3-asr.service": "76190",
+    "qwen3-asr-b.service": "76186"
+  },
+  "all_model_pids_preserved": true,
+  "public_workbuddy_cases_passed": 18,
+  "public_workbuddy_http_requests_passed": 30,
+  "readiness_probes_under_load_passed": 32,
+  "selected_profile": "DSpark depth4 confidence0.6000 eviction4096 FP4 KV context1048576 indexer2^26",
+  "full_cold_1m_repeated_after_wrapper_rebuild": false
+}

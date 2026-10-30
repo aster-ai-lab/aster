@@ -1,0 +1,20 @@
+{
+  "upstream_commit": "3fb0375b227119289acbef1190a92fc1f0a3c5be",
+  "upstream_diff": "xolotl-upstream-dspark-cumulative-v48-diff.json",
+  "original_generator_sha256": "196c58faf7c1674869fd49757b3f5775ab672ec37fc121ebeb32e511cdaf8578",
+  "patched_generator_sha256": "299a2958c364827270a974425d908383cd0de2bcc2cfc9933c31575e94eeaeec",
+  "mode_env": "ASTER_XQ_DSPARK_CUM",
+  "modes": [
+    "0",
+    "0.1",
+    "0.25",
+    "0.5"
+  ],
+  "default": "0",
+  "insertion_sites": 2,
+  "target_acceptance_changed": false,
+  "routing_changed": false,
+  "gpu_qualified": false,
+  "generator_compiled": false,
+  "production_promoted": false
+}

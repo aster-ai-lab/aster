@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::blocks::user::tests::mid_text_token_on_second_logical_line' (55428) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\user.rs:768:9:
+line 0 has no token
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::user::tests::mid_text_token_on_second_logical_line ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::user::tests::mid_text_token_on_second_logical_line
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

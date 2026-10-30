@@ -1,0 +1,41 @@
+{
+  "unix": 1792856434.2052646,
+  "phase": "compiling",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/mixed-cache-gpu-gate-v18r2",
+  "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "gpu_uuid": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
+  "gpu_executed": false,
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "aster_cache_restore_policy.hpp",
+      "bytes": 2391,
+      "sha256": "31b4720bcef27d9fc0eb9596ddff6b76a6ec7800e11d4aadf8e06f2d812b31e8"
+    },
+    {
+      "file": "mixed_cache_gpu_test.cpp",
+      "bytes": 4821,
+      "sha256": "3831428d4d5cc381232325e05f0008e6a8c655f5eb9147c25c9f756fd74ef79c"
+    },
+    {
+      "file": "gpu_gate_compile_worker_v18r2.py",
+      "bytes": 1615,
+      "sha256": "884e61e10872ed006ea1a49bef8686c9efcd85c28f07a3465bd21c01f89d9d94"
+    },
+    {
+      "file": "compile-plan.json",
+      "bytes": 2474,
+      "sha256": "82baf8ec60ac0684538e03a9410119ca2b563c0e0f0f7d217e47731e84f59733"
+    }
+  ],
+  "stage": {
+    "staged": true
+  },
+  "process": {
+    "pid": 4914,
+    "start_ticks": 728336780,
+    "uid": 10250,
+    "unix": 1792856445.885161,
+    "budget_seconds": 60
+  }
+}

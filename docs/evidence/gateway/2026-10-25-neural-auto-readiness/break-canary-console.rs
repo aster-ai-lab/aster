@@ -1,0 +1,2 @@
+use a3s_acl::Value;use std::io::{self,Read};
+fn main(){let mut text=String::new();io::stdin().take(1048577).read_to_string(&mut text).unwrap();let mut doc=a3s_acl::parse(&text).unwrap();let service=doc.blocks.iter_mut().find(|b|b.name=="services"&&b.labels==["a3s-api"]).unwrap();let lb=service.blocks.iter_mut().find(|b|b.name=="load_balancer").unwrap();lb.attributes.insert("servers".into(),Value::List(vec![Value::Object(vec![("url".into(),Value::String("http://127.0.0.1:9".into()))])]));print!("{}",a3s_acl::generate(&doc));}

@@ -1,0 +1,294 @@
+{
+  "unix": 1792889898.0251467,
+  "result": {
+    "unix": 1792889720.9758441,
+    "phase": "failed",
+    "profile": "on",
+    "tests": [
+      {
+        "name": "warm-0",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into your project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: nodes need to point both forward and backward, and the map needs to point at nodes. The idiomatic solution is to store nodes in a `Vec` (or arena) and use indices instead of pointers. This avoids `Rc<RefCell<...>>` cycles, keeps memory contiguous, and makes the borrow checker happy.\n\nOur design:\n\n```rust\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,          // key -> node index\n    nodes: Vec<Node<K, V>>,          // arena of nodes\n    head: Option<usize>,             // most-recent node index\n    tail: Option<usize>,             // least-recent node index\n    free: Vec<usize>,                // recycled node slots\n}\n```\n\nEach node holds the key, value, and prev/next indices:\n\n```rust\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n```\n\nUsing `Option<K>`/`Option<V>` lets us reuse slots after eviction without reallocating. When a slot is freed, we set `key = None`, `value = None`, and push its index onto `free`.\n\n### Why indices instead of pointers?\n\n- **No cycles**: `Rc<RefCell<Node>>` with prev/next pointers creates reference cycles that leak. Indices sidestep this entirely.\n- **Cache locality**: nodes live in one contiguous `Vec`.\n- **Borrow checker friendly**: we mutate `nodes[i]` freely without fighting aliasing rules.\n- **Deterministic memory**: capacity bounds the arena size; no unbounded growth.\n\n---\n\n## 2. The Full Generic Data Structure\n\n```rust\nuse std::collections::HashMap;\nuse std::hash::Hash;\n\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,\n    nodes: Vec<Node<K, V>>,\n    head: Option<usize>,\n    tail: Option<usize>,\n    free: Vec<usize>,\n}\n\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n\nimpl<K, V> Node<K, V> {\n    fn empty() -> Self {\n        Node { key: None, value: None, prev: None, next: None }\n    }\n}\n```\n\n### Constructor\n\n```rust\nimpl<K: Eq + Hash, V> LruCache<K, V> {\n    pub fn new(capacity: usize) -> Self {\n        assert!(capacity > 0, \"LRU cache capacity must be > 0\");\n        LruCache {\n            capacity,\n            map: HashMap::with_capacity(capacity),\n            nodes: Vec::with_capacity(capacity),\n            head: None,\n            tail: None,\n            free: Vec::new(),\n        }\n    }\n}\n```\n\nWe pre-size the map and node arena to `capacity` so we never reallocate during steady-state operation. The `assert!` guards against a nonsensical zero-capacity cache; alternatively you could return a `Result`, but a panic on programmer error is idiomatic here.\n\n---\n\n## 3. Core Methods\n\n### 3.1 `get` \u2014 read without promoting\n\n```rust\npub fn get(&self, key: &K) -> Option<&V> {\n    let idx = self.map.get(key)?;\n    self.nodes[*idx].value.as_ref()\n}\n```\n\nThis is a pure read. It does **not** update recency. If you want LRU semantics where reads promote entries, use `get_mut` or `touch`.\n\n### 3.2 `get_mut` \u2014 read and promote\n\n```rust\npub fn get_mut(&mut self, key: &K) -> Option<&mut V> {\n    let idx = *self.map.get(key)?;\n    self.move_to_front(idx);\n   ",
+        "output_sha256": "16d9c6addfbf20f894e14d8de7cdf735e3f99d74b1ae17c8a606e3b0dc8c0196",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 15.319607339799404,
+        "ttft_seconds": 0.9638505559414625,
+        "first_to_last_text_seconds": 14.355457845143974,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null
+      },
+      {
+        "name": "warm-1",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Cache Consistency in Distributed Systems\n\n## 1. Introduction and Scope\n\nA cache is a redundant copy of authoritative data held closer to the consumer than the source of truth. In a distributed system, the cache is not merely an optimization: it is a second database with its own lifecycle, failure modes, and consistency obligations. The central question of cache consistency is: **when the authoritative value changes, how quickly and how reliably does every cached copy converge to it, and what happens in the window before convergence?**\n\nThis chapter treats consistency as a spectrum rather than a binary. Strong consistency means a read never observes a stale value after the write that superseded it has been acknowledged. Eventual consistency means reads may observe stale values for a bounded (or unbounded) period, but the system converges. Between these lie bounded-staleness guarantees (\"reads are at most N seconds stale\"), read-your-writes guarantees, and monotonic reads. Every mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is a tool for placing a system somewhere on that spectrum at an acceptable cost.\n\nThe chapter is organized as follows: cache topologies and where consistency obligations arise (\u00a72); invalidation (\u00a73); TTL and expiry (\u00a74); write-through and write-back (\u00a75); replication of cache state (\u00a76); failover (\u00a77); race conditions with concrete timelines (\u00a78); versioning (\u00a79); pseudocode for a reference implementation (\u00a710); monitoring (\u00a711); and operational trade-offs (\u00a712).\n\n## 2. Topologies and Where Consistency Obligations Arise\n\nFour common placements determine which consistency problems exist:\n\n1. **Client-side cache** (browser, mobile app, SDK memoization). Consistency is bounded by TTL and by explicit invalidation signals (e.g., `Cache-Control`, ETags). The server cannot force convergence except through expiry headers.\n2. **CDN / edge cache**. Shared across many clients; invalidation must propagate to every edge PoP. A purge that reaches 95% of PoPs leaves 5% serving stale content \u2014 a partial-invalidation problem.\n3. **Application-level cache tier** (Redis/Memcached cluster in front of a database). This is where write-through, write-back, invalidation, and versioning matter most, because the cache is *shared mutable state* between application instances.\n4. **Database-internal cache** (buffer pool, page cache, query cache). Consistency is maintained by the storage engine itself; the interesting failure mode is replication lag between primary and replica buffer pools.\n\nA crucial distinction: **caches of immutable data** (content-addressed blobs, compiled assets) need only TTL and versioning; **caches of mutable data** (user records, counters, session state) need invalidation or write policies, because the source of truth can change underneath the cached copy.\n\n## 3. Invalidation\n\nInvalidation is the act of removing or marking a cached entry unusable when the source changes. It is the strongest practical mechanism short of bypassing the cache entirely.\n\n### 3.1 Invalidation strategies\n\n- **Explicit key deletion (purge).** On write, delete the cache key. Example: a profile update calls `cache.delete(\"user:42:profile\")`. Cheap, but only works if every writer knows every derived key. Derived keys (aggregates, lists, joins) are the classic trap: updating user 42 invalidates `user:42:profile` but also `list:users:page3` and `count:active-users`, which the writer may not know about.\n- **Tag / dependency invalidation.** Entries are annotated with tags; purging a tag removes all dependent entries. Example: cache the rendered product page tagged `product:123` and `category:electronics`; a price change purges tag `product:123`, catching every derived view. This scales better than enumerating keys but requires disciplined tagging at write time.\n- **Generation / epoch invalidation.** A namespace carries a generation counter; readers include the generation in the key. Bumping the generation logically invalidates the whole namespace without deleting entries (they become unreachable and age out). Example: `catalog:v17:sku:9981`; a schema migration bumps `v17 \u2192 v18`, and all old entries are ignored.\n- **Broadcast invalidation.** Writers publish invalidation events (pub/sub, Kafka topic) that every cache node consumes. Example: Redis pub/sub channel `invalidate` carrying `{\"key\":\"user:42:profile\",\"version\":881}`. This is the only way to invalidate a *distributed* cache tier coherently, and it introduces its own delivery races (\u00a78).\n\n### 3.2 The invalidation gap\n\nInvalidation is issued *after* the write commits, so there is a window in which the cache still holds the old value while the database holds the new one",
+        "output_sha256": "699c60199edc0d6e9ff955496b411592d464b2a5e910a7104a49d388d968fe3b",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 67,
+          "completion_tokens": 1024,
+          "total_tokens": 1091,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 20.367094720248133,
+        "ttft_seconds": 0.49021734297275543,
+        "first_to_last_text_seconds": 19.876608001068234,
+        "case": "distributed-cache-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null
+      },
+      {
+        "name": "serial-repeat-0",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into your project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: nodes need to point both forward and backward, and the map needs to point at nodes. The idiomatic solution is to store nodes in a `Vec` (or arena) and use indices instead of pointers. This avoids `Rc<RefCell<...>>` cycles, keeps memory contiguous, and makes the borrow checker happy.\n\nOur design:\n\n```rust\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,          // key -> node index\n    nodes: Vec<Node<K, V>>,          // arena of nodes\n    head: Option<usize>,             // most-recent node index\n    tail: Option<usize>,             // least-recent node index\n    free: Vec<usize>,                // recycled node slots\n}\n```\n\nEach node holds the key, value, and prev/next indices:\n\n```rust\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n```\n\nUsing `Option<K>`/`Option<V>` lets us reuse slots after eviction without reallocating. When a slot is freed, we set `key = None`, `value = None`, and push its index onto `free`.\n\n### Why indices instead of pointers?\n\n- **No cycles**: `Rc<RefCell<Node>>` with prev/next pointers creates reference cycles that leak. Indices sidestep this entirely.\n- **Cache locality**: nodes live in one contiguous `Vec`.\n- **Borrow checker friendly**: we mutate `nodes[i]` freely without fighting aliasing rules.\n- **Deterministic memory**: capacity bounds the arena size; no unbounded growth.\n\n---\n\n## 2. The Full Generic Data Structure\n\n```rust\nuse std::collections::HashMap;\nuse std::hash::Hash;\n\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,\n    nodes: Vec<Node<K, V>>,\n    head: Option<usize>,\n    tail: Option<usize>,\n    free: Vec<usize>,\n}\n\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n\nimpl<K, V> Node<K, V> {\n    fn empty() -> Self {\n        Node { key: None, value: None, prev: None, next: None }\n    }\n}\n```\n\n### Constructor\n\n```rust\nimpl<K: Eq + Hash, V> LruCache<K, V> {\n    pub fn new(capacity: usize) -> Self {\n        assert!(capacity > 0, \"LRU cache capacity must be > 0\");\n        LruCache {\n            capacity,\n            map: HashMap::with_capacity(capacity),\n            nodes: Vec::with_capacity(capacity),\n            head: None,\n            tail: None,\n            free: Vec::new(),\n        }\n    }\n}\n```\n\nWe pre-size the map and node arena to `capacity` so we never reallocate during steady-state operation. The `assert!` guards against a nonsensical zero-capacity cache; alternatively you could return a `Result`, but a panic on programmer error is idiomatic here.\n\n---\n\n## 3. Core Methods\n\n### 3.1 `get` \u2014 read without promoting\n\n```rust\npub fn get(&self, key: &K) -> Option<&V> {\n    let idx = self.map.get(key)?;\n    self.nodes[*idx].value.as_ref()\n}\n```\n\nThis is a pure read. It does **not** update recency. If you want LRU semantics where reads promote entries, use `get_mut` or `touch`.\n\n### 3.2 `get_mut` \u2014 read and promote\n\n```rust\npub fn get_mut(&mut self, key: &K) -> Option<&mut V> {\n    let idx = *self.map.get(key)?;\n    self.move_to_front(idx);\n   ",
+        "output_sha256": "16d9c6addfbf20f894e14d8de7cdf735e3f99d74b1ae17c8a606e3b0dc8c0196",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 61
+          }
+        },
+        "seconds": 11.442625877913088,
+        "ttft_seconds": 0.010932572651654482,
+        "first_to_last_text_seconds": 11.431291372980922,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null,
+        "matches_profile_reference": true,
+        "first_profile_difference": null
+      },
+      {
+        "name": "serial-repeat-1",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Cache Consistency in Distributed Systems\n\n## 1. Introduction and Scope\n\nA cache is a redundant copy of authoritative data held closer to the consumer than the source of truth. In a distributed system, the cache is not merely an optimization: it is a second database with its own lifecycle, failure modes, and consistency obligations. The central question of cache consistency is: **when the authoritative value changes, how quickly and how reliably does every cached copy converge to it, and what happens in the window before convergence?**\n\nThis chapter treats consistency as a spectrum rather than a binary. Strong consistency means a read never observes a stale value after the write that superseded it has been acknowledged. Eventual consistency means reads may observe stale values for a bounded (or unbounded) period, but the system converges. Between these lie bounded-staleness guarantees (\"reads are at most N seconds stale\"), read-your-writes guarantees, and monotonic reads. Every mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is a tool for placing a system somewhere on that spectrum at an acceptable cost.\n\nThe chapter is organized as follows: cache topologies and where consistency obligations arise (\u00a72); invalidation (\u00a73); TTL and expiry (\u00a74); write-through and write-back (\u00a75); replication of cache state (\u00a76); failover (\u00a77); race conditions with concrete timelines (\u00a78); versioning (\u00a79); pseudocode for a reference implementation (\u00a710); monitoring (\u00a711); and operational trade-offs (\u00a712).\n\n## 2. Topologies and Where Consistency Obligations Arise\n\nFour common placements determine which consistency problems exist:\n\n1. **Client-side cache** (browser, mobile app, SDK memoization). Consistency is bounded by TTL and by explicit invalidation signals (e.g., `Cache-Control`, ETags). The server cannot force convergence except through expiry headers.\n2. **CDN / edge cache**. Shared across many clients; invalidation must propagate to every edge PoP. A purge that reaches 95% of PoPs leaves 5% serving stale content \u2014 a partial-invalidation problem.\n3. **Application-level cache tier** (Redis/Memcached cluster in front of a database). This is where write-through, write-back, invalidation, and versioning matter most, because the cache is *shared mutable state* between application instances.\n4. **Database-internal cache** (buffer pool, page cache, query cache). Consistency is maintained by the storage engine itself; the interesting failure mode is replication lag between primary and replica buffer pools.\n\nA crucial distinction: **caches of immutable data** (content-addressed blobs, compiled assets) need only TTL and versioning; **caches of mutable data** (user records, counters, session state) need invalidation or write policies, because the source of truth can change underneath the cached copy.\n\n## 3. Invalidation\n\nInvalidation is the act of removing or marking a cached entry unusable when the source changes. It is the strongest practical mechanism short of bypassing the cache entirely.\n\n### 3.1 Invalidation strategies\n\n- **Explicit key deletion (purge).** On write, delete the cache key. Example: a profile update calls `cache.delete(\"user:42:profile\")`. Cheap, but only works if every writer knows every derived key. Derived keys (aggregates, lists, joins) are the classic trap: updating user 42 invalidates `user:42:profile` but also `list:users:page3` and `count:active-users`, which the writer may not know about.\n- **Tag / dependency invalidation.** Entries are annotated with tags; purging a tag removes all dependent entries. Example: cache the rendered product page tagged `product:123` and `category:electronics`; a price change purges tag `product:123`, catching every derived view. This scales better than enumerating keys but requires disciplined tagging at write time.\n- **Generation / epoch invalidation.** A namespace carries a generation counter; readers include the generation in the key. Bumping the generation logically invalidates the whole namespace without deleting entries (they become unreachable and age out). Example: `catalog:v17:sku:9981`; a schema migration bumps `v17 \u2192 v18`, and all old entries are ignored.\n- **Broadcast invalidation.** Writers publish invalidation events (pub/sub, Kafka topic) that every cache node consumes. Example: Redis pub/sub channel `invalidate` carrying `{\"key\":\"user:42:profile\",\"version\":881}`. This is the only way to invalidate a *distributed* cache tier coherently, and it introduces its own delivery races (\u00a78).\n\n### 3.2 The invalidation gap\n\nInvalidation is issued *after* the write commits, so there is a window in which the cache still holds the old value while the database holds the new one",
+        "output_sha256": "699c60199edc0d6e9ff955496b411592d464b2a5e910a7104a49d388d968fe3b",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 67,
+          "completion_tokens": 1024,
+          "total_tokens": 1091,
+          "prompt_tokens_details": {
+            "cached_tokens": 67
+          }
+        },
+        "seconds": 15.534067742992193,
+        "ttft_seconds": 0.010044902097433805,
+        "first_to_last_text_seconds": 15.523779410868883,
+        "case": "distributed-cache-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null,
+        "matches_profile_reference": true,
+        "first_profile_difference": null
+      },
+      {
+        "name": "concurrent-same-0",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a fully functional cache with unit tests.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** for O(1) recency tracking and eviction.\n\nRust's ownership model makes a doubly-linked list tricky: nodes reference both neighbors, creating cycles. We'll solve this with `Rc<RefCell<...>>` for a single-threaded version, and discuss alternatives (arena-based indices, `Arc<Mutex<...>>` for concurrency) later.\n\n### Design goals\n\n1. **Generic** over key `K` and value `V`.\n2. **O(1)** `get`, `put`, `remove`, `len`, `contains`.\n3. **Correct eviction** \u2014 evict the least-recently-used entry when full.\n4. **Safe** \u2014 no `unsafe` code, no leaks, no dangling references.\n5. **Testable** \u2014 comprehensive unit tests.\n6. **Extensible** \u2014 concurrency options discussed.\n\n---\n\n## 2. The Core Data Structure\n\nWe'll use a doubly-linked list of nodes, each holding a key, value, and pointers to prev/next. The hash map stores `Rc<Node>` handles so we can find nodes in O(1).\n\n```rust\nuse std::collections::HashMap;\nuse std::hash::Hash;\nuse std::rc::Rc;\nuse std::cell::RefCell;\n\n/// A node in the doubly-linked recency list.\nstruct Node<K, V> {\n    key: K,\n    value: V,\n    prev: Option<Rc<RefCell<Node<K, V>>>>,\n    next: Option<Rc<RefCell<Node<K, V>>>>,\n}\n\n/// LRU cache with O(1) operations.\npub struct LruCache<K, V> {\n    map: HashMap<K, Rc<RefCell<Node<K, V>>>>,\n    head: Option<Rc<RefCell<Node<K, V>>>>, // most-recently-used\n    tail: Option<Rc<RefCell<Node<K, V>>>>, // least-recently-used\n    capacity: usize,\n    len: usize,\n}\n```\n\n### Why `Rc<RefCell<Node>>`?\n\n- `Rc` gives shared ownership so both the map and the list can reference the same node.\n- `RefCell` allows mutation through shared references (Rust's borrow rules otherwise forbid mutating through `Rc`).\n- The list forms a cycle (head \u2194 tail via prev/next), so `Rc` is required \u2014 plain `Box` would create ownership cycles that leak.\n\n### Memory-safety reasoning\n\n- **No cycles leak**: When a node is removed from the list, we drop its `Rc` from the map and clear its `prev`/`next`. The `Rc` count drops to zero and the node is freed.\n- **No dangling pointers**: `Option<Rc<...>>` is always valid or `None`. We never hold raw pointers.\n- **Borrow discipline**: We use `RefCell::borrow_mut()` only briefly, and never hold two mutable borrows simultaneously on the same node. We must be careful when traversing: borrow one node, extract its `next` clone, drop the borrow, then proceed.\n- **No `unsafe`**: All operations are safe Rust.\n\n---\n\n## 3. Constructor and Basic Methods\n\n```rust\nimpl<K: Eq + Hash + Clone, V: Clone> LruCache<K, V> {\n    pub fn new(capacity: usize) -> Self {\n        assert!(capacity > 0, \"capacity must be > 0\");\n        Self {\n            map: HashMap::with_capacity(capacity),\n            head: None,\n            tail: None,\n            capacity,\n            len: 0,\n        }\n    }\n\n    pub fn len(&self) -> usize { self.len }\n    pub fn is_empty(&self) -> bool { self.len == 0 }\n    pub fn capacity(&self) -> usize { self.capacity }\n\n    pub fn contains(&self, key: &K) -> bool {\n        self.map.contains_key(key)\n    }\n}\n```\n\nNote: `assert!(capacity > 0)` is a programmer-error guard. We could return `Result` instead, but a zero-capacity cache is nonsensical; asserting is idiomatic.\n\n---\n\n## 4. Internal List",
+        "output_sha256": "8e4cb99e0fc92cbe96c4eeb21b1f26f89fc0de314b7d68aef88d04d8afda24c4",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 29.877555668354034,
+        "ttft_seconds": 0.41150316409766674,
+        "first_to_last_text_seconds": 29.465781058184803,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": false,
+        "first_qualified_difference": 358,
+        "matches_profile_reference": false,
+        "first_profile_difference": 358
+      },
+      {
+        "name": "concurrent-same-1",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into any project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache is a bounded key-value store that evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** tracking recency order (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with arbitrary removal is awkward to express safely. We have several options:\n\n1. **`HashMap<K, Node>` with raw pointers** \u2014 unsafe, error-prone.\n2. **`HashMap<K, usize>` with an arena of nodes** \u2014 safe, but requires careful index management.\n3. **`HashMap<K, Entry>` plus a `VecDeque`** \u2014 simple but O(n) removal.\n4. **`HashMap<K, Entry>` plus intrusive linked list using indices** \u2014 the sweet spot.\n\nWe'll implement option 4: an intrusive doubly-linked list stored in a `Vec<Node>` arena, with indices instead of pointers. This gives us O(1) insert, lookup, and eviction, all in safe Rust.\n\n### Design goals\n\n- **Generic** over key `K` and value `V`.\n- **O(1)** `get`, `put`, `remove`, `contains`.\n- **Bounded capacity** with automatic eviction.\n- **Safe Rust** \u2014 no `unsafe` blocks.\n- **Optional concurrency** via `Mutex` or sharded locks.\n- **Clear error handling** for invalid capacity, missing keys, etc.\n\n---\n\n## 2. The Core Data Structure\n\n### 2.1 Node representation\n\nEach node holds a key, a value, and links to its neighbors in the recency list. We store nodes in a `Vec<Node<K, V>>` arena and refer to them by index.\n\n```rust\nstruct Node<K, V> {\n    key: K,\n    value: V,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n```\n\n`prev` and `next` are indices into the arena. `None` means \"no neighbor\" (head or tail).\n\n### 2.2 The cache struct\n\n```rust\npub struct LruCache<K, V> {\n    map: HashMap<K, usize>,       // key -> node index\n    nodes: Vec<Node<K, V>>,       // arena of nodes\n    head: Option<usize>,          // most-recently-used node\n    tail: Option<usize>,          // least-recently-used node\n    capacity: usize,\n    len: usize,\n}\n```\n\nWhy an arena instead of a linked list of `Box<Node>`? Because:\n\n- Indices are cheap and copyable.\n- No pointer aliasing issues.\n- Removal from the middle is O(1) \u2014 we just splice indices.\n- We can reuse freed slots (or compact occasionally).\n\n### 2.3 Invariants\n\nThe cache maintains these invariants:\n\n1. `len == map.len() == number of live nodes`.\n2. `head` is the MRU node; `tail` is the LRU node.\n3. Following `next` from `head` reaches `tail`; following `prev` from `tail` reaches `head`.\n4. Every key in `map` points to a live node whose `key` matches.\n5. `len <= capacity`.\n\nWe'll verify these in unit tests.\n\n---\n\n## 3. Constructors and Error Handling\n\n### 3.1 Capacity validation\n\nA cache with capacity 0 is useless \u2014 every `put` would immediately evict. We reject it with a typed error.\n\n```rust\n#[derive(Debug, Clone, PartialEq, Eq)]\npub enum LruError {\n    ZeroCapacity,\n    KeyNotFound,\n    CapacityExceeded,\n}\n\nimpl std::fmt::Display for LruError {\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n        match self {\n            LruError::ZeroCapacity => write!(f, \"capacity must be greater than zero\"),\n            LruError::KeyNotFound => write!(f, \"key not found in cache\"),\n            LruError::CapacityExceeded => write!(f, \"cache capacity exceeded\"),\n        }\n    }\n}\n\nimpl std::error::Error for LruError {}\n```\n\n### 3.2 Constructor\n\n```rust\nimpl<K, V> LruCache",
+        "output_sha256": "5e778cea12b18e9e1265ecbb71100c827a9fef7d8ff1e170905ec521b3c94c5f",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 61
+          }
+        },
+        "seconds": 29.781156747136265,
+        "ttft_seconds": 0.01214473508298397,
+        "first_to_last_text_seconds": 29.7685882342048,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": false,
+        "first_qualified_difference": 408,
+        "matches_profile_reference": false,
+        "first_profile_difference": 408
+      },
+      {
+        "name": "concurrent-mixed-0",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into any project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache is a bounded key-value store that evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** tracking recency order (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with arbitrary removal is awkward to express safely. We have several options:\n\n1. **`HashMap<K, usize>` + `Vec<Node>`** \u2014 nodes stored in a vector, indices used as links. Simple, safe, but requires careful index bookkeeping.\n2. **`HashMap<K, Node>` with `Rc<RefCell<...>>`** \u2014 classic linked list, but `RefCell` borrow panics are a footgun.\n3. **`HashMap<K, Entry>` with intrusive doubly-linked list using raw pointers** \u2014 fastest, but requires `unsafe`.\n4. **`HashMap<K, Entry>` with a doubly-linked list built from `Vec` indices** \u2014 safe and idiomatic.\n\nWe'll implement **option 4**: a safe, generic LRU cache backed by a `HashMap<K, usize>` mapping keys to node indices, plus a `Vec<Node>` holding the doubly-linked list. This avoids `unsafe`, avoids `RefCell`, and gives predictable performance.\n\n### Design goals\n\n- **Generic** over key `K` and value `V`.\n- **Bounded capacity** with automatic eviction.\n- **O(1)** `get`, `put`, `remove`, `contains`.\n- **Safe**: no `unsafe` code, no `RefCell` panics.\n- **Testable**: comprehensive unit tests.\n- **Concurrency**: optional wrapper using `Mutex` or `RwLock`.\n- **Error handling**: typed errors for capacity, missing keys, etc.\n\n---\n\n## 2. The Core Data Structure\n\n### Node representation\n\nEach node holds a key, a value, and links to its neighbors. We store nodes in a `Vec<Node<K, V>>` and use `Option<usize>` indices for links. `None` means \"no neighbor\" (head/tail boundary).\n\n```rust\nstruct Node<K, V> {\n    key: K,\n    value: V,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n```\n\n### Cache struct\n\n```rust\npub struct LruCache<K, V> {\n    map: HashMap<K, usize>,\n    nodes: Vec<Node<K, V>>,\n    head: Option<usize>, // most-recently-used\n    tail: Option<usize>, // least-recently-used\n    capacity: usize,\n    len: usize,\n}\n```\n\nWhy `Vec<Node>` instead of a linked list of `Box<Node>`? Because:\n\n- **Contiguous memory** improves cache locality.\n- **No pointer chasing** across heap allocations.\n- **Safe indexing** \u2014 no `unsafe` dereferences.\n- **Easy iteration** for debugging and tests.\n\nThe trade-off: when we remove a node, we leave a \"hole\" in the vector. We'll handle holes by reusing freed slots via a free-list, or by compacting. For simplicity and correctness, we'll use a **free-list** of indices.\n\n### Free-list\n\n```rust\nfree: Vec<usize>,\n```\n\nWhen a node is removed, its index is pushed onto `free`. When a new node is inserted, we pop from `free` if available; otherwise we push a new node onto `nodes`.\n\nThis keeps memory bounded by `capacity` (plus a small free-list), and avoids O(n) compaction.\n\n---\n\n## 3. Full Implementation\n\nHere's the complete implementation. We'll break it into pieces and explain each.\n\n### 3.1 Constructor and basic accessors\n\n```rust\nimpl<K, V> LruCache<K, V>\nwhere\n    K: Eq + Hash + Clone,\n{\n    pub fn new(capacity: usize) -> Self {\n        assert!(capacity > 0, \"capacity must be > 0\");\n        Self {\n            map: HashMap::with_capacity(capacity),\n            nodes: Vec::with_capacity(capacity),\n            head: None,\n            tail: None,\n            capacity,\n            len: 0,\n            free: Vec::new(),\n        }\n    }\n\n    pub fn capacity(&self) -> usize {\n        self.capacity",
+        "output_sha256": "cdf1c04cf8759f3a343efa74990d37891e841664f7af9cf0e280dc7049b5ce96",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 61
+          }
+        },
+        "seconds": 32.30370326898992,
+        "ttft_seconds": 0.01253028679639101,
+        "first_to_last_text_seconds": 32.29079680517316,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": false,
+        "first_qualified_difference": 408,
+        "matches_profile_reference": false,
+        "first_profile_difference": 408
+      },
+      {
+        "name": "concurrent-mixed-1",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Cache Consistency in Distributed Systems\n\n## 1. Introduction and Scope\n\nA cache is a redundant copy of authoritative data held closer to the consumer than the source of truth. In a distributed system, the cache is not merely an optimization: it is a second database with its own lifecycle, failure modes, and consistency obligations. The central question of cache consistency is: **when the authoritative store changes, how quickly and how reliably does every cache converge to the new value, and what happens in the window before convergence?**\n\nThis chapter treats consistency as a spectrum rather than a binary. Strong consistency means a read never observes a stale value after the write is acknowledged. Eventual consistency means reads may observe stale values for a bounded (or unbounded) period, but convergence is guaranteed if the system remains operational. Between these lie bounded-staleness models (TTL guarantees), read-your-writes models, and monotonic-read models. Every mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is a tool for moving a system along that spectrum, and each carries distinct operational costs.\n\nWe will use a running example throughout: a service `catalog-svc` storing product records in a primary database `db-primary`, with a Redis-style cache cluster `cache-a`/`cache-b` in front of it, and three application nodes `app-1..app-3`. Concrete timelines use wall-clock timestamps to make race conditions visible.\n\n## 2. Invalidation\n\nInvalidation is the act of removing or marking a cache entry unusable when the underlying data changes. It is the most direct consistency mechanism, and it is also the most fragile, because it requires the writer to know *which* caches hold *which* keys.\n\n### 2.1 Active (explicit) invalidation\n\nThe writer, after committing to `db-primary`, sends an invalidation message to every cache node holding the affected key.\n\n```\nfunction updateProduct(id, payload):\n    db-primary.commit(id, payload)          # authoritative write\n    for node in cacheCluster.nodes():\n        node.invalidate(key(id))            # delete or tombstone\n    return ack\n```\n\nExample: `app-1` updates product `P-42` at 10:00:00.000. It commits to `db-primary` at 10:00:00.012 and issues invalidations to `cache-a` and `cache-b`. `cache-a` processes the invalidation at 10:00:00.030; `cache-b` at 10:00:00.041. Any read served by `cache-a` between 10:00:00.012 and 10:00:00.030 returns the stale value \u2014 a **stale-read window** of 18 ms. This window is unavoidable in asynchronous invalidation; it is the consistency cost of decoupling the write path from the cache path.\n\nFailure modes of active invalidation:\n\n- **Lost invalidation.** If the invalidation message is dropped (network partition, cache node restart), the cache retains stale data indefinitely until TTL or eviction rescues it. Mitigation: invalidation messages must be durable (queued, retried) or paired with a TTL as a safety net.\n- **Partial invalidation.** A cache node that was down at invalidation time misses the message. On restart it may serve stale entries. Mitigation: versioned keys (Section 8) or a generation counter that invalidates wholesale on topology change.\n- **Invalidation of the wrong key.** Derived keys (e.g., `product:P-42:summary`) must be invalidated alongside the base key, or the derived cache diverges. This is the classic \"cache key explosion\" problem: one logical update may require invalidating N physical keys.\n\n### 2.2 Passive invalidation via eviction\n\nEviction (LRU, LFU, size-bounded) removes entries for capacity reasons, not correctness reasons. It incidentally repairs staleness, but it is not a consistency mechanism: an entry can survive eviction pressure indefinitely if it is hot. Treat eviction as an availability tool, never as a consistency guarantee.\n\n### 2.3 Invalidation by broadcast vs. targeted\n\nBroadcast invalidation (e.g., a pub/sub channel every cache subscribes to) is simple and robust to topology changes but scales poorly: every cache processes every invalidation. Targeted invalidation (routing by key hash to the owning cache node) scales but requires the writer to know the cache topology, which breaks when nodes are added or removed. A common compromise: broadcast a *key-set* invalidation per write batch, and let each cache filter by its own key ownership.\n\n## 3. TTL (Time-To-Live)\n\nTTL bounds staleness by construction: an entry older than `ttl` is treated as absent and re-fetched",
+        "output_sha256": "0badbf0011119299bcdaa48ae6b6832c9902e1fb303ce00e4d0a753a2cf55b6d",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 67,
+          "completion_tokens": 1024,
+          "total_tokens": 1091,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 32.4002065830864,
+        "ttft_seconds": 0.46337887924164534,
+        "first_to_last_text_seconds": 31.936507476959378,
+        "case": "distributed-cache-1024",
+        "matches_qualified_reference": false,
+        "first_qualified_difference": 407,
+        "matches_profile_reference": false,
+        "first_profile_difference": 407
+      },
+      {
+        "name": "serial-post-0",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into your project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: nodes need to point both forward and backward, and the map needs to point at nodes. The idiomatic solution is to store nodes in a `Vec` (or arena) and use indices instead of pointers. This avoids `Rc<RefCell<...>>` cycles, keeps memory contiguous, and makes the borrow checker happy.\n\nOur design:\n\n```rust\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,          // key -> node index\n    nodes: Vec<Node<K, V>>,          // arena of nodes\n    head: Option<usize>,             // most-recent node index\n    tail: Option<usize>,             // least-recent node index\n    free: Vec<usize>,                // recycled node slots\n}\n```\n\nEach node holds the key, value, and prev/next indices:\n\n```rust\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n```\n\nUsing `Option<K>`/`Option<V>` lets us reuse slots after eviction without reallocating. When a slot is freed, we set `key = None`, `value = None`, and push its index onto `free`.\n\n### Why indices instead of pointers?\n\n- **No cycles**: `Rc<RefCell<Node>>` with prev/next pointers creates reference cycles that leak. Indices sidestep this entirely.\n- **Cache locality**: nodes live in one contiguous `Vec`.\n- **Borrow checker friendly**: we mutate `nodes[i]` freely without fighting aliasing rules.\n- **Deterministic memory**: capacity bounds the arena size; no unbounded growth.\n\n---\n\n## 2. The Full Generic Data Structure\n\n```rust\nuse std::collections::HashMap;\nuse std::hash::Hash;\n\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,\n    nodes: Vec<Node<K, V>>,\n    head: Option<usize>,\n    tail: Option<usize>,\n    free: Vec<usize>,\n}\n\nstruct Node<K, V> {\n    key: Option<K>,\n    value: Option<V>,\n    prev: Option<usize>,\n    next: Option<usize>,\n}\n\nimpl<K, V> Node<K, V> {\n    fn empty() -> Self {\n        Node { key: None, value: None, prev: None, next: None }\n    }\n}\n```\n\n### Constructor\n\n```rust\nimpl<K: Eq + Hash, V> LruCache<K, V> {\n    pub fn new(capacity: usize) -> Self {\n        assert!(capacity > 0, \"LRU cache capacity must be > 0\");\n        LruCache {\n            capacity,\n            map: HashMap::with_capacity(capacity),\n            nodes: Vec::with_capacity(capacity),\n            head: None,\n            tail: None,\n            free: Vec::new(),\n        }\n    }\n}\n```\n\nWe pre-size the map and node arena to `capacity` so we never reallocate during steady-state operation. The `assert!` guards against a nonsensical zero-capacity cache; alternatively you could return a `Result`, but a panic on programmer error is idiomatic here.\n\n---\n\n## 3. Core Methods\n\n### 3.1 `get` \u2014 read without promoting\n\n```rust\npub fn get(&self, key: &K) -> Option<&V> {\n    let idx = self.map.get(key)?;\n    self.nodes[*idx].value.as_ref()\n}\n```\n\nThis is a pure read. It does **not** update recency. If you want LRU semantics where reads promote entries, use `get_mut` or `touch`.\n\n### 3.2 `get_mut` \u2014 read and promote\n\n```rust\npub fn get_mut(&mut self, key: &K) -> Option<&mut V> {\n    let idx = *self.map.get(key)?;\n    self.move_to_front(idx);\n   ",
+        "output_sha256": "16d9c6addfbf20f894e14d8de7cdf735e3f99d74b1ae17c8a606e3b0dc8c0196",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 61
+          }
+        },
+        "seconds": 11.932663829997182,
+        "ttft_seconds": 0.010956118814647198,
+        "first_to_last_text_seconds": 11.921401900239289,
+        "case": "rust-lru-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null,
+        "matches_profile_reference": true,
+        "first_profile_difference": null
+      },
+      {
+        "name": "serial-post-1",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Cache Consistency in Distributed Systems\n\n## 1. Introduction and Scope\n\nA cache is a redundant copy of authoritative data held closer to the consumer than the source of truth. In a distributed system, the cache is not merely an optimization: it is a second database with its own lifecycle, failure modes, and consistency obligations. The central question of cache consistency is: **when the authoritative value changes, how quickly and how reliably does every cached copy converge to it, and what happens in the window before convergence?**\n\nThis chapter treats consistency as a spectrum rather than a binary. Strong consistency means a read never observes a stale value after the write that superseded it has been acknowledged. Eventual consistency means reads may observe stale values for a bounded (or unbounded) period, but the system converges. Between these lie bounded-staleness guarantees (\"reads are at most N seconds stale\"), read-your-writes guarantees, and monotonic reads. Every mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is a tool for placing a system somewhere on that spectrum at an acceptable cost.\n\nThe chapter is organized as follows: cache topologies and where consistency obligations arise (\u00a72); invalidation (\u00a73); TTL and expiry (\u00a74); write-through and write-back (\u00a75); replication of cache state (\u00a76); failover (\u00a77); race conditions with concrete timelines (\u00a78); versioning (\u00a79); pseudocode for a reference implementation (\u00a710); monitoring (\u00a711); and operational trade-offs (\u00a712).\n\n## 2. Topologies and Where Consistency Obligations Arise\n\nFour common placements determine which consistency problems exist:\n\n1. **Client-side cache** (browser, mobile app, SDK memoization). Consistency is bounded by TTL and by explicit invalidation signals (e.g., `Cache-Control`, ETags). The server cannot force convergence except through expiry headers.\n2. **CDN / edge cache**. Shared across many clients; invalidation must propagate to every edge PoP. A purge that reaches 95% of PoPs leaves 5% serving stale content \u2014 a partial-invalidation problem.\n3. **Application-level cache tier** (Redis/Memcached cluster in front of a database). This is where write-through, write-back, invalidation, and versioning matter most, because the cache is *shared mutable state* between application instances.\n4. **Database-internal cache** (buffer pool, page cache, query cache). Consistency is maintained by the storage engine itself; the interesting failure mode is replication lag between primary and replica buffer pools.\n\nA crucial distinction: **caches of immutable data** (content-addressed blobs, compiled assets) need only TTL and versioning; **caches of mutable data** (user records, counters, session state) need invalidation or write policies, because the source of truth can change underneath the cached copy.\n\n## 3. Invalidation\n\nInvalidation is the act of removing or marking a cached entry unusable when the source changes. It is the strongest practical mechanism short of bypassing the cache entirely.\n\n### 3.1 Invalidation strategies\n\n- **Explicit key deletion (purge).** On write, delete the cache key. Example: a profile update calls `cache.delete(\"user:42:profile\")`. Cheap, but only works if every writer knows every derived key. Derived keys (aggregates, lists, joins) are the classic trap: updating user 42 invalidates `user:42:profile` but also `list:users:page3` and `count:active-users`, which the writer may not know about.\n- **Tag / dependency invalidation.** Entries are annotated with tags; purging a tag removes all dependent entries. Example: cache the rendered product page tagged `product:123` and `category:electronics`; a price change purges tag `product:123`, catching every derived view. This scales better than enumerating keys but requires disciplined tagging at write time.\n- **Generation / epoch invalidation.** A namespace carries a generation counter; readers include the generation in the key. Bumping the generation logically invalidates the whole namespace without deleting entries (they become unreachable and age out). Example: `catalog:v17:sku:9981`; a schema migration bumps `v17 \u2192 v18`, and all old entries are ignored.\n- **Broadcast invalidation.** Writers publish invalidation events (pub/sub, Kafka topic) that every cache node consumes. Example: Redis pub/sub channel `invalidate` carrying `{\"key\":\"user:42:profile\",\"version\":881}`. This is the only way to invalidate a *distributed* cache tier coherently, and it introduces its own delivery races (\u00a78).\n\n### 3.2 The invalidation gap\n\nInvalidation is issued *after* the write commits, so there is a window in which the cache still holds the old value while the database holds the new one",
+        "output_sha256": "699c60199edc0d6e9ff955496b411592d464b2a5e910a7104a49d388d968fe3b",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 67,
+          "completion_tokens": 1024,
+          "total_tokens": 1091,
+          "prompt_tokens_details": {
+            "cached_tokens": 67
+          }
+        },
+        "seconds": 15.637879393063486,
+        "ttft_seconds": 0.011208893731236458,
+        "first_to_last_text_seconds": 15.6264659143053,
+        "case": "distributed-cache-1024",
+        "matches_qualified_reference": true,
+        "first_qualified_difference": null,
+        "matches_profile_reference": true,
+        "first_profile_difference": null
+      }
+    ],
+    "pairs": [
+      {
+        "pair": "same",
+        "requests": 2,
+        "completion_tokens": 2048,
+        "wall_seconds": 29.891518781892955,
+        "api_wall_completion_tok_s": 68.51441758257508,
+        "qualified_reference_matched": false,
+        "profile_serial_reference_matched": false,
+        "performance_qualified": false
+      },
+      {
+        "pair": "mixed",
+        "requests": 2,
+        "completion_tokens": 2048,
+        "wall_seconds": 32.409995269961655,
+        "api_wall_completion_tok_s": 63.190382563805386,
+        "qualified_reference_matched": false,
+        "profile_serial_reference_matched": false,
+        "performance_qualified": false
+      }
+    ],
+    "diagnostic_only": true,
+    "diagnostic_completed": true,
+    "formal_service_changed": false,
+    "actual1m_input_tested": false,
+    "performance_qualified": false,
+    "speed_300_qualified": false,
+    "cause_proven": false,
+    "scope": "Ten short-input1024-output calls: warm2, serial repeat2, same/mixed concurrent4, post2. Qualified gate retained; profile-reference comparison is counterfactual only. Copy/I/O may overlap, so timings do not qualify performance.",
+    "current_pair": "mixed",
+    "qualified_reference_gate_passed": false,
+    "profile_serial_repeat_passed": true,
+    "profile_concurrent_reference_passed": false,
+    "profile_post_serial_passed": true,
+    "finished_unix": 1792889873.6508286,
+    "error": "Qualified/profile complete-output identity gate differs; counterfactual diagnostic only, no acceptance gate changed"
+  },
+  "exact_client_alive": false
+}

@@ -1,0 +1,70 @@
+{
+  "unix": 1792922161.3999314,
+  "phase": "verified_serving",
+  "same_vip": true,
+  "same_existing_key": true,
+  "base_url": "http://10.102.93.68/v1",
+  "allocation_uid": "e808d0b3-65c6-4a48-b121-220ff6fc5eb2",
+  "gpu_uuid": "GPU-ae6ae91f-8d9b-abc1-f7d4-7077c20fcc97",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v284",
+  "runtime": {
+    "unix": 1792922168.485843,
+    "native": {
+      "pid": 3478,
+      "start_ticks": 735319806,
+      "parent_pid": 3476,
+      "namespace": "formal pod"
+    },
+    "api": {
+      "pid": 3476,
+      "start_ticks": 735319747,
+      "uid": 10250
+    },
+    "supervisor": {
+      "pid": 3337,
+      "start_ticks": 735318015,
+      "uid": 10250,
+      "unix": 1792921897.2084458,
+      "deadline_seconds": 11126
+    },
+    "source": [
+      {
+        "file": "source/serve/frontend.py",
+        "bytes": 75157,
+        "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+      },
+      {
+        "file": "source/tools/v41/serve/serve_ds41.py",
+        "bytes": 29569,
+        "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+      },
+      {
+        "file": "source/tools/v41/serve/aster_tool_roundtrip.py",
+        "bytes": 6081,
+        "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af"
+      }
+    ],
+    "native_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+    "lease_ends_unix": 1792933033.9163594,
+    "context_tokens": 1048576
+  },
+  "live_nonstream_protocol_tests": 2,
+  "live_stream_recovery": {
+    "passed": true,
+    "done": true,
+    "finish": "stop",
+    "exposed_tool_calls": 0,
+    "reply": "alpha=25;beta=17",
+    "seconds": 0.2809999999590218
+  },
+  "installed_WorkBuddy_Read_tool_passed": true,
+  "installed_WorkBuddy_search_error_terminated": true,
+  "successful_authenticated_search_E2E_passed": false,
+  "WorkBuddy_GUI_E2E_passed": false,
+  "installed_WorkBuddy_repeated_search_stopped_at_three_and_reported_three": true,
+  "original_loop_root_cause_exclusively_proven": false,
+  "ID_loss_defect_fixed": true,
+  "three_identical_completed_rounds_guard_deployed": true,
+  "native_performance_candidate_promoted": false,
+  "goal_complete": false
+}

@@ -1,0 +1,20 @@
+
+running 1 test
+test entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model ... FAILED
+
+failures:
+
+---- entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model stdout ----
+
+thread 'entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model' (3320086) panicked at apps/gateway/src/entrypoint/platform_model_tests.rs:789:5:
+assertion `left == right` failed
+  left: 200
+ right: 404
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2123 filtered out; finished in 0.16s
+

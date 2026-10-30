@@ -1,0 +1,209 @@
+{
+  "unix": 1792929855.4667027,
+  "exact_worker_alive": false,
+  "result": {
+    "unix": 1792929808.73638,
+    "phase": "passed",
+    "runs": [
+      {
+        "name": "original-core-control-compile",
+        "returncode": 0,
+        "seconds": 6.575383665971458
+      },
+      {
+        "name": "candidate-core-compile",
+        "returncode": 0,
+        "seconds": 7.026778322644532
+      },
+      {
+        "name": "source-type-mode-compile",
+        "returncode": 0,
+        "seconds": 0.21422020811587572
+      },
+      {
+        "name": "type-driver-compile",
+        "returncode": 0,
+        "seconds": 0.46437061950564384
+      },
+      {
+        "name": "direct-oracle-compile",
+        "returncode": 0,
+        "seconds": 0.6647938368842006
+      },
+      {
+        "name": "replay-driver-compile",
+        "returncode": 0,
+        "seconds": 0.6146830478683114
+      },
+      {
+        "name": "type-probe-link",
+        "returncode": 0,
+        "seconds": 0.864952651783824
+      },
+      {
+        "name": "direct-oracle-link",
+        "returncode": 0,
+        "seconds": 0.8154155649244785
+      },
+      {
+        "name": "replay-original-link",
+        "returncode": 0,
+        "seconds": 0.8173150653019547
+      },
+      {
+        "name": "replay-candidate-link",
+        "returncode": 0,
+        "seconds": 0.8654358386993408
+      },
+      {
+        "name": "type-switch-uid0-guard0",
+        "returncode": 3,
+        "seconds": 0.3143227342516184
+      },
+      {
+        "name": "type-switch-uid0-guard1",
+        "returncode": 0,
+        "seconds": 0.2641853429377079
+      },
+      {
+        "name": "type-switch-uid1-guard0",
+        "returncode": 3,
+        "seconds": 0.2642259746789932
+      },
+      {
+        "name": "type-switch-uid1-guard1",
+        "returncode": 0,
+        "seconds": 0.2641647597774863
+      },
+      {
+        "name": "original-direct-oracle",
+        "returncode": 0,
+        "seconds": 0.4145686822012067
+      },
+      {
+        "name": "guarded-original",
+        "returncode": 0,
+        "seconds": 0.464891760610044
+      },
+      {
+        "name": "candidate-off",
+        "returncode": 0,
+        "seconds": 0.41502124909311533
+      },
+      {
+        "name": "premask-no-skip",
+        "returncode": 0,
+        "seconds": 0.41488778684288263
+      },
+      {
+        "name": "existing-mask-skip",
+        "returncode": 0,
+        "seconds": 0.4145690957084298
+      },
+      {
+        "name": "MXFP4-header-on",
+        "returncode": 0,
+        "seconds": 0.41452424600720406
+      },
+      {
+        "name": "MXFP4-memcheck",
+        "returncode": 0,
+        "seconds": 0.9655681382864714
+      }
+    ],
+    "comparisons": [
+      {
+        "profile": "guarded-original",
+        "cases": 270,
+        "score_values": 416340,
+        "sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+        "byte_equal_to_original_direct_oracle": true
+      },
+      {
+        "profile": "candidate-off",
+        "cases": 270,
+        "score_values": 416340,
+        "sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+        "byte_equal_to_original_direct_oracle": true
+      },
+      {
+        "profile": "premask-no-skip",
+        "cases": 270,
+        "score_values": 416340,
+        "sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+        "byte_equal_to_original_direct_oracle": true
+      },
+      {
+        "profile": "existing-mask-skip",
+        "cases": 270,
+        "score_values": 416340,
+        "sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+        "byte_equal_to_original_direct_oracle": true
+      },
+      {
+        "profile": "MXFP4-header-on",
+        "cases": 270,
+        "score_values": 416340,
+        "sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+        "byte_equal_to_original_direct_oracle": true
+      }
+    ],
+    "type_switch_tests": [
+      {
+        "nonzero_UID": false,
+        "guard": "0",
+        "values": 780,
+        "mismatches": 390
+      },
+      {
+        "nonzero_UID": false,
+        "guard": "1",
+        "values": 780,
+        "mismatches": 0
+      },
+      {
+        "nonzero_UID": true,
+        "guard": "0",
+        "values": 780,
+        "mismatches": 390
+      },
+      {
+        "nonzero_UID": true,
+        "guard": "1",
+        "values": 780,
+        "mismatches": 0
+      }
+    ],
+    "model_executed": false,
+    "performance_claimed": false,
+    "formal_changed": false,
+    "control_object_sha256": "5464cf1211e26bbc08a5800a4e68b58afb02208f086a4e918a8c608ae426257a",
+    "original_core_byte_equal": false,
+    "original_core_bookkeeping": {
+      "original_raw_sha256": "a8fd0ca15571a34d73b397626b6585955e58049e7b0757d64cf420381c025b40",
+      "control_raw_sha256": "5464cf1211e26bbc08a5800a4e68b58afb02208f086a4e918a8c608ae426257a",
+      "normalized_sha256": "a8fd0ca15571a34d73b397626b6585955e58049e7b0757d64cf420381c025b40",
+      "all_other_object_bytes_equal": true,
+      "differing_STT_FILE_symbols": 1,
+      "original_file_symbol": "tmpxft_000118cd_00000000-6_ggml-cuda.cudafe1.cpp",
+      "control_file_symbol": "tmpxft_000018d2_00000000-6_ggml-cuda.cudafe1.cpp"
+    },
+    "original_core_equal_after_filename_normalization": true,
+    "candidate_core_sha256": "786ea84ef9bcddb0ee2c93378448cb78a5680b7cb0af4eb0eb1411c8b4addfd2",
+    "candidate_type_probe_sha256": "71f00a914fafcf6bab20b7b16d5bd434f1b57de3fecca5226de20b240d42a91f",
+    "direct_oracle_sha256": "9e0e717507d3e19ce3fb837a3a2a5aee372173febaef29bad4847cc3d3e65786",
+    "input_type_cache_defect_fixed_in_isolated_GPU_test": true,
+    "UID_fastpath_guard_tested": true,
+    "original_direct_reference_cases": 270,
+    "guarded_replay_cases": 1350,
+    "original90_gate_prior_cases": 450,
+    "actual_CUDA_graph_launch_and_same_exec_changed_input_checked": true,
+    "full_score_byte_identity_passed": true,
+    "memcheck_zero_errors": true,
+    "model_quality_passed": false,
+    "formal_promoted": false,
+    "finished_unix": 1792929832.9866664,
+    "GPU_idle_after": true
+  },
+  "error_logs": []
+}

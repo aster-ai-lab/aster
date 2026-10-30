@@ -1,0 +1,12 @@
+{
+  "unix": 1792878763.2333465,
+  "local_parent": "/var/tmp",
+  "writable": true,
+  "free_bytes": 686513410048,
+  "total_bytes": 3838880616448,
+  "filesystem": [
+    1,
+    "/",
+    "overlay"
+  ]
+}

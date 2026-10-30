@@ -1,0 +1,343 @@
+diff --git a/crates/code/core/Cargo.toml b/crates/code/core/Cargo.toml
+index 49605c34b..f1725ca07 100644
+--- a/crates/code/core/Cargo.toml
++++ b/crates/code/core/Cargo.toml
+@@ -190,7 +190,7 @@ a3s-oci-sdk = { workspace = true }
+ libc = {workspace = true}
+ 
+ [target.'cfg(windows)'.dependencies]
+-windows-sys = {version = "0.61", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_System_JobObjects", "Win32_System_Threading"]}
++windows-sys = {version = "0.61", features = ["Win32_Foundation", "Win32_Security", "Win32_Storage_FileSystem", "Win32_System_JobObjects", "Win32_System_Threading"]}
+ 
+ [features]
+ # Thin coding-harness default (`HARNESS-CONV5`): agent loop, tools, identity,
+diff --git a/crates/code/core/src/porcelain.rs b/crates/code/core/src/porcelain.rs
+index ffd1b9a44..e322e2d33 100644
+--- a/crates/code/core/src/porcelain.rs
++++ b/crates/code/core/src/porcelain.rs
+@@ -50,6 +50,8 @@ pub(crate) struct ContentStamp {
+     pub kind: u8,
+     #[serde(default)]
+     pub content_digest: Option<String>,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub metadata_digest: Option<String>,
+ }
+ 
+ #[derive(Clone, Debug, Serialize)]
+@@ -821,6 +823,8 @@ pub(crate) struct NodeStamp {
+     pub len: u64,
+     pub modified: (i64, i64),
+     pub changed: (i64, i64),
++    #[serde(skip_serializing_if = "Option::is_none")]
++    pub metadata_digest: Option<String>,
+ }
+ 
+ /// The prepared fact is bounded at 1 MiB; leave room for the rest of it.
+@@ -941,6 +945,7 @@ fn node_stamp(relative: &str, stat: &libc::stat) -> Option<NodeStamp> {
+         len: u64::try_from(stat.st_size).ok()?,
+         modified: (i64::from(stat.st_mtime), i64::try_from(modified_nsec).ok()?),
+         changed: (i64::from(stat.st_ctime), i64::try_from(changed_nsec).ok()?),
++        metadata_digest: None,
+     })
+ }
+ 
+@@ -1310,6 +1315,7 @@ fn missing_identity(relative: &str) -> ContentStamp {
+         mode: 0,
+         kind: 0,
+         content_digest: None,
++        metadata_digest: None,
+     }
+ }
+ 
+@@ -1484,6 +1490,7 @@ fn identity_from_stat(
+         mode: stat.st_mode as u32,
+         kind,
+         content_digest: digest,
++        metadata_digest: None,
+     })
+ }
+ 
+diff --git a/crates/code/core/src/porcelain/receipt_tests.rs b/crates/code/core/src/porcelain/receipt_tests.rs
+index 18d492fae..fb1dcacd2 100644
+--- a/crates/code/core/src/porcelain/receipt_tests.rs
++++ b/crates/code/core/src/porcelain/receipt_tests.rs
+@@ -846,6 +846,7 @@ fn a_non_git_read_failure_stays_incomplete() {
+             len: 1,
+             modified: (1, 0),
+             changed: (1, 0),
++            metadata_digest: None,
+         }],
+         incomplete: true,
+         budget: false,
+@@ -1229,6 +1230,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
+             mode: 0o100644,
+             kind: 0,
+             content_digest: Some("ab".repeat(32)),
++            metadata_digest: None,
+         })
+         .collect();
+     let watch = Watch {
+diff --git a/crates/code/core/src/porcelain/windows.rs b/crates/code/core/src/porcelain/windows.rs
+index aaf9d4bf4..ac71359cc 100644
+--- a/crates/code/core/src/porcelain/windows.rs
++++ b/crates/code/core/src/porcelain/windows.rs
+@@ -7,6 +7,11 @@ use std::ffi::OsString;
+ use std::io;
+ use std::os::windows::fs::OpenOptionsExt;
+ use std::os::windows::io::AsRawHandle;
++use windows_sys::Win32::Foundation::{GetLastError, ERROR_INSUFFICIENT_BUFFER};
++use windows_sys::Win32::Security::{
++    GetKernelObjectSecurity, DACL_SECURITY_INFORMATION, GROUP_SECURITY_INFORMATION,
++    OWNER_SECURITY_INFORMATION,
++};
+ use windows_sys::Win32::Storage::FileSystem::{
+     FileBasicInfo, GetFileInformationByHandle, GetFileInformationByHandleEx,
+     BY_HANDLE_FILE_INFORMATION, FILE_ATTRIBUTE_DIRECTORY, FILE_ATTRIBUTE_REPARSE_POINT,
+@@ -22,6 +27,7 @@ pub(super) struct NodeInfo {
+     len: u64,
+     modified: i64,
+     changed: i64,
++    metadata_digest: String,
+ }
+ 
+ pub(super) fn observe_identity_windows(
+@@ -36,14 +42,14 @@ pub(super) fn observe_identity_windows(
+     let parent = match open_ancestors(directory, ancestors) {
+         Ok(parent) => parent,
+         Err(error) if error.kind() == io::ErrorKind::NotFound => {
+-            return Some(missing_identity(relative))
++            return Some(missing_identity(relative));
+         }
+         Err(_) => return None,
+     };
+     let mut file = match open_node(&parent, leaf) {
+         Ok(file) => file,
+         Err(error) if error.kind() == io::ErrorKind::NotFound => {
+-            return Some(missing_identity(relative))
++            return Some(missing_identity(relative));
+         }
+         Err(_) => return None,
+     };
+@@ -66,11 +72,15 @@ pub(super) fn observe_identity_windows(
+         present: true,
+         len: before.len,
+         modified: u128::try_from(before.modified).ok()? * 100,
+-        changed: u128::try_from(before.changed).ok()? * 100,
++        // AppContainer ACL leases advance ChangeTime even after restoring the
++        // original ACL. Compare the actual security metadata between calls;
++        // NodeInfo still uses ChangeTime to reject a raced observation above.
++        changed: 0,
+         node: (before.volume, before.index),
+         mode: before.attributes,
+         kind: u8::from(before.attributes & FILE_ATTRIBUTE_DIRECTORY != 0),
+         content_digest: digest,
++        metadata_digest: Some(before.metadata_digest),
+     })
+ }
+ 
+@@ -125,7 +135,8 @@ pub(super) fn node_stamp(relative: &str, info: &NodeInfo) -> Option<NodeStamp> {
+         mode: info.attributes,
+         len: info.len,
+         modified: (info.modified, 0),
+-        changed: (info.changed, 0),
++        changed: (0, 0),
++        metadata_digest: Some(info.metadata_digest.clone()),
+     })
+ }
+ 
+@@ -187,6 +198,10 @@ fn node_info(file: &impl AsRawHandle) -> Option<NodeInfo> {
+     if info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT != 0 {
+         return None;
+     }
++    let mut metadata = Sha256::new();
++    metadata.update(security_descriptor(file)?);
++    metadata.update(info.nNumberOfLinks.to_le_bytes());
++    metadata.update(basic.CreationTime.to_le_bytes());
+     Some(NodeInfo {
+         volume: u64::from(info.dwVolumeSerialNumber),
+         index: (u64::from(info.nFileIndexHigh) << 32) | u64::from(info.nFileIndexLow),
+@@ -194,9 +209,59 @@ fn node_info(file: &impl AsRawHandle) -> Option<NodeInfo> {
+         len: (u64::from(info.nFileSizeHigh) << 32) | u64::from(info.nFileSizeLow),
+         modified: basic.LastWriteTime,
+         changed: basic.ChangeTime,
++        metadata_digest: format!("{:x}", metadata.finalize()),
+     })
+ }
+ 
++fn security_descriptor(file: &impl AsRawHandle) -> Option<Vec<u8>> {
++    const MAX_DESCRIPTOR_BYTES: u32 = 64 * 1024;
++    const INFORMATION: u32 =
++        OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
++    let mut needed = 0;
++    // SAFETY: the live handle and length output are valid; a null zero-length
++    // buffer queries the required size without reading an object by path.
++    let queried = unsafe {
++        GetKernelObjectSecurity(
++            file.as_raw_handle(),
++            INFORMATION,
++            std::ptr::null_mut(),
++            0,
++            &mut needed,
++        )
++    };
++    if queried != 0
++        || unsafe { GetLastError() } != ERROR_INSUFFICIENT_BUFFER
++        || needed == 0
++        || needed > MAX_DESCRIPTOR_BYTES
++    {
++        return None;
++    }
++    // Security descriptors require four-byte alignment. The API returns a
++    // self-relative descriptor, so its bytes contain offsets, not pointers.
++    let mut words = vec![0_u32; (needed as usize).div_ceil(4)];
++    let capacity = (words.len() * std::mem::size_of::<u32>()) as u32;
++    // SAFETY: the aligned buffer owns capacity writable bytes. Failure,
++    // including a descriptor that grew after the size query, is refused.
++    if unsafe {
++        GetKernelObjectSecurity(
++            file.as_raw_handle(),
++            INFORMATION,
++            words.as_mut_ptr().cast(),
++            capacity,
++            &mut needed,
++        )
++    } == 0
++        || needed > capacity
++    {
++        return None;
++    }
++    // SAFETY: a successful call initialized needed bytes within the buffer.
++    Some(
++        unsafe { std::slice::from_raw_parts(words.as_ptr().cast::<u8>(), needed as usize) }
++            .to_vec(),
++    )
++}
++
+ #[cfg(test)]
+ #[path = "windows_tests.rs"]
+ mod tests;
+diff --git a/crates/code/core/src/porcelain/windows_tests.rs b/crates/code/core/src/porcelain/windows_tests.rs
+index 737ec49f9..ef6130614 100644
+--- a/crates/code/core/src/porcelain/windows_tests.rs
++++ b/crates/code/core/src/porcelain/windows_tests.rs
+@@ -2,6 +2,120 @@
+ 
+ use super::*;
+ 
++#[tokio::test]
++async fn native_sandbox_bash_read_keeps_the_observation_stable() {
++    use crate::tools::Tool;
++
++    let base = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap()).join("Temp");
++    let root = tempfile::Builder::new()
++        .prefix("aster-observe-")
++        .tempdir_in(base)
++        .unwrap();
++    let workspace = root.path().join("workspace");
++    std::fs::create_dir(&workspace).unwrap();
++    std::fs::write(workspace.join("proof.txt"), b"READ-ONLY-PROOF").unwrap();
++    let sandbox = crate::sandbox::native::NativeBashSandbox::new(&workspace).unwrap();
++    let context = crate::tools::ToolContext::new(workspace.clone())
++        .with_sandbox(std::sync::Arc::new(sandbox));
++    let before = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    let directory = open_directory(&workspace, &[]).unwrap();
++    let file = open_node(&directory, std::ffi::OsStr::new("proof.txt")).unwrap();
++    let before_security = security_descriptor(&file).unwrap();
++    let index = index_files(&workspace);
++    let result = crate::tools::builtin::bash::BashTool
++        .execute(&serde_json::json!({"command":"cat proof.txt"}), &context)
++        .await
++        .unwrap();
++    assert!(result.success, "{}", result.content);
++    assert!(result.content.contains("READ-ONLY-PROOF"));
++    let after = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    let after_security = security_descriptor(&file).unwrap();
++    let differences: Vec<_> = before_security
++        .iter()
++        .zip(&after_security)
++        .enumerate()
++        .filter_map(|(index, (before, after))| (before != after).then_some(index))
++        .take(32)
++        .collect();
++    eprintln!(
++        "security headers: before={:?} after={:?}; lengths={}/{}; changed offsets={differences:?}",
++        before_security.get(..20),
++        after_security.get(..20),
++        before_security.len(),
++        after_security.len()
++    );
++    assert_eq!(
++        before, after,
++        "a real sandboxed read must not change the observed file identity"
++    );
++    let delta = file_delta(&workspace, &index);
++    assert!(!delta.incomplete);
++    assert!(delta.paths.is_empty(), "read-only sandbox delta: {delta:?}");
++}
++
++#[test]
++fn windows_observation_keeps_real_security_and_link_changes() {
++    let root = tempfile::tempdir().unwrap();
++    let file = root.path().join("proof.txt");
++    std::fs::write(&file, "unchanged bytes").unwrap();
++    let before = observe_identity_windows(root.path(), "proof.txt", &mut 1024, false).unwrap();
++    let script = root.path().join("protect.ps1");
++    std::fs::write(&script, "$ErrorActionPreference = 'Stop'\n$p = Join-Path $PSScriptRoot 'proof.txt'\n$a = Get-Acl -LiteralPath $p\n$sid = [System.Security.Principal.SecurityIdentifier]::new('S-1-1-0')\n$rule = [System.Security.AccessControl.FileSystemAccessRule]::new($sid, [System.Security.AccessControl.FileSystemRights]::ReadData, [System.Security.AccessControl.AccessControlType]::Allow)\n$a.AddAccessRule($rule)\nSet-Acl -LiteralPath $p -AclObject $a\n").unwrap();
++    let shell = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap())
++        .join("System32/WindowsPowerShell/v1.0/powershell.exe");
++    let output = std::process::Command::new(shell)
++        .args(["-NoProfile", "-NonInteractive", "-File"])
++        .arg(&script)
++        .output()
++        .unwrap();
++    assert!(output.status.success(), "{:?}", output.stderr);
++    let secured = observe_identity_windows(root.path(), "proof.txt", &mut 1024, false).unwrap();
++    assert_eq!(before.content_digest, secured.content_digest);
++    assert_eq!(before.modified, secured.modified);
++    assert_ne!(before.metadata_digest, secured.metadata_digest);
++    std::fs::hard_link(&file, root.path().join("link.txt")).unwrap();
++    let linked = observe_identity_windows(root.path(), "proof.txt", &mut 1024, false).unwrap();
++    assert_eq!(secured.content_digest, linked.content_digest);
++    assert_eq!(secured.modified, linked.modified);
++    assert_ne!(secured.metadata_digest, linked.metadata_digest);
++}
++
++#[test]
++fn actual_powershell_read_keeps_the_observation_stable() {
++    let root = tempfile::tempdir().unwrap();
++    let workspace = root.path().join("workspace");
++    std::fs::create_dir(&workspace).unwrap();
++    std::fs::write(workspace.join("proof.txt"), b"READ-ONLY-PROOF").unwrap();
++    let script = root.path().join("read.ps1");
++    std::fs::write(
++        &script,
++        "Get-Content -LiteralPath (Join-Path $PSScriptRoot 'workspace/proof.txt')\n",
++    )
++    .unwrap();
++    let before = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    let index = index_files(&workspace);
++    let shell = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap())
++        .join("System32/WindowsPowerShell/v1.0/powershell.exe");
++    let output = std::process::Command::new(shell)
++        .args(["-NoProfile", "-NonInteractive", "-File"])
++        .arg(script)
++        .output()
++        .unwrap();
++    assert!(output.status.success());
++    assert_eq!(
++        String::from_utf8(output.stdout).unwrap().trim(),
++        "READ-ONLY-PROOF"
++    );
++    let after = observe_identity_windows(&workspace, "proof.txt", &mut 1024, false).unwrap();
++    assert_eq!(before, after);
++    let delta = file_delta(&workspace, &index);
++    assert!(!delta.incomplete);
++    assert!(
++        delta.paths.is_empty(),
++        "read-only command observed as a mutation: {delta:?}"
++    );
++}
++
+ #[test]
+ fn actual_windows_files_have_bounded_byte_identities() {
+     let root = tempfile::tempdir().unwrap();

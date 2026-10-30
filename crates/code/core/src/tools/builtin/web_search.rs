@@ -431,7 +431,7 @@ async fn saved_notes(
     }
     let invocation = crate::tools::ToolInvocation::runtime_internal(
         "search_wiki",
-        serde_json::json!({ "query": query, "scope": "local" }),
+        serde_json::json!({ "query": query, "scope": "current" }),
     );
     Some(invoker.invoke(invocation, ctx).await)
 }

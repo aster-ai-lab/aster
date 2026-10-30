@@ -1,0 +1,112 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/use/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running unittests src/lib.rs (target-power/debug/deps/a3s_power-65f37d3f6bb16005)
+
+running 81 tests
+test api::openai::chat::policy_tests::explicit_backend_capability_allows_selection_for_local_container_without_weakening_default ... ok
+test api::openai::chat::runtime::tests::buffered_reasoning_tool_message_can_be_replayed_through_request_and_receipt_validation ... ok
+test api::openai::chat::runtime::tests::buffered_upstream_errors_keep_client_and_unavailable_http_status_and_release_admission ... ok
+test api::openai::chat::runtime::tests::continuation_wire_omits_empty_identity_fields_for_openai_sdks ... ok
+test api::openai::chat::runtime::tests::disconnect_drops_upstream_before_releasing_execution_permit_and_cleans_once ... ok
+test api::openai::chat::runtime::tests::failure_audit_applies_error_and_log_privacy_without_hiding_benign_reasons ... ok
+test api::openai::chat::runtime::tests::interleaved_tool_deltas_reconstruct_once_by_explicit_index ... ok
+test api::openai::chat::runtime::tests::json_and_sse_report_same_usage_without_chunk_counting_or_privacy_leak ... ok
+test api::openai::chat::runtime::tests::meaningful_excludes_role_metadata_and_tool_identity ... ok
+test api::openai::chat::runtime::tests::missing_prism_usage_is_omitted_on_both_surfaces ... ok
+test api::openai::chat::runtime::tests::prism_usage_is_authoritative_u64_and_unknown_is_not_zero ... ok
+test api::openai::chat::runtime::tests::privacy_preserves_success_audit_and_unredacted_host_failure_contract ... ok
+test api::openai::chat::runtime::tests::privacy_rounds_nested_usage_metrics_and_removes_upstream_timing_counts ... ok
+test api::openai::chat::runtime::tests::split_tool_names_append_without_duplicating_call_identity ... ok
+test api::openai::chat::runtime::tests::streaming_and_buffered_error_audits_do_not_keep_private_upstream_content ... ok
+test api::openai::chat::runtime::tests::upstream_error_never_emits_success_done_or_success_token_metrics ... ok
+test api::openai::chat::tests::backend_response_format_extracts_schema_for_local_backends ... ok
+test api::openai::chat::tests::backend_response_format_preserves_remote_json_schema_wire_shape ... ok
+test api::openai::chat::tests::local_parallel_tool_calls_validation_rejects_false_with_tools ... ok
+test api::openai::chat::tests::local_tool_choice_validation_rejects_non_default_policy ... ok
+test api::openai::chat::tests::streaming_preserves_terminal_chat_payload ... ok
+test api::openai::chat::tests::terminal_chat_payload_chunks_count_as_output_tokens ... ok
+test api::openai::chat::tests::test_active_requests_decremented_on_model_not_found ... ok
+test api::openai::chat::tests::test_keep_alive_zero_streaming_unloads_after_inference ... ok
+test api::openai::chat::tests::test_keep_alive_zero_unloads_after_inference ... ok
+test api::openai::chat::tests::test_openai_chat_accepts_single_choice_request ... ok
+test api::openai::chat::tests::test_openai_chat_allows_remote_message_role_passthrough ... ok
+test api::openai::chat::tests::test_openai_chat_allows_text_modalities_request ... ok
+test api::openai::chat::tests::test_openai_chat_backend_not_found ... ok
+test api::openai::chat::tests::test_openai_chat_default_stream_false ... ok
+test api::openai::chat::tests::test_openai_chat_forwards_extended_sampling_controls ... ok
+test api::openai::chat::tests::test_openai_chat_forwards_max_completion_tokens ... ok
+test api::openai::chat::tests::test_openai_chat_forwards_message_images_to_backend ... ok
+test api::openai::chat::tests::test_openai_chat_has_choices ... ok
+test api::openai::chat::tests::test_openai_chat_has_usage_field ... ok
+test api::openai::chat::tests::test_openai_chat_load_failure ... ok
+test api::openai::chat::tests::test_openai_chat_maps_legacy_functions_to_tools ... ok
+test api::openai::chat::tests::test_openai_chat_model_not_found ... ok
+test api::openai::chat::tests::test_openai_chat_non_streaming_preserves_tool_calls ... ok
+test api::openai::chat::tests::test_openai_chat_non_streaming_success ... ok
+test api::openai::chat::tests::test_openai_chat_preserves_remote_json_schema_response_format ... ok
+test api::openai::chat::tests::test_openai_chat_preserves_remote_parallel_tool_calls ... ok
+test api::openai::chat::tests::test_openai_chat_prompt_cache_fails_closed_or_forwards_opaque_key ... ok
+test api::openai::chat::tests::test_openai_chat_receipt_includes_effective_prompt_digest ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_audio_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_conflicting_max_completion_tokens ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_conflicting_tool_choice_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_conflicting_tool_definition_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_incomplete_json_schema_response_format ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_invalid_keep_alive ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_invalid_prompt_cache_key_before_lookup ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_local_named_legacy_function_call ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_local_parallel_tool_calls_false_with_tools ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_local_tool_choice_none_with_tools ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_logit_bias_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_logprobs_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_message_thinking_input ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_multi_choice_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_prediction_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_reasoning_effort_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_stream_options_without_stream ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_text_effective_prompt_for_image_url_parts ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_text_effective_prompt_for_message_images ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_local_message_role ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_message_content_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_modalities_request ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_response_format_field ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_response_format_type ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_stream_options_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_tool_choice_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_tool_definition_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_tool_function_fields ... ok
+test api::openai::chat::tests::test_openai_chat_rejects_unsupported_top_level_fields ... ok
+test api::openai::chat::tests::test_openai_chat_streaming_returns_sse ... ok
+test api::openai::chat::tests::test_openai_chat_streaming_with_include_usage ... ok
+test api::openai::chat::tests::test_openai_chat_streaming_with_tools ... ok
+test api::openai::chat::tests::test_openai_chat_with_temperature ... ok
+test api::openai::chat::tests::test_openai_chat_with_tool_result ... ok
+test api::openai::chat::tests::test_openai_chat_with_tools ... ok
+test api::openai::chat::tests::test_openai_chat_with_vision ... ok
+test api::openai::chat::tests::test_round_tokens_rounds_to_nearest_10 ... ok
+
+test result: ok. 81 passed; 0 failed; 0 ignored; 0 measured; 1939 filtered out; finished in 0.17s
+

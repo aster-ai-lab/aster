@@ -1,0 +1,17 @@
+
+running 1 test
+test workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace ... ORACLE case=relative-cwd name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=relative-cwd name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26586
+
+thread 'workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace' (5920) panicked at crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs:427:10:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    workspace_trust::kimi_relative_cwd_with_unicode_and_spaces_uses_the_actual_workspace
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 39 filtered out; finished in 20.59s
+

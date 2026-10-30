@@ -1,0 +1,208 @@
+{
+  "recorded_at": "2026-10-28T17:22:26.2226478+08:00",
+  "platform": "native Windows x86_64 / ConPTY",
+  "model": "kimi/k3.1-pro",
+  "build": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+  "command": "./target/debug/deps/aster_tui_live_e2e-931eb4a332f55eae.exe --ignored --test-threads=1 --nocapture",
+  "result": {
+    "elapsed_seconds": 557.98,
+    "assertions_finished": true,
+    "ignored": 0,
+    "palette_commands": 28,
+    "failed": 0,
+    "passed": 10,
+    "acl_unchanged": true,
+    "mode_specific_commands": 2,
+    "cases": 12
+  },
+  "tests": [
+    {
+      "name": "kimi_tui_allow_once_writes_and_verifies_actual_workspace_bytes",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "allow-once",
+          "artifact": "allow-once.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 6,
+          "retained_facts": 14
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_durable_goal_controls_persist_real_facts",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "goal",
+          "artifact": "goal.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 6,
+          "retained_facts": 8
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_expands_actual_folded_tool_output",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "expand",
+          "artifact": "expand.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 4,
+          "retained_facts": 5
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_interrupts_a_running_tool_without_late_side_effects",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "interrupt",
+          "artifact": "interrupt.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 3,
+          "retained_facts": 2
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_multiturn_edits_and_runs_the_real_checker",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "coding",
+          "artifact": "coding.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 6,
+          "retained_facts": 19
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_native_form_validates_submits_and_cancels",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "form-submit",
+          "artifact": "form-submit.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 5,
+          "retained_facts": 8
+        },
+        {
+          "name": "form-cancel",
+          "artifact": "form-cancel.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 3,
+          "retained_facts": 8
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_offered_commands_have_observable_effects",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "surface",
+          "artifact": "surface.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 71,
+          "retained_facts": 0
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_permission_reject_and_cancel_leave_no_side_effect",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "permission-reject",
+          "artifact": "permission-reject.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 3,
+          "retained_facts": 2
+        },
+        {
+          "name": "permission-cancel",
+          "artifact": "permission-cancel.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 3,
+          "retained_facts": 2
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_reads_actual_workspace_bytes",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "read",
+          "artifact": "read.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 4,
+          "retained_facts": 5
+        }
+      ]
+    },
+    {
+      "name": "kimi_tui_writes_and_verifies_actual_workspace_bytes",
+      "result": "passed",
+      "cases": [
+        {
+          "name": "write-verify",
+          "artifact": "write-verify.json",
+          "assertions_finished": true,
+          "panicked": false,
+          "config_unchanged": true,
+          "source_pair": "aster-cli-pair-v1:81c920c48600768812f229a43803ad31893fc3e2:x86_64-pc-windows-msvc",
+          "oracles": 4,
+          "retained_facts": 17
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "whole_workspace_format": "failed on existing unrelated formatting differences; native Windows also hits OS 206",
+    "cli_pair_delivery_tests": 10,
+    "core_rust_tests": 62,
+    "focused_format": "passed",
+    "workspace_dependency_tests": 6,
+    "acp_rust_tests": 31
+  }
+}

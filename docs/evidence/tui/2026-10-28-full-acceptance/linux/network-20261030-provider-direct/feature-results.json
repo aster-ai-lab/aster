@@ -1,0 +1,76 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "harness_source_digest": "103b1638d3775ff58d7a9f08cfc3fa6e3fd080b1",
+  "tests": [
+    {
+      "test": "network_tools_wave::kimi_download_binary_unicode_destination_matches_sha256_and_real_checker",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_binary_unicode_destination_matches_sha256_and_real_checker.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_existing_destination_refuses_without_overwrite.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_sha256_failure_keeps_existing_exact_bytes",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_sha256_failure_keeps_existing_exact_bytes.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_declared_size_limit_leaves_no_destination_or_partial.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_http_404_leaves_no_destination_or_partial",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_http_404_leaves_no_destination_or_partial.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_private_literal_refuses_before_proxy_or_file_effect",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_private_literal_refuses_before_proxy_or_file_effect.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_download_truncated_http_body_never_promotes_partial_file",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_download_truncated_http_body_never_promotes_partial_file.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content",
+      "exit_code": 101,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_redirect_preserves_original_and_final_sources.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_404_reports_actual_failure_and_recovers.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_http_429_reports_actual_rate_limit_and_recovers.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_timeout_is_real_and_followup_turn_remains_usable.log"
+    },
+    {
+      "test": "network_tools_wave::kimi_web_fetch_private_literal_is_refused_before_proxy_access",
+      "exit_code": 0,
+      "log": "linux/network-20261030-provider-direct/network_tools_wave__kimi_web_fetch_private_literal_is_refused_before_proxy_access.log"
+    }
+  ]
+}

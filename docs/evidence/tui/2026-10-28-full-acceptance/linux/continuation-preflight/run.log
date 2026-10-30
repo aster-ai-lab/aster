@@ -1,0 +1,9 @@
+
+running 1 test
+test kimi_tui_interrupts_a_running_tool_without_late_side_effects ... ORACLE case=interrupt name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=interrupt name=interrupt result=pass detail=Ctrl+C settles an admitted bash call; no delayed write after eight seconds
+ORACLE case=interrupt name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 25.62s
+

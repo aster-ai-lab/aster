@@ -1,0 +1,42 @@
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -400,6 +400,10 @@
+     if (draft_cumulative == aster_draft::Mode::invalid) {
+         std::fprintf(stderr, "ASTER_XQ_DSPARK_CUM must be 0, 0.1, 0.25, or 0.5\n"); return 2;
+     }
++    bool admit_draft_seed = false;
++    if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_ADMIT_DRAFT_SEED"), admit_draft_seed)) {
++        std::fprintf(stderr, "ASTER_XQ_ADMIT_DRAFT_SEED must be 0 or 1\n"); return 2;
++    }
+     bool prefill_qos = false;
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_QOS"), prefill_qos)) {
+         std::fprintf(stderr, "ASTER_XQ_PREFILL_QOS must be 0 or 1\n"); return 2;
+@@ -2393,7 +2397,9 @@
+             const int delta = total - reused;
+             int sp_tail = 0;   // DSpark: the last new prompt tokens, fed by pass_v (seeds the window)
+ #if defined(DS41_HAVE_DSPARK)
+-            if (dsp_path && admit < 0) {   // (an admission decodes on in a slot: no drafts there)
++            if (dsp_path && (admit < 0 || admit_draft_seed)) {
++                // Batch admissions still decode through the ordinary slot path. Retain
++                // the same prompt-tail hidden rows for a later solo KV-hit regenerate.
+                 if (!(reused > 0 && reused == dsp_next) && dsp) dsp->reset();
+                 dsp_next = -1;
+                 sp_tail = std::min(128, delta);
+@@ -2705,7 +2711,7 @@
+                         spos.resize((size_t) m);
+                         for (int t = 0; t < m; ++t) spos[(size_t) t] = i0 + t;
+                         const bool last = i0 + m == total;
+-                        if (last) sp_t = sample_p(last_logits.data(), nv, temp, tk, top_p, min_p, rng);   // the batch's last row
++                        if (last && admit < 0) sp_t = sample_p(last_logits.data(), nv, temp, tk, top_p, min_p, rng);   // the batch's last row
+                         if (i0 == c0s) cur_seed_n = 0;
+                         cur_seed.resize((size_t) (cur_seed_n + m) * 3 * n_embd);
+                         std::copy_n(bcap_vh.data() + (size_t) (i0 - c0s) * 3 * n_embd, (size_t) m * 3 * n_embd,
+@@ -2727,7 +2733,7 @@
+                     const bool last = i0 + m == total;
+                     if (last) {
+                         std::copy(vlog.end() - nv, vlog.end(), last_logits.begin());
+-                        sp_t = sample_p(last_logits.data(), nv, temp, tk, top_p, min_p, rng);
++                        if (admit < 0) sp_t = sample_p(last_logits.data(), nv, temp, tk, top_p, min_p, rng);
+                     }
+                     if (i0 == total - sp_tail) cur_seed_n = 0;
+                     cur_seed.resize((size_t) (cur_seed_n + m) * 3 * n_embd);

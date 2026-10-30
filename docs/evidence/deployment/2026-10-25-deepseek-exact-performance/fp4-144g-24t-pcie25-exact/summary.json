@@ -1,0 +1,9 @@
+{
+  "profile": "Exact routing + packed KV; 24 threads, 144 GiB arena, PCIe 0.25",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 24.4
+  },
+  "prefill_median": 661.7,
+  "full_one_million_completed": false
+}

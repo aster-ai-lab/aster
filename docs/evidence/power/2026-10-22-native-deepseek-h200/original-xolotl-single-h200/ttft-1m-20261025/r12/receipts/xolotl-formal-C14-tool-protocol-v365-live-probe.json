@@ -1,0 +1,42 @@
+{
+  "unix": 1792932528.8474479,
+  "phase": "passed",
+  "base_url": "http://10.102.93.68/v1",
+  "same_existing_key": true,
+  "public_fixture_only": true,
+  "tools_executed": false,
+  "tests": [
+    {
+      "name": "reverse_parallel_results",
+      "seconds": 2.125,
+      "answer": "alpha=25;beta=17",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 371,
+        "completion_tokens": 8,
+        "total_tokens": 379,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "exposed_tool_calls": 0,
+      "exact_passed": true
+    },
+    {
+      "name": "three_identical_rounds_recovery",
+      "seconds": 1.9530000002123415,
+      "answer": "alpha=25;beta=17",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 645,
+        "completion_tokens": 8,
+        "total_tokens": 653,
+        "prompt_tokens_details": {
+          "cached_tokens": 371
+        }
+      },
+      "exposed_tool_calls": 0,
+      "exact_passed": true
+    }
+  ]
+}

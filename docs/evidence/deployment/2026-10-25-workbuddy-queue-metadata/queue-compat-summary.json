@@ -1,0 +1,27 @@
+{
+  "at_epoch": 1792918409.389431,
+  "public_base": "http://117.162.0.179:8080/v1",
+  "models": [
+    "deepseek-v4.1-flash",
+    "prism-27b"
+  ],
+  "before_reproduced_http_400": 2,
+  "after_same_history_http_200": 2,
+  "qualified_tool_roundtrips": 8,
+  "qualified_tool_hi_cases": 4,
+  "qualified_http_requests": 22,
+  "qualified_cases_all_passed": true,
+  "focused_rust_tests_passed": 46,
+  "gateway_pid": 2011098,
+  "binary_sha256": "17d6d7c86ce2680503d56f6d1c1d33177e89bdc851d302ddfd16ea4d7036a674",
+  "source_fingerprint": "4a0dcf76f4337c5e939936d0a5e3e0c6784a0bca18595891ea7c2de6e307b33a",
+  "managed_snapshot_ready": true,
+  "native_context_configured": 1048576,
+  "native_health_loaded": true,
+  "native_admission_after_tests": {
+    "active_limit": 1,
+    "active": 0,
+    "waiting": 0
+  },
+  "full_one_million_completed": false
+}

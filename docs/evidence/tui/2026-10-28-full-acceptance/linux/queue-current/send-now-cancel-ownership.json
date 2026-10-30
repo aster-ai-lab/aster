@@ -1,0 +1,135 @@
+{
+  "assertions_finished": true,
+  "case": "send-now-cancel-ownership",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "printf started > started.txt; sleep 8; printf late > late.txt",
+            "timeout": 15000
+          },
+          "id": "call_a7b144141730497eb519a454c4a6e974",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13212,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2cda6106-704e-4884-81f3-097c02fa7fee",
+            "thread_id": "c09c4d2c-e6f4-40ef-b3ec-428068a4849a"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a7b144141730497eb519a454c4a6e974",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:03494afd4248c42f5fa1237bf2eeebe751ab8d9c977d55405fcb17469dbd91f8",
+                "kind": "file",
+                "mode": 33188
+              },
+              "before": {
+                "kind": "missing"
+              },
+              "path": "started.txt"
+            }
+          ],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:fdb93f7fb0eb9a07511f6f2e055853eed92bbaed2789d15cb309130f6ca9c5f2"
+          ]
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2cda6106-704e-4884-81f3-097c02fa7fee",
+            "thread_id": "c09c4d2c-e6f4-40ef-b3ec-428068a4849a"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a7b144141730497eb519a454c4a6e974",
+          "turn": 1
+        },
+        "outcome": "cancelled",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}",
+        "prepared_digest": "sha256:78b69b8eae9aee81dbf7287a532d5f65bed3955b33b693c2cfdd14c5a57e3f38",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": null,
+        "text": "(Response interrupted by the user.)",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13595,
+        "text": "SEND-NOW-OWNED",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal",
+      "name": "send-now-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-QA5xkG/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use bash exactly once to run this exact command: printf started > started.txt; sleep 8; printf late  12:25 AM    \n       > late.txt. Then reply ORIGINAL-COMPLETED. Do not call any other tool.                                           \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 7.1s                                                                                                 \n     ◆ Run printf started > started.txt; sleep 8; printf late > late.txt                                                \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    #1 Reply only SEND-NOW-OWNED. Do not call any tool.                                                                 \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+;:queue  │  Ctrl+x:shortcuts                                                                  \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

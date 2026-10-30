@@ -1,0 +1,16 @@
+{
+  "schema": "aster.tui.index-audit.v1",
+  "index_sha256": "b571d982ab362c51a4fefe1a73d17515102782417c9f3d81828c17ab96572258",
+  "checkpoint_count": 153,
+  "domain_count": 16,
+  "status_counts": {
+    "explicitly_unavailable": 1,
+    "partial": 57,
+    "pending": 48,
+    "verified_for_listed_contract": 47
+  },
+  "verified_with_both_platforms": 47,
+  "referenced_files_checked": 237,
+  "all_referenced_hashes_match": true,
+  "complete_153": false
+}

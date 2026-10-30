@@ -1,0 +1,5 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 24082 MiB):
+  Device 0: NVIDIA GeForce RTX 4090 D, compute capability 8.9, VMM: yes, VRAM: 24082 MiB
+comp nvfp4: 4194304 values, 0 differ (bf16 round trip: 0 differ)
+idxk mxfp4: 1048576 values, 0 differ (bf16 round trip: 0 differ)
+packed == fake-quant, bit for bit

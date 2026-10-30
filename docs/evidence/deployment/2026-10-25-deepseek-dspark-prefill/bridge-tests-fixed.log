@@ -1,0 +1,21 @@
+test_adapter_cannot_bind_a_public_interface_or_ambiguous_identity (test_power_xolotl_bridge.Boundary.test_adapter_cannot_bind_a_public_interface_or_ambiguous_identity) ... ok
+test_admitted_single_card_and_eight_card_records_round_trip (test_power_xolotl_bridge.Boundary.test_admitted_single_card_and_eight_card_records_round_trip) ... ok
+test_device_authority_cannot_expand_or_alias_an_index (test_power_xolotl_bridge.Boundary.test_device_authority_cannot_expand_or_alias_an_index) ... ok
+test_dspark_environment_is_complete_bounded_and_single_card (test_power_xolotl_bridge.Boundary.test_dspark_environment_is_complete_bounded_and_single_card) ... ok
+test_dspark_requires_success_in_current_process_log_not_stale_success (test_power_xolotl_bridge.Boundary.test_dspark_requires_success_in_current_process_log_not_stale_success) ... ok
+test_engine_log_refuses_symlink_and_fifo_without_touching_targets (test_power_xolotl_bridge.Boundary.test_engine_log_refuses_symlink_and_fifo_without_touching_targets) ... ok
+test_engine_log_remains_seekable_with_journal_socket_stderr (test_power_xolotl_bridge.Boundary.test_engine_log_remains_seekable_with_journal_socket_stderr) ... ok
+test_exact_routing_cannot_be_omitted_or_changed_by_the_launch_record (test_power_xolotl_bridge.Boundary.test_exact_routing_cannot_be_omitted_or_changed_by_the_launch_record) ... ok
+test_fp4_kv_keeps_context_proof_and_device_count_closed (test_power_xolotl_bridge.Boundary.test_fp4_kv_keeps_context_proof_and_device_count_closed) ... ok
+test_inherited_draft_environment_cannot_enable_or_override_acl (test_power_xolotl_bridge.Boundary.test_inherited_draft_environment_cannot_enable_or_override_acl) ... ok
+test_mock_cpu_relative_and_rewritten_split_plans_refuse (test_power_xolotl_bridge.Boundary.test_mock_cpu_relative_and_rewritten_split_plans_refuse) ... ok
+test_one_million_context_is_closed_and_actual_ready_must_match (test_power_xolotl_bridge.Boundary.test_one_million_context_is_closed_and_actual_ready_must_match) ... ok
+test_parent_death_binding_rechecks_identity_after_prctl (test_power_xolotl_bridge.Boundary.test_parent_death_binding_rechecks_identity_after_prctl) ... ok
+test_ready_channel_reaches_eof_while_adapter_remains_alive (test_power_xolotl_bridge.Boundary.test_ready_channel_reaches_eof_while_adapter_remains_alive) ... ok
+test_unknown_duplicate_and_oversized_records_refuse_before_import (test_power_xolotl_bridge.Boundary.test_unknown_duplicate_and_oversized_records_refuse_before_import) ... ok
+test_unknown_parent_refuses_before_setting_a_death_signal (test_power_xolotl_bridge.Boundary.test_unknown_parent_refuses_before_setting_a_death_signal) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.096s
+
+OK

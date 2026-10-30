@@ -30,6 +30,87 @@ fn form_req() -> McpElicitExtRequest {
     }
 }
 
+#[test]
+fn short_terminal_form_keeps_fields_and_actions_reachable() {
+    use crate::views::agent::{AgentViewLayout, AgentViewLayoutParams};
+    let mut properties = serde_json::Map::new();
+    let mut order = Vec::new();
+    for n in 1..=24 {
+        let name = format!("field{n:02}");
+        properties.insert(name.clone(), json!({"type":"string","title":format!("Required {n:02}"),"default":format!("seed{n:02}")}));
+        order.push(name);
+    }
+    let mut request = form_req();
+    request.mode = McpElicitModeFields::Form {
+        requested_schema: Some(json!({
+            "type":"object", "properties":properties, "required":order, "x-a3s-field-order":order,
+        })),
+    };
+    let mut state = ElicitationViewState::from_request(request, None, None);
+    let area = Rect::new(0, 0, 64, 14);
+    let params = AgentViewLayoutParams {
+        area,
+        prompt_height: elicitation_view_height(&state, area.height, 59),
+        turn_status_height: 1,
+        shortcuts_height: 1,
+        ..Default::default()
+    };
+    let layout = AgentViewLayout::compute_for_elicitation(params);
+    let mut buffer = Buffer::empty(area);
+    render_elicitation_view(
+        &mut buffer,
+        layout.prompt,
+        &mut state,
+        &Theme::default(),
+        true,
+        None,
+    );
+    let text = buffer_text(&buffer);
+    assert!(
+        text.contains("Required 01") && text.contains("Accept") && text.contains("Decline"),
+        "{text}"
+    );
+    state.form_mut().unwrap().field_cursor = 23;
+    buffer.reset();
+    render_elicitation_view(
+        &mut buffer,
+        layout.prompt,
+        &mut state,
+        &Theme::default(),
+        true,
+        None,
+    );
+    let text = buffer_text(&buffer);
+    assert!(
+        text.contains("Required 24") && text.contains("Accept") && text.contains("Decline"),
+        "{text}"
+    );
+    assert!(layout.prompt.bottom() <= layout.shortcuts.y);
+    state.focus = super::state::ElicitationFocus::Actions;
+    set_draft(&mut state, 23, "");
+    assert!(state.try_accept().is_none());
+    buffer.reset();
+    render_elicitation_view(
+        &mut buffer,
+        layout.prompt,
+        &mut state,
+        &Theme::default(),
+        true,
+        None,
+    );
+    let text = buffer_text(&buffer);
+    assert!(
+        text.lines().any(|line| {
+            line.trim()
+                .trim_start_matches(crate::glyphs::accent_bar())
+                .trim()
+                == "required"
+        }),
+        "{text}"
+    );
+    assert!(text.contains("Accept") && text.contains("Decline"));
+}
+
 fn url_req(url: &str) -> McpElicitExtRequest {
     McpElicitExtRequest {
         require_nonempty: false,

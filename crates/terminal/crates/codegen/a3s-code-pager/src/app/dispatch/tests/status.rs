@@ -1827,6 +1827,7 @@ fn context_info_response() -> a3s_code_shell::session::SessionInfoResponse {
     a3s_code_shell::session::SessionInfoResponse {
         session_id: "test-session".to_string(),
         cwd: "/tmp/test".to_string(),
+        permission_posture: None,
         data: SessionInfoData {
             agent_name: None,
             model: Some("grok-build".to_string()),

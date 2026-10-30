@@ -1,0 +1,74 @@
+{
+  "schema": "aster-serve-decode-profile-v166",
+  "parent_source_sha256": "47af8a6d48d42d0bd745b59279ed1ed2e907829e4402e4b366e70b6494e4ba7e",
+  "parent_generator_sha256": "8ab829c4157968935bb4f95b31b73ebd1b60c6fb3fa6e6db144c30fc496c3715",
+  "parent_native_sha256": "99f3eee8c7eeee54c304120db50e8e632a7c001f9ac90fadf0983040fef92c25",
+  "env": "ASTER_XQ_SERVE_PROFILE",
+  "closed_values": [
+    "0",
+    "1"
+  ],
+  "default_enabled": false,
+  "profiled_GEN_number": 4,
+  "prefill_profiled": false,
+  "routing_changed": false,
+  "model_math_changed": false,
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 228908,
+      "sha256": "e65f795b5ba3336bfdff2d529101fc950fa3a748dd22d2019f29a3d5ca8cec32"
+    },
+    {
+      "file": "ds41_generate.original.cpp",
+      "bytes": 228205,
+      "sha256": "47af8a6d48d42d0bd745b59279ed1ed2e907829e4402e4b366e70b6494e4ba7e"
+    },
+    {
+      "file": "aster_serve_profile.hpp",
+      "bytes": 1120,
+      "sha256": "7f233bb8c78ef0d31eae1ab343f26f0f0a6248c14528f6ed9c8a0a559d894f0c"
+    },
+    {
+      "file": "test_serve_profile.cpp",
+      "bytes": 1723,
+      "sha256": "4f0e43f5feaf97296ec0fd2e54fc0c5d1b4d65ed7715147ab83c226c2fe788ad"
+    },
+    {
+      "file": "serve-decode-profile-v166.patch",
+      "bytes": 2027,
+      "sha256": "5dd1840c8195dc76228ae5a7cd7edee0a7598c95af996e876b3bd661a4bad579"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f"
+    }
+  ]
+}

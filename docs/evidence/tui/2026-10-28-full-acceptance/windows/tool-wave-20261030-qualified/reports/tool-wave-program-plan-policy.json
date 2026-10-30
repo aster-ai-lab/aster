@@ -1,0 +1,363 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-program-plan-policy",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-program-plan-write.json"
+          },
+          "id": "call_b5b481279d444d6e9fdf9acefd807dac",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13327,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+            "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b5b481279d444d6e9fdf9acefd807dac",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+            "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b5b481279d444d6e9fdf9acefd807dac",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"write\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-plan-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-plan-write.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":300},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":300,\"projected_bytes\":300,\"original_estimated_tokens\":75,\"projected_estimated_tokens\":75,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"projected_digest\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"repeat_key\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"content_ref\":\"inline:sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:1eb99be524ee0cdaa3fc585f3c064d140cb805db4b23ef8561879ce280f27ae1\"}",
+        "prepared_digest": "sha256:0b54ccf6bf10439b9d11d6092d1fc3c0517bbc96278ed4e91b27af84da7bbcc9",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "write"
+            ],
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 2,
+              "timeoutMs": 10000
+            },
+            "source": "async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-plan-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }",
+            "type": "script"
+          },
+          "id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13626,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+            "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+            "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+          "turn": 1
+        },
+        "outcome": "denied",
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "prepared_digest": "sha256:9989ce63645435dc5ac601822901f31f5786c73b2371818735759accfff3354c",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13860,
+        "text": "The `program` call was denied:\n\n`tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy`",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "5e576998eda62c7f015d241395592d90d2de54090f4351eb00f045fbea1aff93",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:e6145a7031e4837bc84857a31a93a054bc5ab8f14e57a7e8a8bebeac2f56d3e9",
+          "sha256:24de6c2e3293fc9940fbbd01f436c3ab43e696f5dda0fe0f5408639fbe25170a"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40813",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9rHaQh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-program-plan-write.json once. Call program exactly once with its exact JSON object as   12:50 PM           arguments. Report the actual denial without retrying or calling other tools.                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 2.4s                                                                                                                                                                                                                              The program call was denied:                                                                           12:51 PM                                                                                                                                 tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission                     policy                                                                                                                                                                                                                                          Worked for 39s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the original fixed program request is denied by the frozen policy with complete empty effects, no nested write dispatch, and no output file",
+      "name": "program-plan-actual-denial",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-9rHaQh\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-program-plan-write.json once. Call program exactly once with its exact JSON object as   12:50 PM           arguments. Report the actual denial without retrying or calling other tools.                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 2.4s                                                                                                                                                                                                                              The program call was denied:                                                                           12:51 PM                                                                                                                                 tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission                     policy                                                                                                                                                                                                                                          Worked for 39s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "tool-wave-program-plan-policy",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-program-plan-write.json"
+              },
+              "id": "call_b5b481279d444d6e9fdf9acefd807dac",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13327,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+                "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b5b481279d444d6e9fdf9acefd807dac",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+                "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_b5b481279d444d6e9fdf9acefd807dac",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"write\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-plan-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-plan-write.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":300},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":300,\"projected_bytes\":300,\"original_estimated_tokens\":75,\"projected_estimated_tokens\":75,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"projected_digest\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"repeat_key\":\"sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"content_ref\":\"inline:sha256:95072df696707818d5bf11aec61efffae4bc27d12f54b7efe93210619d40fecf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:1eb99be524ee0cdaa3fc585f3c064d140cb805db4b23ef8561879ce280f27ae1\"}",
+            "prepared_digest": "sha256:0b54ccf6bf10439b9d11d6092d1fc3c0517bbc96278ed4e91b27af84da7bbcc9",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "write"
+                ],
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 2,
+                  "timeoutMs": 10000
+                },
+                "source": "async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-plan-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }",
+                "type": "script"
+              },
+              "id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13626,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+                "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-41b67347-e193-4a99-8c0b-d7374ff697a2",
+                "thread_id": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_eb6f9e5b4e8d4dada719fd9834011438",
+              "turn": 1
+            },
+            "outcome": "denied",
+            "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+            "prepared_digest": "sha256:9989ce63645435dc5ac601822901f31f5786c73b2371818735759accfff3354c",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13860,
+            "text": "The `program` call was denied:\n\n`tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy`",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "5e576998eda62c7f015d241395592d90d2de54090f4351eb00f045fbea1aff93",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:e6145a7031e4837bc84857a31a93a054bc5ab8f14e57a7e8a8bebeac2f56d3e9",
+              "sha256:24de6c2e3293fc9940fbbd01f436c3ab43e696f5dda0fe0f5408639fbe25170a"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "31ab9fff-c065-4b67-ba72-1f2a313eaf62"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

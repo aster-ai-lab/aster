@@ -1,0 +1,10 @@
+{
+  "unix": 1792902292.7777264,
+  "phase": "passed",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-actual1m-input-v169-cpu",
+  "fixture_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/canonical-code-fullwindow-v147",
+  "api_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148",
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "credentials_copied": false
+}

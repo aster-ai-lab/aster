@@ -1,0 +1,11 @@
+
+running 1 test
+test questions_and_forms::kimi_cancelled_question_returns_cancelled_without_completion_and_recovers ... ORACLE case=question-cancel-protocol-recovery name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc
+ORACLE case=question-cancel-protocol-recovery name=question-cancel-wire result=pass detail=the actual ACP prompt response is cancelled, the UI becomes idle, and neither a default answer nor a successful completion fact is fabricated
+ORACLE case=question-cancel-protocol-recovery name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13395
+ORACLE case=question-cancel-protocol-recovery name=question-cancel-recovery result=pass detail=the same session completes a fresh real model turn after the cancelled question without reopening it
+ORACLE case=question-cancel-protocol-recovery name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 28.20s
+

@@ -1,0 +1,18 @@
+
+running 2 tests
+test context_and_input::kimi_actual_compaction_with_and_without_focus_preserves_model_history ... ORACLE case=compact-model-history name=source-pair result=pass detail=aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-unknown-linux-gnu
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26851
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13652
+ORACLE case=compact-model-history name=/compact result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13704
+ORACLE case=compact-model-history name=/compact Preserve the exact acceptance key and the still-open task. result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=quit result=pass detail=exit 0
+ok
+test context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once ... ORACLE case=long-unicode-paste name=source-pair result=pass detail=aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-unknown-linux-gnu
+ORACLE case=long-unicode-paste name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=22084
+ORACLE case=long-unicode-paste name=exact-long-paste result=pass detail=more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response
+ORACLE case=long-unicode-paste name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 89.28s
+

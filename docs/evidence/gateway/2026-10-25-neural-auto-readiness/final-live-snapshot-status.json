@@ -1,0 +1,27 @@
+{
+  "http_status": 200,
+  "status": {
+    "schema": "a3s.gateway.managed-snapshot-status.v1",
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "requested": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 50,
+      "snapshot_digest": "sha256:c8d7f8aec0c8156d61cb0ebf2c0c4e73f5efd816d115018fbbf36e8cde741eb9"
+    },
+    "state": "applied",
+    "ready": true,
+    "replayed": false,
+    "applied": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 50,
+      "expected_revision": 49,
+      "snapshot_digest": "sha256:c8d7f8aec0c8156d61cb0ebf2c0c4e73f5efd816d115018fbbf36e8cde741eb9",
+      "issued_at": "2026-10-25T16:07:11Z",
+      "expires_at": "2026-10-26T04:07:11Z",
+      "applied_at": "2026-10-25T16:07:11.993395990Z"
+    }
+  },
+  "gateway_pid": "3406639",
+  "gateway_sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+  "model_pids_preserved": true
+}

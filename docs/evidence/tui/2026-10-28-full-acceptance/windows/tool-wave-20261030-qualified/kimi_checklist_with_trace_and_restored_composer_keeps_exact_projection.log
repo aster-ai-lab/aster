@@ -1,0 +1,60 @@
+
+running 1 test
+test tool_wave::kimi_checklist_with_trace_and_restored_composer_keeps_exact_projection ... ORACLE case=tool-wave-checklist-traced name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=tool-wave-checklist-traced name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40615
+ORACLE case=tool-wave-checklist-traced name=checklist-first-ui result=pass detail=a real update_plan receipt and ACP projection render all three requested checklist rows
+ORACLE case=tool-wave-checklist-traced name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=41913
+ORACLE case=tool-wave-checklist-traced name=checklist-replacement-ui result=pass detail=replacement removes the old row, changes the order and projects completed/cancelled statuses independently of Plan review mode
+
+thread 'tool_wave::kimi_checklist_with_trace_and_restored_composer_keeps_exact_projection' (52540) panicked at crates\code\acp\tests\aster_tui_live_e2e\driver.rs:447:17:
+command did not reach the actual composer
+                                                                                                                        
+  C:\W\T\aster-kimi-p8HI7T\workspace                                                                        14K / 128K  
+ ┌                                                                                                                    x 
+ │   √ CHECKLIST-SECOND                                                                                          ▼ █  │ 
+ │   search: quit                                                                                                     │ 
+ └                                                                                                                    ┘ 
+                                                                                                                        
+     > Read request-checklist-replace.json once. Call update_plan exactly once with its exact JSON object   12:51 PM    
+       as arguments. This replaces the UI checklist fixture. Report the returned result without performing              
+       the listed work or calling other tools.                                                                          
+                                                                                                                        
+                                                                                                                        
+     ♦ Read 1 file                                                                                                      
+                                                                                                                        
+     Updated plan: 1/2 done.                                                                                12:51 PM   █
+                                                                                                                       █
+     Worked for 13s                                                                                                    █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ > Build anything                                                                                                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  h:hide done  │  Ctrl+x:shortcuts                                                                                      
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_wave::kimi_checklist_with_trace_and_restored_composer_keeps_exact_projection
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 81 filtered out; finished in 42.42s
+

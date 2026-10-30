@@ -1,0 +1,21 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::edit::tests::expanded_shows_relative_when_under_cwd_preamble_absolute' (48804) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\edit.rs:1748:9:
+assertion failed: `(left == right)`
+
+Diff < left / right > :
+<Edit src\foo.rs
+>Edit src/foo.rs
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::edit::tests::expanded_shows_relative_when_under_cwd_preamble_absolute ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::edit::tests::expanded_shows_relative_when_under_cwd_preamble_absolute
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

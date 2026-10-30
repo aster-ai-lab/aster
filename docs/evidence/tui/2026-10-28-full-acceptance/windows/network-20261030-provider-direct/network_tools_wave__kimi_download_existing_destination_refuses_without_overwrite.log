@@ -1,0 +1,11 @@
+
+running 1 test
+test network_tools_wave::kimi_download_existing_destination_refuses_without_overwrite ... ORACLE case=network-download-existing name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=network-download-existing name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=network-download-existing name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40673
+ORACLE case=network-download-existing name=download-refusal-exact-scope result=pass detail=the actual failed download keeps the original destination bytes or leaves no destination, leaks no adjacent download temporary, and its HTTP dispatch boundary matches the requested refusal
+ORACLE case=network-download-existing name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 26.90s
+

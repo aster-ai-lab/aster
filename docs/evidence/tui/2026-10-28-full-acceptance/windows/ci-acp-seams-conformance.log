@@ -1,0 +1,194 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo fix --lib -p a3s-tty-utils` to apply 1 suggestion)
+   Compiling mermaid-to-svg v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\third_party\mermaid-to-svg)
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates\embedding\src\vector\hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates\embedding\src\hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates\embedding\src\vector\hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates\embedding\src\vector\hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+   Compiling a3s-code-mermaid v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-mermaid)
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp)
+warning: variable does not need to be mutable
+   --> crates\code\acp\src\unattended.rs:223:9
+    |
+223 |     let mut builder = std::fs::DirBuilder::new();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_embedding_provider` is never used
+  --> crates\code\acp\src\agent\local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates\code\acp\src\host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-acp` to apply 1 suggestion)
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\deps\a3s_code_acp.lib 和对象 D:\code\aster\target\debug\deps\a3s_code_acp.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.06s
+     Running tests\acp_conformance_stdio.rs (D:/code/aster/target\debug\deps\acp_conformance_stdio-0454ada047e1caaa.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\v912_seam.rs (D:/code/aster/target\debug\deps\v912_seam-4f5e9f7c5964ca64.exe)
+
+running 8 tests
+ORACLE compaction-summary=## Durable source
+sequence: 2
+schema: a3s.code.execution-identity.v1
+domain: a3s.code.session-fact-source.v1
+digest: sha256:6d371d5c2b98fabe35df0aa8af0144fc5800ed38051d905ba69274928a0292fe
+Reference only: policy, goal state and accepted progress come from original facts.
+
+# Instructions (personal + project AGENTS.md chain)
+
+Personal: never print the token named CARRY-PERSONAL-7f3a.
+
+--- instruction-doc ---
+
+Project: format Rust with cargo fmt before finishing CARRY-PROJECT-7f3a.
+
+<!-- /standing -->
+
+## Goal
+the active task is a JSON exporter in crates/export.
+
+## Earlier goal
+Add a CSV parser in crates/import.
+
+## Constraints
+- Must not: add a dependency to parse CSV.
+
+## Open steps
+- write the JSON exporter
+
+## Completed steps
+- read the export schema
+
+## Summary
+The task is finished. All required steps are done. Goal: Add a CSV parser in crates/import. No constraints remain.
+test v912_compact_keeps_obligations ... ok
+ORACLE yolo-gate-error=completion gate: workspace mutation 9347178477916c3303f0a00d62330cd3d08b9554ebec1510fb509d5a01d09993 (gate-target.ts) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f gate-target.ts` with the check that proves the change, for example `test -f gate-target.ts && <test command>`.
+test v912_completion_gate_keeps_path ... ok
+ORACLE cursor replayed=true appended=true previous_digest=sha256:c1e8c11904659a4eb316e39391f0d7de44123b8a0cdf491569d519e1c766d025 entry_digest=sha256:14a08553d2e2f73ee2f61069b23f51086d04f880b23e49642dfd46b519169946
+test v912_cursor_replays_before_new_chain_digest ... ok
+ORACLE image-bytes model-body-contains=PNG_BASE64
+test v912_image_bytes_reach_the_model ... ok
+ORACLE readonly-git prompt=ok foreign-paths=[] seen=READONLY-SEEN
+test v912_readonly_git_parallel_commit_stays_ok ... ok
+test v912_remember_before_stream_close ... ignored, retired raw-input fallback: empty model extraction grants no write authority; covered by Core memory_retention_tests
+ORACLE rejected-posture=always-approve error="unknown permission posture \"always-approve\"; expected one of: default, plan, auto, yolo"
+ORACLE rejected-posture=force error="unknown permission posture \"force\"; expected one of: default, plan, auto, yolo"
+ORACLE permissionPosture="default" unknown-posture-rejected=always-approve,force
+ORACLE permissionPosture=plan
+ORACLE permissionPosture=auto
+test v912_session_posture_and_deny ... ok
+ORACLE standing-context seq=1 before user.message seq=4
+test v912_standing_context_before_model ... ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 12.80s
+

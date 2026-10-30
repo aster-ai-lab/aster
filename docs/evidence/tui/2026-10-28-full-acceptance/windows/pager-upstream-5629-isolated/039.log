@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::workspace_worktree_dispatch_shows_row_while_worktree_is_created' (57008) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2615:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::workspace_worktree_dispatch_shows_row_while_worktree_is_created ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::workspace_worktree_dispatch_shows_row_while_worktree_is_created
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.02s
+

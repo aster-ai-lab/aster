@@ -1,0 +1,21 @@
+{
+  "root": "/code/aster/.wt-deepseek-dspark-main-20261025",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "a3s-power",
+    "--no-default-features",
+    "--features",
+    "server",
+    "--bin",
+    "a3s-power"
+  ],
+  "stage": "/data/deepseek-v41-xq-1017/main-landing-release-capture"
+}

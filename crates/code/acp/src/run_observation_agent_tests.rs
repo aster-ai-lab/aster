@@ -26,6 +26,9 @@ impl acp::Client for Host {
     }
 
     async fn ext_notification(&self, args: acp::ExtNotification) -> acp::Result<()> {
+        if args.method.as_ref() == "a3s/turn/outcome" {
+            return Ok(());
+        }
         assert_eq!(args.method.as_ref(), crate::run_observation::METHOD);
         self.0
             .send(serde_json::from_str(args.params.get()).unwrap())

@@ -112,6 +112,139 @@ fn cancellation_never_becomes_a_submission() {
     assert!(payload.get("values").is_none());
 }
 
+#[tokio::test]
+async fn late_and_duplicate_form_answers_keep_their_request_and_session_owner() {
+    use crate::app::acp_handler::tests::{
+        insert_agent, interaction_resolved_ext, make_app_with_agent, switch_active_to,
+    };
+    use crate::app::agent::AgentId;
+    use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
+
+    let mut app = make_app_with_agent("sess-A");
+    insert_agent(&mut app, AgentId(1), Some("sess-B"));
+    app.agents
+        .get_mut(&AgentId(0))
+        .unwrap()
+        .prompt
+        .set_text("draft A");
+    app.agents
+        .get_mut(&AgentId(1))
+        .unwrap()
+        .prompt
+        .set_text("draft B");
+    let mut old_a = request(&mut app, "sess-A", "old-A");
+    let late = app
+        .agents
+        .get_mut(&AgentId(0))
+        .unwrap()
+        .elicitation_view
+        .as_mut()
+        .unwrap()
+        .take_response_tx()
+        .unwrap();
+    switch_active_to(&mut app, AgentId(1));
+    let mut current_a = request(&mut app, "sess-A", "current-A");
+    let mut current_b = request(&mut app, "sess-B", "current-B");
+
+    let raw = serde_json::value::to_raw_value(&McpElicitExtResponse::Accept {
+        content: Some(json!({"value":"LATE-A"})),
+    })
+    .unwrap();
+    late.send(Ok(acp::ExtResponse::new(raw.into()))).unwrap();
+    assert_eq!(
+        form_answer(&mut old_a).await,
+        json!({"values":{"value":"LATE-A"}})
+    );
+    assert!(matches!(
+        current_a.try_recv(),
+        Err(tokio::sync::oneshot::error::TryRecvError::Empty)
+    ));
+    assert!(matches!(
+        current_b.try_recv(),
+        Err(tokio::sync::oneshot::error::TryRecvError::Empty)
+    ));
+
+    for _ in 0..2 {
+        super::super::handle_session_notification(
+            &interaction_resolved_ext("sess-A", "old-A"),
+            &mut app,
+        );
+    }
+    assert_eq!(
+        app.agents[&AgentId(0)]
+            .elicitation_view
+            .as_ref()
+            .unwrap()
+            .tool_call_id,
+        "current-A"
+    );
+    assert_eq!(
+        app.agents[&AgentId(1)]
+            .elicitation_view
+            .as_ref()
+            .unwrap()
+            .tool_call_id,
+        "current-B"
+    );
+
+    for (id, text, receiver) in [
+        (AgentId(0), "ANSWER-A-中文", &mut current_a),
+        (AgentId(1), "ANSWER-B", &mut current_b),
+    ] {
+        switch_active_to(&mut app, id);
+        for code in std::iter::once(KeyCode::Enter)
+            .chain(text.chars().map(KeyCode::Char))
+            .chain([KeyCode::Enter, KeyCode::Tab, KeyCode::Enter])
+        {
+            let _ = app.handle_input(&Event::Key(KeyEvent::new(code, KeyModifiers::NONE)));
+        }
+        assert_eq!(
+            form_answer(receiver).await,
+            json!({"values":{"value":text}})
+        );
+        assert!(matches!(
+            receiver.try_recv(),
+            Err(tokio::sync::oneshot::error::TryRecvError::Closed)
+        ));
+        assert!(app.agents[&id].elicitation_view.is_none());
+    }
+    assert_eq!(app.agents[&AgentId(0)].prompt.text(), "draft A");
+    assert_eq!(app.agents[&AgentId(1)].prompt.text(), "draft B");
+}
+
+fn request(
+    app: &mut AppView,
+    session: &str,
+    form: &str,
+) -> tokio::sync::oneshot::Receiver<a3s_acp_lib::AcpResult<acp::ExtResponse>> {
+    let spec = json!({"root":"value","elements":{
+        "value":{"type":"Input","props":{"label":"Value","required":true,"value":{"$bindState":"/form/value"}}}
+    },"state":{"form":{"value":""}}});
+    let params = serde_json::value::to_raw_value(&json!({
+        "sessionId":session,"formId":form,"prompt":"Answer","format":"json-render","spec":spec.to_string()
+    })).unwrap();
+    let (response_tx, response_rx) = tokio::sync::oneshot::channel();
+    handle_form_request(
+        a3s_acp_lib::AcpArgs {
+            request: acp::ExtRequest::new("a3s/form/request", params.into()),
+            response_tx,
+        },
+        app,
+    );
+    response_rx
+}
+
+async fn form_answer(
+    receiver: &mut tokio::sync::oneshot::Receiver<a3s_acp_lib::AcpResult<acp::ExtResponse>>,
+) -> Value {
+    let response = tokio::time::timeout(std::time::Duration::from_secs(2), receiver)
+        .await
+        .expect("bounded response")
+        .unwrap()
+        .unwrap();
+    serde_json::from_str(response.0.get()).unwrap()
+}
+
 #[test]
 fn unrepresentable_or_ambiguous_forms_are_rejected_before_opening_ui() {
     for source in [

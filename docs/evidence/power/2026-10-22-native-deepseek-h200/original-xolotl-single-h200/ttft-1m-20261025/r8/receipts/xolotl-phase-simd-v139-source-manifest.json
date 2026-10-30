@@ -1,0 +1,39 @@
+{
+  "schema": "aster-phase-simd-service-matrix-v139",
+  "files": [
+    {
+      "file": "launch_phase_simd_service_v139.frozen.py",
+      "bytes": 9314,
+      "sha256": "346bafcf6cbee85395b8f4169b8859f1847a137e783230eb76fb78326468724d"
+    },
+    {
+      "file": "manage_phase_simd_basic_v139.frozen.py",
+      "bytes": 7039,
+      "sha256": "eecfb6e0c020957eeee070b235809c86d192327468b1abfdc8ca9c67351b4371"
+    },
+    {
+      "file": "manage_phase_simd_extended_v139.frozen.py",
+      "bytes": 7300,
+      "sha256": "3b6a339350f6cf563ee80b437ffc7b715222cd2d902286d5dc86c2cc2a91911d"
+    },
+    {
+      "file": "xolotl_sealed_bootstrap_v139.py",
+      "bytes": 2886,
+      "sha256": "5bb1d8b2a6e01e2e04db8a1dc6c348946315803c0c5a1ca776d8b688226b848f"
+    }
+  ],
+  "acceptance_counts_per_profile": {
+    "basic": 28,
+    "native_tool_and_1024": 12
+  },
+  "acceptance_changed": false,
+  "profiles": [
+    "control_a",
+    "simd",
+    "control_b"
+  ],
+  "api_source_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+  "trace_enabled": true,
+  "full1m_gpu_qualified": false,
+  "performance_claimed": false
+}

@@ -1,0 +1,17 @@
+{
+  "unix": 1792935743.172638,
+  "failed_strict_attempt": {
+    "source": "aster_nsys_decode_metrics_v378.py",
+    "remote_stage": "decode-metric-proof-v380-cpu",
+    "failure": "nonnegative numeric observed metrics required",
+    "cause": "actual signed negative warp counter samples"
+  },
+  "failed_raw_attempt": {
+    "source": "aster_nsys_raw_decode_metrics_v382.py",
+    "remote_stage": "decode-metric-proof-v384-cpu",
+    "failure": "bounded literal metric names required",
+    "cause": "actual typeName is empty for all30 metric identities"
+  },
+  "new_contract": "Raw signed values and exact labels retained, physical values unqualified; separate exact timeline and canonical model gates unchanged",
+  "new_GPU_work_sent": false
+}

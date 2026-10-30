@@ -1,0 +1,27 @@
+{
+  "case": "sessions-help-capability",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "capability-help",
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-UBKZG2\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                      ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                                        │                                                                              │                                        │  Open sessions                                                               │                                        │  Ctrl+r                                                                      │                                        │                                                                              │                                        │  Opens the session browser to resume or switch between past conversations.   │                                        │                                                                              │                                        │  Select one to reattach to its full history.                                 │                                        │                                                                              │                                        │  Cancel to keep the current conversation.                                    │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                                        │                                                                              │                      ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮    │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

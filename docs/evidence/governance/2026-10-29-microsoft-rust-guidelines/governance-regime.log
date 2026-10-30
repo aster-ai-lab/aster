@@ -1,0 +1,14 @@
+..F.
+======================================================================
+FAIL: test_obligation_regressions_are_rejected (__main__.GovernanceRegimeTest.test_obligation_regressions_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\code\aster\tests\governance_regime.py", line 140, in test_obligation_regressions_are_rejected
+    with self.assertRaises(RegimeError) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RegimeError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.019s
+
+FAILED (failures=1)

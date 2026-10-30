@@ -1,0 +1,41 @@
+{
+  "unix": 1792896150.0318756,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-engram-simd-v137",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "ds41_engram.cpp",
+      "bytes": 37959,
+      "sha256": "8196c7cb227c74cd8c083d738e29b220ca79ce902cefbe949806e284484a4a44"
+    },
+    {
+      "file": "aster_engram_fp8_simd.hpp",
+      "bytes": 6240,
+      "sha256": "869ebd68e50af97f2d73a684717c415b514d873b7816fc724e9775eace680fe2"
+    },
+    {
+      "file": "fp8_simd_exact_test.cpp",
+      "bytes": 5278,
+      "sha256": "63c6926172faa35abd2cef679eabab848fa6bbb10e48483c426df42705e1f1e5"
+    },
+    {
+      "file": "build-plan.json",
+      "bytes": 727,
+      "sha256": "396eae2af8c0a49ea530f5a83ac6bcfcaa9455997d9274ef0ab00cd95b361b68"
+    },
+    {
+      "file": "worker.py",
+      "bytes": 6557,
+      "sha256": "c780f75355a3cb4fab8d76ee27c26d1c39cc7e18e187bc032f1d810d5a57fd50"
+    }
+  ],
+  "process": {
+    "pid": 1203146,
+    "start_ticks": 282294486,
+    "uid": 10250,
+    "unix": 1792896159.9289863,
+    "budget_seconds": 260,
+    "namespace": "jump host"
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "assertions_finished": true,
+  "case": "goal",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "body": {
+          "binding": {
+            "authorization_source": {
+              "digest": "sha256:b933a69435d317be621fcdc6f55fd47ac69e601b88d60348f21c3c4aa172fe0e",
+              "domain": "a3s.code.goal-authorization.v1",
+              "schema": "a3s.code.execution-identity.v1"
+            },
+            "goal_id": "unattended-task",
+            "goal_revision": 1,
+            "non_goals": [],
+            "scope_fact_sequences": [],
+            "session_id": "0adacff3-5f3e-471b-980f-fb587b4f084f",
+            "work_policy_digest": "sha256:aaf5b5ef10b2b65e0005b8b99ff0b7dd7045f20826efffb674f1cf99d34614eb",
+            "workspace": {
+              "display_root": "/tmp/aster-kimi-YX1GCq/workspace",
+              "id": "/tmp/aster-kimi-YX1GCq/workspace"
+            }
+          },
+          "expected_goal_revision": null,
+          "expected_goal_sequence": null,
+          "expected_plan_revision": null,
+          "goal": {
+            "achieved": false,
+            "achieved_at": null,
+            "created_at": 1793325315,
+            "description": "Wait for the user to provide an approval token in their next message. Do not call tools or finish the goal; ask them to provide the token.",
+            "progress": 0.0,
+            "success_criteria": [
+              "Every requirement of the task holds in the workspace."
+            ]
+          }
+        },
+        "command_digest": "sha256:37c2b2905ea065e61bdff97879985aba6351eaf57221f0c0139f9e86c603c17f",
+        "goal_id": "unattended-task",
+        "goal_revision": 1,
+        "operation_id": "unattended-create",
+        "plan_revision": null,
+        "schema": "a3s.code.goal.fact.v1",
+        "session_id": "0adacff3-5f3e-471b-980f-fb587b4f084f",
+        "work_policy_digest": "sha256:aaf5b5ef10b2b65e0005b8b99ff0b7dd7045f20826efffb674f1cf99d34614eb"
+      },
+      "seq": 4,
+      "type": "a3s.goal.created"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13615,
+        "text": "Please provide the approval token in your next message.",
+        "tool": null
+      },
+      "seq": 10,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "218a07b968cf413c39ca03d173284b66e1cc2bb5a79414a7e49cf92459c85533",
+          "seq": 10
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 11,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13672,
+        "text": "Please provide the approval token in your next message so I can proceed.",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "0fa17f1c24d7ff337418f7254dfe8eebd9e5007428054a27a6fbb5d2c49d5e4f",
+          "seq": 16
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "body": {
+          "expected_goal_revision": 1,
+          "expected_goal_sequence": 13,
+          "expected_plan_revision": 1
+        },
+        "command_digest": "sha256:033dd76bc9d9290f47f2dbb374874b443437256c1de23b481d53ed89115dc8fc",
+        "goal_id": "unattended-task",
+        "goal_revision": 1,
+        "operation_id": "acp-pause-13",
+        "plan_revision": 1,
+        "schema": "a3s.code.goal.fact.v1",
+        "session_id": "0adacff3-5f3e-471b-980f-fb587b4f084f",
+        "work_policy_digest": "sha256:aaf5b5ef10b2b65e0005b8b99ff0b7dd7045f20826efffb674f1cf99d34614eb"
+      },
+      "seq": 19,
+      "type": "a3s.goal.paused"
+    },
+    {
+      "payload": {
+        "body": {
+          "expected_goal_revision": 1,
+          "expected_goal_sequence": 19,
+          "expected_plan_revision": 1
+        },
+        "command_digest": "sha256:69a80c329af4050d3691ae82968de5a7456e29eb60d4f0712530fa71bb7e86b7",
+        "goal_id": "unattended-task",
+        "goal_revision": 1,
+        "operation_id": "acp-resume-19",
+        "plan_revision": 1,
+        "schema": "a3s.code.goal.fact.v1",
+        "session_id": "0adacff3-5f3e-471b-980f-fb587b4f084f",
+        "work_policy_digest": "sha256:aaf5b5ef10b2b65e0005b8b99ff0b7dd7045f20826efffb674f1cf99d34614eb"
+      },
+      "seq": 20,
+      "type": "a3s.goal.resumed"
+    },
+    {
+      "payload": {
+        "body": {
+          "expected_goal_revision": 1,
+          "expected_goal_sequence": 20,
+          "expected_plan_revision": 1
+        },
+        "command_digest": "sha256:23845ee664722c170948d591fca83cf21c82ae85fb1d26a882230f7ae1cf0e13",
+        "goal_id": "unattended-task",
+        "goal_revision": 1,
+        "operation_id": "acp-cancel-20",
+        "plan_revision": 1,
+        "schema": "a3s.code.goal.fact.v1",
+        "session_id": "0adacff3-5f3e-471b-980f-fb587b4f084f",
+        "work_policy_digest": "sha256:aaf5b5ef10b2b65e0005b8b99ff0b7dd7045f20826efffb674f1cf99d34614eb"
+      },
+      "seq": 21,
+      "type": "a3s.goal.cancelled"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual Core goal.created fact preserves the objective",
+      "name": "goal-create",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-YX1GCq/workspace                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯ /goal Wait for the user to provide an approval token in their next message. Do not call tools or finish the    │  \n  │   goal; ask them to provide the token.                                                                           │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              \n                                                                                                                        "
+    },
+    {
+      "detail": "a3s.goal.paused",
+      "name": "/goal pause",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-YX1GCq/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ /goal Wait for the user to provide an approval token in their next message. Do not call tools or      9:55 AM    \n       finish the goal; ask them to provide the token.                                                                  \n                                                                                                                        \n                                                                                                                        \n     Durable goal active: Wait for the user to provide an approval token in their next message. Do not       9:55 AM    \n     call tools or finish the goal; ask them to provide the token. Plan r1 accepted: 0/1 steps done Next:               \n     advance                                                                                                            \n                                                                                                                        \n     Please provide the approval token in your next message.                                                            \n                                                                                                                        \n     Goal slice acp-tick-d24595b3-790a-47c5-930d-ca1f2ea80cd7: Completed                                                \n                                                                                                                        \n     Durable goal active: Wait for the user to provide an approval token in their next message. Do not                  \n     call tools or finish the goal; ask them to provide the token. Plan r1 accepted: 0/1 steps done Next:               \n     advance                                                                                                            \n                                                                                                                        \n     Please provide the approval token in your next message so I can proceed.                                           \n                                                                                                                        \n     ◆ Thought for 3.8s                                                                                                 \n     ◆ Thought for 2.5s                                                                                                 \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    #1 /goal pause                                                                                                      \n                                                                                                                        \n    ⠹ Responding… 5.4s                                                                               34s ⇣13.7k [stop]  \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Enter:send now  │  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+;:queue  │  Ctrl+x:shortcuts                             \n                                                                                                                        "
+    },
+    {
+      "detail": "a3s.goal.resumed",
+      "name": "/goal resume",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-YX1GCq/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ /goal pause                                                                                           9:55 AM    \n                                                                                                                        \n                                                                                                                        \n     Worked for 0.1s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯ /goal resume                                                                                                   │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              \n                                                                                                                        "
+    },
+    {
+      "detail": "a3s.goal.cancelled",
+      "name": "/goal clear",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-YX1GCq/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ /goal resume                                                                                          9:55 AM    \n                                                                                                                        \n                                                                                                                        \n     Worked for 0.1s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯ /goal clear                                                                                                    │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

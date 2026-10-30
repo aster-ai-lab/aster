@@ -1,0 +1,12 @@
+[
+  {
+    "name": "annotation-requests",
+    "filter": "inference::openai_request",
+    "exit_code": 0
+  },
+  {
+    "name": "annotation-e2e",
+    "filter": "neural_routing_tests",
+    "exit_code": 0
+  }
+]

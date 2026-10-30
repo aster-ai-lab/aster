@@ -1,0 +1,11 @@
+{
+  "at_epoch": 1792916851.2002735,
+  "stage": "complete",
+  "profile": "Exact routing + NVFP4/MXFP4 KV; 8 threads, 60 GiB arena",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 5.9
+  },
+  "prefill_median": 491.5,
+  "full_one_million_completed": false
+}

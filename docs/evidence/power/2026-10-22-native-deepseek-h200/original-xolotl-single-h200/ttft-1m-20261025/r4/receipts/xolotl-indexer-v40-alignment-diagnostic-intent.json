@@ -1,0 +1,14 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "result": {
+    "compute_sanitizer_available": true,
+    "process": {
+      "pid": 2535,
+      "start_ticks": 314804746,
+      "uid": 10250,
+      "unix": 1792868571.5817683,
+      "budget_seconds": 90
+    }
+  }
+}

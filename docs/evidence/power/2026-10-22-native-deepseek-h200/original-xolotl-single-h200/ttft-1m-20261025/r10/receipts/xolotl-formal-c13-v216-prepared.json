@@ -1,0 +1,10 @@
+{
+  "parent": "submit_xolotl_single1m_cont11_lease_v155r1.frozen.py",
+  "parent_sha256": "1b70a3f13cc37ea56a61c4b4e5cb5b9d324fc84b81d8199ed31265c9e6900aa7",
+  "file": "submit_xolotl_single1m_cont13_lease_v216.frozen.py",
+  "sha256": "adfbd24d0a68afe6a62b237b88c5d141e8f51e955187d3a2328c038a88f076fa",
+  "submission_executed": false,
+  "old_formal_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "live_optimization_uid": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+  "maximum_task_H200": 2
+}

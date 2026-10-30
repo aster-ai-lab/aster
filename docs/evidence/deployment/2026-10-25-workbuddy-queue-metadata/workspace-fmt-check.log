@@ -1,0 +1,200 @@
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:222:
+     /// (the turn's content against the plan's rubric, over the
+     /// decision model's resolved backend), and the effective target
+     /// list. Fail-closed throughout: any failure resolves primary.
+-    pub(crate) async fn resolve_routing(&mut self, state: &GatewayState, req_headers: &http::HeaderMap) {
++    pub(crate) async fn resolve_routing(
++        &mut self,
++        state: &GatewayState,
++        req_headers: &http::HeaderMap,
++    ) {
+         if self.model_alias == "auto" {
+             let now = chrono::Utc::now();
+             if let Ok(candidates) = self.authorizer.allowed_models(self.authenticated, now) {
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:230:
+                     .into_iter()
+                     .filter(|alias| alias != "auto" && !alias.starts_with("platform/"))
+                     .collect::<Vec<_>>();
+-                if let Some(selected) = auto_select_model(&self.request, &candidates, req_headers).await {
++                if let Some(selected) =
++                    auto_select_model(&self.request, &candidates, req_headers).await
++                {
+                     self.model_alias = selected;
+                 }
+             }
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:1025:
+     InferenceAccessError::TranslationRefused
+ }
+ 
+-
+ /// Use a decision model to choose the best chat model for this request.
+ /// Falls back to the catalog's default when the router is unavailable or
+ /// returns an unknown model.
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:1032:
+-async fn auto_select_model(request: &OpenAiJsonRequest, candidates: &[String], req_headers: &http::HeaderMap) -> Option<String> {
++async fn auto_select_model(
++    request: &OpenAiJsonRequest,
++    candidates: &[String],
++    req_headers: &http::HeaderMap,
++) -> Option<String> {
+     if candidates.is_empty() {
+         tracing::warn!("auto router has no candidates");
+         return None;
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:1036:
+     }
+     tracing::info!(candidates = ?candidates, "auto router invoked");
+-    let router_model = std::env::var("A3S_ROUTER_MODEL").unwrap_or_else(|_| "prism-27b".to_string());
++    let router_model =
++        std::env::var("A3S_ROUTER_MODEL").unwrap_or_else(|_| "prism-27b".to_string());
+     let router_url = std::env::var("A3S_ROUTER_URL")
+         .unwrap_or_else(|_| "http://127.0.0.1:8080/v1/chat/completions".to_string());
+     let router_token = req_headers
+Diff in /code/aster/apps/gateway/src/entrypoint/inference_dispatch.rs:1091:
+         .and_then(|choice| choice.get("message"))
+         .and_then(|message| message.get("content"))
+         .and_then(|content| content.as_str())?;
+-    let selected = content.trim().trim_matches(|c| c == '"' || c == '\'' || c == '`');
++    let selected = content
++        .trim()
++        .trim_matches(|c| c == '"' || c == '\'' || c == '`');
+     let selected = candidates
+         .iter()
+         .find(|candidate| candidate.eq_ignore_ascii_case(selected))
+Diff in /code/aster/apps/gateway/src/entrypoint/native_response.rs:107:
+             let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+             let rate = tokens as f64 / seconds;
+             if let Ok(value) = http::HeaderValue::from_str(&format!("{rate:.2}")) {
+-                response.headers_mut().insert("x-a3s-tokens-per-second", value);
++                response
++                    .headers_mut()
++                    .insert("x-a3s-tokens-per-second", value);
+             }
+         }
+     }
+Diff in /code/aster/apps/gateway/src/entrypoint/protocol/http_handler.rs:16:
+ use bytes::Bytes;
+ use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
+ use http::{HeaderValue, Response};
+-use hyper::body::Body as _;
+ use http_body_util::BodyExt;
++use hyper::body::Body as _;
+ use std::sync::Arc;
+ 
+ pub(super) async fn with_inference_metrics(
+Diff in /code/aster/apps/gateway/src/entrypoint/protocol/http_handler.rs:48:
+                         let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+                         let rate = tokens as f64 / seconds;
+                         if let Ok(value) = HeaderValue::from_str(&format!("{rate:.2}")) {
+-                            let mut response = Response::from_parts(parts, ResponseBody::full(bytes));
+-                            response.headers_mut().insert("x-a3s-tokens-per-second", value);
++                            let mut response =
++                                Response::from_parts(parts, ResponseBody::full(bytes));
++                            response
++                                .headers_mut()
++                                .insert("x-a3s-tokens-per-second", value);
+                             return response;
+                         }
+                     }
+Diff in /code/aster/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:332:
+                                         }
+                                         drop(inference_admission);
+                                         drop(service_request);
+-                return track_usage_response(response, usage_lifecycle);
++                                        return track_usage_response(response, usage_lifecycle);
+                                     }
+                                     crate::wire::Gated::Forward {
+                                         body: gated,
+Diff in /code/aster/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:510:
+                     observed_tokens,
+                     attribution,
+                 );
+-                let response = super::http_handler::with_inference_metrics(response, request_start).await;
++                let response =
++                    super::http_handler::with_inference_metrics(response, request_start).await;
+                 return track_usage_response(response, usage_lifecycle);
+             }
+             Err(error) => {
+Diff in /code/aster/apps/gateway/src/inference/authorization.rs:1091:
+             .unwrap_or(Uuid::nil())
+     }
+ 
+-    fn principal_allows_model(
+-        &self,
+-        authenticated: AuthenticatedInference,
+-        alias: &str,
+-    ) -> bool {
++    fn principal_allows_model(&self, authenticated: AuthenticatedInference, alias: &str) -> bool {
+         if !authenticated.principal {
+             return true;
+         }
+Diff in /code/aster/apps/gateway/src/inference/openai_message_annotations_tests.rs:1:
+ use super::super::{collect_json_body, collect_proxy_json_body};
+ use super::*;
+ use bytes::Bytes;
+-use http::{HeaderMap, header::CONTENT_TYPE};
++use http::{header::CONTENT_TYPE, HeaderMap};
+ use http_body_util::Full;
+ use serde_json::json;
+ 
+Diff in /code/aster/apps/gateway/src/inference/openai_message_annotations_tests.rs:157:
+ 
+ #[tokio::test]
+ async fn normalized_wire_body_still_obeys_the_fixed_byte_limit() {
+-    use super::super::{OPENAI_REQUEST_BODY_LIMIT, OpenAiRequestError};
++    use super::super::{OpenAiRequestError, OPENAI_REQUEST_BODY_LIMIT};
+     // 1e2 expands to 100.0 when serde emits canonical numeric values.
+     let numbers = "1e2,".repeat(OPENAI_REQUEST_BODY_LIMIT / 4 - 100);
+     let body = Bytes::from(format!(
+Diff in /code/aster/apps/gateway/src/inference/principal.rs:98:
+             return Ok(());
+         };
+         let now = Instant::now();
+-        let mut windows = self.rpm_windows.lock().unwrap_or_else(PoisonError::into_inner);
++        let mut windows = self
++            .rpm_windows
++            .lock()
++            .unwrap_or_else(PoisonError::into_inner);
+         let window = windows.entry(subject.credential_id).or_default();
+         while window
+             .front()
+Diff in /code/aster/apps/gateway/src/inference/principal.rs:347:
+         InferenceAccessError::Unauthorized
+     })?;
+     let org = principal.org_header.as_deref().and_then(header);
+-    let credential_id = header("x-a3s-credential-id")
+-        .and_then(|value| Uuid::parse_str(&value).ok());
++    let credential_id =
++        header("x-a3s-credential-id").and_then(|value| Uuid::parse_str(&value).ok());
+     let allowed_models = header("x-a3s-models").map(|value| {
+         value
+             .split(',')
+Diff in /code/aster/crates/power/src/bin/a3s-power-cuda-fusion-bench.rs:40:
+ }
+ 
+ fn gelu_plan(fused: bool) -> String {
+-    let mut nodes = vec![
+-        serde_json::json!({
+-            "name": "divide",
+-            "op": "Div",
+-            "inputs": ["input", "divisor"],
+-            "outputs": ["divided"],
+-            "attributes": {}
+-        }),
+-    ];
++    let mut nodes = vec![serde_json::json!({
++        "name": "divide",
++        "op": "Div",
++        "inputs": ["input", "divisor"],
++        "outputs": ["divided"],
++        "attributes": {}
++    })];
+     if !fused {
+         // Breaks the exact Div/Erf/Add/Mul/Mul fusion window on purpose.
+         nodes.push(serde_json::json!({
+error: couldn't read `/code/aster/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs`: No such file or directory (os error 2)
+   --> /code/aster/apps/studio/src-tauri/src/app_updater.rs:129:1
+    |
+129 | mod os_feed_tests;
+    | ^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `os_feed_tests`: /code/aster/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs does not exist

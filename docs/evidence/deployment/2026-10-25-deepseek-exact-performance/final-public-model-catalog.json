@@ -1,0 +1,16 @@
+{
+    "status":  200,
+    "url":  "http://117.162.0.179:8080/v1/models",
+    "at":  "2026-10-25T11:26:29.7403176+00:00",
+    "ids":  [
+                "auto",
+                "deepseek-v4.1-flash",
+                "platform/apofasi",
+                "platform/bge-m3",
+                "platform/bge-reranker-v2-m3",
+                "platform/pp-ocr-v6",
+                "prism-27b",
+                "prism-27b-alt"
+            ],
+    "passed":  true
+}

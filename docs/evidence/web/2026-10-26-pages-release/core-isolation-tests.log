@@ -1,0 +1,44 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/docs-publish-20261026/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/docs-publish-20261026/Cargo.toml
+   Compiling ring v0.17.14
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/acl)
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/oci-runtime/crates/sdk)
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/vec)
+   Compiling rustls-webpki v0.103.15
+   Compiling rcgen v0.13.2
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/form-core)
+   Compiling a3s-lane v0.5.1 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/lane)
+   Compiling rustls v0.23.46
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/sandbox)
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/effect)
+   Compiling a3s-common v0.1.1 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/common)
+   Compiling a3s-memory v0.1.5 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/memory)
+   Compiling tokio-rustls v0.26.6
+   Compiling hyper-rustls v0.27.7
+   Compiling reqwest v0.12.24
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/search)
+   Compiling a3s-code-core v9.1.6 (/Users/roylin/code/aster/target/docs-publish-20261026/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 2 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized] target(s) in 2m 38s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/target/debug/deps/a3s_code_core-f8a573bd640353e3)
+
+running 1 test
+test agent_api::tests::session_construction::isolated_session_omits_discovered_context_and_prior_memory ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5455 filtered out; finished in 0.03s

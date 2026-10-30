@@ -1,0 +1,21 @@
+
+running 1 test
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-unknown-linux-gnu
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26852
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27518
+
+thread 'tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results' (14132) panicked at crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs:57:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 50.66s
+

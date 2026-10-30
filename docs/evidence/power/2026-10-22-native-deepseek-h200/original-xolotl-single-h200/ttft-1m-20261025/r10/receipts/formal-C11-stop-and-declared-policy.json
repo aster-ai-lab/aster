@@ -1,0 +1,244 @@
+{
+  "rjob": {
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-10-25T03:42:58Z",
+          "lastUpdateTime": "2026-10-25T03:42:58Z",
+          "message": "RJob is inqueue",
+          "reason": "StartInqueue",
+          "status": "True",
+          "type": "Inqueue"
+        },
+        {
+          "lastTransitionTime": "2026-10-25T03:43:04Z",
+          "lastUpdateTime": "2026-10-25T03:43:04Z",
+          "message": "RJob is starting",
+          "reason": "Starting",
+          "status": "True",
+          "type": "Starting"
+        },
+        {
+          "lastTransitionTime": "2026-10-25T03:48:43Z",
+          "lastUpdateTime": "2026-10-25T03:48:43Z",
+          "message": "RJob is running",
+          "reason": "StartRunning",
+          "status": "True",
+          "type": "Running"
+        },
+        {
+          "lastTransitionTime": "2026-10-25T06:53:29Z",
+          "lastUpdateTime": "2026-10-25T06:53:29Z",
+          "message": "RJob is stopped",
+          "reason": "StartStopped",
+          "status": "True",
+          "type": "Stopped"
+        }
+      ],
+      "finishTime": "2026-10-25T06:53:29Z",
+      "message": "RJob stopped",
+      "phase": "Stopped",
+      "reason": "RJobStopped",
+      "taskStatuses": {
+        "t0": {
+          "stopped": 1
+        }
+      }
+    }
+  },
+  "replica_status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-25T03:43:02Z",
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-25T03:48:41Z",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-25T03:48:41Z",
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-25T03:43:02Z",
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "containerID": "containerd://5b9a188c5368de49c1d46e54a94db5ae71fe74ee6e5b3078ee273fdbe0a1ad36",
+        "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+        "imageID": "registry.h.pjlab.org.cn/ailab-safeag/zoubo@sha256:6430d45b74a8d6059bd15774cf92216985f86b4b7285cb5393db8e5fcf3f6d8a",
+        "lastState": {},
+        "name": "t0",
+        "ready": true,
+        "restartCount": 0,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-10-25T03:48:40Z"
+          }
+        }
+      }
+    ],
+    "hostIP": "10.102.223.47",
+    "nodeName": "gpu-lg-cmc-h-h200-3083.host.h.pjlab.org.cn",
+    "phase": "Stopped",
+    "podIP": "100.104.93.236",
+    "podIPs": [
+      {
+        "ip": "100.104.93.236"
+      }
+    ],
+    "qosClass": "Guaranteed",
+    "startTime": "2026-10-25T03:43:02Z"
+  },
+  "old_allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "last_worker_health": {
+    "modified_unix": 1792911207.5769992,
+    "result": {
+      "schema": "aster-xolotl-stable-service-v1",
+      "phase": "serving",
+      "unix": 1792900149.7923212,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "performance_300_claimed": false,
+      "context_tokens": 1048576,
+      "cpu_api_tests_passed": true,
+      "gpu_uuid": "GPU-ae6ae91f-8d9b-abc1-f7d4-7077c20fcc97",
+      "lease_ends_unix": 1792921721.8908198,
+      "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+      "api_attempt": 1,
+      "api_process": {
+        "pid": 321,
+        "start_ticks": 733144691,
+        "uid": 10250
+      },
+      "startup_unix": 1792900163.9693348,
+      "last_health_status": 200,
+      "last_health_unix": 1792911207.576666
+    }
+  },
+  "last_watch": {
+    "modified_unix": 1792911261.253107,
+    "result": {
+      "schema": "aster-xolotl-readiness-watch-v65",
+      "unix": 1792911261.2514453,
+      "phase": "resource_terminal",
+      "allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+      "observation_only": true,
+      "failures": [],
+      "job_phase": "Stopped",
+      "last_ready_unix": 1792911200.965335,
+      "health_status": 200,
+      "scope": "jump host direct to the owned VIP; no inference request",
+      "terminal_status": {
+        "conditions": [
+          {
+            "lastTransitionTime": "2026-10-25T03:42:58Z",
+            "lastUpdateTime": "2026-10-25T03:42:58Z",
+            "message": "RJob is inqueue",
+            "reason": "StartInqueue",
+            "status": "True",
+            "type": "Inqueue"
+          },
+          {
+            "lastTransitionTime": "2026-10-25T03:43:04Z",
+            "lastUpdateTime": "2026-10-25T03:43:04Z",
+            "message": "RJob is starting",
+            "reason": "Starting",
+            "status": "True",
+            "type": "Starting"
+          },
+          {
+            "lastTransitionTime": "2026-10-25T03:48:43Z",
+            "lastUpdateTime": "2026-10-25T03:48:43Z",
+            "message": "RJob is running",
+            "reason": "StartRunning",
+            "status": "True",
+            "type": "Running"
+          },
+          {
+            "lastTransitionTime": "2026-10-25T06:53:29Z",
+            "lastUpdateTime": "2026-10-25T06:53:29Z",
+            "message": "RJob is stopped",
+            "reason": "StartStopped",
+            "status": "True",
+            "type": "Stopped"
+          }
+        ],
+        "finishTime": "2026-10-25T06:53:29Z",
+        "message": "RJob stopped",
+        "phase": "Stopped",
+        "reason": "RJobStopped",
+        "taskStatuses": {
+          "t0": {
+            "stopped": 1
+          }
+        }
+      },
+      "finished_unix": 1792911261.2514486
+    }
+  },
+  "recorded_lease_ends_unix": 1792921721.8908198,
+  "terminal_before_lease": true,
+  "cause_identified": false,
+  "actor_identified": false,
+  "declared_lifecycle": {
+    "job_spec_non_tasks": {
+      "autoDeleteDuration": "720h0m0s",
+      "backoffLimit": 1,
+      "selector": {
+        "matchLabels": {
+          "kubebrain.brainpp.cn/resourcetype": "rjob",
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc11-6ef84ac5b528-78529266"
+        }
+      }
+    },
+    "task_fields": {
+      "t0": {
+        "maxRunningDuration": "0s",
+        "maxWaitDuration": "0s",
+        "positiveTags": [
+          "H200",
+          "feature/gpfs=yes"
+        ],
+        "qos": {
+          "gpuQos": "guaranteed",
+          "localStorageQos": "guaranteed"
+        },
+        "replicas": 1,
+        "rootfsSource": {
+          "kind": "image",
+          "metadata": {
+            "creationTimestamp": null
+          }
+        },
+        "selector": {
+          "matchLabels": {
+            "kubebrain.brainpp.cn/resourcetype": "rjob",
+            "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc11-6ef84ac5b528-78529266",
+            "rjob.brainpp.cn/rjob-task-type": "t0"
+          }
+        },
+        "updatePolicy": "Active"
+      }
+    },
+    "declared_labels": {
+      "quotagroup.brainpp.cn/preemptible": "no",
+      "rjob.brainpp.cn/auto-delete-policy": "server-managed",
+      "rjob.brainpp.cn/auto-delete-policy-version": "v1",
+      "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+      "volcano.brainpp.cn/interruptible": "false"
+    },
+    "policy_change_executed": false
+  }
+}

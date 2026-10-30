@@ -1,0 +1,56 @@
+
+running 1 test
+test tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once ... ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-unknown-linux-gnu
+
+thread 'tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once' (15150) panicked at crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs:185:9:
+send-now failed
+                                                                                                                        
+  /t/aster-kimi-A5QKgv/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Use bash exactly once to run this exact command: printf started > started.txt; sleep 8; printf late  10:44 AM    
+       > late.txt. Then reply ORIGINAL-COMPLETED. Do not call any other tool.                                           
+                                                                                                                        
+                                                                                                                        
+     ◆ Thought for 2.4s                                                                                                 
+     ◆ Run printf started > started.txt; sleep 8; printf late > late.txt                                                
+                                                                                                                        
+                                                                                                                        
+     ❯ Reply only SEND-NOW-OWNED. Do not call any tool.                                                     10:44 AM    
+                                                                                                                        
+                                                                                                                        
+     ◆ Thought for 0.4s                                                                                                 
+                                                                                                                        
+     ORIGINAL-COMPLETED                                                                                     10:44 AM    
+                                                                                                                        
+  ┃  Turn failed in 18s: completion gate: workspace mutation                                                            
+  ┃  e4082886e18d95c24bf3222b174adda806bffeed919f346a198f096095e5fbec (late.txt, started.txt) has no bound Passed       
+  ┃  verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to        
+  ┃  this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash`        
+  ┃  command that exits 0 and includes `test -f late.txt` with the check that proves the change, for example `test      
+  ┃  -f late.txt && <test command>`.                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_send_now_cancels_running_tool_and_runs_new_prompt_once
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 26.44s
+

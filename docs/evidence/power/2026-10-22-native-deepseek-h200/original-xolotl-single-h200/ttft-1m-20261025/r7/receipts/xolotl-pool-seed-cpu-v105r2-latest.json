@@ -1,0 +1,113 @@
+{
+  "unix": 1792890131.04762,
+  "result": {
+    "unix": 1792890046.048956,
+    "phase": "compiled",
+    "gpu_executed": false,
+    "native_linked": false,
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "runs": [
+      {
+        "name": "control",
+        "command": [
+          "nice",
+          "-n",
+          "19",
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-control.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc9-e81ede480e07/admission-seed-cpu-v94/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-control.o",
+          "bytes": 529944,
+          "sha256": "71e8e29a993328327a9b3189acffd5ef7cec4cb1a3b6e1782d0c80a9224358dd"
+        }
+      },
+      {
+        "name": "candidate",
+        "command": [
+          "nice",
+          "-n",
+          "19",
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-candidate.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-candidate.o",
+          "bytes": 535384,
+          "sha256": "4894588c1cd86d1207045f57c358dc5e23c1b61302d623a73ccdc82a6454dd22"
+        }
+      }
+    ],
+    "unit_tests": [
+      {
+        "mode": "release",
+        "contracts": 113,
+        "exit": 0,
+        "stdout": "pool_seed: 113 contracts passed\n"
+      },
+      {
+        "mode": "asan_ubsan",
+        "contracts": 113,
+        "exit": 0,
+        "stdout": "pool_seed: 113 contracts passed\n"
+      }
+    ],
+    "step": "upstream-pool-compile",
+    "control_object_byte_equal": true,
+    "upstream_pool_suite_passed": true,
+    "candidate_object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r2/generator-candidate.o",
+      "bytes": 535384,
+      "sha256": "4894588c1cd86d1207045f57c358dc5e23c1b61302d623a73ccdc82a6454dd22"
+    },
+    "finished_unix": 1792890103.1252372
+  },
+  "exact_cpu_process_alive": false
+}

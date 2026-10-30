@@ -1,0 +1,245 @@
+{
+  "cases": [
+    {
+      "wrappers": false,
+      "forced": false,
+      "width": 1,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": false,
+      "width": 2,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": false,
+      "width": 7,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": false,
+      "width": 1000,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": true,
+      "width": 1,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": true,
+      "width": 2,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": true,
+      "width": 7,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": false,
+      "forced": true,
+      "width": 1000,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": false,
+      "width": 1,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": false,
+      "width": 2,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": false,
+      "width": 7,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": false,
+      "width": 1000,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": true,
+      "width": 1,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": true,
+      "width": 2,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": true,
+      "width": 7,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    },
+    {
+      "wrappers": true,
+      "forced": true,
+      "width": 1000,
+      "passed": true,
+      "calls": [
+        {
+          "name": "add_numbers",
+          "arguments": {
+            "a": 17,
+            "b": 25
+          }
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

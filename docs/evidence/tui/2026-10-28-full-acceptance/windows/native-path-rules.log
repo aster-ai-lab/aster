@@ -1,0 +1,10 @@
+case=0 verbatim=false ok=true
+case=0 verbatim=true ok=true
+case=1 verbatim=false ok=true
+case=1 verbatim=true ok=true
+case=2 verbatim=false ok=true
+case=2 verbatim=true ok=true
+case=3 verbatim=false ok=false code=Some(123)
+case=3 verbatim=true ok=false code=Some(123)
+case=4 verbatim=false ok=false code=Some(123)
+case=4 verbatim=true ok=false code=Some(123)

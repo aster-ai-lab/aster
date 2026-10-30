@@ -1,0 +1,27 @@
+{
+  "refresh_exit_code": 0,
+  "snapshot_status": {
+    "schema": "a3s.gateway.managed-snapshot-status.v1",
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "requested": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 51,
+      "snapshot_digest": "sha256:d2f223d8b594500a100ec9e5ee3a2fdee35b818abf0b053e404e9084d3a5aafa"
+    },
+    "state": "applied",
+    "ready": true,
+    "replayed": false,
+    "applied": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 51,
+      "expected_revision": 50,
+      "snapshot_digest": "sha256:d2f223d8b594500a100ec9e5ee3a2fdee35b818abf0b053e404e9084d3a5aafa",
+      "issued_at": "2026-10-25T16:14:01Z",
+      "expires_at": "2026-10-26T04:14:01Z",
+      "applied_at": "2026-10-25T16:14:02.146920053Z"
+    }
+  },
+  "gateway_pid_unchanged": true,
+  "model_pids_preserved": true,
+  "auto_policy_persisted": true
+}

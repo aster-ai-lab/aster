@@ -1,0 +1,42 @@
+{
+  "unix": 1792939766.4260166,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/availability-guard-v415",
+  "allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+  "same_GPU": true,
+  "new_GPU_allocated": false,
+  "model_configuration_changed": false,
+  "credential_copied": false,
+  "optimization_resumed": false,
+  "files": [
+    {
+      "file": "aster_stall_window_v415.py",
+      "bytes": 1499,
+      "sha256": "485a34e06d31f3cbecd68462bdd5a2d3435713961c75aeee7c00c5d2d653eb54"
+    },
+    {
+      "file": "test_stall_window_v415.py",
+      "bytes": 2112,
+      "sha256": "4379ad8aeb8e579f980240abdd63284d46484b80fadf14447c6a48a291731a48"
+    },
+    {
+      "file": "h200_availability_guard_v415.py",
+      "bytes": 5440,
+      "sha256": "3994c3670058fd3501c3d7af6f791bf4b437d1dd06f16087a19fe9d768b94c96"
+    },
+    {
+      "file": "guard-plan.json",
+      "bytes": 548,
+      "sha256": "f93340ef7362e453eeab4e0d00beec5bdff8d4cc179467b2831948a0a51d011d"
+    }
+  ],
+  "process": {
+    "unix": 1792939776.421964,
+    "pid": 3094,
+    "start_ticks": 737724533,
+    "uid": 10250,
+    "namespace": "C14 pod",
+    "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/availability-guard-v415",
+    "tests": 10
+  }
+}

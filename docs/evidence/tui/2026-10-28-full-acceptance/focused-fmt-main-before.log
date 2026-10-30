@@ -1,0 +1,56 @@
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp\src\agent.rs:9:
+ use a3s_code_core::{Agent, AgentEvent, AgentSession, SessionOptions};
+ use agent_client_protocol as acp;
+ use agent_client_protocol::Client;
+-use tokio::sync::{Mutex, OwnedMutexGuard, watch};
++use tokio::sync::{watch, Mutex, OwnedMutexGuard};
+ use tokio::task::JoinHandle;
+ 
+ use crate::config::LaunchConfig;
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp\src\agent.rs:41:
+ #[cfg(test)]
+ use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
+ use host_methods::HostMethod;
+-use models::{EffortLimits, effort_guideline, effort_limits};
++use models::{effort_guideline, effort_limits, EffortLimits};
+ #[cfg(test)]
+ use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
+ #[cfg(test)]
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core\src\porcelain\windows.rs:7:
+ use std::io;
+ use std::os::windows::fs::OpenOptionsExt;
+ use std::os::windows::io::AsRawHandle;
+-use windows_sys::Win32::Foundation::{ERROR_INSUFFICIENT_BUFFER, GetLastError};
++use windows_sys::Win32::Foundation::{GetLastError, ERROR_INSUFFICIENT_BUFFER};
+ use windows_sys::Win32::Security::{
+-    DACL_SECURITY_INFORMATION, GROUP_SECURITY_INFORMATION, GetKernelObjectSecurity,
++    GetKernelObjectSecurity, DACL_SECURITY_INFORMATION, GROUP_SECURITY_INFORMATION,
+     OWNER_SECURITY_INFORMATION,
+ };
+ use windows_sys::Win32::Storage::FileSystem::{
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core\src\porcelain\windows.rs:16:
++    FileBasicInfo, GetFileInformationByHandle, GetFileInformationByHandleEx,
+     BY_HANDLE_FILE_INFORMATION, FILE_ATTRIBUTE_DIRECTORY, FILE_ATTRIBUTE_REPARSE_POINT,
+     FILE_BASIC_INFO, FILE_FLAG_BACKUP_SEMANTICS, FILE_FLAG_OPEN_REPARSE_POINT, FILE_SHARE_READ,
+-    FILE_SHARE_WRITE, FileBasicInfo, GetFileInformationByHandle, GetFileInformationByHandleEx,
++    FILE_SHARE_WRITE,
+ };
+ 
+ #[derive(Clone, Debug, PartialEq, Eq)]
+Diff in \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core\src\porcelain\windows_tests.rs:133:
+         effects.completeness,
+         a3s_effect::ToolObservationCompleteness::Complete
+     );
+-    assert!(
+-        effects
+-            .changes
+-            .iter()
+-            .any(|c| c.path == "created.txt" && c.after.content_digest.is_some())
+-    );
++    assert!(effects
++        .changes
++        .iter()
++        .any(|c| c.path == "created.txt" && c.after.content_digest.is_some()));
+ }
+ 
+ #[test]

@@ -1,0 +1,29 @@
+{
+  "integration": "standalone",
+  "version": "0.26.0",
+  "protocol_revision": 15,
+  "features": [
+    "accessibility",
+    "console",
+    "context_clicks",
+    "dialogs",
+    "domain_containment",
+    "downloads",
+    "drag_and_drop",
+    "element_interactions",
+    "form_controls",
+    "frames",
+    "har",
+    "mouse_wheel",
+    "network_routes",
+    "page_errors",
+    "screenshots",
+    "synthetic_microphone",
+    "tabs",
+    "trace",
+    "uploads",
+    "video",
+    "viewport"
+  ],
+  "page_context_protocol": null
+}

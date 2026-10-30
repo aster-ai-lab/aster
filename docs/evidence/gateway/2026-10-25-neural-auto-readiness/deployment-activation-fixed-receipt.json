@@ -1,0 +1,51 @@
+{
+  "started_at_epoch": 1792943704.088953,
+  "success": true,
+  "gateway_binary_sha256": "281ff44b44e2dc928e06afb374ccbe77cd496b385a6eef67859ee0d22e11640d",
+  "preserved_pids_before": {
+    "prism-27b@0.service": "2073548",
+    "prism-27b@1.service": "2073908",
+    "prism-27b@2.service": "2074263",
+    "prism-27b@3.service": "2074649",
+    "prism-27b@4.service": "2075000",
+    "prism-27b@5.service": "2075354",
+    "a3s-power@0.service": "3845392",
+    "a3s-power@1.service": "3845569",
+    "a3s-power@2.service": "3845745",
+    "a3s-power@3.service": "3845957",
+    "a3s-power@4.service": "3846134",
+    "a3s-power@5.service": "3846431",
+    "a3s-power-deepseek-gpu6.service": "3221770",
+    "qwen3-asr.service": "76190",
+    "qwen3-asr-b.service": "76186"
+  },
+  "phase": "completed",
+  "new_gateway_pid": "3381670",
+  "official_refresh_exit": 0,
+  "snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 49,
+    "snapshot_digest": "sha256:f5a65e5d4bbb1b2918f8da50c5c12328b857f2573ed7aa2c0eb1a539c5de5f4e",
+    "issued_at": "2026-10-25T15:55:06Z",
+    "expires_at": "2026-10-26T03:55:06Z"
+  },
+  "preserved_pids_after": {
+    "prism-27b@0.service": "2073548",
+    "prism-27b@1.service": "2073908",
+    "prism-27b@2.service": "2074263",
+    "prism-27b@3.service": "2074649",
+    "prism-27b@4.service": "2075000",
+    "prism-27b@5.service": "2075354",
+    "a3s-power@0.service": "3845392",
+    "a3s-power@1.service": "3845569",
+    "a3s-power@2.service": "3845745",
+    "a3s-power@3.service": "3845957",
+    "a3s-power@4.service": "3846134",
+    "a3s-power@5.service": "3846431",
+    "a3s-power-deepseek-gpu6.service": "3221770",
+    "qwen3-asr.service": "76190",
+    "qwen3-asr-b.service": "76186"
+  },
+  "timer_active_after": "active",
+  "finished_at_epoch": 1792943706.7553043
+}

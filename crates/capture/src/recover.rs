@@ -91,6 +91,7 @@ fn orphaned(dir: &Path) -> bool {
 /// Whether a build is still owed to `dir`: nothing built it and it hasn't been tried.
 pub fn owed(dir: &Path) -> bool {
     !dir.join("capture.json").exists()
+        && !dir.join("scrawl.json").exists()
         && !dir.join(RECOVERING).exists()
         && (dir.join(UNFINISHED).is_file() || orphaned(dir))
 }

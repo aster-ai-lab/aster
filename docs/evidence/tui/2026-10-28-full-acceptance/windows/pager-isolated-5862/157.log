@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::int_editing_value_renders_stepper_ui' (55304) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:2141:27:
+must find the stepper row
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::int_editing_value_renders_stepper_ui ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::int_editing_value_renders_stepper_ui
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

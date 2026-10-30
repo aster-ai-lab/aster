@@ -64,6 +64,8 @@ pub struct PackedQuestion {
     pub qtype: u8,
     /// Rendered option labels in marker order (for decoding argmax).
     pub option_labels: Vec<String>,
+    /// Whether the state was shortened to fit the sequence budget.
+    pub state_truncated: bool,
 }
 
 /// Render option strings for the decision head prompt.
@@ -142,6 +144,19 @@ pub fn render_options(question: &Question) -> Result<Vec<(String, String)>> {
     }
 }
 
+/// How a state is handled when it exceeds the sequence budget.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StateTruncation {
+    /// Keep the beginning of the state.
+    Head,
+    /// Keep the most recent end of the state.
+    Tail,
+    /// Keep the most recent end and mark that history was shortened.
+    TailAndMark,
+    /// Return [`Error::StateOverflow`](crate::Error::StateOverflow) instead.
+    Reject,
+}
+
 /// Pack one question + state into the canonical token layout.
 ///
 /// `mask_token_str` is stripped from instructions/options/state (replaced with
@@ -154,6 +169,33 @@ pub fn pack_question<T: Tokenize>(
     question_id: &str,
     question: &Question,
     cfg: SequenceConfig,
+) -> Result<PackedQuestion> {
+    pack_question_with_truncation(
+        tok,
+        specials,
+        mask_token_str,
+        state,
+        question_id,
+        question,
+        cfg,
+        StateTruncation::Head,
+    )
+}
+
+/// Pack one question with an explicit state-overflow policy.
+#[expect(
+    clippy::too_many_arguments,
+    reason = "Mirrors pack_question plus its overflow policy"
+)]
+pub fn pack_question_with_truncation<T: Tokenize>(
+    tok: &T,
+    specials: SpecialTokens,
+    mask_token_str: &str,
+    state: &State,
+    question_id: &str,
+    question: &Question,
+    cfg: SequenceConfig,
+    truncation: StateTruncation,
 ) -> Result<PackedQuestion> {
     let rendered = render_options(question).map_err(|err| match err {
         Error::InvalidQuestion { reason, .. } => Error::InvalidQuestion {
@@ -230,8 +272,35 @@ pub fn pack_question<T: Tokenize>(
     let room = cfg.max_len.saturating_sub(ids.len().saturating_add(1));
     let state_text = state.model_text()?.replace(mask_token_str, " ");
     let mut state_ids = tok.encode_ordinary(&state_text)?;
-    if state_ids.len() > room {
-        state_ids.truncate(room);
+    let state_truncated = state_ids.len() > room;
+    if state_truncated {
+        match truncation {
+            StateTruncation::Head => state_ids.truncate(room),
+            StateTruncation::Tail => {
+                let start = state_ids.len().saturating_sub(room);
+                state_ids.drain(..start);
+            }
+            StateTruncation::TailAndMark => {
+                let marker_ids = tok.encode_ordinary("[history is partial]\n\n")?;
+                if marker_ids.len() > room {
+                    return Err(Error::StateOverflow {
+                        id: question_id.to_string(),
+                        max_len: cfg.max_len,
+                    });
+                }
+                let keep = room.saturating_sub(marker_ids.len());
+                let start = state_ids.len().saturating_sub(keep);
+                let recent = state_ids.split_off(start);
+                state_ids = marker_ids;
+                state_ids.extend(recent);
+            }
+            StateTruncation::Reject => {
+                return Err(Error::StateOverflow {
+                    id: question_id.to_string(),
+                    max_len: cfg.max_len,
+                })
+            }
+        }
     }
     ids.extend(state_ids);
     ids.push(specials.sep);
@@ -252,6 +321,7 @@ pub fn pack_question<T: Tokenize>(
         markers,
         qtype: question.type_.type_id(),
         option_labels,
+        state_truncated,
     })
 }
 

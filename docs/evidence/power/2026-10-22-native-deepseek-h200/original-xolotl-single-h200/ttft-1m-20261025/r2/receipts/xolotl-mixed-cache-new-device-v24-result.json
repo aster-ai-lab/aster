@@ -1,0 +1,9 @@
+{
+  "unix": 1792859570.570696,
+  "phase": "passed",
+  "gpu_uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+  "binary_sha256": "60df409c1b710ab0d49b4716efa81ac3d9242634c4f6ea7214ab7788d7e6dc7a",
+  "stdout": "PASS mixed cache: 3 shrink/grow cycles, 194 restored slots, 478 slot byte comparisons, exact live ownership\n",
+  "stderr": "",
+  "returncode": 0
+}

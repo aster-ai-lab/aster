@@ -1,0 +1,55 @@
+[package]
+name = "a3s-code-acp"
+version = "9.1.6"
+edition = "2021"
+authors = ["A3S Lab Team"]
+license = "MIT"
+description = "ACP stdio agent over a3s-code-core 9.1.6 for Aster desktop hosts"
+publish = false
+
+[[bin]]
+name = "a3s-code-acp"
+path = "src/bin/a3s-code-acp.rs"
+required-features = ["svg-png", "account-import"]
+
+[dependencies]
+agent-client-protocol = {workspace = true}
+anyhow = "1"
+chrono = {workspace = true}
+a3s-embedding = { path = "../../embedding" }
+async-trait = {workspace = true}
+rusqlite = {workspace = true, optional = true}
+serde_json = {workspace = true}
+serde = "1"
+sha2 = {workspace = true}
+tokio = {version = "1", features = ["rt-multi-thread", "macros", "sync", "io-std", "io-util", "process", "time"]}
+tokio-util = {version = "0.7", features = ["compat"]}
+tracing = {workspace = true}
+tracing-subscriber = {version = "0.3", features = ["env-filter", "registry"]}
+uuid = {version = "1", features = ["v4"]}
+url = {workspace = true}
+a3s-okf = {path = "../../okf"}
+a3s-acl = {path = "../../acl"}
+a3s-office = {path = "../../office/crates/core"}
+a3s-code-mermaid = {path = "../../terminal/crates/codegen/a3s-code-mermaid", optional = true}
+cap-std = "=4.0.2"
+cap-fs-ext = "=4.0.2"
+quick-xml = {version = "0.38", optional = true}
+tempfile = {workspace = true}
+a3s-use-reconcile = {path = "../../use/reconcile"}
+a3s-code-core = {default-features = true, path = "../core"}
+
+
+[dev-dependencies]
+a3s-form-core = { path = "../../form-core" }
+tempfile = {workspace = true}
+agent-client-protocol = {workspace = true}
+portable-pty = {workspace = true}
+tokio = {version = "1", features = ["rt-multi-thread", "macros", "time", "net"]}
+vt100 = "0.15"
+
+[features]
+default = ["svg-png", "account-import"]
+headless-search = ["a3s-code-core/headless-search"]
+svg-png = ["dep:a3s-code-mermaid", "dep:quick-xml"]
+account-import = ["dep:rusqlite"]

@@ -1,0 +1,44 @@
+{
+  "AGENTS.md": {
+    "utf8": true,
+    "crlf": 0,
+    "bom": false,
+    "lines": 105
+  },
+  "docs/development-standards.md": {
+    "utf8": true,
+    "crlf": 0,
+    "bom": false,
+    "lines": 453
+  },
+  ".specify/memory/constitution.md": {
+    "utf8": true,
+    "crlf": 0,
+    "bom": false,
+    "lines": 249
+  },
+  "docs/evidence/governance/2026-10-29-microsoft-rust-guidelines/OUTCOME.md": {
+    "utf8": true,
+    "crlf": 0,
+    "bom": false,
+    "lines": 93
+  },
+  "git diff --check -- AGENTS.md docs/development-standards.md .specify/memory/constitution.md": {
+    "exit_code": 0,
+    "output": ""
+  },
+  "git diff --numstat -- AGENTS.md docs/development-standards.md .specify/memory/constitution.md": {
+    "exit_code": 0,
+    "output": "6\t0\t.specify/memory/constitution.md\n19\t0\tAGENTS.md\n91\t2\tdocs/development-standards.md\n"
+  },
+  "concurrent_reviewed_source_changes": [],
+  "head": "3185a21747df621c569ad4828103b53e685a8203",
+  "evidence_reopened": {
+    "referenced_records": 10,
+    "review_findings": 4,
+    "reviewed_package_warnings": 122,
+    "unsafe_comment_warnings": 18,
+    "lint_reason_warnings": 83,
+    "source_snapshots_unchanged": true
+  }
+}

@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'tools::builtin::read::line_endings_tests::partial_page_does_not_claim_to_know_the_file_ending' (53664) panicked at crates\code\core\src\tools\builtin\read\line_endings_tests.rs:44:5:
+     2	last
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tools::builtin::read::line_endings_tests::partial_page_does_not_claim_to_know_the_file_ending ... FAILED
+
+failures:
+
+failures:
+    tools::builtin::read::line_endings_tests::partial_page_does_not_claim_to_know_the_file_ending
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5307 filtered out; finished in 0.01s
+

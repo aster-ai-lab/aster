@@ -1,0 +1,15 @@
+{
+    "at":  "2026-10-25T13:48:22.2518961+00:00",
+    "status":  200,
+    "ids":  [
+                "auto",
+                "deepseek-v4.1-flash",
+                "platform/apofasi",
+                "platform/bge-m3",
+                "platform/bge-reranker-v2-m3",
+                "platform/pp-ocr-v6",
+                "prism-27b",
+                "prism-27b-alt"
+            ],
+    "passed":  true
+}

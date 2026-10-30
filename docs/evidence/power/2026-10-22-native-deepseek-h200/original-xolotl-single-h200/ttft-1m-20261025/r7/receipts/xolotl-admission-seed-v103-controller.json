@@ -1,0 +1,113 @@
+{
+  "unix": 1792889293.533741,
+  "phase": "diagnostic_matrix_completed",
+  "profiles": [
+    {
+      "profile": "off",
+      "phase": "failed",
+      "diagnostic_completed": true,
+      "tests": 10,
+      "qualified_reference_gate_passed": false,
+      "profile_serial_repeat_passed": true,
+      "profile_concurrent_reference_passed": false,
+      "profile_post_serial_passed": false,
+      "pairs": [
+        {
+          "pair": "same",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 31.462698594201356,
+          "api_wall_completion_tok_s": 65.09295424447319,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        },
+        {
+          "pair": "mixed",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 31.70612163003534,
+          "api_wall_completion_tok_s": 64.59320455201689,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        }
+      ]
+    },
+    {
+      "profile": "on",
+      "phase": "failed",
+      "diagnostic_completed": true,
+      "tests": 10,
+      "qualified_reference_gate_passed": false,
+      "profile_serial_repeat_passed": true,
+      "profile_concurrent_reference_passed": false,
+      "profile_post_serial_passed": true,
+      "pairs": [
+        {
+          "pair": "same",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 29.891518781892955,
+          "api_wall_completion_tok_s": 68.51441758257508,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        },
+        {
+          "pair": "mixed",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 32.409995269961655,
+          "api_wall_completion_tok_s": 63.190382563805386,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        }
+      ]
+    },
+    {
+      "profile": "off_repeat",
+      "phase": "failed",
+      "diagnostic_completed": true,
+      "tests": 10,
+      "qualified_reference_gate_passed": false,
+      "profile_serial_repeat_passed": true,
+      "profile_concurrent_reference_passed": false,
+      "profile_post_serial_passed": false,
+      "pairs": [
+        {
+          "pair": "same",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 30.49426655191928,
+          "api_wall_completion_tok_s": 67.16016587948073,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        },
+        {
+          "pair": "mixed",
+          "requests": 2,
+          "completion_tokens": 2048,
+          "wall_seconds": 30.337827167008072,
+          "api_wall_completion_tok_s": 67.5064825416096,
+          "qualified_reference_matched": false,
+          "profile_serial_reference_matched": false,
+          "performance_qualified": false
+        }
+      ]
+    }
+  ],
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "diagnostic_only": true,
+  "performance_qualified": false,
+  "goal_complete": false,
+  "profile": "off_repeat",
+  "observed_unix": 1792890240.2301922,
+  "service_phase": "stopped",
+  "client_phase": "failed",
+  "client_tests": 10,
+  "finished_unix": 1792890240.2301922
+}

@@ -1,0 +1,100 @@
+[
+  {
+    "max_tokens": 12,
+    "result": {
+      "unix": 1792853262.816061,
+      "seconds": 5.392970323562622,
+      "response": {
+        "id": "chatcmpl-eb3be2e0e9904f83a9060a2d",
+        "object": "chat.completion",
+        "created": 1792853257,
+        "model": "deepseek-v4.1-flash-1017-xq",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "<｜DSML｜ invoke name=\"add_numbers\">{\"a\": 17, \"b\": 25}</"
+            },
+            "finish_reason": "length"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 299,
+          "completion_tokens": 12,
+          "total_tokens": 311,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 299,
+          "prompt_ms": 4925.9,
+          "prompt_per_token_ms": 16.475,
+          "prompt_per_second": 60.7,
+          "predicted_n": 12,
+          "predicted_ms": 151.5,
+          "predicted_per_token_ms": 12.625,
+          "predicted_per_second": 79.2,
+          "draft_n": 0,
+          "draft_n_accepted": 0
+        }
+      }
+    }
+  },
+  {
+    "max_tokens": 20,
+    "result": {
+      "unix": 1792853264.6727214,
+      "seconds": 0.18580150604248047,
+      "response": {
+        "id": "chatcmpl-415a742afca44f0ea7d5a9a1",
+        "object": "chat.completion",
+        "created": 1792853264,
+        "model": "deepseek-v4.1-flash-1017-xq",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "</",
+              "tool_calls": [
+                {
+                  "id": "call_0ff3ee7408a94874aea683d6",
+                  "type": "function",
+                  "function": {
+                    "name": "add_numbers",
+                    "arguments": "{}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "length"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 299,
+          "completion_tokens": 20,
+          "total_tokens": 319,
+          "prompt_tokens_details": {
+            "cached_tokens": 299
+          }
+        },
+        "timings": {
+          "cache_n": 299,
+          "prompt_n": 0,
+          "prompt_ms": 6.7,
+          "prompt_per_token_ms": null,
+          "prompt_per_second": null,
+          "predicted_n": 20,
+          "predicted_ms": 173.1,
+          "predicted_per_token_ms": 8.655,
+          "predicted_per_second": 115.5,
+          "draft_n": 0,
+          "draft_n_accepted": 0
+        }
+      }
+    }
+  }
+]

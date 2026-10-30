@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::explicit_tool_link_clips_before_u16_conversion' (46724) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:2931:10:
+long Read header file link
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::explicit_tool_link_clips_before_u16_conversion ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::explicit_tool_link_clips_before_u16_conversion
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.03s
+

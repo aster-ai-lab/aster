@@ -1,0 +1,172 @@
+--- indexer-v40r2/lightning-indexer.cu
++++ candidate/lightning-indexer.cu
+@@ -16,7 +16,7 @@
+ #include <mma.h>
+ namespace wmma = nvcuda::wmma;
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP, bool HEADER_SCALE>
+ static __global__ void lightning_indexer_kernel_wmma(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -42,7 +42,7 @@
+     // each block processes K_VECS_PER_BLOCK K vectors
+     const int start_kv = blockIdx.x * K_VECS_PER_BLOCK;
+     if constexpr (MASK_SKIP) {
+-        if (aster_indexer_masked_block<true, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K>(
++        if (aster_indexer_masked_block<true, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K, HEADER_SCALE>(
+             Q, K, W, M, dst, start_kv, n_kv, i_batch, i_stream, static_cast<int>(nem3),
+             nb1, nb3, nbq1, nbq2, nbq3, nbk2, nbk3, nbw1, nbw3, nbm1, nbm3)) return;
+     }
+@@ -219,7 +219,7 @@
+ 
+ #else // defined(TURING_MMA_AVAILABLE)
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP, bool HEADER_SCALE>
+ static __global__ void lightning_indexer_kernel_wmma(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -247,7 +247,7 @@
+ // thanks to that one warp operating on float4 processes whole indexer K/Q vectors
+ // 32 * 4 = 128 (N_EMBD)
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP, bool HEADER_SCALE>
+ static __global__ void lightning_indexer_kernel_vec(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -273,7 +273,7 @@
+     const int start_kv = start_kv_block + i_warp * K_VECS_PER_WARP;
+     if constexpr (MASK_SKIP) {
+         // Eligibility is block-wide even though the unchanged vector work is per warp.
+-        if (aster_indexer_masked_block<false, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K>(
++        if (aster_indexer_masked_block<false, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K, HEADER_SCALE>(
+             Q, K, W, M, dst, start_kv_block, n_kv, i_batch, i_stream, static_cast<int>(nem3),
+             nb1, nb3, nbq1, nbq2, nbq3, nbk2, nbk3, nbw1, nbw3, nbm1, nbm3)) return;
+     }
+@@ -396,8 +396,8 @@
+     }
+ }
+ 
+-#define ASTER_INDEXER_LAUNCH(kernel, n_embd, n_head, type_K, mask_skip)                 \
+-    kernel<WARPS_PER_BLOCK, K_VECS_PER_BLOCK, n_embd, n_head, type_K, mask_skip>            \
++#define ASTER_INDEXER_LAUNCH(kernel, n_embd, n_head, type_K, mask_skip, header_scale) \
++    kernel<WARPS_PER_BLOCK, K_VECS_PER_BLOCK, n_embd, n_head, type_K, mask_skip, header_scale> \
+         <<<grid, block, 0, ctx.stream()>>>(                                              \
+         q_d, k_d, w_d, m_d, dst_d, n_stream, n_batch, n_kv,                               \
+         nb1, nb2, nb3, nbq1, nbq2, nbq3, nbk1, nbk2, nbk3,                               \
+@@ -405,14 +405,23 @@
+ 
+ #define LIGHTNING_INDEXER_CASE(kernel, n_embd, n_head, K, type_K)                         \
+     if (K->type == (type_K)) {                                                           \
+-        if (mask_skip) { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,true); }          \
+-        else { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,false); }                  \
++        if (mask_skip) {                                                                \
++            if constexpr ((type_K) == GGML_TYPE_MXFP4) {                                \
++                if (header_scale) { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,true,true); } \
++                else { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,true,false); }    \
++            } else { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,true,false); }      \
++        } else { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,false,false); }         \
+     } else
+ 
+ void ggml_cuda_lightning_indexer(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
+     static const auto mode = aster_indexer::parse(std::getenv("ASTER_XQ_INDEXER_MASK_SKIP"));
+     if (mode == aster_indexer::Mode::invalid) GGML_ABORT("ASTER_XQ_INDEXER_MASK_SKIP must be 0 or 1");
+     const bool mask_skip = mode == aster_indexer::Mode::on;
++    static const auto header_mode = aster_indexer::parse(std::getenv("ASTER_XQ_INDEXER_MXFP4_HEADER"));
++    if (header_mode == aster_indexer::Mode::invalid) GGML_ABORT("ASTER_XQ_INDEXER_MXFP4_HEADER must be 0 or 1");
++    const bool header_scale = header_mode == aster_indexer::Mode::on;
++    if (header_scale && !mask_skip) GGML_ABORT("ASTER_XQ_INDEXER_MXFP4_HEADER requires ASTER_XQ_INDEXER_MASK_SKIP=1");
++
+ 
+     const ggml_tensor * q = dst->src[0];
+     const ggml_tensor * k = dst->src[1];
+--- indexer-v40r2/aster_indexer_mask_skip.cuh
++++ candidate/aster_indexer_mask_skip.cuh
+@@ -1,8 +1,9 @@
+ // All threads take the same returns. No extra allocation or approximation.
+ #pragma once
+ #include "aster_indexer_mask_policy.hpp"
++#include "aster_mxfp4_scale_bound_v306.hpp"
+ 
+-template<bool WMMA, int KV, int EMB, int HEAD, ggml_type TYPE_K>
++template<bool WMMA, int KV, int EMB, int HEAD, ggml_type TYPE_K, bool HEADER_SCALE = false>
+ static __device__ __forceinline__ bool aster_indexer_masked_block(
+         const float* Q, const char* K, const float* W, const half* M, float* dst,
+         int start, int n_kv, int i_batch, int i_stream, int nem3,
+@@ -32,24 +33,37 @@
+         ok &= aster_indexer::bounded(v.x) && aster_indexer::bounded(v.y) &&
+               aster_indexer::bounded(v.z) && aster_indexer::bounded(v.w);
+     }
+-    for (int at = tid; at < KV*(EMB/4); at += nt) {
+-        const int k = at/(EMB/4), d = at%(EMB/4);
+-        if (start+k >= n_kv) continue;
+-        const void* key = K + (start+k)*nbk2 + i_stream*nbk3;
+-        if constexpr (WMMA) {
+-            __align__(16) half v[4];
+-            constexpr dequantize_V_t read = get_dequantize_V<TYPE_K, half, 4>();
+-            read(key, v, d*4);
+-            for (int i=0; i<4; ++i) ok &= aster_indexer::bounded(__half2float(v[i]));
+-        } else if constexpr (TYPE_K == GGML_TYPE_F32) {
+-            const float4 v = reinterpret_cast<const float4*>(key)[d];
+-            ok &= aster_indexer::bounded(v.x) && aster_indexer::bounded(v.y) &&
+-                  aster_indexer::bounded(v.z) && aster_indexer::bounded(v.w);
+-        } else {
+-            __align__(16) float v[4];
+-            constexpr dequantize_V_t read = get_dequantize_V<TYPE_K, float, 4>();
+-            read(key, v, d*4);
+-            for (int i=0; i<4; ++i) ok &= aster_indexer::bounded(v[i]);
++    if constexpr (HEADER_SCALE && TYPE_K == GGML_TYPE_MXFP4 && EMB >= QK_MXFP4 && EMB % QK_MXFP4 == 0) {
++        // A scale <=134 bounds every nibble to |value|<=768 in both float
++        // and half. Other scales conservatively run the original kernel.
++        constexpr int blocks_per_key = EMB / QK_MXFP4;
++        static_assert(sizeof(block_mxfp4) == 17);
++        for (int at = tid; at < KV*blocks_per_key; at += nt) {
++            const int k = at/blocks_per_key, block = at%blocks_per_key;
++            if (start+k >= n_kv) continue;
++            const auto* key = reinterpret_cast<const block_mxfp4*>(K + (start+k)*nbk2 + i_stream*nbk3);
++            ok &= aster_indexer_scale::bounded_mxfp4_header(key[block].e);
++        }
++    } else {
++        for (int at = tid; at < KV*(EMB/4); at += nt) {
++            const int k = at/(EMB/4), d = at%(EMB/4);
++            if (start+k >= n_kv) continue;
++            const void* key = K + (start+k)*nbk2 + i_stream*nbk3;
++            if constexpr (WMMA) {
++                __align__(16) half v[4];
++                constexpr dequantize_V_t read = get_dequantize_V<TYPE_K, half, 4>();
++                read(key, v, d*4);
++                for (int i=0; i<4; ++i) ok &= aster_indexer::bounded(__half2float(v[i]));
++            } else if constexpr (TYPE_K == GGML_TYPE_F32) {
++                const float4 v = reinterpret_cast<const float4*>(key)[d];
++                ok &= aster_indexer::bounded(v.x) && aster_indexer::bounded(v.y) &&
++                      aster_indexer::bounded(v.z) && aster_indexer::bounded(v.w);
++            } else {
++                __align__(16) float v[4];
++                constexpr dequantize_V_t read = get_dequantize_V<TYPE_K, float, 4>();
++                read(key, v, d*4);
++                for (int i=0; i<4; ++i) ok &= aster_indexer::bounded(v[i]);
++            }
+         }
+     }
+     if (!ok) atomicExch(&eligible, 0);
+--- indexer-v40/ds41_dense.cpp
++++ candidate/ds41_dense.cpp
+@@ -1728,6 +1728,16 @@
+         return false;
+     }
+     im.indexer_mask_first = mask_mode == aster_indexer::Mode::on;
++    const auto header_mode = aster_indexer::parse(std::getenv("ASTER_XQ_INDEXER_MXFP4_HEADER"));
++    if (header_mode == aster_indexer::Mode::invalid) {
++        err = "ASTER_XQ_INDEXER_MXFP4_HEADER must be 0 or 1";
++        return false;
++    }
++    if (header_mode == aster_indexer::Mode::on && !im.indexer_mask_first) {
++        err = "ASTER_XQ_INDEXER_MXFP4_HEADER requires ASTER_XQ_INDEXER_MASK_SKIP=1";
++        return false;
++    }
++
+ 
+     try {
+         im.model = std::make_unique<GgufModel>(GgufModel::open(path));

@@ -63,3 +63,6 @@ pub fn check_admitted_tool<T>(
         Err(a3s_code_core::permissions::PermissionDecision::Allow) => Err("allow"),
     }
 }
+
+#[cfg(test)]
+mod test_support;

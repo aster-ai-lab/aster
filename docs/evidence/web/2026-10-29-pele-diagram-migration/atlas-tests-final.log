@@ -1,0 +1,22 @@
+✔ every migrated Pele diagram preserves original labels, node identities, relationships and explanation sources (4120.4432ms)
+✔ Pele guide refuses missing explanations, invalid Mermaid and references to missing nodes (1.8039ms)
+✔ prose export reads the Pele guide schema and retains every authored prose unit (623.1353ms)
+✔ diagram stepping, keyboard bounds and complete view do not start animation timers (118.1259ms)
+✔ requested narration is finite and reduced motion keeps manual controls (165.5912ms)
+✔ responsibility blocks remain separate concepts and stepping does not change other figures (25.8022ms)
+✔ diagram nodes have working pointer and keyboard explanations (19.9595ms)
+✔ Code Hike token colors remain readable on both code backgrounds (1.4086ms)
+✔ source walkthrough works without IntersectionObserver and exposes full reading mode (92.9262ms)
+✔ scroll walkthrough follows an observed narrative without announcing every scroll (82.3069ms)
+✔ static source walks retain every explanation and original code line without JavaScript (3705.6114ms)
+✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (354.0781ms)
+✔ new internal reading paths retain explicit product versions rather than default aliases (334.8078ms)
+✔ published documents, diagram assets and README exports contain Pele with no retired renderer resources (124.2393ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10845.0523

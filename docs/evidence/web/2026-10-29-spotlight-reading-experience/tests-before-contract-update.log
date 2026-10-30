@@ -1,0 +1,58 @@
+✔ every migrated Pele diagram preserves original labels, node identities, relationships and explanation sources (4058.926ms)
+✔ Pele guide refuses missing explanations, invalid Mermaid and references to missing nodes (2.2443ms)
+✔ prose export reads the Pele guide schema and retains every authored prose unit (600.9296ms)
+✔ diagram stepping, keyboard bounds and complete view do not start animation timers (112.1515ms)
+✔ requested narration is finite and reduced motion keeps manual controls (149.7116ms)
+✔ responsibility blocks remain separate concepts and stepping does not change other figures (30.0871ms)
+✔ diagram nodes have working pointer and keyboard explanations (22.1022ms)
+✖ Code Hike token colors remain readable on both code backgrounds (5.9198ms)
+✔ source walkthrough works without IntersectionObserver and exposes full reading mode (113.2399ms)
+✖ scroll walkthrough follows an observed narrative without announcing every scroll (83.0264ms)
+✖ static source walks retain every explanation and original code line without JavaScript (326.4431ms)
+✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (321.3909ms)
+✔ new internal reading paths retain explicit product versions rather than default aliases (353.1788ms)
+✔ published documents, diagram assets and README exports contain Pele with no retired renderer resources (134.6188ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 11
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7272.949
+
+✖ failing tests:
+
+test at apps\web\tests\atlas.test.mjs:157:1
+✖ Code Hike token colors remain readable on both code backgrounds (5.9198ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(colors.length > 5)
+  
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:161:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\web\tests\atlas.test.mjs:183:1
+✖ scroll walkthrough follows an observed narrative without announcing every scroll (83.0264ms)
+  TypeError: observer is not a function
+      at Object.observe (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:30:77)
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:187:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps\web\tests\atlas.test.mjs:192:1
+✖ static source walks retain every explanation and original code line without JavaScript (326.4431ms)
+  TypeError: Cannot read properties of null (reading 'remove')
+      at file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:211:119
+      at Array.map (<anonymous>)
+      at TestContext.<anonymous> (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/tests/atlas.test.mjs:211:64)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

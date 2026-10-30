@@ -1,0 +1,45 @@
+{
+  "unix": 1792875518.5779984,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "stopped",
+    "unix": 1792874507.7165225,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+    "lease_ends_unix": 1792884595.778009,
+    "binary_sha256": "34f3c963304445e50c4ae398194f4b4745a0b1868a6b4a1d6668068aebcf96e6",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 5698,
+      "start_ticks": 315399750,
+      "uid": 10250
+    },
+    "startup_unix": 1792874521.613836,
+    "last_health_status": 200,
+    "last_health_unix": 1792875417.9265995,
+    "api_reaped": true,
+    "api_exit": 0,
+    "finished_unix": 1792875429.4526627
+  },
+  "service-process.json": {
+    "pid": 5561,
+    "start_ticks": 315398355,
+    "uid": 10250,
+    "unix": 1792874507.668383,
+    "deadline_seconds": 10078
+  },
+  "exact_supervisor_alive": false,
+  "numeric_diagnostics": [
+    "serve: cache kept for a 305-token batch (320 tail slots out, 12156 experts stay)",
+    "chunk prof: 40 calls, 59 launches: wall 276 ms = waits on reads 0 + wave/copy waits 0 + final sync 105 + other host 171; reader wall 0 ms; GPU grouped kernels 69 ms (resident 67); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 893 sub-runs; PTQ1_0 -> Q2_0 transcode 14 ms GPU (inside the grouped kernels) over 41 sub-runs, 27.1 GB of ternary read = 1989 GB/s",
+    "resident MMQ stage: 196 waves, 71039969280 exact D2D bytes",
+    "serve: cache regrown: 320 experts back (0 from the file) in 70 ms",
+    "dense prof turn: 40 attn spans: build 3 ms, alloc 9, gpu compute 325, engram wait 1, readback 16, upload 0, finish build 1",
+    "serve: prompt phases: 305 new = 305 batch (2.11 s: dense 0.37, experts 1.64, logits 0.01) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.02 s)",
+    "serve: prompt 305 tokens (0 reused, batch) in 2.13 s = 143.2 tok/s (experts 70976 hit / 0 cpu / 2224 pcie / 0 file)"
+  ]
+}

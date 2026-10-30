@@ -1,0 +1,158 @@
+{
+  "case": "shell-nonzero-contract",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:0a5338d573aa5e6c6d6ff84db276ccd3ae95117b:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27180",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iIAajN\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use bash exactly once to run this exact command: & './probe script.ps1'. The script intentionally    10:58 AM           fails. Report the actual exit code and quote both output streams and its CWD line. Do not retry,                        repair files or call other tools.                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 5.4s                                                                                                      ♦ Run & './probe script.ps1'                                                                                            ♦ Thought for 10.3s                                                                                                                                                                                                                             Actual exit code: 7                                                                                    10:59 AM                                                                                                                                 stdout:                                                                                                                                                                                                                                         STDOUT-e655eb78-74d9-4ce5-bf90-5605b3290472                                                                             CWD=Z:\\                                                                                                                                                                                                                                         stderr:                                                                                                                                                                                                                                         STDERR-f171effb-94a7-465a-8e00-d5509137df14                                                                                                                                                                                                     CWD line: CWD=Z:\\                                                                                                                                                                                                                               Worked for 35s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "native-nonzero",
+      "detail": "one real native command preserves exit 7, independent stdout/stderr tokens, exact working directory and unchanged script bytes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iIAajN\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use bash exactly once to run this exact command: & './probe script.ps1'. The script intentionally    10:58 AM           fails. Report the actual exit code and quote both output streams and its CWD line. Do not retry,                        repair files or call other tools.                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 5.4s                                                                                                      ♦ Run & './probe script.ps1'                                                                                            ♦ Thought for 10.3s                                                                                                                                                                                                                             Actual exit code: 7                                                                                    10:59 AM                                                                                                                                 stdout:                                                                                                                                                                                                                                         STDOUT-e655eb78-74d9-4ce5-bf90-5605b3290472                                                                             CWD=Z:\\                                                                                                                                                                                                                                         stderr:                                                                                                                                                                                                                                         STDERR-f171effb-94a7-465a-8e00-d5509137df14                                                                                                                                                                                                     CWD line: CWD=Z:\\                                                                                                                                                                                                                               Worked for 35s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13851",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iIAajN\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only SHELL-FAILURE-RECOVERED. Do not call any tool.                                            10:59 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.9s                                                                                                                                                                                                                              SHELL-FAILURE-RECOVERED                                                                                10:59 AM                                                                                                                                 Worked for 9.4s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "failed-tool-recovery",
+      "detail": "the same session accepts and completes the next no-tool request after the real failed shell call",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iIAajN\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only SHELL-FAILURE-RECOVERED. Do not call any tool.                                            10:59 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.9s                                                                                                                                                                                                                              SHELL-FAILURE-RECOVERED                                                                                10:59 AM                                                                                                                                 Worked for 9.4s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13470,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_97b939c8a4eb437fb8e47df193912436",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-15fa535c-2758-47af-ab3d-7acde3d54d63",
+            "thread_id": "8f4cf164-bfd4-46e8-8877-723afc3b3b38",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_97b939c8a4eb437fb8e47df193912436",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-15fa535c-2758-47af-ab3d-7acde3d54d63",
+            "thread_id": "8f4cf164-bfd4-46e8-8877-723afc3b3b38",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:10c051ab15b5d9d445bb1ed158c628b3abbd5eee217c07b02678e33996879269",
+        "outcome": "failed",
+        "effects": {
+          "changes": [
+            {
+              "path": "probe script.ps1",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:e46adc236817331dcc594c2aa498f0377cc1c7095b3619d3654ad0867358c6f1",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:e46adc236817331dcc594c2aa498f0377cc1c7095b3619d3654ad0867358c6f1",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"STDOUT-e655eb78-74d9-4ce5-bf90-5605b3290472\\r\\nCWD=Z:\\\\\\r\\nSTDERR-f171effb-94a7-465a-8e00-d5509137df14\\r\\n\",\"is_error\":true,\"images\":[],\"exit_code\":7,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":7,\"sandboxed\":true,\"output\":{\"total_bytes\":99,\"captured_bytes\":99,\"truncated\":false,\"timed_out\":false},\"changed_paths\":[\"probe script.ps1\"],\"verification_shell_command\":\"& './probe script.ps1'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":99,\"projected_bytes\":99,\"original_estimated_tokens\":25,\"projected_estimated_tokens\":25,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:ebfa048d7a1d26b6010c3d8611c2cf7bbb85f2eb5289edee49cbd50702e767e6\",\"projected_digest\":\"sha256:ebfa048d7a1d26b6010c3d8611c2cf7bbb85f2eb5289edee49cbd50702e767e6\",\"repeat_key\":\"sha256:ebfa048d7a1d26b6010c3d8611c2cf7bbb85f2eb5289edee49cbd50702e767e6\",\"content_ref\":\"inline:sha256:ebfa048d7a1d26b6010c3d8611c2cf7bbb85f2eb5289edee49cbd50702e767e6\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0f9b2acaa294504b81c91655656927d962854b2d92abbbf92ec87c82ecaacb21\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13710,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:db8e53fb0af65d4bc46c85be475c573978c7138333cffde0e8574cfd94f4869d"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "5f725bd55784b16928a88e30ccd85c9ca599487c7364e5ffdd93e5ece00426cc"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13851,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 13,
+          "digest": "d7027d84d54264afdb9bc096d35b87873a5ac6b56aa0fbabaf68d4908e9a0bd8"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

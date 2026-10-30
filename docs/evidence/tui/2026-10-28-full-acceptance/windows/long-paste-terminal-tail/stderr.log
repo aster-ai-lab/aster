@@ -1,0 +1,3 @@
+ORACLE case=long-unicode-paste name=source-pair result=pass detail=aster-cli-pair-v1:bbf90821fc61d8d13a6cd36eb7e826d13231c68d:x86_64-pc-windows-msvc
+INPUT_DIAGNOSTIC write_start bytes=23775
+INPUT_DIAGNOSTIC write_complete bytes=23775

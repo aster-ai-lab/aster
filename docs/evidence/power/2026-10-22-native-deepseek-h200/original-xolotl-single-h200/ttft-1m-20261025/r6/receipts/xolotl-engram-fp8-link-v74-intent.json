@@ -1,0 +1,28 @@
+{
+  "unix": 1792883496.4415877,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-engram-fp8-v74",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "gpu_qualified": false,
+  "files": [
+    {
+      "file": "native_link_worker.py",
+      "bytes": 5365,
+      "sha256": "fca15da745d6bb6f400dbdf9d642ba0138c0ffff3bea96c12608c9981773fc4f"
+    },
+    {
+      "file": "native-link-plan.json",
+      "bytes": 358,
+      "sha256": "c29f988490f975520e581cd35552023c73701b29977eaa35bc0eb0326b664640"
+    }
+  ],
+  "process": {
+    "pid": 9703,
+    "start_ticks": 316298212,
+    "uid": 10250,
+    "unix": 1792883506.2337132,
+    "budget_seconds": 170,
+    "namespace": "optimization pod"
+  }
+}

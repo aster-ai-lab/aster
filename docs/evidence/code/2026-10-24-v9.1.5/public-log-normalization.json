@@ -1,0 +1,30 @@
+[
+  {
+    "public_path": "docs/evidence/code/2026-10-24-acp-long-horizon/release915three-actual-conformance.log",
+    "raw_path": "/Users/roylin/code/aster/target/qualification/net-progress-build/raw-public-evidence/release915three-actual-conformance.log",
+    "raw_sha256": "7d269fab919beeec31e071f0cb262d0ae851b8ee46cf6bf5097698eaf7c558d8",
+    "public_sha256": "d7df6c49f65f486ebf3ba93b36b537c8dfa443073ff89582f0f7284c721c8140",
+    "change": "only trailing whitespace and blank EOF lines; original verdicts and raw copies retained"
+  },
+  {
+    "public_path": "docs/evidence/code/2026-10-24-acp-long-horizon/release915three-actual-unattended.log",
+    "raw_path": "/Users/roylin/code/aster/target/qualification/net-progress-build/raw-public-evidence/release915three-actual-unattended.log",
+    "raw_sha256": "e7e42b49afebf966b41d1d6392fd7235d43577f3a1b30dfb054833e92027893b",
+    "public_sha256": "8cf7b6b2f5af9fd43c9efcbff19c88045094a5e130e88f2c72de898292556fb6",
+    "change": "only trailing whitespace and blank EOF lines; original verdicts and raw copies retained"
+  },
+  {
+    "public_path": "docs/evidence/code/2026-10-24-acp-long-horizon/release915three-h1.log",
+    "raw_path": "/Users/roylin/code/aster/target/qualification/net-progress-build/raw-public-evidence/release915three-h1.log",
+    "raw_sha256": "89ed061e806eb811421eeac8a4904c25805b14881540dd95626d7eb7810a1b13",
+    "public_sha256": "fe579f3370b98fc298b736b9b48ef740efc5c46055e9fe9a3714fd144fd86234",
+    "change": "only trailing whitespace and blank EOF lines; original verdicts and raw copies retained"
+  },
+  {
+    "public_path": "docs/evidence/code/2026-10-24-v9.1.5/draft-source-red.log",
+    "raw_path": "/Users/roylin/code/aster/target/qualification/net-progress-build/raw-public-evidence/draft-source-red.log",
+    "raw_sha256": "14c69e392599878f802b67ca9f00a7d23683d5565c4dcdbf6141742e9947e7f3",
+    "public_sha256": "29d1e09d95dea56770905ee10e10ce24e413f8429611f5e0e9d5aa123cf12f3e",
+    "change": "only trailing whitespace and blank EOF lines; original verdicts and raw copies retained"
+  }
+]

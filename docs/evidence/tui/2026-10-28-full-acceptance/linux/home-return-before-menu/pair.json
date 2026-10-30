@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-unknown-linux-gnu",
+  "folder": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/session-isolation-20261029170551638426",
+  "files": [
+    {
+      "name": "aster",
+      "sha256": "cac36b027be8e8d9e629835f37fae958c859874d78ebaf089b1d496251dc0757",
+      "bytes": 1115603016
+    },
+    {
+      "name": "a3s-code-acp",
+      "sha256": "2b50526a38e998981882bc05b94c1bf43f227b5fb815014feed4396f65543cd6",
+      "bytes": 415399248
+    }
+  ],
+  "build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/session-isolation-build/build.jsonl",
+  "created_at": "2026-10-29T17:05:51.638426+00:00"
+}

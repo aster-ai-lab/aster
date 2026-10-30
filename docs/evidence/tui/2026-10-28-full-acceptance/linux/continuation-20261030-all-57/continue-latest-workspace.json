@@ -1,0 +1,275 @@
+{
+  "assertions_finished": true,
+  "case": "continue-latest-workspace",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13220,
+        "text": "SESSION-READY",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "c570862f4032dfef4541f2f9772cf3a15bfe003cee775dc44785586940bbf19b",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13277,
+        "text": "WORKSPACE-B-76fa666f-b984-4bbf-a9b5-40341cc80915",
+        "tool": null
+      },
+      "seq": 10,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "1c4c76fc77eaec2d8f1f996c953258fae1ec08d9fd0b926b82cfe94c98564174",
+          "seq": 10
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 11,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13221",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Remember this exact token for the rest of this session: WORKSPACE-A-OLDER-03853c0e-798a-46ac-93b0-   10:06 AM    \n       4159462abc2a. Reply only SESSION-READY. Do not call tools.                                                       \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.9s                                                                                                 \n                                                                                                                        \n     SESSION-READY                                                                                          10:06 AM    \n                                                                                                                        \n     Worked for 11s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13220",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/其他 工作区                                                                          13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Remember this exact token for the rest of this session: WORKSPACE-B-76fa666f-b984-4bbf-a9b5-         10:06 AM    \n       40341cc80915. Reply only SESSION-READY. Do not call tools.                                                       \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n                                                                                                                        \n     SESSION-READY                                                                                          10:06 AM    \n                                                                                                                        \n     Worked for 5.4s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13219",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Remember this exact token for the rest of this session: WORKSPACE-A-LATEST-60f36423-388f-4910-b902-  10:06 AM    \n       4725b07ec33d. Reply only SESSION-READY. Do not call tools.                                                       \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n                                                                                                                        \n     SESSION-READY                                                                                          10:06 AM    \n                                                                                                                        \n     Worked for 5.2s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13276",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact token I asked you to remember earlier in this session. Do not call tools.       10:06 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.4s                                                                                                 \n                                                                                                                       █\n     WORKSPACE-A-LATEST-60f36423-388f-4910-b902-4725b07ec33d                                                10:06 AM   █\n                                                                                                                       █\n     Worked for 6.8s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the latest interactive session in this workspace restored its own identity and history without tools",
+      "name": "continue-latest-workspace-a",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact token I asked you to remember earlier in this session. Do not call tools.       10:06 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.4s                                                                                                 \n                                                                                                                       █\n     WORKSPACE-A-LATEST-60f36423-388f-4910-b902-4725b07ec33d                                                10:06 AM   █\n                                                                                                                       █\n     Worked for 6.8s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "continue-latest-workspace-a",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13219,
+            "text": "SESSION-READY",
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "177c5f2a9224e8401a5ab6738211880ac28d3accb2dfa25bbcdde67e9c0a98e3",
+              "seq": 6
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 7,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13276,
+            "text": "WORKSPACE-A-LATEST-60f36423-388f-4910-b902-4725b07ec33d",
+            "tool": null
+          },
+          "seq": 10,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "0b6f11d20c42138d0ad67412264c0243aae71a8b4e9466b5223d573a5e70b5a0",
+              "seq": 10
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 11,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "48a64b50-dbc6-48ae-ad8f-aa5324095f2c"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13277",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/其他 工作区                                                                          13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact token I asked you to remember earlier in this session. Do not call tools.       10:06 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.5s                                                                                                 \n                                                                                                                       █\n     WORKSPACE-B-76fa666f-b984-4bbf-a9b5-40341cc80915                                                       10:07 AM   █\n                                                                                                                       █\n     Worked for 6.2s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the latest interactive session in this workspace restored its own identity and history without tools",
+      "name": "continue-latest-workspace-b",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-ArHkko/其他 工作区                                                                          13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply with the exact token I asked you to remember earlier in this session. Do not call tools.       10:06 AM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.5s                                                                                                 \n                                                                                                                       █\n     WORKSPACE-B-76fa666f-b984-4bbf-a9b5-40341cc80915                                                       10:07 AM   █\n                                                                                                                       █\n     Worked for 6.2s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "continue-latest-workspace-b",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13220,
+            "text": "SESSION-READY",
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "c570862f4032dfef4541f2f9772cf3a15bfe003cee775dc44785586940bbf19b",
+              "seq": 6
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 7,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13277,
+            "text": "WORKSPACE-B-76fa666f-b984-4bbf-a9b5-40341cc80915",
+            "tool": null
+          },
+          "seq": 10,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "1c4c76fc77eaec2d8f1f996c953258fae1ec08d9fd0b926b82cfe94c98564174",
+              "seq": 10
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 11,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "a997bc4d-6652-4683-b693-80ce50c0de93"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "the older same-workspace session was not selected or mutated",
+      "name": "continue-preserves-older-session",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

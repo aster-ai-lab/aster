@@ -1,0 +1,7 @@
+
+running 2 tests
+test app::dispatch::tests::modes::cycle_mode_plan_plus_always_approve_exits_plan_keeps_yolo ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_plus_always_approve_under_pin_still_resets ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.02s
+

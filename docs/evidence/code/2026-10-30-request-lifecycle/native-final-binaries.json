@@ -1,0 +1,32 @@
+{
+  "base_commit": "e2beb284d3fe99a1fd8b4ad78f13a9988187c9f9",
+  "build_command": "cargo build --locked -p aster -p a3s-code-acp",
+  "binaries": [
+    {
+      "name": "aster",
+      "bytes": 808383272,
+      "sha256": "8ac8a89904c56672236d2c6b65abfb8c899ef59041bc2582021f95270f1d86ce",
+      "build_id": "aster-cli-pair-v1:3d366eb1295ebae5c7784ac3f367d2f198820ff4:aarch64-apple-darwin"
+    },
+    {
+      "name": "a3s-code-acp",
+      "bytes": 342271168,
+      "sha256": "dee0d93ada241ff1d80bcf77067a23ed21a302e1dc3f398e22df3ac9a9f7e89e",
+      "build_id": "aster-cli-pair-v1:3d366eb1295ebae5c7784ac3f367d2f198820ff4:aarch64-apple-darwin"
+    }
+  ],
+  "historical_probe_sha256": "c6d3ec3cb5a1341ec09f8e9f72dcfa64cc34c80f7fe6ff0d76832dcfa1f463fa",
+  "historical_probe_unchanged": true,
+  "source_files": {
+    "crates/code/acp/src/config.rs": "82fe58a67a86cbe7572da924783c048331720dfd027c1c58f895fd8423bc210b",
+    "crates/code/core/src/llm/http.rs": "381d2f7e7268d9bb5384d9f0210f732c1a3f2a992c946b0f89a3705a1019b7f5",
+    "crates/code/core/src/llm/http/duplex_tests.rs": "dbeccd5dea60bfc069d92ffc16125c49d9a83319b22a68e0d583c1fa346fa0c8",
+    "crates/code/core/src/llm/http/response_lifecycle_tests.rs": "e477e23934cdbb94344fa380a336305eb0baf6ba93b99273c471a4864718de10",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs": "9cd8de9c6769ef6bc7da386388e2f594c824aca9c69156d9d6163a8eaa0f97b5",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/startup_deadline_tests.rs": "e86099965952afb314b66ed45ca30609cb3d0a024fa038ce9fb1dc694106d8f4",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli.rs": "ef8564b48be990ce443f54319de5e3be5c1fbb9df4a17c1d2296bc100dde38af",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs": "44024d550df4a61750c9b8a47e3298460230bdc73090db660ceaeb6344be933b",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "a29151ebd6bf64b10df3c61ba7c419d6c8b886eed8f4db16d081dd25051b51eb",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs": "426bc0e3429e09d451c92b04ee056f8cb2f6bc8f0758ea02fbbecd14a854292d"
+  }
+}

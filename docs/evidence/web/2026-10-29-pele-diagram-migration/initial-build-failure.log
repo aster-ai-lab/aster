@@ -1,0 +1,31 @@
+
+> build
+> node scripts/build_docs.mjs
+
+file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:8
+${r}`;return new Ke(i,"syntax",{type:e,...s})}var BS="amp:38,lt:60,gt:62,quot:34,apos:39,nbsp:160,shy:173,iexcl:161,cent:162,pound:163,curren:164,yen:165,sect:167,copy:169,laquo:171,not:172,reg:174,deg:176,plusmn:177,sup2:178,sup3:179,micro:181,para:182,middot:183,sup1:185,raquo:187,frac14:188,frac12:189,frac34:190,iquest:191,times:215,divide:247,ndash:8211,mdash:8212,lsquo:8216,rsquo:8217,sbquo:8218,ldquo:8220,rdquo:8221,bdquo:8222,dagger:8224,Dagger:8225,bull:8226,hellip:8230,permil:8240,prime:8242,Prime:8243,lsaquo:8249,rsaquo:8250,euro:8364,trade:8482,larr:8592,uarr:8593,rarr:8594,darr:8595,harr:8596,lArr:8656,uArr:8657,rArr:8658,dArr:8659,hArr:8660,forall:8704,part:8706,exist:8707,empty:8709,nabla:8711,isin:8712,notin:8713,ni:8715,prod:8719,sum:8721,minus:8722,radic:8730,infin:8734,and:8743,or:8744,cap:8745,cup:8746,int:8747,there4:8756,sim:8764,cong:8773,asymp:8776,ne:8800,equiv:8801,le:8804,ge:8805,sub:8834,sup:8835,sube:8838,supe:8839,oplus:8853,otimes:8855,perp:8869,sdot:8901,loz:9674,spades:9824,clubs:9827,hearts:9829,diams:9830,check:10003,cross:10007,AMP:38,LT:60,GT:62,QUOT:34,lsqb:91,rsqb:93,lcub:123,rcub:125,verbar:124,VerticalLine:124,midast:42,DiacriticalGrave:96,Hat:94,UnderBar:95,equals:61,colon:58,semi:59,num:35,percnt:37,lpar:40,rpar:41,lbrack:91,rbrack:93,lbrace:123,rbrace:125,vert:124,sol:47,bsol:92,quest:63,excl:33,ast:42,plus:43,comma:44,period:46,dollar:36,commat:64,grave:96,hat:94,lowbar:95,tilde:126,Alpha:913,Beta:914,Gamma:915,Delta:916,Epsilon:917,Zeta:918,Eta:919,Theta:920,Iota:921,Kappa:922,Lambda:923,Mu:924,Nu:925,Xi:926,Omicron:927,Pi:928,Rho:929,Sigma:931,Tau:932,Upsilon:933,Phi:934,Chi:935,Psi:936,Omega:937,alpha:945,beta:946,gamma:947,delta:948,epsilon:949,zeta:950,eta:951,theta:952,iota:953,kappa:954,lambda:955,mu:956,nu:957,xi:958,omicron:959,pi:960,rho:961,sigmaf:962,sigma:963,tau:964,upsilon:965,phi:966,chi:967,psi:968,omega:969",ma;function WS(e){if(!ma){ma=new Map;for(let t of BS.split(",")){let n=t.indexOf(":");ma.set(t.slice(0,n),String.fromCodePoint(Number(t.slice(n+1))))}}return ma.get(e)}function sh(e,t){return e>0&&e<=1114111&&(e<55296||e>57343)?String.fromCodePoint(e):t}var US=/&(?:#(\d+)|#[xX]([0-9a-fA-F]+)|(\w+));/g,ih="ﬂ°",oh="¶ß";function GS(e){let t="",n=0,r=e.indexOf(ih);for(;r!==-1;){let o=e.indexOf("¶",r+2);if(o===-1)break;if(e[o+1]==="ß"){let s=e[r+2]==="°";t+=e.slice(n,r)+(s?"&#":"&")+e.slice(r+(s?3:2),o)+";",n=o+2}r=e.indexOf(ih,o+1)}return n===0?e:t+e.slice(n)}var YS=/ﬂ°°?(\w+)¶ß/g;function Zi(e){return e.includes(oh)?e.replace(YS,"#$1;"):e}function at(e){return e.includes(oh)&&(e=GS(e)),e.includes("&")&&(e=e.replace(US,(t,n,r,o)=>n?sh(Number(n),t):r?sh(parseInt(r,16),t):WS(o)??t)),e}var Ji,eo=new Map;function ah(e,t){let n=Ji,r=eo;Ji=e,eo=new Map;try{return t()}finally{Ji=n,eo=r}}function ii(e){if(Ji===void 0)return"";let t=eo.get(e);return t===void 0&&(t=Ji(e)??"",eo.set(e,t)),t}var ir,oi=new Map;function lh(e,t){let n=ir,r=oi;ir=e,oi=new Map;try{return t()}finally{ir=n,oi=r}}function dh(){return ir!==void 0}function ch(e){return Number.isFinite(e)&&e>0}function uh(e,t){if(ir===void 0)return;let n=t+`
+             ^
+
+Ke [PeleError]: Parse error on line 2:
+  accTitle: 应用、Harness 与编排各负责什么
+--^
+Expecting 'NODE_ID', 'COLUMNS', 'SPACE_BLOCK', 'BLOCK_DIAGRAM_KEY', 'id-block', 'classDef', 'class', 'style', got 'acc_title'
+    at rt (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:8:14)
+    at a (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:64:4098)
+    at rg (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:64:6067)
+    at Object.parse (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:64:19280)
+    at file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:43:47
+    at rh (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:1:2335)
+    at file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:43:14
+    at Mh (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:42:3481)
+    at Nh (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:43:5)
+    at D1 (file:///D:/code/aster/.tmp/code-docs-depth-20261028/apps/web/node_modules/pele/dist/pele.js:44:68) {
+  code: 'syntax',
+  type: 'block',
+  mermaidType: 'block',
+  line: 2,
+  column: 3,
+  snippet: '  accTitle: 应用、Harness 与编排各负责什么\n--^'
+}
+
+Node.js v26.8.1

@@ -292,6 +292,21 @@ pub(super) struct OwnedLoopConstruction {
     parent: crate::child_run::ChildRunContext,
 }
 
+impl OwnedLoopConstruction {
+    pub(super) fn append_turn_guidance(&mut self, guidance: &str) {
+        let extra = self
+            .inputs
+            .config
+            .prompt_slots
+            .extra
+            .get_or_insert_with(String::new);
+        if !extra.is_empty() {
+            extra.push_str("\n\n");
+        }
+        extra.push_str(guidance);
+    }
+}
+
 pub(super) struct OwnedCheckpointInputs {
     pub(super) store: Option<Arc<dyn crate::store::SessionStore>>,
     pub(super) export: Option<Arc<dyn crate::session_checkpoint::SessionCheckpointExportSink>>,

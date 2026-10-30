@@ -1,0 +1,119 @@
+{
+  "case": "preferences-restart",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:945306086e646e5a1704d79cc26aa70f4494214e:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "preferences-reloaded",
+      "detail": "four persisted settings actually restored before inverse toggles",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-iG89iV/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────1─  \n    ❯ /vim-mode Toggle vim-style scrollback keybindings (j/k, h/l, g/G, y/Y, …)                                         \n  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────  \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯ /vim-mode                                                                                                      │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26808",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-iG89iV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read restart-proof.txt and reply with its exact contents. Do not call       9:18 PM   █\n       other tools or modify any file.                                                                                 █\n                                                                                                                       █\n                                                                                                                       █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     RESTART-cb5cec17-563c-41ac-adde-d5167df6519e                                                            9:18 PM   █\n                                                                                                                       █\n     Worked for 10s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "restart-kimi",
+      "detail": "new parent session completes a real Kimi read after preference reload",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-iG89iV/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool once to read restart-proof.txt and reply with its exact contents. Do not call       9:18 PM   █\n       other tools or modify any file.                                                                                 █\n                                                                                                                       █\n                                                                                                                       █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     RESTART-cb5cec17-563c-41ac-adde-d5167df6519e                                                            9:18 PM   █\n                                                                                                                       █\n     Worked for 10s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13328,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_95d6453f6370406786ed11599f3230d0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8c38841c-1d0a-4be6-9a8d-bf94f946891a",
+            "thread_id": "3bd87917-a035-439f-af69-bbcc376ddf5a",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_95d6453f6370406786ed11599f3230d0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8c38841c-1d0a-4be6-9a8d-bf94f946891a",
+            "thread_id": "3bd87917-a035-439f-af69-bbcc376ddf5a",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:8ac6583645ff43c4c965d30f1c3271eec06df3c608624169f47fe5af0b0e80a9",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTART-cb5cec17-563c-41ac-adde-d5167df6519e\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"restart-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":52},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":52,\"projected_bytes\":52,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:81c0eb470e13f713fc1f558003181cb40b102310d707121a073651e01a1a553c\",\"projected_digest\":\"sha256:81c0eb470e13f713fc1f558003181cb40b102310d707121a073651e01a1a553c\",\"repeat_key\":\"sha256:81c0eb470e13f713fc1f558003181cb40b102310d707121a073651e01a1a553c\",\"content_ref\":\"inline:sha256:81c0eb470e13f713fc1f558003181cb40b102310d707121a073651e01a1a553c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ee1b5bc84e7208f8f28f28a4a6a3576763e50f5949e54aaf94e423cbb04d775a\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13480,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:2936aa3e4a7719fbb04c019d3f404f54f22b4e90c3ade58eabc1eaa4124da9d3"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "de32fae72f56fdffa94a6fc53d1d36170201ab2278356e6a83a745af8fd23a80"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

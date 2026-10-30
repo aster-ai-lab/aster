@@ -1,0 +1,23 @@
+{
+  "platform": "windows",
+  "archive": "/Users/roylin/code/aster/target/qualification/net-progress-build/archives-release915three/aster-cli-v0.1.3-windows.zip",
+  "archive_sha256": "8a0d387f369ef63272f2e683ab26d9b1d71dad316099c153a9c8d214177c6d8d",
+  "archive_bytes": 106082005,
+  "build_source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+  "build_run": 40110868267,
+  "build_id": "aster-cli-pair-v1:a6144e54b185e808983e7d661c349b069fcade5b:x86_64-pc-windows-msvc",
+  "members": {
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three/windows/aster.exe",
+      "sha256": "15d84670b9e8ef568242ff16145d5bba365588496d0ed13141b557eac0ba4905",
+      "bytes": 137886208
+    },
+    "acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three/windows/a3s-code-acp.exe",
+      "sha256": "4eb77a3b41acc86034533b1bb96dbc5374130b21dc9fa8542160f62a8c9dc0ad",
+      "bytes": 77999616
+    }
+  },
+  "exact_four_regular_members": true,
+  "member_checksums_match": true
+}

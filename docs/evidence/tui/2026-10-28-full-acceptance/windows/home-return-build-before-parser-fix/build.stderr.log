@@ -1,0 +1,36 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools-api)
+   Compiling aster v0.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\apps\aster)
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp)
+   Compiling a3s-tool-runtime v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-runtime)
+   Compiling a3s-computer-hub-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-core)
+   Compiling a3s-computer-hub-sdk v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-sdk)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-daemon v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-daemon)
+   Compiling a3s-code-workspace-client v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-client)
+   Compiling a3s-code-hooks v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-config-types)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-subagent-resolution)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace)
+   Compiling a3s-code-http v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager)
+   Compiling a3s-code-pager-minimal v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager-minimal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 35s

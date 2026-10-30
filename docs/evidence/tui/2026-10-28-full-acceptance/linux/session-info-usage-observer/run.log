@@ -1,0 +1,20 @@
+
+running 1 test
+ORACLE case=session-info-contract name=source-pair result=pass detail=aster-cli-pair-v1:4add4d5e56ad8593f2cbc0546c282221f115cbb5:x86_64-unknown-linux-gnu
+ORACLE case=session-info-contract name=session-info-empty result=pass detail=persisted identity/cwd, configured model, default mode and zero turn/context match
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13182
+
+thread 'functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage' (2473) panicked at crates/code/acp/tests/aster_tui_live_e2e/functional.rs:719:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage ... FAILED
+
+failures:
+
+failures:
+    functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 51 filtered out; finished in 11.45s
+

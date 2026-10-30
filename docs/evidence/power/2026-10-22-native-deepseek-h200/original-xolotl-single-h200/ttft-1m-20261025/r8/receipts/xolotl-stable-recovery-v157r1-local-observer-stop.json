@@ -1,0 +1,22 @@
+{
+  "action": "stop_only_exact_local_prelaunch_observer",
+  "pid": 25004,
+  "creation": "2026-10-25T11:44:28.155721+08:00",
+  "command": "\"C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe\" -X utf8 -u run_xolotl_stable_recovery_v157.frozen.py",
+  "prior_state": {
+    "unix": 1792899868.390909,
+    "phase": "waiting_existing_resource",
+    "profiles": [],
+    "formal_service_unchanged": true,
+    "predecessor_formal_stopped": true,
+    "existing_optimization_gpu_repurposed": false,
+    "newly_allocated_formal_replacement": true,
+    "maximum_h200_roles": 2,
+    "ctx1M_configured": true,
+    "actual1M_input_tested": false,
+    "resource_phase": "Starting",
+    "resource_probe": null
+  },
+  "reason": "Correct stale underscored v97 operator references before any model launch",
+  "gpu_or_model_signal_sent": false
+}

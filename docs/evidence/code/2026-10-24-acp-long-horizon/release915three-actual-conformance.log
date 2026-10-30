@@ -1,0 +1,31 @@
+
+running 10 tests
+test acp_v1_conformance ... # a3s-code-acp 9.1.5 ACP v1 conformance
+
+10 of 10 cases pass. Client: raw JSON-RPC over stdio (`acp/tests/acp_conformance_stdio.rs`), scripted local model.
+
+| Case | ACP v1 requirement | Result |
+|---|---|---|
+| `initialize-version` | initialize answers protocolVersion 1 for a v1 client, and its latest supported version (1) for a client asking a newer one | pass |
+| `initialize-capabilities` | initialize returns agentCapabilities (loadSession, promptCapabilities) and an authMethods list | pass |
+| `prompt-end-turn` | session/prompt streams agent_message_chunk updates for the session, then answers stopReason end_turn | pass |
+| `prompt-unknown-session` | session/prompt for an unknown sessionId is a JSON-RPC error, not a result | pass |
+| `prompt-invalid-params` | session/prompt without sessionId is invalid params (-32602) | pass |
+| `unknown-method` | an unknown method is method not found (-32601) | pass |
+| `cancel-in-flight` | session/cancel during a model call answers the pending session/prompt with stopReason cancelled | pass |
+| `permission-request-shape` | session/request_permission names the session and toolCallId and offers options with an optionId, a name and a kind from the closed set; a reject ends the turn normally | pass |
+| `permission-cancelled` | a client that cancels the turn and answers the pending permission request with outcome cancelled gets stopReason cancelled | pass |
+| `load-replays-history` | with loadSession, session/load replays the conversation as user_message_chunk and agent_message_chunk updates before its response | pass |
+
+ok
+test activation_oracle_detects_a_started_companion_without_launching_one ... ok
+test artifact::tests::bounded_artifacts_refuse_directories_oversize_and_traversal ... ok
+test artifact::tests::fixture_links_and_nonregular_files_are_refused_before_reading ... ok
+test candidate::tests::a_member_changed_after_selection_cannot_be_frozen_as_approved ... ok
+test candidate::tests::linked_or_nonregular_members_are_refused_without_reading_them ... ok
+test candidate::tests::registered_pair_copies_only_the_declared_bytes_despite_other_candidates ... ok
+test candidate::tests::same_build_id_does_not_admit_changed_binary_bytes_or_a_partial_pair ... ok
+test candidate::tests::unknown_manifest_fields_stale_ids_and_oversized_records_fail_closed ... ok
+test case_filter_selects_exactly_one_known_case_and_refuses_unknown_names ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 65.47s

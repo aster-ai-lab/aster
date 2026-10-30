@@ -1,0 +1,232 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling rustix v1.1.5
+   Compiling fs-err v3.1.3
+   Compiling oid-registry v0.7.1
+   Compiling tempfile v3.27.0
+   Compiling which v8.0.0
+   Compiling reflink-copy v0.1.28
+   Compiling xattr v1.6.1
+   Compiling waitpid-any v0.3.0
+   Compiling polling v3.11.0
+   Compiling wayland-backend v0.3.12
+   Compiling gethostname v1.1.0
+   Compiling x509-parser v0.16.0
+   Compiling x11rb v0.13.2
+   Compiling async-lsp v0.2.3
+   Compiling tar v0.4.46
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling async-io v2.6.0
+   Compiling a3s-code-config v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config)
+   Compiling axum-server v0.8.0
+   Compiling gix-tempfile v23.0.1
+   Compiling gix-odb v0.80.0
+   Compiling pprof v0.15.0
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling a3s-code-mermaid v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling wayland-client v0.31.12
+   Compiling a3s-code-feedback v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-feedback)
+   Compiling async-signal v0.2.13
+   Compiling async-net v2.0.0
+   Compiling async-global-executor v2.4.1
+   Compiling gix-lock v23.0.1
+   Compiling async-process v2.5.0
+   Compiling async-std v1.13.2
+   Compiling wayland-protocols v0.32.10
+   Compiling gix-ref v0.63.0
+   Compiling gix-index v0.51.0
+   Compiling gix-shallow v0.12.1
+   Compiling zbus v5.14.0
+   Compiling rcgen v0.13.2
+   Compiling a3s-code-test-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-test-support)
+   Compiling gix-discover v0.51.0
+   Compiling gix-config v0.56.0
+   Compiling gix-protocol v0.61.0
+   Compiling gix-worktree v0.52.0
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-code-bundle v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling a3s-code-dashboard-store v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling a3s-code-active-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling wayland-protocols-wlr v0.3.10
+   Compiling gix-dir v0.25.0
+   Compiling gix-diff v0.63.0
+   Compiling gix-submodule v0.30.0
+   Compiling wl-clipboard-rs v0.9.3
+   Compiling arboard v3.6.1
+   Compiling gix-status v0.30.0
+   Compiling a3s-system-power v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling ashpd v0.10.3
+   Compiling a3s-code-shared v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling gix v0.83.0
+   Compiling dark-light v2.0.0
+   Compiling a3s-code-shell-base v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling a3s-gix-status v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling a3s-hunk-tracker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling a3s-fast-worktree v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6m 09s
+     Running unittests src/lib.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/a3s_code_pager-85732a5a9540a909)
+
+running 107 tests
+test app::event_loop::tests::coalesce_empty_input ... ok
+test app::event_loop::native_paste_tests::card_and_game_contexts_keep_all_original_keys ... ok
+test app::event_loop::tests::coalesce_below_threshold_no_change ... ok
+test app::event_loop::tests::coalesce_lone_ctrl_j_not_after_enter_preserved ... ok
+test app::event_loop::tests::coalesce_mouse_breaks_key_run_preserves_events ... ok
+test app::event_loop::tests::coalesce_ctrl_key_breaks_run ... ok
+test app::event_loop::tests::coalesce_mouse_events_interleaved_with_paste_chars ... ok
+test app::event_loop::native_paste_tests::owned_voice_hold_keeps_its_release ... ok
+test app::event_loop::native_paste_tests::voice_press_and_release_in_one_batch_stay_paired ... ok
+test app::event_loop::native_paste_tests::unowned_voice_release_does_not_create_a_voice_operation ... ok
+test app::event_loop::tests::blocking_cards_keep_navigation_keys_separate_from_pasted_values ... ok
+test app::event_loop::native_paste_tests::voice_chord_is_preserved_beside_an_actual_paste ... ok
+test app::event_loop::native_paste_tests::ordinary_single_line_keys_keep_their_edit_semantics ... ok
+test app::event_loop::native_paste_tests::native_end_fence_keeps_submit_out_of_the_paste ... ok
+test app::event_loop::native_paste_tests::native_space_releases_do_not_split_a_large_unicode_paste ... ok
+test app::event_loop::tests::coalesce_multiline_paste_without_bracketed_paste ... ok
+test app::event_loop::tests::coalesce_crlf_paste_ending_in_newline_is_paste ... ok
+test app::event_loop::tests::coalesce_four_lines_trailing_newline ... ok
+test app::event_loop::tests::coalesce_filters_release_events ... ok
+test app::event_loop::tests::coalesce_exactly_at_threshold ... ok
+test app::event_loop::tests::coalesce_crlf_multiline_collapses_pairs ... ok
+test app::event_loop::tests::coalesce_no_enter_no_change ... ok
+test app::event_loop::tests::coalesce_only_enters_no_change ... ok
+test app::event_loop::tests::coalesce_preserves_non_key_events ... ok
+test app::event_loop::tests::coalesce_preserves_shifted_chars ... ok
+test app::event_loop::tests::coalesce_single_event_passthrough ... ok
+test app::event_loop::tests::coalesce_tabs_in_pasted_code ... ok
+test app::event_loop::tests::coalesce_three_lines ... ok
+test app::event_loop::tests::coalesce_type_then_submit_not_coalesced ... ok
+test app::event_loop::tests::editor_report_then_success_does_not_suppress_pager_first_timeout ... ok
+test app::event_loop::tests::extend_not_triggered_with_bracketed_paste ... ok
+test app::event_loop::tests::empty_primary_preserves_original_middle_event ... ok
+test app::event_loop::tests::extend_not_triggered_with_only_mouse_and_focus ... ok
+test app::event_loop::tests::extend_not_triggered_with_only_non_pasteable ... ok
+test app::event_loop::tests::extend_triggered_only_when_key_present_in_mixed_batch ... ok
+test app::event_loop::tests::extend_triggered_with_enter_key ... ok
+test app::event_loop::tests::extend_triggered_with_single_pasteable_key ... ok
+test app::event_loop::tests::filter_startup_typeahead_preserves_order_and_truncates_at_escape ... ok
+test app::event_loop::tests::fragmented_paste_merged_with_keys ... ok
+test app::event_loop::tests::is_voice_chord_press_exact_release_keycode ... ok
+test app::event_loop::tests::merge_multiple_paste_fragments ... ok
+test app::event_loop::tests::merge_paste_and_key_fragments ... ok
+test app::event_loop::tests::merge_preserves_non_key_events ... ok
+test app::event_loop::tests::merge_skips_release_events ... ok
+test app::event_loop::tests::nonqualifying_mouse_events_do_not_read_primary ... ok
+test app::event_loop::tests::park_input_reader_timeout_clears_stale_acknowledgement ... ok
+test app::event_loop::tests::pasteable_accepts_valid_key_presses ... ok
+test app::event_loop::tests::focus_gained_reassert_enqueues_enable_mouse_capture ... ok
+test app::event_loop::tests::pasteable_rejects_focus_events ... ok
+test app::event_loop::tests::pasteable_rejects_mouse_events ... ok
+test app::event_loop::tests::pasteable_rejects_release_events ... ok
+test app::event_loop::tests::pasteable_rejects_repeat_events ... ok
+test app::event_loop::tests::pasteable_rejects_resize ... ok
+test app::event_loop::tests::plugin_cta_marketplace_from_managed_layer ... ok
+test app::event_loop::tests::plugin_cta_marketplace_from_unset_or_empty_is_none ... ok
+test app::event_loop::tests::plugin_cta_marketplace_from_user_wins_over_managed ... ok
+test app::event_loop::tests::presenter_acknowledge_reports_target_coverage ... ok
+test app::event_loop::tests::presenter_blocked_report_lifecycle ... ok
+test app::event_loop::tests::presenter_caught_up_writer_does_not_arm_blocked_report ... ok
+test app::event_loop::tests::presenter_coalesces_until_ack ... ok
+test app::event_loop::tests::presenter_escape_backlog_gates_draws_until_caught_up ... ok
+test app::event_loop::tests::presenter_immediate_ack_before_request_is_not_lost ... ok
+test app::event_loop::tests::presenter_keeps_forced_repaint_sticky ... ok
+test app::event_loop::tests::presenter_later_ack_clears_target ... ok
+test app::event_loop::tests::presenter_no_output_does_not_wedge ... ok
+test app::event_loop::tests::presenter_slow_drain_progress_reanchors_episode ... ok
+test app::event_loop::tests::presenter_waits_for_last_payload_in_turn ... ok
+test app::event_loop::tests::pure_paste_no_merge_needed ... ok
+test app::event_loop::tests::reconnect_drain_blocked_when_init_failed ... ok
+test app::event_loop::tests::reconnect_drain_blocked_when_no_active_agent ... ok
+test app::event_loop::tests::reconnect_drain_blocked_when_active_agent_failed ... ok
+test app::event_loop::tests::reconnect_drain_gates_on_active_agent_not_all_agents ... ok
+test app::event_loop::tests::reconnect_drain_single_agent_success_preserved ... ok
+test app::event_loop::tests::suspend_retry_gate_blocks_until_deadline ... ok
+test app::event_loop::tests::suspend_timeout_requeues_request ... ok
+test app::event_loop::tests::suspend_wait_feedback_is_reported_only_once_across_retries ... ok
+test app::event_loop::tests::delayed_scroll_batch_preserves_arrival_spacing_and_reversal ... ok
+test app::event_loop::tests::reset_mouse_reporting_effect_rides_the_writer_queue ... ok
+test app::event_loop::tests::suspend_wait_sink_is_mode_appropriate ... ok
+test app::event_loop::tests::plan_reconnect_load_meta_carries_cursor_and_yolo ... ok
+test app::event_loop::tests::plan_reconnect_load_requires_session_id ... ok
+test app::event_loop::tests::plan_reconnect_load_meta_carries_auto_mode_from_session ... ok
+test app::event_loop::tests::plan_reconnect_load_multi_agent_uses_per_agent_auto ... ok
+test app::event_loop::tests::plan_reconnect_load_prefers_session_cwd_over_fallback ... ok
+test app::event_loop::tests::suspend_wait_report_uses_system_block_in_minimal_mode ... ok
+test app::event_loop::tests::suspend_wait_report_uses_toast_outside_minimal_mode ... ok
+test app::event_loop::tests::finish_run_empty_session_omits_summary ... ok
+test app::event_loop::tests::feedback_modal_blocks_voice_chord_targeting ... ok
+test app::event_loop::tests::take_load_restore_code_is_oneshot_on_matching_session_only ... ok
+test app::event_loop::tests::timed_paste_uses_first_contributing_event ... ok
+test app::event_loop::tests::tty_suspend_arm_stops_same_batch_before_later_ownership_changes ... ok
+test app::event_loop::tests::typeahead_classification_keeps_text_drops_noise_and_control ... ok
+test app::event_loop::tests::finish_run_unused_home_session_has_no_exit_info ... ok
+test app::event_loop::tests::authenticated_startup_hook_creates_home ... ok
+test app::event_loop::tests::unmodified_middle_down_reads_primary_once ... ok
+test app::event_loop::tests::voice_chord_action_cases ... ok
+test app::event_loop::tests::voice_chord_claims_event_cases ... ok
+test app::event_loop::tests::writer_failure_event_returns_original_error ... ok
+test app::event_loop::tests::finish_run_inline_and_minimal_quits_omit_summary ... ok
+test app::event_loop::tests::finish_run_non_agent_views_have_no_exit_info ... ok
+test app::event_loop::tests::finish_run_unanswered_prompt_omits_stale_response ... ok
+test app::event_loop::tests::finish_run_fullscreen_quit_builds_summary ... ok
+test app::event_loop::tests::reconnect_restores_dashboard_peek_before_replacing_scrollback ... ok
+test app::event_loop::tests::welcome_shift_tab_applies_mode_before_session_new_is_sent ... ok
+test app::event_loop::tests::handled_counts_only_events_processed_before_suspend_break ... ok
+test app::event_loop::tests::pending_create_uses_auto_selected_before_effect_execution ... ok
+test app::event_loop::tests::welcome_paste_preserves_create_and_forwarded_prompt ... ok
+
+test result: ok. 107 passed; 0 failed; 0 ignored; 0 measured; 10119 filtered out; finished in 0.54s
+

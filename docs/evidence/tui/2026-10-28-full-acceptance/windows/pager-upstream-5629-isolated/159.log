@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::picker_string_original_value_fills_committed_marker' (51660) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:2854:5:
+assertion `left == right` failed: String original_value "first" must fill row 3
+  left: "•"
+ right: "●"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::picker_string_original_value_fills_committed_marker ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::picker_string_original_value_fills_committed_marker
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

@@ -1,0 +1,176 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.31s
+     Running unittests src/lib.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/a3s_code_core-840c28faad4accf0)
+
+running 86 tests
+test agent_api::conversation_runtime::child_run::tests::zero_tool_rounds_child_continues_without_removing_independent_guards ... ok
+test agent_api::conversation_runtime::host_event_tests::a_ready_send_remains_observable_after_cancellation ... ok
+test agent_api::conversation_runtime::host_event_tests::cancellation_releases_a_full_host_send_without_replacing_the_queued_prefix ... ok
+test agent_api::conversation_runtime::host_event_tests::uncancelled_host_delivery_keeps_backpressure_and_order ... ok
+test agent_api::conversation_runtime::memory_retention_tests::detached_and_exact_recovery_register_before_publication_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::explicit_host_typed_writer_remains_a_separate_positive_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::former_matcher_inputs_cannot_grant_writes_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_close_timeout_uses_original_five_second_drain_in_both_stores ... original drain wake Memory/Blocking: 5.001s
+original drain wake Memory/Stream: 5.001s
+original drain wake Memory/Detached: 5.001s
+original drain wake Memory/Exact: 5.001s
+original drain wake File/Blocking: 5.001s
+original drain wake File/Stream: 5.001s
+original drain wake File/Detached: 5.001s
+original drain wake File/Exact: 5.001s
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_entered_store_results_remain_truthful_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores ... all-stage deny observation Memory/Blocking: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Stream: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Detached: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation Memory/Exact: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Blocking: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Stream: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Detached: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1132)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+all-stage deny observation File/Exact: checks=[("retention-lifecycle", false, 3439), ("retention-lifecycle", true, 1080)], records=[("retention-lifecycle", (17, 13, 30, None, None))]
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_failed_empty_disabled_turns_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_original_cancel_before_store_refuses_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::blocking_send_awaits_original_extraction_and_accounts_usage_in_both_stores ... original callback observations Memory: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+original callback observations File: [("retention-lifecycle", (17, 13, 30, None, None)), ("retention-lifecycle", (11, 7, 18, None, None))]
+ok
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::supplemental_original_facade_parts_match_and_aux_keep_guard_usage_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_remember_bytes_require_valid_model_authority_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::same_worker_joins_original_committer_before_end_and_extraction_in_both_stores ... ok
+test agent_api::conversation_runtime::memory_retention_tests::stream_registers_before_end_preserves_fifo_and_immediate_close_in_both_stores ... ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::actual_checkpoint_eof_is_independent_of_partial_model_callback_in_both_session_stores ... ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_detached ... mode=Detached file_session=false file_memory=false
+mode=Detached file_session=false file_memory=true
+mode=Detached file_session=true file_memory=false
+mode=Detached file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_exact_recovery ... mode=ExactRecovery file_session=false file_memory=false
+mode=ExactRecovery file_session=false file_memory=true
+mode=ExactRecovery file_session=true file_memory=false
+mode=ExactRecovery file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_ordinary_checkpoint ... mode=OrdinaryCheckpoint file_session=false file_memory=false
+mode=OrdinaryCheckpoint file_session=false file_memory=true
+mode=OrdinaryCheckpoint file_session=true file_memory=false
+mode=OrdinaryCheckpoint file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_ordinary_log ... mode=OrdinaryLog file_session=false file_memory=false
+mode=OrdinaryLog file_session=false file_memory=true
+mode=OrdinaryLog file_session=true file_memory=false
+mode=OrdinaryLog file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_prepared_stored ... mode=PreparedStored file_session=false file_memory=false
+mode=PreparedStored file_session=false file_memory=true
+mode=PreparedStored file_session=true file_memory=false
+mode=PreparedStored file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_prepared_supplied ... mode=PreparedSupplied file_session=false file_memory=false
+mode=PreparedSupplied file_session=false file_memory=true
+mode=PreparedSupplied file_session=true file_memory=false
+mode=PreparedSupplied file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_send ... mode=Send file_session=false file_memory=false
+mode=Send file_session=false file_memory=true
+mode=Send file_session=true file_memory=false
+mode=Send file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_send_attachments ... mode=SendAttachments file_session=false file_memory=false
+mode=SendAttachments file_session=false file_memory=true
+mode=SendAttachments file_session=true file_memory=false
+mode=SendAttachments file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_stream ... mode=Stream file_session=false file_memory=false
+mode=Stream file_session=false file_memory=true
+mode=Stream file_session=true file_memory=false
+mode=Stream file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::both_adapters_stream_attachments ... mode=StreamAttachments file_session=false file_memory=false
+mode=StreamAttachments file_session=false file_memory=true
+mode=StreamAttachments file_session=true file_memory=false
+mode=StreamAttachments file_session=true file_memory=true
+ok
+test agent_api::conversation_runtime::owner_checkpoint_tests::cancelled_success_waits_for_original_charge_then_releases_in_both_stores ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::canonical_blocking_returns_after_actual_original_retirement_and_keeps_governance ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::canonical_commands_execute_in_one_original_worker_without_a_fact_run ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::detached_observer_drains_actual_events_before_waiting_for_the_original_proxy ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::exact_invalid_identity_finishes_the_known_unconstructed_branch_without_a_model ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::lost_blocking_caller_and_last_session_drop_retain_actual_callback_and_task_lease ... ok
+test agent_api::conversation_runtime::owner_lifetime_tests::prepared_recovery_from_another_admission_refuses_before_target_mutation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::a_future_terminal_does_not_erase_prepared_debt_at_the_exact_cached_prefix ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::an_original_write_without_its_verifier_cannot_authorize_cached_passed_reports ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_passed_report_requires_the_original_accepted_bound_report ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_prepared_debt_waits_for_its_actual_later_original_boundary ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::completion_gate_to_host_retains_typed_reconciliation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_background_terminals_reconcile_legacy_observation_only_cache_keys ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_unknown_receipt_covers_its_cache_without_forgiving_debt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_write_and_verifier_receipts_cover_a_passed_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_prepared_only_debt_proves_its_negative_cache_without_a_terminal_receipt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::incomplete_or_mismatched_original_evidence_cannot_promote_a_passed_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::originally_settled_legacy_history_stays_readable_without_positive_cache_claims ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_run_settled_receipts_keep_their_own_frozen_binding_in_cache_coverage ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_settled_path_does_not_rebind_a_new_runs_distinct_effect_report ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_file_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_memory_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::actual_original_log_io_fault_refuses_resume_before_provider_and_retains_source_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::committed_negative_input_survives_surface_destruction_and_actual_send ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::distinct_target_runs_reuse_one_negative_identity_but_changed_source_content_does_not ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::exact_target_publisher_cleanup_never_deletes_source_or_discharges_original_negative ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::full_log_negative_survives_compaction_settlement_later_original_proof_and_current_passed ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::malformed_and_unknown_negative_inputs_remain_unproved_on_fresh_surface_and_actual_send ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::original_negative_debt_survives_memory_and_reopened_file_session_stores_without_caches ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::reports_only_and_unreadable_original_logs_remain_unproved ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::unrelated_prepared_debt_does_not_invalidate_exact_cache_provenance ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::valid_older_cache_is_covered_before_a_later_known_write ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::conflicting_detached_binding_fails_before_execution_and_retains_close_failure ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_binding_uses_the_pinned_capability_cognitive_and_control_identity ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_live_controls_apply_exact_steer_and_settle_parked_interrupt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::failed_recovery_seed_closes_bound_run_before_releasing_session_slots ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::missing_log_and_compacted_checkpoint_preserve_unknown_after_history_import ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::original_log_wins_for_later_known_bytes_and_preserves_all_unknowns_past_marker ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::retained_end_and_external_end_share_the_actual_byte_check_summary ... ok
+test agent_api::conversation_runtime::steer_lifecycle_tests::joined_aborted_worker_fails_steer_and_closes_wire_before_accounting_returns ... ok
+test agent_api::conversation_runtime::steer_terminal_tests::accepted_steer_after_last_safe_point_is_retained_before_normal_completion ... outcome=Ok(AgentResult { text: "The original answer is complete.", messages: [Message { role: "user", content: [Text { text: "Finish the current answer." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }, Message { role: "assistant", content: [Text { text: "The original answer is complete." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }, Message { role: "user", content: [Text { text: "Use the new workspace requirement on the next turn." }], reasoning_content: None, transcript_text: None, transcript_visibility: Product }], usage: TokenUsage { prompt_tokens: 0, completion_tokens: 8, total_tokens: 8, cache_read_tokens: None, cache_write_tokens: None }, tool_calls_count: 0, verification_reports: [], completion: Narrative, forced_stop: None, run_admission: "ordinary" }) receipt=RunControlReceipt { schema: "a3s.code.run-control-receipt.v1", request_id: "terminal-steer-request", session_id: "terminal-steer", run_id: "run-908aad43-2662-4819-972b-8f17b8588855", operation: Steer, state: Applied, sequence: 1, turn_id: Some("turn-1"), turn_revision: 1, accepted_at_ms: 1793249577167, applied_at_ms: Some(1793249577180), error: None } facts=[Fact { seq: 1, kind: "a3s.standing-context", key: "standing-context", cause: None, payload: Object {"context": String("sha256:f6112cd5ba14f413ee7efa06c8dd073c6752dc580ff3b2fbd2678d98fa7e505f"), "digest": String("sha256:4ae5d8f7010ec7efd9c984c4f132dc1577cfc2ed95657748745c0c94564ac37b")} }, Fact { seq: 2, kind: "user.message", key: "m-1", cause: None, payload: Object {"text": String("Finish the current answer.")} }, Fact { seq: 3, kind: "context.sections", key: "context:1793249577156:sha256:dc8767791c96f33727389e19cbf203a40beca15e8ddb237073c6be58baf2a2ef", cause: None, payload: Object {"sections": Array []} }, Fact { seq: 4, kind: "model.turn", key: "model:1:0", cause: Some("infer:1:0"), payload: Object {"kind": String("text"), "text": String("The original answer is complete."), "tool_effect_protocol": Number(1)} }, Fact { seq: 5, kind: "user.message", key: "run-steer-v1:sha256:ad483171cdc18e8951b236d8f25cbadbb79693d5a4cbd167f41dc88905b44b73", cause: None, payload: Object {"text": String("Use the new workspace requirement on the next turn.")} }, Fact { seq: 6, kind: "turn.complete", key: "turn-complete:5:43b7ac0499a1a3e154d7007125ecef5d2ca089ddda863c251a864a001b38633b", cause: None, payload: Object {"background_receipt_keys": Array [], "effect_digest": Null, "forced_stop": Null, "log_cut": Object {"digest": String("43b7ac0499a1a3e154d7007125ecef5d2ca089ddda863c251a864a001b38633b"), "seq": Number(5)}, "receipt_keys": Array [], "terminal": String("narrative")} }]
+ok
+test agent_api::conversation_runtime::steer_terminal_tests::actual_original_file_io_failure_retains_both_errors_and_never_publishes_success ... actual combined failure=Session error: fact schema: fact log must be a single-link regular file; terminal input retention also failed: fact schema: fact log must be a single-link regular file; terminal transcript also failed: fact schema: fact log must be a single-link regular file
+ok
+test agent_api::conversation_runtime::steer_terminal_tests::late_input_reaches_original_log_store_and_next_provider_across_public_routes ... late input route=send file=false
+late input route=send file=true
+late input route=attachments file=false
+late input route=attachments file=true
+late input route=stream file=false
+late input route=stream file=true
+late input route=detached file=false
+late input route=detached file=true
+ok
+test agent_api::conversation_runtime::stream_usage_tests::public_stream_end_preserves_mapped_usage_including_cache_tokens ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::budget_denial_tests::denied_original_budget_stops_once_and_same_session_accepts_reallocated_budget ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::budget_guard_denial_fails_without_cancelling_or_calling_provider ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_send_with_attachments_returns_original_run_error ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::cancelled_stream_with_attachments_has_no_success_end ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancellation_publication_tests::late_token_cancel_cannot_reverse_the_original_sealed_success ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::cancelled_success_uses_owned_token_after_active_slot_is_cleared ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::model_completion_facts::cancelled_partial_model_has_no_completion_fact_and_next_turn_completes_once ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::ordinary_interruption_words_complete_across_conversation_surfaces ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::provider_error_with_interruption_word_is_failed_without_cancellation ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::public_cancel_keeps_cancellation_and_original_cleanup_error_event ... ok
+test agent_api::conversation_runtime::typed_interruption_tests::tool_budget_forced_stop_remains_distinct_from_host_cancellation ... ok
+
+test result: ok. 86 passed; 0 failed; 0 ignored; 0 measured; 5357 filtered out; finished in 17.78s
+

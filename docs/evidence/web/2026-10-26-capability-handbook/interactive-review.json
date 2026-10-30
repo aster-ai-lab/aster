@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-handbook-review/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "browser_containment": "hostname_v1",
+    "event_count": 51,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-handbook-review/events.jsonl",
+    "finished_at_ms": 1793012356078,
+    "goal": "核对 Core/ACP 产品切换、9.1.5/9.1.6 版本隔离、右下资料区与移动文档",
+    "schema_version": 1,
+    "session": "aster-handbook-review",
+    "started_at_ms": 1793011476731,
+    "status": "passed",
+    "success_criteria": [
+      "产品与版本切换正确，能力参考与设计章节可读，桌面资料区在右下，移动端可访问"
+    ],
+    "summary": "Reviewed actual Code/ACP product switching, pinned 9.1.5 and 9.1.6 navigation with missing-page fallback, desktop bottom-right and mobile in-flow resources, ACP JSON examples, design and RSI, and the repaired native Markdown table on desktop and mobile. Screenshots retained.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-handbook-review/report.json",
+  "session": "aster-handbook-review",
+  "status": "passed"
+}

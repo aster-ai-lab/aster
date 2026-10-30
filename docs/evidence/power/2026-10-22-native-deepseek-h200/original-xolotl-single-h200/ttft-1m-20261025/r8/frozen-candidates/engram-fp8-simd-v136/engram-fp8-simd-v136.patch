@@ -1,0 +1,57 @@
+--- a/tools/v41/engine/ds41_engram.cpp
++++ b/tools/v41/engine/ds41_engram.cpp
+@@ -15,6 +15,15 @@
+ #include <cstdlib>
+ #include <cstring>
+ #include "ds41_sys.hpp"
++#ifndef ASTER_XQ_ENGRAM_FP8_SIMD
++#define ASTER_XQ_ENGRAM_FP8_SIMD 0
++#endif
++#if ASTER_XQ_ENGRAM_FP8_SIMD != 0 && ASTER_XQ_ENGRAM_FP8_SIMD != 1
++#error "ASTER_XQ_ENGRAM_FP8_SIMD must be 0 or 1"
++#endif
++#if ASTER_XQ_ENGRAM_FP8_SIMD
++#include "aster_engram_fp8_simd.hpp"
++#endif
+ #include <filesystem>
+ #include <fstream>
+ #include <sstream>
+@@ -450,8 +459,12 @@
+             bytes.fetch_add((uint64_t) (dim_ + dim_ / 32));
+             float * o = &out[(size_t) e][(size_t) ((j % (n * cols_)) * dim_)];
+             for (int64_t q = 0; q < dim_ / 32; ++q) {
++#if ASTER_XQ_ENGRAM_FP8_SIMD
++                aster_engram_fp8::dequantize32(w + q * 32, s[q], o + q * 32, fp8_e4m3);
++#else
+                 const float sc = std::ldexp(1.0f, (int) s[q] - 127);
+                 for (int64_t i = 0; i < 32; ++i) o[q * 32 + i] = fp8_e4m3(w[q * 32 + i]) * sc;
++#endif
+             }
+         }
+     };
+@@ -623,8 +636,12 @@
+                         const uint8_t * sc = H.w + dim;
+                         float * o0 = oe + (size_t) (uint32_t) pk[rb[H.k]] * (size_t) dim;
+                         for (int64_t q = 0; q < srsz; ++q) {
++#if ASTER_XQ_ENGRAM_FP8_SIMD
++                            aster_engram_fp8::dequantize32(H.w + q * 32, sc[q], o0 + q * 32, fp8_e4m3);
++#else
+                             const float f = std::ldexp(1.0f, (int) sc[q] - 127);
+                             for (int64_t x = 0; x < 32; ++x) o0[q * 32 + x] = fp8_e4m3(H.w[q * 32 + x]) * f;
++#endif
+                         }
+                         for (uint32_t p = rb[H.k] + 1; p < rb[H.k + 1]; ++p)
+                             std::memcpy(oe + (size_t) (uint32_t) pk[p] * (size_t) dim, o0, (size_t) dim * sizeof(float));
+@@ -659,8 +676,12 @@
+                     const uint32_t p0 = rb[uu];
+                     float * o0 = oe + (size_t) (uint32_t) pk[p0] * (size_t) dim;   // dequantize straight into the first slot
+                     for (int64_t q = 0; q < srsz; ++q) {
++#if ASTER_XQ_ENGRAM_FP8_SIMD
++                        aster_engram_fp8::dequantize32(w + q * 32, s[q], o0 + q * 32, fp8_e4m3);
++#else
+                         const float sc = std::ldexp(1.0f, (int) s[q] - 127);
+                         for (int64_t x = 0; x < 32; ++x) o0[q * 32 + x] = fp8_e4m3(w[q * 32 + x]) * sc;
++#endif
+                     }
+                     for (uint32_t p = p0 + 1; p < rb[uu + 1]; ++p)               // ... and share it with the row's other slots
+                         std::memcpy(oe + (size_t) (uint32_t) pk[p] * (size_t) dim, o0, (size_t) dim * sizeof(float));

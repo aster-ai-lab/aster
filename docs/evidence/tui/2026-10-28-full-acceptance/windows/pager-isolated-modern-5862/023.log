@@ -1,0 +1,6 @@
+
+running 1 test
+test app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.30s
+

@@ -1,0 +1,18 @@
+F
+======================================================================
+FAIL: test_revision_step_handles_a_different_owner_without_global_trust (__main__.StudioCheckout.test_revision_step_handles_a_different_owner_without_global_trust)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/tests/studio_checkout.py", line 38, in test_revision_step_handles_a_different_owner_without_global_trust
+    self.assertEqual(accepted.returncode, 0, accepted.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : fatal: detected dubious ownership in repository at '/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.037s
+
+FAILED (failures=1)

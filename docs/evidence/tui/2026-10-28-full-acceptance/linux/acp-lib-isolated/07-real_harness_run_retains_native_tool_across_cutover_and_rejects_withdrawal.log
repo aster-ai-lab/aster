@@ -1,0 +1,17 @@
+
+running 1 test
+test plugin_selection::tests::real_harness_run_retains_native_tool_across_cutover_and_rejects_withdrawal ... 
+thread 'plugin_selection::tests::real_harness_run_retains_native_tool_across_cutover_and_rejects_withdrawal' (4950) panicked at crates/code/acp/src/plugin_selection_tests.rs:684:5:
+assertion `left == right` failed
+  left: ["Tool exit code: 0\nold", "Tool exit code: 0\nnew"]
+ right: ["old", "new"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    plugin_selection::tests::real_harness_run_retains_native_tool_across_cutover_and_rejects_withdrawal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 396 filtered out; finished in 0.82s
+

@@ -1,0 +1,522 @@
+{
+  "schema": "aster-literal-profiler-r9-manifest",
+  "unix": 1792905565.7461102,
+  "files": [
+    {
+      "file": "receipts/xolotl-literal-api-v151-controller.json",
+      "bytes": 1265,
+      "sha256": "98a1039c484893c1a3fffae3133a188f77d6f356df9c27b1fc51ce97e2285653",
+      "source": "xolotl-literal-api-v151-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-service-v149-literal-intent.json",
+      "bytes": 10809,
+      "sha256": "2b9ea26dca4c50db8457625a86fa1cbe57ffa97824a4021ece65743174987b53",
+      "source": "xolotl-literal-service-v149-literal-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-service-v149-literal-qualification-intent.json",
+      "bytes": 983,
+      "sha256": "63c374a21c0e374729e352ef5d63ab60d21f6b20acf09230bbbd8d9a67ca9400",
+      "source": "xolotl-literal-service-v149-literal-qualification-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-service-v149-literal-qualification-latest.json",
+      "bytes": 26164,
+      "sha256": "b1621aedd865e822d1e0d786c507c157618cd0e7b559829b1de84f90a4dabdda",
+      "source": "xolotl-literal-service-v149-literal-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-extended-v149-literal-intent.json",
+      "bytes": 946,
+      "sha256": "38eb1ebeafad1335322ddd4c9d0564f10cae5fdd3631e38f81e6aa1b93f53d61",
+      "source": "xolotl-literal-extended-v149-literal-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-extended-v149-literal-latest.json",
+      "bytes": 54989,
+      "sha256": "a10868fa5ba65e623b87ed854da1cc184772fe17b9f4e63bb333aefe417ff643",
+      "source": "xolotl-literal-extended-v149-literal-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-fullwindow-v150-control-intent.json",
+      "bytes": 1989,
+      "sha256": "c72b2843c7aa30bef2fe815883268938d674dc81576fb94ff947ecab231ca355",
+      "source": "xolotl-literal-fullwindow-v150-control-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-fullwindow-v150-control-latest.json",
+      "bytes": 111075,
+      "sha256": "0f87f454fcb7aa185a845568724594e500e69b64704c185617f9218f517def08",
+      "source": "xolotl-literal-fullwindow-v150-control-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-fullwindow-v150-literal-intent.json",
+      "bytes": 1984,
+      "sha256": "887f6f450dc531a26e008bdd68678cf419c1fdcd67ee03c9aa03d050608c74ac",
+      "source": "xolotl-literal-fullwindow-v150-literal-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-fullwindow-v150-literal-latest.json",
+      "bytes": 110337,
+      "sha256": "163e23d3a46a6beb34a2840b188a54ec5d4ea9656bded77431a45ed2591e12e3",
+      "source": "xolotl-literal-fullwindow-v150-literal-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-phase-simd-extended-v139-control_b-latest.json",
+      "bytes": 54998,
+      "sha256": "ab172d121d4457912c4ee733aa5a21d2911ff57085c7fb1e5e19f7f540ac9c4c",
+      "source": "xolotl-phase-simd-extended-v139-control_b-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-serve-profile-cpu-v167-prepared.json",
+      "bytes": 440,
+      "sha256": "be90df47a011377a20c1745ac5d1c4a6332a3b127f4b9ff7244638aab867fdca",
+      "source": "xolotl-serve-profile-cpu-v167-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-serve-profile-cpu-v167-intent.json",
+      "bytes": 2275,
+      "sha256": "b8f9a58d9b9c1aa9335353672146f64f5988b3a4769459c2f046200ed58d5aba",
+      "source": "xolotl-serve-profile-cpu-v167-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-serve-profile-cpu-v167-latest.json",
+      "bytes": 8461,
+      "sha256": "3e67b366043f58039c130cdc5b7b8cd047a1122b355131bf48077ada540830b3",
+      "source": "xolotl-serve-profile-cpu-v167-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-native-serve-profile-v168-plan.json",
+      "bytes": 6231,
+      "sha256": "6b4cdef85c340e8e132184916f18cff6556a09b1a7375181f871a6fe31c84fac",
+      "source": "xolotl-native-serve-profile-v168-plan.json"
+    },
+    {
+      "file": "receipts/xolotl-native-actual1m-input-v169-intent.json",
+      "bytes": 558,
+      "sha256": "783bee4c08555fcf47a58bd1c6fea330637c6920d925c54e44e823e0746945c7",
+      "source": "xolotl-native-actual1m-input-v169-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-native-actual1m-input-v169-latest.json",
+      "bytes": 1093,
+      "sha256": "344e253941d7b4c2eb6eab7131d2559d9fc0dcff7997ed5e53846c886c35089c",
+      "source": "xolotl-native-actual1m-input-v169-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-capture-cli-v170.json",
+      "bytes": 9307,
+      "sha256": "a6b646f9989f961851058f4abc984de7c67e66b9b9f46ee619512b928ee39277",
+      "source": "xolotl-ncu-capture-cli-v170.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172-plan.json",
+      "bytes": 27129,
+      "sha256": "7bf7357dcecdf14a48bda96bf5b6427baa8a8ba6ede0b5bad4b28d02a3099125",
+      "source": "xolotl-ncu-actual1m-v172-plan.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r1-plan.json",
+      "bytes": 27131,
+      "sha256": "bf073519e9e9f9f5da93cfeed3663571c38d229ee05b5367c01d2d6bb5712cdb",
+      "source": "xolotl-ncu-actual1m-v172r1-plan.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-hardware-v173-controller.json",
+      "bytes": 566,
+      "sha256": "380be1289a5fc28140d858de63598dde14d1f49969decfc7f8d55ce3b21126f3",
+      "source": "xolotl-fullwindow-hardware-v173-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-hardware-controller-v173-intervention-v177.json",
+      "bytes": 268,
+      "sha256": "749d0fb11badb89b03428d89aa049c763a618db2ff60ddef96342367f1ea6b91",
+      "source": "xolotl-hardware-controller-v173-intervention-v177.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-preflight-v176.json",
+      "bytes": 603,
+      "sha256": "e468ae9d5c911dd2b67fcbe6d972138548f1b2904f0f0cf20f74ed410a9184e5",
+      "source": "xolotl-ncu-preflight-v176.json"
+    },
+    {
+      "file": "receipts/xolotl-bounded-ncu-query-v178-prepared.json",
+      "bytes": 1235,
+      "sha256": "d4ab81fc73cc89352564f4f85ad761f1ad78c168e101d1a75b1c4f64d82bd0ee",
+      "source": "xolotl-bounded-ncu-query-v178-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-hash-inputs-v179.json",
+      "bytes": 1891,
+      "sha256": "6ed4caae25355632c86026ae5a887e82de24afc331e9295e9448f265907c02d5",
+      "source": "xolotl-engram-hash-inputs-v179.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-hash-footprint-v181-intent.json",
+      "bytes": 1731,
+      "sha256": "16b6d2bbbebcdfe5fae9f93a3a89e904e5d7e2541a3c55faf8eb2cdb21d22bfb",
+      "source": "xolotl-engram-hash-footprint-v181-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-engram-hash-footprint-v181-latest.json",
+      "bytes": 2068,
+      "sha256": "616d5b388d8484b9407bb00565956baa1e2c7e068bc4237da044c75894958fb0",
+      "source": "xolotl-engram-hash-footprint-v181-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-literal-runtime-v182.json",
+      "bytes": 1246,
+      "sha256": "bfb499729376881f901bacbc4eb98a71943d76c0f49d0da96ed29425700d11da",
+      "source": "xolotl-literal-runtime-v182.json"
+    },
+    {
+      "file": "receipts/xolotl-native-serve-profile-v168-intent.json",
+      "bytes": 935,
+      "sha256": "bfb7b2e5e29924aa0b0768ec8b7d5805effa56e6e95e2ab9c0ad88ca61850745",
+      "source": "xolotl-native-serve-profile-v168-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-native-serve-profile-v168-latest.json",
+      "bytes": 1557,
+      "sha256": "9de3ccd2900e5b719627f69e87ab8f1c53032224a1851b847a25390d188c2118",
+      "source": "xolotl-native-serve-profile-v168-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r1-intent.json",
+      "bytes": 1895,
+      "sha256": "7fa215d0783b77aec2f5944a8850b9bfdb08eb0fa701b150d729df34938c240a",
+      "source": "xolotl-ncu-actual1m-v172r1-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r1-latest.json",
+      "bytes": 4104,
+      "sha256": "4da212cd4615a204800373ceccf329da5f631ac3855753903f9ab954aa899664",
+      "source": "xolotl-ncu-actual1m-v172r1-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-hardware-v173r1-controller.json",
+      "bytes": 872,
+      "sha256": "f4b8c2e721af689200c0951b9df4a756935b6a253de39fb0f1c983ed32fbaa7b",
+      "source": "xolotl-fullwindow-hardware-v173r1-controller.json"
+    },
+    {
+      "file": "receipts/fresh-role-observation.json",
+      "bytes": 1969,
+      "sha256": "ce18c1b24eaa66918fb84d3a047624cddb7f0028f521fa2f5c3a4f2d695cdda1",
+      "source": "xolotl-progress-v175-1792905482185937800.json"
+    },
+    {
+      "file": "operators/prepare_serve_decode_profile_v166.py",
+      "bytes": 6398,
+      "sha256": "4fd898069241ba418f80fdfbf495f9e0e6ff902f71bf47748587440912c52520",
+      "source": "prepare_serve_decode_profile_v166.py"
+    },
+    {
+      "file": "operators/prepare_serve_profile_cpu_v167.py",
+      "bytes": 4341,
+      "sha256": "ccbccee5e1e057e72a75f5649b0388e80dfac62f38748bd43968842d8365c8cc",
+      "source": "prepare_serve_profile_cpu_v167.py"
+    },
+    {
+      "file": "operators/serve_decode_profile_cpu_worker_v167.frozen.py",
+      "bytes": 5617,
+      "sha256": "91854b317499d1140a86b9a3d5fc0e613b07b75e9840361a1743883a15012da4",
+      "source": "serve_decode_profile_cpu_worker_v167.frozen.py"
+    },
+    {
+      "file": "operators/manage_serve_profile_cpu_v167.py",
+      "bytes": 5351,
+      "sha256": "1bcd7e049a45a88f939db30da3f4e1cb656472b050988c313a72f1c5c5137471",
+      "source": "manage_serve_profile_cpu_v167.py"
+    },
+    {
+      "file": "operators/serve_profile_native_link_worker_v168.frozen.py",
+      "bytes": 4254,
+      "sha256": "ee407bdabb5b442d8f9b3d1a50222645d127ee0ca8c33e4e14fac943894d3505",
+      "source": "serve_profile_native_link_worker_v168.frozen.py"
+    },
+    {
+      "file": "operators/manage_serve_profile_native_v168.py",
+      "bytes": 7410,
+      "sha256": "e7179d62500602cfaf7ea77b38ba672d40969e13480910747cdeaf1436f13c00",
+      "source": "manage_serve_profile_native_v168.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v168.py",
+      "bytes": 2880,
+      "sha256": "e47be8a3ce0500a3ef7b46b67500b4b6dd6645442e9a0bf3733256949c8f32a6",
+      "source": "xolotl_sealed_bootstrap_v168.py"
+    },
+    {
+      "file": "operators/prepare_native_actual1m_ids_v169.py",
+      "bytes": 5074,
+      "sha256": "542ab49144b0538dda0175a7d29da0b239c3d8886fba654763266ba90134c069",
+      "source": "prepare_native_actual1m_ids_v169.py"
+    },
+    {
+      "file": "operators/inspect_ncu_capture_cli_v170.py",
+      "bytes": 1277,
+      "sha256": "82a044e7bdbe12c9925a9c566af0bdac4c9eb5d4ae6c5936f809a43248002650",
+      "source": "inspect_ncu_capture_cli_v170.py"
+    },
+    {
+      "file": "operators/aster_ncu_metrics_v171.py",
+      "bytes": 3047,
+      "sha256": "01d6074e2b039050cf5c04a989d245326e569e6be3ff86646485d42353f4d2aa",
+      "source": "aster_ncu_metrics_v171.py"
+    },
+    {
+      "file": "operators/test_ncu_metrics_v171.py",
+      "bytes": 2127,
+      "sha256": "ca8bb771ae79f9ee95785459a8d900fb0fda1e53c019d53b6c4378ebb2a5ce5b",
+      "source": "test_ncu_metrics_v171.py"
+    },
+    {
+      "file": "operators/xolotl_ncu_actual1m_worker_v171.frozen.py",
+      "bytes": 16334,
+      "sha256": "33cc025b035a7bb980a578a2f4ecc50e68cb5113764b47af7f5f1eecd29f3859",
+      "source": "xolotl_ncu_actual1m_worker_v171.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_ncu_actual1m_worker_v171r1.frozen.py",
+      "bytes": 16384,
+      "sha256": "abafb9d93360c7a1ffdbbff82500329c3ff4f0d43ca173edd729b238634e8db0",
+      "source": "xolotl_ncu_actual1m_worker_v171r1.frozen.py"
+    },
+    {
+      "file": "operators/manage_ncu_actual1m_v172.py",
+      "bytes": 11887,
+      "sha256": "81cef370d9e153d4dc553b4c3dce4339e39b371f3de2e3b8db0635b46b28c206",
+      "source": "manage_ncu_actual1m_v172.py"
+    },
+    {
+      "file": "operators/manage_ncu_actual1m_v172r1.py",
+      "bytes": 12094,
+      "sha256": "992301f611556cbd725a7017baca467c83a6b0ccf27d9dd122df6a460b4e6fdd",
+      "source": "manage_ncu_actual1m_v172r1.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v172.py",
+      "bytes": 2873,
+      "sha256": "949fef0f8e23103e2deea8f68b03b3b9f1950f1c440abc6f3e2a1d6bb989cbe0",
+      "source": "xolotl_sealed_bootstrap_v172.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v172r1.py",
+      "bytes": 2875,
+      "sha256": "2efb98e58c811d861c58004cf48b201606457d9643565cfda2ec9ab3c8f95d22",
+      "source": "xolotl_sealed_bootstrap_v172r1.py"
+    },
+    {
+      "file": "operators/run_fullwindow_then_hardware_profile_v173.frozen.py",
+      "bytes": 7062,
+      "sha256": "3f624a97a8ae91600db9ecf828fb1b2f9d592cfe3835c238b43e49e717ed1d1e",
+      "source": "run_fullwindow_then_hardware_profile_v173.frozen.py"
+    },
+    {
+      "file": "operators/run_fullwindow_then_hardware_profile_v173r1.frozen.py",
+      "bytes": 7070,
+      "sha256": "9d8678e950058337d0b6de665ee0fb4de4c5298b6778fe79a66913f9ffc6e6f5",
+      "source": "run_fullwindow_then_hardware_profile_v173r1.frozen.py"
+    },
+    {
+      "file": "operators/observe_hardware_pipeline_v175.py",
+      "bytes": 4619,
+      "sha256": "c3f9bdde29fcd7cf8e338ce0c13a1970c2cc7c77b05f7653c57cd8cfa47f562d",
+      "source": "observe_hardware_pipeline_v175.py"
+    },
+    {
+      "file": "operators/preflight_installed_ncu_protocol_v176.py",
+      "bytes": 3812,
+      "sha256": "2592564835987b3d49ed33b3fdd829f90e9305058e2d37daa66a4a30dd674a6b",
+      "source": "preflight_installed_ncu_protocol_v176.py"
+    },
+    {
+      "file": "operators/inspect_ncu_metric_suffix_v177.py",
+      "bytes": 2216,
+      "sha256": "709f956fe68a39496220f94d0177832a8523257abef0f37c7fa2b4cf050a003e",
+      "source": "inspect_ncu_metric_suffix_v177.py"
+    },
+    {
+      "file": "operators/aster_ncu_query_v178.py",
+      "bytes": 1281,
+      "sha256": "6939a3be6799e50142aa05b5b917976b65115c7d6161d8b366ef89fecedd1733",
+      "source": "aster_ncu_query_v178.py"
+    },
+    {
+      "file": "operators/test_ncu_query_v178.py",
+      "bytes": 2012,
+      "sha256": "8aaeceff9016c31e66f6d7469779c941ae5feeab9880b363dd836fbc7c5816d0",
+      "source": "test_ncu_query_v178.py"
+    },
+    {
+      "file": "operators/prepare_bounded_ncu_query_v178.py",
+      "bytes": 3786,
+      "sha256": "f5bfd8adf319793548ef2beaa7dcf7d4e6dde04d690afd5fa0bebaf0a462c479",
+      "source": "prepare_bounded_ncu_query_v178.py"
+    },
+    {
+      "file": "operators/inspect_engram_hash_cpu_inputs_v179.py",
+      "bytes": 1507,
+      "sha256": "9e919395f861b8138069c3ae8e2fda4563d809e9f1075c3db0eabaec07caea54",
+      "source": "inspect_engram_hash_cpu_inputs_v179.py"
+    },
+    {
+      "file": "operators/engram_hash_footprint_v180.cpp",
+      "bytes": 3474,
+      "sha256": "e18704c106693e56a5e39a60b637d983dbcc24233588dfa6069de1f523f3679b",
+      "source": "engram_hash_footprint_v180.cpp"
+    },
+    {
+      "file": "operators/run_engram_hash_footprint_v181.py",
+      "bytes": 5956,
+      "sha256": "6d8bece8172490588ae256697e002315fd62b6e0d87f6163e6faa7195be7a1a1",
+      "source": "run_engram_hash_footprint_v181.py"
+    },
+    {
+      "file": "operators/inspect_literal_runtime_activation_v182.py",
+      "bytes": 2524,
+      "sha256": "a899d7e769b9f7f42271faeb4abc9392700642e49b646f3506d2ced6ee838d85",
+      "source": "inspect_literal_runtime_activation_v182.py"
+    },
+    {
+      "file": "operators/collect_profiler_cpu_public_v184.py",
+      "bytes": 2383,
+      "sha256": "d2f13e89ce33ecf41caf8834fe74867cadae0689eaebade4f71b49142b46ad90",
+      "source": "collect_profiler_cpu_public_v184.py"
+    },
+    {
+      "file": "operators/retain_xolotl_literal_and_profiler_r9_v183.py",
+      "bytes": 17660,
+      "sha256": "a5b839f2eeb5f1cbef3d2b43113ef7ac12458fef2071e5336378cd2ee6fd856d",
+      "source": "retain_xolotl_literal_and_profiler_r9_v183.py"
+    },
+    {
+      "file": "frozen-candidate/aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe",
+      "source": "serve-decode-profile-v166/aster_draft_cumulative.hpp"
+    },
+    {
+      "file": "frozen-candidate/aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23",
+      "source": "serve-decode-profile-v166/aster_dspark_seed.hpp"
+    },
+    {
+      "file": "frozen-candidate/aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8",
+      "source": "serve-decode-profile-v166/aster_prefill_policy.hpp"
+    },
+    {
+      "file": "frozen-candidate/aster_serve_profile.hpp",
+      "bytes": 1120,
+      "sha256": "7f233bb8c78ef0d31eae1ab343f26f0f0a6248c14528f6ed9c8a0a559d894f0c",
+      "source": "serve-decode-profile-v166/aster_serve_profile.hpp"
+    },
+    {
+      "file": "frozen-candidate/ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267",
+      "source": "serve-decode-profile-v166/ds41_conv_pool.hpp"
+    },
+    {
+      "file": "frozen-candidate/ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112",
+      "source": "serve-decode-profile-v166/ds41_conv_pool_dense.hpp"
+    },
+    {
+      "file": "frozen-candidate/ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f",
+      "source": "serve-decode-profile-v166/ds41_conv_reuse.hpp"
+    },
+    {
+      "file": "frozen-candidate/ds41_generate.cpp",
+      "bytes": 228908,
+      "sha256": "e65f795b5ba3336bfdff2d529101fc950fa3a748dd22d2019f29a3d5ca8cec32",
+      "source": "serve-decode-profile-v166/ds41_generate.cpp"
+    },
+    {
+      "file": "frozen-candidate/ds41_generate.original.cpp",
+      "bytes": 228205,
+      "sha256": "47af8a6d48d42d0bd745b59279ed1ed2e907829e4402e4b366e70b6494e4ba7e",
+      "source": "serve-decode-profile-v166/ds41_generate.original.cpp"
+    },
+    {
+      "file": "frozen-candidate/serve-decode-profile-v166.patch",
+      "bytes": 2027,
+      "sha256": "5dd1840c8195dc76228ae5a7cd7edee0a7598c95af996e876b3bd661a4bad579",
+      "source": "serve-decode-profile-v166/serve-decode-profile-v166.patch"
+    },
+    {
+      "file": "frozen-candidate/source-manifest.json",
+      "bytes": 2415,
+      "sha256": "6689f08429f5cafca98b1b00aad5d891428af2e3bfca34360f28076ee7387bd0",
+      "source": "serve-decode-profile-v166/source-manifest.json"
+    },
+    {
+      "file": "frozen-candidate/test_serve_profile.cpp",
+      "bytes": 1723,
+      "sha256": "4f0e43f5feaf97296ec0fd2e54fc0c5d1b4d65ed7715147ab83c226c2fe788ad",
+      "source": "serve-decode-profile-v166/test_serve_profile.cpp"
+    },
+    {
+      "file": "frozen-candidate/upstream-LICENSE",
+      "bytes": 1093,
+      "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0",
+      "source": "xolotl-trial-source-e9d0826d71c5/source/LICENSE"
+    },
+    {
+      "file": "public-diagnostics/lifecycle/release-unit-run.log",
+      "bytes": 58,
+      "sha256": "e3688d37433e6127dfe0eedb3f6550d955f14a044e41fbb5e5086d5ae53eddae",
+      "source": "profiler-cpu-public-v184/lifecycle/release-unit-run.log"
+    },
+    {
+      "file": "public-diagnostics/lifecycle/asan_ubsan-unit-run.log",
+      "bytes": 58,
+      "sha256": "e3688d37433e6127dfe0eedb3f6550d955f14a044e41fbb5e5086d5ae53eddae",
+      "source": "profiler-cpu-public-v184/lifecycle/asan_ubsan-unit-run.log"
+    },
+    {
+      "file": "public-diagnostics/controlled-link-result.json",
+      "bytes": 1333,
+      "sha256": "b667e580e24fe8636f92e284f6e24e6ad01420e31dcb949db0cd9dcd3786dd7c",
+      "source": "profiler-cpu-public-v184/controlled-link-result.json"
+    },
+    {
+      "file": "public-diagnostics/numeric-query-parser-tests.log",
+      "bytes": 1034,
+      "sha256": "e574a9f496373e974c8eea98da52e0ec82adf33b6130b5412ae8ef933385fc7d",
+      "source": "profiler-cpu-public-v184/numeric-query-parser-tests.log"
+    },
+    {
+      "file": "public-diagnostics/collection-manifest.json",
+      "bytes": 814,
+      "sha256": "479a82d635f57037f9f8441b9ad7b8ab00214f1dbe7af6a2cbe18bea0137c2a4",
+      "source": "xolotl-profiler-cpu-public-v184.json"
+    },
+    {
+      "file": "installed-counter-support.json",
+      "bytes": 1596,
+      "sha256": "b9c495c0a5f1ec4b30bb8e008d310d14faf8632bb33659b8cac0516ccd01eaa1",
+      "source": null
+    },
+    {
+      "file": "round-summary.json",
+      "bytes": 25137,
+      "sha256": "5f8508bd754b09b60b4321965d51790eaf33770801decd7d1eacd44d54a6d0f2",
+      "source": null
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 4470,
+      "sha256": "411e1f08cabd36df2c3dec6befa1b008fcf966fd458be6b33a8125579722f293",
+      "source": null
+    }
+  ]
+}

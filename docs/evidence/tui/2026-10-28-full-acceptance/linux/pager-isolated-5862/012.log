@@ -1,0 +1,17 @@
+
+running 1 test
+test views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url ... 
+thread 'views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url' (36774) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/views/mcps_modal.rs:526:9:
+assertion `left == right` failed
+  left: "[github.com/A3S-Lab/a3s]"
+ right: "[a3s/connectors]"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.04s
+

@@ -1,0 +1,21 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::tool_header_link_target_overlay_covers_path_after_bullet' (47472) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:2677:5:
+assertion failed: `(left == right)`: expected one file:// overlay for the tool path, got [OverlayLink { screen_row: 0, col_start: 10, col_end: 16, target: File("/Users/me/project/src/foo.rs"), presentation: Opaque, id: None }]
+
+Diff < left / right > :
+<0
+>1
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::tool_header_link_target_overlay_covers_path_after_bullet ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::tool_header_link_target_overlay_covers_path_after_bullet
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.02s
+

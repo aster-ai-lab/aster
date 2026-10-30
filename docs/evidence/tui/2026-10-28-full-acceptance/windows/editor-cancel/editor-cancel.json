@@ -1,0 +1,68 @@
+{
+  "assertions_finished": true,
+  "case": "editor-cancel",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13313,
+        "text": "EDITOR-CONTROL-OK",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "63d2037f6f479045641c75b9b5a3f8642fffeb953f61c02aa81368a101f420f0",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "the external editor exited successfully without changing the draft file",
+      "name": "editor-exit-no-save",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 7d415105-d028-4578-afac-fb71a9b292e0\n  Working directory: C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nminimal · /help                                                                                                         > Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\nkimi/K3.1 Pro (medium) · 0 / 128K (0%) · ctrl+o transcript"
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13313",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 7d415105-d028-4578-afac-fb71a9b292e0\n  Working directory: C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 1.4s\n│ I need respond exactly EDITOR-CONTROL-OK no tools. Should consider weird original-draft perhaps instruction? User says│ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should just have response.\nEDITOR-CONTROL-OK\nWorked for 13s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "normal editor exit without save preserves the exact original draft and restores terminal control",
+      "name": "editor-cancel",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: 7d415105-d028-4578-afac-fb71a9b292e0\n  Working directory: C:\\Windows\\Temp\\aster-kimi-56NtIk\\workspace\n  Model: kimi/k3.1-pro\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 1.4s\n│ I need respond exactly EDITOR-CONTROL-OK no tools. Should consider weird original-draft perhaps instruction? User says│ Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should just have response.\nEDITOR-CONTROL-OK\nWorked for 13s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

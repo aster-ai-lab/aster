@@ -1,0 +1,20 @@
+{
+  "app-icon.svg": {
+    "before_sha256": "1f74bd953d0ab5d6f8c075bf7f48025c9a2c95982b0444fdf10893bc93c966b1",
+    "after_sha256": "1f74bd953d0ab5d6f8c075bf7f48025c9a2c95982b0444fdf10893bc93c966b1",
+    "canonical_svg_sha256": "91c1cbe7451c19f84e091eb0bef022a46c8d4d33a4ab0b7dda802c8e5cf76265",
+    "canonical_svg_unchanged": true
+  },
+  "app-icon-small.svg": {
+    "before_sha256": "742629280f11bcafb482be1147137e5133d08cd014bc6957435bfcdc7df3af8c",
+    "after_sha256": "381315da81494a7a2432d38fd6662ace91dbdcb6acbdddf2a00606575f4c5ba3",
+    "canonical_svg_sha256": "1ee535dba50594fc2b5289811c737a367467ccbbdef9363b7d48f297bd710c39",
+    "canonical_svg_unchanged": true
+  },
+  "app-icon-micro.svg": {
+    "before_sha256": "a62e87283063126d29169290f911b41ac333be12382325c691fad9a3f773e6db",
+    "after_sha256": "a62e87283063126d29169290f911b41ac333be12382325c691fad9a3f773e6db",
+    "canonical_svg_sha256": "e208cc9d90147f85f3f9264966d0db7731db0ca1bbec553b2169a638a61db7f6",
+    "canonical_svg_unchanged": true
+  }
+}

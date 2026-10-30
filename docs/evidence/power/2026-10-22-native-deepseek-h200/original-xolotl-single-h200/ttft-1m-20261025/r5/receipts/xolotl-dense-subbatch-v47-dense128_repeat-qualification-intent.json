@@ -1,0 +1,32 @@
+{
+  "unix": 1792872733.232007,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-dense-subbatch-v47-dense128_repeat/qualification-v47",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "profile": "dense128_repeat",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "request-worker.py",
+      "bytes": 7482,
+      "sha256": "b76e46ab371f23bdc2805f82263f2ef4a78dbd629e98918b81e928ad6d35cccf"
+    },
+    {
+      "file": "request-plan.json",
+      "bytes": 490,
+      "sha256": "bafd59e82b23301953959b50a13b9e6db5809f66d0c354713f36e459f25151ed"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    }
+  ],
+  "process": {
+    "pid": 901921,
+    "start_ticks": 279952723,
+    "uid": 10250,
+    "unix": 1792872742.2998192,
+    "budget_seconds": 1100
+  }
+}

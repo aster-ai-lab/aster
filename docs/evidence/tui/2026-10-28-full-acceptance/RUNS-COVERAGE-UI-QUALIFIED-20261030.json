@@ -1,0 +1,154 @@
+{
+  "schema": "aster.tui.coverage-wave-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_snapshot": {
+    "file": "source/coverage-20261030-ui-qualified-source.json",
+    "sha256": "b2d14f4d9dbf860c2ca31a085febef49043767b824d043ef6a9bcc31ae85d704"
+  },
+  "runtime_pair_rebuilt": false,
+  "pre_execution_harness_failure": {
+    "file": "source/coverage-20261030-pre-execution-failure.json",
+    "sha256": "2e6a51794d062365311cab5c5597e9c30a52acc42b494e20fbb38942ddd536ba"
+  },
+  "phases": [
+    {
+      "platform": "windows",
+      "phase": "coverage-20261030-ui-qualified",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "harness": {
+        "file": "windows/coverage-20261030-ui-qualified/test-binary.json",
+        "sha256": "f8a26cc3ff71968f3c7c674b48dadf119acde6d28ba78d555e35c6f12bb741b5"
+      },
+      "harness_source": {
+        "file": "windows/coverage-20261030-ui-qualified/harness-source.json",
+        "sha256": "f60f5724a54b345b24fb388e3c55f7d43fe7ddd275780384444ddc7f0681222d"
+      },
+      "inventory": 99,
+      "passed": 3,
+      "failed": 0,
+      "seconds": 74.78,
+      "run_logs": [
+        {
+          "file": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows.log",
+          "sha256": "2b1650097944f5fa1ef63a43c17fe09d92ed8a1e2590e2b4e5c268554323bf65",
+          "test": "ui_qualified_wave::kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows.log",
+          "seconds": 18.09
+        },
+        {
+          "file": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_theme_preview_cancel_commit_reset_compare_actual_background.log",
+          "sha256": "e3d767be7c2510615fa63f54ef6634da4988c55320fe7090ddc38a7c8be7d8dd",
+          "test": "ui_qualified_wave::kimi_theme_preview_cancel_commit_reset_compare_actual_background",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_theme_preview_cancel_commit_reset_compare_actual_background.log",
+          "seconds": 43.92
+        },
+        {
+          "file": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation.log",
+          "sha256": "0089445f91ab463a92b374e88eea96cb687f422812d54efa50b4efe1d331a72e",
+          "test": "ui_qualified_wave::kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation.log",
+          "seconds": 12.77
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/coverage-20261030-ui-qualified/reports/coverage-markdown-last-match.json",
+          "sha256": "a918d20f4f454adafc0975e60bf21fac2f095365dd3a7813ff71a0c2596d3f10",
+          "case": "coverage-markdown-last-match",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-ui-qualified/reports/coverage-settings-voice-off.json",
+          "sha256": "048014cdfa97d604745532e32a501693cd099202e9c2cbedd5a5d3477678285e",
+          "case": "coverage-settings-voice-off",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-ui-qualified/reports/coverage-theme-background.json",
+          "sha256": "d3ff6db62ea1e2602796c112f1c7eb590ecb90f3cb51dba520166d5f32305e94",
+          "case": "coverage-theme-background",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "coverage-20261030-ui-qualified",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "harness": {
+        "file": "linux/coverage-20261030-ui-qualified/test-binary.json",
+        "sha256": "f62490a05d91c7ee3b2c2e5731fbb2fa3e139782c5c708c7487c2bf69f992732"
+      },
+      "harness_source": {
+        "file": "linux/coverage-20261030-ui-qualified/harness-source.json",
+        "sha256": "815cba315519786168a17b8b873922d83c1f8cec5bfcc4334e40d3e2a3ad2284"
+      },
+      "inventory": 99,
+      "passed": 3,
+      "failed": 0,
+      "seconds": 87.32,
+      "run_logs": [
+        {
+          "file": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows.log",
+          "sha256": "79f336ec2a30ad42780021d9631e846cffff6187bcfccbcbb2f7e554ceb59d33",
+          "test": "ui_qualified_wave::kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_voice_off_explicit_profile_hides_all_backend_and_voice_rows.log",
+          "seconds": 19.73
+        },
+        {
+          "file": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_theme_preview_cancel_commit_reset_compare_actual_background.log",
+          "sha256": "090ed30a8cce4df7f5532af1e6e44166fe6c74c6f4cda215a1998085a60e14dd",
+          "test": "ui_qualified_wave::kimi_theme_preview_cancel_commit_reset_compare_actual_background",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_theme_preview_cancel_commit_reset_compare_actual_background.log",
+          "seconds": 48.92
+        },
+        {
+          "file": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation.log",
+          "sha256": "ebdb9f340cd8efdc2ccc4e3e2d6549655124959a5fe99ed23e90f516590914b3",
+          "test": "ui_qualified_wave::kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-ui-qualified/ui_qualified_wave__kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation.log",
+          "seconds": 18.67
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/coverage-20261030-ui-qualified/reports/coverage-markdown-last-match.json",
+          "sha256": "1b00b8b08c052bb85432457a47c113c28c4a937bcdf0929f18073e0f5b617824",
+          "case": "coverage-markdown-last-match",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-ui-qualified/reports/coverage-settings-voice-off.json",
+          "sha256": "53d371199e0ca07372aca02a77afc6ad4549022d950013a235e320a0229a307b",
+          "case": "coverage-settings-voice-off",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-ui-qualified/reports/coverage-theme-background.json",
+          "sha256": "d9e4ceecf2760dc03729109c2e554c1800540f7f6bccee0adbbd00b287b118ae",
+          "case": "coverage-theme-background",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    }
+  ],
+  "inventory": 99,
+  "all_inventory_entrypoints_run": false,
+  "complete_153": false,
+  "original_failed_runs": {
+    "file": "RUNS-COVERAGE-20261030.json",
+    "sha256": "60d40297444afddc3ea6365e1b2f9153a946a78faa8c58028a2368d85648b20a"
+  }
+}

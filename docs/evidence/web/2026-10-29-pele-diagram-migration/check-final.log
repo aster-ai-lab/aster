@@ -1,0 +1,5 @@
+
+> check
+> node scripts/build_docs.mjs --check
+
+Checked 89 MDX documents (150 routes) and generated CSS.

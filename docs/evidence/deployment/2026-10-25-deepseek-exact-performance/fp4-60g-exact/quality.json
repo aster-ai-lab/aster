@@ -1,0 +1,248 @@
+[
+  {
+    "wall_seconds": 24.655432231957093,
+    "request_sha256": "c6441b02afb9d7a61bcf50f34bfaf79c4dc81357ab99acfa41a3d60a81b27934",
+    "request_utf8_bytes": 249,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-c23e4f0267574c5db0fc9e35",
+      "object": "chat.completion",
+      "created": 1792916431,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":250}",
+            "reasoning_content": "We need answer JSON object one key answer integer value compute (19*23)-(17*11). 19*23=437. 17*11=187. Difference 250. Need JSON no markdown. Ensure valid JSON. {\"answer\":250}."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 56,
+        "completion_tokens": 60,
+        "total_tokens": 116,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 56,
+        "prompt_ms": 10516.2,
+        "prompt_per_token_ms": 187.789,
+        "prompt_per_second": 5.3,
+        "predicted_n": 60,
+        "predicted_ms": 14024.3,
+        "predicted_per_token_ms": 233.738,
+        "predicted_per_second": 4.3,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "arithmetic",
+    "correct": true,
+    "expected": {
+      "answer": 250
+    }
+  },
+  {
+    "wall_seconds": 33.160739472019486,
+    "request_sha256": "3c20d00333bab1b7a08c9bae092b7b126b3fcd42b965703255e01b65220c69a6",
+    "request_utf8_bytes": 269,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-d86e5222af1a4df78119fdd7",
+      "object": "chat.completion",
+      "created": 1792916455,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":16}",
+            "reasoning_content": "We need answer. Need evaluate Python slicing. a=[2,5,8,11,14]. a[1::2] means start index 1, step 2: indices 1,3 => values 5,11. sum=16. Return only JSON with key answer and integer result. Need ensure JSON. {\"answer\":16}."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 67,
+        "completion_tokens": 79,
+        "total_tokens": 146,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 67,
+        "prompt_ms": 14129.8,
+        "prompt_per_token_ms": 210.893,
+        "prompt_per_second": 4.7,
+        "predicted_n": 79,
+        "predicted_ms": 19025.9,
+        "predicted_per_token_ms": 240.834,
+        "predicted_per_second": 4.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "python-slices",
+    "correct": true,
+    "expected": {
+      "answer": 16
+    }
+  },
+  {
+    "wall_seconds": 22.135700542014092,
+    "request_sha256": "6e02e9682db8ce23a8c9301f2931e3c09d7764943dfe6cbff965e97b223890e2",
+    "request_utf8_bytes": 264,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-2091432af627419a994c1c53",
+      "object": "chat.completion",
+      "created": 1792916489,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":1}",
+            "reasoning_content": "We need answer. u8::MAX = 255. wrapping_add(2) wraps modulo 256: 255+2=257 mod256=1. Return JSON only key answer integer."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 58,
+        "completion_tokens": 47,
+        "total_tokens": 105,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 58,
+        "prompt_ms": 10738.5,
+        "prompt_per_token_ms": 185.147,
+        "prompt_per_second": 5.4,
+        "predicted_n": 47,
+        "predicted_ms": 11390.4,
+        "predicted_per_token_ms": 242.349,
+        "predicted_per_second": 4.1,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "rust-overflow",
+    "correct": true,
+    "expected": {
+      "answer": 1
+    }
+  },
+  {
+    "wall_seconds": 15.03571537102107,
+    "request_sha256": "d75bb87a63acd63aeaffbc1355d81424b8684341e85650e4531cc85aae9c3d99",
+    "request_utf8_bytes": 259,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-7b4483f5d87e4706b51b1c60",
+      "object": "chat.completion",
+      "created": 1792916511,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"city\":\"杭州\",\"ok\":true}",
+            "reasoning_content": "We need answer only exact JSON object preserving Chinese characters. Need output {\"city\":\"杭州\",\"ok\":true}. No extra."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 51,
+        "completion_tokens": 36,
+        "total_tokens": 87,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 51,
+        "prompt_ms": 8610.6,
+        "prompt_per_token_ms": 168.835,
+        "prompt_per_second": 5.9,
+        "predicted_n": 36,
+        "predicted_ms": 6416.2,
+        "predicted_per_token_ms": 178.228,
+        "predicted_per_second": 5.6,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "json-unicode",
+    "correct": true,
+    "expected": {
+      "city": "杭州",
+      "ok": true
+    }
+  },
+  {
+    "wall_seconds": 29.93134623201331,
+    "request_sha256": "f2a067bb469ea944ecdaf2325582eab087798354bd6c1f0f216da5690a40885a",
+    "request_utf8_bytes": 336,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-84acba249e004419a182d18c",
+      "object": "chat.completion",
+      "created": 1792916526,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\"answer\":1}",
+            "reasoning_content": "We need answer. SQL WHERE keeps only TRUE. Values (1),(NULL),(3). WHERE x <> 1. For 1: false. NULL: unknown, filtered out. 3: true. Count 1. Need JSON only key answer integer."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 77,
+        "completion_tokens": 60,
+        "total_tokens": 137,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 77,
+        "prompt_ms": 15714.9,
+        "prompt_per_token_ms": 204.09,
+        "prompt_per_second": 4.9,
+        "predicted_n": 60,
+        "predicted_ms": 14211.1,
+        "predicted_per_token_ms": 236.852,
+        "predicted_per_second": 4.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "case": "sql-three-valued-logic",
+    "correct": true,
+    "expected": {
+      "answer": 1
+    }
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "ControllerPid": 182940,
+  "StoppedWaitingObserverOnly": true,
+  "FormalServiceChanged": false,
+  "ModelStopped": false,
+  "Reason": "Retained CPU-only preflight V176 found overbroad Nsight metric query; prepare bounded query revision before GPU capture"
+}

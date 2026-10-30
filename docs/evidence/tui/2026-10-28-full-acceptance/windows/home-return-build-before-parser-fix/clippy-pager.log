@@ -1,0 +1,1220 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-tty-utils -- --no-deps` to apply 1 suggestion)
+warning: field `directory` is never read
+   --> crates\terminal\crates\codegen\a3s-code-config\src\managed_text\source.rs:131:5
+    |
+128 | pub(super) struct ParentAnchor {
+    |                   ------------ field in this struct
+...
+131 |     directory: fs::File,
+    |     ^^^^^^^^^
+    |
+    = note: `ParentAnchor` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-config` (lib) generated 1 warning
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools-api)
+warning: variable does not need to be mutable
+   --> crates\terminal\crates\codegen\a3s-code-telemetry\src\logs\unified_log.rs:175:13
+    |
+175 |         let mut builder = fs::DirBuilder::new();
+    |             ----^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-telemetry` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-code-telemetry -- --no-deps` to apply 1 suggestion)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates\third-party\crossterm\src\lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates\third-party\crossterm\src\lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates\third-party\crossterm\src\lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates\third-party\crossterm\src\lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates\third-party\crossterm\src\event\filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 5 warnings
+warning: unused imports: `Command` and `Stdio`
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1024:24
+     |
+1024 |     use std::process::{Command, Stdio};
+     |                        ^^^^^^^  ^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1757:33
+     |
+1757 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1766 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+     |
+     = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1863:33
+     |
+1863 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1872 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+
+warning: `a3s-code-shared` (lib) generated 3 warnings (run `cargo clippy --fix --lib -p a3s-code-shared -- --no-deps` to apply 1 suggestion)
+    Checking a3s-tool-runtime v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-runtime)
+    Checking a3s-computer-hub-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-core)
+    Checking a3s-computer-hub-sdk v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-sdk)
+    Checking a3s-code-tools v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-tools)
+    Checking a3s-computer-hub-mcp-adapter v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-computer-hub-mcp-adapter)
+    Checking a3s-code-workspace-client v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-client)
+    Checking a3s-code-workspace-daemon v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace-daemon)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: unused variable: `task_ids`
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:1580:51
+     |
+1580 |     async fn collect_shell_state_dumps(&mut self, task_ids: &[String]) {
+     |                                                   ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_ids`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:3315:9
+     |
+3315 |     let mut build_cmd = |with_breakaway: bool| {
+     |         ----^^^^^^^^^
+     |         |
+     |         help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `login_shell_capture` is never read
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:590:5
+    |
+547 | struct LocalTerminalActor {
+    |        ------------------ field in this struct
+...
+590 |     login_shell_capture: bool,
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-tools` (lib) generated 5 warnings (run `cargo clippy --fix --lib -p a3s-code-tools -- --no-deps` to apply 4 suggestions)
+    Checking a3s-code-hooks v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-hooks)
+    Checking a3s-code-announcements v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-announcements)
+    Checking a3s-code-mcp v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-mcp)
+    Checking a3s-code-pager-diff v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager-diff)
+    Checking a3s-code-agent v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-agent)
+    Checking a3s-code-config-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-config-types)
+    Checking a3s-code-subagent-resolution v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-subagent-resolution)
+    Checking a3s-code-plugin-marketplace v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-plugin-marketplace)
+    Checking a3s-code-workspace v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-workspace)
+    Checking a3s-code-http v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-http)
+    Checking a3s-code-shell-terminal v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell-terminal)
+    Checking a3s-code-pager-render v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager-render)
+    Checking a3s-code-memory v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-memory)
+    Checking a3s-code-shell-session-support v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell-session-support)
+warning: function `default_shell_path` is never used
+  --> crates\terminal\crates\codegen\a3s-code-shell-terminal\src\lib.rs:45:15
+   |
+45 | pub(crate) fn default_shell_path() -> &'static str {
+   |               ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-shell-terminal` (lib) generated 1 warning
+warning: unused import: `std::time::Duration`
+ --> crates\terminal\crates\codegen\a3s-code-pager-render\src\terminal\probe.rs:9:5
+  |
+9 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-pager-render` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-code-pager-render -- --no-deps` to apply 1 suggestion)
+    Checking a3s-code-login v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-login)
+    Checking a3s-code-shell v1.0.41 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-shell)
+    Checking a3s-code-update v0.1.220-alpha.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-update)
+    Checking a3s-code-pager v9.1.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-pager)
+warning: use of a disallowed method `tokio::process::Command::spawn`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\acp\a3s_spawn.rs:102:22
+    |
+102 |                     .spawn()
+    |                      ^^^^^
+    |
+    = note: an unenrolled child outlives its session; use a3s_tty_utils::ProcessScope::enroll
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#disallowed_methods
+    = note: `#[warn(clippy::disallowed_methods)]` on by default
+
+warning: use of a disallowed method `tokio::process::Command::spawn`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\acp\a3s_spawn.rs:313:10
+    |
+313 |         .spawn()
+    |          ^^^^^
+    |
+    = note: an unenrolled child outlives its session; use a3s_tty_utils::ProcessScope::enroll
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#disallowed_methods
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\acp\mod.rs:394:9
+    |
+394 | /         if target == CapabilityTarget::Sidecar {
+395 | |             if let Some(rules) = cli_permission_rules_meta(
+396 | |                 &flags.permission_allow_rules,
+397 | |                 &flags.permission_deny_rules,
+...   |
+401 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+    = note: `#[warn(clippy::collapsible_if)]` on by default
+help: collapse nested if block
+    |
+394 ~         if target == CapabilityTarget::Sidecar
+395 ~             && let Some(rules) = cli_permission_rules_meta(
+396 |                 &flags.permission_allow_rules,
+...
+399 |                 obj.insert("permissionRules".into(), rules);
+400 ~             }
+    |
+
+warning: use of a disallowed method `std::path::Path::canonicalize`
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\viewer.rs:41:40
+   |
+41 |         let resolved = match full_path.canonicalize() {
+   |                                        ^^^^^^^^^^^^
+   |
+   = note: returns \\?\ verbatim paths on Windows; use dunce::canonicalize
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#disallowed_methods
+
+warning: use of a disallowed method `std::path::Path::canonicalize`
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\viewer.rs:53:14
+   |
+53 |             .canonicalize()
+   |              ^^^^^^^^^^^^
+   |
+   = note: returns \\?\ verbatim paths on Windows; use dunce::canonicalize
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#disallowed_methods
+
+warning: this `if` can be collapsed into the outer `match`
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\mod.rs:2100:17
+     |
+2100 | /                 if !wf.url.is_empty() {
+2101 | |                     links.push(VisibleLink {
+2102 | |                         rects: vec![block_geom.content_area],
+2103 | |                         target: crate::render::osc8::LinkTarget::Url(Arc::from(wf.url.as_str())),
+2104 | |                         id: None,
+2105 | |                     });
+2106 | |                 }
+     | |_________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_match
+     = note: `#[warn(clippy::collapsible_match)]` on by default
+help: collapse nested if block
+     |
+2099 ~             RenderBlock::ToolCall(ToolCallBlock::WebFetch(wf))
+2100 ~                 if !wf.url.is_empty() => {
+2101 |                     links.push(VisibleLink {
+ ...
+2105 |                     });
+2106 ~                 }
+     |
+
+warning: this `if` can be collapsed into the outer `match`
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\acp_handler\session_notification.rs:1637:13
+     |
+1637 | /             if agent.session.state.is_switch_model_compact() {
+1638 | |                 agent.session.finish_command();
+1639 | |                 agent.mark_turn_finished(TurnEnd::Completed);
+1640 | |                 agent.activity_started_at = None;
+1641 | |                 agent.last_activity = None;
+1642 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_match
+help: collapse nested if block
+     |
+1636 ~         | A3sSessionUpdate::AutoCompactCancelled { .. }
+1637 ~             if agent.session.state.is_switch_model_compact() => {
+1638 |                 agent.session.finish_command();
+ ...
+1641 |                 agent.last_activity = None;
+1642 ~             }
+     |
+
+warning: this `if` statement can be collapsed
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\model_config.rs:15:5
+   |
+15 | /     if let ActiveView::Agent(id) = app.active_view {
+16 | |         if let Some(agent) = app.agents.get_mut(&id) {
+17 | |             if matches!(agent.active_modal, Some(ActiveModal::ModelConfig { .. })) {
+18 | |                 agent.active_modal = None;
+...  |
+22 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+   |
+15 ~     if let ActiveView::Agent(id) = app.active_view
+16 ~         && let Some(agent) = app.agents.get_mut(&id) {
+17 |             if matches!(agent.active_modal, Some(ActiveModal::ModelConfig { .. })) {
+...
+20 |             }
+21 ~         }
+   |
+
+warning: this `if` statement can be collapsed
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\model_config.rs:16:9
+   |
+16 | /         if let Some(agent) = app.agents.get_mut(&id) {
+17 | |             if matches!(agent.active_modal, Some(ActiveModal::ModelConfig { .. })) {
+18 | |                 agent.active_modal = None;
+19 | |                 return Vec::new();
+20 | |             }
+21 | |         }
+   | |_________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+   |
+16 ~         if let Some(agent) = app.agents.get_mut(&id)
+17 ~             && matches!(agent.active_modal, Some(ActiveModal::ModelConfig { .. })) {
+18 |                 agent.active_modal = None;
+19 |                 return Vec::new();
+20 ~             }
+   |
+
+warning: this `if` can be collapsed into the outer `match`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\notes.rs:771:17
+    |
+771 | /                 if file_paths.len() < 20 {
+772 | |                     match tc {
+773 | |                         ToolCallBlock::Read(b) => {
+774 | |                             file_paths.push(b.path.clone());
+...   |
+784 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_match
+help: collapse nested if block
+    |
+770 ~             RenderBlock::ToolCall(tc)
+771 ~                 if file_paths.len() < 20 => {
+772 |                     match tc {
+...
+783 |                     }
+784 ~                 }
+    |
+
+warning: consider using `sort_by_key`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\rewind.rs:465:5
+    |
+465 |     sorted.sort_by(|a, b| b.prompt_index.cmp(&a.prompt_index));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+    = note: `#[warn(clippy::unnecessary_sort_by)]` on by default
+help: try
+    |
+465 -     sorted.sort_by(|a, b| b.prompt_index.cmp(&a.prompt_index));
+465 +     sorted.sort_by_key(|b| std::cmp::Reverse(b.prompt_index));
+    |
+
+warning: redundant reference in `format!` argument
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\session\load.rs:175:53
+    |
+175 |         format!("Restoring code for session {}...", &session_id)
+    |                                                     ^^^^^^^^^^^ help: remove the redundant `&`: `session_id`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+    = note: `#[warn(clippy::useless_borrows_in_formatting)]` on by default
+
+warning: redundant reference in `format!` argument
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\session\load.rs:177:42
+    |
+177 |         format!("Loading session {}...", &session_id)
+    |                                          ^^^^^^^^^^^ help: remove the redundant `&`: `session_id`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\modals.rs:106:22
+    |
+106 |                     &tabs[window.active_tab],
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+note: the lint level is defined here
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\lib.rs:11:9
+    |
+ 11 | #![deny(clippy::indexing_slicing)]
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\modals.rs:143:14
+    |
+143 |             &tabs[tab_idx],
+    |              ^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\modals.rs:173:14
+    |
+173 |             &tabs[window.active_tab],
+    |              ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: this `if` has identical blocks
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\modals.rs:763:55
+    |
+763 |                   if self.apply_model_provider_tab(idx) {
+    |  _______________________________________________________^
+764 | |                     InputOutcome::Changed
+765 | |                 } else {
+    | |_________________^
+    |
+note: same as this
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\app\modals.rs:765:24
+    |
+765 |                   } else {
+    |  ________________________^
+766 | |                     InputOutcome::Changed
+767 | |                 }
+    | |_________________^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#if_same_then_else
+    = note: `#[warn(clippy::if_same_then_else)]` on by default
+
+warning: this `if` statement can be collapsed
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\mod.rs:1407:13
+     |
+1407 | /             if let Some((handle, current)) = stdin_console_mode() {
+1408 | |                 if current != saved {
+1409 | |                     unsafe {
+1410 | |                         let _ = SetConsoleMode(handle, saved);
+...    |
+1413 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1407 ~             if let Some((handle, current)) = stdin_console_mode()
+1408 ~                 && current != saved {
+1409 |                     unsafe {
+1410 |                         let _ = SetConsoleMode(handle, saved);
+1411 |                     }
+1412 ~                 }
+     |
+
+warning: consider using `sort_by_key`
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\recent_dirs.rs:38:5
+   |
+38 |     projects.sort_by(|a, b| b.1.cmp(&a.1));
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+   |
+38 -     projects.sort_by(|a, b| b.1.cmp(&a.1));
+38 +     projects.sort_by_key(|b| std::cmp::Reverse(b.1));
+   |
+
+warning: the variable `screen_y` is used as a loop counter
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render.rs:493:9
+    |
+493 |         for (block_line_idx, line) in mapped_lines.iter().enumerate().skip(content_skip) {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider using: `for (screen_y, (block_line_idx, line)) in (first_visible_content_y..).zip(mapped_lines.iter().enumerate().skip(content_skip))`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#explicit_counter_loop
+    = note: `#[warn(clippy::explicit_counter_loop)]` on by default
+
+warning: this loop could be written as a `while let` loop
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\text_selection.rs:1257:5
+     |
+1257 | /     loop {
+1258 | |         let Some(prefix) = url.get(..end) else {
+1259 | |             break;
+1260 | |         };
+...    |
+1280 | |         end -= last.len_utf8();
+1281 | |     }
+     | |_____^ help: try: `while let Some(prefix) = url.get(..end) { .. }`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#while_let_loop
+     = note: `#[warn(clippy::while_let_loop)]` on by default
+
+warning: consider using `sort_by_key`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\slash\mru.rs:160:9
+    |
+160 |         entries.sort_by(|a, b| b.1.cmp(&a.1));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+160 -         entries.sort_by(|a, b| b.1.cmp(&a.1));
+160 +         entries.sort_by_key(|b| std::cmp::Reverse(b.1));
+    |
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\slash\mod.rs:489:17
+    |
+489 |                 tabs[index].clone()
+    |                 ^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\slash\mod.rs:492:40
+    |
+492 |         self.model_provider_tab = Some(tabs[active].clone());
+    |                                        ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\slash\mod.rs:495:24
+    |
+495 |         let provider = self.model_tab_labels[active].clone();
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: consider using `sort_by_key`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\tool_usage.rs:385:9
+    |
+385 |         items.sort_by(|a, b| b.1.count.cmp(&a.1.count));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+385 -         items.sort_by(|a, b| b.1.count.cmp(&a.1.count));
+385 +         items.sort_by_key(|b| std::cmp::Reverse(b.1.count));
+    |
+
+warning: consider using `sort_by_key`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\dashboard\state.rs:937:5
+    |
+937 |     out.sort_by(|a, b| a.label.to_lowercase().cmp(&b.label.to_lowercase()));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+937 -     out.sort_by(|a, b| a.label.to_lowercase().cmp(&b.label.to_lowercase()));
+937 +     out.sort_by_key(|a| a.label.to_lowercase());
+    |
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\elicitation_view\state.rs:308:25
+    |
+308 | /                         if req.require_nonempty {
+309 | |                             if let Some(order) = schema
+310 | |                                 .get("x-a3s-field-order")
+311 | |                                 .and_then(serde_json::Value::as_array)
+...   |
+320 | |                         }
+    | |_________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+308 ~                         if req.require_nonempty
+309 ~                             && let Some(order) = schema
+310 |                                 .get("x-a3s-field-order")
+...
+318 |                                 });
+319 ~                             }
+    |
+
+warning: consider using `sort_unstable_by_key`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\history_search.rs:211:5
+    |
+211 |     hits.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+211 -     hits.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+211 +     hits.sort_unstable_by_key(|b| std::cmp::Reverse(b.1));
+    |
+
+warning: manual implementation of `Option::filter`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\history_search.rs:490:29
+    |
+490 |           let clamped = index.and_then(|i| {
+    |  _____________________________^
+491 | |             if i < self.snapshot.items.len() {
+492 | |                 Some(i)
+493 | |             } else {
+...   |
+496 | |         });
+    | |__________^ help: try: `filter(|&i| i < self.snapshot.items.len())`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_filter
+    = note: `#[warn(clippy::manual_filter)]` on by default
+
+warning: this `if` statement can be collapsed
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:88:9
+   |
+88 | /         if let Some(parent) = self.path.parent() {
+89 | |             if !parent.as_os_str().is_empty() {
+90 | |                 std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+91 | |             }
+92 | |         }
+   | |_________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+   |
+88 ~         if let Some(parent) = self.path.parent()
+89 ~             && !parent.as_os_str().is_empty() {
+90 |                 std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+91 ~             }
+   |
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:146:5
+    |
+146 | /     if let Some(path) = explicit {
+147 | |         if !path.is_empty() {
+148 | |             return PathBuf::from(path);
+149 | |         }
+150 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+146 ~     if let Some(path) = explicit
+147 ~         && !path.is_empty() {
+148 |             return PathBuf::from(path);
+149 ~         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:164:5
+    |
+164 | /     if let Some(home) = user_home {
+165 | |         if !home.is_empty() {
+166 | |             return PathBuf::from(home).join(".a3s").join("config.acl");
+167 | |         }
+168 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+164 ~     if let Some(home) = user_home
+165 ~         && !home.is_empty() {
+166 |             return PathBuf::from(home).join(".a3s").join("config.acl");
+167 ~         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:389:9
+    |
+389 | /         if is_timeout(&entry.name) {
+390 | |             if timeout_dirty {
+391 | |                 let replacement = if replaced_timeout {
+392 | |                     String::new()
+...   |
+399 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+389 ~         if is_timeout(&entry.name)
+390 ~             && timeout_dirty {
+391 |                 let replacement = if replaced_timeout {
+...
+397 |                 edits.push((entry.start, entry.end, replacement));
+398 ~             }
+    |
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:414:18
+    |
+414 |                 !used[*index] && provider.original_label.as_deref() == Some(label)
+    |                  ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:418:13
+    |
+418 |             used[index] = true;
+    |             ^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:419:16
+    |
+419 |             if draft.providers[index].dirty {
+    |                ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:423:38
+    |
+423 |                     render_provider(&draft.providers[index]),
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:433:13
+    |
+433 |         if !used[index] {
+    |             ^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:518:5
+    |
+518 | /     if let Some(original) = original {
+519 | |         if original.display == text {
+520 | |             return Some(original.value.clone());
+521 | |         }
+522 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+518 ~     if let Some(original) = original
+519 ~         && original.display == text {
+520 |             return Some(original.value.clone());
+521 ~         }
+    |
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:749:28
+    |
+749 |         if !is_ident_start(bytes[index]) {
+    |                            ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:755:52
+    |
+755 |         while index < bytes.len() && is_ident_part(bytes[index]) {
+    |                                                    ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:768:24
+    |
+768 |             let byte = bytes[cursor];
+    |                        ^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:877:38
+    |
+877 |         while index < bytes.len() && bytes[index].is_ascii_whitespace() {
+    |                                      ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:880:35
+    |
+880 |         if index < bytes.len() && bytes[index] == b'#' {
+    |                                   ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:893:34
+    |
+893 |     while index < bytes.len() && bytes[index] != b'\n' {
+    |                                  ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:904:17
+    |
+904 |     let quote = bytes[start];
+    |                 ^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: slicing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\document.rs:907:18
+    |
+907 |     for byte in &bytes[start + 1..] {
+    |                  ^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n..)` or .get_mut(n..)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:239:17
+    |
+239 | /                 if let Some(edit) = self.editing.as_mut() {
+240 | |                     if edit.cursor < edit.buffer.chars().count() {
+241 | |                         edit.cursor += 1;
+242 | |                     }
+243 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+239 ~                 if let Some(edit) = self.editing.as_mut()
+240 ~                     && edit.cursor < edit.buffer.chars().count() {
+241 |                         edit.cursor += 1;
+242 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:247:17
+    |
+247 | /                 if let Some(edit) = self.editing.as_mut() {
+248 | |                     if edit.cursor > 0 {
+249 | |                         let byte = byte_index(&edit.buffer, edit.cursor);
+250 | |                         let prev = byte_index(&edit.buffer, edit.cursor - 1);
+...   |
+254 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+247 ~                 if let Some(edit) = self.editing.as_mut()
+248 ~                     && edit.cursor > 0 {
+249 |                         let byte = byte_index(&edit.buffer, edit.cursor);
+...
+252 |                         edit.cursor -= 1;
+253 ~                     }
+    |
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:282:28
+    |
+282 |                 let next = fields[step(self.detail_index, fields.len(), delta)];
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:495:20
+    |
+495 |         let next = ids[step(current, ids.len(), delta)].clone();
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:542:21
+    |
+542 |         let model = provider.models[next].id.clone();
+    |                     ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:668:32
+    |
+668 |                 let previous = provider.models[index].id.clone();
+    |                                ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\model_config\state.rs:669:17
+    |
+669 |                 provider.models[index].id = id.clone();
+    |                 ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: this `if` statement can be collapsed
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\views\picker.rs:2770:13
+     |
+2770 | /             if state.query().is_empty() && !config.expandable {
+2771 | |                 if let Some(idx) = empty_query_tab_cycle(key, config) {
+2772 | |                     return PickerOutcome::TabChanged(idx);
+2773 | |                 }
+2774 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+2770 ~             if state.query().is_empty() && !config.expandable
+2771 ~                 && let Some(idx) = empty_query_tab_cycle(key, config) {
+2772 |                     return PickerOutcome::TabChanged(idx);
+2773 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\views\picker.rs:3053:13
+     |
+3053 | /             if state.query().is_empty() {
+3054 | |                 if let Some(idx) = empty_query_tab_cycle(key, config) {
+3055 | |                     return PickerOutcome::TabChanged(idx);
+3056 | |                 }
+3057 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+3053 ~             if state.query().is_empty()
+3054 ~                 && let Some(idx) = empty_query_tab_cycle(key, config) {
+3055 |                     return PickerOutcome::TabChanged(idx);
+3056 ~                 }
+     |
+
+warning: manual implementation of `Option::filter`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\prompt_widget\mod.rs:968:29
+    |
+968 |           let clamped = index.and_then(|i| {
+    |  _____________________________^
+969 | |             if i < self.suggestions.dropdown.items.len() {
+970 | |                 Some(i)
+971 | |             } else {
+...   |
+974 | |         });
+    | |__________^ help: try: `filter(|&i| i < self.suggestions.dropdown.items.len())`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_filter
+
+warning: manual implementation of `Option::filter`
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\views\prompt_widget\mod.rs:1463:29
+     |
+1463 |           let clamped = index.and_then(|i| {
+     |  _____________________________^
+1464 | |             if i < snap.matches.len() {
+1465 | |                 Some(i)
+1466 | |             } else {
+...    |
+1469 | |         });
+     | |__________^ help: try: `filter(|&i| i < snap.matches.len())`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_filter
+
+warning: this loop could be written as a `while let` loop
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\state.rs:495:9
+    |
+495 | /         loop {
+496 | |             let Some(&row_idx) = self.filtered_cache.get(prev) else {
+497 | |                 break;
+498 | |             };
+...   |
+510 | |             prev -= 1;
+511 | |         }
+    | |_________^ help: try: `while let Some(&row_idx) = self.filtered_cache.get(prev) { .. }`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#while_let_loop
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\slash_dropdown.rs:299:20
+    |
+299 |         let full = widths[index];
+    |                    ^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\slash_dropdown.rs:306:39
+    |
+306 |             let shown = truncate_str(&tabs[index], room as usize);
+    |                                       ^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\slash_dropdown.rs:310:14
+    |
+310 |             (tabs[index].clone(), full)
+    |              ^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: the loop variable `index` is used to index `widths`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\slash_dropdown.rs:353:18
+    |
+353 |     for index in start..=end {
+    |                  ^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_range_loop
+    = note: `#[warn(clippy::needless_range_loop)]` on by default
+help: consider using an iterator and enumerate()
+    |
+353 -     for index in start..=end {
+353 +     for (index, <item>) in widths.iter().enumerate().take(end + 1).skip(start) {
+    |
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\slash_dropdown.rs:355:62
+    |
+355 |         let next = used.saturating_add(extra).saturating_add(widths[index]);
+    |                                                              ^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: redundant reference in `format!` argument
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\tasks_pane.rs:497:47
+    |
+497 |             tag_display, info.human_schedule, &prompt_preview, &suffix
+    |                                               ^^^^^^^^^^^^^^^ help: remove the redundant `&`: `prompt_preview`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+warning: redundant reference in `format!` argument
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\tasks_pane.rs:497:64
+    |
+497 |             tag_display, info.human_schedule, &prompt_preview, &suffix
+    |                                                                ^^^^^^^ help: remove the redundant `&`: `suffix`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\welcome\logo.rs:183:41
+    |
+183 |                         let cell = &mut cells[row * cols + col];
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+error: indexing may panic
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\views\welcome\logo.rs:207:33
+    |
+207 | ...                   cells[row * cols + col] = Some((ch, opacity));
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider using `.get(n)` or `.get_mut(n)` instead
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#indexing_slicing
+
+warning: the variable `y` is used as a loop counter
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\views\welcome\menu.rs:59:5
+   |
+59 |     for (i, (key, label)) in items.iter().enumerate() {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider using: `for (y, (i, (key, label))) in (menu_centered.y..).zip(items.iter().enumerate())`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#explicit_counter_loop
+
+warning: `a3s-code-pager` (lib) generated 40 warnings
+error: could not compile `a3s-code-pager` (lib) due to 30 previous errors; 40 warnings emitted
+warning: build failed, waiting for other jobs to finish...
+warning: use of a disallowed method `tokio::process::Command::spawn`
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\acp\a3s_spawn.rs:540:33
+    |
+540 |         let mut child = command.spawn().expect("spawn stderr probe");
+    |                                 ^^^^^
+    |
+    = note: an unenrolled child outlives its session; use a3s_tty_utils::ProcessScope::enroll
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#disallowed_methods
+
+warning: deref which would be done by auto-deref
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\prompt.rs:6892:48
+     |
+6892 |         Some(RowEntry::Setting { key, .. }) => *key,
+     |                                                ^^^^ help: try: `key`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#explicit_auto_deref
+     = note: `#[warn(clippy::explicit_auto_deref)]` on by default
+
+warning: length comparison to zero
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\prompt.rs:7114:21
+     |
+7114 |     let system = if agent.scrollback.len() == 0 {
+     |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: using `is_empty` is clearer and more explicit: `agent.scrollback.is_empty()`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#len_zero
+     = note: `#[warn(clippy::len_zero)]` on by default
+
+warning: this `if` statement can be collapsed
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\prompt.rs:7174:13
+     |
+7174 | /             if let Effect::SetSessionMode { mode_id, .. } = effect {
+7175 | |                 if mode_id.0.as_ref() == "plan" {
+7176 | |                     return false;
+7177 | |                 }
+7178 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+7174 ~             if let Effect::SetSessionMode { mode_id, .. } = effect
+7175 ~                 && mode_id.0.as_ref() == "plan" {
+7176 |                     return false;
+7177 ~                 }
+     |
+
+warning: used `assert_eq!` with a literal bool
+    --> crates\terminal\crates\codegen\a3s-code-pager\src\app\session_startup.rs:1878:9
+     |
+1878 | /         assert_eq!(
+1879 | |             MaterializeCtx::from_pager_args(&parse(&["grok"])).allow_remote_restore,
+1880 | |             false
+1881 | |         );
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_assert_comparison
+     = note: `#[warn(clippy::bool_assert_comparison)]` on by default
+help: replace it with `assert!(..)`
+     |
+1878 ~         assert!(
+1879 ~             !MaterializeCtx::from_pager_args(&parse(&["grok"])).allow_remote_restore
+     |
+
+warning: this `MutexGuard` is held across an await point
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\headless\missing_sidecar_tests.rs:58:9
+   |
+58 |     let _guard = crate::acp::a3s_spawn::ACP_AGENT_BIN_TEST_LOCK
+   |         ^^^^^^
+   |
+   = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+  --> crates\terminal\crates\codegen\a3s-code-pager\src\headless\missing_sidecar_tests.rs:76:6
+   |
+76 |     .await
+   |      ^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+   = note: `#[warn(clippy::await_holding_lock)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\headless\missing_sidecar_tests.rs:90:9
+    |
+ 90 |     let _guard = crate::acp::a3s_spawn::ACP_AGENT_BIN_TEST_LOCK
+    |         ^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates\terminal\crates\codegen\a3s-code-pager\src\headless\missing_sidecar_tests.rs:109:6
+    |
+109 |     .await
+    |      ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: `a3s-code-pager` (lib test) generated 47 warnings (40 duplicates)
+error: could not compile `a3s-code-pager` (lib test) due to 30 previous errors; 47 warnings emitted

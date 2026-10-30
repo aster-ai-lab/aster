@@ -1191,10 +1191,9 @@ fn feedback_modal_open_refuses_visibly_under_every_input_owner() {
                 agent.question_view = Some(QuestionViewState::new("q-1".into(), vec![], stashed));
             }
             Owner::LineViewer => {
-                app.agents
-                    .get_mut(&id)
-                    .unwrap()
-                    .open_line_viewer(&viewer_path, None);
+                let agent = app.agents.get_mut(&id).unwrap();
+                agent.session.cwd = viewer_dir.path().to_path_buf();
+                agent.open_line_viewer(&viewer_path, None);
             }
             Owner::PlanApproval => {
                 app.agents.get_mut(&id).unwrap().plan_approval_view =

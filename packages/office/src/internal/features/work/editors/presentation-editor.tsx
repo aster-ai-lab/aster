@@ -69,7 +69,7 @@ import type {
   PresentationDesignMode,
   PresentationEditorProps,
 } from './presentation-editor-types';
-import { PresentationPlayer } from './presentation-player';
+import { PresentationPlayer, PresentationPreview } from './presentation-player';
 import { PresentationInlinePreview } from './presentation-inline-preview';
 import {
   presentationElementSupportsTextFormatting,
@@ -233,7 +233,7 @@ function PresentationEditorSurface(props: PresentationEditorSurfaceProps) {
           fileActions={fileActions}
           className="work-presentation-ribbon"
         />
-        <PresentationPlayer content={content} />
+        <PresentationPreview content={content} />
       </section>
     );
   }

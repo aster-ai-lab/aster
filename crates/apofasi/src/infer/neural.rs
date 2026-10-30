@@ -17,7 +17,10 @@ use crate::engine::DecisionEngine;
 use crate::error::{Error, Result};
 use crate::primitive::DecisionKind;
 use crate::schema::{Criteria, Question, State, SystemOneRequest, SystemOneResponse, TokenUsage};
-use crate::sequence::{choice_option_costs, pack_question, PackedQuestion};
+use crate::sequence::{
+    choice_option_costs, pack_question_with_truncation, PackedQuestion, SequenceConfig,
+    StateTruncation,
+};
 use crate::wide_choice::{compose_grouped_probs, plan_choice_groups};
 
 enum EngineNet {
@@ -142,15 +145,21 @@ impl NeuralEngine {
         state: &State,
         question_id: &str,
         question: &Question,
+        truncation: StateTruncation,
+        max_len: usize,
     ) -> Result<(Vec<String>, Vec<f32>, u32)> {
-        let packed = pack_question(
+        let packed = pack_question_with_truncation(
             &self.tokenizer,
             self.tokenizer.specials,
             &self.tokenizer.mask_token,
             state,
             question_id,
             question,
-            self.config.sequence,
+            SequenceConfig {
+                max_len,
+                ..self.config.sequence
+            },
+            truncation,
         )?;
         let tokens = packed.input_ids.len() as u32;
         let labels = packed.option_labels.clone();
@@ -172,6 +181,8 @@ impl NeuralEngine {
         question_id: &str,
         question: &Question,
         depth: usize,
+        truncation: StateTruncation,
+        max_len: usize,
     ) -> Result<(Vec<String>, Vec<f32>, u32)> {
         let labels = match &question.criteria {
             Some(Criteria::Choice(opts)) => opts.keys().cloned().collect::<Vec<_>>(),
@@ -195,7 +206,7 @@ impl NeuralEngine {
         let groups = plan_choice_groups(&costs, self.config.sequence.head_max_len);
         let splittable = groups.len() > 1 && groups.iter().any(|group| group.len() > 1);
         if depth > 8 || !splittable {
-            return self.direct_distribution(state, question_id, question);
+            return self.direct_distribution(state, question_id, question, truncation, max_len);
         }
 
         let mut jobs: Vec<Option<PackedQuestion>> = Vec::with_capacity(groups.len());
@@ -206,14 +217,18 @@ impl NeuralEngine {
                 continue;
             }
             let subset = subset_choice(question, group)?;
-            let packed = pack_question(
+            let packed = pack_question_with_truncation(
                 &self.tokenizer,
                 self.tokenizer.specials,
                 &self.tokenizer.mask_token,
                 state,
                 question_id,
                 &subset,
-                self.config.sequence,
+                SequenceConfig {
+                    max_len,
+                    ..self.config.sequence
+                },
+                truncation,
             )?;
             tokens = tokens.saturating_add(packed.input_ids.len() as u32);
             jobs.push(Some(packed));
@@ -256,8 +271,14 @@ impl NeuralEngine {
             vec![1.0]
         } else {
             let winners = subset_choice_keys(question, &winner_keys)?;
-            let (_labels, probs, winner_tokens) =
-                self.choice_distribution(state, question_id, &winners, depth + 1)?;
+            let (_labels, probs, winner_tokens) = self.choice_distribution(
+                state,
+                question_id,
+                &winners,
+                depth + 1,
+                truncation,
+                max_len,
+            )?;
             tokens = tokens.saturating_add(winner_tokens);
             probs
         };
@@ -266,14 +287,66 @@ impl NeuralEngine {
     }
 }
 
-impl DecisionEngine for NeuralEngine {
-    fn model_id(&self) -> &str {
-        &self.model_id
+impl NeuralEngine {
+    /// Decide with an optional state that must fit before applying the policy to the full request.
+    pub fn decide_with_required(
+        &self,
+        request: &SystemOneRequest,
+        required: Option<&SystemOneRequest>,
+        truncation: StateTruncation,
+    ) -> Result<SystemOneResponse> {
+        self.decide_with_required_and_len(
+            request,
+            required,
+            truncation,
+            self.config.sequence.max_len,
+        )
     }
 
-    fn decide(&self, request: &SystemOneRequest) -> Result<SystemOneResponse> {
+    /// Decide with required content and an explicit total token budget.
+    pub fn decide_with_required_and_len(
+        &self,
+        request: &SystemOneRequest,
+        required: Option<&SystemOneRequest>,
+        truncation: StateTruncation,
+        max_len: usize,
+    ) -> Result<SystemOneResponse> {
+        if let Some(required) = required {
+            for (id, question) in &required.questions {
+                pack_question_with_truncation(
+                    &self.tokenizer,
+                    self.tokenizer.specials,
+                    &self.tokenizer.mask_token,
+                    &required.state,
+                    id,
+                    question,
+                    SequenceConfig {
+                        max_len,
+                        ..self.config.sequence
+                    },
+                    StateTruncation::Reject,
+                )?;
+            }
+        }
+        self.decide_with_truncation_and_len(request, truncation, max_len)
+    }
+
+    fn decide_with_truncation(
+        &self,
+        request: &SystemOneRequest,
+        truncation: StateTruncation,
+    ) -> Result<SystemOneResponse> {
+        self.decide_with_truncation_and_len(request, truncation, self.config.sequence.max_len)
+    }
+
+    fn decide_with_truncation_and_len(
+        &self,
+        request: &SystemOneRequest,
+        truncation: StateTruncation,
+        max_len: usize,
+    ) -> Result<SystemOneResponse> {
         if request_has_wide(self, request)? {
-            return self.decide_wide(request);
+            return self.decide_wide(request, truncation, max_len);
         }
         let profile = std::env::var_os("APOFASI_PROFILE").is_some();
         let t_pack0 = std::time::Instant::now();
@@ -289,14 +362,18 @@ impl DecisionEngine for NeuralEngine {
                 other => other,
             })?;
 
-            let one = pack_question(
+            let one = pack_question_with_truncation(
                 &self.tokenizer,
                 self.tokenizer.specials,
                 &self.tokenizer.mask_token,
                 &request.state,
                 id,
                 question,
-                self.config.sequence,
+                SequenceConfig {
+                    max_len,
+                    ..self.config.sequence
+                },
+                truncation,
             )?;
             input_tokens = input_tokens.saturating_add(one.input_ids.len() as u32);
             packed.push(one);
@@ -357,6 +434,16 @@ impl DecisionEngine for NeuralEngine {
                 output_tokens: (request.questions.len() as u32).saturating_mul(8),
             },
         })
+    }
+}
+
+impl DecisionEngine for NeuralEngine {
+    fn model_id(&self) -> &str {
+        &self.model_id
+    }
+
+    fn decide(&self, request: &SystemOneRequest) -> Result<SystemOneResponse> {
+        self.decide_with_truncation(request, StateTruncation::Head)
     }
 }
 
@@ -425,13 +512,18 @@ fn subset_choice_keys(question: &Question, keys: &[String]) -> Result<Question> 
 }
 
 impl NeuralEngine {
-    fn decide_wide(&self, request: &SystemOneRequest) -> Result<SystemOneResponse> {
+    fn decide_wide(
+        &self,
+        request: &SystemOneRequest,
+        truncation: StateTruncation,
+        max_len: usize,
+    ) -> Result<SystemOneResponse> {
         let mut answers = IndexMap::new();
         let mut input_tokens = 0u32;
         for (id, question) in &request.questions {
             if self.question_is_wide(question)? {
                 let (labels, probs, tokens) =
-                    self.choice_distribution(&request.state, id, question, 0)?;
+                    self.choice_distribution(&request.state, id, question, 0, truncation, max_len)?;
                 input_tokens = input_tokens.saturating_add(tokens);
                 let answer = choice_from_probs(&labels, &probs).map_err(|err| match err {
                     Error::InvalidQuestion { reason, .. } => Error::InvalidQuestion {
@@ -442,7 +534,8 @@ impl NeuralEngine {
                 })?;
                 answers.insert(id.clone(), answer);
             } else {
-                let (answer, tokens) = self.fitted_one(id, &request.state, question)?;
+                let (answer, tokens) =
+                    self.fitted_one(id, &request.state, question, truncation, max_len)?;
                 input_tokens = input_tokens.saturating_add(tokens);
                 answers.insert(id.clone(), answer);
             }
@@ -462,15 +555,21 @@ impl NeuralEngine {
         id: &str,
         state: &State,
         question: &Question,
+        truncation: StateTruncation,
+        max_len: usize,
     ) -> Result<(crate::schema::Answer, u32)> {
-        let packed = pack_question(
+        let packed = pack_question_with_truncation(
             &self.tokenizer,
             self.tokenizer.specials,
             &self.tokenizer.mask_token,
             state,
             id,
             question,
-            self.config.sequence,
+            SequenceConfig {
+                max_len,
+                ..self.config.sequence
+            },
+            truncation,
         )?;
         let tokens = packed.input_ids.len() as u32;
         let outputs = self.forward_packed(std::slice::from_ref(&packed))?;
@@ -519,7 +618,6 @@ mod tests {
     use crate::infer::decision_net::ForwardOutput;
     use crate::primitive::DecisionKind;
     use crate::schema::{Criteria, Question, State};
-    use crate::sequence::pack_question;
     use serde_json::json;
 
     fn close(a: &[f32], b: &[f32]) -> bool {
@@ -564,7 +662,7 @@ mod tests {
         let mut packed = Vec::new();
         for (id, question) in &questions {
             packed.push(
-                pack_question(
+                crate::sequence::pack_question(
                     &engine.tokenizer,
                     engine.tokenizer.specials,
                     &engine.tokenizer.mask_token,

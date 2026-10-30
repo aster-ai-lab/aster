@@ -1,0 +1,47 @@
+[
+  {
+    "check": "line_endings",
+    "exit_code": 0,
+    "seconds": 10.95752
+  },
+  {
+    "check": "workspace_dependencies",
+    "exit_code": 0,
+    "seconds": 130.131906
+  },
+  {
+    "check": "studio_checkout",
+    "exit_code": 0,
+    "seconds": 2.282132
+  },
+  {
+    "check": "cli_pair_delivery",
+    "exit_code": 0,
+    "seconds": 0.953547
+  },
+  {
+    "check": "release_governance",
+    "exit_code": 0,
+    "seconds": 0.39682
+  },
+  {
+    "check": "aster_cli_linux",
+    "exit_code": 0,
+    "seconds": 0.834427
+  },
+  {
+    "check": "kylin_input_method",
+    "exit_code": 0,
+    "seconds": 0.99236
+  },
+  {
+    "check": "progress_bench",
+    "exit_code": 0,
+    "seconds": 0.214657
+  },
+  {
+    "check": "musl_linker_flags",
+    "exit_code": 0,
+    "seconds": 0.648369
+  }
+]

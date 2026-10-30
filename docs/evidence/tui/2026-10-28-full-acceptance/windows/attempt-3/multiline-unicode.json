@@ -1,0 +1,104 @@
+{
+  "assertions_finished": false,
+  "case": "multiline-unicode",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13466,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0fcbb71-6715-4072-ba0d-8e190cae3143",
+            "thread_id": "4473282f-853a-442d-a08c-ee83fca21931"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_2f7fdc9138344af1a00b69fe1d3ee62b",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a0fcbb71-6715-4072-ba0d-8e190cae3143",
+            "thread_id": "4473282f-853a-442d-a08c-ee83fca21931"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_2f7fdc9138344af1a00b69fe1d3ee62b",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tUTF8-6ad9d7e7-b80c-4c3a-9f08-3f8887dafe7d\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:3036543c4d143c1d82a8d36e8fea617505be3a1df486f2ee8ec23832c639cbcb\",\"content_ref\":\"inline:sha256:3036543c4d143c1d82a8d36e8fea617505be3a1df486f2ee8ec23832c639cbcb\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":49,\"original_estimated_tokens\":13,\"projected_bytes\":49,\"projected_digest\":\"sha256:3036543c4d143c1d82a8d36e8fea617505be3a1df486f2ee8ec23832c639cbcb\",\"projected_estimated_tokens\":13,\"repeat_key\":\"sha256:3036543c4d143c1d82a8d36e8fea617505be3a1df486f2ee8ec23832c639cbcb\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":49,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"中文 带空格.txt\"]},\"observation_digest\":\"sha256:b2c4875168e4ab1e5f1608a0d6bea464c639be0d10e51f9a18110922e10d1478\"}",
+        "prepared_digest": "sha256:b01e53e11a4dfb819b5c76acbdeff4e845b2d67327116aa2e42e8d5af4d584ca"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13688,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "c929144942218fc4cd46de6d6b8ea44d034e3b5f71a78ad78876b00c79d08539",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:75a5d35b0ce36cb77dc1872f1237cd4a55fadb89672a6789901d8c1d12fd3143"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "                                                                                                                          C:\\W\\T\\aster-kimi-5Qv7nH\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.      8:43 PM           第二行：这是多行输入验证，请勿修改文件。                                                                                Do not call other tools.                                                                                                                                                                                                                                                                                                                                              ♦ Read 1 file                                                                                                                                                                                                                                   UTF8-6ad9d7e7-b80c-4c3a-9f08-3f8887dafe7d                                                               8:43 PM                                                                                                                                 Worked for 10s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ > Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.               │    │   第二行：这是多行输入验证，请勿修改文件。                                                                       │    │   Do not call other tools.                                                                                       │    ╰────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─multiline ─╯                                                                                                                            Alt+Enter:send  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                        ",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:607f5cc78c810e67a4e95936ce58959c8634389e:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=27154",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-5Qv7nH\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.      8:43 PM           第二行：这是多行输入验证，请勿修改文件。                                                                                Do not call other tools.                                                                                                                                                                                                                                                                                                                                              ♦ Read 1 file                                                                                                                                                                                                                                   UTF8-6ad9d7e7-b80c-4c3a-9f08-3f8887dafe7d                                                               8:43 PM                                                                                                                                 Worked for 10s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─multiline ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exact multiline user.message, real Unicode/space-path read and unseen token reply",
+      "name": "multiline-utf8",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-5Qv7nH\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read the file named 中文 带空格.txt and reply with its exact contents.      8:43 PM           第二行：这是多行输入验证，请勿修改文件。                                                                                Do not call other tools.                                                                                                                                                                                                                                                                                                                                              ♦ Read 1 file                                                                                                                                                                                                                                   UTF8-6ad9d7e7-b80c-4c3a-9f08-3f8887dafe7d                                                               8:43 PM                                                                                                                                 Worked for 10s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─multiline ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    }
+  ],
+  "panicked": true
+}

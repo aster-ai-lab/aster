@@ -645,6 +645,11 @@
 
     #[test]
     fn plan_kept_replaces_the_keep_and_refreshes_mounted_review() {
+        let root = tempfile::tempdir().unwrap();
+        let first = root.path().join("first.plan.md");
+        let second = root.path().join("second.plan.md");
+        let first_uri = url::Url::from_file_path(&first).unwrap();
+        let second_uri = url::Url::from_file_path(&second).unwrap();
         let mut app = make_app_with_agent("sess-plan");
         {
             let agent = app.agents.get_mut(&AgentId(0)).unwrap();
@@ -652,7 +657,7 @@
             agent.plan_mode_active = true;
         }
         let _ = handle(
-            plan_kept_msg("sess-plan", "file:///tmp/first.plan.md", "# First body\n"),
+            plan_kept_msg("sess-plan", first_uri.as_str(), "# First body\n"),
             &mut app,
         );
         app.agents
@@ -660,7 +665,7 @@
             .unwrap()
             .open_post_turn_plan_review();
         let _ = handle(
-            plan_kept_msg("sess-plan", "file:///tmp/second.plan.md", "# Second body\n"),
+            plan_kept_msg("sess-plan", second_uri.as_str(), "# Second body\n"),
             &mut app,
         );
         let agent = test_agent(&app, AgentId(0));
@@ -673,7 +678,7 @@
         );
         assert_eq!(
             agent.kept_plan.path(),
-            Some(std::path::Path::new("/tmp/second.plan.md")),
+            Some(second.as_path()),
         );
     }
 

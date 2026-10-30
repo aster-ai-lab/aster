@@ -1,0 +1,32 @@
+
+running 27 tests
+test event::read::tests::test_poll_continues_after_error ... ok
+test event::read::tests::test_poll_fails_without_event_source ... ok
+test event::read::tests::test_poll_propagates_error ... ok
+test event::read::tests::test_poll_returns_false_after_all_source_events_are_consumed ... ok
+test event::read::tests::test_poll_returns_true_for_matching_event_in_queue_at_front ... ok
+test event::read::tests::test_poll_returns_true_if_source_has_at_least_one_event ... ok
+test event::read::tests::test_poll_timeouts_if_source_has_no_events ... ok
+test event::read::tests::test_read_continues_after_error ... ok
+test event::read::tests::test_read_propagates_error ... ok
+test event::read::tests::test_read_returns_events_if_source_has_events ... ok
+test event::read::tests::test_read_returns_matching_event_in_queue_at_front ... ok
+test event::read::tests::test_reads_returns_event_if_source_has_at_least_one_event ... ok
+test event::sys::windows::parse::alt_code_tests::committed_alt_code_characters_are_text_presses ... ok
+test event::sys::windows::parse::alt_code_tests::committed_alt_code_surrogates_still_form_one_text_press ... ok
+test event::sys::windows::parse::alt_code_tests::ordinary_alt_release_does_not_insert_text ... ok
+test event::sys::windows::parse::alt_code_tests::ordinary_character_release_remains_a_release ... ok
+test event::tests::keycode_display ... ok
+test event::tests::media_keycode_display ... ok
+test event::tests::modifier_keycode_display ... ok
+test event::tests::modifier_keycode_display_windows ... ok
+test event::tests::test_equality ... ok
+test event::tests::test_hash ... ok
+test event::timeout::tests::test_elapsed_timeout_has_zero_leftover ... ok
+test event::timeout::tests::test_not_elapsed_timeout_has_positive_leftover ... ok
+test event::timeout::tests::test_timeout_elapses ... ok
+test event::timeout::tests::test_timeout_without_duration_does_not_have_leftover ... ok
+test event::timeout::tests::test_timeout_without_duration_never_elapses ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.00s
+

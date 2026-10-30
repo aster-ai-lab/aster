@@ -1,0 +1,45 @@
+{
+  "unix": 1792868266.9247541,
+  "result": {
+    "schema": "aster-indexer-mask-v40-build",
+    "unix": 1792868170.7928264,
+    "phase": "built",
+    "gpu_executed": false,
+    "performance_claimed": false,
+    "step": "helper-probe-link",
+    "v35_control_binary_sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd",
+    "gpu_quality_passed": false,
+    "adopted": false,
+    "candidate": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40/ds41_generate",
+      "sha256": "c03250645ea8e960d3db2b9a46d51dd74b8f616c2a8047eaeca1456fb8901aff",
+      "bytes": 253077656
+    },
+    "gates": [
+      {
+        "name": "graph-gate-original",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40/graph-gate-original",
+        "sha256": "2b88d14aae8b236b325f2a2cd3be7d4e951b6d52095399d0d83e42c19f3c177f"
+      },
+      {
+        "name": "graph-gate-candidate",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40/graph-gate-candidate",
+        "sha256": "dafc565b51d07f855d84ef8d62bc3a46d2f502f1a4c8ab20ccfcb8c8728d82e3"
+      },
+      {
+        "name": "helper-probe",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40/helper-probe",
+        "sha256": "b75a26bb301503e885d3ae957d8b9442c70ed09add8827584642604aabce33e9"
+      }
+    ],
+    "cuda_object_sha256": "c213b1ee8d8cca7dc45c2f0d0df9b7e3e926b14887a5cab15445682f57382d3e",
+    "dense_object_sha256": "61be5025c151dacde10b9b4454436b4b0cb871b9cfcb384db3a5c969141de3f3",
+    "finished_unix": 1792868198.5541282
+  },
+  "exact_build_alive": false,
+  "exact-mask-cuda-compile.stderr.log": "dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\n",
+  "exact-mask-probe-compile.stderr.log": "dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\ndpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied\n",
+  "actual-graph-driver-compile.stderr.log": "",
+  "candidate-model-link.stderr.log": "",
+  "gpu-build-worker.log": ""
+}

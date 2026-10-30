@@ -1,0 +1,61 @@
+
+running 1 test
+ORACLE case=session-info-contract name=source-pair result=pass detail=aster-cli-pair-v1:7f282ad7c4cc5580d1811b0d4a2dd4c12de32865:x86_64-unknown-linux-gnu
+ORACLE case=session-info-contract name=session-info-empty result=pass detail=persisted identity/cwd, configured model, default mode and zero turn/context match
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13182
+ORACLE case=session-info-contract name=session-info-first-turn result=pass detail=actual user turns=1, provider usage=13227/128000 (10%), mode=default
+ORACLE case=session-info-contract name=session-info-yolo result=pass detail=the real permission-mode transition is reflected without changing turn or usage
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13238
+
+thread 'functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage' (5367) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:367:9:
+timeout waiting for "TUI_INPUT_BARRIER"
+                                                                                                                        
+  /t/aster-kimi-nkSZiI/workspace                                                                            26K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Do not call tools. Reply only SESSION-INFO-SECOND-OK.                                                 5:08 AM    
+                     ┌────────────────────────────────────────────────────────────────────── [✗] ─┐                     
+                     │  Context usage  Usage limit  Session info                                  │                     
+     ◆ Thought for 0.│────────────────────────────────────────────────────────────────────────────│                     
+                     │  Session info   click or drag to copy                                      │                     
+     SESSION-INFO-SEC│                                                                            │          5:08 AM    
+                     │  Title:                                                                    │                    █
+     Worked for 4.6s │  kimi/k3.1-pro                                                             │                    █
+                     │                                                                            │                    █
+                     │  Shell version:                                                            │                    █
+                     │  9.1.4                                                                     │                    █
+                     │                                                                            │                    █
+                     │  Session ID:                                                               │                    █
+                     │  8e70fd69-3f8d-44d7-bda4-ccc14447ca37                                      │                    █
+                     │                                                                            │                    █
+                     │  Working directory:                                                        │                    █
+                     │  /tmp/aster-kimi-nkSZiI/workspace                                          │                    █
+                     │                                                                            │                    █
+                     │  Model: kimi/k3.1-pro                                                      │                    █
+                     │  Mode: yolo                                                                │                    █
+                     │  Turn: 2                                                                   │                    █
+                     │  Context: 26510 / 128000 tokens (21%)                                      │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │       Tab switch  |  ↑/↓ scroll  |  c copy session ID  |  y copy all       │                    █
+                     │                                 Esc close                                  │                     
+  ╭──────────────────└────────────────────────────────────────────────────────────────────────────┘──────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage ... FAILED
+
+failures:
+
+failures:
+    functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 51 filtered out; finished in 43.65s
+

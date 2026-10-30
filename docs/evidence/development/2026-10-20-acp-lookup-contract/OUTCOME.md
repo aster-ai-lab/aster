@@ -27,10 +27,10 @@ one. `aster agent leader` still calls `run_leader`, which builds
 moved onto `a3s-code-acp`.
 
 Sidecar initialize capability meta has no key that starts with
-`x.ai/`. Leader initialize still advertises exactly
-`x.ai/bashOutputNoColor`, `x.ai/gitHeadChanged`, `x.ai/hunkTracker`,
-`x.ai/incrementalBashOutput`, `x.ai/statusLine`, and
-`x.ai/userMessageEcho`. `crates/code/acp` does not implement those six
+`a3s/`. Leader initialize still advertises exactly
+`a3s/bashOutputNoColor`, `a3s/gitHeadChanged`, `a3s/hunkTracker`,
+`a3s/incrementalBashOutput`, `a3s/statusLine`, and
+`a3s/userMessageEcho`. `crates/code/acp` does not implement those six
 keys. `specs/002-shared-acp-agent/spec.md` records both paths.
 
 `spawn_grok_shell` is not defined and not called in the pager crate.
@@ -67,7 +67,7 @@ with `spawn_grok_shell`. The product shell-spawn set stays empty.
 
 - The live LLM prompt was not re-run. Boyue is not a pass.
 - No ACL or TOML setting was added. No shared lookup crate was added.
-- The six `x.ai/` keys were not implemented in the ACP agent.
+- The six `a3s/` keys were not implemented in the ACP agent.
 - Pager layout, crate names, versions, editions, and licenses were not
   changed.
 - Nothing was committed.

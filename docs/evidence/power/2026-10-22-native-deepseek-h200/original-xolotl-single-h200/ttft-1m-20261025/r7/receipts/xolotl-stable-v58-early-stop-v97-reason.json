@@ -1,0 +1,628 @@
+{
+  "rjob": {
+    "name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+    "uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-10-24T21:24:51Z",
+          "lastUpdateTime": "2026-10-24T21:24:51Z",
+          "message": "RJob is inqueue",
+          "reason": "StartInqueue",
+          "status": "True",
+          "type": "Inqueue"
+        },
+        {
+          "lastTransitionTime": "2026-10-24T21:25:01Z",
+          "lastUpdateTime": "2026-10-24T21:25:01Z",
+          "message": "RJob is starting",
+          "reason": "Starting",
+          "status": "True",
+          "type": "Starting"
+        },
+        {
+          "lastTransitionTime": "2026-10-24T21:29:49Z",
+          "lastUpdateTime": "2026-10-24T21:29:49Z",
+          "message": "RJob is running",
+          "reason": "StartRunning",
+          "status": "True",
+          "type": "Running"
+        },
+        {
+          "lastTransitionTime": "2026-10-24T23:50:19Z",
+          "lastUpdateTime": "2026-10-24T23:50:19Z",
+          "message": "RJob is stopped",
+          "reason": "StartStopped",
+          "status": "True",
+          "type": "Stopped"
+        }
+      ],
+      "finishTime": "2026-10-24T23:50:19Z",
+      "message": "RJob stopped",
+      "phase": "Stopped",
+      "reason": "RJobStopped",
+      "taskStatuses": {
+        "t0": {
+          "stopped": 1
+        }
+      }
+    },
+    "spec": {
+      "autoDeleteDuration": "720h0m0s",
+      "backoffLimit": 1,
+      "selector": {
+        "matchLabels": {
+          "kubebrain.brainpp.cn/resourcetype": "rjob",
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078"
+        }
+      },
+      "taskSpecs": {
+        "t0": {
+          "maxRunningDuration": "0s",
+          "maxWaitDuration": "0s",
+          "positiveTags": [
+            "H200",
+            "feature/gpfs=yes"
+          ],
+          "qos": {
+            "gpuQos": "guaranteed",
+            "localStorageQos": "guaranteed"
+          },
+          "replicas": 1,
+          "rootfsSource": {
+            "kind": "image",
+            "metadata": {
+              "creationTimestamp": null
+            }
+          },
+          "selector": {
+            "matchLabels": {
+              "kubebrain.brainpp.cn/resourcetype": "rjob",
+              "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+              "rjob.brainpp.cn/rjob-task-type": "t0"
+            }
+          },
+          "template": {
+            "metadata": {
+              "annotations": {
+                "kubebrain.brainpp.cn/module": "hrprda3s_gpu_pool",
+                "kubebrain.brainpp.cn/readonly-hostpath-mounts": "/checkpoints/2:/mnt/nvme2n1/shared/checkpoints,/checkpoints/3:/mnt/nvme3n1/shared/checkpoints",
+                "mount.brainpp.cn/gpfs": "gpfs://gpfs1/yangchao:/mnt/shared-storage-user/yangchao;gpfs://gpfs2/gpfs2-shared-public:/mnt/shared-storage-gpfs2/gpfs2-shared-public"
+              },
+              "creationTimestamp": null,
+              "labels": {
+                "brainpp-log-collector": "fluent-bit",
+                "kubebrain.brainpp.cn/creator": "yangchao",
+                "kubebrain.brainpp.cn/creator-department": "default",
+                "kubebrain.brainpp.cn/creator-id": "2719f82309b46a2aca14f264bc0437ae",
+                "kubebrain.brainpp.cn/creator-type": "user",
+                "kubebrain.brainpp.cn/extraresourceid": "",
+                "kubebrain.brainpp.cn/extraresourcetype": "",
+                "kubebrain.brainpp.cn/resourcetype": "rjob",
+                "privatemachine.brainpp.cn/privatemachine": "group",
+                "quotagroup.brainpp.cn/preemptible": "no",
+                "quotagroup.brainpp.cn/quotagroup": "hrprda3s_gpu_pool",
+                "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+                "rjob.brainpp.cn/rjob-task-id": "aster-xolotl-1mc8-d1480eb0e2fd-90999078-t0",
+                "rjob.brainpp.cn/rjob-task-type": "t0",
+                "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+                "volcano.brainpp.cn/interruptible": "false",
+                "workspace.brainpp.cn/workspace-namspace": "ailab-hrprdduanyan"
+              }
+            },
+            "spec": {
+              "affinity": {},
+              "containers": [
+                {
+                  "command": [
+                    "bash",
+                    "-lc",
+                    "exec timeout --signal=TERM --kill-after=30 21660 python3 -u -c 'import base64;exec(base64.b64decode('\"'\"'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBvcyxzdWJwcm9jZXNzLHN5cyx0aW1lLHRyYWNlYmFjawpyb290PVBhdGgoJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQnKQp0cnk6CiBpZiByb290LnJlc29sdmUoKSE9cm9vdCBvciByb290LnN0YXQoKS5zdF91aWQhPTEwMjUwOnJhaXNlIFJ1bnRpbWVFcnJvcignb3duZWQgcmVzb3VyY2Ugc3RhZ2UgVUlEIGNoYW5nZWQnKQogaWYgb3MuZ2V0dWlkKCk9PTA6CiAgb3Muc2V0Z3JvdXBzKFtdKTtvcy5zZXRnaWQocm9vdC5zdGF0KCkuc3RfZ2lkKTtvcy5zZXR1aWQoMTAyNTApCiBpZiBvcy5nZXR1aWQoKSE9MTAyNTA6cmFpc2UgUnVudGltZUVycm9yKCdwcm9iZSBtdXN0IHJ1biBhcyBpdHMgYXJ0aWZhY3Qgb3duZXInKQogb3MudW1hc2soMG8wNzcpCiB3aXRoIChyb290Lyd3b3JrZXIubG9nJykub3BlbigneGInLGJ1ZmZlcmluZz0wKSBhcyBsb2c6CiAgb3MuZHVwMihsb2cuZmlsZW5vKCksMSk7b3MuZHVwMihsb2cuZmlsZW5vKCksMikKICBwcmludCgnUkVTT1VSQ0VfUFJPQkVfQk9PVFNUUkFQIHVpZD0nK3N0cihvcy5nZXR1aWQoKSksZmx1c2g9VHJ1ZSkKICByZXN1bHQ9c3VicHJvY2Vzcy5ydW4oWydweXRob24zJywgJy11JywgJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQvd29ya2VyLnB5JywgJy0tZXhwZWN0ZWQtZ3B1cycsICcxJywgJy0tbGVhc2Utc2Vjb25kcycsICcyMTYwMCcsICctLXdvcmtlci1zaGEyNTYnLCAnMzBlNDUzYzI2NzFkOWQ4YTE4YjIzMzdhNzQ3ZjJiNWY4YWU5MDJmM2JkZWU5ODc4ZTViNzY0YjhhNjMxMDZkYiddLGN3ZD1yb290LHRpbWVvdXQ9MjE2MjApCiAgaWYgcmVzdWx0LnJldHVybmNvZGU6CiAgIHByaW50KCdSRVNPVVJDRV9QUk9CRV9GQUlMRUQgZGlhZ25vc3RpY19ob2xkX3NlY29uZHM9NjAwJyxmbHVzaD1UcnVlKTt0aW1lLnNsZWVwKDYwMCkKICBzeXMuZXhpdChyZXN1bHQucmV0dXJuY29kZSkKZXhjZXB0IEV4Y2VwdGlvbjoKIHRyYWNlYmFjay5wcmludF9leGMoKTtwcmludCgnUkVTT1VSQ0VfQk9PVFNUUkFQX0ZBSUxFRCBkaWFnbm9zdGljX2hvbGRfc2Vjb25kcz02MDAnLGZsdXNoPVRydWUpO3RpbWUuc2xlZXAoNjAwKTtyYWlzZQo='\"'\"'))'"
+                  ],
+                  "env": [
+                    {
+                      "name": "RJOB_TASK_INDEX",
+                      "value": "0"
+                    },
+                    {
+                      "name": "KUBEBRAIN_CLUSTER_ENTRY",
+                      "value": "https://h.pjlab.org.cn"
+                    },
+                    {
+                      "name": "KUBEBRAIN_WORKSPACE_NAME",
+                      "value": "ws-361f4be2c42b325e"
+                    },
+                    {
+                      "name": "KUBEBRAIN_NODE_NAME",
+                      "valueFrom": {
+                        "fieldRef": {
+                          "fieldPath": "spec.nodeName"
+                        }
+                      }
+                    },
+                    {
+                      "name": "HOST_NETWORK",
+                      "value": "false"
+                    },
+                    {
+                      "name": "KUBEBRAIN_CLUSTER_ENTRY",
+                      "value": "https://h.pjlab.org.cn"
+                    },
+                    {
+                      "name": "KUBEBRAIN_QUOTA_GROUP",
+                      "value": "hrprda3s_gpu_pool"
+                    },
+                    {
+                      "name": "KUBEBRAIN_WORKSPACE_NAMESPACE",
+                      "value": "ailab-hrprdduanyan"
+                    },
+                    {
+                      "name": "KUBEBRAIN_NAMESPACE",
+                      "value": "ailab-hrprdduanyan"
+                    }
+                  ],
+                  "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "t0",
+                  "resources": {
+                    "limits": {
+                      "cpu": "20",
+                      "memory": "220Gi",
+                      "nvidia.com/gpu": "1"
+                    },
+                    "requests": {
+                      "cpu": "20",
+                      "memory": "220Gi",
+                      "nvidia.com/gpu": "1"
+                    }
+                  },
+                  "securityContext": {
+                    "privileged": false
+                  },
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/.auth/accesskey_id",
+                      "name": "auth-info",
+                      "readOnly": true,
+                      "subPath": "accesskey_id"
+                    },
+                    {
+                      "mountPath": "/.auth/accesskey_secret",
+                      "name": "auth-info",
+                      "readOnly": true,
+                      "subPath": "accesskey_secret"
+                    }
+                  ]
+                }
+              ],
+              "imagePullSecrets": [
+                {
+                  "name": "2719f82309b46a2aca14f264bc0437ae"
+                }
+              ],
+              "restartPolicy": "Never",
+              "securityContext": {},
+              "terminationGracePeriodSeconds": 60,
+              "volumes": [
+                {
+                  "name": "auth-info",
+                  "secret": {
+                    "items": [
+                      {
+                        "key": "accesskey_id",
+                        "path": "accesskey_id"
+                      },
+                      {
+                        "key": "accesskey_secret",
+                        "path": "accesskey_secret"
+                      }
+                    ],
+                    "secretName": "2719f82309b46a2aca14f264bc0437ae"
+                  }
+                }
+              ]
+            }
+          },
+          "updatePolicy": "Active"
+        }
+      }
+    }
+  },
+  "replica": {
+    "name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078-n742l",
+    "uid": "5bc10e6a-63e4-4f52-bdeb-8b1fd22dd67c",
+    "status": {
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T21:24:59Z",
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T21:29:47Z",
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T21:29:47Z",
+          "status": "True",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T21:24:59Z",
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "containerID": "containerd://24c5419c1cd3bc71e61fd5f5828b04ccaba810f6e3dd8da57ea23c3156361512",
+          "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+          "imageID": "registry.h.pjlab.org.cn/ailab-safeag/zoubo@sha256:6430d45b74a8d6059bd15774cf92216985f86b4b7285cb5393db8e5fcf3f6d8a",
+          "lastState": {},
+          "name": "t0",
+          "ready": true,
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-24T21:29:47Z"
+            }
+          }
+        }
+      ],
+      "hostIP": "10.102.232.13",
+      "nodeName": "gpu-lg-cmc-h-h200-1844.host.h.pjlab.org.cn",
+      "phase": "Stopped",
+      "podIP": "100.100.176.103",
+      "podIPs": [
+        {
+          "ip": "100.100.176.103"
+        }
+      ],
+      "qosClass": "Guaranteed",
+      "startTime": "2026-10-24T21:24:59Z"
+    },
+    "spec": {
+      "affinity": {
+        "nodeAffinity": {
+          "requiredDuringSchedulingIgnoredDuringExecution": {
+            "nodeSelectorTerms": [
+              {
+                "matchExpressions": [
+                  {
+                    "key": "feature.brainpp.cn/gpfs",
+                    "operator": "In",
+                    "values": [
+                      "yes"
+                    ]
+                  },
+                  {
+                    "key": "GPUType",
+                    "operator": "In",
+                    "values": [
+                      "H200"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "containers": [
+        {
+          "command": [
+            "/kubebrain/worker-init",
+            "run",
+            "--enable-pid-monitor",
+            "--",
+            "bash",
+            "-lc",
+            "exec timeout --signal=TERM --kill-after=30 21660 python3 -u -c 'import base64;exec(base64.b64decode('\"'\"'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBvcyxzdWJwcm9jZXNzLHN5cyx0aW1lLHRyYWNlYmFjawpyb290PVBhdGgoJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQnKQp0cnk6CiBpZiByb290LnJlc29sdmUoKSE9cm9vdCBvciByb290LnN0YXQoKS5zdF91aWQhPTEwMjUwOnJhaXNlIFJ1bnRpbWVFcnJvcignb3duZWQgcmVzb3VyY2Ugc3RhZ2UgVUlEIGNoYW5nZWQnKQogaWYgb3MuZ2V0dWlkKCk9PTA6CiAgb3Muc2V0Z3JvdXBzKFtdKTtvcy5zZXRnaWQocm9vdC5zdGF0KCkuc3RfZ2lkKTtvcy5zZXR1aWQoMTAyNTApCiBpZiBvcy5nZXR1aWQoKSE9MTAyNTA6cmFpc2UgUnVudGltZUVycm9yKCdwcm9iZSBtdXN0IHJ1biBhcyBpdHMgYXJ0aWZhY3Qgb3duZXInKQogb3MudW1hc2soMG8wNzcpCiB3aXRoIChyb290Lyd3b3JrZXIubG9nJykub3BlbigneGInLGJ1ZmZlcmluZz0wKSBhcyBsb2c6CiAgb3MuZHVwMihsb2cuZmlsZW5vKCksMSk7b3MuZHVwMihsb2cuZmlsZW5vKCksMikKICBwcmludCgnUkVTT1VSQ0VfUFJPQkVfQk9PVFNUUkFQIHVpZD0nK3N0cihvcy5nZXR1aWQoKSksZmx1c2g9VHJ1ZSkKICByZXN1bHQ9c3VicHJvY2Vzcy5ydW4oWydweXRob24zJywgJy11JywgJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOC1kMTQ4MGViMGUyZmQvd29ya2VyLnB5JywgJy0tZXhwZWN0ZWQtZ3B1cycsICcxJywgJy0tbGVhc2Utc2Vjb25kcycsICcyMTYwMCcsICctLXdvcmtlci1zaGEyNTYnLCAnMzBlNDUzYzI2NzFkOWQ4YTE4YjIzMzdhNzQ3ZjJiNWY4YWU5MDJmM2JkZWU5ODc4ZTViNzY0YjhhNjMxMDZkYiddLGN3ZD1yb290LHRpbWVvdXQ9MjE2MjApCiAgaWYgcmVzdWx0LnJldHVybmNvZGU6CiAgIHByaW50KCdSRVNPVVJDRV9QUk9CRV9GQUlMRUQgZGlhZ25vc3RpY19ob2xkX3NlY29uZHM9NjAwJyxmbHVzaD1UcnVlKTt0aW1lLnNsZWVwKDYwMCkKICBzeXMuZXhpdChyZXN1bHQucmV0dXJuY29kZSkKZXhjZXB0IEV4Y2VwdGlvbjoKIHRyYWNlYmFjay5wcmludF9leGMoKTtwcmludCgnUkVTT1VSQ0VfQk9PVFNUUkFQX0ZBSUxFRCBkaWFnbm9zdGljX2hvbGRfc2Vjb25kcz02MDAnLGZsdXNoPVRydWUpO3RpbWUuc2xlZXAoNjAwKTtyYWlzZQo='\"'\"'))'"
+          ],
+          "env": [
+            {
+              "name": "RJOB_TASK_INDEX",
+              "value": "0"
+            },
+            {
+              "name": "KUBEBRAIN_CLUSTER_ENTRY",
+              "value": "https://h.pjlab.org.cn"
+            },
+            {
+              "name": "KUBEBRAIN_WORKSPACE_NAME",
+              "value": "ws-361f4be2c42b325e"
+            },
+            {
+              "name": "KUBEBRAIN_NODE_NAME",
+              "valueFrom": {
+                "fieldRef": {
+                  "fieldPath": "spec.nodeName"
+                }
+              }
+            },
+            {
+              "name": "HOST_NETWORK",
+              "value": "false"
+            },
+            {
+              "name": "KUBEBRAIN_CLUSTER_ENTRY",
+              "value": "https://h.pjlab.org.cn"
+            },
+            {
+              "name": "KUBEBRAIN_QUOTA_GROUP",
+              "value": "hrprda3s_gpu_pool"
+            },
+            {
+              "name": "KUBEBRAIN_WORKSPACE_NAMESPACE",
+              "value": "ailab-hrprdduanyan"
+            },
+            {
+              "name": "KUBEBRAIN_NAMESPACE",
+              "value": "ailab-hrprdduanyan"
+            },
+            {
+              "name": "TerminationGracePeriodSeconds",
+              "value": "60"
+            },
+            {
+              "name": "KUBEBRAIN_RJOB_NAME",
+              "value": "aster-xolotl-1mc8-d1480eb0e2fd-90999078"
+            },
+            {
+              "name": "KUBEBRAIN_RJOB_UID",
+              "value": "c016efa8-6e71-4501-8aff-08f7335d0b27"
+            },
+            {
+              "name": "LANG",
+              "value": "C.UTF-8"
+            },
+            {
+              "name": "LC_ALL",
+              "value": "C.UTF-8"
+            },
+            {
+              "name": "BRAIN_USERNAME",
+              "valueFrom": {
+                "fieldRef": {
+                  "fieldPath": "metadata.labels['kubebrain.brainpp.cn/creator']"
+                }
+              }
+            },
+            {
+              "name": "NVIDIA_DRIVER_CAPABILITIES",
+              "value": "all"
+            },
+            {
+              "name": "NVIDIA_REQUIRE_CUDA",
+              "value": "cuda>=10.1"
+            },
+            {
+              "name": "KUBEBRAIN_REPLICA",
+              "value": "0"
+            },
+            {
+              "name": "KUBEBRAIN_REPLICA_TOTAL",
+              "value": "1"
+            },
+            {
+              "name": "KUBEBRAIN_HOSTNAME_PREFIX",
+              "value": "rjob-cbd23079f2b7f97d-f61eb500bddbbf61"
+            },
+            {
+              "name": "KUBEBRAIN_RESOURCE_TYPE",
+              "value": "rjob"
+            },
+            {
+              "name": "KUBEBRAIN_REPLICA_NAME",
+              "value": "aster-xolotl-1mc8-d1480eb0e2fd-90999078-n742l"
+            }
+          ],
+          "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+          "imagePullPolicy": "IfNotPresent",
+          "name": "t0",
+          "resources": {
+            "limits": {
+              "cpu": "20",
+              "mellanox.com/mlnx_rdma": "1",
+              "memory": "220Gi",
+              "nvidia.com/gpu": "1",
+              "rdma/mlnx_shared": "4"
+            },
+            "requests": {
+              "cpu": "20",
+              "memory": "220Gi",
+              "nvidia.com/gpu": "1"
+            }
+          },
+          "securityContext": {
+            "capabilities": {
+              "add": [
+                "IPC_LOCK"
+              ]
+            },
+            "privileged": false
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/.auth/accesskey_id",
+              "name": "auth-info",
+              "readOnly": true,
+              "subPath": "accesskey_id"
+            },
+            {
+              "mountPath": "/.auth/accesskey_secret",
+              "name": "auth-info",
+              "readOnly": true,
+              "subPath": "accesskey_secret"
+            },
+            {
+              "mountPath": "/dev/shm",
+              "name": "dshm"
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "tmp-0"
+            },
+            {
+              "mountPath": "/kubebrain",
+              "mountPropagation": "None",
+              "name": "client-tools",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/jobutils",
+              "mountPropagation": "None",
+              "name": "jobutils",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "dnsConfig": {
+        "options": [
+          {
+            "name": "ndots",
+            "value": "1"
+          }
+        ]
+      },
+      "enableServiceLinks": false,
+      "hostname": "rjob-cbd23079f2b7f97d-f61eb500bddbbf61-0",
+      "imagePullSecrets": [
+        {
+          "name": "2719f82309b46a2aca14f264bc0437ae"
+        }
+      ],
+      "restartPolicy": "Never",
+      "securityContext": {},
+      "selector": {
+        "matchLabels": {
+          "rjob.brainpp.cn/replica": "aster-xolotl-1mc8-d1480eb0e2fd-90999078-n742l"
+        }
+      },
+      "stopTimestamp": "2026-10-24T23:50:03Z",
+      "subdomain": "yangchao",
+      "terminationGracePeriodSeconds": 60,
+      "type": "t0",
+      "volumes": [
+        {
+          "name": "auth-info",
+          "secret": {
+            "items": [
+              {
+                "key": "accesskey_id",
+                "path": "accesskey_id"
+              },
+              {
+                "key": "accesskey_secret",
+                "path": "accesskey_secret"
+              }
+            ],
+            "secretName": "2719f82309b46a2aca14f264bc0437ae"
+          }
+        },
+        {
+          "emptyDir": {
+            "medium": "Memory",
+            "sizeLimit": "110Gi"
+          },
+          "name": "dshm"
+        },
+        {
+          "emptyDir": {
+            "medium": "Memory",
+            "sizeLimit": "220Gi"
+          },
+          "name": "tmp-0"
+        },
+        {
+          "hostPath": {
+            "path": "/opt/kubebrain/client-tools",
+            "type": "DirectoryOrCreate"
+          },
+          "name": "client-tools"
+        },
+        {
+          "hostPath": {
+            "path": "/opt/kubebrain/jobutils",
+            "type": "DirectoryOrCreate"
+          },
+          "name": "jobutils"
+        }
+      ]
+    }
+  },
+  "service": {
+    "metadata": {
+      "annotations": {
+        "aster.serving/allocation-uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+        "aster.serving/lease-ends-unix": "1792898988.8316312",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"c016efa8-6e71-4501-8aff-08f7335d0b27\",\"aster.serving/lease-ends-unix\":\"1792898988.8316312\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc8-d1480eb0e2fd-90999078\",\"uid\":\"c016efa8-6e71-4501-8aff-08f7335d0b27\"}],\"resourceVersion\":\"14548641795\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc8-d1480eb0e2fd-90999078\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+        "metallb.universe.tf/address-pool": "bgp-pool-v3",
+        "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+      },
+      "creationTimestamp": "2026-10-24T11:45:48Z",
+      "labels": {
+        "app.kubernetes.io/managed-by": "aster-h200-deployment",
+        "aster-task": "xolotl-single-h200"
+      },
+      "name": "aster-xolotl-api-v3pool-20261024",
+      "namespace": "ailab-hrprdduanyan",
+      "ownerReferences": [
+        {
+          "apiVersion": "rjob.brainpp.cn/v1alpha1",
+          "blockOwnerDeletion": false,
+          "controller": false,
+          "kind": "RJob",
+          "name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+          "uid": "c016efa8-6e71-4501-8aff-08f7335d0b27"
+        }
+      ],
+      "resourceVersion": "14554371966",
+      "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+    },
+    "spec": {
+      "allocateLoadBalancerNodePorts": false,
+      "clusterIP": "10.68.85.120",
+      "clusterIPs": [
+        "10.68.85.120"
+      ],
+      "externalTrafficPolicy": "Cluster",
+      "internalTrafficPolicy": "Cluster",
+      "ipFamilies": [
+        "IPv4"
+      ],
+      "ipFamilyPolicy": "SingleStack",
+      "ports": [
+        {
+          "appProtocol": "http",
+          "name": "openai-http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": 30003
+        }
+      ],
+      "selector": {
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc8-d1480eb0e2fd-90999078"
+      },
+      "sessionAffinity": "None",
+      "type": "LoadBalancer"
+    },
+    "status": {
+      "loadBalancer": {
+        "ingress": [
+          {
+            "ip": "10.102.93.68"
+          }
+        ]
+      }
+    }
+  },
+  "unix": 1792887965.6530209
+}

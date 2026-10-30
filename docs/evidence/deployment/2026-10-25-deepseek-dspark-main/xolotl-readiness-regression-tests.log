@@ -1,0 +1,79 @@
+cwd=/code/aster/.wt-deepseek-dspark-main-20261025
+command=['taskset', '-c', '0-23', '/home/user/.cargo/bin/cargo', '+1.97.1', 'test', '--locked', '--offline', '-p', 'a3s-power', '--no-default-features', '--features', 'server', '--lib', 'backend::xolotl', '--', '--test-threads=1']
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+   Compiling a3s-power v0.10.0 (/code/aster/.wt-deepseek-dspark-main-20261025/crates/power)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.44s
+     Running unittests src/lib.rs (/code/aster/target/debug/deps/a3s_power-223f5a3ff6aafcdc)
+
+running 45 tests
+test backend::xolotl::detect::tests::family_marker_selects_xolotl_and_ud_packs_stay_out ... ok
+test backend::xolotl::detect::tests::path_detection_covers_the_1017_xq_pack_only ... ok
+test backend::xolotl::managed::tests::managed_context_ready_must_prove_actual_capacity ... ok
+test backend::xolotl::managed::tests::managed_local_index_must_resolve_to_the_exact_cloud_admitted_uuid ... ok
+test backend::xolotl::managed::tests::managed_origin_identity_and_deadlines_are_closed ... ok
+test backend::xolotl::managed::tests::managed_probe_refuses_an_http_200_for_the_wrong_or_unloaded_model ... ok
+test backend::xolotl::managed::tests::managed_ready_proof_refuses_unknown_facts_and_payloads ... ok
+test backend::xolotl::managed::tests::managed_shutdown_kills_and_reaps_a_term_resistant_owned_group ... ok
+test backend::xolotl::managed::tests::readiness_tests::concurrent_readiness_checks_wait_for_the_healthy_owned_probe ... ok
+test backend::xolotl::managed::tests::readiness_tests::readiness_still_refuses_a_lifecycle_lock_after_its_bounded_deadline ... ok
+test backend::xolotl::plan::dspark_tests::dspark_plan_preserves_exact_routing_one_gpu_and_one_million_context ... ok
+test backend::xolotl::plan::dspark_tests::dspark_refuses_unowned_or_unproven_shapes ... ok
+test backend::xolotl::plan::dspark_tests::indexer_tile_env_preserves_every_native_argument_with_or_without_drafts ... ok
+test backend::xolotl::plan::exact_routing_tests::every_owned_placement_keeps_exact_routing_with_or_without_kv_packing ... ok
+test backend::xolotl::plan::kv_fp4_tests::xolotl_fp4_kv_preserves_the_admitted_placement_and_context ... ok
+test backend::xolotl::plan::rtx_4090d_tests::admitted_4090d_still_requires_sm89_and_24gib ... ok
+test backend::xolotl::plan::rtx_4090d_tests::product_suffixes_and_arbitrary_prefixes_are_not_inferred ... ok
+test backend::xolotl::plan::rtx_4090d_tests::real_host_4090d_smi_inventory_is_admitted ... ok
+test backend::xolotl::plan::tests::auto_split_short_inventory_and_disabled_fail ... ok
+test backend::xolotl::plan::tests::eight_h200_plan_uses_split_device_not_gpus ... ok
+test backend::xolotl::plan::tests::explicit_one_million_context_and_cache_plan_is_bounded ... ok
+test backend::xolotl::plan::tests::non_h200_hopper_cards_are_rejected ... ok
+test backend::xolotl::plan::tests::ready_log_requires_the_unmodified_eight_card_line ... ok
+test backend::xolotl::plan::tests::rtx_4090_partial_config_and_wrong_card_fail_closed ... ok
+test backend::xolotl::plan::tests::rtx_4090_single_card_plan_uses_expert_cache_not_layer_split ... ok
+test backend::xolotl::plan::tests::smi_parser_converts_mib_and_keeps_commas_in_the_name ... ok
+test backend::xolotl::plan::tests::wrong_rank_binary_and_unsloth_model_are_refused ... ok
+test backend::xolotl::plan::tests::xolotl_single_engram_directory_does_not_require_a_duplicate_copy ... ok
+test backend::xolotl::prepare::tests::dspark_binding_refuses_corruption_missing_magic_and_symlink ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_admission_rejects_oversized_or_duplicate_records ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_honors_cancellation_and_deadline_before_creating_output ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_never_publishes_corrupt_changed_or_reordered_members ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_refuses_symlinks_without_touching_their_targets ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_reuse_is_measured_and_does_not_require_refetching_sources ... ok
+test backend::xolotl::prepare::tests::xolotl_assembly_verifies_every_member_and_the_joined_digest_before_publication ... ok
+test backend::xolotl::streaming_tests::dropping_an_unpolled_chat_does_not_start_upstream_generation ... ok
+test backend::xolotl::streaming_tests::successful_tool_finish_without_authoritative_usage_is_not_success ... ok
+test backend::xolotl::streaming_tests::tool_calls_and_tool_result_replay_work_for_both_client_modes ... ok
+test backend::xolotl::tests::chat_streams_and_completion_forwards_json_response ... ok
+test backend::xolotl::tests::chat_without_upstream_returns_the_eight_card_command ... ok
+test backend::xolotl::tests::claims_xq_manifests_without_claiming_every_gguf ... ok
+test backend::xolotl::tests::cold_upstream_outlasts_the_reqwest_default ... ok
+test backend::xolotl::tests::disabled_and_speculative_loads_fail_closed ... ok
+test backend::xolotl::tests::llama_mistral_and_picolm_refuse_the_xq_manifest ... ok
+test backend::xolotl::tests::rtx_4090_load_records_the_single_card_command ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 1985 filtered out; finished in 35.19s
+

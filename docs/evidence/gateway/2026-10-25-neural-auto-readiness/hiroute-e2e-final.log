@@ -1,0 +1,35 @@
+
+running 18 tests
+test entrypoint::inference_tests::hr_a5_fixed_mode_never_calls_the_decision_service ... ok
+test entrypoint::inference_tests::hr_a_dormant_decision_plane_fails_closed_to_primary ... ok
+test entrypoint::inference_tests::hr_a_fresh_low_competence_score_protects_the_next_turn ... ok
+test entrypoint::inference_tests::hr_b3_a_rebuilt_history_forces_a_fresh_decision ... ok
+test entrypoint::inference_tests::hr_b4_a_frozen_decision_expires_and_re_decides ... ok
+test entrypoint::inference_tests::hr_c1_an_unreachable_decision_service_fails_closed_to_primary ... ok
+test entrypoint::inference_tests::hr_c2_strict_decode_violations_fail_closed_over_the_wire ... ok
+test entrypoint::inference_tests::hr_c3_an_economy_failure_relays_to_primary ... ok
+test entrypoint::inference_tests::hr_c4_a_failed_primary_exhausts_explicitly ... ok
+test entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts ... FAILED
+test entrypoint::inference_tests::hr_content_reaches_a_real_decision_service_over_http ... ok
+test entrypoint::inference_tests::hr_d5_a_stale_low_score_stops_protecting ... ok
+test entrypoint::inference_tests::hr_d6_competence_protection_is_category_scoped ... ok
+test entrypoint::inference_tests::hr_e1_the_decision_request_is_model_blind ... ok
+test entrypoint::inference_tests::hr_e2_an_oversized_conversation_fails_closed_without_a_call ... ok
+test entrypoint::inference_tests::hr_g_family_routing_facts_in_the_spool_and_no_prompt_bytes ... ok
+test entrypoint::inference_tests::hr_partial_assessments_never_protect ... ok
+test entrypoint::inference_tests::hr_smart_saving_routes_e2e_and_freezes_the_turn ... ok
+
+failures:
+
+---- entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts stdout ----
+
+thread 'entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts' (3319670) panicked at apps/gateway/src/entrypoint/inference_tests.rs:4775:5:
+the broken stream surfaces to the client
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts
+
+test result: FAILED. 17 passed; 1 failed; 0 ignored; 0 measured; 2106 filtered out; finished in 25.42s
+

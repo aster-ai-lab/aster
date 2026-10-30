@@ -1,0 +1,35 @@
+{
+  "unix": 1792890014.326943,
+  "phase": "launched",
+  "profile": "off_repeat",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-admission-v101-off_repeat/qualification-admission-v102",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "formal_service_unchanged": true,
+  "diagnostic_only": true,
+  "files": [
+    {
+      "file": "probe-worker.py",
+      "bytes": 6114,
+      "sha256": "f1d2b690a40c3f92c764881560643162b733150dc9638cc15d6f280c240eda0b"
+    },
+    {
+      "file": "qualified-request-source.py",
+      "bytes": 10599,
+      "sha256": "e4d0e2cf742631af019b4bc81c0eb510be7c6bc2151e5d49ecdcb9a12a9c376f"
+    },
+    {
+      "file": "probe-plan.json",
+      "bytes": 475,
+      "sha256": "35b8c37e8c8bf107b30e8ff9e9743e96cb4e87f0c5c4f21e4ce4bf5858966768"
+    }
+  ],
+  "process": {
+    "pid": 1122392,
+    "start_ticks": 281680866,
+    "uid": 10250,
+    "unix": 1792890023.729282,
+    "budget_seconds": 450,
+    "namespace": "jump host"
+  }
+}

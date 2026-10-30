@@ -1,0 +1,8 @@
+{
+  "unix": 1792935743.5486507,
+  "phase": "passed",
+  "methods": 36,
+  "command": "python -B -m unittest test_nsys_decode_window_v321 test_nsys_raw_decode_metrics_v386 test_native_resume_v197 test_full_output_protocol_v247 test_nsys_lifecycle_v302",
+  "stdout": "",
+  "stderr": "....................................\n----------------------------------------------------------------------\nRan 36 tests in 0.020s\n\nOK\n"
+}

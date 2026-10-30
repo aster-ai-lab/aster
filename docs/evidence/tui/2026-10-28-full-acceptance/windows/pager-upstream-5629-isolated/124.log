@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::basename_headers_stay_grok_owned_for_duplicate_and_outside_targets' (50824) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:2884:13:
+Read duplicate-a
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::basename_headers_stay_grok_owned_for_duplicate_and_outside_targets ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::basename_headers_stay_grok_owned_for_duplicate_and_outside_targets
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

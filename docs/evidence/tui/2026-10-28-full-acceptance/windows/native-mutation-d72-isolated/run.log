@@ -1,0 +1,18 @@
+
+running 1 test
+ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:d72c86b71a65fbdde696e8a24e84f6210b95591d:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations' (55804) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:246:5:
+assertion `left == right` failed
+  left: ["Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED. Do not call any other tool.", "Reply only SEND-NOW-OWNED. Do not call any tool.\n\n[owed work] Earlier turns left workspace mutations that are not verified yet: started.txt. A narrative claim of completion will be refused —re-run the project's verification before answering."]
+ right: ["Use bash exactly once to run this exact command: [IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late'). Then reply ORIGINAL-COMPLETED. Do not call any other tool.", "Reply only SEND-NOW-OWNED. Do not call any tool."]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 34 filtered out; finished in 24.20s
+

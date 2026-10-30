@@ -1,0 +1,8 @@
+{
+  "stoppedAt": "2026-10-28T22:51:01.8365627Z",
+  "pid": 53768,
+  "port": 7101,
+  "root": "D:\\code\\aster\\.tmp\\code-docs-depth-20261028\\apps\\web\\public",
+  "reason": "User requested stopping local preview",
+  "listenerRemaining": false
+}

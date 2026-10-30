@@ -1,0 +1,18 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::edit::tests::workflow_script_header_hides_rhai_path' (55524) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\edit.rs:1606:9:
+assertion failed: block.path_link_target(Some(Path::new("/repo"))).and_then(|target|
+                crate::render::osc8::resolve_link_target(&target)).and_then(|resolved|
+            resolved.osc8_url).is_some_and(|u|
+        u.contains("cc-deep-research.rhai"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::edit::tests::workflow_script_header_hides_rhai_path ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::edit::tests::workflow_script_header_hides_rhai_path
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

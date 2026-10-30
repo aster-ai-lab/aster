@@ -1,0 +1,12 @@
+
+running 2 tests
+ORACLE case=compact-model-history name=source-pair result=pass detail=aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-pc-windows-msvc
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27120
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13800
+ORACLE case=compact-model-history name=/compact result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13824
+ORACLE case=compact-model-history name=/compact Preserve the exact acceptance key and the still-open task. result=pass detail=actual Kimi summary committed; next model request recalls the unseen key without tools in the same session
+ORACLE case=compact-model-history name=quit result=pass detail=exit 0
+test context_and_input::kimi_actual_compaction_with_and_without_focus_preserves_model_history ... ok
+ORACLE case=long-unicode-paste name=source-pair result=pass detail=aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-pc-windows-msvc
+test context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once ... 

@@ -1,0 +1,329 @@
+{
+  "assertions_finished": true,
+  "case": "write-verify",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13354,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_23ba04a6006a478692e0d0a1baa87928",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_23ba04a6006a478692e0d0a1baa87928",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"content_ref\":\"inline:sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":55,\"original_estimated_tokens\":14,\"projected_bytes\":55,\"projected_digest\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"projected_estimated_tokens\":14,\"repeat_key\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":55,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"source.txt\"]},\"observation_digest\":\"sha256:0f217e0d1388c22301016acf723ea1462e891fbbf465c3d432347d24c10718f8\"}",
+        "prepared_digest": "sha256:a93740d8b870f3e6622afe785ac9a3c49ccfa01155457da3233a7ae3984233d9"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13544,
+        "tool": "bash"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_b0207dea8cec40fdb165e7e89834113e",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_b0207dea8cec40fdb165e7e89834113e",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\" 4b 49 4d 49 2d 57 52 49 54 45 2d 37 35 38 34 32\\n 31 35 63 2d 38 61 36 64 2d 34 61 38 30 2d 39 35\\n 31 66 2d 30 61 64 32 39 33 34 32 34 38 65 37\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:f271dd7343cf679abd177e1034b1cd04671d2d0f59517e6bbb452bf6526c14da\",\"content_ref\":\"inline:sha256:f271dd7343cf679abd177e1034b1cd04671d2d0f59517e6bbb452bf6526c14da\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":144,\"original_estimated_tokens\":36,\"projected_bytes\":144,\"projected_digest\":\"sha256:f271dd7343cf679abd177e1034b1cd04671d2d0f59517e6bbb452bf6526c14da\",\"projected_estimated_tokens\":36,\"repeat_key\":\"sha256:f271dd7343cf679abd177e1034b1cd04671d2d0f59517e6bbb452bf6526c14da\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"exit_code\":0,\"output\":{\"captured_bytes\":144,\"timed_out\":false,\"total_bytes\":144,\"truncated\":false},\"sandboxed\":true,\"verification_shell_command\":\"od -An -tx1 -v source.txt\"},\"observation_digest\":\"sha256:5bde85fdd8f44c2c74e5d4591384d5cc1621c63220b4ac81a78d4b2c44593c1c\"}",
+        "prepared_digest": "sha256:02763eb6259ac08f937fc8f36c136bac4dcead2676a9f48a7b16d7efb1ff27f3"
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 14153,
+        "tool": "write"
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_1da74177a5764f11b6f8347dc600fb46",
+          "turn": 1
+        },
+        "tool": "write"
+      },
+      "seq": 13,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:1963bb629e21f55f647ec34311294340a1615da3fd95db89c3b8b691cc36f590",
+                "kind": "file",
+                "mode": 33188
+              },
+              "before": {
+                "kind": "missing"
+              },
+              "path": "result.txt"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_1da74177a5764f11b6f8347dc600fb46",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 47 bytes (1 lines) to /tmp/aster-kimi-RmFG6b/workspace/result.txt\\n[mutation observation] path=result.txt status=unavailable\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:352ecacf2371017fc975e7d9b5f9e691e7bb95100f265cdc5a85da464dd4d210\",\"content_ref\":\"inline:sha256:352ecacf2371017fc975e7d9b5f9e691e7bb95100f265cdc5a85da464dd4d210\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":71,\"original_estimated_tokens\":18,\"projected_bytes\":71,\"projected_digest\":\"sha256:352ecacf2371017fc975e7d9b5f9e691e7bb95100f265cdc5a85da464dd4d210\",\"projected_estimated_tokens\":18,\"repeat_key\":\"sha256:352ecacf2371017fc975e7d9b5f9e691e7bb95100f265cdc5a85da464dd4d210\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"after\":\"KIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7\",\"change\":{\"after\":{\"artifact\":null,\"bytes\":47,\"sha256\":\"1963bb629e21f55f647ec34311294340a1615da3fd95db89c3b8b691cc36f590\"},\"before\":null,\"compacted\":false,\"diff_omitted\":false,\"unified_diff\":null},\"created\":true,\"file_path\":\"result.txt\",\"mutation_observation\":{\"path\":\"result.txt\",\"schema\":\"a3s.code.mutation-observation.v1\",\"status\":\"unavailable\"}},\"observation_digest\":\"sha256:4266d955304493e34069bb099c21c7e5a483d9eb67f3acf9505168d43ef2b137\"}",
+        "prepared_digest": "sha256:cdb9567b71e57eb56871ecbfd77428e330fef15b10b81c12a1c1cb21bd26499f"
+      },
+      "seq": 14,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 14533,
+        "tool": "bash"
+      },
+      "seq": 15,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_241e6e2751af42eca8004739442c2f39",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 16,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_241e6e2751af42eca8004739442c2f39",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":0,\"original_estimated_tokens\":0,\"projected_bytes\":0,\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_estimated_tokens\":0,\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"exit_code\":0,\"output\":{\"captured_bytes\":0,\"timed_out\":false,\"total_bytes\":0,\"truncated\":false},\"sandboxed\":true,\"verification_report\":{\"checks\":[{\"description\":\"Host verified mutated path exists with matching content digest: result.txt\",\"id\":\"mutation_path_verify:result.txt\",\"kind\":\"mutation_path_verify\",\"required\":true,\"status\":\"passed\"}],\"effect_digest\":\"01e082d9055fab81ba61f823dcd9baf95f1b01f2d500f8220e2ea2d35e5b84f4\",\"schema\":\"a3s.verification_report.v1\",\"status\":\"passed\",\"subject\":\"shell:mutation_path_verify:result.txt\"},\"verification_shell_command\":\"test -f result.txt\"},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+        "prepared_digest": "sha256:39a9e98bbc7b35495232e1c5bcb48f04a50ca26c500ead1cfd7ff99515e5b51d"
+      },
+      "seq": 17,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 14438,
+        "tool": "read"
+      },
+      "seq": 18,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 4,
+          "tool_call_id": "call_2a812d239e01400594773eba8ed90f7d",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 19,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-48ed5a0a-f533-44a8-9153-5598e36fc805",
+            "thread_id": "4f51729d-72ec-4f67-b026-123e11037652"
+          },
+          "batch_index": 0,
+          "cycle": 4,
+          "tool_call_id": "call_2a812d239e01400594773eba8ed90f7d",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"content_ref\":\"inline:sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":55,\"original_estimated_tokens\":14,\"projected_bytes\":55,\"projected_digest\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"projected_estimated_tokens\":14,\"repeat_key\":\"sha256:ee90abe19419e0467cf96c3d415afbe892a329a4528b2364b3158648ff8c16fe\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"range\":{\"applied_limit\":2000,\"budget_clamped\":false,\"eof\":true,\"limit_clamped\":false,\"next_offset\":null,\"offset\":0,\"output_bytes\":55,\"requested_limit\":2000,\"returned_lines\":1,\"total_lines\":1},\"source_anchors\":[\"result.txt\"]},\"observation_digest\":\"sha256:0f217e0d1388c22301016acf723ea1462e891fbbf465c3d432347d24c10718f8\"}",
+        "prepared_digest": "sha256:c111ac45294fa3cce9338dc45a80d4c1e09d3988292d34891269d04cbc633693"
+      },
+      "seq": 20,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 14558,
+        "tool": null
+      },
+      "seq": 21,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": "01e082d9055fab81ba61f823dcd9baf95f1b01f2d500f8220e2ea2d35e5b84f4",
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "9861f53e77d4704df0d5e04abb2064a3d2da890ed7a563c779c77c1fc7a1c329",
+          "seq": 21
+        },
+        "receipt_keys": [
+          "sha256:3d3a6ac2277a9d4f60951a4c19fa42ed26367e61e00211ce6ad23dc90112b36c",
+          "sha256:9e171fe90c3cd2a5c01b214031445f57290d0f4e4eaac4943c8318427df8ec0f",
+          "sha256:b0ccdf8bd73b9f726d902fa84796b6fb8895550ebf053280eee1abaebe0a7064",
+          "sha256:3a829532872cd2e479a7bf66c8e8f8868080a973433243aeb620a5ff67886f97",
+          "sha256:783c712dec27a65c5904ebcbe04ca43c3da4908b71291b8978307fa0a8af76b9"
+        ],
+        "terminal": "verified"
+      },
+      "seq": 22,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=20 model_turns=6 prompt_tokens=84580",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-RmFG6b/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   6:31 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run od -An -tx1 -v source.txt                                                                                    \n     ◆ Thought for 2.4s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7                                                               \n                                                                                                                        \n     ◆ Run test -f result.txt                                                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7                                                         6:32 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 52s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "real read/write/shell receipts, exact output bytes and verified terminal",
+      "name": "live-write-verify",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-RmFG6b/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   6:31 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run od -An -tx1 -v source.txt                                                                                    \n     ◆ Thought for 2.4s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7                                                               \n                                                                                                                        \n     ◆ Run test -f result.txt                                                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-7584215c-8a6d-4a80-951f-0ad2934248e7                                                         6:32 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 52s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

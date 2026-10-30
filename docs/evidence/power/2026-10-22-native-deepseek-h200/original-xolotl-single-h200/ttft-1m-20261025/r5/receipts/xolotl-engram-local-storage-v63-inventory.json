@@ -1,0 +1,38 @@
+{
+  "unix": 1792878557.9312758,
+  "engram_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-b345/engram",
+  "files": [
+    {
+      "name": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5.safetensors",
+      "bytes": 101535150936,
+      "symlink": true
+    },
+    {
+      "name": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd.safetensors",
+      "bytes": 101537926640,
+      "symlink": true
+    },
+    {
+      "name": "model.safetensors.index.json",
+      "bytes": 489,
+      "symlink": false
+    }
+  ],
+  "space": {
+    "/": {
+      "free_bytes": 932671197184,
+      "total_bytes": 3838880616448,
+      "uid": 0
+    },
+    "/tmp": {
+      "free_bytes": 236223197184,
+      "total_bytes": 236223201280,
+      "uid": 0
+    },
+    "/dev/shm": {
+      "free_bytes": 118111600640,
+      "total_bytes": 118111600640,
+      "uid": 0
+    }
+  }
+}

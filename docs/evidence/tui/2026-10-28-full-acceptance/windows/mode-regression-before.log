@@ -1,0 +1,425 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+   Compiling hashbrown v0.17.1
+   Compiling windows-sys v0.61.2
+   Compiling windows-sys v0.60.2
+   Compiling icu_normalizer v2.0.0
+   Compiling tungstenite v0.28.0
+   Compiling rsa v0.9.10
+   Compiling a3s-sqlite-journal v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-sqlite-journal)
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\build\a3s-code-markdown-654ecdb30b4ef92f\build_script_build-654ecdb30b4ef92f.lib 和对象 D:\code\aster\target\debug\build\a3s-code-markdown-654ecdb30b4ef92f\build_script_build-654ecdb30b4ef92f.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-markdown` (build script) generated 1 warning
+   Compiling x509-parser v0.16.0
+   Compiling a3s-ratatui-textarea v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-ratatui-textarea)
+   Compiling a3s-ratatui-inline v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-ratatui-inline)
+   Compiling a3s-code-gboom v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-gboom)
+   Compiling serial_test v3.2.0
+   Compiling indexmap v2.14.0
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling serde_json v1.0.154
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling zip v8.6.0
+   Compiling write-fonts v0.43.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling zip v3.0.0
+   Compiling petgraph v0.6.5
+   Compiling plist v1.10.0
+   Compiling toml_edit v0.22.27
+   Compiling url v2.5.8
+   Compiling rcgen v0.13.2
+   Compiling socket2 v0.6.4
+   Compiling winapi-util v0.1.11
+   Compiling tempfile v3.27.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling anstyle-query v1.1.4
+   Compiling schemars v1.2.3
+   Compiling anstyle-wincon v3.0.10
+   Compiling dirs-sys v0.5.0
+   Compiling mio v1.2.1
+   Compiling schannel v0.1.28
+   Compiling prod-mc-cli-chat-proxy-types v0.1.0 (D:\code\aster\crates\terminal\prod\mc\cli-chat-proxy-types)
+   Compiling typeshare v1.0.4
+   Compiling home v0.5.12
+   Compiling same-file v1.0.6
+   Compiling tracing-subscriber v0.3.23
+   Compiling dirs v6.0.0
+   Compiling a3s-code-env v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-env)
+   Compiling sentry-types v0.42.0
+   Compiling a3s-code-secrets v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-secrets)
+   Compiling jsonwebtoken v10.3.0
+   Compiling reqwest v0.12.24
+   Compiling anstream v0.6.21
+   Compiling gix-sec v0.14.1
+   Compiling errno v0.3.14
+   Compiling tokio v1.53.3
+   Compiling rustls-native-certs v0.8.2
+   Compiling a3s-tool-types v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-tool-types)
+   Compiling subsetter v0.2.3
+   Compiling lsp-types v0.95.1
+   Compiling git2 v0.20.2
+   Compiling office_oxide v0.1.9
+   Compiling walkdir v2.5.0
+   Compiling a3s-code-workspace-types v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-workspace-types)
+   Compiling shellexpand v3.1.2
+   Compiling agent-client-protocol-schema v0.11.4
+   Compiling os_info v3.14.0
+   Compiling tracing-opentelemetry v0.33.0
+   Compiling env_logger v0.11.8
+   Compiling rustix v1.1.5
+   Compiling anstream v1.0.0
+   Compiling tracing-chrome v0.7.2
+   Compiling tracing-appender v0.2.4
+   Compiling gix-features v0.48.1
+   Compiling ignore v0.4.24
+   Compiling a3s-code-feedback v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-feedback)
+   Compiling a3s-tool-protocol v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-tool-protocol)
+   Compiling clap_builder v4.6.7
+   Compiling a3s-code-session-events v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-session-events)
+   Compiling notify v8.2.0
+   Compiling sentry-core v0.42.0
+   Compiling gix-hash v0.25.1
+   Compiling gix-fs v0.21.2
+   Compiling gix-glob v0.26.1
+   Compiling gix-transport v0.57.2
+   Compiling gix-hashtable v0.15.1
+   Compiling gix-tempfile v23.0.1
+   Compiling gix-commitgraph v0.37.1
+   Compiling sentry-backtrace v0.42.0
+   Compiling gix-attributes v0.33.2
+   Compiling sentry-debug-images v0.42.0
+   Compiling gix-object v0.60.0
+   Compiling gix-lock v23.0.1
+   Compiling sentry-contexts v0.42.0
+   Compiling sentry-tracing v0.42.0
+   Compiling sentry-panic v0.42.0
+   Compiling sentry-anyhow v0.42.0
+   Compiling gix-ignore v0.21.1
+   Compiling clap v4.6.7
+   Compiling gix-pathspec v0.18.1
+   Compiling gix-shallow v0.12.1
+   Compiling webbrowser v1.2.4
+   Compiling a3s-code-tools v0.1.220-alpha.4 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-tools)
+   Compiling tokio-util v0.7.19
+   Compiling tokio-rustls v0.26.6
+   Compiling async-compression v0.4.19
+   Compiling tokio-stream v0.1.17
+   Compiling aws-smithy-async v1.2.14
+   Compiling a3s-tty-utils v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-tty-utils)
+   Compiling backoff v0.4.0
+   Compiling gix-revwalk v0.31.0
+   Compiling a3s-code-compaction v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-code-compaction)
+   Compiling gix-ref v0.63.0
+   Compiling gix-filter v0.30.0
+   Compiling gix-pack v0.70.0
+   Compiling file-id v0.2.3
+   Compiling tokio-tungstenite v0.28.0
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-codebase-graph v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-codebase-graph)
+   Compiling opentelemetry_sdk v0.32.1
+   Compiling h2 v0.4.19
+   Compiling tower v0.5.2
+   Compiling aws-smithy-types v1.4.3
+   Compiling a3s-code-config v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-config)
+   Compiling gix-traverse v0.57.0
+   Compiling gix-revision v0.45.0
+   Compiling notify-debouncer-full v0.5.0
+   Compiling gix-discover v0.51.0
+   Compiling gix-config v0.56.0
+   Compiling gix-index v0.51.0
+   Compiling gix-refspec v0.41.0
+   Compiling gix-odb v0.80.0
+   Compiling aws-smithy-runtime-api v1.11.3
+   Compiling aws-smithy-eventstream v0.60.18
+   Compiling aws-smithy-json v0.61.6
+   Compiling tower-http v0.6.8
+   Compiling aws-smithy-query v0.60.8
+   Compiling gix-protocol v0.61.0
+   Compiling a3s-fsnotify v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-fsnotify)
+warning: field `directory` is never read
+   --> crates\terminal\crates\codegen\a3s-code-config\src\managed_text\source.rs:131:5
+    |
+128 | pub(super) struct ParentAnchor {
+    |                   ------------ field in this struct
+...
+131 |     directory: fs::File,
+    |     ^^^^^^^^^
+    |
+    = note: `ParentAnchor` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling gix-worktree v0.52.0
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo fix --lib -p a3s-tty-utils` to apply 1 suggestion)
+   Compiling a3s-code-sandbox v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-sandbox)
+   Compiling hyper v1.8.1
+   Compiling aws-smithy-http v0.62.6
+   Compiling aws-credential-types v1.2.8
+   Compiling aws-smithy-observability v0.1.4
+   Compiling fastrace-opentelemetry v0.18.1
+   Compiling async-lsp v0.2.3
+   Compiling agent-client-protocol v0.10.4
+   Compiling gix-diff v0.63.0
+   Compiling gix-dir v0.25.0
+   Compiling gix-submodule v0.30.0
+   Compiling a3s-fuzzy-file-search v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-fuzzy-file-search)
+   Compiling pdf_oxide v0.3.74
+   Compiling a3s-code-models v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-models)
+   Compiling arboard v3.6.1
+   Compiling aws-types v1.3.9
+   Compiling process-wrap v9.0.0
+   Compiling aws-smithy-runtime v1.9.3
+   Compiling aws-sigv4 v1.3.5
+   Compiling aws-smithy-checksums v0.63.13
+   Compiling hyper-util v0.1.20
+   Compiling backon v1.6.0
+   Compiling gix-status v0.30.0
+warning: `a3s-code-config` (lib) generated 1 warning
+   Compiling a3s-code-shell v1.0.41 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-shell)
+   Compiling a3s-acp-lib v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-acp-lib)
+   Compiling a3s-code-shared v0.0.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-shared)
+   Compiling syntect v5.3.0
+   Compiling referencing v0.30.0
+   Compiling a3s-code-bundle v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-bundle)
+   Compiling a3s-workflow v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-workflow)
+   Compiling fs-err v3.1.3
+   Compiling tokio-retry v0.3.0
+   Compiling a3s-code-foreign-sessions v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-foreign-sessions)
+   Compiling gix v0.83.0
+   Compiling notify-debouncer-mini v0.6.0
+warning: unused imports: `Command` and `Stdio`
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1024:24
+     |
+1024 |     use std::process::{Command, Stdio};
+     |                        ^^^^^^^  ^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling console v0.16.1
+   Compiling a3s-prompt-queue v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-prompt-queue)
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1757:33
+     |
+1757 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1766 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+     |
+     = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1863:33
+     |
+1863 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1872 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+
+   Compiling hyper-rustls v0.27.7
+   Compiling axum v0.8.6
+   Compiling hyper-timeout v0.5.2
+   Compiling axum-server v0.8.0
+   Compiling deadpool v0.12.3
+   Compiling indicatif v0.18.3
+   Compiling reqwest v0.13.5
+   Compiling aws-smithy-http-client v1.1.9
+   Compiling mermaid-to-svg v0.1.0 (D:\code\aster\crates\terminal\third_party\mermaid-to-svg)
+   Compiling aws-runtime v1.5.12
+   Compiling anstyle-syntect v1.0.4
+   Compiling assert-json-diff v2.0.2
+   Compiling tinytemplate v1.2.1
+   Compiling opentelemetry-http v0.32.0
+   Compiling gcloud-metadata v1.0.2
+   Compiling reqwest-middleware v0.5.2
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sso v1.86.0
+warning: `a3s-code-shared` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-shared` to apply 1 suggestion)
+   Compiling aws-sdk-sts v1.88.0
+   Compiling reqwest-middleware v0.4.2
+   Compiling reqwest-eventsource v0.6.0
+   Compiling a3s-code-extra-ca v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-extra-ca)
+   Compiling fastrace-reqwest v0.2.0
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling a3s-mixpanel v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-mixpanel)
+   Compiling gcloud-auth v1.3.0
+   Compiling tonic v0.14.6
+   Compiling sentry v0.42.0
+   Compiling oauth2 v5.0.0
+   Compiling async-openai v0.33.1 (D:\code\aster\crates\third-party\async-openai)
+   Compiling a3s-gix-status v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-gix-status)
+   Compiling a3s-code-auth v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-auth)
+   Compiling a3s-code-diag-server v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-diag-server)
+   Compiling a3s-code-shell-base v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-shell-base)
+   Compiling jsonschema v0.30.0
+   Compiling a3s-fast-worktree v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-fast-worktree)
+   Compiling a3s-hunk-tracker v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-hunk-tracker)
+   Compiling a3s-code-markdown v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-markdown)
+   Compiling a3s-code-voice v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-voice)
+   Compiling rmcp v3.4.0
+   Compiling a3s-code-mermaid v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-mermaid)
+   Compiling aws-config v1.8.8
+   Compiling criterion v0.6.0
+   Compiling wiremock v0.6.5
+   Compiling a3s-code-active-sessions v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-active-sessions)
+   Compiling tonic-prost v0.14.6
+   Compiling tonic-types v0.14.5
+   Compiling gcloud-storage v1.3.0
+   Compiling opentelemetry-proto v0.32.0
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-tools-api)
+   Compiling a3s-code-dashboard-store v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-dashboard-store)
+   Compiling clap_complete v4.6.5
+   Compiling a3s-form-core v0.1.0 (D:\code\aster\crates\form-core)
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling a3s-code-test-support v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-test-support)
+   Compiling a3s-tool-runtime v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-tool-runtime)
+   Compiling a3s-tracing v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-tracing)
+   Compiling a3s-code-otel v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-otel)
+   Compiling a3s-code-sampling-types v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-sampling-types)
+   Compiling a3s-computer-hub-core v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-computer-hub-core)
+   Compiling a3s-computer-hub-sdk v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-computer-hub-sdk)
+   Compiling a3s-code-sampler v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-sampler)
+   Compiling a3s-compaction-transcript v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-compaction-transcript)
+   Compiling a3s-chat-state v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-chat-state)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (D:\code\aster\crates\terminal\crates\common\a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-client v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-workspace-daemon)
+   Compiling a3s-file-utils v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-file-utils)
+   Compiling a3s-code-telemetry v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-telemetry)
+warning: variable does not need to be mutable
+   --> crates\terminal\crates\codegen\a3s-code-telemetry\src\logs\unified_log.rs:175:13
+    |
+175 |         let mut builder = fs::DirBuilder::new();
+    |             ----^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-session-search v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-session-search)
+warning: `a3s-code-telemetry` (lib) generated 1 warning (run `cargo fix --lib -p a3s-code-telemetry` to apply 1 suggestion)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: unused variable: `task_ids`
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:1580:51
+     |
+1580 |     async fn collect_shell_state_dumps(&mut self, task_ids: &[String]) {
+     |                                                   ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_ids`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:3315:9
+     |
+3315 |     let mut build_cmd = |with_breakaway: bool| {
+     |         ----^^^^^^^^^
+     |         |
+     |         help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `login_shell_capture` is never read
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:590:5
+    |
+547 | struct LocalTerminalActor {
+    |        ------------------ field in this struct
+...
+590 |     login_shell_capture: bool,
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-hooks v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-config-types)
+warning: `a3s-code-tools` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 4 suggestions)
+   Compiling a3s-code-subagent-resolution v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-plugin-marketplace)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-workspace)
+   Compiling a3s-code-http v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-pager-render)
+warning: unused import: `std::time::Duration`
+ --> crates\terminal\crates\codegen\a3s-code-pager-render\src\terminal\probe.rs:9:5
+  |
+9 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-memory v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-shell-session-support)
+warning: function `default_shell_path` is never used
+  --> crates\terminal\crates\codegen\a3s-code-shell-terminal\src\lib.rs:45:15
+   |
+45 | pub(crate) fn default_shell_path() -> &'static str {
+   |               ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-shell-terminal` (lib) generated 1 warning
+   Compiling a3s-code-login v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-login)
+warning: `a3s-code-pager-render` (lib) generated 1 warning (run `cargo fix --lib -p a3s-code-pager-render` to apply 1 suggestion)
+   Compiling a3s-code-update v0.1.220-alpha.4 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-pager)
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\deps\a3s_code_pager-ceeb4f441e2b45ef.lib 和对象 D:\code\aster\target\debug\deps\a3s_code_pager-ceeb4f441e2b45ef.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8m 24s
+     Running unittests src\lib.rs (target\debug\deps\a3s_code_pager-ceeb4f441e2b45ef.exe)
+
+running 1 test
+test app::dispatch::tests::modes_code::code_plan_yolo_exit_preserves_backend_posture ... FAILED
+
+failures:
+
+---- app::dispatch::tests::modes_code::code_plan_yolo_exit_preserves_backend_posture stdout ----
+
+thread 'app::dispatch::tests::modes_code::code_plan_yolo_exit_preserves_backend_posture' (50152) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\modes_code.rs:37:5:
+Code must confirm the retained YOLO posture, got [SetSessionMode { session_id: SessionId("test-session"), mode_id: SessionModeId("default") }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    app::dispatch::tests::modes_code::code_plan_yolo_exit_preserves_backend_posture
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10162 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p a3s-code-pager --lib`

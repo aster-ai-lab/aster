@@ -1,0 +1,77 @@
+{
+  "unix": 1792891568.9104233,
+  "prepare-result.json": {
+    "schema": "aster-xolotl-code-fullwindow-prepare-v114",
+    "unix": 1792891525.351248,
+    "phase": "passed",
+    "gpu_executed": false,
+    "credentials_copied": false,
+    "corpus_repeated": false,
+    "acceptance_unit_methods_passed": 6,
+    "corpus_source_files": 262,
+    "excluded_files": 0,
+    "unique_corpus_tokens": 1510935,
+    "unique_corpus_bytes": 4604969,
+    "fixture": {
+      "context_tokens": 1048576,
+      "actual_prompt_tokens": 1047544,
+      "max_output_tokens": 1024,
+      "context_safety_tokens": 8,
+      "total_reserved_tokens": 1048576,
+      "prompt_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+      "prompt_bytes": 3158161,
+      "prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+      "record_token_positions": {
+        "begin": 36,
+        "middle": 523698,
+        "end": 1047424
+      },
+      "expected": {
+        "begin": 731927,
+        "middle": 408563,
+        "end": 962814
+      },
+      "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+      "source_archive_sha256": "bfdeb3b4d178e0b4a2c29076d394083c7b6f4b50509c2de982fa886bc1d6fcad",
+      "corpus_repeated": false,
+      "unique_corpus_tokens": 1510935,
+      "selected_body_token_budget": 1047275,
+      "boundary_padding_repetitions": 62,
+      "source_file_manifest": "corpus-source-manifest.json",
+      "source_files_count": 262,
+      "excluded_files_count": 0
+    },
+    "finished_unix": 1792891540.6379838
+  },
+  "fixture-metadata.json": {
+    "context_tokens": 1048576,
+    "actual_prompt_tokens": 1047544,
+    "max_output_tokens": 1024,
+    "context_safety_tokens": 8,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+    "prompt_bytes": 3158161,
+    "prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+    "record_token_positions": {
+      "begin": 36,
+      "middle": 523698,
+      "end": 1047424
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+    "source_archive_sha256": "bfdeb3b4d178e0b4a2c29076d394083c7b6f4b50509c2de982fa886bc1d6fcad",
+    "corpus_repeated": false,
+    "unique_corpus_tokens": 1510935,
+    "selected_body_token_budget": 1047275,
+    "boundary_padding_repetitions": 62,
+    "source_file_manifest": "corpus-source-manifest.json",
+    "source_files_count": 262,
+    "excluded_files_count": 0
+  },
+  "unit-tests.log": "test_complete_cold_and_exact_warm_answer (__main__.FullWindowAcceptanceTests) ... ok\ntest_incomplete_http_sse_and_output_budget_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_missing_or_inline_continuation_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_reservation_and_cache_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_timing_and_identity_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_wrong_or_partial_record_values_refused (__main__.FullWindowAcceptanceTests) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n",
+  "exact_cpu_process_alive": false
+}

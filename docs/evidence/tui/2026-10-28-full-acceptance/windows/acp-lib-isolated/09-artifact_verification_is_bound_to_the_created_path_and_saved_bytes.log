@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes' (54532) panicked at crates\code\acp\src\office_file_tests.rs:306:60:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes ... FAILED
+
+failures:
+
+failures:
+    office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.09s
+

@@ -1,0 +1,37 @@
+[
+  {
+    "test": "document_read::run_tests::native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns",
+    "exit": 101,
+    "file": "01-native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns.log"
+  },
+  {
+    "test": "document_read::tests::actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications",
+    "exit": 101,
+    "file": "02-actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications.log"
+  },
+  {
+    "test": "document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations",
+    "exit": 101,
+    "file": "03-actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations.log"
+  },
+  {
+    "test": "host_context::tests::host_text_lands_in_extra_and_keeps_the_budget_line",
+    "exit": 101,
+    "file": "04-host_text_lands_in_extra_and_keeps_the_budget_line.log"
+  },
+  {
+    "test": "office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission",
+    "exit": 101,
+    "file": "05-live_tool_turn_reads_only_with_read_authority_and_permission.log"
+  },
+  {
+    "test": "plugin_selection::tests::native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_cutover",
+    "exit": 101,
+    "file": "06-native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_cutover.log"
+  },
+  {
+    "test": "plugin_selection::tests::real_harness_run_retains_native_tool_across_cutover_and_rejects_withdrawal",
+    "exit": 101,
+    "file": "07-real_harness_run_retains_native_tool_across_cutover_and_rejects_withdrawal.log"
+  }
+]

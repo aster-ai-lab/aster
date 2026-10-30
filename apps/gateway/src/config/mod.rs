@@ -25,13 +25,13 @@ pub(crate) use entrypoint::ListenAddress;
 pub use entrypoint::{EntrypointConfig, Protocol, TlsConfig};
 pub use inference::{
     default_catalog_poll_interval, ConsoleCatalogConfig, FailoverPolicy, InferenceConfig,
-    InferenceCredentialConfig, InferenceDistributedServingConfig, InferenceEndpoint,
-    InferenceGrantConfig, InferenceGuardrailsConfig, InferenceLimitsConfig, InferenceListingConfig,
-    InferenceModelConfig, InferenceModelPricing, InferencePhaseRole, InferencePrincipalConfig,
-    InferenceProtocol, InferenceRouteConfig, InferenceRoutingBranch, InferenceRoutingMode,
-    InferenceRoutingPlan, InferenceSchedulingConfig, InferenceSpendWindow, InferenceTargetConfig,
-    InferenceTransferHealth, InferenceWire, InferenceWorkerConfig, INFERENCE_CREDENTIAL_AUDIENCE,
-    INFERENCE_TOKENIZER_REVISION, POWER_WORKER_OBSERVATION_SCHEMA,
+    InferenceCredentialConfig, InferenceDecisionProtocol, InferenceDistributedServingConfig,
+    InferenceEndpoint, InferenceGrantConfig, InferenceGuardrailsConfig, InferenceLimitsConfig,
+    InferenceListingConfig, InferenceModelConfig, InferenceModelPricing, InferencePhaseRole,
+    InferencePrincipalConfig, InferenceProtocol, InferenceRouteConfig, InferenceRoutingBranch,
+    InferenceRoutingMode, InferenceRoutingPlan, InferenceSchedulingConfig, InferenceSpendWindow,
+    InferenceTargetConfig, InferenceTransferHealth, InferenceWire, InferenceWorkerConfig,
+    INFERENCE_CREDENTIAL_AUDIENCE, INFERENCE_TOKENIZER_REVISION, POWER_WORKER_OBSERVATION_SCHEMA,
 };
 pub use middleware::MiddlewareConfig;
 pub use mode::OperatingMode;

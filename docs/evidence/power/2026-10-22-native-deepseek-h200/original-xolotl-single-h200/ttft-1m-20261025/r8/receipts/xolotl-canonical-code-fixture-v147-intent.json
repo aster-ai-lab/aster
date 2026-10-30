@@ -1,0 +1,53 @@
+{
+  "unix": 1792899195.0601451,
+  "phase": "staged",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/canonical-code-fullwindow-v147",
+  "original_fixture_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+  "metadata": {
+    "context_tokens": 1048576,
+    "actual_prompt_tokens": 1047544,
+    "max_output_tokens": 1024,
+    "context_safety_tokens": 8,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+    "prompt_bytes": 3158161,
+    "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+    "record_token_positions": {
+      "begin": 36,
+      "middle": 523698,
+      "end": 1047424
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+    "source_archive_sha256": "bfdeb3b4d178e0b4a2c29076d394083c7b6f4b50509c2de982fa886bc1d6fcad",
+    "corpus_repeated": false,
+    "unique_corpus_tokens": 1510935,
+    "selected_body_token_budget": 1047275,
+    "boundary_padding_repetitions": 62,
+    "source_file_manifest": "corpus-source-manifest.json",
+    "source_files_count": 262,
+    "excluded_files_count": 0,
+    "schema": "aster-public-code-fullwindow-canonical-api-v145r1",
+    "previous_direct_template_prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+    "canonical_encoder": "Service.encode_prompt: mark_think_literals/render_prompt/unmark_think_literals/tokenizer.encode",
+    "canonical_api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+    "canonical_frontend_sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e",
+    "body_changed": false,
+    "input_tokens_changed": false,
+    "protection_rules_changed": false,
+    "native_runtime_id_digest_captured": false
+  },
+  "body_changed": false,
+  "credentials_copied": false,
+  "gpu_executed": false,
+  "result": {
+    "phase": "staged",
+    "body_changed": false,
+    "prompt_tokens": 1047544,
+    "api_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4"
+  }
+}

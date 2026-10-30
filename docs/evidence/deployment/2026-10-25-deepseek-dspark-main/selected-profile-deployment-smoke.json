@@ -1,0 +1,38 @@
+{
+  "id": "chatcmpl-5dad7fd3794246cda2d78c8e",
+  "object": "chat.completion",
+  "created": 1792938638,
+  "model": "deepseek-v41-flash-1017-xq-1m",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"answer\":250}",
+        "reasoning_content": "We need answer JSON object one key answer integer value compute (19*23)-(17*11). 19*23=437. 17*11=187. Difference 250. Need JSON no markdown. Ensure valid JSON. {\"answer\":250}."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 56,
+    "completion_tokens": 60,
+    "total_tokens": 116,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 56,
+    "prompt_ms": 2233.7,
+    "prompt_per_token_ms": 39.887,
+    "prompt_per_second": 25.1,
+    "predicted_n": 60,
+    "predicted_ms": 1951.6,
+    "predicted_per_token_ms": 32.527,
+    "predicted_per_second": 30.7,
+    "draft_n": 52,
+    "draft_n_accepted": 42
+  }
+}

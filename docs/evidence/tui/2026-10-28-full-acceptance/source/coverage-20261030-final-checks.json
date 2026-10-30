@@ -1,0 +1,34 @@
+{
+  "model": "kimi/k3.1-pro",
+  "source_digest": "a1208f00e45e87991b37d6eb21d7496cfadb4125",
+  "runtime_pair_rebuilt": false,
+  "all_frozen_source_files_still_match": true,
+  "format_checks": [
+    {
+      "platform": "windows",
+      "command": "rustfmt --edition 2021 --check integration root, driver, tool_wave, coverage_wave, ui_qualified_wave",
+      "exit_code": 0
+    },
+    {
+      "platform": "linux",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0
+    }
+  ],
+  "provider_secret_scans": {
+    "windows": {
+      "file": "source/coverage-20261030-secret-scan-windows.log",
+      "sha256": "07e9171b165aa233a771f3babcba644715eea921e197b02e0cf1124bd54cecda",
+      "exit_code": 0,
+      "files_observed": 4251
+    },
+    "linux": {
+      "file": "source/coverage-20261030-secret-scan-linux.log",
+      "sha256": "07e9171b165aa233a771f3babcba644715eea921e197b02e0cf1124bd54cecda",
+      "exit_code": 0,
+      "files_observed": 4251
+    }
+  },
+  "native_test_processes_remaining": false,
+  "complete_153": false
+}

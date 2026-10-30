@@ -1,0 +1,65 @@
+{
+  "unix": 1792899867.4612339,
+  "phase": "prepared",
+  "files": [
+    {
+      "file": "xolotl_recovery_common_v157.py",
+      "bytes": 4694,
+      "sha256": "1aefe280150488d9677ef935554f4c7cd0b1a9e47114ec77d4fdb89e21af34a0"
+    },
+    {
+      "file": "xolotl_sealed_bootstrap_v157.py",
+      "bytes": 2838,
+      "sha256": "7bd05ebd49a90d0c2dca07e05d4e85a35661aa11c7269cbebfe2e8c346eaff08"
+    },
+    {
+      "file": "launch_xolotl_stable_recovery_v157.frozen.py",
+      "bytes": 6224,
+      "sha256": "151cbc2a73c5397add1b1407311253001521b25c769a8dc093af78f358487dc2"
+    },
+    {
+      "file": "manage_xolotl_stable_recovery_v157.frozen.py",
+      "bytes": 7050,
+      "sha256": "388a93656c8c6de6e7c34d47b1b6f1a9b87d7a21e9785e39e818db1259cfb501"
+    },
+    {
+      "file": "manage_xolotl_stable_extended_v157.frozen.py",
+      "bytes": 7288,
+      "sha256": "cb41efeb3db503457e9fd48f3c8fdb22770de608a88ecdac335d6b7e36b0a39f"
+    },
+    {
+      "file": "manage_xolotl_stable_edge_suite_v157.frozen.py",
+      "bytes": 8915,
+      "sha256": "45374f8c80b92d92044457196d9422500db8fbe4e4a4ce1c4a0e3d1121cb9ef5"
+    },
+    {
+      "file": "run_xolotl_stable_recovery_v157.frozen.py",
+      "bytes": 5980,
+      "sha256": "97f518d51d464f1cbc4cc0e7fae3843bc5fb160e21098648d41541a769674298"
+    },
+    {
+      "file": "promote_xolotl_stable_recovery_v157.frozen.py",
+      "bytes": 8572,
+      "sha256": "d6a86fb4a3e154f10f9604f1176fe9c166d956b2c8ebda13a793ff0c1f14cb9e"
+    },
+    {
+      "file": "finalize_xolotl_stable_recovery_v157.frozen.py",
+      "bytes": 6003,
+      "sha256": "dba10ea22dc8fd8c6187f97ba9f35b92ce90519a927348f749ecc437db853483"
+    }
+  ],
+  "maximum_h200_roles": 2,
+  "prior_formal_allocation_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+  "new_formal_allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "independent_optimization_allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "optimization_restarted": false,
+  "selected_profile": "nativefa/S128/API f062/exact-token-memo1/GPFS, unchanged qualified formal profile",
+  "fresh_gates": [
+    "basic28",
+    "native-tool/1024output12",
+    "strict132097",
+    "Windows VIP backend nonce/cache reuse"
+  ],
+  "actual1m_new_instance_claimed": false,
+  "experimental_candidates_promoted": false
+}

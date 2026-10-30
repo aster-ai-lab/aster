@@ -1,0 +1,12 @@
+
+running 1 test
+test tool_wave::kimi_checklist_exact_projection_leaves_overlay_before_clean_exit ... ORACLE case=tool-wave-checklist-exit name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=tool-wave-checklist-exit name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40627
+ORACLE case=tool-wave-checklist-exit name=checklist-first-ui result=pass detail=a real update_plan receipt and ACP projection render all three requested checklist rows
+ORACLE case=tool-wave-checklist-exit name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=41882
+ORACLE case=tool-wave-checklist-exit name=checklist-replacement-ui result=pass detail=replacement removes the old row, changes the order and projects completed/cancelled statuses independently of Plan review mode
+ORACLE case=tool-wave-checklist-exit name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 82 filtered out; finished in 53.36s
+

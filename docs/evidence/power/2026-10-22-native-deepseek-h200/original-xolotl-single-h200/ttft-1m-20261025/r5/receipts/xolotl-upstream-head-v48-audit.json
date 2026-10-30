@@ -1,0 +1,235 @@
+{
+  "unix": 1792871773.1523666,
+  "source": "https://api.github.com/repos/Indras-Mirror/Xolotl",
+  "pinned": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "head": "ef248e4cdfb55bedb8b132ca51eedf9f258052a8",
+  "date": "2026-10-24T19:46:14Z",
+  "subject": "kq_cpu_bench: ptq1_0 and --dims H,FF (DeepSeek-V4.1 5120,2304); V4's four expert types on a 5700X, 8 threads, 1 token: PTQ1_0 16.3, Q2_0 23.8, Q3_K 24.2, MXFP4 23.0 GB/s",
+  "changed": true,
+  "status": "ahead",
+  "ahead_by": 17,
+  "commits": [
+    {
+      "sha": "7fdee99fd14923b426fc70843724c10b067ed17b",
+      "subject": "data: restore the expert profiles, draft vocabularies and speed projection removed in 9b77b2b8",
+      "date": "2026-10-24T03:01:02Z"
+    },
+    {
+      "sha": "6e9e1619688bb2131b7db3c4dee5f1531f5b01c7",
+      "subject": "layer split auto: the coverage curve on 2 and 3 GPUs too (STRATA_SPLIT_POWER_CURVE=1 keeps the old one)",
+      "date": "2026-10-24T03:24:03Z"
+    },
+    {
+      "sha": "bdd6acfce132549bfdc9490f640f3df5f20177f8",
+      "subject": "tools/v41/serve/ds41_top.py: prefill and decode speed of a running server, in a terminal",
+      "date": "2026-10-24T04:06:59Z"
+    },
+    {
+      "sha": "d98dd3ede67694f2f8c874e17d0bda6ee3faee03",
+      "subject": "v41 decode diagnostics: STRATA_DEC_PROF=2, DS41_GRAPH_OPS=1, a CUPTI tracer for Windows; decode profile notes",
+      "date": "2026-10-24T04:24:13Z"
+    },
+    {
+      "sha": "b2ad0cacc974cf829382c5f79eaca71c72e3eeb7",
+      "subject": "ds41 Engram: read ISTA-DASLab's Engram GGUF (IQ4_NL tables) - an --engram entry ending in .gguf",
+      "date": "2026-10-24T10:02:00Z"
+    },
+    {
+      "sha": "ebbc9738396090b43401a0778d3d5d4606ef6bb6",
+      "subject": "docs: V41 remote experts on Linux - the helper builds and runs, --remote-device ties it on decode",
+      "date": "2026-10-24T10:43:58Z"
+    },
+    {
+      "sha": "bda7f5a2c753bb6f6fb96f74446a11491ab2eea7",
+      "subject": "README: V4 is up (quality numbers, speed note), ISTA IQ2_XS GPU-tested",
+      "date": "2026-10-24T17:57:13Z"
+    },
+    {
+      "sha": "c5be51d76f57863dfbc0d59d1f33174254f77925",
+      "subject": "Merge pull request #45 from Xiaomi2008/pr/ds41-linux-remote-docs",
+      "date": "2026-10-24T17:58:04Z"
+    },
+    {
+      "sha": "408df4a9bf819204ca3379b0e5d2c35f2de09a95",
+      "subject": "Merge pull request #37 from Xiaomi2008/pr/ds41-top",
+      "date": "2026-10-24T17:58:08Z"
+    },
+    {
+      "sha": "33cf3604ebf15ef70b46fbc74a68410b7fc95d0f",
+      "subject": "Merge pull request #35 from Xiaomi2008/pr/restore-data",
+      "date": "2026-10-24T17:58:12Z"
+    },
+    {
+      "sha": "6caad0ffe2efdfb63db5a3c4fba961448933ccf9",
+      "subject": "Merge pull request #36 from Xiaomi2008/pr/split-cover-2gpu",
+      "date": "2026-10-24T17:58:15Z"
+    },
+    {
+      "sha": "7445c10289c3793f37e35d2aaaf5a4ca82826664",
+      "subject": "Merge pull request #39 from Xiaomi2008/pr/ds41-prof-tools",
+      "date": "2026-10-24T17:58:19Z"
+    },
+    {
+      "sha": "59f4447c3f699803de433f07c210d2de72b56a1c",
+      "subject": "Merge pull request #41 from NektoDron/ds41-ista-engram-gguf",
+      "date": "2026-10-24T17:58:22Z"
+    },
+    {
+      "sha": "1a80dedbf3b70c3a81896cb267af307c892fc906",
+      "subject": "ds41: split GGUFs open every shard from the canonical order and gate/up expert types must match (#38); serve_ds41 refuses --vision before the encoder starts when the GGUF has no exp_probs_b_vl.bias, README: ISTA's GGUFs are text only (#43)",
+      "date": "2026-10-24T18:01:15Z"
+    },
+    {
+      "sha": "3fb0375b227119289acbef1190a92fc1f0a3c5be",
+      "subject": "CPU experts: AVX2 Q2_0 rows (q2_0_rows_q8_0) for gate/up and down - ggml-cpu only has the scalar _generic Q2_0 dot on x86; decoded once per block for every token, same integer sums (parity vs ggml's dot: max rel 2.4e-5, nt 1-4). kq_cpu_bench on a Ryzen 7 5700X, 8 threads: 4.2 -> 23.5 GB/s at 1 token, 2.1 -> 18.7 at 2, 1.0 -> 12.9 at 4. STRATA_NO_Q2_ROWS=1 = the old path. DSpark: STRATA_DSPARK_CUM=<c> (opt-in, after upstream Strata f73ae5a6) cuts the verify window where the product of the drafts' confidences falls below c",
+      "date": "2026-10-24T19:43:37Z"
+    },
+    {
+      "sha": "bce045e59e4acecaefe217b3707a7a2bf23af1ef",
+      "subject": "README: V4's Gauntlet v2 result (6/7, 6.50) and where the speed work is",
+      "date": "2026-10-24T19:44:10Z"
+    },
+    {
+      "sha": "ef248e4cdfb55bedb8b132ca51eedf9f258052a8",
+      "subject": "kq_cpu_bench: ptq1_0 and --dims H,FF (DeepSeek-V4.1 5120,2304); V4's four expert types on a 5700X, 8 threads, 1 token: PTQ1_0 16.3, Q2_0 23.8, Q3_K 24.2, MXFP4 23.0 GB/s",
+      "date": "2026-10-24T19:46:14Z"
+    }
+  ],
+  "files": [
+    {
+      "file": ".gitignore",
+      "status": "modified",
+      "changes": 4
+    },
+    {
+      "file": "README.md",
+      "status": "modified",
+      "changes": 37
+    },
+    {
+      "file": "data/draft_vocab.bin",
+      "status": "added",
+      "changes": 0
+    },
+    {
+      "file": "data/draft_vocab_en.bin",
+      "status": "added",
+      "changes": 0
+    },
+    {
+      "file": "data/experimental-speed-projection/Qwen3.8-Flash-Next-experimental-speed-projection.gguf",
+      "status": "added",
+      "changes": 0
+    },
+    {
+      "file": "data/experimental-speed-projection/Qwen3.8-Flash-Next-experimental-speed-projection.json",
+      "status": "added",
+      "changes": 26
+    },
+    {
+      "file": "data/experimental-speed-projection/README.md",
+      "status": "added",
+      "changes": 21
+    },
+    {
+      "file": "data/expert-profile-coder.bin",
+      "status": "added",
+      "changes": 0
+    },
+    {
+      "file": "data/expert-profile.bin",
+      "status": "added",
+      "changes": 0
+    },
+    {
+      "file": "docs/ds4/V41_DECODE_PROFILE.md",
+      "status": "added",
+      "changes": 87
+    },
+    {
+      "file": "docs/ds4/V41_REMOTE_EXPERTS.md",
+      "status": "modified",
+      "changes": 27
+    },
+    {
+      "file": "include/strata/kernels/cpu/ptq1_0.hpp",
+      "status": "modified",
+      "changes": 5
+    },
+    {
+      "file": "src/kernels/cpu/kq_cpu_bench.cpp",
+      "status": "modified",
+      "changes": 19
+    },
+    {
+      "file": "src/kernels/cpu/native_expert.cpp",
+      "status": "modified",
+      "changes": 27
+    },
+    {
+      "file": "src/kernels/cpu/ptq1_0.cpp",
+      "status": "modified",
+      "changes": 83
+    },
+    {
+      "file": "src/program/generate.cpp",
+      "status": "modified",
+      "changes": 13
+    },
+    {
+      "file": "tools/v41/engine/ds41_dense.cpp",
+      "status": "modified",
+      "changes": 19
+    },
+    {
+      "file": "tools/v41/engine/ds41_engram.cpp",
+      "status": "modified",
+      "changes": 159
+    },
+    {
+      "file": "tools/v41/engine/ds41_engram.hpp",
+      "status": "modified",
+      "changes": 11
+    },
+    {
+      "file": "tools/v41/engine/ds41_generate.cpp",
+      "status": "modified",
+      "changes": 37
+    },
+    {
+      "file": "tools/v41/engine/ds41_geometry.hpp",
+      "status": "modified",
+      "changes": 6
+    },
+    {
+      "file": "tools/v41/engine/ds41_moe.cpp",
+      "status": "modified",
+      "changes": 9
+    },
+    {
+      "file": "tools/v41/engine/ds41_moe.hpp",
+      "status": "modified",
+      "changes": 2
+    },
+    {
+      "file": "tools/v41/prof/cupti_trace.cpp",
+      "status": "added",
+      "changes": 63
+    },
+    {
+      "file": "tools/v41/prof/trace_summary.py",
+      "status": "added",
+      "changes": 86
+    },
+    {
+      "file": "tools/v41/serve/ds41_top.py",
+      "status": "added",
+      "changes": 100
+    },
+    {
+      "file": "tools/v41/serve/serve_ds41.py",
+      "status": "modified",
+      "changes": 33
+    }
+  ]
+}

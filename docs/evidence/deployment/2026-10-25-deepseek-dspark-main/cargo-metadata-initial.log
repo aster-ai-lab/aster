@@ -1,0 +1,6 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml

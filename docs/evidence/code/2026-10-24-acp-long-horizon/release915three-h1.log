@@ -1,0 +1,7 @@
+
+running 1 test
+test masked_verification_is_repaired_with_the_admitted_exact_command has been running for over 60 seconds
+RUST_SCRIPTED_RESULT {"evidence":"/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/docs/evidence/code/2026-10-24-acp-long-horizon/rust-scripted-6bc851d9-cfb8-45f4-8e7f-d58db80c28a3","identity":true,"main_steps":6,"model_requests":9,"pass":true,"prompt_ms":25266}
+test masked_verification_is_repaired_with_the_admitted_exact_command ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 51 filtered out; finished in 115.30s

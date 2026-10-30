@@ -1,0 +1,12 @@
+{
+  "source_pair": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-pc-windows-msvc",
+  "harness_manifest": "windows/forms-20261030-owner-step-initial/test-binary.json",
+  "harness_manifest_sha256": "8385b12c9b4ed9d1c690afa2df7c14f6aa1d2cb4c0c3ec400c5de27cfa89c243",
+  "binary_sha256": "c34547c7283c19147f2793f27bd80c4ff0dde3a2361401e346fd377b17a5d8c3",
+  "model": "kimi/k3.1-pro",
+  "script_sha256": "f0a6c9c8d4d15dd96a697b303fc91271500b024ae1bd65648fd32c0708c553f7",
+  "tests": [
+    "forms_catalog::kimi_form_step_constraints_reject_off_step_drafts_before_submission"
+  ],
+  "expected_tests": 69
+}

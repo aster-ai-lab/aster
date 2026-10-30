@@ -1,0 +1,31 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205",
+  "phase": "launched",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "prior_operator_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v203-cpu",
+  "model_forward_executed": false,
+  "service_changed": false,
+  "files": [
+    {
+      "file": "h200_ncu_smoke_v204.cu",
+      "bytes": 1594,
+      "sha256": "0d7afb3e5ed714f6aed6766c85eba86e0f4a92781542ceec96fad42094d6ed45"
+    },
+    {
+      "file": "aster_ncu_metrics_v171.py",
+      "bytes": 3047,
+      "sha256": "01d6074e2b039050cf5c04a989d245326e569e6be3ff86646485d42353f4d2aa"
+    }
+  ],
+  "stage": {
+    "worker_sha256": "c013b54c8bd8b63453ca6d3ec79157657d59f181949cbbf9eb4544aef0f813b5"
+  },
+  "process": {
+    "pid": 9051,
+    "start_ticks": 713950430,
+    "uid": 10250,
+    "unix": 1792910233.3178523,
+    "namespace": "optimization pod",
+    "budget_seconds": 160
+  }
+}

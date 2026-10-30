@@ -1,0 +1,21 @@
+{
+  "unix": 1792856359.2263186,
+  "gpu_executed": false,
+  "compile-result.json": {
+    "unix": 1792856309.6533325,
+    "phase": "failed",
+    "gpu_executed": false,
+    "error": "RuntimeError: GPU gate compile exit 1",
+    "finished_unix": 1792856310.472962
+  },
+  "compile-process.json": {
+    "pid": 4863,
+    "start_ticks": 728323154,
+    "uid": 10250,
+    "unix": 1792856309.6241357,
+    "budget_seconds": 60
+  },
+  "exact_compile_alive": false,
+  "compile.log": "/usr/bin/ld: /tmp/ccCpZUDR.o: in function `(anonymous namespace)::fill(strata::core::ExpertCache&, aster_cache_restore::Record const&)':\nmixed_cache_gpu_test.cpp:(.text+0x159): undefined reference to `strata::core::ExpertCache::fill_slot_blocking(int, unsigned char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, long)'\n/usr/bin/ld: /tmp/ccCpZUDR.o: in function `(anonymous namespace)::check(strata::core::ExpertCache&, std::vector<aster_cache_restore::Record, std::allocator<aster_cache_restore::Record> > const&, long)':\nmixed_cache_gpu_test.cpp:(.text+0x2cd): undefined reference to `strata::core::ExpertCache::verify_slot(int, unsigned char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, long)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text+0x30f): undefined reference to `strata::core::ExpertCache::slot_of(long, long) const'\n/usr/bin/ld: /tmp/ccCpZUDR.o: in function `main.cold':\nmixed_cache_gpu_test.cpp:(.text.unlikely+0xa7): undefined reference to `strata::core::ExpertCache::~ExpertCache()'\n/usr/bin/ld: /tmp/ccCpZUDR.o: in function `main':\nmixed_cache_gpu_test.cpp:(.text.startup+0x36a): undefined reference to `strata::core::ExpertCache::open_sized(std::vector<long, std::allocator<long> > const&, long, long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x4d0): undefined reference to `strata::core::ExpertCache::admit(long, long)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x5de): undefined reference to `strata::core::ExpertCache::slots_within(long) const'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x5eb): undefined reference to `strata::core::ExpertCache::device_slot(int)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x6ab): undefined reference to `strata::core::ExpertCache::evict_from(long)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x6f4): undefined reference to `strata::core::ExpertCache::shrink(long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x717): undefined reference to `strata::core::ExpertCache::device_slot(int)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x733): undefined reference to `strata::core::ExpertCache::device_slot(int)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0x809): undefined reference to `strata::core::ExpertCache::grow(long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0xa26): undefined reference to `strata::core::ExpertCache::admit_at(long, long, int)'\n/usr/bin/ld: mixed_cache_gpu_test.cpp:(.text.startup+0xb39): undefined reference to `strata::core::ExpertCache::~ExpertCache()'\ncollect2: error: ld returned 1 exit status\n",
+  "worker.log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/mixed-cache-gpu-gate-v18/compile_gpu_gate_worker.py\", line 29, in <module>\n    raise RuntimeError('GPU gate compile exit ' + str(result.returncode))\nRuntimeError: GPU gate compile exit 1\n"
+}

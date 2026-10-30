@@ -1,0 +1,31 @@
+{
+  "unix": 1792858010.7609217,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v15/server-vip-cleanup-v15",
+  "plan": {
+    "service_name": "aster-xolotl-api-v3pool-20261024",
+    "service_uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+    "namespace": "ailab-hrprdduanyan",
+    "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+    "lease_ends_unix": 1792862381.5974355
+  },
+  "files": [
+    {
+      "file": "cleanup-worker.py",
+      "bytes": 1926,
+      "sha256": "f91fd0eeb19cd879fd7538260a51412bc9387a8ce45ff76cb4799d34179bdd8f"
+    },
+    {
+      "file": "cleanup-plan.json",
+      "bytes": 252,
+      "sha256": "3f1f1857ebccb91c6182102009674d8068b291968cf5ee1473b012b9287a6134"
+    }
+  ],
+  "process": {
+    "pid": 805121,
+    "start_ticks": 278480478,
+    "uid": 10250,
+    "unix": 1792858019.8509703,
+    "budget_seconds": 4541
+  }
+}

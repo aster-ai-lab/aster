@@ -1,0 +1,16 @@
+
+running 1 test
+mutation=none observed_model_calls=4 verified=true
+
+thread 'office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness' (53572) panicked at crates\code\acp\src\office_file_tests\nested_verification.rs:172:13:
+all native writes succeeded, but send returned Session error: completion gate: workspace mutation 14d9e324696232774b4f602d5ce57d5de802c6b1bebfbe3e7c9e68d189ee5d48 (_font_probe.png, _probe2.png, regions.png, trend.png) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f _font_probe.png` with the check that proves the change, for example `test -f _font_probe.png && <test command>`.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness ... FAILED
+
+failures:
+
+failures:
+    office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 7.12s
+

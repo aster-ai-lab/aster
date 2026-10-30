@@ -263,42 +263,13 @@ pub(crate) fn render_run_context(
     context["accepted_steps"] =
         serde_json::to_value(&accepted[accepted.len().saturating_sub(SHOWN)..])?;
     context["remaining_steps"] = serde_json::json!(steps.len() - accepted.len());
-    // Refs, current step and waits come first so truncation only cuts the goal text.
-    Ok(bounded_brief(format!(
+    // Preserve the complete admitted step and goal. Conversation compaction,
+    // not this run brief, owns any later model-window truncation.
+    Ok(format!(
         "## Current admitted goal\nThis binding describes the current task; it does not prove accepted progress or completion. Advance only with fresh evidence that meets current_step.success_criteria.{note}\n{}\ngoal: {}",
         serde_json::to_string(&context)?,
         serde_json::to_string(&serde_json::json!({"goal": view.goal, "non_goals": non_goals}))?
-    )))
-}
-
-const MAX_BRIEF_BYTES: usize = 4 * 1024;
-const MAX_BRIEF_TOKENS: usize = 512;
-const BRIEF_TRUNCATED: &str = "\n[brief truncated; the full view is the goal definition]";
-
-fn bounded_brief(mut brief: String) -> String {
-    let fits = |text: &str| {
-        text.len() <= MAX_BRIEF_BYTES
-            && crate::llm::estimate_prompt_tokens(&[], Some(text), &[]) <= MAX_BRIEF_TOKENS
-    };
-    if fits(&brief) {
-        return brief;
-    }
-    let mut cut = brief.len().min(MAX_BRIEF_BYTES);
-    let mut candidate = String::with_capacity(MAX_BRIEF_BYTES);
-    while cut > 0 {
-        if brief.is_char_boundary(cut) {
-            candidate.clear();
-            candidate.push_str(&brief[..cut]);
-            candidate.push_str(BRIEF_TRUNCATED);
-            if fits(&candidate) {
-                break;
-            }
-        }
-        cut -= 1;
-    }
-    brief.truncate(cut);
-    brief.push_str(BRIEF_TRUNCATED);
-    brief
+    ))
 }
 
 #[cfg(test)]

@@ -1,0 +1,121 @@
+{
+  "currentDocuments": 51,
+  "citedPages": 9,
+  "inlineCitations": 48,
+  "verifiedSourceTargets": 150,
+  "citedSourceFiles": 15,
+  "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+  "pages": [
+    {
+      "route": "code/9.1.6/",
+      "citations": 7,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/agent_facade.rs#L11",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/fact_control.rs#L126",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/agent_facade.rs#L176",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/context/assembler.rs#L153",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/run_facade.rs#L6",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/harness_loop.rs#L1565",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/durable_memory.rs#L260"
+      ]
+    },
+    {
+      "route": "code/9.1.6/workflow/",
+      "citations": 5,
+      "diagrams": 2,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/agent_facade.rs#L176",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/fact_control.rs#L126",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/context/assembler.rs#L153",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/harness_loop.rs#L1565",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/capability/effect.rs#L39"
+      ]
+    },
+    {
+      "route": "code/9.1.6/reference/run-control/",
+      "citations": 5,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/run_facade.rs#L6",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/run_control.rs#L80",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/run_facade.rs#L41",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/governance_facade.rs#L275",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/governance_facade.rs#L287"
+      ]
+    },
+    {
+      "route": "code/9.1.6/reference/governance/",
+      "citations": 3,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/governance_facade.rs#L470",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/harness_loop.rs#L1591",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/capability/effect.rs#L39"
+      ]
+    },
+    {
+      "route": "code/9.1.6/reference/memory/",
+      "citations": 5,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/durable_memory.rs#L260",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/durable_memory.rs#L287",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/durable_memory.rs#L211",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/durable_memory.rs#L225",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/core/src/agent_api/agent_facade.rs#L344"
+      ]
+    },
+    {
+      "route": "acp/9.1.6/",
+      "citations": 7,
+      "diagrams": 2,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L529",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/session_open.rs#L233",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L976",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1021",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/turn.rs#L411",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/permission_ask.rs#L135",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1121"
+      ]
+    },
+    {
+      "route": "acp/9.1.6/protocol/",
+      "citations": 7,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L976",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1021",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1309",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1462",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/turn.rs#L463",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent.rs#L1121",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/resume.rs#L37"
+      ]
+    },
+    {
+      "route": "acp/9.1.6/events/",
+      "citations": 5,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/turn.rs#L26",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/turn.rs#L463",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/run_observation.rs#L13",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/run_observation.rs#L99",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/run_observation.rs#L113"
+      ]
+    },
+    {
+      "route": "acp/9.1.6/permissions/",
+      "citations": 4,
+      "diagrams": 1,
+      "sources": [
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/permission_ask.rs#L59",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/permission_ask.rs#L135",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/permission_ask.rs#L251",
+        "https://github.com/aster-ai-lab/aster/blob/8729d7c84a2d887c61dc206ba47bf8a63425e768/crates/code/acp/src/agent/permission_ask.rs#L209"
+      ]
+    }
+  ]
+}

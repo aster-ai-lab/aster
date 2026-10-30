@@ -1,0 +1,88 @@
+{
+  "fixtureSha256": "4b7e9b351110f3c22d995028722e661c97963f296716abc3310228a7c7b3af34",
+  "sourceRanges": [
+    "A1:C7",
+    "A1:B3"
+  ],
+  "explicitEdit": {
+    "sheet": "原始数据",
+    "cell": "C2",
+    "value": "121",
+    "type": "s"
+  },
+  "allOtherCellsUnchanged": true,
+  "files": [
+    {
+      "file": "chromium-save.xlsx",
+      "bytes": 9675,
+      "sha256": "666d74bcc63b93da3f0646b6dc8ec5e8138511fc79fbb2077fee180a48e0dec7",
+      "sheetNames": [
+        "原始数据",
+        "月度汇总"
+      ],
+      "populatedCells": 27,
+      "populatedRowsIncludingHeaders": [
+        7,
+        3
+      ],
+      "ranges": [
+        "A1:L40",
+        "A1:L40"
+      ]
+    },
+    {
+      "file": "chromium-failed-save.xlsx",
+      "bytes": 9675,
+      "sha256": "79044efbd23388270305269182298690c92d3aab4bbf46e455354eb7be810fcb",
+      "sheetNames": [
+        "原始数据",
+        "月度汇总"
+      ],
+      "populatedCells": 27,
+      "populatedRowsIncludingHeaders": [
+        7,
+        3
+      ],
+      "ranges": [
+        "A1:L40",
+        "A1:L40"
+      ]
+    },
+    {
+      "file": "webkit-save.xlsx",
+      "bytes": 9675,
+      "sha256": "968639cefe70bad02f62786e4864cdf33647f208e351a1e6e67c5ed8bfb49850",
+      "sheetNames": [
+        "原始数据",
+        "月度汇总"
+      ],
+      "populatedCells": 27,
+      "populatedRowsIncludingHeaders": [
+        7,
+        3
+      ],
+      "ranges": [
+        "A1:L40",
+        "A1:L40"
+      ]
+    },
+    {
+      "file": "webkit-failed-save.xlsx",
+      "bytes": 9675,
+      "sha256": "f76dca10311abddc987d45a87246b6a3f5bf1290ab39a0d9b29e1ce50d8b2148",
+      "sheetNames": [
+        "原始数据",
+        "月度汇总"
+      ],
+      "populatedCells": 27,
+      "populatedRowsIncludingHeaders": [
+        7,
+        3
+      ],
+      "ranges": [
+        "A1:L40",
+        "A1:L40"
+      ]
+    }
+  ]
+}

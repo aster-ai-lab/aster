@@ -1,0 +1,46 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 06s
+     Running unittests src\lib.rs (target\debug\deps\a3s_code_core-e95e7f9dfb5c77aa.exe)
+
+running 1 test
+test porcelain::windows::tests::actual_powershell_read_keeps_the_observation_stable ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5288 filtered out; finished in 1.27s
+

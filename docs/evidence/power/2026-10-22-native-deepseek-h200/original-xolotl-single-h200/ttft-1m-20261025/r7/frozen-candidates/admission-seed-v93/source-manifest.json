@@ -1,0 +1,36 @@
+{
+  "schema": "aster-xolotl-admission-seed-v93",
+  "default_enabled": false,
+  "change": "Retain the existing DSpark prompt-tail seed on BGEN. Append-only drafter seeding there, so no extra RNG sample and no speculative first-token branch. Original slot decoding/verification/routing preserved.",
+  "compiled": false,
+  "gpu_qualified": false,
+  "performance_claimed": false,
+  "full1m_qualified": false,
+  "files": [
+    {
+      "file": "ds41_generate.original.cpp",
+      "bytes": 221080,
+      "sha256": "299a2958c364827270a974425d908383cd0de2bcc2cfc9933c31575e94eeaeec"
+    },
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 221472,
+      "sha256": "7a3c2432abaa95add1882a36968adbdebe9725a7827ebbc359b311e9912c79b1"
+    },
+    {
+      "file": "admission-seed-v93.patch",
+      "bytes": 2704,
+      "sha256": "c09c89e6ce335460ac1cf47cca065102f6cf8be0d3c958c6497f97de13b51dcc"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    }
+  ]
+}

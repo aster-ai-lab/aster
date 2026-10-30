@@ -1,0 +1,18 @@
+test_a_missing_binary_is_an_error_not_a_pass (__main__.GlibcCeilingTest.test_a_missing_binary_is_an_error_not_a_pass) ... ok
+test_a_newer_requirement_fails_the_ceiling (__main__.GlibcCeilingTest.test_a_newer_requirement_fails_the_ceiling) ... ok
+test_an_unreadable_ceiling_is_an_error_not_a_pass (__main__.GlibcCeilingTest.test_an_unreadable_ceiling_is_an_error_not_a_pass) ... ok
+test_cli_passes_a_dump_within_the_ceiling (__main__.GlibcCeilingTest.test_cli_passes_a_dump_within_the_ceiling) ... ok
+test_cli_reports_a_violation_as_a_failure (__main__.GlibcCeilingTest.test_cli_reports_a_violation_as_a_failure) ... ok
+test_dump_parsing_reads_the_version_needs_section (__main__.GlibcCeilingTest.test_dump_parsing_reads_the_version_needs_section) ... ok
+test_unprovable_labels_fail_instead_of_passing_silently (__main__.GlibcCeilingTest.test_unprovable_labels_fail_instead_of_passing_silently) ... ok
+test_versions_are_compared_numerically_not_lexically (__main__.GlibcCeilingTest.test_versions_are_compared_numerically_not_lexically) ... ok
+test_linux_hosts_request_the_same_archive_without_a_special_channel (__main__.LinuxChannelSelectionTest.test_linux_hosts_request_the_same_archive_without_a_special_channel) ... ok
+test_retired_direct_archive_is_refused_before_network_access (__main__.LinuxChannelSelectionTest.test_retired_direct_archive_is_refused_before_network_access) ... ok
+test_linux_packaging_checks_both_binaries_against_the_baseline (__main__.LinuxPackagingTest.test_linux_packaging_checks_both_binaries_against_the_baseline) ... ok
+test_linux_packaging_refuses_a_newer_glibc_requirement (__main__.LinuxPackagingTest.test_linux_packaging_refuses_a_newer_glibc_requirement) ... ok
+test_retired_and_unknown_platforms_are_refused (__main__.LinuxPackagingTest.test_retired_and_unknown_platforms_are_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.686s
+
+OK

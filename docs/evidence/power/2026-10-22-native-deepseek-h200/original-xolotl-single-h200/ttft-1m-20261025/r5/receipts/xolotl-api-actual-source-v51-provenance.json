@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "file": "source/serve/frontend.py",
+      "bytes": 74956,
+      "sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e",
+      "local_snapshot_sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e",
+      "snapshot_matches_actual": true
+    },
+    {
+      "file": "source/serve/server.py",
+      "bytes": 439846,
+      "sha256": "04abb76be1608b0c718891fb1486f8a05faada618948f963b222b8f60d62417b",
+      "local_snapshot_sha256": "04abb76be1608b0c718891fb1486f8a05faada618948f963b222b8f60d62417b",
+      "snapshot_matches_actual": true
+    },
+    {
+      "file": "source/tools/v41/serve/test_serve_ds41.py",
+      "bytes": 13761,
+      "sha256": "d6c2cdbebce5497c040d738ee7714147eae9b9907c3df8bb4c01d9d55d5f732e",
+      "local_snapshot_sha256": "d6c2cdbebce5497c040d738ee7714147eae9b9907c3df8bb4c01d9d55d5f732e",
+      "snapshot_matches_actual": true
+    }
+  ]
+}

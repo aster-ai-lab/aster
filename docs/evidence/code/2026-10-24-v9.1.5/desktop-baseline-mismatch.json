@@ -1,0 +1,18 @@
+{
+  "base_commit": "bfdfb797de3dc373025c5469dded57be2acb0e91",
+  "studio_gitlink": "92cec9d14a0870b13a08a62cfa086f29a5b6a37f",
+  "unchanged_paths": [
+    "packages/intelligent-ui",
+    "packages/office",
+    "apps/studio"
+  ],
+  "baseline_referenced_source": "packages/intelligent-ui/src/jsonRender.ts",
+  "baseline_source_exists": false,
+  "actual_ci_run": 40104203537,
+  "failed_jobs": [
+    120902394925,
+    120902394949
+  ],
+  "result": "pre-existing desktop source dependency mismatch; CLI/ACP release compilation has no desktop-renderer target",
+  "scope": "no desktop source copied or concurrent intelligent-ui work committed"
+}

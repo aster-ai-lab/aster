@@ -1,0 +1,10 @@
+
+running 5 tests
+test app::dispatch::tests::prompt::code_command_refusal::code_backend_unavailable_commands_never_become_model_prompts ... ok
+test app::dispatch::tests::prompt::code_command_refusal::code_bare_slash_never_becomes_a_model_prompt ... ok
+test app::dispatch::tests::prompt::code_command_refusal::code_direct_shell_refusal_preserves_draft_without_queue_or_turn ... ok
+test app::dispatch::tests::prompt::code_command_refusal::code_ordinary_and_literal_prompts_keep_their_original_text ... ok
+test app::dispatch::tests::prompt::code_command_refusal::code_unknown_command_never_becomes_a_model_prompt ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 10176 filtered out; finished in 0.05s
+

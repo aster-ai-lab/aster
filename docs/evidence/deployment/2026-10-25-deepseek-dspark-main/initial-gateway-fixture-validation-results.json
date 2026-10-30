@@ -1,0 +1,44 @@
+[
+  {
+    "name": "power-server-library",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-power",
+      "--no-default-features",
+      "--features",
+      "server",
+      "--lib",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 84.00395917892456
+  },
+  {
+    "name": "gateway-request",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-gateway",
+      "--lib",
+      "inference::openai_request",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 101,
+    "wall_seconds": 39.95235848426819
+  }
+]

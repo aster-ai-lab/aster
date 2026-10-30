@@ -1,0 +1,64 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 30s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_core-b84e9a3e662ce246.exe)
+
+running 5 tests
+
+thread 'harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_create_mutation_or_failed_effect_debt' (52904) panicked at crates\code\core\src\harness_loop\unchanged_receipt_tests.rs:49:9:
+assertion failed: ledger.is_empty()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'harness_loop::unchanged_receipt_tests::unchanged_receipt_background_and_nested_paths_share_the_same_rule' (41588) panicked at crates\code\core\src\harness_loop\unchanged_receipt_tests.rs:114:5:
+assertion failed: ledger.is_empty()
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_forgive_unknown_invocation_outcomes ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_filter_keeps_unknown_preimages_bytes_and_mode_changes ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_background_and_nested_paths_share_the_same_rule ... FAILED
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_create_mutation_or_failed_effect_debt ... FAILED
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_preserves_prior_mutation_and_its_verification_debt ... ok
+
+failures:
+
+failures:
+    harness_loop::unchanged_receipt_tests::unchanged_receipt_background_and_nested_paths_share_the_same_rule
+    harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_create_mutation_or_failed_effect_debt
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 5296 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

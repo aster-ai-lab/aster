@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc12-00686222ad57/geometry-topk-v223r1-cpu",
+  "build": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build",
+  "model": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+  "source_sha256": "2a5fc22405308f48f1f4c57c3574e22157575ac8a7f45dd047e14ea18b0cb37d",
+  "GPU_work_started": false,
+  "result": {
+    "unix": 1792912253.2462814,
+    "geometry": {
+      "phase": "passed",
+      "index_topk": 512,
+      "index_heads": 32,
+      "index_dim": 128,
+      "candidate_blocks": 2048,
+      "candidate_block_size": 8,
+      "context_length": 1048576,
+      "model_layers": 40,
+      "index_source_layers": [
+        2,
+        8,
+        14,
+        20,
+        24,
+        28,
+        32,
+        36
+      ]
+    },
+    "GPU_executed": false,
+    "model_forward_executed": false,
+    "source_sha256": "2a5fc22405308f48f1f4c57c3574e22157575ac8a7f45dd047e14ea18b0cb37d"
+  }
+}

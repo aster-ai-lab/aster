@@ -43,6 +43,7 @@ a3s-memory = {path = "../../memory"}
 
 
 [dev-dependencies]
+a3s-form-core = { path = "../../form-core" }
 tempfile = {workspace = true}
 agent-client-protocol = {workspace = true}
 portable-pty = {workspace = true}

@@ -1,0 +1,53 @@
+{
+  "unix": 1792900391.8351703,
+  "phase": "promoted",
+  "optimization_restarted": false,
+  "maximum_h200_roles": 2,
+  "goal_complete": false,
+  "qualification_phase": "passed",
+  "qualification_tests": 12,
+  "edge_phase": "passed",
+  "observed_unix": 1792900782.0158362,
+  "switch": {
+    "phase": "switched",
+    "base_url": "http://10.102.93.68/v1",
+    "same_existing_key": true,
+    "windows_validation_pending": true,
+    "native_tool_roundtrip_passed": true
+  },
+  "windows": {
+    "phase": "promoted",
+    "base_url": "http://10.102.93.68/v1",
+    "same_existing_key": true,
+    "actual_prompt_tokens_qualified": 132097,
+    "full_1m_length_qualified": false,
+    "windows_direct_generation": {
+      "content": "42",
+      "done": true,
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 2,
+        "total_tokens": 355,
+        "prompt_tokens_details": {
+          "cached_tokens": 353
+        }
+      },
+      "ttft_seconds": 0.06199999991804361,
+      "seconds": 0.09299999987706542
+    }
+  },
+  "watch": {
+    "phase": "launched",
+    "process": {
+      "pid": 1260324,
+      "start_ticks": 282760046,
+      "uid": 10250,
+      "unix": 1792900815.529115,
+      "budget_seconds": 21026,
+      "namespace": "jump host"
+    },
+    "observation_only": true
+  },
+  "finished_unix": 1792900808.1210177
+}

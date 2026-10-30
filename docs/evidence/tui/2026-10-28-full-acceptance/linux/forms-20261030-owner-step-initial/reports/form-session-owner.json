@@ -1,0 +1,473 @@
+{
+  "assertions_finished": true,
+  "case": "form-session-owner",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "owner-form.json"
+          },
+          "id": "call_eb409de92c0547aaaa96862c3f90f56c",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13212,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+            "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_eb409de92c0547aaaa96862c3f90f56c",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+            "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_eb409de92c0547aaaa96862c3f90f56c",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"value\\\":{\\\"props\\\":{\\\"label\\\":\\\"Owner value\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/value\\\"}},\\\"type\\\":\\\"Input\\\"}},\\\"root\\\":\\\"value\\\",\\\"state\\\":{\\\"form\\\":{\\\"value\\\":\\\"\\\"}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"owner-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":210},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":210,\"projected_bytes\":210,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"projected_digest\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"repeat_key\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"content_ref\":\"inline:sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:aeb6bbf4c9cb3fd3d13008ebb8795fd70f28424cd96c0c5e017e196c4987df01\"}",
+        "prepared_digest": "sha256:c813d475e58316767695ce0ff057a8bd9001292dad2455ef98dc87ca77016669",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"value\":{\"props\":{\"label\":\"Owner value\",\"required\":true,\"value\":{\"$bindState\":\"/form/value\"}},\"type\":\"Input\"}},\"root\":\"value\",\"state\":{\"form\":{\"value\":\"\"}}}",
+            "prompt": "Session owner acceptance"
+          },
+          "id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 13394,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+            "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+          "turn": 1
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+            "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"value\\\":\\\"A-ONLY-中文-c01e67ef-f4c0-4f95-b057-c4790d6ac09c\\\"},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":256,\"projected_bytes\":256,\"original_estimated_tokens\":64,\"projected_estimated_tokens\":64,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"projected_digest\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"repeat_key\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"content_ref\":\"inline:sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5dd1ff0b80672e082b3aaa803b5aa9ed45e58597554fc8dc5f918c82ba613259\"}",
+        "prepared_digest": "sha256:d133fe882d621316a57a268cde9c1a971ca79901cde5ca301be763e70cbf0cf5",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13664,
+        "text": "```json\n{\"schema\":\"a3s.code.user-form.v1\",\"question_id\":\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\",\"status\":\"answered\",\"values\":{\"value\":\"A-ONLY-中文-c01e67ef-f4c0-4f95-b057-c4790d6ac09c\"},\"permission_grant\":false}\n```",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "578a5d7bf9a6c8614015cd6666eacf85b56d3b38048091858f991054d4d52393",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:c8b63e10aeeca5c09d63f71aa38ee55c5266c014589cca65d06b7198c8c3504a",
+          "sha256:0ba1a0b9800c474e496e7f4dfa00154e4e115804aa075aefac9d2a6e001ee67b"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:b44752d77fa649bf767498820c1fdb123aaa13ac:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13182",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly OWNER-B-READY.                                                      12:07 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.1s                                                                                                 \n                                                                                                                        \n     OWNER-B-READY                                                                                          12:07 PM    \n                                                                                                                        \n     Worked for 3.7s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13234",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly OWNER-B-CONTINUES.                                                  12:08 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.0s                                                                                                 \n                                                                                                                       █\n     OWNER-B-CONTINUES                                                                                      12:08 PM   █\n                                                                                                                       █\n     Worked for 2.9s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "a real pending form on A does not capture B's draft or new model turn",
+      "name": "background-form-does-not-capture-b",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly OWNER-B-CONTINUES.                                                  12:08 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.0s                                                                                                 \n                                                                                                                       █\n     OWNER-B-CONTINUES                                                                                      12:08 PM   █\n                                                                                                                       █\n     Worked for 2.9s                                                                                                   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40270",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read owner-form.json once. Call ask_user_form exactly once with its exact JSON Render document and   12:07 PM    \n       prompt 'Session owner acceptance'. After the user submits, report the returned value without                     \n       calling other tools or modifying files.                                                                          \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 4.1s                                                                                                 \n                                                                                                                        \n     {\"schema\":\"a3s.code.user-form.v1\",\"question_id\":\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-    12:08 PM    \n     97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\",\"status\":\"answered\",\"values\":{\"value\":\"A-ONLY-中文-c01e67ef-               \n     f4c0-4f95-b057-c4790d6ac09c\"},\"permission_grant\":false}                                                            \n                                                                                                                        \n     Worked for 27s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "two native Enter presses produce exactly one accepted form receipt on A with the unseen host answer",
+      "name": "repeated-submit-has-one-owned-receipt",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read owner-form.json once. Call ask_user_form exactly once with its exact JSON Render document and   12:07 PM    \n       prompt 'Session owner acceptance'. After the user submits, report the returned value without                     \n       calling other tools or modifying files.                                                                          \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ ask_user_form                                                                                                    \n     ◆ Thought for 4.1s                                                                                                 \n                                                                                                                        \n     {\"schema\":\"a3s.code.user-form.v1\",\"question_id\":\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-    12:08 PM    \n     97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\",\"status\":\"answered\",\"values\":{\"value\":\"A-ONLY-中文-c01e67ef-               \n     f4c0-4f95-b057-c4790d6ac09c\"},\"permission_grant\":false}                                                            \n                                                                                                                        \n     Worked for 27s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13290",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly OWNER-B-AFTER-SUBMIT.                                               12:08 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.7s                                                                                                 \n                                                                                                                        \n     OWNER-B-AFTER-SUBMIT                                                                                   12:08 PM    \n                                                                                                                        \n     Worked for 3.3s                                                                                                    \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "B remains usable without receiving A's tool receipt or answer text",
+      "name": "other-session-after-submit",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-Lp63Tz/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Do not call tools. Reply exactly OWNER-B-AFTER-SUBMIT.                                               12:08 PM    \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.7s                                                                                                 \n                                                                                                                        \n     OWNER-B-AFTER-SUBMIT                                                                                   12:08 PM    \n                                                                                                                        \n     Worked for 3.3s                                                                                                    \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "form-session-owner-b",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13182,
+            "text": "OWNER-B-READY",
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "52927867bc4f5005304a7a1769218409caceeecfed984237cddbc746ca53fbce",
+              "seq": 6
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 7,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13234,
+            "text": "OWNER-B-CONTINUES",
+            "tool": null
+          },
+          "seq": 10,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "1c9c8ef9e1b8a887abd60dd34d0058fbf803b12c70e19195f67c277621dedd6d",
+              "seq": 10
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 11,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13290,
+            "text": "OWNER-B-AFTER-SUBMIT",
+            "tool": null
+          },
+          "seq": 14,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "d27183511105c13228b0d9b48279b3f26ff2b30d4e751c17efe54a02957de32e",
+              "seq": 14
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 15,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "2a04251d-cb3d-4d1e-9f5c-5aa350f53a32"
+    },
+    {
+      "checkpoint": "form-session-owner-a",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "owner-form.json"
+              },
+              "id": "call_eb409de92c0547aaaa96862c3f90f56c",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13212,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+                "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_eb409de92c0547aaaa96862c3f90f56c",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+                "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_eb409de92c0547aaaa96862c3f90f56c",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"value\\\":{\\\"props\\\":{\\\"label\\\":\\\"Owner value\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/value\\\"}},\\\"type\\\":\\\"Input\\\"}},\\\"root\\\":\\\"value\\\",\\\"state\\\":{\\\"form\\\":{\\\"value\\\":\\\"\\\"}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"owner-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":210},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":210,\"projected_bytes\":210,\"original_estimated_tokens\":53,\"projected_estimated_tokens\":53,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"projected_digest\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"repeat_key\":\"sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"content_ref\":\"inline:sha256:9917ad5e89c9bd683322b95338ef3e6a94fe80197e211734cc5e52a0ac1275d5\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:aeb6bbf4c9cb3fd3d13008ebb8795fd70f28424cd96c0c5e017e196c4987df01\"}",
+            "prepared_digest": "sha256:c813d475e58316767695ce0ff057a8bd9001292dad2455ef98dc87ca77016669",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"value\":{\"props\":{\"label\":\"Owner value\",\"required\":true,\"value\":{\"$bindState\":\"/form/value\"}},\"type\":\"Input\"}},\"root\":\"value\",\"state\":{\"form\":{\"value\":\"\"}}}",
+                "prompt": "Session owner acceptance"
+              },
+              "id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 13394,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+                "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+              "turn": 1
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97dc2021-505a-44bb-8bec-9e6e8d24bb42",
+                "thread_id": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_c9038ea4e1df46d8b62af0546b1f3ff8",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"value\\\":\\\"A-ONLY-中文-c01e67ef-f4c0-4f95-b057-c4790d6ac09c\\\"},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":256,\"projected_bytes\":256,\"original_estimated_tokens\":64,\"projected_estimated_tokens\":64,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"projected_digest\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"repeat_key\":\"sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"content_ref\":\"inline:sha256:87c437b67528183cc72104405d47798ee9faa1d188ed223e61e362496dbc8a58\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5dd1ff0b80672e082b3aaa803b5aa9ed45e58597554fc8dc5f918c82ba613259\"}",
+            "prepared_digest": "sha256:d133fe882d621316a57a268cde9c1a971ca79901cde5ca301be763e70cbf0cf5",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13664,
+            "text": "```json\n{\"schema\":\"a3s.code.user-form.v1\",\"question_id\":\"ask-form-e40f7a29-e4e5-432b-bbe8-4815327bead9-run-97dc2021-505a-44bb-8bec-9e6e8d24bb42-1\",\"status\":\"answered\",\"values\":{\"value\":\"A-ONLY-中文-c01e67ef-f4c0-4f95-b057-c4790d6ac09c\"},\"permission_grant\":false}\n```",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "578a5d7bf9a6c8614015cd6666eacf85b56d3b38048091858f991054d4d52393",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:c8b63e10aeeca5c09d63f71aa38ee55c5266c014589cca65d06b7198c8c3504a",
+              "sha256:0ba1a0b9800c474e496e7f4dfa00154e4e115804aa075aefac9d2a6e001ee67b"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "e40f7a29-e4e5-432b-bbe8-4815327bead9"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,275 @@
+{
+  "gateway_sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+  "power_sha256": "899084c8e07d7da2a902169dd21d6dc4e294352caf7b110c4eded34a78e59d28",
+  "probes": [
+    {
+      "index": 0,
+      "http_status": 200,
+      "milliseconds": 2.5327219627797604,
+      "active": 1
+    },
+    {
+      "index": 1,
+      "http_status": 200,
+      "milliseconds": 3.5764789790846407,
+      "active": 1
+    },
+    {
+      "index": 2,
+      "http_status": 200,
+      "milliseconds": 2.1853329963050783,
+      "active": 1
+    },
+    {
+      "index": 3,
+      "http_status": 200,
+      "milliseconds": 3.568612039089203,
+      "active": 1
+    },
+    {
+      "index": 4,
+      "http_status": 200,
+      "milliseconds": 3.3309530117549,
+      "active": 1
+    },
+    {
+      "index": 5,
+      "http_status": 200,
+      "milliseconds": 3.393638995476067,
+      "active": 1
+    },
+    {
+      "index": 6,
+      "http_status": 200,
+      "milliseconds": 3.074664040468633,
+      "active": 1
+    },
+    {
+      "index": 7,
+      "http_status": 200,
+      "milliseconds": 2.7109120273962617,
+      "active": 1
+    },
+    {
+      "index": 8,
+      "http_status": 200,
+      "milliseconds": 2.734242007136345,
+      "active": 1
+    },
+    {
+      "index": 9,
+      "http_status": 200,
+      "milliseconds": 2.608954964671284,
+      "active": 1
+    },
+    {
+      "index": 10,
+      "http_status": 200,
+      "milliseconds": 2.8737650136463344,
+      "active": 1
+    },
+    {
+      "index": 11,
+      "http_status": 200,
+      "milliseconds": 3.2198569970205426,
+      "active": 1
+    },
+    {
+      "index": 12,
+      "http_status": 200,
+      "milliseconds": 3.3304609823971987,
+      "active": 1
+    },
+    {
+      "index": 13,
+      "http_status": 200,
+      "milliseconds": 3.256572992540896,
+      "active": 1
+    },
+    {
+      "index": 14,
+      "http_status": 200,
+      "milliseconds": 3.5229729837737978,
+      "active": 1
+    },
+    {
+      "index": 15,
+      "http_status": 200,
+      "milliseconds": 3.3831889741122723,
+      "active": 1
+    },
+    {
+      "index": 16,
+      "http_status": 200,
+      "milliseconds": 3.341584000736475,
+      "active": 1
+    },
+    {
+      "index": 17,
+      "http_status": 200,
+      "milliseconds": 3.3633679850026965,
+      "active": 1
+    },
+    {
+      "index": 18,
+      "http_status": 200,
+      "milliseconds": 2.8325210441835225,
+      "active": 1
+    },
+    {
+      "index": 19,
+      "http_status": 200,
+      "milliseconds": 2.635139971971512,
+      "active": 1
+    },
+    {
+      "index": 20,
+      "http_status": 200,
+      "milliseconds": 2.4299999931827188,
+      "active": 1
+    },
+    {
+      "index": 21,
+      "http_status": 200,
+      "milliseconds": 2.4930169456638396,
+      "active": 1
+    },
+    {
+      "index": 22,
+      "http_status": 200,
+      "milliseconds": 2.4776909849606454,
+      "active": 1
+    },
+    {
+      "index": 23,
+      "http_status": 200,
+      "milliseconds": 2.6880180230364203,
+      "active": 1
+    },
+    {
+      "index": 24,
+      "http_status": 200,
+      "milliseconds": 2.7579680318012834,
+      "active": 1
+    },
+    {
+      "index": 25,
+      "http_status": 200,
+      "milliseconds": 2.810774021781981,
+      "active": 1
+    },
+    {
+      "index": 26,
+      "http_status": 200,
+      "milliseconds": 2.725698985159397,
+      "active": 1
+    },
+    {
+      "index": 27,
+      "http_status": 200,
+      "milliseconds": 2.550575998611748,
+      "active": 1
+    },
+    {
+      "index": 28,
+      "http_status": 200,
+      "milliseconds": 2.482112031430006,
+      "active": 1
+    },
+    {
+      "index": 29,
+      "http_status": 200,
+      "milliseconds": 2.3466540151275694,
+      "active": 1
+    },
+    {
+      "index": 30,
+      "http_status": 200,
+      "milliseconds": 2.380465972237289,
+      "active": 1
+    },
+    {
+      "index": 31,
+      "http_status": 200,
+      "milliseconds": 2.3434690083377063,
+      "active": 1
+    }
+  ],
+  "load_request": {
+    "http_status": 200,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "e9c78c34685df8b40f3dbbe92688fe262678387bb63357f3effdd1ba89c3d7f0"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "688948256c3f58d11d918bab81869d56f339db0fb5018b544d2206b8a5febc8f",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30",
+            "reasoning_content": "We need answer list integers 1 to 30 one per line no skip. Simple. Need comply.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944742,
+      "id": "chatcmpl-1517e49d-0fb9-4377-8ff6-85f3598c8a12",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 80,
+          "prompt_tokens": 50,
+          "total_tokens": 130
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 80,
+        "prompt_tokens": 50,
+        "total_tokens": 130
+      }
+    }
+  },
+  "all_passed": true
+}

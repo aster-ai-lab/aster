@@ -1,0 +1,17 @@
+
+running 1 test
+test plugin_selection::tests::native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_cutover ... 
+thread 'plugin_selection::tests::native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_cutover' (4907) panicked at crates/code/acp/src/plugin_selection_tests.rs:319:5:
+assertion `left == right` failed
+  left: ["Tool exit code: 0\nold"]
+ right: ["old"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    plugin_selection::tests::native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_cutover
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 396 filtered out; finished in 0.79s
+

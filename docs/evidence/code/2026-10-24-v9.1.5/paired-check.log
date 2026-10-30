@@ -1,0 +1,1301 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling unicode-ident v1.0.24
+   Compiling libc v0.2.186
+   Compiling serde_core v1.0.229
+    Checking cfg-if v1.0.4
+   Compiling serde v1.0.229
+   Compiling syn v2.0.117
+   Compiling syn v3.0.4
+    Checking memchr v2.8.2
+    Checking itoa v1.0.17
+    Checking equivalent v1.0.2
+    Checking allocator-api2 v0.2.21
+    Checking value-bag v1.12.0
+   Compiling portable-atomic v1.15.0
+    Checking log v0.4.32
+    Checking scopeguard v1.2.0
+    Checking foldhash v0.2.0
+    Checking lock_api v0.4.14
+   Compiling parking_lot_core v0.9.12
+    Checking once_cell v1.21.4
+   Compiling serde_derive v1.0.229
+   Compiling shlex v1.3.0
+   Compiling version_check v0.9.5
+   Compiling jobserver v0.1.34
+   Compiling find-msvc-tools v0.1.14
+    Checking hashbrown v0.17.0
+   Compiling cc v1.2.48
+   Compiling zeroize_derive v1.4.2
+    Checking bitflags v2.13.0
+    Checking zeroize v1.8.2
+    Checking getrandom v0.2.16
+   Compiling thiserror v2.0.20
+   Compiling thiserror-impl v2.0.20
+    Checking indexmap v2.14.0
+    Checking errno v0.3.14
+   Compiling zmij v1.0.19
+    Checking pin-project-lite v0.2.16
+   Compiling libm v0.2.15
+    Checking smallvec v1.15.1
+   Compiling autocfg v1.5.0
+    Checking subtle v2.6.1
+    Checking parking_lot v0.12.5
+   Compiling typenum v1.19.0
+   Compiling num-traits v0.2.19
+    Checking rand_core v0.6.4
+    Checking bytes v1.12.1
+    Checking stable_deref_trait v1.2.1
+   Compiling serde_json v1.0.154
+   Compiling generic-array v0.14.7
+   Compiling crc32fast v1.5.0
+    Checking signal-hook-registry v1.4.8
+    Checking mio v1.2.1
+    Checking futures-core v0.3.34
+    Checking percent-encoding v2.3.2
+   Compiling tokio-macros v2.7.0
+    Checking socket2 v0.6.4
+   Compiling pkg-config v0.3.32
+    Checking crypto-common v0.1.6
+    Checking const-oid v0.9.6
+   Compiling synstructure v0.13.2
+    Checking tracing-core v0.1.36
+    Checking tokio v1.53.3
+    Checking regex-syntax v0.8.11
+   Compiling zerofrom-derive v0.1.6
+   Compiling tracing-attributes v0.1.31
+   Compiling yoke-derive v0.8.2
+    Checking block-buffer v0.10.4
+    Checking digest v0.10.7
+    Checking aho-corasick v1.1.3
+    Checking tracing v0.1.44
+   Compiling zerovec-derive v0.11.1
+    Checking regex-automata v0.4.18
+    Checking futures-sink v0.3.34
+    Checking byteorder v1.5.0
+   Compiling displaydoc v0.2.5
+    Checking futures-channel v0.3.34
+   Compiling futures-macro v0.3.34
+    Checking futures-io v0.3.34
+    Checking slab v0.4.11
+    Checking futures-task v0.3.34
+    Checking cpufeatures v0.2.17
+   Compiling icu_normalizer_data v2.0.0
+    Checking futures-util v0.3.34
+   Compiling icu_properties_data v2.0.1
+    Checking core-foundation-sys v0.8.7
+    Checking fnv v1.0.7
+    Checking zerofrom v0.1.6
+    Checking form_urlencoded v1.2.2
+    Checking ryu v1.0.20
+   Compiling crossbeam-utils v0.8.21
+   Compiling getrandom v0.3.4
+    Checking yoke v0.8.3
+    Checking tokio-util v0.7.19
+    Checking http v1.4.0
+    Checking litemap v0.8.0
+    Checking writeable v0.6.1
+    Checking zerovec v0.11.4
+    Checking zerotrie v0.2.2
+   Compiling ring v0.17.14
+   Compiling time-core v0.1.8
+   Compiling num-conv v0.2.0
+    Checking utf8_iter v1.0.4
+   Compiling zerocopy v0.8.48
+   Compiling zerocopy-derive v0.8.48
+    Checking tinystr v0.8.1
+    Checking potential_utf v0.1.3
+    Checking icu_locale_core v2.0.0
+    Checking icu_collections v2.0.0
+    Checking base64 v0.22.1
+    Checking icu_provider v2.0.0
+    Checking http-body v1.0.1
+    Checking icu_normalizer v2.0.0
+    Checking icu_properties v2.0.1
+    Checking simd-adler32 v0.3.7
+    Checking powerfmt v0.2.0
+    Checking deranged v0.5.5
+    Checking idna_adapter v1.2.1
+    Checking idna v1.1.0
+    Checking url v2.5.8
+   Compiling time-macros v0.2.27
+    Checking adler2 v2.0.1
+    Checking miniz_oxide v0.8.9
+    Checking pin-utils v0.1.0
+    Checking http-body-util v0.1.3
+   Compiling cmake v0.1.54
+   Compiling fs_extra v1.3.0
+    Checking time v0.3.47
+   Compiling dunce v1.0.5
+   Compiling heck v0.5.0
+    Checking rand_core v0.10.0
+   Compiling aws-lc-sys v0.45.0
+   Compiling httparse v1.10.1
+    Checking untrusted v0.9.0
+   Compiling aws-lc-rs v1.18.1
+    Checking zlib-rs v0.5.5
+    Checking untrusted v0.7.1
+   Compiling getrandom v0.4.1
+    Checking rustls-pki-types v1.14.0
+    Checking libz-rs-sys v0.5.2
+    Checking core-foundation v0.10.1
+    Checking flate2 v1.1.5
+   Compiling rustls v0.23.46
+    Checking sha1 v0.10.6
+   Compiling unicase v2.8.1
+    Checking fastrand v2.3.0
+    Checking ipnet v2.11.0
+    Checking tower-service v0.3.3
+   Compiling anyhow v1.0.104
+    Checking webpki-roots v1.0.9
+    Checking security-framework-sys v2.15.0
+    Checking atomic-waker v1.1.2
+    Checking tower-layer v0.3.3
+    Checking try-lock v0.2.5
+    Checking want v0.3.1
+    Checking security-framework v3.5.1
+    Checking h2 v0.4.19
+    Checking ppv-lite86 v0.2.21
+    Checking bstr v1.12.1
+    Checking httpdate v1.0.3
+    Checking iana-time-zone v0.1.64
+    Checking sync_wrapper v1.0.2
+    Checking either v1.15.0
+    Checking chrono v0.4.45
+    Checking hyper v1.8.1
+    Checking rustls-native-certs v0.8.2
+    Checking hdrhistogram v7.5.4
+    Checking tinyvec_macros v0.1.1
+    Checking mime v0.3.17
+    Checking tower v0.5.2
+    Checking hyper-util v0.1.20
+    Checking tinyvec v1.10.0
+   Compiling siphasher v1.0.3
+    Checking serde_urlencoded v0.7.1
+    Checking sha1_smol v1.0.1
+   Compiling mime_guess v2.0.5
+    Checking uuid v1.26.1
+   Compiling zstd-sys v2.0.16+zstd.1.5.7
+   Compiling async-trait v0.1.92
+    Checking same-file v1.0.6
+    Checking spin v0.9.9
+    Checking walkdir v2.5.0
+    Checking unicode-normalization v0.1.24
+   Compiling rustix v1.1.5
+   Compiling zstd-safe v7.2.4
+    Checking encoding_rs v0.8.35
+    Checking sha2 v0.10.9
+    Checking iri-string v0.7.9
+    Checking tower-http v0.6.8
+    Checking rand_core v0.9.3
+    Checking rand_chacha v0.9.0
+    Checking num-integer v0.1.46
+    Checking rand v0.9.5
+    Checking crossbeam-channel v0.5.15
+    Checking regex v1.12.4
+    Checking utf-8 v0.7.6
+    Checking lazy_static v1.5.0
+   Compiling rustversion v1.0.22
+    Checking alloc-no-stdlib v2.0.4
+   Compiling thiserror v1.0.69
+    Checking alloc-stdlib v0.2.2
+   Compiling strum_macros v0.27.2
+   Compiling thiserror-impl v1.0.69
+   Compiling ref-cast v1.0.25
+   Compiling litrs v1.0.0
+    Checking flagset v0.4.7
+   Compiling document-features v0.2.12
+   Compiling ref-cast-impl v1.0.25
+    Checking hex v0.4.3
+    Checking futures-executor v0.3.34
+   Compiling cookie v0.18.2
+    Checking strum v0.27.2
+    Checking brotli-decompressor v4.0.3
+    Checking memmap2 v0.9.11
+    Checking psl-types v2.0.11
+    Checking jiff v0.2.28
+   Compiling ident_case v1.0.1
+   Compiling strsim v0.11.1
+    Checking publicsuffix v2.3.0
+    Checking brotli v7.0.0
+    Checking zstd v0.13.3
+    Checking base64ct v1.8.0
+    Checking cookie_store v0.21.1
+    Checking pem-rfc7468 v0.7.0
+   Compiling der_derive v0.7.3
+    Checking async-compression v0.4.19
+    Checking unicode-width v0.2.0
+    Checking der v0.7.10
+    Checking vsimd v0.8.0
+    Checking outref v0.5.2
+   Compiling semver v1.0.28
+    Checking tokio-stream v0.1.17
+    Checking gix-trace v0.1.20
+   Compiling itertools v0.14.0
+    Checking tempfile v3.27.0
+    Checking gix-validate v0.11.2
+    Checking spki v0.7.3
+    Checking webpki-roots v0.26.11
+   Compiling crossbeam-epoch v0.9.20
+    Checking hashbrown v0.14.5
+    Checking dashmap v6.2.1
+    Checking gix-path v0.12.1
+   Compiling darling_core v0.20.11
+    Checking data-encoding v2.9.0
+    Checking gix-utils v0.3.3
+   Compiling cfg_aliases v0.2.1
+   Compiling prost-derive v0.14.4
+    Checking futures v0.3.34
+   Compiling darling_macro v0.20.11
+   Compiling phf_shared v0.13.1
+   Compiling darling v0.20.11
+   Compiling serde_derive_internals v0.30.0
+    Checking new_debug_unreachable v1.0.6
+   Compiling phf_generator v0.13.1
+   Compiling schemars_derive v1.2.3
+    Checking crossbeam-deque v0.8.6
+    Checking signature v2.2.0
+    Checking prodash v31.0.0
+    Checking hashbrown v0.16.1
+    Checking zlib-rs v0.6.6
+    Checking dyn-clone v1.0.20
+    Checking arrayvec v0.7.6
+    Checking schemars v1.2.3
+    Checking gix-features v0.48.1
+   Compiling bytemuck_derive v1.10.2
+    Checking rand_chacha v0.3.1
+    Checking precomputed-hash v0.1.1
+    Checking bytemuck v1.25.2
+    Checking foldhash v0.1.5
+    Checking option-ext v0.2.0
+    Checking hashbrown v0.15.5
+    Checking rand v0.8.8
+   Compiling nix v0.30.1
+   Compiling rustc_version v0.4.1
+    Checking gix-error v0.2.4
+    Checking chacha20 v0.10.2
+    Checking http v0.2.12
+   Compiling pin-project-internal v1.1.11
+    Checking base64 v0.23.1
+    Checking urlencoding v2.1.3
+    Checking pin-project v1.1.11
+    Checking http-body v0.4.6
+    Checking rand v0.10.3
+    Checking base64-simd v0.8.0
+    Checking sharded-slab v0.1.7
+   Compiling phf_shared v0.11.3
+    Checking bytes-utils v0.1.4
+    Checking matchers v0.2.0
+    Checking tracing-serde v0.2.0
+    Checking tracing-log v0.2.0
+    Checking thread_local v1.1.9
+    Checking utf8parse v0.2.2
+   Compiling heapless v0.8.0
+    Checking anstyle v1.0.14
+    Checking nu-ansi-term v0.50.3
+    Checking aws-smithy-types v1.4.3
+    Checking tracing-subscriber v0.3.23
+   Compiling phf_generator v0.11.3
+   Compiling phf_codegen v0.13.1
+    Checking hash32 v0.3.1
+   Compiling multer v3.1.0
+    Checking serde_path_to_error v0.1.20
+   Compiling rayon-core v1.13.0
+    Checking winnow v0.7.14
+    Checking static_assertions v1.1.0
+    Checking hmac v0.12.1
+   Compiling unicode-xid v0.2.6
+   Compiling unicode-segmentation v1.12.0
+    Checking faster-hex v0.10.0
+    Checking dirs-sys v0.5.0
+   Compiling phf_macros v0.13.1
+    Checking num-bigint v0.4.6
+    Checking num-iter v0.1.45
+    Checking axum-core v0.5.5
+   Compiling axum-macros v0.5.0
+   Compiling prettyplease v0.2.37
+    Checking anstyle-query v1.1.4
+    Checking is_terminal_polyfill v1.70.2
+    Checking colorchoice v1.0.4
+    Checking matchit v0.8.4
+    Checking phf v0.13.1
+    Checking rayon v1.12.0
+    Checking dirs v6.0.0
+   Compiling string_cache_codegen v0.6.1
+    Checking aws-smithy-async v1.2.14
+    Checking aws-smithy-runtime-api v1.11.3
+   Compiling web_atoms v0.2.3
+   Compiling derive_builder_core v0.20.2
+    Checking prost v0.14.4
+    Checking hyper-timeout v0.5.2
+    Checking sha1-checked v0.10.0
+    Checking minimal-lexical v0.2.1
+    Checking gix-hash v0.25.1
+    Checking nom v7.1.3
+   Compiling derive_builder_macro v0.20.2
+   Compiling convert_case v0.10.0
+    Checking string_cache v0.9.0
+    Checking pkcs8 v0.10.2
+    Checking pem v3.0.6
+   Compiling crunchy v0.2.4
+   Compiling vcpkg v0.2.15
+   Compiling derive_more-impl v2.1.1
+    Checking derive_builder v0.20.2
+    Checking a3s-tty-utils v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-tty-utils)
+    Checking tendril v0.5.0
+    Checking opentelemetry v0.32.0
+   Compiling tls_codec_derive v0.4.2
+    Checking weezl v0.1.10
+   Compiling tiny-keccak v2.0.2
+   Compiling pulldown-cmark v0.13.0
+    Checking tls_codec v0.4.2
+    Checking derive_more v2.1.1
+   Compiling prost-types v0.14.3
+    Checking rustls-webpki v0.103.15
+   Compiling phf_macros v0.11.3
+   Compiling phf_codegen v0.11.3
+    Checking gix-date v0.15.5
+    Checking a3s-tool-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-tool-types)
+    Checking getopts v0.2.24
+    Checking core_maths v0.1.1
+    Checking dtoa v1.0.10
+    Checking winnow v1.0.4
+   Compiling a3s-code-version v9.1.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-version)
+    Checking bitflags v1.3.2
+    Checking toml_parser v1.1.5+spec-1.1.0
+    Checking dtoa-short v0.3.5
+    Checking ttf-parser v0.25.1
+    Checking gix-actor v0.41.1
+    Checking tokio-rustls v0.26.6
+    Checking rustls-platform-verifier v0.6.2
+    Checking hyper-rustls v0.27.7
+    Checking tungstenite v0.28.0
+    Checking reqwest v0.12.24
+    Checking reqwest v0.13.5
+    Checking tokio-tungstenite v0.28.0
+    Checking axum v0.8.6
+    Checking phf v0.11.3
+    Checking x509-cert v0.2.5
+    Checking gix-hashtable v0.15.1
+    Checking a3s-dirs v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-dirs)
+    Checking aws-smithy-eventstream v0.60.18
+    Checking arc-swap v1.9.2
+    Checking hybrid-array v0.4.10
+    Checking serde_spanned v1.1.2
+    Checking toml_datetime v0.7.5+spec-1.1.0
+    Checking fs2 v0.4.3
+    Checking tonic v0.14.6
+    Checking env_home v0.1.0
+   Compiling fixedbitset v0.5.7
+    Checking unicode-properties v0.1.4
+    Checking toml_writer v1.1.3+spec-1.1.0
+   Compiling petgraph v0.7.1
+    Checking which v8.0.0
+    Checking toml v0.9.12+spec-1.1.0
+    Checking aws-smithy-http v0.62.6
+   Compiling pulldown-cmark-to-cmark v21.1.0
+    Checking gix-object v0.60.0
+   Compiling const-random-macro v0.1.16
+    Checking opentelemetry_sdk v0.32.1
+    Checking tonic-prost v0.14.6
+    Checking fdeflate v0.3.7
+    Checking concurrent-queue v2.5.0
+    Checking md-5 v0.10.6
+    Checking ff v0.13.1
+   Compiling blake3 v1.8.7
+   Compiling ahash v0.8.12
+    Checking filetime v0.2.29
+   Compiling multimap v0.10.1
+    Checking base16ct v0.2.0
+    Checking rustc-hash v2.1.1
+    Checking ryu-js v1.0.3
+    Checking unicode-bidi v0.3.18
+    Checking web-time v1.1.0
+    Checking unsafe-libyaml v0.2.11
+    Checking parking v2.2.1
+    Checking sec1 v0.7.3
+    Checking event-listener v5.4.1
+   Compiling prost-build v0.14.1
+    Checking group v0.13.0
+    Checking png v0.18.0
+    Checking const-random v0.1.18
+    Checking reqwest-middleware v0.4.2
+   Compiling tonic-build v0.14.3
+    Checking aws-credential-types v1.2.8
+    Checking hkdf v0.12.4
+   Compiling string_cache_codegen v0.5.4
+    Checking anstyle-parse v0.2.7
+   Compiling aws-types v1.3.9
+    Checking debugid v0.8.0
+    Checking globset v0.4.18
+    Checking half v2.7.1
+    Checking crypto-bigint v0.5.5
+    Checking servo_arc v0.4.3
+    Checking nom v8.0.0
+    Checking const-hex v1.18.1
+    Checking bumpalo v3.19.0
+    Checking constant_time_eq v0.4.2
+    Checking mac v0.1.1
+    Checking futf v0.1.5
+    Checking elliptic-curve v0.13.8
+    Checking zopfli v0.8.3
+    Checking opentelemetry-proto v0.32.0
+    Checking ignore v0.4.24
+   Compiling markup5ever v0.14.1
+    Checking tonic-types v0.14.5
+   Compiling tonic-prost-build v0.14.3
+    Checking event-listener-strategy v0.5.4
+    Checking prod-mc-cli-chat-proxy-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/prod/mc/cli-chat-proxy-types)
+    Checking opentelemetry-http v0.32.0
+   Compiling pbjson-build v0.9.0
+   Compiling prost-reflect v0.16.4
+    Checking aws-smithy-observability v0.1.4
+   Compiling slotmap v1.0.7
+   Compiling small_ctor v0.1.2
+    Checking fastant v0.1.10
+   Compiling a3s-proto-build v0.0.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/build/a3s-proto-build)
+    Checking aws-smithy-runtime v1.9.3
+    Checking opentelemetry-otlp v0.32.0
+    Checking tendril v0.4.3
+    Checking anstream v0.6.21
+    Checking aws-sigv4 v1.3.5
+    Checking crypto-common v0.2.2
+   Compiling selectors v0.26.0
+    Checking tracing-opentelemetry v0.33.0
+    Checking string_cache v0.8.9
+    Checking markup5ever v0.38.0
+    Checking sigstore-types v0.6.6
+    Checking shellexpand v3.1.2
+    Checking rfc6979 v0.4.0
+   Compiling curve25519-dalek v4.1.3
+    Checking lru v0.12.5
+    Checking dirs-sys v0.4.1
+    Checking gix-fs v0.21.2
+    Checking env_filter v0.1.4
+    Checking a3s-code-env v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-env)
+    Checking fxhash v0.2.1
+   Compiling typeshare-annotation v1.0.4
+   Compiling cssparser-macros v0.6.1
+   Compiling fastrace-macro v0.7.18
+   Compiling serde_derive_internals v0.29.1
+   Compiling schemars v0.8.22
+    Checking pulldown-cmark-escape v0.11.0
+    Checking float-cmp v0.9.0
+   Compiling object v0.37.3
+    Checking rtrb v0.3.5
+   Compiling num-bigint-dig v0.8.6
+    Checking fastrace v0.7.18
+    Checking strict-num v0.1.1
+   Compiling schemars_derive v0.8.22
+    Checking cssparser v0.34.0
+    Checking typeshare v1.0.4
+    Checking a3s-code-config v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-config)
+    Checking env_logger v0.11.8
+    Checking sigstore-crypto v0.6.6
+    Checking dirs v5.0.1
+    Checking ecdsa v0.16.9
+    Checking aws-runtime v1.5.12
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-tools-api)
+    Checking primeorder v0.13.6
+    Checking stringprep v0.1.5
+    Checking cms v0.2.3
+    Checking eventsource-stream v0.2.3
+    Checking aws-smithy-json v0.61.6
+    Checking gix-chunk v0.7.2
+   Compiling match_token v0.1.0
+   Compiling fax_derive v0.2.0
+   Compiling async-stream-impl v0.3.6
+   Compiling derive_more v0.99.20
+    Checking spin v0.10.1
+    Checking instant v0.1.12
+    Checking rustc-demangle v0.1.26
+    Checking arrayref v0.3.9
+    Checking gimli v0.32.3
+    Checking futures-timer v3.0.3
+    Checking quick-error v2.0.1
+    Checking zune-core v0.5.1
+    Checking regex-lite v0.1.8
+    Checking nonempty v0.12.0
+    Checking zune-jpeg v0.5.15
+    Checking reqwest-eventsource v0.6.0
+    Checking tiny-skia-path v0.12.0
+    Checking addr2line v0.25.1
+    Checking backoff v0.4.0
+    Checking async-stream v0.3.6
+    Checking fax v0.2.6
+    Checking html5ever v0.29.1
+    Checking crmf v0.2.0
+    Checking a3s-tool-protocol v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling regress v0.11.1
+    Checking gix-tempfile v23.0.1
+    Checking html5ever v0.38.0
+    Checking a3s-code-extra-ca v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-extra-ca)
+    Checking pkcs1 v0.7.5
+    Checking ed25519 v2.2.3
+    Checking gix-quote v0.7.2
+   Compiling strum_macros v0.28.0
+    Checking pxfm v0.1.25
+    Checking secrecy v0.10.3
+   Compiling async-openai-macros v0.1.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/third-party/async-openai-macros)
+   Compiling serde_repr v0.1.20
+    Checking a3s-circuit-breaker v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-circuit-breaker)
+   Compiling protobuf v3.7.2
+    Checking typed-path v0.12.3
+    Checking unicode-script v0.5.8
+    Checking crc-catalog v2.4.0
+    Checking xmlparser v0.13.6
+    Checking color_quant v1.1.0
+    Checking byteorder-lite v0.1.0
+    Checking unicode-bidi-mirroring v0.4.0
+    Checking ego-tree v0.10.0
+    Checking unicode-ccc v0.4.0
+    Checking rustybuzz v0.20.1
+    Checking image-webp v0.2.4
+    Checking gif v0.14.1
+    Checking aws-smithy-xml v0.60.11
+    Checking crc v3.3.0
+    Checking strum v0.28.0
+    Checking moxcms v0.8.1
+    Checking async-openai v0.33.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/third-party/async-openai)
+    Checking ed25519-dalek v2.2.0
+    Checking rsa v0.9.10
+    Checking gix-lock v23.0.1
+   Compiling typify-impl v0.6.2
+    Checking backtrace v0.3.76
+    Checking tiff v0.11.3
+    Checking cmpv2 v0.2.0
+    Checking p256 v0.13.2
+    Checking p384 v0.13.1
+    Checking fontdb v0.23.0
+    Checking xml5ever v0.38.0
+    Checking sentry-types v0.42.0
+    Checking serde_yaml v0.9.34+deprecated
+    Checking block-buffer v0.12.0
+   Compiling libz-sys v1.1.22
+    Checking simple_asn1 v0.6.3
+   Compiling serde_tokenstream v0.2.3
+    Checking gix-glob v0.26.1
+    Checking protobuf-support v3.7.2
+   Compiling strum_macros v0.26.4
+    Checking quick-xml v0.41.0
+    Checking pollster v0.4.0
+    Checking const-oid v0.10.2
+   Compiling prometheus v0.14.0
+    Checking shell-words v1.1.0
+    Checking strum v0.26.3
+    Checking digest v0.11.2
+    Checking fastrace-opentelemetry v0.18.1
+    Checking sentry-core v0.42.0
+   Compiling typify-macro v0.6.2
+    Checking jsonwebtoken v10.3.0
+    Checking markup5ever_rcdom v0.38.0+unofficial
+    Checking a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-tool-runtime)
+    Checking x509-tsp v0.1.0
+    Checking image v0.25.10
+    Checking crc-fast v1.9.0
+    Checking tiny-skia v0.12.0
+    Checking gix-commitgraph v0.37.1
+    Checking sigstore-merkle v0.6.6
+    Checking fastrace-tonic v0.1.1
+    Checking fastrace-reqwest v0.2.0
+    Checking a3s-code-auth v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-auth)
+    Checking block-padding v0.4.2
+    Checking gcloud-metadata v1.0.2
+   Compiling xattr v1.6.1
+    Checking aws-smithy-query v0.60.8
+    Checking font-types v0.10.1
+    Checking a3s-code-secrets v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-secrets)
+    Checking token-source v1.0.0
+    Checking itertools v0.12.1
+    Checking cpufeatures v0.3.0
+    Checking path-clean v1.0.1
+    Checking unicode-bom v2.0.3
+    Checking home v0.5.12
+    Checking similar v2.7.0
+   Compiling tar v0.4.46
+    Checking gcloud-auth v1.3.0
+    Checking prometheus-parse v0.2.5
+    Checking read-fonts v0.35.0
+    Checking aws-sdk-sts v1.88.0
+    Checking aws-smithy-checksums v0.63.13
+    Checking inout v0.2.2
+    Checking a3s-tracing v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-tracing)
+    Checking sigstore-rekor v0.6.6
+    Checking gix-revwalk v0.31.0
+    Checking a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-computer-hub-core)
+    Checking sigstore-tsa v0.6.6
+    Checking htmd v0.5.4
+   Compiling typify v0.6.2
+    Checking aws-sdk-ssooidc v1.89.0
+    Checking aws-sdk-sso v1.86.0
+    Checking reqwest-middleware v0.5.2
+   Compiling nix v0.31.3
+   Compiling phf_shared v0.14.0
+   Compiling libgit2-sys v0.18.2+1.9.1
+   Compiling findshlibs v0.10.2
+    Checking reflink-copy v0.1.28
+    Checking unicode-linebreak v0.1.5
+   Compiling phf_generator v0.14.0
+    Checking aws-config v1.8.8
+    Checking gcloud-storage v1.3.0
+   Compiling nono v0.53.0
+    Checking sigstore-bundle v0.6.6
+    Checking a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-computer-hub-sdk)
+    Checking cipher v0.5.2
+    Checking aws-sdk-s3 v1.109.0
+    Checking sha2 v0.11.0
+    Checking a3s-code-otel v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-otel)
+    Checking sigstore-trust-root v0.6.3
+    Checking serde_json_canonicalizer v0.3.2
+    Checking aws-smithy-http-client v1.1.9
+    Checking kstring v2.0.2
+    Checking anstyle-parse v1.0.0
+    Checking kurbo v0.12.0
+    Checking objc2-encode v4.1.0
+    Checking debug_unsafe v0.1.3
+    Checking a3s-token-estimation v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-token-estimation)
+    Checking atoi_simd v0.18.1
+    Checking write-fonts v0.43.0
+    Checking anstream v1.0.0
+    Checking gix-attributes v0.33.2
+    Checking sigstore-verify v0.6.3
+   Compiling phf_macros v0.14.0
+    Checking skrifa v0.37.0
+    Checking a3s-code-image v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-image)
+    Checking sentry-backtrace v0.42.0
+    Checking zip v8.6.0
+    Checking brotli-decompressor v5.0.0
+    Checking a3s-code-compaction v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-code-compaction)
+    Checking cfb v0.7.3
+    Checking gix-sec v0.14.1
+   Compiling enum-ordinalize-derive v4.3.1
+    Checking grid v1.0.1
+    Checking cpubits v0.1.1
+    Checking hayro-ccitt v0.3.0
+    Checking clap_lex v1.0.0
+    Checking fast-float2 v0.2.3
+    Checking clap_builder v4.6.7
+    Checking office_oxide v0.1.9
+    Checking hayro-jbig2 v0.3.0
+    Checking aes v0.9.3
+    Checking a3s-file-utils v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-file-utils)
+    Checking taffy v0.12.2
+   Compiling enum-ordinalize v4.3.0
+    Checking a3s-code-sampling-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-sampling-types)
+    Checking phf v0.14.0
+    Checking brotli v8.0.2
+    Checking subsetter v0.2.3
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-tools)
+    Checking cbc v0.2.0
+    Checking md-5 v0.11.0
+    Checking gix-ref v0.63.0
+    Checking agent-client-protocol-schema v0.11.4
+    Checking lsp-types v0.95.1
+    Checking async-broadcast v0.7.2
+   Compiling libsqlite3-sys v0.35.0
+    Checking jpeg-decoder v0.3.2
+   Compiling sentry-contexts v0.42.0
+    Checking gix-config-value v0.18.1
+    Checking a3s-code-workspace-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-workspace-types)
+    Checking fast_image_resize v6.1.0
+    Checking waitpid-any v0.3.0
+   Compiling clap_derive v4.6.7
+    Checking vte v0.14.1
+   Compiling objc2 v0.6.5
+    Checking weezl v0.2.1
+    Checking hayro-jpeg2000 v0.4.0
+    Checking memo-map v0.3.3
+    Checking qcms v0.3.0
+    Checking minijinja v2.24.0
+    Checking pdf_oxide v0.3.74
+    Checking clap v4.6.7
+    Checking strip-ansi-escapes v0.2.1
+    Checking async-lsp v0.2.3
+    Checking agent-client-protocol v0.10.4
+   Compiling educe v0.6.0
+    Checking a3s-code-sandbox v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-sandbox)
+    Checking infer v0.19.0
+    Checking a3s-code-feedback v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-feedback)
+    Checking gix-traverse v0.57.0
+    Checking gix-command v0.9.1
+    Checking scraper v0.23.1
+    Checking gix-packetline v0.21.5
+    Checking command-fds v0.3.2
+    Checking gix-bitmap v0.3.2
+    Checking git2 v0.20.2
+    Checking zip v3.0.0
+   Compiling onig_sys v69.9.3
+    Checking a3s-interjection-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-interjection-core)
+    Checking hostname v0.4.1
+    Checking num_cpus v1.17.0
+    Checking uname v0.1.1
+   Compiling pastey v0.2.3
+   Compiling paste v1.0.15
+    Checking a3s-message-delivery-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-message-delivery-core)
+    Checking wildmatch v2.6.0
+    Checking gix-index v0.51.0
+    Checking gix-pathspec v0.18.1
+    Checking sentry-panic v0.42.0
+    Checking sentry-anyhow v0.42.0
+    Checking sentry-tracing v0.42.0
+    Checking sentry-debug-images v0.42.0
+    Checking gix-ignore v0.21.1
+    Checking hashlink v0.10.0
+    Checking fsevent-sys v4.1.0
+    Checking fallible-iterator v0.3.0
+    Checking hmac-sha256 v1.1.12
+    Checking fallible-streaming-iterator v0.1.9
+    Checking notify-types v2.0.0
+    Checking tree-sitter-language v0.1.5
+    Checking notify v8.2.0
+    Checking rusqlite v0.37.0
+    Checking mid v4.0.0
+    Checking gix-worktree v0.52.0
+    Checking sentry v0.42.0
+    Checking a3s-code-sampler v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-sampler)
+    Checking a3s-mixpanel v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-mixpanel)
+    Checking tracing-appender v0.2.4
+    Checking tracing-chrome v0.7.2
+    Checking gix-url v0.36.1
+    Checking a3s-code-session-events v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-session-events)
+    Checking whoami v1.6.1
+    Checking bit-vec v0.8.0
+    Checking a3s-code-telemetry v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-telemetry)
+    Checking bit-set v0.8.0
+    Checking gix-filter v0.30.0
+    Checking gix-discover v0.51.0
+    Checking gix-revision v0.45.0
+    Checking gix-imara-diff v0.2.3
+   Compiling darling_core v0.24.1
+    Checking castaway v0.2.4
+    Checking num-complex v0.4.6
+    Checking clru v0.6.2
+    Checking glob v0.3.3
+    Checking borrow-or-share v0.2.4
+    Checking gix-pack v0.70.0
+    Checking gix-diff v0.63.0
+   Compiling darling_macro v0.24.1
+    Checking gix-refspec v0.41.0
+    Checking gix-dir v0.25.0
+    Checking gix-transport v0.57.2
+    Checking objc2-core-foundation v0.3.2
+    Checking gix-config v0.56.0
+    Checking gix-shallow v0.12.1
+   Compiling maybe-async v0.2.10
+    Checking gix-submodule v0.30.0
+    Checking objc2-foundation v0.3.2
+    Checking gix-protocol v0.61.0
+    Checking gix-status v0.30.0
+   Compiling darling v0.24.1
+    Checking gix-odb v0.80.0
+    Checking a3s-sqlite-journal v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-sqlite-journal)
+    Checking num-rational v0.4.2
+   Compiling libmimalloc-sys v0.1.44
+   Compiling camino v1.2.1
+   Compiling rmcp v3.4.0
+   Compiling rmcp-macros v3.4.0
+    Checking num v0.4.3
+    Checking gix v0.83.0
+    Checking objc2-app-kit v0.3.2
+    Checking oauth2 v5.0.0
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling tree-sitter v0.26.13
+    Checking sse-stream v0.2.5
+    Checking crossbeam-queue v0.3.12
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling tree-sitter-go v0.25.0
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-javascript v0.25.0
+    Checking wait-timeout v0.2.1
+    Checking crossbeam v0.8.4
+    Checking a3s-gix-status v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-gix-status)
+    Checking webbrowser v1.2.4
+    Checking fraction v0.15.3
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+    Checking a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-hooks)
+    Checking async-lock v3.4.1
+    Checking nucleo-matcher v0.3.1 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+    Checking block-padding v0.3.3
+   Compiling tree-sitter-bash v0.25.0
+    Checking fixedbitset v0.4.2
+    Checking bytecount v0.6.9
+    Checking num-cmp v0.1.0
+    Checking streaming-iterator v0.1.9
+    Checking a3s-code-agent v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling signal-hook v0.3.18
+    Checking file-id v0.2.3
+    Checking notify-debouncer-full v0.5.0
+   Compiling clang-sys v1.8.1
+    Checking petgraph v0.6.5
+    Checking inout v0.1.4
+    Checking nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+    Checking a3s-code-paths v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-paths)
+    Checking a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-announcements)
+    Checking mimalloc v0.1.48
+    Checking uuid-simd v0.8.0
+    Checking rapidhash v4.2.0
+    Checking email_address v0.2.9
+    Checking nohash-hasher v0.2.0
+    Checking humantime v2.4.0
+   Compiling rustix v0.38.44
+    Checking a3s-codebase-graph v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-codebase-graph)
+    Checking humantime-serde v1.1.1
+    Checking a3s-fast-worktree v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-fast-worktree)
+    Checking onig v6.5.2
+    Checking a3s-fuzzy-file-search v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+    Checking cipher v0.4.4
+    Checking a3s-fsnotify v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-fsnotify)
+    Checking a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-mcp)
+    Checking a3s-hunk-tracker v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-hunk-tracker)
+    Checking compact_str v0.9.0
+    Checking a3s-acp-lib v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-acp-lib)
+    Checking a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+    Checking a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-workspace-client)
+    Checking a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+    Checking a3s-code-diag-server v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-diag-server)
+    Checking bincode v1.3.3
+    Checking serde_spanned v0.6.9
+    Checking toml_datetime v0.6.11
+   Compiling io-lifetimes v2.0.4
+   Compiling io-lifetimes v3.0.1
+    Checking utf8-width v0.1.7
+    Checking toml_write v0.1.2
+    Checking a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling indoc v2.0.7
+    Checking toml_edit v0.22.27
+    Checking html-escape v0.2.13
+    Checking signal-hook-mio v0.2.5
+   Compiling libloading v0.8.9
+    Checking a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-workspace)
+    Checking rust-stemmers v1.2.0
+   Compiling io-extras v0.19.0
+   Compiling bindgen v0.72.1
+   Compiling cpp_demangle v0.4.5
+   Compiling instability v0.3.9
+    Checking crossterm v0.28.1
+   Compiling cexpr v0.6.0
+    Checking polycool v0.4.0
+   Compiling itertools v0.13.0
+   Compiling equator-macro v0.4.2
+    Checking serde_ignored v0.1.14
+    Checking mach2 v0.4.3
+   Compiling unicode-general-category v1.1.0
+   Compiling symbolic-demangle v12.16.3
+   Compiling cap-primitives v4.0.3
+    Checking unicode-width v0.1.14
+   Compiling linked-hash-map v0.5.6
+   Compiling cfg_aliases v0.1.1
+   Compiling nix v0.28.0
+   Compiling yaml-rust v0.4.5
+    Checking unicode-truncate v1.1.0
+    Checking equator v0.4.2
+   Compiling plist v1.10.0
+    Checking kurbo v0.13.1
+    Checking fs-set-times v0.20.3
+    Checking fluent-uri v0.4.1
+    Checking compact_str v0.8.1
+    Checking symbolic-common v12.16.3
+    Checking a3s-acl v0.3.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/acl)
+   Compiling selectors v0.38.0
+    Checking a3s-code-status-line v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-status-line)
+    Checking a3s-code-models v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-models)
+   Compiling smartstring v1.0.1
+   Compiling sqlite-vec v0.1.7-alpha.10
+   Compiling cssparser-macros v0.7.1
+   Compiling pprof v0.15.0
+    Checking cassowary v0.3.0
+    Checking ambient-authority v0.0.2
+   Compiling objc-sys v0.3.5
+    Checking ordered_hashmap v0.0.3 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/third_party/ordered_hashmap)
+   Compiling cap-std v4.0.2
+    Checking maybe-owned v0.3.4
+    Checking micromap v0.3.0
+    Checking graphlib_rust v0.0.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/third_party/graphlib_rust)
+    Checking cssparser v0.37.0
+    Checking ratatui v0.29.0
+    Checking a3s-code-shared v0.0.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling syntect v5.3.0
+   Compiling coreaudio-sys v0.2.18
+    Checking svgtypes v0.16.1
+    Checking aligned-vec v0.6.4
+    Checking aes v0.8.4
+    Checking nix v0.26.4
+    Checking markup5ever v0.39.0
+    Checking regress v0.10.5
+   Compiling stop-words v0.9.0
+   Compiling phf_shared v0.12.1
+   Compiling rquickjs-sys v0.11.0
+    Checking simplecss v0.2.2
+    Checking roxmltree v0.21.1
+   Compiling cap-fs-ext v4.0.2
+    Checking imagesize v0.14.0
+    Checking unicode-vo v0.1.0
+    Checking pico-args v0.5.0
+    Checking xmlwriter v0.1.0
+    Checking data-url v0.3.2
+    Checking konst_macro_rules v0.2.19
+    Checking usvg v0.47.0
+    Checking konst v0.2.20
+    Checking a3s-form-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/form-core)
+   Compiling phf_generator v0.12.1
+    Checking html5ever v0.39.0
+   Compiling two-face v0.4.5
+    Checking dagre_rust v0.0.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/third_party/dagre_rust)
+    Checking cbc v0.1.2
+    Checking ecb v0.1.2
+    Checking unicode-truncate v2.0.1
+    Checking fluent-uri v0.3.2
+    Checking fancy-regex v0.18.0
+   Compiling const_format_proc_macros v0.2.34
+    Checking rgb v0.8.52
+    Checking lru v0.16.3
+    Checking kasuari v0.4.11
+   Compiling cached_proc_macro v0.25.0
+    Checking console v0.15.11
+    Checking filedescriptor v0.8.3
+    Checking universal-hash v0.5.1
+   Compiling matrixmultiply v0.3.11
+    Checking thin-vec v0.2.18
+   Compiling esaxx-rs v0.1.10
+   Compiling rhai_codegen v3.2.0
+    Checking serial2 v0.2.34
+    Checking cached_proc_macro_types v0.1.1
+    Checking downcast-rs v1.2.1
+    Checking number_prefix v0.4.0
+    Checking bitmaps v3.1.0
+   Compiling zip v2.4.2
+    Checking rangemap v1.8.0
+    Checking opaque-debug v0.3.1
+   Compiling moka v0.12.11
+    Checking smawk v0.3.2
+    Checking polyval v0.6.2
+    Checking textwrap v0.16.2
+    Checking lopdf v0.42.0
+    Checking imbl-sized-chunks v0.1.3
+    Checking rhai v1.25.1
+    Checking indicatif v0.17.11
+    Checking portable-pty v0.9.0
+    Checking cached v0.56.0
+    Checking ratatui-core v0.1.0
+    Checking const_format v0.2.36
+    Checking resvg v0.47.0
+    Checking referencing v0.30.0
+    Checking mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/third_party/mermaid-to-svg)
+    Checking objc2 v0.5.2
+    Checking dom_query v0.28.0
+   Compiling a3s-code-markdown v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-markdown)
+    Checking a3s-code-shell-base v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling phf_macros v0.12.1
+    Checking referencing v0.48.5
+    Checking jsonschema-value v0.48.5
+    Checking fancy-regex v0.14.0
+    Checking rmp v0.8.14
+    Checking a3s-compaction-transcript v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-shell)
+    Checking serde_yaml_ng v0.10.0
+   Compiling convert_case v0.8.0
+    Checking process-wrap v9.0.0
+    Checking opentelemetry v0.21.0
+    Checking olpc-cjson v0.1.4
+    Checking backon v1.6.0
+   Compiling enum-as-inner v0.6.1
+    Checking socks v0.3.4
+    Checking jsonschema-regex v0.48.5
+    Checking ordered-float v4.6.0
+    Checking rand_xoshiro v0.6.0
+    Checking quick-xml v0.38.4
+    Checking a3s-hooks-plugins-types v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-hooks-plugins-types)
+   Compiling tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+   Compiling optfield v0.4.0
+   Compiling monostate-impl v0.1.18
+   Compiling getset v0.1.7
+    Checking obfstr v0.4.4
+    Checking base64 v0.13.1
+    Checking rawpointer v0.2.1
+   Compiling cpal v0.15.3
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+    Checking deunicode v1.6.2
+   Compiling dark-light v2.0.0
+    Checking is_ci v1.2.0
+    Checking a3s-system-power v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-system-power)
+    Checking gjson v0.8.1
+    Checking tagptr v0.2.0
+    Checking supports-color v3.0.2
+    Checking dom_smoothie v0.18.2
+    Checking macro_rules_attribute v0.2.3
+    Checking bm25 v2.3.2
+    Checking oci-spec v0.10.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/vendor/oci-spec-0.10.0)
+    Checking spm_precompiled v0.1.4
+    Checking monostate v0.1.18
+   Compiling documented-macros v0.9.2
+    Checking a3s-code-http v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-http)
+    Checking a3s-code-memory v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-memory)
+    Checking a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+    Checking a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+    Checking a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+    Checking opentelemetry_sdk v0.21.2
+    Checking a3s-code-login v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-login)
+    Checking imbl v3.0.0
+    Checking sysctl v0.6.0
+    Checking jsonschema v0.48.5
+    Checking ureq v2.12.1
+    Checking a3s-use-core v0.2.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/use/core)
+    Checking phf v0.12.1
+    Checking a3s-chat-state v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-chat-state)
+    Checking jsonschema v0.30.0
+    Checking rmp-serde v1.3.0
+    Checking a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-mermaid)
+    Checking rquickjs-core v0.11.0
+    Checking objc2-foundation v0.2.2
+    Checking a3s-workflow v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-workflow)
+    Checking coreaudio-rs v0.11.3
+    Checking anstyle-syntect v1.0.4
+    Checking tui-scrollbar v0.2.2
+    Checking ghash v0.5.1
+    Checking referencing v0.47.0
+    Checking ctr v0.9.2
+    Checking a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+    Checking rayon-cond v0.4.0
+    Checking a3s-code-foreign-sessions v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+    Checking a3s-code-session-search v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-session-search)
+    Checking notify-debouncer-mini v0.6.0
+    Checking infer v0.15.0
+    Checking a3s-code-bundle v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-bundle)
+    Checking scraper v0.22.0
+    Checking a3s-code-markdown-core v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-markdown-core)
+    Checking cron v0.17.0
+    Checking fluent-uri v0.1.4
+    Checking anstyle-lossy v1.1.4
+    Checking tokio-retry v0.3.0
+    Checking roaring v0.11.1
+    Checking console v0.16.1
+    Checking gethostname v1.1.0
+    Checking a3s-agent-lifecycle v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-agent-lifecycle)
+    Checking a3s-code-file-lock v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-file-lock)
+    Checking jsonschema-regex v0.47.0
+    Checking aead v0.5.2
+    Checking kanal v0.1.1
+    Checking a3s-prompt-queue v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-prompt-queue)
+    Checking combine v4.6.9
+    Checking a3s-oci-core v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/crates/core)
+    Checking unicode-normalization-alignments v0.1.12
+    Checking dary_heap v0.3.9
+    Checking linkify v0.10.0
+    Checking cpu-time v1.0.0
+    Checking dasp_sample v0.11.0
+    Checking unit-prefix v0.5.1
+    Checking tdigests v1.0.1
+    Checking unicode_categories v0.1.1
+    Checking a3s-tracing-macros v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-tracing-macros)
+    Checking tokenizers v0.21.4
+    Checking mmap-rs v0.7.0
+    Checking indicatif v0.18.3
+    Checking anndists v0.1.5
+    Checking a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/oci-runtime/crates/sdk)
+    Checking aes-gcm v0.10.3
+    Checking jsonschema v0.47.0
+    Checking a3s-vec v0.1.8 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/vec)
+    Checking lsp-types v0.97.0
+    Checking a3s-lane v0.5.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/lane)
+    Checking a3s-search v3.4.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/search)
+    Checking a3s-ratatui-textarea v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+    Checking rquickjs v0.11.0
+    Checking documented v0.9.2
+    Checking hf-hub v0.4.3
+    Checking ndarray v0.15.6
+    Checking a3s-effect v0.2.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/effect)
+    Checking a3s-ratatui-inline v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-ratatui-inline)
+    Checking a3s-code-gboom v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-gboom)
+    Checking toml v0.8.23
+    Checking html2text v0.16.7
+    Checking a3s-sandbox v0.2.3 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/sandbox)
+    Checking a3s-memory v0.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/memory)
+    Checking vte v0.15.0
+    Checking a3s-common v0.1.1 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/common)
+    Checking sha256 v1.6.0
+    Checking safetensors v0.5.3
+    Checking smallstr v0.3.1
+    Checking simdutf8 v0.1.5
+    Checking base64 v0.21.7
+    Checking ansi-to-tui v7.0.0
+    Checking a3s-code-core v9.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/core)
+    Checking yrs v0.27.3
+    Checking model2vec-rs v0.3.0
+    Checking a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-pager-render)
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:28:26
+   |
+28 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+    Checking hnsw_rs v0.3.5
+    Checking a3s-code-voice v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-voice)
+    Checking pdf-inspector v1.17.0
+    Checking a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-pager-diff)
+    Checking a3s-code-dashboard-store v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+    Checking a3s-code-active-sessions v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-active-sessions)
+    Checking clap_complete v4.6.5
+    Checking a3s-crash-handler v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-crash-handler)
+    Checking zip v7.2.0
+    Checking a3s-office-formula-parser v0.45.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/office/crates/formula-parser)
+   Compiling a3s-code-acp v9.1.5 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/code/acp)
+    Checking a3s-office v0.45.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/office/crates/core)
+    Checking a3s-okf v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/okf)
+    Checking a3s-use-reconcile v0.2.10 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/use/reconcile)
+   Compiling aster v0.1.3 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/apps/aster)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+    Checking tikv-jemallocator v0.7.0
+    Checking tikv-jemalloc-ctl v0.7.0
+    Checking a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-update)
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:488:21
+    |
+488 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+    Checking a3s-code-pager v9.1.4 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-pager)
+warning: `a3s-code-core` (lib) generated 11 warnings (run `cargo fix --lib -p a3s-code-core` to apply 3 suggestions)
+    Checking a3s-embedding v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/embedding)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:51:12
+   |
+44 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+51 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 2 warnings
+    Checking a3s-code-pager-minimal v0.1.0 (/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/crates/terminal/crates/codegen/a3s-code-pager-minimal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6m 38s

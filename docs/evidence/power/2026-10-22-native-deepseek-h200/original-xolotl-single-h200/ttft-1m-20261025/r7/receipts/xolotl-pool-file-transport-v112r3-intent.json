@@ -1,0 +1,16 @@
+{
+  "unix": 1792892362.5593145,
+  "phase": "staged",
+  "bootstrap": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-repeat-bootstrap-v112r3.py",
+  "sha256": "2840b15c0642d4f585a92a21f546cc3367452e984261317aa496b11113af5a9b",
+  "bytes": 57152,
+  "same_bootstrap_bytes": true,
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "model_launched": false,
+  "staging": {
+    "staged": true,
+    "root_exists": false,
+    "bytes": 57152,
+    "sha256": "2840b15c0642d4f585a92a21f546cc3367452e984261317aa496b11113af5a9b"
+  }
+}

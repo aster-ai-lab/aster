@@ -1,0 +1,11 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+  "harness_source_digest": "2e48640082dbc258450e32d004115c483d1d2098",
+  "tests": [
+    {
+      "test": "network_tools_wave::kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read",
+      "exit_code": 0,
+      "log": "windows/network-20261030-direct-pages/network_tools_wave__kimi_web_fetch_unicode_second_page_reaches_eof_independently_of_artifact_read.log"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "unix": 1792880370.836676,
+  "result": {
+    "schema": "aster-xolotl-engram-storage-probe-v64",
+    "unix": 1792880218.459225,
+    "phase": "passed",
+    "scope": "CPU dispatch plus paired256-byte weight/8-byte scale preads; component probe, not model/API speed.",
+    "gpu_executed": false,
+    "live_service_changed": false,
+    "source_cache_evicted": false,
+    "cases": [
+      {
+        "rows_per_table": 512,
+        "backend": "source",
+        "repetition": 0,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.05984804918989539,
+        "paired_rows_per_second": 17109.99796753425,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 512,
+        "backend": "local",
+        "repetition": 0,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.03400247963145375,
+        "paired_rows_per_second": 30115.45072885673,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 512,
+        "backend": "local",
+        "repetition": 1,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.02433272311463952,
+        "paired_rows_per_second": 42083.24712263386,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 512,
+        "backend": "source",
+        "repetition": 1,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.030791563913226128,
+        "paired_rows_per_second": 33255.86199147727,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 512,
+        "backend": "source",
+        "repetition": 2,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.0315141249448061,
+        "paired_rows_per_second": 32493.366126885503,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 512,
+        "backend": "local",
+        "repetition": 2,
+        "rows": 1024,
+        "pread_calls": 2048,
+        "bytes": 270336,
+        "seconds": 0.021351535338908434,
+        "paired_rows_per_second": 47959.08040083597,
+        "output_sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "source",
+        "repetition": 0,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.3779510520398617,
+        "paired_rows_per_second": 21674.7643796372,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "local",
+        "repetition": 0,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.30244271410629153,
+        "paired_rows_per_second": 27086.121165811834,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "local",
+        "repetition": 1,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.2252603960223496,
+        "paired_rows_per_second": 36366.80102074941,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "source",
+        "repetition": 1,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.2392417648807168,
+        "paired_rows_per_second": 34241.51299036118,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "source",
+        "repetition": 2,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.28858111007139087,
+        "paired_rows_per_second": 28387.166429477715,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      },
+      {
+        "rows_per_table": 4096,
+        "backend": "local",
+        "repetition": 2,
+        "rows": 8192,
+        "pread_calls": 16384,
+        "bytes": 2162688,
+        "seconds": 0.16415961319580674,
+        "paired_rows_per_second": 49902.65169685021,
+        "output_sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      }
+    ],
+    "summaries": [
+      {
+        "rows_per_table": 512,
+        "source_seconds": [
+          0.05984804918989539,
+          0.030791563913226128,
+          0.0315141249448061
+        ],
+        "local_seconds": [
+          0.03400247963145375,
+          0.02433272311463952,
+          0.021351535338908434
+        ],
+        "source_median_seconds": 0.0315141249448061,
+        "local_median_seconds": 0.02433272311463952,
+        "all_sampled_raw_bytes_identical": true,
+        "sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+      },
+      {
+        "rows_per_table": 4096,
+        "source_seconds": [
+          0.3779510520398617,
+          0.2392417648807168,
+          0.28858111007139087
+        ],
+        "local_seconds": [
+          0.30244271410629153,
+          0.2252603960223496,
+          0.16415961319580674
+        ],
+        "source_median_seconds": 0.28858111007139087,
+        "local_median_seconds": 0.2252603960223496,
+        "all_sampled_raw_bytes_identical": true,
+        "sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+      }
+    ],
+    "measured_blocks": 12,
+    "all_sampled_raw_bytes_identical": true,
+    "finished_unix": 1792880220.391676
+  },
+  "exact_probe_process_alive": false
+}

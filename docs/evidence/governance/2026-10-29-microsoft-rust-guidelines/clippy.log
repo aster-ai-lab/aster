@@ -1,0 +1,1360 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+    Checking smallvec v1.16.3
+    Checking parking_lot_core v0.9.12
+    Checking hashbrown v0.17.1
+    Checking windows-sys v0.61.2
+    Checking windows-sys v0.60.2
+    Checking parking_lot v0.12.5
+    Checking winapi v0.3.9
+    Checking indexmap v2.14.0
+    Checking string_cache v0.9.0
+    Checking icu_normalizer v2.0.0
+    Checking concurrent-queue v2.5.0
+    Checking rustls v0.23.46
+    Checking anyhow v1.0.104
+    Checking cssparser v0.37.0
+    Checking ahash v0.8.12
+    Checking string_cache v0.8.9
+    Checking winx v0.36.4
+    Checking env_filter v0.1.4
+    Checking fs2 v0.4.3
+    Checking dashmap v6.2.1
+    Checking cssparser v0.34.0
+    Checking mio v1.2.1
+    Checking lopdf v0.42.0
+    Checking hashbrown v0.15.5
+    Checking rand v0.8.8
+    Checking kurbo v0.13.1
+    Checking rquickjs-sys v0.11.0
+    Checking web_atoms v0.2.3
+    Checking socket2 v0.6.4
+    Checking anstyle-wincon v3.0.10
+    Checking anstyle-query v1.1.4
+    Checking event-listener v5.4.1
+    Checking io-extras v0.19.0
+    Checking winapi-util v0.1.11
+    Checking idna_adapter v1.2.1
+    Checking dirs-sys v0.5.0
+    Checking markup5ever v0.14.1
+    Checking tempfile v3.27.0
+    Checking anstream v0.6.21
+    Checking anstream v1.0.0
+    Checking nu-ansi-term v0.50.3
+    Checking opentelemetry v0.21.0
+    Checking tokio v1.53.3
+    Checking socks v0.3.4
+    Checking a3s-acl v0.3.0 (D:\code\aster\crates\acl)
+    Checking serde_yaml v0.9.34+deprecated
+    Checking serde_yaml_ng v0.10.0
+    Checking selectors v0.26.0
+    Checking selectors v0.38.0
+    Checking markup5ever v0.38.0
+    Checking event-listener-strategy v0.5.4
+    Checking markup5ever v0.39.0
+    Checking same-file v1.0.6
+    Checking cap-primitives v4.0.3
+    Checking idna v1.1.0
+    Checking dirs v6.0.0
+    Checking html5ever v0.29.1
+    Checking ordered_hashmap v0.0.3 (D:\code\aster\crates\terminal\third_party\ordered_hashmap)
+    Checking env_logger v0.11.8
+    Checking clap_builder v4.6.7
+    Checking tracing-subscriber v0.3.23
+    Checking rustybuzz v0.20.1
+    Checking referencing v0.47.0
+    Checking toml_edit v0.22.27
+    Checking html5ever v0.38.0
+    Checking xml5ever v0.38.0
+    Checking globset v0.4.18
+    Checking async-lock v3.4.1
+    Checking png v0.18.0
+    Checking html5ever v0.39.0
+    Checking svgtypes v0.16.1
+    Checking walkdir v2.5.0
+    Checking cap-std v4.0.2
+    Checking url v2.5.8
+    Checking tokio-util v0.7.19
+    Checking tokio-rustls v0.26.6
+    Checking tower v0.5.2
+    Checking publicsuffix v2.3.0
+    Checking async-compression v0.4.19
+    Checking clap v4.6.7
+    Checking scraper v0.22.0
+    Checking graphlib_rust v0.0.2 (D:\code\aster\crates\terminal\third_party\graphlib_rust)
+    Checking onig v6.5.2
+    Checking fontdb v0.23.0
+    Checking markup5ever_rcdom v0.38.0+unofficial
+    Checking rquickjs-core v0.11.0
+    Checking esaxx-rs v0.1.10
+    Checking cpu-time v1.0.0
+    Checking windows v0.48.0
+    Checking dom_query v0.28.0
+    Checking unicode-normalization-alignments v0.1.12
+    Checking combine v4.6.9
+    Checking cap-fs-ext v4.0.2
+    Checking ureq v2.12.1
+    Checking a3s-use-core v0.2.4 (D:\code\aster\crates\use\core)
+    Checking cookie_store v0.21.1
+    Checking tower-http v0.6.8
+    Checking h2 v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking simplecss v0.2.2
+    Checking widestring v1.2.1
+    Checking jsonschema v0.47.0
+    Checking htmd v0.5.4
+    Checking a3s-sandbox v0.2.3 (D:\code\aster\crates\sandbox)
+    Checking sha256 v1.6.0
+    Checking notify v8.2.0
+    Checking anndists v0.1.5
+    Checking tokenizers v0.21.4
+    Checking dom_smoothie v0.18.2
+    Checking rquickjs v0.11.0
+    Checking a3s-effect v0.2.1 (D:\code\aster\crates\effect)
+    Checking hf-hub v0.4.3
+    Checking dagre_rust v0.0.5 (D:\code\aster\crates\terminal\third_party\dagre_rust)
+    Checking a3s-form-core v0.1.0 (D:\code\aster\crates\form-core)
+    Checking ignore v0.4.24
+    Checking a3s-vec v0.1.8 (D:\code\aster\crates\vec)
+    Checking opentelemetry_sdk v0.21.2
+    Checking usvg v0.47.0
+    Checking hyper v1.8.1
+    Checking mmap-rs v0.7.0
+    Checking tiny-skia v0.12.0
+    Checking toml v0.8.23
+    Checking html2text v0.16.7
+    Checking a3s-common v0.1.1 (D:\code\aster\crates\common)
+    Checking a3s-memory v0.1.5 (D:\code\aster\crates\memory)
+    Checking zip v2.4.2
+    Checking ndarray v0.15.6
+    Checking safetensors v0.5.3
+    Checking smallstr v0.3.1
+    Checking zip v7.2.0
+    Checking libsqlite3-sys v0.35.0
+    Checking mermaid-to-svg v0.1.0 (D:\code\aster\crates\terminal\third_party\mermaid-to-svg)
+    Checking a3s-tty-utils v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-tty-utils)
+    Checking agent-client-protocol-schema v0.11.4
+    Checking pdf-inspector v1.17.0
+    Checking a3s-lane v0.5.1 (D:\code\aster\crates\lane)
+    Checking async-broadcast v0.7.2
+    Checking hyper-util v0.1.20
+    Checking hnsw_rs v0.3.5
+    Checking hashlink v0.10.0
+    Checking a3s-office-formula-parser v0.45.0 (D:\code\aster\crates\office\crates\formula-parser)
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\crates\code\acp)
+    Checking yrs v0.27.3
+    Checking resvg v0.47.0
+    Checking a3s-use-reconcile v0.2.10 (D:\code\aster\crates\use\reconcile)
+    Checking model2vec-rs v0.3.0
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-tty-utils -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 1 suggestion)
+    Checking rusqlite v0.37.0
+    Checking a3s-code-mermaid v0.1.0 (D:\code\aster\crates\terminal\crates\codegen\a3s-code-mermaid)
+    Checking hyper-rustls v0.27.7
+    Checking reqwest v0.12.24
+    Checking a3s-okf v0.1.0 (D:\code\aster\crates\okf)
+    Checking a3s-search v3.4.0 (D:\code\aster\crates\search)
+    Checking a3s-office v0.45.0 (D:\code\aster\crates\office\crates\core)
+    Checking agent-client-protocol v0.10.4
+    Checking a3s-code-core v9.1.6 (D:\code\aster\crates\code\core)
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent\completion_runtime.rs:97:5
+   |
+97 |     #[allow(clippy::too_many_arguments)]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+   = note: requested on the command line with `-W clippy::allow-attributes-without-reason`
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent\execution_entry.rs:28:5
+   |
+28 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\invocation_context.rs:225:5
+    |
+225 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\llm_invoker.rs:417:5
+    |
+417 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\loop_builder.rs:169:27
+    |
+169 |     #[cfg_attr(not(test), allow(dead_code))]
+    |                           ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\loop_builder.rs:212:5
+    |
+212 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent\loop_runtime.rs:55:5
+   |
+55 |     #[allow(clippy::too_many_arguments)]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent\prompt_runtime.rs:11:5
+   |
+11 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\tool_completion_runtime.rs:211:5
+    |
+211 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent\turn_context.rs:391:5
+    |
+391 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent_api\agent_loop_runtime.rs:48:5
+   |
+48 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent_api\execution_coordinator.rs:33:1
+   |
+33 | #[allow(dead_code)]
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent_api\execution_coordinator.rs:123:1
+    |
+123 | #[allow(dead_code)]
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent_api\project_instructions.rs:146:1
+    |
+146 | #[allow(clippy::too_many_arguments)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\agent_api\run_lifecycle.rs:1:1
+  |
+1 | #![allow(dead_code)]
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\agent_api\runtime.rs:1:1
+  |
+1 | #![allow(dead_code)]
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\agent_api\runtime_events.rs:1:1
+  |
+1 | #![allow(dead_code)]
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\agent_api\session_clock.rs:3:1
+  |
+3 | #[allow(dead_code)]
+  | ^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\agent_api\session_persistence.rs:62:5
+   |
+62 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent_api\session_persistence.rs:168:5
+    |
+168 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent_api.rs:185:1
+    |
+185 | #[allow(clippy::large_enum_variant)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\agent_api.rs:193:1
+    |
+193 | #[allow(clippy::large_enum_variant)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\bounded_io.rs:6:1
+  |
+6 | #[allow(dead_code)] // retained for agent-directory read budgets
+  | ^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\capability\source.rs:24:5
+   |
+24 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\capability\source.rs:56:5
+   |
+56 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\code_intelligence\lsp\initialize.rs:116:1
+    |
+116 | #[allow(deprecated)]
+    | ^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\cognitive_context.rs:199:5
+    |
+199 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\cognitive_context.rs:349:5
+    |
+349 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\core_identity.rs:337:5
+    |
+337 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\execution_identity.rs:218:23
+    |
+218 | #[cfg_attr(not(test), allow(dead_code))]
+    |                       ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\execution_identity.rs:226:23
+    |
+226 | #[cfg_attr(not(test), allow(dead_code))]
+    |                       ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\llm\admission.rs:338:51
+    |
+338 |     #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
+    |                                                   ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\llm\anthropic.rs:872:1
+    |
+872 | #[allow(dead_code)]
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\llm\anthropic.rs:936:1
+    |
+936 | #[allow(dead_code)]
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\llm\types.rs:342:5
+    |
+342 |     #[allow(clippy::trivially_copy_pass_by_ref)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\llm\types.rs:687:1
+    |
+687 | #[allow(clippy::large_enum_variant)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\mcp\oauth.rs:13:5
+   |
+13 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\mcp\oauth.rs:15:5
+   |
+15 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\mcp\oauth.rs:17:5
+   |
+17 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\mcp\protocol.rs:543:1
+    |
+543 | #[allow(dead_code)] // used by serde default = "default_tool_timeout"
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\mcp\protocol.rs:548:1
+    |
+548 | #[allow(dead_code)]
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\mcp\transport\http_sse.rs:42:5
+   |
+42 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\porcelain.rs:746:1
+    |
+746 | #[allow(dead_code)] // bash unit tests compare porcelain lines through this helper
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\rl_trajectory.rs:323:5
+    |
+323 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\run.rs:38:5
+   |
+38 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\sandbox\guest.rs:127:5
+    |
+127 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\session_lane_queue.rs:79:5
+   |
+79 |     #[allow(clippy::too_many_arguments)]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\session_review\finding.rs:166:5
+    |
+166 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\session_review\finding.rs:204:5
+    |
+204 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\standing_context.rs:69:1
+   |
+69 | #[allow(clippy::too_many_arguments)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\store\file_store.rs:648:1
+    |
+648 | #[allow(clippy::large_enum_variant)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\bash.rs:966:1
+    |
+966 | #[allow(clippy::result_large_err)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\read.rs:681:1
+    |
+681 | #[allow(clippy::too_many_arguments)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\web_search.rs:705:54
+    |
+705 |         #[cfg_attr(not(feature = "headless-search"), allow(unused_mut))]
+    |                                                      ^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\write.rs:279:1
+    |
+279 | #[allow(clippy::result_large_err)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\mod.rs:251:1
+    |
+251 | #[allow(clippy::too_many_arguments)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\mod.rs:278:1
+    |
+278 | #[allow(clippy::too_many_arguments)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\builtin\mod.rs:305:1
+    |
+305 | #[allow(clippy::too_many_arguments)]
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\invocation.rs:180:51
+    |
+180 |     #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
+    |                                                   ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\task.rs:668:5
+    |
+668 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\task.rs:711:5
+    |
+711 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\tools\types.rs:29:1
+   |
+29 | #[allow(dead_code)]
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\tools\types.rs:35:5
+   |
+35 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\tools\types.rs:51:1
+   |
+51 | #[allow(dead_code)]
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\types.rs:313:51
+    |
+313 |     #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
+    |                                                   ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\tools\types.rs:805:51
+    |
+805 |     #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
+    |                                                   ^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\workspace\grep_candidates\trigram_index.rs:62:5
+   |
+62 |     #[allow(dead_code)]
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\workspace\retrieval\runtime.rs:21:1
+   |
+21 | #[allow(dead_code)] // Referenced only from `#[cfg(test)]` helpers; keep linked in lib builds.
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\workspace\retrieval\vector_contract.rs:20:1
+   |
+20 | #[allow(dead_code)]
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\core\src\workspace\retrieval\wiki.rs:134:5
+    |
+134 |     #[allow(dead_code)]
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\core\src\workspace\services.rs:3:1
+  |
+3 | #[allow(unused_imports)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\core\src\workspace\source_snapshot.rs:70:5
+   |
+70 |     #[allow(clippy::too_many_arguments)]
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates\code\core\src\agent\tool_completion_runtime.rs:316:5
+    |
+316 | /     pub(crate) fn record_native_artifact_verification(
+317 | |         &self,
+318 | |         call: &ToolCall,
+319 | |         result: &a3s_effect::ToolExecutionResultV1,
+...   |
+324 | |         nested: Option<&crate::harness_loop::MutationLedger>,
+325 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: casting to the same type is unnecessary (`u64` -> `u64`)
+  --> crates\code\core\src\fact_control\receipts.rs:95:51
+   |
+95 |             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `request.identity.turn`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_cast
+   = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+  --> crates\code\core\src\porcelain\windows.rs:81:6
+   |
+81 | ) -> Option<(Vec<(OsString, NodeInfo)>, bool, bool)> {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#type_complexity
+   = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\sandbox\guest.rs:535:9
+    |
+535 |         return;
+    |         ^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+    = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+    |
+534 -     if pid == 0 {
+535 -         return;
+534 +     if pid == 0 {
+    |
+
+warning: the following explicit lifetimes could be elided: 'a
+  --> crates\code\core\src\tools\builtin\bash\windows_shell.rs:54:44
+   |
+54 | pub(crate) fn first_usable_host_powershell<'a>(
+   |                                            ^^
+55 |     candidates: &'a [std::path::PathBuf],
+   |                  ^^
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 | ) -> Option<&'a std::path::PathBuf> {
+   |              ^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_lifetimes
+   = note: `#[warn(clippy::needless_lifetimes)]` on by default
+help: elide the lifetimes
+   |
+54 ~ pub(crate) fn first_usable_host_powershell(
+55 ~     candidates: &[std::path::PathBuf],
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 ~ ) -> Option<&std::path::PathBuf> {
+   |
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\tools\builtin\bash.rs:194:13
+    |
+194 |             return None;
+    |             ^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+help: remove `return`
+    |
+194 -             return None;
+194 +             None
+    |
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:437:19
+    |
+437 |     let raw_job = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null()) };
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+    = note: requested on the command line with `-W clippy::undocumented-unsafe-blocks`
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:441:15
+    |
+441 |     let job = unsafe { OwnedHandle::from_raw_handle(raw_job) };
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:442:22
+    |
+442 |     let mut limits = unsafe { zeroed::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() };
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:446:8
+    |
+446 |     if unsafe {
+    |        ^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:457:8
+    |
+457 |     if unsafe { AssignProcessToJobObject(job.as_raw_handle(), raw_process) } == 0 {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:460:20
+    |
+460 |     let raw_wait = unsafe { OpenProcess(SYNCHRONIZE, 0, pid) };
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:464:16
+    |
+464 |     let wait = unsafe { OwnedHandle::from_raw_handle(raw_wait) };
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:468:16
+    |
+468 |             if unsafe { WaitForSingleObject(wait.as_raw_handle(), u32::MAX) } == 0 {
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\builtin\bash.rs:469:25
+    |
+469 |                 let _ = unsafe { TerminateJobObject(job.as_raw_handle(), 1) };
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:394:23
+    |
+394 |             let raw = unsafe { OpenProcess(PROCESS_SET_QUOTA | PROCESS_TERMINATE, 0, pid) };
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:398:27
+    |
+398 |             let process = unsafe { OwnedHandle::from_raw_handle(raw) };
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:428:20
+    |
+428 |                 if unsafe { TerminateJobObject(job.as_raw_handle(), 1) } == 0 {
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:469:19
+    |
+469 |     let raw_job = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null()) };
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:473:15
+    |
+473 |     let job = unsafe { OwnedHandle::from_raw_handle(raw_job) };
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:476:18
+    |
+476 |     let limits = unsafe { zeroed::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() };
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:479:8
+    |
+479 |     if unsafe {
+    |        ^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\tools\process.rs:490:8
+    |
+490 |     if unsafe { AssignProcessToJobObject(job.as_raw_handle(), raw_process) } == 0 {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: unsafe block missing a safety comment
+   --> crates\code\core\src\workspace\local_access.rs:315:31
+    |
+315 |         let mut information = unsafe { std::mem::zeroed::<BY_HANDLE_FILE_INFORMATION>() };
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#undocumented_unsafe_blocks
+
+warning: stripping a prefix manually
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:632:33
+    |
+632 |                     let after = &rest[identifier.len()..];
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: the prefix was tested here
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:631:17
+    |
+631 |                 if rest.starts_with(identifier) {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_strip
+    = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+    |
+631 ~                 if let Some(after) = rest.strip_prefix(identifier) {
+632 ~                     if after.is_empty()
+    |
+
+warning: `a3s-code-core` (lib) generated 102 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 7 suggestions)
+    Checking a3s-embedding v0.1.0 (D:\code\aster\crates\embedding)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates\embedding\src\vector\hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates\embedding\src\hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates\embedding\src\vector\hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates\embedding\src\vector\hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p a3s-embedding -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 2 suggestions)
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\emit.rs:316:5
+    |
+316 |     #[allow(clippy::too_many_arguments)] // event surface arity is the ACP wire shape
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+    = note: requested on the command line with `-W clippy::allow-attributes-without-reason`
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\emit.rs:356:5
+    |
+356 |     #[allow(clippy::too_many_arguments)] // event surface arity is the ACP wire shape
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\models.rs:255:1
+    |
+255 | #[allow(dead_code)]
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\acp\src\agent\tool_render.rs:90:13
+   |
+90 |             #[allow(clippy::collapsible_if, clippy::single_match)]
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\turn.rs:462:5
+    |
+462 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\unattended_turn.rs:101:5
+    |
+101 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent\unattended_turn.rs:312:5
+    |
+312 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\agent.rs:805:5
+    |
+805 |     #[allow(clippy::too_many_arguments)]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+   --> crates\code\acp\src\cc_switch.rs:338:1
+    |
+338 | #[allow(dead_code)] // profile-picker surface; lands with its slice
+    | ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: try adding a reason at the end with `, reason = ".."`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+ --> crates\code\acp\src\connector_notes.rs:4:1
+  |
+4 | #![allow(dead_code)]
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: try adding a reason at the end with `, reason = ".."`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: `allow` attribute without specifying a reason
+  --> crates\code\acp\src\local_assets.rs:22:1
+   |
+22 | #[allow(unused_imports)] // re-export consumed by the session tests
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: try adding a reason at the end with `, reason = ".."`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#allow_attributes_without_reason
+
+warning: variable does not need to be mutable
+   --> crates\code\acp\src\unattended.rs:223:9
+    |
+223 |     let mut builder = std::fs::DirBuilder::new();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_embedding_provider` is never used
+  --> crates\code\acp\src\agent\local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates\code\acp\src\host_context.rs:51:12
+   |
+44 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+51 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates\code\acp\src\agent\emit.rs:133:5
+    |
+133 | /     pub(super) async fn emit_tool_call_completed(
+134 | |         &self,
+135 | |         session_id: &acp::SessionId,
+136 | |         id: &str,
+...   |
+141 | |         metadata: Option<&serde_json::Value>,
+142 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates\code\acp\src\agent\tool_render.rs:179:8
+    |
+179 |     if metadata.get("validated")?.as_bool()? != true
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+    = note: `#[warn(clippy::bool_comparison)]` on by default
+
+warning: this function has too many arguments (9/7)
+   --> crates\code\acp\src\agent\turn.rs:411:5
+    |
+411 | /     pub(super) async fn stream_turn(
+412 | |         &self,
+413 | |         session_id: &acp::SessionId,
+414 | |         session: &AgentSession,
+...   |
+420 | |         requested_posture: Option<PermissionPosture>,
+421 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: unneeded `return` statement
+  --> crates\code\acp\src\office_file.rs:26:9
+   |
+26 |         return crate::artifact_image::render_png(svg);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+   = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+   |
+26 -         return crate::artifact_image::render_png(svg);
+26 +         crate::artifact_image::render_png(svg)
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates\code\acp\src\office_file.rs:193:12
+    |
+193 |         if metadata.get("validated")?.as_bool()? != true
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+
+warning: the borrowed expression implements the required traits
+   --> crates\code\acp\src\unattended.rs:410:37
+    |
+410 |             progress.remember_error(&error.to_string());
+    |                                     ^^^^^^^^^^^^^^^^^^ help: change this to: `error.to_string()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_borrows_for_generic_args
+    = note: `#[warn(clippy::needless_borrows_for_generic_args)]` on by default
+
+warning: `a3s-code-acp` (lib) generated 20 warnings (run `cargo clippy --fix --lib -p a3s-code-acp -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 5 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 52s

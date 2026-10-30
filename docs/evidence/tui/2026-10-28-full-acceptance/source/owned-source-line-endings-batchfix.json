@@ -1,0 +1,79 @@
+{
+  "files": 9,
+  "failures": [],
+  "entries": [
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "bytes": 27801,
+      "binary": false,
+      "sha256": "016cb53c4b536b874ca6822dd8326c9f57fc64429da4a243ee3eb928229d1786",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/prompts/common/runtime_contract.md",
+      "bytes": 2037,
+      "binary": false,
+      "sha256": "207a37eab514210b93024adba74c71673ac2a08b42dc83e562a677e028de071c",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "bytes": 3959,
+      "binary": false,
+      "sha256": "83fcd93f8859b034efb2c0d10ff5474fd9d9d53245b15143cbf3af5c3b5414cf",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "bytes": 61507,
+      "binary": false,
+      "sha256": "cf758361502f6e9c42c1d2a8cb0b9e14dc0323ae898ac3df2a33e5fc14400463",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_history_tests.rs",
+      "bytes": 27137,
+      "binary": false,
+      "sha256": "4bba850d890ab8a256ff769e5c6b7cc4a37307241cce11f345149969efb6c553",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_results.rs",
+      "bytes": 17463,
+      "binary": false,
+      "sha256": "6d663d448553d68af2810b9c4908b5e8a43d973c20d18daa5957a7262e63e6d3",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "bytes": 1160,
+      "binary": false,
+      "sha256": "9a457361da8ee5305738aa9ecaa81f6b876921e04d59a75bdae824f4dc5d3f41",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "bytes": 1359,
+      "binary": false,
+      "sha256": "b143d5f3e01f6e8c3cede9378b24afc089ce9b5d98c029944ed5a0c35c46ecc0",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "bytes": 46406,
+      "binary": false,
+      "sha256": "45fe23dd822a834a60b22e7e4dc06458b16766d71b6e8db52f3b236aaa5c7468",
+      "cr_bytes": 0,
+      "bom": false
+    }
+  ],
+  "note": "Source-only audit; retained evidence and fixtures are not normalized."
+}

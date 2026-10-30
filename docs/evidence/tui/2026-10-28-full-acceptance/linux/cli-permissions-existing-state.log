@@ -1,0 +1,14 @@
+
+running 9 tests
+test agent::permission_state_tests::reconciliation_wire_error_carries_an_action_and_refuses_retry ... ok
+test agent::permission_state_tests::unknown_session_model_change_does_not_activate_or_create_a_session ... ok
+test agent::permission_state_tests::invalid_permission_seed_is_refused_before_creating_any_session ... ok
+test agent::permission_state_tests::mode_parsing_is_closed_and_canonical_before_mutation ... ok
+test agent::permission_state_tests::stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity ... ok
+test agent::permission_state_tests::research_cleanup_restores_current_mode_on_return_and_drop ... ok
+test agent::permission_state_tests::mode_changes_cannot_relax_research_admission_and_new_denies_survive_cleanup ... ok
+test agent::permission_state_tests::session_creation_publishes_and_applies_the_same_permission_postures ... ok
+test agent::permission_state_tests::model_and_effort_replacement_keep_denies_and_the_original_queue ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 384 filtered out; finished in 0.59s
+

@@ -1,0 +1,68 @@
+{
+  "original_script_exit_code": 0,
+  "scenario_count": 6,
+  "acceptance_incomplete": true,
+  "finding": "The original script checks no calls to its local fixture but does not detect a different remote provider. The full missing-ACL output exposes this false positive.",
+  "cases": [
+    {
+      "case": "acl_only",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Consistent with the recorded scenario"
+    },
+    {
+      "case": "acl_and_api_key",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Consistent with the recorded scenario"
+    },
+    {
+      "case": "rules_cli",
+      "stdout_keys": [
+        "text",
+        "stopReason",
+        "sessionId",
+        "requestId"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Consistent with the recorded scenario"
+    },
+    {
+      "case": "unsupported_override",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Consistent with the recorded scenario"
+    },
+    {
+      "case": "api_key_without_acl",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Missing ACL still attempts the template DeepSeek endpoint"
+    },
+    {
+      "case": "stalled_stream_401",
+      "stdout_keys": [
+        "type",
+        "message"
+      ],
+      "bytes_match": true,
+      "semantic_finding": "Consistent with the recorded scenario"
+    }
+  ]
+}

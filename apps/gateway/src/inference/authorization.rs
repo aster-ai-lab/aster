@@ -618,6 +618,7 @@ impl InferenceAuthorizer {
                 models.push(alias.to_string());
             }
         }
+        models.retain(|alias| self.principal_allows_model(authenticated, alias));
         models.sort_unstable();
         models.dedup();
         Ok(models)
@@ -1090,6 +1091,16 @@ impl InferenceAuthorizer {
             .unwrap_or(Uuid::nil())
     }
 
+    fn principal_allows_model(&self, authenticated: AuthenticatedInference, alias: &str) -> bool {
+        if !authenticated.principal {
+            return true;
+        }
+        let Some(models) = self.principals.allowed_models(authenticated.credential_id) else {
+            return true;
+        };
+        models.iter().any(|model| model.as_ref() == alias)
+    }
+
     fn granted_model(
         &self,
         authenticated: AuthenticatedInference,
@@ -1097,7 +1108,7 @@ impl InferenceAuthorizer {
         now: DateTime<Utc>,
     ) -> Result<(&InferenceRouteConfig, &InferenceModelConfig), InferenceAccessError> {
         let (route, grant) = self.grant(authenticated, now)?;
-        if !grant.allows_model(alias) {
+        if !grant.allows_model(alias) || !self.principal_allows_model(authenticated, alias) {
             return Err(InferenceAccessError::Denied);
         }
         let model = route

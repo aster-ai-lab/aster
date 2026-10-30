@@ -1,0 +1,17 @@
+{
+  "unix": 1792899949.2737157,
+  "phase": "prepared",
+  "old_local_observer_terminated_before_model_launch": true,
+  "original_source_retained": "run_xolotl_stable_recovery_v157.frozen.py",
+  "changed_operator_references": 8,
+  "fresh_operator_files_verified": [
+    "launch_xolotl_stable_recovery_v157.frozen.py",
+    "manage_xolotl_stable_edge_suite_v157.frozen.py",
+    "manage_xolotl_stable_extended_v157.frozen.py",
+    "manage_xolotl_stable_recovery_v157.frozen.py",
+    "xolotl_recovery_common_v157.py"
+  ],
+  "model_profile_changed": false,
+  "new_allocation_added": false,
+  "worker_sha256": "3b621aea4e8e0978e73a404ee97aac9f129fcec2081f67f9a3c655e643a8acff"
+}

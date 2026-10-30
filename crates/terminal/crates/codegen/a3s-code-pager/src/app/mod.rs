@@ -950,6 +950,8 @@ pub async fn run(
             &args.allow_rules,
             &args.deny_rules,
         ),
+        permission_allow_rules: args.allow_rules.clone(),
+        permission_deny_rules: args.deny_rules.clone(),
         default_yolo_mode: launch_yolo.yolo,
         default_auto_mode: launch_auto && !launch_yolo.yolo,
         status_line: false,

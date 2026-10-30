@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::prompt_widget::tests::accept_arg_completion_replaces_arg_range' (50592) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\prompt_widget\tests.rs:1725:9:
+arg suggestions should be open
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::prompt_widget::tests::accept_arg_completion_replaces_arg_range ... FAILED
+
+failures:
+
+failures:
+    views::prompt_widget::tests::accept_arg_completion_replaces_arg_range
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

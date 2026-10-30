@@ -1,0 +1,30 @@
+{
+  "upstream_source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "baseline_frontend_sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e",
+  "encoder_sha256": "13231c592e958fb39e2af6001dae69d90e7a36b265702b9b390236fb387599e2",
+  "baseline_shim_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+  "exact_deployed_sources": [
+    {
+      "file": "source/serve/frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+    },
+    {
+      "file": "source/tools/v41/serve/serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+    },
+    {
+      "file": "source/tools/v41/serve/aster_tool_roundtrip.py",
+      "bytes": 6081,
+      "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af"
+    }
+  ],
+  "native_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "model_weights_or_native_kernels_changed": false,
+  "API_credential_changed": false,
+  "local_hermetic_tests_omit_only_unrelated_Jinja_classes": true,
+  "remote_CPU_tests_import_complete_patched_modules": true,
+  "successful_authenticated_search_E2E_passed": false,
+  "WorkBuddy_GUI_E2E_passed": false
+}

@@ -778,6 +778,43 @@ fn path_from_existence_check_command_parses_common_forms() {
 }
 
 #[test]
+fn powershell_literal_item_checks_require_terminating_errors_and_literal_operands() {
+    for (command, expected) in [
+        (
+            "Get-Item -LiteralPath result.txt -ErrorAction Stop",
+            "result.txt",
+        ),
+        (
+            "Get-Item -LiteralPath 'docs/my file.txt' -ErrorAction Stop",
+            "docs/my file.txt",
+        ),
+        (
+            "Get-Item -LiteralPath \"result.txt\" -ErrorAction Stop",
+            "result.txt",
+        ),
+    ] {
+        assert_eq!(
+            path_from_existence_check_command(command).as_deref(),
+            Some(expected)
+        );
+    }
+    for command in [
+        "Test-Path -LiteralPath missing.txt",
+        "Get-Item -LiteralPath result.txt",
+        "Get-Item -LiteralPath result.txt -ErrorAction SilentlyContinue",
+        "Get-Item -LiteralPath \"$file\" -ErrorAction Stop",
+        "Get-Item -LiteralPath $(Get-Content name.txt) -ErrorAction Stop",
+        "Get-Item -LiteralPath 'file' extra -ErrorAction Stop",
+        "echo Get-Item -LiteralPath result.txt -ErrorAction Stop",
+    ] {
+        assert!(
+            path_from_existence_check_command(command).is_none(),
+            "{command}"
+        );
+    }
+}
+
+#[test]
 fn host_report_for_verified_mutation_path_binds_digest_for_completion_gate() {
     use crate::harness_loop::{
         decide_completion, CompletionGate, CompletionTerminal, MutationLedger,

@@ -13,7 +13,7 @@ mod startup;
 use crate::config::GatewayConfig;
 use crate::entrypoint;
 use crate::error::{GatewayError, Result};
-use crate::managed_service::{ManagedServiceStore, MANAGED_SERVICE_MIDDLEWARE_NAME};
+use crate::managed_service::{MANAGED_SERVICE_MIDDLEWARE_NAME, ManagedServiceStore};
 use crate::managed_snapshot::{ManagedSnapshotReloadCallback, ManagedSnapshotStore};
 use crate::middleware::MiddlewareRegistry;
 use crate::observability::metrics::GatewayMetrics;
@@ -28,7 +28,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, RwLock, Weak};
 use std::time::{Duration, Instant};
 
-use self::autoscaling::{prepare_autoscaler, PreparedAutoscaler};
+use self::autoscaling::{PreparedAutoscaler, prepare_autoscaler};
 use self::builders::{
     build_mirror_failover_state, build_passive_health, build_pipeline_cache, build_route_plans,
     build_scaling_state, build_service_grpc_proxies, build_service_http_proxies,
@@ -193,6 +193,21 @@ async fn build_runtime(
             "TCP SNI router table compiled"
         );
     }
+    let supplier_keys = if let Some(keys) = embedded_supplier_keys {
+        keys.iter()
+            .map(|(name, api_key)| crate::inference::SupplierCredential {
+                name: name.clone(),
+                api_key: api_key.clone(),
+            })
+            .collect()
+    } else if config.inference.is_some() {
+        crate::inference::load_supplier_credentials(config).await.map_err(|reason| {
+            GatewayError::Config(format!("Inference supplier credentials unavailable; runtime activation refused: {reason}"))
+        })?
+    } else {
+        Vec::new()
+    };
+
     let pipeline_cache = build_pipeline_cache(config, &config.middlewares, middleware_registry)?;
 
     let service_registry = ServiceRegistry::from_config(&config.services)?;
@@ -251,18 +266,21 @@ async fn build_runtime(
                 ))
             })?;
 
-    let supplier_keys = if let Some(keys) = embedded_supplier_keys {
-        keys.iter()
-            .map(|(name, api_key)| crate::inference::SupplierCredential {
-                name: name.clone(),
-                api_key: api_key.clone(),
+    let apofasi_required = config.inference.as_ref().is_some_and(|policy| {
+        policy.routes.values().any(|route| {
+            route.models.values().any(|model| {
+                model.routing.as_ref().is_some_and(|plan| {
+                    plan.decision_protocol == crate::config::InferenceDecisionProtocol::Apofasi
+                })
             })
-            .collect()
-    } else if config.inference.is_some() {
-        crate::inference::load_supplier_credentials(config).await
-    } else {
-        Vec::new()
-    };
+        })
+    });
+    let decision_plane = crate::inference::DecisionPlane::from_environment(apofasi_required)
+        .map_err(|error| {
+            GatewayError::Config(format!(
+                "Could not initialize Apofasi decision runtime: {error}"
+            ))
+        })?;
 
     let access_log = Arc::new(crate::observability::access_log::AccessLog::new());
     const ACCESS_LOG_QUEUE_CAPACITY: usize = 4096;
@@ -307,7 +325,7 @@ async fn build_runtime(
             metrics,
             shutdown_timeout: Duration::from_secs(config.shutdown_timeout_secs),
             hosted_function_activations: Arc::new(config.hosted_function_activations.clone()),
-            decision_plane: Arc::new(crate::inference::DecisionPlane::dormant()),
+            decision_plane: Arc::new(decision_plane),
             agent_wake: Arc::new(entrypoint::AgentWakePlane {
                 policies: config.agent_idle_policies.clone(),
                 demand: crate::agent_wake::AgentWakeDemandRegistry::new(),

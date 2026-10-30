@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\code\aster\apps\studio\resources\skills\stc-answer\stc\tools\check.py", line 660, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\code\aster\apps\studio\resources\skills\stc-answer\stc\tools\check.py", line 640, in main
+    findings.extend(checker.check_file(path))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\code\aster\apps\studio\resources\skills\stc-answer\stc\tools\check.py", line 451, in check_file
+    with open(path, encoding="utf-8") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'target/pele-stc/prose.md'

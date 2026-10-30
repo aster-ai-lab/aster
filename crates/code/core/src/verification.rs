@@ -987,6 +987,33 @@ pub fn path_from_existence_check_command(command: &str) -> Option<String> {
 
 fn path_from_single_existence_check(command: &str) -> Option<String> {
     let trimmed = command.trim();
+    if let Some(rest) = trimmed.strip_prefix("Get-Item -LiteralPath ") {
+        // A bare Test-Path prints False with exit 0; only this terminating-error
+        // form proves that PowerShell actually found the literal operand.
+        let path = rest.strip_suffix(" -ErrorAction Stop")?.trim();
+        let path = if let Some(inner) = path.strip_prefix('\'') {
+            let inner = inner.strip_suffix('\'')?;
+            if inner.contains('\'') {
+                return None;
+            }
+            inner
+        } else if let Some(inner) = path.strip_prefix('"') {
+            let inner = inner.strip_suffix('"')?;
+            if inner.contains(['"', '$', '`']) {
+                return None;
+            }
+            inner
+        } else {
+            if path
+                .chars()
+                .any(|ch| ch.is_whitespace() || "'\"$`&|<>(){}".contains(ch))
+            {
+                return None;
+            }
+            path
+        };
+        return (!path.is_empty() && !path.contains(['\0', '\r', '\n'])).then(|| path.to_string());
+    }
     let trimmed = trimmed
         .strip_prefix("command ")
         .map(str::trim_start)

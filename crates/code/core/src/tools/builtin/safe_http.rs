@@ -371,8 +371,13 @@ where
             addresses = resolve_via_dns_over_https(host, port)
                 .await
                 .map_err(|doh_error| {
-                    SafeHttpError::invalid(format!(
-                        "{error}; DNS-over-HTTPS fallback also failed: {doh_error}"
+                    let fake_ip_addresses = addresses
+                        .iter()
+                        .map(|address| address.ip().to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ");
+                    SafeHttpError::transport(format!(
+                        "Network unavailable: sandbox DNS returned only Fake-IP addresses for {host} ({fake_ip_addresses}); DNS-over-HTTPS fallback failed: {doh_error}. Check sandbox network access or configure a web proxy."
                     ))
                 })?;
             addresses.sort_unstable();
@@ -723,6 +728,34 @@ mod tests {
             SocketAddr::from(([93, 184, 216, 34], 443)),
         ]));
         assert!(!addresses_are_exclusively_fake_ip(&[]));
+    }
+
+    #[tokio::test]
+    async fn fake_ip_doh_failure_reports_network_unavailable() {
+        struct ResetResolutionScript;
+        impl Drop for ResetResolutionScript {
+            fn drop(&mut self) {
+                set_resolution_script(None);
+            }
+        }
+
+        set_resolution_script(Some(ResolutionScript::FakeIpDohFail));
+        let _reset = ResetResolutionScript;
+        let url = Url::parse("https://example.com").unwrap();
+        let error = match resolve_public_target(&url).await {
+            Ok(_) => panic!("Fake-IP without a DoH fallback must not connect"),
+            Err(error) => error,
+        };
+        let message = error.to_string();
+        assert!(error.is_transport(), "{message}");
+        assert!(message.contains("Network unavailable"), "{message}");
+        assert!(message.contains("Fake-IP"), "{message}");
+        assert!(message.contains("198.18.0.1"), "{message}");
+        assert!(
+            message.contains("DNS-over-HTTPS fallback failed"),
+            "{message}"
+        );
+        assert!(!message.contains("non-public address"), "{message}");
     }
 
     #[test]

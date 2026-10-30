@@ -1,0 +1,449 @@
+{
+  "schema": "aster.tui.coverage-wave-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_snapshot": {
+    "file": "source/coverage-20261030-source.json",
+    "sha256": "cb9b4d41e5a3912bb987325de58f55138fa66fdb568e4683bf55812eadf8e23b"
+  },
+  "runtime_pair_rebuilt": false,
+  "pre_execution_harness_failure": {
+    "file": "source/coverage-20261030-pre-execution-failure.json",
+    "sha256": "2e6a51794d062365311cab5c5597e9c30a52acc42b494e20fbb38942ddd536ba"
+  },
+  "phases": [
+    {
+      "platform": "windows",
+      "phase": "coverage-20261030-portable",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "harness": {
+        "file": "windows/coverage-20261030-portable/test-binary.json",
+        "sha256": "1f948e9923ca1fb0496ca8945e35a6c1ac689fde181fd80fdebfa16b9235a544"
+      },
+      "harness_source": {
+        "file": "windows/coverage-20261030-portable/harness-source.json",
+        "sha256": "c45771701b54c47c2451ff7ef4d58c95e0f38a70bae55cd71614692f322bca93"
+      },
+      "inventory": 96,
+      "passed": 9,
+      "failed": 4,
+      "seconds": 361.08,
+      "run_logs": [
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_code_search_registered_template_returns_real_match.log",
+          "sha256": "ab5962ba544c61ee90fb9c85f8d6a7f27240b8c0851cc6cfd0d53c75ac6bee4d",
+          "test": "coverage_wave::kimi_program_code_search_registered_template_returns_real_match",
+          "exit_code": 101,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_code_search_registered_template_returns_real_match.log",
+          "seconds": 56.64
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_repo_map_registered_template_runs_all_seven_steps.log",
+          "sha256": "726500c848c9d8971e0a21858ec1c5242cf2c6735e680b3c6692472b5768e77f",
+          "test": "coverage_wave::kimi_program_repo_map_registered_template_runs_all_seven_steps",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_repo_map_registered_template_runs_all_seven_steps.log",
+          "seconds": 22.41
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_template_rejects_numeric_search_query_with_owned_error.log",
+          "sha256": "b4271728320c751e4750fce40aed99ab2dcb6810368aa91494fb032f548f1b1c",
+          "test": "coverage_wave::kimi_program_template_rejects_numeric_search_query_with_owned_error",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_template_rejects_numeric_search_query_with_owned_error.log",
+          "seconds": 29.15
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_max_tool_calls_stops_before_second_dispatch.log",
+          "sha256": "c8fd72e2e0fb584d878bba70a6198a49e4c3354726ff20b77c9c1a8251bd39c5",
+          "test": "coverage_wave::kimi_program_max_tool_calls_stops_before_second_dispatch",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_max_tool_calls_stops_before_second_dispatch.log",
+          "seconds": 22.29
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_timeout_terminates_vm_and_next_turn_still_runs.log",
+          "sha256": "cad63c67ea81de95c41544fb2b3cd7d6de9060bbe6c63a664305d8d233446f4d",
+          "test": "coverage_wave::kimi_program_timeout_terminates_vm_and_next_turn_still_runs",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_timeout_terminates_vm_and_next_turn_still_runs.log",
+          "seconds": 54.52
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_program_output_limit_preserves_utf8_and_marks_truncation.log",
+          "sha256": "47418c975848b0026105198c1d2a738578f952689d1792974042f4989dda22b1",
+          "test": "coverage_wave::kimi_program_output_limit_preserves_utf8_and_marks_truncation",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_output_limit_preserves_utf8_and_marks_truncation.log",
+          "seconds": 31.86
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_staged_reference_uses_real_first_result.log",
+          "sha256": "4d59d2de24534d018ea7ead29c27626167440e5a0500f08f36c2e7f3474374bf",
+          "test": "coverage_wave::kimi_batch_staged_reference_uses_real_first_result",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_staged_reference_uses_real_first_result.log",
+          "seconds": 18.17
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_missing_reference_fails_only_dependent_item.log",
+          "sha256": "d208a4d96ffddadb6f06b1942d3f3716c29ff2bd4a1d07ce4b7daefeae666c7f",
+          "test": "coverage_wave::kimi_batch_missing_reference_fails_only_dependent_item",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_missing_reference_fails_only_dependent_item.log",
+          "seconds": 23.05
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_settings_hidden_backend_rows_are_not_actionable.log",
+          "sha256": "efc1893b67de232380daff8c44b885e8b07f5f89fe7963fbef4d252da848139b",
+          "test": "coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable",
+          "exit_code": 101,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_settings_hidden_backend_rows_are_not_actionable.log",
+          "seconds": 21.68
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette.log",
+          "sha256": "7f1190211d2d438bb02900563625354de1e8913114ee7da6eb0d8c0158f4c0f4",
+          "test": "coverage_wave::kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette",
+          "exit_code": 101,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette.log",
+          "seconds": 18.53
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes.log",
+          "sha256": "91271af5c07c3573daa6bb33e6a9071273594b1c25654e14808fec9ddb549c71",
+          "test": "coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes.log",
+          "seconds": 14.06
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection.log",
+          "sha256": "a02bdee54132c8cfad8a60fed114e61db49698c1dd46c40b418177169c3b9e99",
+          "test": "coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection",
+          "exit_code": 101,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection.log",
+          "seconds": 23.97
+        },
+        {
+          "file": "windows/coverage-20261030-portable/coverage_wave__kimi_web_search_explicit_wiki_returns_structured_real_sources.log",
+          "sha256": "b884f1c938ea63d9ced0fc41ae236fe7e9d1ec24099322f428d8f5e6f979de44",
+          "test": "coverage_wave::kimi_web_search_explicit_wiki_returns_structured_real_sources",
+          "exit_code": 0,
+          "log": "windows/coverage-20261030-portable/coverage_wave__kimi_web_search_explicit_wiki_returns_structured_real_sources.log",
+          "seconds": 24.75
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-batch-missing-reference.json",
+          "sha256": "f8d3b0cdc25ead91d00972c6aa2b220fc550a95dda1351b0977463f7e97a5827",
+          "case": "coverage-batch-missing-reference",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-batch-staged.json",
+          "sha256": "5a0e6f8191aa25f94ef774f8a6171b2312d583ded9427e585b8d248c73c0636d",
+          "case": "coverage-batch-staged",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-markdown-raw.json",
+          "sha256": "8e564e49b4e5546322e6dd3d6805b86053502fdc512b4a66654284ca2c5fba07",
+          "case": "coverage-markdown-raw",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-call-limit.json",
+          "sha256": "6eecf7519126968b0099d18e6fb69980427b3c3ebf804dd0d4a738ef62babe34",
+          "case": "coverage-program-call-limit",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-code-search.json",
+          "sha256": "27a29cbf4c134e35737d1bdae064839fdf9ee8edc339c73381dc7c80d4e9554c",
+          "case": "coverage-program-code-search",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-output-limit.json",
+          "sha256": "b61d44a5c597161e73c2967a60caf12f160364a21ccfef2c7279f4cb3c1c5223",
+          "case": "coverage-program-output-limit",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-repo-map.json",
+          "sha256": "83f37f561d1a8cb74192517c5aa6ccbb62a69fe9f71f7cd52cdf414d24017fc0",
+          "case": "coverage-program-repo-map",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-timeout.json",
+          "sha256": "8821e0d02b1edde7af13b7e7e7abef3c3eaa219a50f992b5d133a2d367fd9772",
+          "case": "coverage-program-timeout",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-program-typed-error.json",
+          "sha256": "9df2a83f73a6ba4a1b38279f60dd1738b6bf73052fbbd76737ae7b91993a19d7",
+          "case": "coverage-program-typed-error",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-read-viewer.json",
+          "sha256": "a628b83bc62fd7e63ea313197ce964e439d44a3e16aa2325b10374cd3a0c1e60",
+          "case": "coverage-read-viewer",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-theme-enum.json",
+          "sha256": "5138ffd59807b2b5dd66c8b5a91c181bf33b2fba49375bcdc22a9c3eb36307bb",
+          "case": "coverage-theme-enum",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-unavailable-settings.json",
+          "sha256": "50813e0dcbe9d53ec0316e2340ab781ed85e53929f8d667c9b9afe197767a487",
+          "case": "coverage-unavailable-settings",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "windows/coverage-20261030-portable/reports/coverage-web-search-wiki.json",
+          "sha256": "5cdfcd280c83791d23e4916b5092dc36899f87a2972e6e942eb46c03970c49dc",
+          "case": "coverage-web-search-wiki",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "phase": "coverage-20261030-portable",
+      "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "harness": {
+        "file": "linux/coverage-20261030-portable/test-binary.json",
+        "sha256": "52c4d5c2d112ef995008fa85d9871f43d11737eeb53b6ad9f69fc209a9088b29"
+      },
+      "harness_source": {
+        "file": "linux/coverage-20261030-portable/harness-source.json",
+        "sha256": "b118c42efbe6729c09ccc1362ef6f13b885bf7fc6b665a95e35f8e3ab4d20761"
+      },
+      "inventory": 96,
+      "passed": 10,
+      "failed": 3,
+      "seconds": 389.92,
+      "run_logs": [
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_code_search_registered_template_returns_real_match.log",
+          "sha256": "17bfe8c103aa238d5e52c1cd4524aaaff5a1a9e3034d114e28aea60a81a4d1d7",
+          "test": "coverage_wave::kimi_program_code_search_registered_template_returns_real_match",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_code_search_registered_template_returns_real_match.log",
+          "seconds": 34.17
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_repo_map_registered_template_runs_all_seven_steps.log",
+          "sha256": "66ab8fa4147b1f27525b5fe722d9c65f2144c011f1c7dbf2377db26102167366",
+          "test": "coverage_wave::kimi_program_repo_map_registered_template_runs_all_seven_steps",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_repo_map_registered_template_runs_all_seven_steps.log",
+          "seconds": 35.37
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_template_rejects_numeric_search_query_with_owned_error.log",
+          "sha256": "96b277fae54ebe4965a6b5ab04b31d61ca5d8f516375109316d8d521773b9262",
+          "test": "coverage_wave::kimi_program_template_rejects_numeric_search_query_with_owned_error",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_template_rejects_numeric_search_query_with_owned_error.log",
+          "seconds": 29.58
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_max_tool_calls_stops_before_second_dispatch.log",
+          "sha256": "54a52d2e66d0f81afc741f1948824b15d1bfc845003aece5183e900a26c98e75",
+          "test": "coverage_wave::kimi_program_max_tool_calls_stops_before_second_dispatch",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_max_tool_calls_stops_before_second_dispatch.log",
+          "seconds": 23.25
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_timeout_terminates_vm_and_next_turn_still_runs.log",
+          "sha256": "36a14eb2a802e78968476e3fb0060d23253beb1776df5408ef5ff3081b493cee",
+          "test": "coverage_wave::kimi_program_timeout_terminates_vm_and_next_turn_still_runs",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_timeout_terminates_vm_and_next_turn_still_runs.log",
+          "seconds": 31.8
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_program_output_limit_preserves_utf8_and_marks_truncation.log",
+          "sha256": "4ab6f3a0432859d95779cec52d533bcfcc457403f5d25a1078300da870053252",
+          "test": "coverage_wave::kimi_program_output_limit_preserves_utf8_and_marks_truncation",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_program_output_limit_preserves_utf8_and_marks_truncation.log",
+          "seconds": 24.64
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_batch_staged_reference_uses_real_first_result.log",
+          "sha256": "cbf92e73def4042fc0d75bdbc53b11c6825d3e47b629b1aee9aa82918ebdd632",
+          "test": "coverage_wave::kimi_batch_staged_reference_uses_real_first_result",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_batch_staged_reference_uses_real_first_result.log",
+          "seconds": 28.65
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_batch_missing_reference_fails_only_dependent_item.log",
+          "sha256": "fd1c2aec9ce005127c5414bc586857e19e5263a3300955584c8abff50a192c2e",
+          "test": "coverage_wave::kimi_batch_missing_reference_fails_only_dependent_item",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_batch_missing_reference_fails_only_dependent_item.log",
+          "seconds": 24.11
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_settings_hidden_backend_rows_are_not_actionable.log",
+          "sha256": "8abe3563c0675269dc59e21018d30eb69011c8c27a101b1d8f4fc0f8e86e7bcc",
+          "test": "coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable",
+          "exit_code": 101,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_settings_hidden_backend_rows_are_not_actionable.log",
+          "seconds": 25.34
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette.log",
+          "sha256": "a8f82f47e0bce45e44e9a0e929a860d5ff0cacacd3082165cd711e16feb7017a",
+          "test": "coverage_wave::kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette.log",
+          "seconds": 49.82
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes.log",
+          "sha256": "62c43f7517c5811be0c33f2259c60811ef22e48fd59e5b3d820ab3655b5115b7",
+          "test": "coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes",
+          "exit_code": 101,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes.log",
+          "seconds": 23.34
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection.log",
+          "sha256": "7b71b9c27a8076070d6ad5f90dfd9ce5f0a15573d6a8f817f8ad13ee45ee00e5",
+          "test": "coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection",
+          "exit_code": 101,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection.log",
+          "seconds": 34.51
+        },
+        {
+          "file": "linux/coverage-20261030-portable/coverage_wave__kimi_web_search_explicit_wiki_returns_structured_real_sources.log",
+          "sha256": "4d5391ac01fd00dea10e0b9de69653ea628fcbe8c1ad055fb39a1aba191f8fa8",
+          "test": "coverage_wave::kimi_web_search_explicit_wiki_returns_structured_real_sources",
+          "exit_code": 0,
+          "log": "linux/coverage-20261030-portable/coverage_wave__kimi_web_search_explicit_wiki_returns_structured_real_sources.log",
+          "seconds": 25.34
+        }
+      ],
+      "case_reports": [
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-batch-missing-reference.json",
+          "sha256": "868d4f96127a0757a4365399a3795ced3588511062c91211922aaeda215e56e3",
+          "case": "coverage-batch-missing-reference",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-batch-staged.json",
+          "sha256": "915afb71261fe443e1184ed0d4a26255afcd94e794705428060c9d77375755ee",
+          "case": "coverage-batch-staged",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-markdown-raw.json",
+          "sha256": "0d53841a4aac7742110b82e19d155f0f8a784ea5cb3f7409394f54016151a2ff",
+          "case": "coverage-markdown-raw",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-call-limit.json",
+          "sha256": "fbb6176302640c1f1a885c5616b2e8d337a79f1b2660c766e90549aa763a58eb",
+          "case": "coverage-program-call-limit",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-code-search.json",
+          "sha256": "009fa9f67285e8bbdfc050fde128d191c7095bbeb16cc947222297d9aab5faa6",
+          "case": "coverage-program-code-search",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-output-limit.json",
+          "sha256": "6390adb73013a3abc87edcdb6a3b59fcfd0fa35b0f9c726eaed8a863e9c8e4df",
+          "case": "coverage-program-output-limit",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-repo-map.json",
+          "sha256": "65a54f70fa5265d1e73380f590539a062cd2048ce949b5a07988358f36d20b5a",
+          "case": "coverage-program-repo-map",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-timeout.json",
+          "sha256": "ee21a82555039f7cf2e57e5eb1e13a17788ffbcd8364538355051f108aee6c86",
+          "case": "coverage-program-timeout",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-program-typed-error.json",
+          "sha256": "986c8370fbee964938f51169b8ba39080636c3cb670cbff1d2986b67ee6c1f67",
+          "case": "coverage-program-typed-error",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-read-viewer.json",
+          "sha256": "b744016600c13b0044b99d0b3745c491f43e41a663976fd8bed720bb0c8e1756",
+          "case": "coverage-read-viewer",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-theme-enum.json",
+          "sha256": "ee694e810998bf20c77f55266eccb97069d6777bb9e38f1291bf22f63dcf648b",
+          "case": "coverage-theme-enum",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-unavailable-settings.json",
+          "sha256": "b29616400bafc82cbe70565ee8c44e1f8c2b03d505da0fffcebac3358f7fb249",
+          "case": "coverage-unavailable-settings",
+          "assertions_finished": false,
+          "panicked": true
+        },
+        {
+          "file": "linux/coverage-20261030-portable/reports/coverage-web-search-wiki.json",
+          "sha256": "97ce339fa3ac320aa055cb7bf93435998d61085d58a2e0a4ed93c4e778c3c3c4",
+          "case": "coverage-web-search-wiki",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    }
+  ],
+  "all_96_entrypoints_run": false,
+  "complete_153": false
+}

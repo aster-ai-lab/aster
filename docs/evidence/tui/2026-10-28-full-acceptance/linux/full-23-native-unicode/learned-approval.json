@@ -1,0 +1,399 @@
+{
+  "case": "learned-approval",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:44 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run cat approval-proof.txt 0.0s                                                            5.8s ⇣13.3k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) Yes, and don't ask again for `cat` in this workspace                                                         \n  ┃  3 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/3:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=9 model_turns=2 prompt_tokens=26817",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:44 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 1.0s                                                                                                 \n                                                                                                                        \n     LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0                                                            8:44 AM    \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "allow-always",
+      "detail": "actual permission selection persisted the exact cat rule in ACL",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:44 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.6s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 1.0s                                                                                                 \n                                                                                                                        \n     LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0                                                            8:44 AM    \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "learned",
+      "session": "f21d3065-41ee-4323-95de-aff0a70dd490",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13328,
+            "has_text": false,
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_5f5c16f36fec400c9a8861b4eedf8fad",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-b6543920-d19d-4aad-bbe9-5a67cec017a2",
+                "thread_id": "f21d3065-41ee-4323-95de-aff0a70dd490",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_5f5c16f36fec400c9a8861b4eedf8fad",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-b6543920-d19d-4aad-bbe9-5a67cec017a2",
+                "thread_id": "f21d3065-41ee-4323-95de-aff0a70dd490",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:c09590ce396aa19d11aaa01d88ad4e1341981de78568686f5890305a8082df6f",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":44,\"captured_bytes\":44,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"cat approval-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":44,\"projected_bytes\":44,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"projected_digest\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"repeat_key\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"content_ref\":\"inline:sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8708cdc948c15d140e8057456099fbf2e10aaea8024d724b708b2e1052ba2cf5\"}"
+          }
+        },
+        {
+          "seq": 10,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13489,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 11,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:82e66d231a0a902f7202305f5b392d1249f40b224b6096dfa97939d9204a8567"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 10,
+              "digest": "51df4d20c6130a29d8e4165fca5371dbcda3a13ba5b65147a9cf987681dd036f"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=9 model_turns=2 prompt_tokens=26795",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:44 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 0.8s                                                                                                 \n                                                                                                                        \n     LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0                                                            8:44 AM    \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "learned-restart",
+      "detail": "same workspace reuses persisted approval with no permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:44 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 0.8s                                                                                                 \n                                                                                                                        \n     LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0                                                            8:44 AM    \n                                                                                                                        \n     Worked for 12s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "restarted",
+      "session": "7362d234-944e-4760-a40c-b6cc1e0be50f",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13328,
+            "has_text": false,
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_a4e638d6276946089ff500a3df5d268a",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-8d728b04-9ed6-4b29-be64-51fad7451ae1",
+                "thread_id": "7362d234-944e-4760-a40c-b6cc1e0be50f",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_a4e638d6276946089ff500a3df5d268a",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-8d728b04-9ed6-4b29-be64-51fad7451ae1",
+                "thread_id": "7362d234-944e-4760-a40c-b6cc1e0be50f",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:bbf145eba6a493dd45db5688a404a7e16db0586597340333dc9dd737cfed0be6",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"LEARNED-9cba79d4-daeb-4ed3-88fb-df3d8cfba5c0\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":44,\"captured_bytes\":44,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"cat approval-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":44,\"projected_bytes\":44,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"projected_digest\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"repeat_key\":\"sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"content_ref\":\"inline:sha256:9de81fc216e6ac88f6b7b874ceeef614977cfbb27aa9dd5a3d5bff8e79a1ebb6\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8708cdc948c15d140e8057456099fbf2e10aaea8024d724b708b2e1052ba2cf5\"}"
+          }
+        },
+        {
+          "seq": 10,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13467,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 11,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:d42dedd7bdb6e04bd27c52aca9ddf81bb888180b1df14820f7f1b5d95cb98b84"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 10,
+              "digest": "0feb45417b57f5e19331c305e170ff7e19aa3d37de64bd1c0a891b2fd4fba6bb"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/other-workspace                                                                      13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:45 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run cat approval-proof.txt 0.0s                                                            6.3s ⇣13.3k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) Yes, and don't ask again for `cat` in this workspace                                                         \n  ┃  3 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/3:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=9 model_turns=2 prompt_tokens=26794",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/other-workspace                                                                      13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:45 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 0.5s                                                                                                 \n                                                                                                                        \n     OTHER-8a60140e-8e86-47fe-8313-f479c056dcce                                                              8:45 AM    \n                                                                                                                        \n     Worked for 11s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "approval-workspace-scope",
+      "detail": "another workspace asks again and returns its own unseen token",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-J5zTVW/other-workspace                                                                      13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool exactly once to run cat approval-proof.txt. Reply with its exact output. Do not     8:45 AM    \n       call other tools or modify any file.                                                                             \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.2s                                                                                                 \n     ◆ Run cat approval-proof.txt                                                                                       \n     ◆ Thought for 0.5s                                                                                                 \n                                                                                                                        \n     OTHER-8a60140e-8e86-47fe-8313-f479c056dcce                                                              8:45 AM    \n                                                                                                                        \n     Worked for 11s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "other-workspace",
+      "session": "6cd6b45c-506b-4e79-a6ef-e3b630cb6d52",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13330,
+            "has_text": false,
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2b1ed770c5c049cd86ac5c51b161669d",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-c43dc7ea-1fa1-45cd-b7ec-b3a5d9a1cad2",
+                "thread_id": "6cd6b45c-506b-4e79-a6ef-e3b630cb6d52",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "bash"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2b1ed770c5c049cd86ac5c51b161669d",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-c43dc7ea-1fa1-45cd-b7ec-b3a5d9a1cad2",
+                "thread_id": "6cd6b45c-506b-4e79-a6ef-e3b630cb6d52",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:193f31869ce7a9409d83ef62cb3f0309b5714c22e24fb0aa1c3b7c8235a17ca2",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OTHER-8a60140e-8e86-47fe-8313-f479c056dcce\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":42,\"captured_bytes\":42,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"cat approval-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":42,\"projected_bytes\":42,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"projected_digest\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"repeat_key\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"content_ref\":\"inline:sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:51d8498b0b61050ea826738ad29a0cc668cdd17540b4800619a9611a00d01aad\"}"
+          }
+        },
+        {
+          "seq": 10,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13464,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 11,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:f481ac4d5747cd95dacbf5c1cd4b1eba3089d59e0e81f0e4c5611d63dbee33ba"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 10,
+              "digest": "2a9dd4ee61b78bce25268e69c71d0d9e11d63cecba4c55b755b3dda897fa6cfa"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13330,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2b1ed770c5c049cd86ac5c51b161669d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-c43dc7ea-1fa1-45cd-b7ec-b3a5d9a1cad2",
+            "thread_id": "6cd6b45c-506b-4e79-a6ef-e3b630cb6d52",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2b1ed770c5c049cd86ac5c51b161669d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-c43dc7ea-1fa1-45cd-b7ec-b3a5d9a1cad2",
+            "thread_id": "6cd6b45c-506b-4e79-a6ef-e3b630cb6d52",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:193f31869ce7a9409d83ef62cb3f0309b5714c22e24fb0aa1c3b7c8235a17ca2",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OTHER-8a60140e-8e86-47fe-8313-f479c056dcce\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":42,\"captured_bytes\":42,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"cat approval-proof.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":42,\"projected_bytes\":42,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"projected_digest\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"repeat_key\":\"sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"content_ref\":\"inline:sha256:06cdeae38411a4928e6747b85b59b82d5fd69e64d9850a677099aecd993a6f87\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:51d8498b0b61050ea826738ad29a0cc668cdd17540b4800619a9611a00d01aad\"}"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13464,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 11,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:f481ac4d5747cd95dacbf5c1cd4b1eba3089d59e0e81f0e4c5611d63dbee33ba"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 10,
+          "digest": "2a9dd4ee61b78bce25268e69c71d0d9e11d63cecba4c55b755b3dda897fa6cfa"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

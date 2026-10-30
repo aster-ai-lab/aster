@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::long_horizon_capabilities::compaction_between_debt_and_settlement_does_not_forgive_it' (3453) panicked at crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs:1307:25:
+compaction must not forgive the debt: Session("completion gate: workspace mutation 9f7502666d02c44db611f667d627ed250e2752d5dbe0235ebac75caaf8310e7e (src/impl.mjs) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): [{\"command\":\"node test.mjs\",\"covers\":[\"src/impl.mjs\"],\"id\":\"node-suite\"}]")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::long_horizon_capabilities::compaction_between_debt_and_settlement_does_not_forgive_it ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::long_horizon_capabilities::compaction_between_debt_and_settlement_does_not_forgive_it
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 2.44s
+

@@ -36,16 +36,19 @@ impl crate::llm::LlmClient for PlanHeavyClient {
         let call = self.calls.fetch_add(1, Ordering::SeqCst);
         let message = if call < 12 {
             let block = if call.is_multiple_of(2) {
-                let mut plan = (0..=call / 2)
-                    .map(|inspection| {
+                let inspecting = call / 2;
+                let mut plan = (0..6)
+                    .map(|index| {
                         serde_json::json!({
-                            "step": format!("inspect evidence {inspection}"),
-                            "status": "completed",
+                            "step": format!("Inspect data/a{}.mjs", index + 1),
+                            "status": if index < inspecting { "completed" }
+                                else if index == inspecting { "in_progress" }
+                                else { "pending" },
                         })
                     })
                     .collect::<Vec<_>>();
                 plan.extend([
-                    serde_json::json!({ "step": "fix", "status": "in_progress" }),
+                    serde_json::json!({ "step": "fix", "status": "pending" }),
                     serde_json::json!({ "step": "verify", "status": "pending" }),
                 ]);
                 tool_use(
@@ -57,7 +60,7 @@ impl crate::llm::LlmClient for PlanHeavyClient {
                 tool_use(
                     &format!("ph-read-{call}"),
                     "read",
-                    serde_json::json!({ "path": "data/a.mjs" }),
+                    serde_json::json!({ "file_path": format!("data/a{}.mjs", call / 2 + 1) }),
                 )
             };
             assistant_tool(block)
@@ -133,7 +136,13 @@ pub(super) async fn run_plan_heavy_choreography() {
     let root = workspace.path().to_path_buf();
     std::fs::create_dir_all(root.join("data")).unwrap();
     std::fs::create_dir_all(root.join("src")).unwrap();
-    std::fs::write(root.join("data/a.mjs"), "export const A = 2;\n").unwrap();
+    for index in 1..=6 {
+        std::fs::write(
+            root.join(format!("data/a{index}.mjs")),
+            format!("export const A{index} = {index};\n"),
+        )
+        .unwrap();
+    }
     std::fs::write(root.join("src/impl.mjs"), BEFORE).unwrap();
     std::fs::write(root.join("test.mjs"), CHECKER).unwrap();
 
@@ -177,7 +186,8 @@ pub(super) async fn run_plan_heavy_choreography() {
     assert_eq!(
         std::fs::read_to_string(root.join("src/impl.mjs")).unwrap(),
         AFTER,
-        "plan-heavy result: {result:?}"
+        "actual plan-heavy send result: {result:?}; provider calls: {}",
+        client.calls.load(Ordering::SeqCst)
     );
     assert_eq!(
         std::fs::read_to_string(root.join("test.mjs")).unwrap(),
@@ -206,6 +216,17 @@ pub(super) async fn run_plan_heavy_choreography() {
         count >= 14,
         "12 inspect results, an edit and a checker; got {count}"
     );
+    for index in 0..6 {
+        let plan = bound_receipt(&facts, &format!("ph-plan-{}", index * 2));
+        assert_eq!(plan.outcome, ToolExecutionOutcome::Succeeded);
+        let read = bound_receipt(&facts, &format!("ph-read-{}", index * 2 + 1));
+        assert_eq!(read.outcome, ToolExecutionOutcome::Succeeded);
+        assert!(read.output.to_string().contains(&format!(
+            "export const A{} = {};",
+            index + 1,
+            index + 1
+        )));
+    }
     let edit = bound_receipt(&facts, "ph-edit");
     assert_eq!(edit.outcome, ToolExecutionOutcome::Succeeded);
     assert_eq!(

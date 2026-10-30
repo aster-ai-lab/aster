@@ -1,0 +1,68 @@
+{
+  "unix": 1792938221.9472394,
+  "phase": "passed",
+  "reason": "User cancelled further optimization and retained deployed service",
+  "resources": {
+    "unix": 1792938207.8446946,
+    "roles": {
+      "optimization": {
+        "rjob": {
+          "name": "aster-xolotl-1mc15-4cde736558c0-49555809",
+          "uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+          "phase": "Stopped"
+        },
+        "replica": {
+          "name": "aster-xolotl-1mc15-4cde736558c0-49555809-2mfpn",
+          "uid": "6e97b991-e021-4cdc-8ac9-09941b6f1233",
+          "phase": "Stopped"
+        }
+      },
+      "formal": {
+        "rjob": {
+          "name": "aster-xolotl-1mc14-3458a0d96e5c-82243851",
+          "uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+          "phase": "Running"
+        },
+        "replica": {
+          "name": "aster-xolotl-1mc14-3458a0d96e5c-82243851-mbshx",
+          "uid": "2ba55965-9fff-4c73-bf4e-f3006c7d1f6d",
+          "phase": "Running"
+        }
+      }
+    },
+    "optimization_released": true,
+    "formal_VIP_unchanged": true
+  },
+  "base_url": "http://10.102.93.68/v1",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "context_tokens": 1048576,
+  "same_existing_key_authenticated": true,
+  "Windows_direct_API_passed": true,
+  "Windows_forwarding_required": false,
+  "health_status": 200,
+  "models_status": 200,
+  "smoke": {
+    "done": true,
+    "finish_reason": "stop",
+    "reply": "READY",
+    "ttft_seconds": 20.085196299944073,
+    "seconds": 20.298355399630964,
+    "usage": {
+      "prompt_tokens": 10,
+      "completion_tokens": 3,
+      "total_tokens": 13,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    }
+  },
+  "optimization_controllers_stopped": true,
+  "queued_profiler_cancelled": true,
+  "optimization_H200_released": true,
+  "remaining_active_H200_roles": 1,
+  "performance_optimization_cancelled_by_user": true,
+  "speed300_met": false,
+  "speed1000_met": false,
+  "goal_complete": false,
+  "formal_lease_ends_unix": 1792952301.9907353
+}

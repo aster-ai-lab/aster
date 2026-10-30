@@ -1,0 +1,88 @@
+{
+  "unix": 1792877040.5031497,
+  "uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2026-10-24T16:14:18Z",
+        "lastUpdateTime": "2026-10-24T16:14:18Z",
+        "message": "RJob is inqueue",
+        "reason": "StartInqueue",
+        "status": "True",
+        "type": "Inqueue"
+      },
+      {
+        "lastTransitionTime": "2026-10-24T16:14:32Z",
+        "lastUpdateTime": "2026-10-24T16:14:32Z",
+        "message": "RJob is starting",
+        "reason": "Starting",
+        "status": "True",
+        "type": "Starting"
+      },
+      {
+        "lastTransitionTime": "2026-10-24T16:20:33Z",
+        "lastUpdateTime": "2026-10-24T16:20:33Z",
+        "message": "RJob is running",
+        "reason": "StartRunning",
+        "status": "True",
+        "type": "Running"
+      },
+      {
+        "lastTransitionTime": "2026-10-24T19:48:49Z",
+        "lastUpdateTime": "2026-10-24T19:48:49Z",
+        "message": "RJob is stopped",
+        "reason": "StartStopped",
+        "status": "True",
+        "type": "Stopped"
+      }
+    ],
+    "finishTime": "2026-10-24T19:48:49Z",
+    "message": "RJob stopped",
+    "phase": "Stopped",
+    "reason": "RJobStopped",
+    "taskStatuses": {
+      "t0": {
+        "stopped": 1
+      }
+    }
+  },
+  "spec": {
+    "autoDeleteDuration": "720h0m0s",
+    "backoffLimit": 1,
+    "selector": {
+      "matchLabels": {
+        "kubebrain.brainpp.cn/resourcetype": "rjob",
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc6-43da44c9b0a4-57982995"
+      }
+    }
+  },
+  "task_top": [
+    {
+      "maxRunningDuration": "0s",
+      "maxWaitDuration": "0s",
+      "positiveTags": [
+        "H200",
+        "feature/gpfs=yes"
+      ],
+      "qos": {
+        "gpuQos": "guaranteed",
+        "localStorageQos": "guaranteed"
+      },
+      "replicas": 1,
+      "rootfsSource": {
+        "kind": "image",
+        "metadata": {
+          "creationTimestamp": null
+        }
+      },
+      "selector": {
+        "matchLabels": {
+          "kubebrain.brainpp.cn/resourcetype": "rjob",
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc6-43da44c9b0a4-57982995",
+          "rjob.brainpp.cn/rjob-task-type": "t0"
+        }
+      },
+      "updatePolicy": "Active"
+    }
+  ]
+}

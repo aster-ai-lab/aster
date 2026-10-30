@@ -1,0 +1,13 @@
+platform=macos
+release=aster-cli-v0.1.3
+asset=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/channel/aster-cli-v0.1.3-macos.tar.gz
+installed Aster v0.1.3 into /Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin
+aster=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster
+a3s-code-acp=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/a3s-code-acp
+aster 0.1.3 (220562fe9912)
+9.1.5
+{"currentVersion":"0.1.3 (220562fe9912)","latestVersion":"0.1.3","updateAvailable":false,"installer":"aster-cli","channel":"unknown","autoUpdate":false,"error":null}
+installed Aster v0.1.3 into /Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin
+identity=aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin
+aster=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster
+a3s-code-acp=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/a3s-code-acp

@@ -1,0 +1,715 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-program",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-program-read.json"
+          },
+          "id": "call_4424197025214bcc96a5dd422a170c77",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13324,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4424197025214bcc96a5dd422a170c77",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4424197025214bcc96a5dd422a170c77",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"inputs\\\":{\\\"path\\\":\\\"program-proof.txt\\\"},\\\"language\\\":\\\"javascript\\\",\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { const r = await ctx.tool('read', {file_path: inputs.path}); return {summary: 'PROGRAM-READ', code: r.exitCode, output: r.output}; }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-read.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":390},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":390,\"projected_bytes\":390,\"original_estimated_tokens\":98,\"projected_estimated_tokens\":98,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"projected_digest\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"repeat_key\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"content_ref\":\"inline:sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c3e32b6358414b6d635d9f0e0ca01768c270608aa11b338f8b7fd910836b91cc\"}",
+        "prepared_digest": "sha256:5d5c1fc1a2cd129ba7748697a1ce9443a81f5751e5b25d0da93ad46b8a4014c7",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "read"
+            ],
+            "inputs": {
+              "path": "program-proof.txt"
+            },
+            "language": "javascript",
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 2,
+              "timeoutMs": 10000
+            },
+            "source": "async function run(ctx, inputs) { const r = await ctx.tool('read', {file_path: inputs.path}); return {summary: 'PROGRAM-READ', code: r.exitCode, output: r.output}; }",
+            "type": "script"
+          },
+          "id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 13579,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+          "turn": 1
+        },
+        "tool": "program"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nPROGRAM-READ\\n\\nTool calls: 1\\n1. read (ok, exit_code=0, output_bytes=92)\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"PROGRAM-READ\\\",\\n  \\\"code\\\": 0,\\n  \\\"output\\\": \\\"     1\\\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\\\n[End of file: no final newline.]\\\\n\\\"\\n}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":92,\"original_output_bytes\":92,\"truncated\":false,\"start_offset_ms\":2,\"duration_ms\":3,\"metadata\":{\"source_anchors\":[\"program-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":92},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":92,\"projected_bytes\":92,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"projected_digest\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"repeat_key\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"content_ref\":\"inline:sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"script_result\":{\"summary\":\"PROGRAM-READ\",\"code\":0,\"output\":\"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final newline.]\\n\"},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":261,\"projected_bytes\":261,\"original_estimated_tokens\":66,\"projected_estimated_tokens\":66,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"projected_digest\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"repeat_key\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"content_ref\":\"inline:sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f62cfc8f846f17f3a89a5e8d774882d6dde00a56700b303af1a37ee6269147c2\"}",
+        "prepared_digest": "sha256:543c765afb8e7475aed4722db530ed8b5a291621d2fe6f559cc3ed80b1b5447f",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13951,
+        "text": "{\n  \"summary\": \"PROGRAM-READ\",\n  \"code\": 0,\n  \"output\": \"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final newline.]\\n\"\n}",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4b0698fd33829f1698114ac0567e697ed0887df09f4edbfe8205a81f2ac44b40",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:3e238b51b4b4ce0aa27964028de037702c7b113b24fb3af5ef883e6d0f94d207",
+          "sha256:6001587d83dd089e1feb6b5f484e7476bc60528d1f0deda4f3eaf6b6037d58f6"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-program-forbidden.json"
+          },
+          "id": "call_4171bd788f564a759550ed75402b74da",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 14085,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 17,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4171bd788f564a759550ed75402b74da",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 18,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4171bd788f564a759550ed75402b74da",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-forbidden.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":294},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":294,\"projected_bytes\":294,\"original_estimated_tokens\":74,\"projected_estimated_tokens\":74,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"projected_digest\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"repeat_key\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"content_ref\":\"inline:sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:96c4adedd8de46d026914223c49723d51eabe1d8f12573f2c8707b9d1c1e6e52\"}",
+        "prepared_digest": "sha256:6377d09f339c7fbda7ccbd0f69665cf44afb416c2cfd938a165714ed35e5a672",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 19,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "allowed_tools": [
+              "read"
+            ],
+            "limits": {
+              "maxOutputBytes": 8192,
+              "maxToolCalls": 2,
+              "timeoutMs": 10000
+            },
+            "source": "async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }",
+            "type": "script"
+          },
+          "id": "call_0dfcd8aea256488f9da75ead851d1308",
+          "name": "program"
+        },
+        "has_text": false,
+        "prompt_tokens": 14283,
+        "text": null,
+        "tool": "program"
+      },
+      "seq": 20,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_0dfcd8aea256488f9da75ead851d1308",
+          "turn": 2
+        },
+        "tool": "program"
+      },
+      "seq": 22,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+            "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_0dfcd8aea256488f9da75ead851d1308",
+          "turn": 2
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Error converting from js 'tool' into type 'allowed tool': tool 'write' is not allowed for this PTC script\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":135,\"projected_bytes\":135,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"projected_digest\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"repeat_key\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"content_ref\":\"inline:sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c1a4fca1987ee95070b5d69819ff36718dd914d580488b88ad85de5b1f89a0ed\"}",
+        "prepared_digest": "sha256:17ac079f6e52e2ef02fbe95446b128e867a6afae01e4cd4c2a5374866a862e0d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 23,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14530,
+        "text": "program script error:\nError: Error converting from js 'tool' into type 'allowed tool': tool 'write' is not allowed for this PTC script",
+        "tool": null
+      },
+      "seq": 24,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "59b946cd800a5b3b3421eb30c5761839d9a8084bbbf65611c52a4f16f3ac3145",
+          "seq": 24
+        },
+        "receipt_keys": [
+          "sha256:5485d01a4ea74022a612a35f86059b5c1992f3778131d5545a22898eb7f2e4f3",
+          "sha256:7e4fb5ec70400be3d38fd6bd21bc5f1cd7ceaf47d4d87c28c461b628b1584579"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 25,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-program-read.json once. Call program exactly once with its exact JSON object as         12:33 PM           arguments. Report the exact returned output. Do not call other tools.                                                                                                                                                                                                                                                                                                 ♦ Read 1 file                                                                                                           ♦ program                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ♦ Run program 0.0s                                                                               11s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow program?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40854",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-program-read.json once. Call program exactly once with its exact JSON object as         12:33 PM           arguments. Report the exact returned output. Do not call other tools.                                                                                                                                                                                                                                                                                                 ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   {                                                                                                      12:33 PM           \"summary\": \"PROGRAM-READ\",                                                                                              \"code\": 0,                                                                                                              \"output\": \"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final                          newline.]\\n\" }                                                                                                                                                                                                                                  Worked for 20s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "embedded QuickJS calls the real read tool once and returns its unseen Unicode bytes with complete nested receipts",
+      "name": "program-real-read-receipt",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-program-read.json once. Call program exactly once with its exact JSON object as         12:33 PM           arguments. Report the exact returned output. Do not call other tools.                                                                                                                                                                                                                                                                                                 ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Read 1 file                                                                                                                                                                                                                                   {                                                                                                      12:33 PM           \"summary\": \"PROGRAM-READ\",                                                                                              \"code\": 0,                                                                                                              \"output\": \"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final                          newline.]\\n\" }                                                                                                                                                                                                                                  Worked for 20s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-program-forbidden.json once. Call program exactly once with its exact JSON object as    12:33 PM           arguments. Report the real error without retrying or calling other tools.                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                           ♦ program                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                            ♦ Run program 0.0s                                                                               13s ↓14.3k [stop]                                                                                                                            │                                                                                                                       │  Allow program?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=42898",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-program-forbidden.json once. Call program exactly once with its exact JSON object as    12:33 PM           arguments. Report the real error without retrying or calling other tools.                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 1.9s                                                                                                                                                                                                                              program script error: Error: Error converting from js 'tool' into type 'allowed tool': tool 'write'    12:33 PM         is not allowed for this PTC script                                                                                █                                                                                                                       █     Worked for 17s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "a script restricted to read fails before dispatching write; no target file or incomplete nested-call receipt is produced",
+      "name": "program-forbidden-nested-write",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-TBmSUa\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read request-program-forbidden.json once. Call program exactly once with its exact JSON object as    12:33 PM           arguments. Report the real error without retrying or calling other tools.                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                           ♦ program                                                                                                               ♦ Thought for 1.9s                                                                                                                                                                                                                              program script error: Error: Error converting from js 'tool' into type 'allowed tool': tool 'write'    12:33 PM         is not allowed for this PTC script                                                                                █                                                                                                                       █     Worked for 17s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "tool-wave-program",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-program-read.json"
+              },
+              "id": "call_4424197025214bcc96a5dd422a170c77",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13324,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4424197025214bcc96a5dd422a170c77",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4424197025214bcc96a5dd422a170c77",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"inputs\\\":{\\\"path\\\":\\\"program-proof.txt\\\"},\\\"language\\\":\\\"javascript\\\",\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { const r = await ctx.tool('read', {file_path: inputs.path}); return {summary: 'PROGRAM-READ', code: r.exitCode, output: r.output}; }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-read.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":390},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":390,\"projected_bytes\":390,\"original_estimated_tokens\":98,\"projected_estimated_tokens\":98,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"projected_digest\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"repeat_key\":\"sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"content_ref\":\"inline:sha256:3c88546e2a9d3fd59be14709b97944b8924784b055fe88732bf282b28c9faa64\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c3e32b6358414b6d635d9f0e0ca01768c270608aa11b338f8b7fd910836b91cc\"}",
+            "prepared_digest": "sha256:5d5c1fc1a2cd129ba7748697a1ce9443a81f5751e5b25d0da93ad46b8a4014c7",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "read"
+                ],
+                "inputs": {
+                  "path": "program-proof.txt"
+                },
+                "language": "javascript",
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 2,
+                  "timeoutMs": 10000
+                },
+                "source": "async function run(ctx, inputs) { const r = await ctx.tool('read', {file_path: inputs.path}); return {summary: 'PROGRAM-READ', code: r.exitCode, output: r.output}; }",
+                "type": "script"
+              },
+              "id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 13579,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+              "turn": 1
+            },
+            "tool": "program"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-a1bb1659-a061-4e95-89b6-bf265739da7d",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a10c20af8c954298ae5cfd7e54411fa6",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Program script completed.\\nPROGRAM-READ\\n\\nTool calls: 1\\n1. read (ok, exit_code=0, output_bytes=92)\\n\\nResult:\\n{\\n  \\\"summary\\\": \\\"PROGRAM-READ\\\",\\n  \\\"code\\\": 0,\\n  \\\"output\\\": \\\"     1\\\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\\\n[End of file: no final newline.]\\\\n\\\"\\n}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":true,\"tool_calls_complete\":true,\"tool_calls\":[{\"tool_name\":\"read\",\"success\":true,\"exit_code\":0,\"output_bytes\":92,\"original_output_bytes\":92,\"truncated\":false,\"start_offset_ms\":2,\"duration_ms\":3,\"metadata\":{\"source_anchors\":[\"program-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":92},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":92,\"projected_bytes\":92,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"projected_digest\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"repeat_key\":\"sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"content_ref\":\"inline:sha256:581f20750a607df6b5ec04b3c4aa7628020a9b35ff78f2c9a9f3e0905e015c98\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}]},\"script_result\":{\"summary\":\"PROGRAM-READ\",\"code\":0,\"output\":\"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final newline.]\\n\"},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":261,\"projected_bytes\":261,\"original_estimated_tokens\":66,\"projected_estimated_tokens\":66,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"projected_digest\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"repeat_key\":\"sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"content_ref\":\"inline:sha256:c8794d279e3f37df0ee5bc480ab17040a14009a01d0da1776d5828ec8d36002d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f62cfc8f846f17f3a89a5e8d774882d6dde00a56700b303af1a37ee6269147c2\"}",
+            "prepared_digest": "sha256:543c765afb8e7475aed4722db530ed8b5a291621d2fe6f559cc3ed80b1b5447f",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13951,
+            "text": "{\n  \"summary\": \"PROGRAM-READ\",\n  \"code\": 0,\n  \"output\": \"     1\\tPROGRAM-中文-f94d59e4-0a5e-4e95-a029-5bf9ba520bf6\\n[End of file: no final newline.]\\n\"\n}",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "4b0698fd33829f1698114ac0567e697ed0887df09f4edbfe8205a81f2ac44b40",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:3e238b51b4b4ce0aa27964028de037702c7b113b24fb3af5ef883e6d0f94d207",
+              "sha256:6001587d83dd089e1feb6b5f484e7476bc60528d1f0deda4f3eaf6b6037d58f6"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-program-forbidden.json"
+              },
+              "id": "call_4171bd788f564a759550ed75402b74da",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 14085,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 17,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4171bd788f564a759550ed75402b74da",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 18,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4171bd788f564a759550ed75402b74da",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"allowed_tools\\\":[\\\"read\\\"],\\\"limits\\\":{\\\"maxOutputBytes\\\":8192,\\\"maxToolCalls\\\":2,\\\"timeoutMs\\\":10000},\\\"source\\\":\\\"async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }\\\",\\\"type\\\":\\\"script\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-program-forbidden.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":294},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":294,\"projected_bytes\":294,\"original_estimated_tokens\":74,\"projected_estimated_tokens\":74,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"projected_digest\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"repeat_key\":\"sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"content_ref\":\"inline:sha256:2f466008fbd0d10cad13c846040827ae9f7509d5330973426ab09b57a04e41e1\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:96c4adedd8de46d026914223c49723d51eabe1d8f12573f2c8707b9d1c1e6e52\"}",
+            "prepared_digest": "sha256:6377d09f339c7fbda7ccbd0f69665cf44afb416c2cfd938a165714ed35e5a672",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 19,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "allowed_tools": [
+                  "read"
+                ],
+                "limits": {
+                  "maxOutputBytes": 8192,
+                  "maxToolCalls": 2,
+                  "timeoutMs": 10000
+                },
+                "source": "async function run(ctx, inputs) { return await ctx.tool('write', {file_path:'program-forbidden.txt',content:'SHOULD-NOT-EXIST'}); }",
+                "type": "script"
+              },
+              "id": "call_0dfcd8aea256488f9da75ead851d1308",
+              "name": "program"
+            },
+            "has_text": false,
+            "prompt_tokens": 14283,
+            "text": null,
+            "tool": "program"
+          },
+          "seq": 20,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_0dfcd8aea256488f9da75ead851d1308",
+              "turn": 2
+            },
+            "tool": "program"
+          },
+          "seq": 22,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-062bcdbe-e8aa-44ae-9b43-bece7e5536d6",
+                "thread_id": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_0dfcd8aea256488f9da75ead851d1308",
+              "turn": 2
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"program script error:\\nError: Error converting from js 'tool' into type 'allowed tool': tool 'write' is not allowed for this PTC script\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"program\":{\"name\":\"script\",\"language\":\"javascript\",\"runtime\":\"embedded-quickjs\",\"tool_call_clock\":\"monotonic-ms-since-program-start\",\"success\":false,\"tool_calls_complete\":true,\"tool_calls\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":135,\"projected_bytes\":135,\"original_estimated_tokens\":34,\"projected_estimated_tokens\":34,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"projected_digest\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"repeat_key\":\"sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"content_ref\":\"inline:sha256:6d70e2f29137f4c7a92dacd02d80a23a770871df641f41c39d8b624fc8db6727\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c1a4fca1987ee95070b5d69819ff36718dd914d580488b88ad85de5b1f89a0ed\"}",
+            "prepared_digest": "sha256:17ac079f6e52e2ef02fbe95446b128e867a6afae01e4cd4c2a5374866a862e0d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 23,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14530,
+            "text": "program script error:\nError: Error converting from js 'tool' into type 'allowed tool': tool 'write' is not allowed for this PTC script",
+            "tool": null
+          },
+          "seq": 24,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "59b946cd800a5b3b3421eb30c5761839d9a8084bbbf65611c52a4f16f3ac3145",
+              "seq": 24
+            },
+            "receipt_keys": [
+              "sha256:5485d01a4ea74022a612a35f86059b5c1992f3778131d5545a22898eb7f2e4f3",
+              "sha256:7e4fb5ec70400be3d38fd6bd21bc5f1cd7ceaf47d4d87c28c461b628b1584579"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 25,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "496dadf4-daa1-46f7-897e-48979d8f19a1"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

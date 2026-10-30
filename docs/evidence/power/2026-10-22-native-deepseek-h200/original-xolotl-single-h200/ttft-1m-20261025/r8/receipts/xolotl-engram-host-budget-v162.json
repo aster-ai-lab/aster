@@ -1,0 +1,27 @@
+{
+  "unix": 1792900834.432704,
+  "native": {
+    "pid": 5856,
+    "start_ticks": 712771781,
+    "namespace": "pod",
+    "uid": 10250,
+    "bounded_status": [
+      "VmPeak:\t691069708 kB",
+      "VmSize:\t691036944 kB",
+      "VmRSS:\t170377432 kB",
+      "RssAnon:\t153109344 kB",
+      "RssFile:\t13928820 kB",
+      "VmSwap:\t       0 kB",
+      "Threads:\t54"
+    ],
+    "cgroup": "13:devices:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n12:rdma:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n11:blkio:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n10:pids:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n9:memory:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n8:cpu,cpuacct:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n7:net_cls,net_prio:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n6:freezer:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n5:perf_event:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n4:cpuset:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n3:hugetlb:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n2:misc:/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n1:name=systemd:/system.slice/containerd.service/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n0::/kubepods-podb1f8d17a_43b4_4b8e_97ff_7b871970f4c1.slice:cri-containerd:d7e4db34b213c314ce3d61eb0c28152d8e9b9b7777d46907b89d240bf2cacd5e\n"
+  },
+  "model_requests_sent": 0,
+  "cache_policy_changed": false,
+  "/sys/fs/cgroup/memory/memory.limit_in_bytes": "236223201280",
+  "/sys/fs/cgroup/memory/memory.usage_in_bytes": "175232196608",
+  "/sys/fs/cgroup/memory/memory.failcnt": "0",
+  "cache_rows_current": "2000000",
+  "actual_weight_row_bytes_observed_previously": 256,
+  "actual_scale_row_bytes_observed_previously": 8
+}

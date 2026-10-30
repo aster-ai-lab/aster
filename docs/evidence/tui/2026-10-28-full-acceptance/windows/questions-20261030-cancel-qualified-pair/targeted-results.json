@@ -1,0 +1,22 @@
+[
+  {
+    "name": "questions_and_forms::kimi_cancelled_question_returns_cancelled_without_completion_and_recovers",
+    "exit_code": 0,
+    "log": "docs/evidence/tui/2026-10-28-full-acceptance/windows/questions-20261030-cancel-qualified-pair/kimi_cancelled_question_returns_cancelled_without_completion_and_recovers.log"
+  },
+  {
+    "name": "questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question",
+    "exit_code": 0,
+    "log": "docs/evidence/tui/2026-10-28-full-acceptance/windows/questions-20261030-cancel-qualified-pair/kimi_ask_user_choices_and_unseen_free_text_match_the_real_question.log"
+  },
+  {
+    "name": "forms_catalog::kimi_catalog_forms_render_all_components_and_preserve_typed_edits",
+    "exit_code": 101,
+    "log": "docs/evidence/tui/2026-10-28-full-acceptance/windows/questions-20261030-cancel-qualified-pair/kimi_catalog_forms_render_all_components_and_preserve_typed_edits.log"
+  },
+  {
+    "name": "forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel",
+    "exit_code": 101,
+    "log": "docs/evidence/tui/2026-10-28-full-acceptance/windows/questions-20261030-cancel-qualified-pair/kimi_long_form_small_window_reaches_fields_submit_and_cancel.log"
+  }
+]

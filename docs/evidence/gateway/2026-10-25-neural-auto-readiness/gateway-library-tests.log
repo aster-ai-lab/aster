@@ -1,0 +1,2416 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+   Compiling a3s-gateway v1.1.1 (/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway)
+warning: unused import: `HashMap`
+  --> apps/gateway/src/entrypoint/inference_dispatch.rs:16:24
+   |
+16 | use std::collections::{HashMap, HashSet};
+   |                        ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::collections::BTreeMap`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4490:17
+     |
+4490 |             use std::collections::BTreeMap;
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `hyper::body::Body as _`
+  --> apps/gateway/src/entrypoint/protocol/http_handler.rs:19:5
+   |
+19 | use hyper::body::Body as _;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufferedBody` and `buffer_body_up_to`
+ --> apps/gateway/src/entrypoint/protocol/streaming_handler.rs:9:26
+  |
+9 | use super::body_buffer::{buffer_body_up_to, BufferedBody};
+  |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DECISION_REQUEST_LIMIT_BYTES`, `DecisionContentPart`, `DecisionDefinition`, `DecisionStepPart`, and `DecisionVisibleTurn`
+  --> apps/gateway/src/inference/mod.rs:37:25
+   |
+37 |     DecisionAssessment, DecisionContentPart, DecisionDefinition, DecisionError, DecisionRequest,
+   |                         ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+38 |     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
+   |                                                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^
+39 |     DECISION_REQUEST_LIMIT_BYTES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `ChosenGroup`, `DecisionReason`, `FrozenDecision`, `TurnDecisionCache`, and `TurnIdentity`
+  --> apps/gateway/src/inference/mod.rs:42:5
+   |
+42 |     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
+   |     ^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DecisionInputs`, `RouteDecision`, `decision_inputs`, `evaluate_routing`, and `plan_decision_definition`
+  --> apps/gateway/src/inference/mod.rs:67:29
+   |
+67 |     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
+   |                             ^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^
+68 |     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^                               ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/entrypoint/protocol/http_handler.rs:812:21
+    |
+812 |                 let mut response = track_attributed_token_budget_response(
+    |                     ----^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> apps/gateway/src/config/acl/inference.rs:37:9
+   |
+37 |     let mut guardrails = HashMap::new();
+   |         ----^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+
+warning: unused variable: `content_length`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4273:25
+     |
+4273 |                     let content_length = loop {
+     |                         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_content_length`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `decider`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4328:9
+     |
+4328 |     let decider = server.clone();
+     |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_decider`
+
+warning: variable does not need to be mutable
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4753:9
+     |
+4753 |     let mut config = routed_config(address, &key);
+     |         ----^^^^^^
+     |         |
+     |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/inference/authorization.rs:863:9
+    |
+863 |         mut service_is_available: F,
+    |         ----^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:354:5
+    |
+354 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:383:5
+    |
+383 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: associated function `new` is never used
+   --> apps/gateway/src/entrypoint.rs:103:19
+    |
+101 | impl HttpConnectionContext {
+    | -------------------------- associated function in this implementation
+102 |     #[cfg(test)]
+103 |     pub(super) fn new(
+    |                   ^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `spawn_sse_chat_backend` is never used
+    --> apps/gateway/src/entrypoint/inference_tests.rs:2938:10
+     |
+2938 | async fn spawn_sse_chat_backend(
+     |          ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `GuardrailBlocked` is never constructed
+  --> apps/gateway/src/inference/access_error.rs:41:5
+   |
+12 | pub(crate) enum InferenceAccessError {
+   |                 -------------------- variant in this enum
+...
+41 |     GuardrailBlocked { reason: String },
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = note: `InferenceAccessError` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: methods `grant_guardrails` and `select_from_effective_targets` are never used
+   --> apps/gateway/src/inference/authorization.rs:214:19
+    |
+211 | impl InferenceAuthorizer {
+    | ------------------------ methods in this implementation
+...
+214 |     pub(crate) fn grant_guardrails(
+    |                   ^^^^^^^^^^^^^^^^
+...
+855 |     pub(crate) fn select_from_effective_targets<F>(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `BranchPrimary` is never constructed
+  --> apps/gateway/src/inference/decision_cache.rs:66:5
+   |
+57 | pub(crate) enum ChosenGroup {
+   |                 ----------- variant in this enum
+...
+66 |     BranchPrimary { category: String },
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `ChosenGroup` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `is_empty` is never used
+   --> apps/gateway/src/inference/decision_cache.rs:169:19
+    |
+125 | impl TurnDecisionCache {
+    | ---------------------- method in this implementation
+...
+169 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: variants `Messages` and `CountTokens` are never constructed
+  --> apps/gateway/src/inference/openai_request.rs:35:5
+   |
+25 | pub(crate) enum OpenAiRequestProfile {
+   |                 -------------------- variants in this enum
+...
+35 |     Messages,
+   |     ^^^^^^^^
+36 |     /// Count Anthropic message input tokens.
+37 |     CountTokens,
+   |     ^^^^^^^^^^^
+   |
+   = note: `OpenAiRequestProfile` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: enum `ProxyJsonField` is never used
+   --> apps/gateway/src/inference/openai_request.rs:476:6
+    |
+476 | enum ProxyJsonField {
+    |      ^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonFieldVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:481:8
+    |
+481 | struct ProxyJsonFieldVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadata` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:525:8
+    |
+525 | struct ProxyJsonMetadata {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadataVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:529:8
+    |
+529 | struct ProxyJsonMetadataVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decision_inputs` is never used
+  --> apps/gateway/src/inference/routing.rs:53:15
+   |
+53 | pub(crate) fn decision_inputs(
+   |               ^^^^^^^^^^^^^^^
+
+warning: variable `baseUrl` should have a snake case name
+   --> apps/gateway/src/inference/console_catalog.rs:393:14
+    |
+393 | fn origin_of(baseUrl: &str) -> String {
+    |              ^^^^^^^ help: convert the identifier to snake case: `base_url`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `a3s-gateway` (lib test) generated 28 warnings (run `cargo fix --lib -p a3s-gateway --tests` to apply 15 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 51.56s
+     Running unittests src/lib.rs (/code/aster/target/debug/deps/a3s_gateway-1bf5f64fc82051e1)
+
+running 2118 tests
+test agent::profile::tests::native_command_preserves_each_argument ... ok
+test agent::profile::tests::profile_is_send_and_sync ... ok
+test agent::profile::tests::task_command_uses_profile_task_contract ... ok
+test agent::registry::tests::builtins_have_unique_stable_ids ... ok
+test agent::registry::tests::unknown_profile_requires_an_explicit_command ... ok
+test agent::skill::tests::explicit_skill_root_has_precedence ... ok
+test agent::skill::tests::malformed_skill_does_not_hide_valid_inventory ... ok
+test agent::skill::tests::task_prompt_names_the_skill_path_and_task ... ok
+test agent_wake::acl_parse_tests::acl_children_parse_into_the_table ... ok
+test agent_wake::acl_parse_tests::malformed_children_refuse_fail_closed ... ok
+test agent_wake::compose_tests::entry_bounds_fail_closed ... ok
+test agent_wake::compose_tests::first_request_holds_and_emits_once ... ok
+test agent_wake::compose_tests::replay_check_composes_with_the_hold ... ok
+test agent_wake::contract_lock_tests::demand_entries_carry_the_signal_derivation_fields ... ok
+test agent_wake::drain_tests::drain_posts_the_frozen_signal_to_the_accept_path ... ok
+test agent_wake::drain_tests::rejected_emissions_report_the_status_and_never_panic ... ok
+test agent_wake::drain_tests::unreachable_endpoints_surface_a_transport_error ... ok
+test agent_wake::emitter_tests::accept_path_follows_the_frozen_cloud_route ... ok
+test agent_wake::emitter_tests::bounded_queue_bound_is_the_declared_constant ... ok
+test agent_wake::emitter_tests::disabled_emitter_never_queues ... ok
+test agent_wake::emitter_tests::signal_body_is_camel_case_with_the_frozen_derivation_fields ... ok
+test agent_wake::hold_tests::default_posture_holds_the_maximum_with_a_bounded_retry ... ok
+test agent_wake::hold_tests::hold_decision_carries_the_deadline ... ok
+test agent_wake::hold_tests::hold_policy_clamps_to_the_platform_bounds ... ok
+test agent_wake::hold_tests::replay_refuses_only_after_the_response_starts ... ok
+test agent_wake::table_tests::invalid_entries_refuse_table_construction ... ok
+test agent_wake::table_tests::lookup_matches_exact_identity_only ... ok
+test agent_wake::table_tests::table_parses_validates_and_sorts ... ok
+test agent_wake::tests::demand_expires_after_ttl ... ok
+test agent_wake::tests::first_observation_emits_and_deduplicates_within_the_window ... ok
+test agent_wake::tests::multiple_executions_accumulate_independently ... ok
+test agent_wake::tests::registry_is_bounded_and_drops_new_executions_when_full ... ok
+test anonymous_chatbot::tests::anonymous_chatbot_block_fails_closed ... ok
+test anonymous_chatbot::tests::configured_chatbot_streams_answers_in_order ... ok
+test anonymous_chatbot::tests::unconfigured_chatbot_does_not_fall_through ... ok
+test config::acl::tests::router_parking_block_parses_with_bounds ... ok
+test config::acl::tests::router_parking_rejects_unknown_fields_and_out_of_bounds ... ok
+test config::acl::tests::test_ensure_acl_path_invalid ... ok
+test config::acl::tests::test_ensure_acl_path_valid ... ok
+test config::acl::tests::test_parse_config_with_shutdown_timeout ... ok
+test config::acl::tests::test_parse_empty_config ... ok
+test config::acl::tests::test_parse_entrypoint_invalid_protocol ... ok
+test config::acl::tests::test_parse_entrypoint_minimal ... ok
+test config::acl::tests::test_parse_entrypoint_missing_address ... ok
+test config::acl::tests::test_parse_entrypoint_tcp ... ok
+test config::acl::tests::test_parse_entrypoint_udp ... ok
+test config::acl::tests::test_parse_failover_missing_service ... ok
+test config::acl::tests::test_parse_full_gateway_config ... ok
+test config::acl::tests::test_parse_health_check_defaults ... ok
+test config::acl::tests::test_parse_health_check_missing_path ... ok
+test config::acl::tests::test_parse_mirror_default_percentage ... ok
+test config::acl::tests::test_parse_revision ... ok
+test config::acl::tests::test_parse_rollout ... ok
+test config::acl::tests::test_parse_rollout_defaults ... ok
+test config::acl::tests::test_parse_router_full ... ok
+test config::acl::tests::test_parse_router_minimal ... ok
+test config::acl::tests::test_parse_router_missing_rule ... ok
+test config::acl::tests::test_parse_router_missing_service ... ok
+test config::acl::tests::test_parse_scaling_defaults ... ok
+test config::acl::tests::test_parse_scaling_full ... ok
+test config::acl::tests::test_parse_server_with_weight ... ok
+test config::acl::tests::test_parse_service_all_strategies ... ok
+test config::acl::tests::test_parse_service_invalid_strategy ... ok
+test config::acl::tests::test_parse_service_minimal ... ok
+test config::acl::tests::test_parse_service_with_failover ... ok
+test config::acl::tests::test_parse_service_with_health_check ... ok
+test config::acl::tests::test_parse_service_with_mirror ... ok
+test config::acl::tests::test_parse_service_with_sticky ... ok
+test config::acl::tests::test_parse_tls_minimal ... ok
+test config::acl::tests::test_parse_tls_with_acme ... ok
+test config::acl::tests::test_parse_unknown_provider ... ok
+test config::acl::tests::test_parse_unknown_top_level_block ... ok
+test config::entrypoint::tests::acme_without_email_fails_listener_policy ... ok
+test config::entrypoint::tests::http_tcp_allowlist_is_not_a_silent_noop ... ok
+test config::entrypoint::tests::tcp_invalid_allowed_ip_fails_listener_policy ... ok
+test config::entrypoint::tests::tcp_tls_is_not_a_silent_noop ... ok
+test config::entrypoint::tests::test_entrypoint_defaults_no_tcp_filter ... ok
+test config::entrypoint::tests::test_entrypoint_parse ... ok
+test config::entrypoint::tests::test_entrypoint_tcp_protocol ... ok
+test config::entrypoint::tests::test_entrypoint_tcp_with_filter ... ok
+test config::entrypoint::tests::test_entrypoint_udp_defaults ... ok
+test config::entrypoint::tests::test_entrypoint_udp_protocol ... ok
+test config::entrypoint::tests::test_entrypoint_udp_with_config ... ok
+test config::entrypoint::tests::test_entrypoint_with_tls ... ok
+test config::entrypoint::tests::test_protocol_default ... ok
+test config::entrypoint::tests::test_protocol_serialization ... ok
+test config::entrypoint::tests::test_tls_acme_enabled ... ok
+test config::entrypoint::tests::test_udp_entrypoint_can_reconfigure_on_the_same_socket ... ok
+test config::entrypoint::tests::udp_zero_max_sessions_fails_listener_policy ... ok
+test config::entrypoint::tests::udp_zero_session_timeout_fails_listener_policy ... ok
+test config::hosted_function::tests::a_new_incarnation_of_the_same_revision_is_served ... ok
+test config::hosted_function::tests::a_target_serving_another_revision_is_drift ... ok
+test config::hosted_function::tests::activation_without_cloud_scope_is_rejected ... ok
+test config::hosted_function::tests::declared_activation_carries_a_bounded_hold ... ok
+test config::hosted_function::tests::drifted_generation_fails_closed_without_using_the_upstream ... ok
+test config::hosted_function::tests::healthy_exact_revision_becomes_one_upstream_route ... ok
+test config::hosted_function::tests::healthy_or_drifted_targets_never_activate ... ok
+test config::hosted_function::tests::intents_without_the_function_entrypoint_are_rejected ... ok
+test config::hosted_function::tests::longer_function_path_is_not_captured_by_a_shorter_prefix ... ok
+test config::hosted_function::tests::missing_target_fails_closed_without_an_upstream ... ok
+test config::hosted_function::tests::profile_concurrency_ceiling_admits_one_request_and_fails_the_next_closed ... ok
+test config::hosted_function::tests::scoped_intent_without_target_records_activation_identity ... ok
+test config::inference::tests::budgeted_grant_over_unpriced_model_fails_closed ... ok
+test config::inference::tests::budgeted_principal_over_unpriced_model_fails_closed ... ok
+test config::inference::tests::distributed_models_cannot_be_granted_the_embeddings_endpoint ... ok
+test config::inference::tests::distributed_scheduling_rejects_missing_or_unsafe_runtime_configuration ... ok
+test config::inference::tests::distributed_scheduling_requires_a_closed_compatible_worker_pair ... ok
+test config::inference::tests::inference_policy_requires_managed_mode_and_an_unexpired_window ... ok
+test config::inference::tests::inference_policy_requires_supported_tokenizer_revision ... ok
+test config::inference::tests::inference_policy_types_are_send_and_sync ... ok
+test config::inference::tests::inference_route_on_non_http_entrypoint_is_not_a_silent_noop ... ok
+test config::inference::tests::parses_a_projected_spend_baseline_with_its_epoch ... ok
+test config::inference::tests::parses_a_standalone_principal_route_on_the_native_wire ... ok
+test config::inference::tests::parses_an_optional_tool_listing_without_changing_model_grants ... ok
+test config::inference::tests::parses_and_validates_a_complete_inference_policy ... ok
+test config::inference::tests::parses_and_validates_a_complete_worker_scheduling_projection ... ok
+test config::inference::tests::parses_and_validates_prefill_decode_scheduling_projection ... ok
+test config::inference::tests::parses_embedding_and_rerank_suppliers ... ok
+test config::inference::tests::parses_model_pricing_and_grant_spend_budget ... ok
+test config::inference::tests::parses_optional_ocr_and_decision_suppliers ... ok
+test config::inference::tests::parses_the_cloud_rendered_latency_bias_bytes ... ok
+test config::inference::tests::parses_the_cloud_rendered_priced_route_bytes ... ok
+test config::inference::tests::permits_revoked_credentials_only_after_grants_are_removed ... ok
+test config::inference::tests::permits_shared_aggregated_target_across_model_aliases ... ok
+test config::inference::tests::prefix_affinity_is_opt_in_and_acl_types_remain_closed ... ok
+test config::inference::tests::prefix_catalog_maintenance_ids_are_exact_bounded_and_typed ... ok
+test config::inference::tests::principal_routes_reject_tool_endpoints_and_bad_key_env_names ... ok
+test config::inference::tests::rejects_duplicate_prefixes_and_target_identities ... ok
+test config::inference::tests::rejects_dynamic_or_unsafe_verifier_hashes ... ok
+test config::inference::tests::rejects_invalid_routes_targets_and_limits ... ok
+test config::inference::tests::rejects_out_of_order_target_priorities ... ok
+test config::inference::tests::rejects_stale_mismatched_or_inconsistent_worker_projections ... ok
+test config::inference::tests::rejects_unknown_or_plaintext_inference_fields ... ok
+test config::inference::tests::rejects_unsafe_credential_and_grant_relationships ... ok
+test config::inference::tests::reserved_platform_alias_in_route_models_refuses_activation ... ok
+test config::inference::tests::scheduled_models_fail_closed_when_service_has_no_configured_workers ... ok
+test config::inference::tests::scheduled_models_fail_closed_when_worker_observations_are_absent ... ok
+test config::inference::tests::scheduled_models_fail_closed_without_exact_managed_endpoint_ownership ... ok
+test config::inference::tests::spend_baseline_above_the_budget_fails_closed ... ok
+test config::inference::tests::spend_baseline_fails_closed_without_a_budget ... ok
+test config::inference::tests::spend_budget_and_window_must_pair ... ok
+test config::inference::tests::unknown_spend_window_names_the_closed_set ... ok
+test config::inference::tests::validate_activation_fails_closed_when_distributed_serving_api_key_env_unset ... ok
+test config::inference::tests::validate_activation_fails_closed_when_distributed_serving_api_key_invalid ... ok
+test config::inference::tests::verifier_is_absent_from_debug_and_serialized_config_views ... ok
+test config::inference::tests::worker_and_scheduling_blocks_are_strict ... ok
+test config::middleware::tests::test_middleware_config_default_impl ... ok
+test config::middleware::tests::test_middleware_defaults ... ok
+test config::middleware::tests::test_parse_api_key_middleware ... ok
+test config::middleware::tests::test_parse_basic_auth_middleware ... ok
+test config::middleware::tests::test_parse_body_limit_middleware ... ok
+test config::middleware::tests::test_parse_circuit_breaker_defaults ... ok
+test config::middleware::tests::test_parse_circuit_breaker_middleware ... ok
+test config::middleware::tests::test_parse_cors_middleware ... ok
+test config::middleware::tests::test_parse_fallback_middleware ... ok
+test config::middleware::tests::test_parse_forward_auth_middleware ... ok
+test config::middleware::tests::test_parse_headers_middleware ... ok
+test config::middleware::tests::test_parse_ip_allow_middleware ... ok
+test config::middleware::tests::test_parse_rate_limit_middleware ... ok
+test config::middleware::tests::test_parse_rate_limit_redis_middleware ... ok
+test config::middleware::tests::test_parse_retry_middleware ... ok
+test config::middleware::tests::test_parse_strip_prefix_middleware ... ok
+test config::mode::tests::cloud_managed_accepts_generation_bound_target_identity ... ok
+test config::mode::tests::cloud_managed_accepts_static_traffic_configuration ... ok
+test config::mode::tests::cloud_managed_rejects_dynamic_providers ... ok
+test config::mode::tests::cloud_managed_rejects_service_rollout ... ok
+test config::mode::tests::cloud_managed_rejects_service_scaling ... ok
+test config::mode::tests::config_serialization_exposes_operating_mode ... ok
+test config::mode::tests::empty_acl_defaults_to_standalone_mode ... ok
+test config::mode::tests::managed_gateway_identity_requires_cloud_managed_mode ... ok
+test config::mode::tests::managed_snapshot_reload_accepts_safe_in_place_listener_updates ... ok
+test config::mode::tests::managed_state_file_requires_identity_and_absolute_file_path ... ok
+test config::mode::tests::managed_target_identity_rejects_invalid_and_ambiguous_values ... ok
+test config::mode::tests::managed_target_identity_requires_cloud_managed_mode ... ok
+test config::mode::tests::parses_both_operating_modes ... ok
+test config::mode::tests::parses_node_local_usage_spool_with_a_bounded_default ... ok
+test config::mode::tests::parses_stable_managed_gateway_identity ... ok
+test config::mode::tests::parses_usage_spool_cloud_ingest_mtls_pairing ... ok
+test config::mode::tests::parses_usage_spool_cloud_ingest_pairing ... ok
+test config::mode::tests::rejects_invalid_operating_mode ... ok
+test config::mode::tests::rejects_nil_managed_gateway_identity ... ok
+test config::mode::tests::standalone_accepts_local_control_features ... ok
+test config::mode::tests::standalone_rejects_unavailable_service_rollout ... ok
+test config::mode::tests::usage_spool_and_snapshot_journal_paths_cannot_overlap ... ok
+test config::mode::tests::usage_spool_cloud_ingest_fields_must_be_paired ... ok
+test config::mode::tests::usage_spool_requires_identity_absolute_directory_and_minimum_capacity ... ok
+test config::mode::tests::usage_spool_storage_cannot_change_through_reload ... ok
+test config::mode::tests::validate_activation_rejects_cloud_managed_bootstrap_with_inline_traffic ... ok
+test config::mode::tests::validate_activation_rejects_reserved_managed_service_middleware_name ... ok
+test config::mode::tests::validate_activation_rejects_reserved_managed_service_name_prefix ... ok
+test config::router::tests::test_router_default_values ... ok
+test config::router::tests::test_router_parse_full ... ok
+test config::router::tests::test_router_parse_minimal ... ok
+test config::router::tests::test_router_serialization_roundtrip ... ok
+test config::scaling::tests::test_partial_config_uses_defaults ... ok
+test config::scaling::tests::test_revision_config_parse ... ok
+test config::scaling::tests::test_rollout_config_defaults ... ok
+test config::scaling::tests::test_rollout_config_parse ... ok
+test config::scaling::tests::test_scaling_config_defaults ... ok
+test config::scaling::tests::test_scaling_config_parse_acl ... ok
+test config::scaling::tests::test_scaling_config_parse_minimal_acl ... ok
+test config::scaling::tests::test_scaling_config_serialization_roundtrip ... ok
+test config::scaling::tests::test_validate_all_valid ... ok
+test config::scaling::tests::test_validate_buffer_requires_autoscaling_signal ... ok
+test config::scaling::tests::test_validate_buffer_requires_positive_bounds ... ok
+test config::scaling::tests::test_validate_executor_timeout_zero ... ok
+test config::scaling::tests::test_validate_k8s_executor_requires_feature ... ok
+test config::scaling::tests::test_validate_min_greater_than_max ... ok
+test config::scaling::tests::test_validate_rejects_executor_endpoint_credentials_and_query ... ok
+test config::scaling::tests::test_validate_rejects_non_finite_utilization ... ok
+test config::scaling::tests::test_validate_rejects_non_http_box_endpoint ... ok
+test config::scaling::tests::test_validate_rejects_unavailable_rollout ... ok
+test config::scaling::tests::test_validate_rejects_unknown_executor ... ok
+test config::scaling::tests::test_validate_revisions_rejects_duplicate_names_and_invalid_servers ... ok
+test config::scaling::tests::test_validate_revisions_sum_100 ... ok
+test config::scaling::tests::test_validate_revisions_sum_not_100 ... ok
+test config::scaling::tests::test_validate_utilization_exactly_one ... ok
+test config::scaling::tests::test_validate_utilization_over_one ... ok
+test config::scaling::tests::test_validate_utilization_zero ... ok
+test config::service::tests::parse_declared_priority_accepts_negative_and_positive ... ok
+test config::service::tests::parse_declared_priority_defaults_when_absent ... ok
+test config::service::tests::parse_declared_priority_rejects_empty ... ok
+test config::service::tests::parse_declared_priority_rejects_non_integer ... ok
+test config::service::tests::parse_declared_request_timeout_accepts_valid ... ok
+test config::service::tests::parse_declared_request_timeout_defaults_when_absent ... ok
+test config::service::tests::parse_declared_request_timeout_rejects_empty ... ok
+test config::service::tests::parse_declared_request_timeout_rejects_invalid ... ok
+test config::service::tests::parse_declared_strategy_defaults_when_absent ... ok
+test config::service::tests::parse_declared_strategy_rejects_empty ... ok
+test config::service::tests::parse_declared_strategy_rejects_unknown ... ok
+test config::service::tests::test_failover_config_parse ... ok
+test config::service::tests::test_health_check_defaults ... ok
+test config::service::tests::test_mirror_config_default_percentage ... ok
+test config::service::tests::test_mirror_config_parse ... ok
+test config::service::tests::test_parse_duration_rejects_invalid_values ... ok
+test config::service::tests::test_parse_duration_units ... ok
+test config::service::tests::test_server_default_weight ... ok
+test config::service::tests::test_server_managed_target_block_parse ... ok
+test config::service::tests::test_server_managed_target_is_complete_and_closed ... ok
+test config::service::tests::test_server_managed_target_parse ... ok
+test config::service::tests::test_service_no_mirror_no_failover ... ok
+test config::service::tests::test_service_parse ... ok
+test config::service::tests::test_service_with_connect_timeout ... ok
+test config::service::tests::test_service_with_failover ... ok
+test config::service::tests::test_service_with_health_check ... ok
+test config::service::tests::test_service_with_mirror ... ok
+test config::service::tests::test_service_with_request_timeout ... ok
+test config::service::tests::test_service_with_sticky ... ok
+test config::service::tests::test_service_with_stream_timeouts ... ok
+test config::service::tests::test_service_with_tls_ca_file ... ok
+test config::service::tests::test_strategy_all_variants ... ok
+test config::service::tests::test_strategy_default ... ok
+test config::service::tests::test_strategy_from_str ... ok
+test config::service::tests::test_strategy_serialization ... ok
+test config::service::tests::test_stream_timeout_serde_defaults_and_roundtrip ... ok
+test config::static_bundle::tests::cloud_managed_rejects_local_digest_store ... ok
+test config::static_bundle::tests::cloud_managed_static_bundles_without_object_authority_fail_validate ... ok
+test config::static_bundle::tests::parses_and_validates_a_static_bundle_with_local_digest_store ... ok
+test config::static_bundle::tests::parses_manifest_content_encoding_into_sealed_entries ... ok
+test config::static_bundle::tests::rejects_s3_shaped_object_namespace ... ok
+test config::static_bundle::tests::standalone_missing_digest_object_in_local_store_fails_validate ... ok
+test config::static_bundle::tests::standalone_missing_local_digest_store_directory_fails_validate ... ok
+test config::static_bundle::tests::standalone_static_bundle_without_local_digest_store_fails_validate ... ok
+test config::static_bundle::tests::validate_activation_fails_closed_when_static_bundle_object_digest_mismatches ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_accepts_exact_cloud_projection ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_does_not_bypass_missing_managed_object_authority ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_preserves_legacy_hex_and_optional_delivery_defaults ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_ambiguous_labels_and_identity_attributes ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_delivery_policy_drift ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_delivery_type_coercion_and_entry_subblocks ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_duplicate_entry_paths_and_target_names ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_unknown_digest_algorithms_and_noncanonical_values ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_unknown_fields_at_each_boundary ... ok
+test config::static_bundle_contract_tests::static_bundle_contract_refuses_unknown_or_duplicate_nested_blocks ... ok
+test config::tests::agent_search_example_requires_caller_auth_and_probes_a3s_health ... ok
+test config::tests::ge0_cloud_rendered_engine_profiles_round_trip ... ok
+test config::tests::ge1_model_engine_profile_reference_round_trips_and_gates ... ok
+test config::tests::health_checker_probe_rejects_unusable_pem ... ok
+test config::tests::hr1_absent_routing_keeps_the_wire_stable ... ok
+test config::tests::hr1_routing_plans_validate_fail_closed ... ok
+test config::tests::hr_cloud_routing_block_round_trips_through_the_acl_parser ... ok
+test config::tests::mirror_target_must_speak_http ... ok
+test config::tests::router_middleware_on_non_http_entrypoint_is_not_a_silent_noop ... ok
+test config::tests::static_bundle_on_non_http_entrypoint_is_not_a_silent_noop ... ok
+test config::tests::sticky_on_tcp_backends_is_not_a_silent_noop ... ok
+test config::tests::test_default_config ... ok
+test config::tests::test_discovery_config_acl_parsing ... ok
+test config::tests::test_discovery_config_defaults ... ok
+test config::tests::test_discovery_config_serialization_roundtrip ... ok
+test config::tests::test_docker_config_absent_when_not_configured ... ok
+test config::tests::test_docker_config_acl_parsing ... ok
+test config::tests::test_docker_config_default ... ok
+test config::tests::test_docker_config_defaults_in_acl ... ok
+test config::tests::test_docker_config_serialization_roundtrip ... ok
+test config::tests::test_file_provider_config ... ok
+test config::tests::test_from_file_rejects_non_acl_extension ... ok
+test config::tests::test_kubernetes_config_acl_parsing ... ok
+test config::tests::test_kubernetes_config_default ... ok
+test config::tests::test_kubernetes_config_defaults_in_acl ... ok
+test config::tests::test_kubernetes_config_serialization_roundtrip ... ok
+test config::tests::test_management_config_acl_parsing ... ok
+test config::tests::test_management_config_defaults_to_local_allowlist ... ok
+test config::tests::test_management_config_rejects_client_ca_without_require_client_cert ... ok
+test config::tests::test_management_config_rejects_empty_allowed_ips ... ok
+test config::tests::test_management_config_rejects_empty_auth_token_env ... ok
+test config::tests::test_management_config_validate_allowed_ips ... ok
+test config::tests::test_management_config_validate_mtls_requires_client_ca ... ok
+test config::tests::test_management_config_validate_path_prefix ... ok
+test config::tests::test_management_config_validate_tls_min_version ... ok
+test config::tests::test_parse_full_config ... ok
+test config::tests::test_parse_invalid_acl ... ok
+test config::tests::test_parse_minimal_config ... ok
+test config::tests::test_provider_config_default ... ok
+test config::tests::test_provider_config_with_kubernetes ... ok
+test config::tests::test_validate_accepts_health_check_with_revision_only_http_servers ... ok
+test config::tests::test_validate_accepts_private_unix_http_entrypoint ... ok
+test config::tests::test_validate_accepts_tls_ca_file_with_revision_only_https_servers ... ok
+test config::tests::test_validate_accepts_valid_sticky_cookie_name ... ok
+test config::tests::test_validate_acme_with_host_router_domains_ok ... ok
+test config::tests::test_validate_acme_without_domains_fails_closed ... ok
+test config::tests::test_validate_acme_without_email_fails_closed ... ok
+test config::tests::test_validate_activation_builds_acme_manager_when_configured ... ok
+test config::tests::test_validate_activation_builds_discovery_http_client ... ok
+test config::tests::test_validate_allows_box_discovered_backends ... ok
+test config::tests::test_validate_discovery_rejects_duplicate_seeds ... ok
+test config::tests::test_validate_discovery_rejects_empty_seeds ... ok
+test config::tests::test_validate_docker_provider_boundary ... ok
+test config::tests::test_validate_empty_servers ... ok
+test config::tests::test_validate_invalid_middleware_definition ... ok
+test config::tests::test_validate_invalid_request_timeout ... ok
+test config::tests::test_validate_invalid_stream_idle_timeout ... ok
+test config::tests::test_validate_invalid_stream_total_timeout ... ok
+test config::tests::test_validate_mirror_and_failover_references ... ok
+test config::tests::test_validate_mirror_percentage_bounds ... ok
+test config::tests::test_validate_rejects_duplicate_entrypoint_addresses ... ok
+test config::tests::test_validate_rejects_health_check_with_non_http_revision_servers ... ok
+test config::tests::test_validate_rejects_health_check_without_probeable_servers ... ok
+test config::tests::test_validate_rejects_invalid_health_check_settings ... ok
+test config::tests::test_validate_rejects_invalid_sticky_cookie_name ... ok
+test config::tests::test_validate_rejects_kubernetes_without_kube_feature ... ok
+test config::tests::test_validate_rejects_management_listener_collision ... ok
+test config::tests::test_validate_rejects_mixed_box_executor_endpoints ... ok
+test config::tests::test_validate_rejects_redis_middleware_without_feature ... ok
+test config::tests::test_validate_rejects_tls_ca_file_without_https_servers ... ok
+test config::tests::test_validate_server_rejects_query_fragment_and_zero_weight ... ok
+test config::tests::test_validate_server_url_rejects_credentials ... ok
+test config::tests::test_validate_server_url_rejects_unknown_scheme ... ok
+test config::tests::test_validate_udp_zero_timeout_fails_closed ... ok
+test config::tests::test_validate_unknown_entrypoint ... ok
+test config::tests::test_validate_unknown_middleware ... ok
+test config::tests::test_validate_unknown_service ... ok
+test config::tests::test_validate_valid_config ... ok
+test config::tests::validate_accepts_docker_unix_socket_host_when_path_exists ... ok
+test config::tests::validate_activation_accepts_usable_acme_account_key ... ok
+test config::tests::validate_activation_accepts_usable_acme_stored_cert_pem ... ok
+test config::tests::validate_activation_fails_closed_on_invalid_health_check_interval ... ok
+test config::tests::validate_activation_fails_closed_on_unusable_health_check_tls_ca ... ok
+test config::tests::validate_activation_fails_closed_on_unusable_service_tls_ca_for_grpc ... ok
+test config::tests::validate_activation_fails_closed_when_acme_account_key_corrupt ... ok
+test config::tests::validate_activation_fails_closed_when_acme_storage_path_is_a_file ... ok
+test config::tests::validate_activation_fails_closed_when_acme_storage_path_is_relative ... ok
+test config::tests::validate_activation_fails_closed_when_acme_stored_cert_pem_corrupt ... ok
+test config::tests::validate_activation_fails_closed_when_box_scale_unreachable ... ok
+test config::tests::validate_activation_fails_closed_when_docker_daemon_unreachable ... ok
+test config::tests::validate_activation_fails_closed_when_forward_auth_unreachable ... ok
+test config::tests::validate_activation_prepares_revision_health_checkers ... ok
+test config::tests::validate_activation_probes_box_scale_http_client ... ok
+test config::tests::validate_activation_probes_default_upstream_tls_clients ... ok
+test config::tests::validate_activation_probes_health_check_http_clients ... ok
+test config::tests::validate_activation_probes_reachable_docker_daemon ... ok
+test config::tests::validate_activation_probes_reachable_forward_auth ... ok
+test config::tests::validate_activation_probes_service_tls_ca_grpc_clients ... ok
+test config::tests::validate_activation_probes_service_tls_ca_http_clients ... ok
+test config::tests::validate_activation_probes_service_tls_ca_websocket_clients ... ok
+test config::tests::validate_rejects_docker_unix_socket_host_when_path_missing ... ok
+test entrypoint::agent_billing::tests::a_failed_charge_reuses_the_same_transaction_id ... ok
+test entrypoint::agent_billing::tests::a_failed_usage_event_clears_the_subscription_cache ... ok
+test entrypoint::agent_billing::tests::a_metered_call_without_an_organization_is_refused_before_upstream ... ok
+test entrypoint::agent_billing::tests::a_missing_org_rejects_the_successful_response ... ok
+test entrypoint::agent_billing::tests::a_query_string_changes_the_idempotency_digest ... ok
+test entrypoint::agent_billing::tests::a_search_quantity_header_does_not_change_the_charge ... ok
+test entrypoint::agent_billing::tests::a_server_error_is_not_a_stored_idempotent_response ... ok
+test entrypoint::agent_billing::tests::a_subscription_is_ensured_once_per_organization ... ok
+test entrypoint::agent_billing::tests::a_zero_page_parse_is_delivered_without_a_charge ... ok
+test entrypoint::agent_billing::tests::an_unstored_charge_keeps_its_transaction_id_after_the_lease_drops ... ok
+test entrypoint::agent_billing::tests::dropping_an_idempotency_lease_releases_the_key ... ok
+test entrypoint::agent_billing::tests::each_successful_call_gets_a_new_transaction_id ... ok
+test entrypoint::agent_billing::tests::parse_requires_a_positive_quantity_header ... ok
+test entrypoint::agent_billing::tests::parsed_pages_above_the_window_are_refused ... ok
+test entrypoint::agent_billing::tests::search_and_parse_are_the_metered_routes ... ok
+test entrypoint::agent_billing::tests::search_and_parse_routes_require_billing_configuration ... ok
+test entrypoint::agent_billing::tests::the_full_page_window_is_charged ... ok
+test entrypoint::agent_billing::tests::the_same_idempotency_key_replays_and_a_different_digest_is_rejected ... ok
+test entrypoint::agent_billing::tests::unset_billing_drops_the_quantity_header ... ok
+test entrypoint::http_listener::tests::private_parent_is_checked_against_process_identity_before_binding ... ok
+test entrypoint::inference_distributed_fallback_tests::pre_response_transport_failure_reselects_a_distinct_worker_pair ... ok
+test entrypoint::inference_distributed_fallback_tests::protocol_version_and_binding_skew_reselect_compatible_worker_pairs ... ok
+test entrypoint::inference_distributed_rollover_tests::rolling_snapshot_drains_inflight_aggregated_sse_while_new_requests_use_pd_snapshot ... ok
+test entrypoint::inference_distributed_rollover_tests::rolling_snapshot_drains_inflight_pd_json_while_new_requests_use_successor_pd_snapshot ... ok
+test entrypoint::inference_distributed_rollover_tests::rolling_snapshot_drains_inflight_pd_sse_while_new_requests_use_successor_pd_snapshot ... ok
+test entrypoint::inference_distributed_rollover_tests::rolling_snapshot_moves_new_requests_to_distributed_workers_without_rebinding_inflight_v1 ... ok
+test entrypoint::inference_distributed_tests::inference_distributed_deadline_tests::expired_before_sse_headers_returns_504_aborts_workers_and_releases_admission ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_execution_timeout_aborts_both_workers_releases_admission_and_persists_failed_terminals ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_json_persists_upstream_usage_on_request_terminal ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_json_upstream_usage_reconciles_token_budget_for_follow_up_request ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_json_without_usage_keeps_provisional_token_reservation_charged ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_client_cancel_aborts_both_workers_and_releases_concurrency ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_client_cancel_persists_terminal_disconnect_outcomes ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_idle_timeout_aborts_both_workers_releases_admission_and_persists_failed_terminals ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_persists_upstream_usage_on_request_terminal ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_total_timeout_aborts_both_workers_releases_admission_and_persists_failed_terminals ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_upstream_usage_reconciles_token_budget_for_follow_up_request ... ok
+test entrypoint::inference_distributed_tests::managed_distributed_sse_without_usage_keeps_provisional_token_reservation_charged ... ok
+test entrypoint::inference_distributed_tests::managed_openai_request_executes_through_the_power_prefill_decode_contract ... ok
+test entrypoint::inference_distributed_tests::managed_streaming_request_exposes_only_openai_sse ... ok
+test entrypoint::inference_distributed_tests::response_middleware_error_fails_closed_on_distributed_json_listener_without_power_body ... ok
+test entrypoint::inference_distributed_tests::response_middleware_error_fails_closed_on_distributed_sse_listener_without_power_body ... ok
+test entrypoint::inference_fallback_tests::managed_fallback_persists_ordered_attempt_boundaries ... ok
+test entrypoint::inference_fallback_tests::managed_http_does_not_fallback_after_an_upstream_status ... ok
+test entrypoint::inference_fallback_tests::managed_http_does_not_fallback_after_upstream_response_start ... ok
+test entrypoint::inference_fallback_tests::managed_http_falls_back_after_first_response_timeout ... ok
+test entrypoint::inference_fallback_tests::managed_http_falls_back_after_pre_response_transport_failure ... ok
+test entrypoint::inference_fallback_tests::managed_snapshot_apply_target_successor_routes_only_to_remaining_fallback_without_primary ... ok
+test entrypoint::inference_fallback_tests::managed_sse_does_not_fallback_after_stream_idle_timeout ... ok
+test entrypoint::inference_fallback_tests::managed_sse_falls_back_only_before_the_upstream_response ... ok
+test entrypoint::inference_fallback_tests::target_successor_runtime_routes_only_to_remaining_fallback_without_primary ... ok
+test entrypoint::inference_identity_tests::authenticated_parse_error_has_request_identity_without_attempt_identity ... ok
+test entrypoint::inference_identity_tests::managed_dispatch_replaces_spoofed_ids_and_logs_snapshot_identity ... ok
+test entrypoint::inference_identity_tests::managed_models_has_a_request_id_without_an_upstream_attempt ... ok
+test entrypoint::inference_identity_tests::managed_sse_retains_request_and_attempt_identity_through_completion ... ok
+test entrypoint::inference_scheduling_tests::expired_worker_observations_fail_closed_without_upstream_contact ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_pool_rejects_when_its_bounded_queue_is_disabled ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_pool_rejects_when_queue_deadline_elapses ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_pool_releases_active_slot_when_streaming_client_aborts ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_pool_releases_queue_slot_when_waiting_client_aborts ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_retries_another_worker_within_the_same_target_generation ... ok
+test entrypoint::inference_scheduling_tests::managed_inference_selects_the_eligible_worker_and_forwards_only_scoped_cache_affinity ... ok
+test entrypoint::inference_scheduling_tests::managed_snapshot_apply_empty_worker_successor_retains_prior_scheduled_routing_on_listener ... ok
+test entrypoint::inference_scheduling_tests::managed_snapshot_apply_stale_worker_successor_retains_prior_scheduled_routing_on_listener ... ok
+test entrypoint::inference_tests::client_abort_before_upstream_response_releases_concurrency_permit ... ok
+test entrypoint::inference_tests::credential_generation_bump_invalidates_prior_authenticated_generation ... ok
+test entrypoint::inference_tests::credential_successor_runtime_revokes_prior_key_without_upstream ... ok
+test entrypoint::inference_tests::cross_protocol_streaming_translates_sse_frames ... ok
+test entrypoint::inference_tests::cross_protocol_target_translates_request_and_response ... ok
+test entrypoint::inference_tests::grant_successor_runtime_denies_prior_model_without_upstream ... ok
+test entrypoint::inference_tests::granted_tool_sku_is_proxied_to_the_listing_service ... ok
+test entrypoint::inference_tests::hr_a5_fixed_mode_never_calls_the_decision_service ... ok
+test entrypoint::inference_tests::hr_a_dormant_decision_plane_fails_closed_to_primary ... ok
+test entrypoint::inference_tests::hr_a_fresh_low_competence_score_protects_the_next_turn ... ok
+test entrypoint::inference_tests::hr_b3_a_rebuilt_history_forces_a_fresh_decision ... ok
+test entrypoint::inference_tests::hr_b4_a_frozen_decision_expires_and_re_decides ... ok
+test entrypoint::inference_tests::hr_c1_an_unreachable_decision_service_fails_closed_to_primary ... ok
+test entrypoint::inference_tests::hr_c2_strict_decode_violations_fail_closed_over_the_wire ... ok
+test entrypoint::inference_tests::hr_c3_an_economy_failure_relays_to_primary ... ok
+test entrypoint::inference_tests::hr_c4_a_failed_primary_exhausts_explicitly ... ok
+test entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts ... FAILED
+test entrypoint::inference_tests::hr_content_reaches_a_real_decision_service_over_http ... ok
+test entrypoint::inference_tests::hr_d5_a_stale_low_score_stops_protecting ... ok
+test entrypoint::inference_tests::hr_d6_competence_protection_is_category_scoped ... ok
+test entrypoint::inference_tests::hr_e1_the_decision_request_is_model_blind ... ok
+test entrypoint::inference_tests::hr_e2_an_oversized_conversation_fails_closed_without_a_call ... ok
+test entrypoint::inference_tests::hr_g_family_routing_facts_in_the_spool_and_no_prompt_bytes ... ok
+test entrypoint::inference_tests::hr_partial_assessments_never_protect ... ok
+test entrypoint::inference_tests::hr_smart_saving_routes_e2e_and_freezes_the_turn ... ok
+test entrypoint::inference_tests::managed_inference_authenticates_before_body_and_strips_authorization ... ok
+test entrypoint::inference_tests::managed_inference_denies_ungranted_endpoints_and_models ... ok
+test entrypoint::inference_tests::managed_inference_enforces_the_spend_budget_with_retry_after ... ok
+test entrypoint::inference_tests::managed_inference_enforces_tokens_per_minute_reservation ... ok
+test entrypoint::inference_tests::managed_inference_models_enforces_request_burst_with_retry_after ... ok
+test entrypoint::inference_tests::managed_inference_policy_expiry_fails_closed_at_request_time ... ok
+test entrypoint::inference_tests::managed_inference_rechecks_policy_expiry_after_body_collection ... ok
+test entrypoint::inference_tests::managed_inference_returns_only_granted_models_without_an_upstream ... ok
+test entrypoint::inference_tests::managed_inference_revoked_or_expired_credentials_fail_closed_without_upstream ... ok
+test entrypoint::inference_tests::managed_inference_router_rejects_near_miss_paths ... ok
+test entrypoint::inference_tests::managed_inference_samples_mirror_after_resolving_target_service ... ok
+test entrypoint::inference_tests::managed_snapshot_apply_credential_generation_bump_invalidates_prior_bearer_without_upstream ... ok
+test entrypoint::inference_tests::managed_snapshot_apply_credential_successor_revokes_prior_key_without_upstream ... ok
+test entrypoint::inference_tests::managed_snapshot_apply_grant_successor_denies_withdrawn_model_without_upstream ... ok
+test entrypoint::inference_tests::managed_snapshot_apply_stale_cas_successor_retains_prior_routing_on_listener ... ok
+test entrypoint::inference_tests::managed_snapshot_apply_unknown_tokenizer_successor_retains_prior_routing_on_listener ... ok
+test entrypoint::inference_tests::managed_sse_client_drop_after_headers_releases_concurrency_permit ... ok
+test entrypoint::inference_tests::openai_stream_field_selects_sse_without_an_accept_header ... ok
+test entrypoint::inference_tests::prefix_affinity_tests::prefix_affinity_disabled_preserves_weighted_target_rotation ... ok
+test entrypoint::inference_tests::prefix_affinity_tests::prefix_affinity_never_overrides_priority_or_unhealthy_target_exclusion ... ok
+test entrypoint::inference_tests::prefix_affinity_tests::prefix_affinity_preserves_locality_across_http_and_sse_tool_replay ... ok
+test entrypoint::inference_tests::rejected_inference_requests_do_not_consume_request_allowance ... ok
+test entrypoint::inference_tests::reserved_anthropic_messages_are_not_admitted ... ok
+test entrypoint::inference_tests::reserved_responses_are_not_admitted ... ok
+test entrypoint::inference_tests::response_middleware_error_fails_closed_on_native_models_listener_without_policy_body ... ok
+test entrypoint::inference_tests::snapshot_refresh_preserves_active_inference_concurrency ... ok
+test entrypoint::inference_tests::ungranted_tool_sku_is_denied_without_contacting_upstream ... ok
+test entrypoint::inference_usage_tests::forced_drain_persists_terminal_cancellation_outcomes ... ok
+test entrypoint::inference_usage_tests::granted_tool_listing_records_sku_on_the_existing_usage_lifecycle ... ok
+test entrypoint::inference_usage_tests::managed_inference_fails_closed_before_dispatch_when_usage_capacity_is_full ... ok
+test entrypoint::inference_usage_tests::managed_inference_persists_prompt_free_request_and_attempt_lifecycle ... ok
+test entrypoint::inference_usage_tests::managed_inference_persists_upstream_usage_on_request_terminal ... ok
+test entrypoint::inference_usage_tests::managed_json_persists_upstream_usage_after_body_exceeds_json_prefix_budget ... ok
+test entrypoint::inference_usage_tests::managed_json_upstream_usage_reconciles_token_budget_for_follow_up_request ... ok
+test entrypoint::inference_usage_tests::managed_json_without_usage_keeps_provisional_token_reservation_charged ... ok
+test entrypoint::inference_usage_tests::managed_sse_disconnect_persists_terminal_disconnect_outcomes ... ok
+test entrypoint::inference_usage_tests::managed_sse_idle_timeout_releases_admission_and_persists_failed_terminals ... ok
+test entrypoint::inference_usage_tests::managed_sse_persists_upstream_usage_after_body_exceeds_json_prefix_budget ... ok
+test entrypoint::inference_usage_tests::managed_sse_persists_upstream_usage_on_request_terminal ... ok
+test entrypoint::inference_usage_tests::managed_sse_total_timeout_releases_admission_and_persists_failed_terminals ... ok
+test entrypoint::inference_usage_tests::managed_sse_upstream_usage_reconciles_token_budget_for_follow_up_request ... ok
+test entrypoint::inference_usage_tests::managed_sse_without_usage_keeps_provisional_token_reservation_charged ... ok
+test entrypoint::native_response::tests::native_buffered_response_runs_compression_transform ... ok
+test entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model ... FAILED
+test entrypoint::platform_model_tests::paperloom_gateway_tests::api_job::actual_api_job_publishes_gateway_ocr_bytes ... ignored, requires an owned job root, pinned Paperloom API/source/Python and actual platform OCR
+test entrypoint::platform_model_tests::paperloom_gateway_tests::paperloom_guest_vsock_runs_real_pdf_ocr_without_network_egress ... ignored, requires an owned Box home, digest-pinned PaperLoom image, real HVF/KVM and A3S_PAPERLOOM_TEST_BOX_RUNTIME_TEST_BIN
+test entrypoint::platform_model_tests::paperloom_gateway_tests::paperloom_pdf_pages_use_authenticated_gateway_ocr ... ignored, requires A3S_PAPERLOOM_TEST_PYTHON with PyMuPDF and the installed platform OCR runtime
+test entrypoint::platform_model_tests::paperloom_gateway_tests::paperloom_private_unix_gateway_runs_real_ocr_with_endpoint_authorization ... ignored, requires the installed platform OCR runtime
+test entrypoint::platform_model_tests::paperloom_gateway_tests::paperloom_service_job_uses_real_gateway_ocr_and_retires_secrets ... ignored, requires a runner-owned RAM Secret root, Paperloom image and real HVF/KVM
+test entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route ... FAILED
+test entrypoint::platform_model_tests::signed_in_callers_use_platform_ocr_and_apofasi ... FAILED
+test entrypoint::platform_model_tests::supplier_binding_replaces_the_platform_model_until_removed ... FAILED
+test entrypoint::principal_inference_tests::principal_policies_still_require_valid_shape ... ok
+test entrypoint::principal_inference_tests::signed_in_users_reach_providers_on_the_native_wire ... ok
+test entrypoint::principal_inference_tests::targets_without_their_provider_key_are_never_called ... ok
+test entrypoint::protocol::body_buffer::tests::buffers_a_complete_body_within_the_limit ... ok
+test entrypoint::protocol::body_buffer::tests::replays_an_error_after_the_consumed_prefix ... ok
+test entrypoint::protocol::body_buffer::tests::replays_the_prefix_and_trailers_after_crossing_the_limit ... ok
+test entrypoint::protocol::tests::dial_failure_marks_backend_unhealthy_but_admission_does_not ... ok
+test entrypoint::protocol::tests::does_not_retry_non_retryable_errors ... ok
+test entrypoint::protocol::tests::retries_only_the_bounded_pre_response_failure ... ok
+test entrypoint::tests::acme_certificate_install_hot_swaps_live_https_acceptor ... ok
+test entrypoint::tests::acme_http01_challenge_is_served_from_runtime_store_before_routes ... ok
+test entrypoint::tests::activation_pending_route_answers_retry_after_and_records_demand ... ok
+test entrypoint::tests::active_health_check_evicts_backend_on_listener_then_readmits_when_healthy ... ok
+test entrypoint::tests::active_health_check_evicts_revision_only_backend_on_listener_then_readmits_when_healthy ... ok
+test entrypoint::tests::agent_search_route_forwards_authorized_calls_and_drops_the_caller_key ... ok
+test entrypoint::tests::an_idempotency_key_replays_the_saved_search_and_rejects_a_different_body ... ok
+test entrypoint::tests::body_limit_rejects_chunked_requests_before_backend_dispatch ... ok
+test entrypoint::tests::circuit_breaker_half_open_probe_closes_after_success_on_listener ... ok
+test entrypoint::tests::circuit_breaker_half_open_still_failing_reopens_on_listener ... ok
+test entrypoint::tests::disabled_access_logging_does_not_enqueue_entries ... ok
+test entrypoint::tests::disabled_tracing_does_not_create_a_request_context ... ok
+test entrypoint::tests::enabled_tracing_reuses_the_inbound_trace_id ... ok
+test entrypoint::tests::failover_backend_uses_backup_upstream_tls_service ... ok
+test entrypoint::tests::failover_routes_to_backup_on_listener_when_primary_unhealthy ... ok
+test entrypoint::tests::feature_free_openai_fast_path_preserves_validation_and_body ... ok
+test entrypoint::tests::feature_free_sse_fast_path_sets_forwarding_headers_once ... ok
+test entrypoint::tests::forward_auth_deny_returns_auth_status_on_listener_without_upstream_contact ... ok
+test entrypoint::tests::forward_auth_unreachable_returns_502_on_listener_without_upstream_contact ... ok
+test entrypoint::tests::gateway_runtime_replaces_the_snapshot_without_invalidating_readers ... ok
+test entrypoint::tests::grpc_proxy_error_emits_terminal_access_log ... ok
+test entrypoint::tests::grpc_stream_accounting_follows_the_response_body_lifetime ... ok
+test entrypoint::tests::held_request_is_rerouted_after_the_activated_snapshot_applies ... ok
+test entrypoint::tests::hold_is_bounded_and_ignores_snapshots_that_stay_pending ... ok
+test entrypoint::tests::http2_host_router_matches_uri_authority_when_host_header_is_absent ... ok
+test entrypoint::tests::http2_host_router_misses_when_uri_authority_does_not_match ... ok
+test entrypoint::tests::http_proxy_error_emits_terminal_access_log ... ok
+test entrypoint::tests::http_success_emits_backend_and_response_size ... ok
+test entrypoint::tests::listener_cancellation_tests::complete_post_connection_close_receives_delayed_response ... ok
+test entrypoint::tests::listener_cancellation_tests::fin_after_first_sse_frame_releases_upstream ... ok
+test entrypoint::tests::listener_cancellation_tests::rst_after_first_sse_frame_releases_upstream ... ok
+test entrypoint::tests::listener_cancellation_tests::write_half_close_cancels_completed_post_without_running_to_deadline ... ok
+test entrypoint::tests::managed_runtime_stops_admitting_traffic_at_snapshot_expiry ... ok
+test entrypoint::tests::managed_snapshot_expiry_rejects_new_requests_on_the_listener_with_503 ... ok
+test entrypoint::tests::managed_snapshot_expiry_rejects_new_tcp_connections_without_upstream ... ok
+test entrypoint::tests::managed_snapshot_expiry_rejects_new_udp_datagrams_without_upstream ... ok
+test entrypoint::tests::middleware_rejection_emits_router_without_backend ... ok
+test entrypoint::tests::no_route_emits_terminal_access_log ... ok
+test entrypoint::tests::openai_near_miss_path_retains_ordinary_proxy_semantics ... ok
+test entrypoint::tests::openai_profile_enforces_limit_for_chunked_requests ... ok
+test entrypoint::tests::openai_profile_forwards_valid_json_bytes_unchanged ... ok
+test entrypoint::tests::openai_profile_rejects_missing_or_invalid_models_before_backend_selection ... ok
+test entrypoint::tests::openai_profile_rejects_oversized_declared_length_without_reading_body ... ok
+test entrypoint::tests::openai_profile_returns_stable_content_type_and_json_errors ... ok
+test entrypoint::tests::openai_profile_runs_route_middleware_before_body_validation ... ok
+test entrypoint::tests::ordinary_http_fast_path_sets_forwarding_headers_once ... ok
+test entrypoint::tests::passive_health_half_open_recovery_readmits_traffic_after_recovery_time ... ok
+test entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold ... FAILED
+test entrypoint::tests::protocol_selection_keeps_revision_policy_authoritative ... ok
+test entrypoint::tests::request_host_authority_prefers_uri_authority_then_host_header ... ok
+test entrypoint::tests::requests_with_a_body_are_never_held ... ok
+test entrypoint::tests::reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route ... ok
+test entrypoint::tests::response_middleware_error_fails_closed_instead_of_returning_upstream_body ... ok
+test entrypoint::tests::response_middleware_error_fails_closed_on_grpc_listener_without_upstream_stream ... ok
+test entrypoint::tests::response_middleware_error_fails_closed_on_proxy_failure ... ok
+test entrypoint::tests::response_middleware_error_fails_closed_on_sse_listener_without_upstream_body ... ok
+test entrypoint::tests::sse_stream_emits_bytes_when_response_body_finishes ... ok
+test entrypoint::tests::sse_ttft_and_active_request_follow_the_body_lifetime ... ok
+test entrypoint::tests::static_bundle_listener_drains_inflight_get_across_runtime_replace ... ok
+test entrypoint::tests::static_bundle_listener_preserves_sealed_bytes_under_compress ... ok
+test entrypoint::tests::static_bundle_listener_serves_get_spa_and_honors_middleware ... ok
+test entrypoint::tests::sticky_session_cookie_pins_backend_on_listener ... ok
+test entrypoint::tests::sticky_session_cookie_pins_websocket_backend_on_listener ... ok
+test entrypoint::tests::test_invalid_address ... ok
+test entrypoint::tests::traffic_mirror_copies_buffered_request_to_shadow_on_listener ... ok
+test entrypoint::tests::traffic_mirror_primary_still_succeeds_when_shadow_unreachable_on_listener ... ok
+test entrypoint::tests::unix_listener_tests::unix_address_rejects_unsupported_policy_and_path_aliases ... ok
+test entrypoint::tests::unix_listener_tests::unix_gateway_reload_preserves_socket_and_rejects_unsafe_policy ... ok
+test entrypoint::tests::unix_listener_tests::unix_http_does_not_inherit_loopback_ip_permissions ... ok
+test entrypoint::tests::unix_listener_tests::unix_http_drains_inflight_response_before_shutdown ... ok
+test entrypoint::tests::unix_listener_tests::unix_http_keeps_auth_and_replaces_spoofed_forwarding_identity ... ok
+test entrypoint::tests::unix_listener_tests::unix_inference_requires_current_bearer_and_endpoint_grant ... ok
+test entrypoint::tests::unix_listener_tests::unix_socket_abort_removes_only_its_owned_inode ... ok
+test entrypoint::tests::unix_listener_tests::unix_socket_refuses_unsafe_parents_and_preserves_occupied_paths ... ok
+test entrypoint::tests::unix_listener_tests::unix_startup_rollback_retires_started_socket_without_removing_conflicting_file ... ok
+test entrypoint::tests::websocket_session_emits_when_relay_finishes ... ok
+test error::tests::json_error_body_escapes_message_contents ... ok
+test error::tests::test_error_display_agent ... ok
+test error::tests::test_error_display_buffer_timeout ... ok
+test error::tests::test_error_display_config ... ok
+test error::tests::test_error_display_discovery ... ok
+test error::tests::test_error_display_middleware_rejected ... ok
+test error::tests::test_error_display_no_route ... ok
+test error::tests::test_error_display_other ... ok
+test error::tests::test_error_display_scaling ... ok
+test error::tests::test_error_display_service_unavailable ... ok
+test error::tests::test_error_display_skill ... ok
+test error::tests::test_error_display_tls ... ok
+test error::tests::test_error_display_upstream_timeout ... ok
+test error::tests::test_error_display_upstream_transport ... ok
+test error::tests::test_error_from_io ... ok
+test error::tests::test_error_from_serde_json ... ok
+test error::tests::test_error_is_send_sync ... ok
+test error::tests::test_result_type_alias ... ok
+test gateway::autoscaling::tests::box_downscale_removes_backends_before_executor_call ... ok
+test gateway::autoscaling::tests::box_endpoint_observation_updates_the_live_backend_pool ... ok
+test gateway::autoscaling::tests::prepared_autoscaler_does_not_execute_before_start ... ok
+test gateway::autoscaling::tests::snapshot_includes_revision_backend_load ... ok
+test gateway::autoscaling::tests::snapshot_reports_real_backend_load_and_health ... ok
+test gateway::builders::tests::build_mirror_failover_fails_closed_when_failover_target_missing_from_registry ... ok
+test gateway::builders::tests::build_mirror_failover_fails_closed_when_mirror_target_missing_from_registry ... ok
+test gateway::builders::tests::build_pipeline_cache_rejects_acl_retry_plus_custom_retry_policy ... ok
+test gateway::builders::tests::build_sticky_managers_fails_closed_on_invalid_cookie_name ... ok
+test gateway::builders::tests::test_build_passive_health_empty ... ok
+test gateway::builders::tests::test_build_passive_health_with_services ... ok
+test gateway::builders::tests::test_build_pipeline_cache_empty ... ok
+test gateway::builders::tests::test_build_pipeline_cache_rejects_invalid_middleware ... ok
+test gateway::builders::tests::test_build_pipeline_cache_with_routers ... ok
+test gateway::builders::tests::test_build_route_plans_bind_runtime_objects ... ok
+test gateway::builders::tests::test_build_scaling_state_no_buffer_when_disabled ... ok
+test gateway::builders::tests::test_build_scaling_state_no_limiter_when_cc_zero ... ok
+test gateway::builders::tests::test_build_scaling_state_none_when_no_scaling ... ok
+test gateway::builders::tests::test_build_scaling_state_propagates_concurrency_to_revisions ... ok
+test gateway::builders::tests::test_build_scaling_state_with_revisions ... ok
+test gateway::builders::tests::test_build_scaling_state_with_scaling_config ... ok
+test gateway::builders::tests::test_build_sticky_managers_empty ... ok
+test gateway::builders::tests::test_build_sticky_managers_with_sticky_service ... ok
+test gateway::builders::tests::test_build_sticky_managers_without_sticky ... ok
+test gateway::mode_tests::cloud_managed_reload_accepts_static_traffic_changes ... ok
+test gateway::mode_tests::health_exposes_cloud_managed_mode ... ok
+test gateway::mode_tests::native_managed_bootstrap_rejects_inference_policy ... ok
+test gateway::mode_tests::native_managed_bootstrap_rejects_traffic_desired_state ... ok
+test gateway::mode_tests::reload_rejects_cloud_managed_to_standalone_transition ... ok
+test gateway::mode_tests::reload_rejects_standalone_to_cloud_managed_transition ... ok
+test gateway::startup::tests::changed_manual_value_is_not_removed_as_provider_owned ... ok
+test gateway::startup::tests::dynamic_provider_overlays_are_composed ... ok
+test gateway::startup::tests::stale_candidate_does_not_reclaim_a_removed_static_key ... ok
+test gateway::startup::tests::stale_provider_candidate_cannot_resurrect_manual_removal ... ok
+test gateway::startup::tests::static_entries_win_over_provider_candidates ... ok
+test gateway::tests::custom_middleware_must_be_registered_and_cannot_shadow_acl ... ok
+test gateway::tests::custom_middleware_registry_survives_configuration_reload ... ok
+test gateway::tests::gateway_new_fails_closed_on_a_usage_spool_identity_mismatch ... ok
+test gateway::tests::gateway_start_launches_cloud_ingest_uploader_when_configured ... ok
+test gateway::tests::gateway_start_opens_and_recovers_the_configured_usage_spool ... ok
+test gateway::tests::reload_adding_discovery_starts_poll_loop ... ok
+test gateway::tests::reload_disabling_acme_aborts_manager ... ok
+test gateway::tests::reload_removing_docker_aborts_provider_handles ... ok
+test gateway::tests::test_entrypoints_do_not_hot_swap_udp_entrypoints ... ok
+test gateway::tests::test_entrypoints_support_hot_swap_for_unchanged_http_entrypoints ... ok
+test gateway::tests::test_gateway_config ... ok
+test gateway::tests::test_gateway_config_with_discovery ... ok
+test gateway::tests::test_gateway_discovery_handle_initially_none ... ok
+test gateway::tests::test_gateway_double_shutdown ... ok
+test gateway::tests::test_gateway_health ... ok
+test gateway::tests::test_gateway_keeps_serving_when_the_management_plane_cannot_start ... FAILED
+test gateway::tests::test_gateway_metrics ... ok
+test gateway::tests::test_gateway_new ... ok
+test gateway::tests::test_gateway_new_invalid_config ... ok
+test gateway::tests::test_gateway_rejects_reload_before_start ... ok
+test gateway::tests::test_gateway_rejects_repeated_start ... ok
+test gateway::tests::test_gateway_rejects_start_after_shutdown ... ok
+test gateway::tests::test_gateway_shutdown ... ok
+test gateway::tests::test_gateway_shutdown_with_no_discovery ... ok
+test gateway::tests::test_gateway_start_tracks_docker_provider_handles ... ok
+test gateway::tests::test_reload_handle_updates_live_components ... ok
+test gateway::tests::test_state_transitions ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_cloud_ingest_bearer_env_unset ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_cloud_ingest_mtls_identity_missing ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_directory_is_not_writable ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_epoch_record_corrupt ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_has_untracked_file ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_locked ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_parent_unusable ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_prepared_epoch_corrupt ... ok
+test gateway::tests::validate_activation_fails_closed_when_usage_spool_recovery_artifact_is_a_directory ... ok
+test gateway::tests::with_middlewares_fails_closed_on_dual_retry_with_custom_policy ... ok
+test hosted_function_activation::parking_tests::parking_bounds_fail_closed ... ok
+test hosted_function_activation::parking_tests::parking_policy_clamps_to_the_platform_bounds ... ok
+test hosted_function_activation::tests::activation_bounds_are_validated ... ok
+test hosted_function_activation::tests::demand_expires_after_ttl ... ok
+test hosted_function_activation::tests::registry_is_bounded_and_drops_new_workloads_when_full ... ok
+test hosted_function_activation::tests::repeated_requests_accumulate_on_one_workload ... ok
+test inference::authorization::tests::access_errors_are_stable_and_do_not_contain_credentials ... ok
+test inference::authorization::tests::authenticates_and_enforces_endpoint_and_model_grants ... ok
+test inference::authorization::tests::authorization_types_are_send_and_sync ... ok
+test inference::authorization::tests::bounds_parallel_argon2_verification ... ok
+test inference::authorization::tests::canceled_callers_keep_argon2_permits_until_work_finishes ... ok
+test inference::authorization::tests::latency_bias_needs_two_samples_for_the_reference_too ... ok
+test inference::authorization::tests::latency_observations_warm_up_and_bias_clamps ... ok
+test inference::authorization::tests::policy_credential_and_revocation_expiry_fail_closed ... ok
+test inference::authorization::tests::rejects_missing_malformed_unknown_and_wrong_credentials ... ok
+test inference::authorization::tests::rejects_zero_weight_runtime_state_without_panicking ... ok
+test inference::authorization::tests::selects_weighted_targets_then_falls_back_by_priority ... ok
+test inference::cloud_worker_acl_render_contract_tests::cloud_rendered_aggregated_worker_acl_shape_is_accepted_by_gateway ... ok
+test inference::console_catalog::tests::origin_strips_version_paths ... ok
+test inference::console_catalog::tests::parse_accepts_the_contract_shape ... ok
+test inference::console_catalog::tests::parse_refuses_unknown_failover_and_protocol ... ok
+test inference::console_catalog::tests::prefix_affinity_catalog_descriptors_keep_target_identity ... ok
+test inference::console_catalog::tests::prefix_affinity_catalog_reload_keeps_identity_and_honors_disabling ... ok
+test inference::decision::tests::an_ordinal_round_trip_validates ... ok
+test inference::decision::tests::categorical_choices_and_refinements_validate_against_the_request ... ok
+test inference::decision::tests::structural_request_violations_refuse_fail_closed ... ok
+test inference::decision::tests::unknown_fields_and_wrong_shapes_refuse ... ok
+test inference::decision_cache::tests::a_continuation_reuses_the_frozen_decision ... ok
+test inference::decision_cache::tests::a_new_turn_or_rebuilt_history_misses ... ok
+test inference::decision_cache::tests::capacity_eviction_is_bounded_and_lossless_to_correctness ... ok
+test inference::decision_cache::tests::frozen_facts_carry_no_content_by_shape ... ok
+test inference::decision_cache::tests::stale_decisions_expire_and_re_decide ... ok
+test inference::decision_transport::tests::chunked_oversized_response_is_refused ... ok
+test inference::decision_transport::tests::decision_chat_strictly_validates_model_output ... ok
+test inference::decision_transport::tests::decision_protocol_is_closed_and_round_trips ... ok
+test inference::decision_transport::tests::declared_oversized_response_is_refused ... ok
+test inference::decision_transport::tests::native_contract_keeps_full_authorization_header ... ok
+test inference::decision_transport::tests::neural_chat_calls_configured_backend_without_gateway_recursion ... ok
+test inference::decision_transport::tests::oversized_turn_is_refused_before_send ... ok
+test inference::decision_transport::tests::redirects_are_refused_instead_of_forwarding_secrets ... ok
+test inference::decision_transport::tests::unicode_chat_uses_bounded_typed_document_without_truncation ... ok
+test inference::distributed_serving::client_tests::api_keys_are_bounded_visible_ascii_header_values ... ok
+test inference::distributed_serving::client_tests::client_does_not_follow_redirects_and_classifies_protocol_errors ... ok
+test inference::distributed_serving::client_tests::client_rejects_mismatched_binding_and_oversized_json ... ok
+test inference::distributed_serving::client_tests::client_types_are_send_and_sync ... ok
+test inference::distributed_serving::client_tests::missing_runtime_key_reports_only_the_configured_environment_name ... ok
+test inference::distributed_serving::client_tests::prepare_decode_uses_exact_path_auth_and_binding_without_logging_secrets ... ok
+test inference::distributed_serving::client_tests::version_and_binding_rejections_are_safe_pre_response_fallbacks ... ok
+test inference::distributed_serving::contract_tests::contract_types_are_send_and_sync ... ok
+test inference::distributed_serving::contract_tests::decode_prepare_fixture_matches_power_v1_and_redacts_prompt_content ... ok
+test inference::distributed_serving::contract_tests::decode_stream_fixture_is_strict_and_bound_to_one_execution ... ok
+test inference::distributed_serving::contract_tests::gateway_and_power_share_distributed_serving_schema_ids ... ok
+test inference::distributed_serving::contract_tests::opaque_transfer_values_round_trip_without_becoming_loggable_domain_state ... ok
+test inference::distributed_serving::contract_tests::recompute_reason_keeps_the_exact_power_wire_vocabulary ... ok
+test inference::distributed_serving::orchestrator_tests::buffered_response_rejects_data_after_the_completed_frame ... ok
+test inference::distributed_serving::orchestrator_tests::only_closed_pre_response_failures_are_retryable ... ok
+test inference::distributed_serving::orchestrator_tests::only_endpoint_failures_feed_backend_health_observers ... ok
+test inference::distributed_serving::orchestrator_tests::orchestrator_executes_three_phases_translates_buffered_output_and_cleans_both_workers ... ok
+test inference::distributed_serving::orchestrator_tests::streaming_response_is_backpressured_openai_sse_and_cleans_after_completion ... ok
+test inference::distributed_serving::orchestrator_tests::streaming_response_withholds_done_when_data_follows_completion ... ok
+test inference::distributed_serving::response_tests::buffered_translation_builds_one_openai_chat_response ... ok
+test inference::distributed_serving::response_tests::buffered_translation_counts_nonterminal_empty_chunks_like_power ... ok
+test inference::distributed_serving::response_tests::buffered_translation_omits_usage_when_power_reports_no_tokens ... ok
+test inference::distributed_serving::response_tests::decoder_handles_arbitrary_network_boundaries_and_enforces_terminal_sequence ... ok
+test inference::distributed_serving::response_tests::decoder_rejects_binding_and_sequence_changes ... ok
+test inference::distributed_serving::response_tests::streaming_translation_emits_openai_sse_and_rejects_endpoint_confusion ... ok
+test inference::fast_model::tests::extracts_model_from_chat_completion ... ok
+test inference::fast_model::tests::lightweight_request_round_trips_to_full ... ok
+test inference::fast_model::tests::returns_none_on_invalid_json ... ok
+test inference::fast_model::tests::returns_none_when_model_missing ... ok
+test inference::fast_model::tests::returns_none_when_model_not_string ... ok
+test inference::fast_model::tests::sse_assembler_handles_crlf ... ok
+test inference::fast_model::tests::sse_assembler_yields_complete_events ... ok
+test inference::identity::tests::attempts_are_unique_and_retain_one_request_and_target_identity ... ok
+test inference::identity::tests::gateway_identity_replaces_untrusted_headers_and_reaches_the_response ... ok
+test inference::identity::tests::identity_types_are_send_and_sync ... ok
+test inference::limits::tests::a_projected_baseline_seeds_the_spend_bucket_at_the_delta ... ok
+test inference::limits::tests::admission_guard_is_send_and_sync ... ok
+test inference::limits::tests::budgeted_grant_refuses_unpriced_model_at_runtime ... ok
+test inference::limits::tests::changed_policy_identity_starts_new_limit_state ... ok
+test inference::limits::tests::concurrency_is_held_until_each_guard_drops ... ok
+test inference::limits::tests::concurrency_rejection_refunds_token_reservation ... ok
+test inference::limits::tests::concurrency_rejection_still_consumes_an_authorized_request_token ... ok
+test inference::limits::tests::identical_policy_refresh_preserves_active_concurrency ... ok
+test inference::limits::tests::identical_policy_refresh_reuses_rate_state ... ok
+test inference::limits::tests::reconcile_after_admit_refunds_unused_tokens_for_later_requests ... ok
+test inference::limits::tests::request_bucket_defensively_rejects_a_zero_rate ... ok
+test inference::limits::tests::request_bucket_enforces_burst_and_exact_refill ... ok
+test inference::limits::tests::request_bucket_reports_ceiling_retry_after ... ok
+test inference::limits::tests::spend_reconcile_refunds_the_unused_reservation ... ok
+test inference::limits::tests::spend_reservation_charges_the_budget_and_rejects_past_it ... ok
+test inference::limits::tests::split_unknown_spend_reconcile_prices_conservatively ... ok
+test inference::limits::tests::token_budget_blocks_admission_when_exhausted ... ok
+test inference::limits::tests::token_budget_enforces_reservation_and_exact_refill ... ok
+test inference::limits::tests::token_budget_reconcile_charges_extra_tokens ... ok
+test inference::limits::tests::token_budget_reconcile_refunds_unused_reservation ... ok
+test inference::limits::tests::unbudgeted_grant_ignores_pricing_entirely ... ok
+test inference::limits::tests::unreconciled_reservation_remains_charged_after_drop ... ok
+test inference::limits::tests::unreconciled_spend_reservation_stays_charged ... ok
+test inference::native_wire::tests::anthropic_errors_use_the_sdk_shape ... ok
+test inference::native_wire::tests::marker_is_scoped_to_one_request ... ok
+test inference::native_wire::tests::openai_errors_use_the_sdk_shape ... ok
+test inference::observed_tokens::tests::empty_cell_reports_no_total_or_breakdown ... ok
+test inference::observed_tokens::tests::empty_observation_records_nothing ... ok
+test inference::observed_tokens::tests::partial_observation_without_total_keeps_breakdown_but_no_total ... ok
+test inference::observed_tokens::tests::record_publishes_every_observed_lane ... ok
+test inference::observed_tokens::tests::upstream_total_wins_over_derived_sum ... ok
+test inference::openai_request::message_annotations::tests::frontend_annotations_are_normalized_once_for_every_native_model_target ... ok
+test inference::openai_request::message_annotations::tests::malformed_messages_are_never_repaired_or_reinterpreted ... ok
+test inference::openai_request::message_annotations::tests::normalized_wire_body_still_obeys_the_fixed_byte_limit ... ok
+test inference::openai_request::message_annotations::tests::only_explicit_message_annotations_are_removed_and_normalization_is_idempotent ... ok
+test inference::openai_request::message_annotations::tests::ordinary_proxy_uses_the_same_normalized_message_history ... ok
+test inference::openai_request::message_annotations::tests::unannotated_requests_keep_original_bytes_and_unknown_fields ... ok
+test inference::openai_request::tests::accepts_json_media_type_parameters_and_preserves_bytes ... ok
+test inference::openai_request::tests::enforces_the_observed_body_limit ... ok
+test inference::openai_request::tests::estimates_token_reservation_from_input_and_completion_budget ... ok
+test inference::openai_request::tests::managed_dispatch_collapses_duplicate_model_fields ... ok
+test inference::openai_request::tests::managed_dispatch_scopes_prompt_cache_affinity_without_forwarding_the_raw_key ... ok
+test inference::openai_request::tests::matches_only_the_closed_endpoint_and_method_set ... ok
+test inference::openai_request::tests::only_completion_profiles_support_json_selected_streaming ... ok
+test inference::openai_request::tests::only_post_profiles_require_json_bodies ... ok
+test inference::openai_request::tests::proxy_validation_discards_unknown_fields_and_preserves_bytes ... ok
+test inference::openai_request::tests::proxy_validation_enforces_model_alias_bounds_without_rewriting ... ok
+test inference::openai_request::tests::proxy_validation_keeps_last_duplicate_field_semantics ... ok
+test inference::openai_request::tests::proxy_validation_preserves_shape_and_syntax_errors ... ok
+test inference::openai_request::tests::recognizes_only_a_boolean_true_stream_field ... ok
+test inference::openai_request::tests::rejects_ambiguous_or_unbounded_prompt_cache_keys ... ok
+test inference::openai_request::tests::rejects_an_oversized_declared_length_before_reading ... ok
+test inference::openai_request::tests::rejects_invalid_json_without_echoing_parser_details ... ok
+test inference::openai_request::tests::rejects_missing_or_non_json_content_type ... ok
+test inference::openai_request::tests::requires_a_json_object_with_a_bounded_model_alias ... ok
+test inference::openai_request::tests::rewrites_only_the_model_for_managed_dispatch ... ok
+test inference::openai_request::tests::stable_error_contract_maps_each_failure ... ok
+test inference::power_observation_contract_tests::gateway_and_power_share_the_same_worker_observation_schema_id ... ok
+test inference::power_observation_projection_tests::power_nested_observation_projects_into_gateway_flat_worker_and_schedules ... ok
+test inference::prefix_affinity::tests::appended_history_reuses_the_longest_prefix_without_retaining_prompts ... ok
+test inference::prefix_affinity::tests::bounded_hashing_lru_and_ttl_survive_adversarial_unique_prompts ... ok
+test inference::prefix_affinity::tests::busy_owner_yields_and_cold_traffic_uses_the_least_loaded_set ... ok
+test inference::prefix_affinity::tests::credentials_models_endpoints_and_process_salts_never_share_hints ... ok
+test inference::prefix_affinity::tests::declared_parallel_slots_keep_a_busy_warm_owner_when_another_slot_is_free ... ok
+test inference::prefix_affinity::tests::expired_removed_or_replaced_targets_cannot_supply_a_hint ... ok
+test inference::prefix_affinity::tests::explicit_cache_namespaces_remain_separate_and_a_clone_retains_locality ... ok
+test inference::prefix_affinity::tests::measured_cost_prefers_faster_prefill_and_expires_without_rewriting_accounting ... ok
+test inference::prefix_affinity::tests::native_cache_miss_invalidates_prior_hints_and_invalid_rates_do_not_train ... ok
+test inference::prefix_affinity::tests::replay_annotations_and_sampling_do_not_break_locality_but_tool_arguments_do ... ok
+test inference::prefix_affinity::tests::reservations_release_on_drop_and_count_before_connections_open ... ok
+test inference::prefix_affinity::tests::small_common_headers_do_not_pin_unrelated_long_prompts ... ok
+test inference::prefix_affinity::tests::token_work_budget_can_beat_request_count_but_never_the_load_band ... ok
+test inference::prefix_feedback::tests::fragmented_crlf_multiline_sse_requires_finish_done_and_clean_eof ... ok
+test inference::prefix_feedback::tests::missing_terminal_errors_unknown_finish_and_oversized_observations_stay_cold ... ok
+test inference::prefix_feedback::tests::only_consistent_upstream_extension_trains_costs ... ok
+test inference::prefix_feedback::tests::pass_through_completion_error_and_drop_own_the_lease ... ok
+test inference::principal::tests::missing_credential_is_unauthorized_without_calling_verify ... ok
+test inference::principal::tests::shared_token_admits_matches_the_configured_token ... ok
+test inference::principal::tests::shared_token_skips_verify ... ok
+test inference::principal::tests::token_accepts_bearer_or_x_api_key ... ok
+test inference::principal::tests::token_rejects_missing_conflicting_or_malformed_credentials ... ok
+test inference::routing::tests::branches_choose_by_category_and_degree ... ok
+test inference::routing::tests::effective_targets_level_the_window_into_a_relay_tail ... ok
+test inference::routing::tests::free_first_keeps_the_declared_order_under_per_model_pricing ... ok
+test inference::routing::tests::no_plan_is_todays_behavior ... ok
+test inference::routing::tests::smart_saving_routes_by_probability_and_fails_closed ... ok
+test inference::routing::tests::turn_identity_binds_to_the_last_user_message_and_history ... ok
+test inference::scheduling::tests::cache_affinity_is_deterministic_inside_the_low_load_band ... ok
+test inference::scheduling::tests::distributed_selection_fails_closed_on_profile_transfer_or_distinctness ... ok
+test inference::scheduling::tests::distributed_selection_returns_distinct_prefill_and_decode_bindings ... ok
+test inference::scheduling::tests::pool_queue_is_bounded_and_reused_across_snapshot_refresh ... ok
+test inference::scheduling::tests::pool_queue_timeout_and_cancellation_release_capacity ... ok
+test inference::scheduling::tests::scheduling_types_are_send_and_sync ... ok
+test inference::scheduling::tests::selection_filters_exact_identity_phase_expiry_health_and_capacity ... ok
+test inference::service_meter_tests::anonymous_and_address_shaped_suppliers_are_refused ... ok
+test inference::service_meter_tests::api_and_mcp_are_their_own_classes ... ok
+test inference::service_meter_tests::signed_in_user_can_call_every_standard ... ok
+test inference::service_meter_tests::success_bills_one_call_and_failure_stays_a_statistic ... ok
+test inference::standards_tests::admission_admits_openai_core_and_audio ... ok
+test inference::standards_tests::catalog_is_the_closed_plan ... ok
+test inference::standards_tests::companion_routes_stay_on_their_standard ... ok
+test inference::standards_tests::model_name_placement_follows_the_route ... ok
+test inference::standards_tests::only_the_decision_standard_has_question_types ... ok
+test inference::standards_tests::parse_roundtrips_and_names_the_closed_set ... ok
+test inference::standards_tests::routes_are_fixed_and_unique ... ok
+test inference::supplier_keys::tests::matches_the_supplier_name_to_the_service_and_ignores_a_missing_one ... ok
+test inference::supplier_keys::tests::parses_the_console_envelope_and_drops_nothing_named ... ok
+test inference::token_reconcile::tests::observes_json_usage_after_body_exceeds_prefix_budget ... ok
+test inference::token_reconcile::tests::observes_sse_usage_after_prefix_larger_than_json_buffer ... ok
+test inference::token_reconcile::tests::observes_sse_usage_split_across_frames ... ok
+test inference::token_reconcile::tests::parses_anthropic_json_usage ... ok
+test inference::token_reconcile::tests::parses_anthropic_sse_usage_across_start_and_delta ... ok
+test inference::token_reconcile::tests::parses_json_usage_total_tokens ... ok
+test inference::token_reconcile::tests::parses_json_usage_without_total_field ... ok
+test inference::token_reconcile::tests::parses_openai_cache_and_reasoning_details ... ok
+test inference::token_reconcile::tests::parses_sse_usage_from_last_data_line ... ok
+test inference::token_reconcile::tests::sink_records_the_full_token_split ... ok
+test inference::token_reconcile::tests::total_only_usage_leaves_split_lanes_unknown ... ok
+test inference::tokenizer::tests::adjacent_cjk_and_latin_do_not_merge_counts ... ok
+test inference::tokenizer::tests::cjk_characters_are_one_token_each ... ok
+test inference::tokenizer::tests::emoji_and_non_cjk_multibyte_use_byte_quarters ... ok
+test inference::tokenizer::tests::empty_and_whitespace_are_zero ... ok
+test inference::tokenizer::tests::latin_runs_use_byte_quarters ... ok
+test inference::tokenizer::tests::mixed_scripts_compose ... ok
+test inference::tokenizer::tests::revision_is_stable ... ok
+test inference::tokenizer_revision_contract_tests::gateway_and_cloud_share_the_same_inference_tokenizer_revision ... ok
+test inference::usage_report::tests::a_client_org_is_only_a_hint ... ok
+test inference::usage_report::tests::an_empty_org_is_omitted ... ok
+test inference::usage_report::tests::an_empty_url_does_not_need_a_runtime ... ok
+test inference::usage_report::tests::only_429_and_5xx_are_retried ... ok
+test inference::usage_report::tests::the_platform_account_receives_shared_usage ... ok
+test inference::work_envelope::tests::err_envelope_carries_work_connect_error_code ... ok
+test inference::work_envelope::tests::ok_envelope_puts_payload_in_data ... ok
+test inference::work_envelope::tests::wrap_json_success_body_nests_openai_payload ... ok
+test inference::work_envelope::tests::wrap_json_success_body_skips_existing_envelope ... ok
+test managed_service::tests::broadly_readable_managed_service_state_fails_gateway_construct_closed ... ok
+test managed_service::tests::corrupt_managed_service_state_fails_gateway_construct_closed ... ok
+test managed_service::tests::lifecycle::base_reload_cannot_move_an_owned_managed_service_entrypoint ... ok
+test managed_service::tests::lifecycle::completed_drain_accepts_a_new_retirement_operation_before_remove ... ok
+test managed_service::tests::lifecycle::drain_hides_then_waits_for_the_exact_admitted_grpc_stream ... ok
+test managed_service::tests::lifecycle::drain_hides_then_waits_for_the_exact_admitted_sse_stream ... ok
+test managed_service::tests::lifecycle::drain_hides_then_waits_for_the_exact_admitted_stream ... ok
+test managed_service::tests::lifecycle::drain_hides_then_waits_for_the_exact_admitted_websocket ... ok
+test managed_service::tests::lifecycle::exact_bind_health_and_replay_use_the_real_gateway_route ... ok
+test managed_service::tests::lifecycle::health_verification_obeys_the_lifecycle_deadline ... ok
+test managed_service::tests::lifecycle::managed_snapshot_reload_preserves_the_managed_service_overlay ... ok
+test managed_service::tests::lifecycle::ordinary_base_reload_preserves_the_managed_service_overlay ... ok
+test managed_service::tests::lifecycle::replay_with_changed_exact_identity_fails_without_replacing_the_route ... ok
+test managed_service::tests::lifecycle::restart_preserves_draining_route_for_exact_drain_replay ... ok
+test managed_service::tests::lifecycle::restart_restores_the_route_and_replay_preserves_binding_identity ... ok
+test managed_service::tests::lifecycle::shutdown_prevents_a_late_readiness_commit ... ok
+test managed_service::tests::lifecycle::stale_generation_cannot_remove_a_newer_binding ... ok
+test managed_service::tests::lifecycle::timed_out_drain_retains_the_admitted_generation_for_exact_replay ... ok
+test managed_service::tests::linked_managed_service_state_fails_gateway_construct_closed ... ok
+test managed_service::tests::managed_service_paths_must_be_valid_http_uri_paths ... ok
+test managed_service::tests::managed_service_public_contracts_are_send_and_sync ... ok
+test managed_service::tests::managed_service_state_cannot_overlap_the_snapshot_journal ... ok
+test managed_service::tests::managed_service_state_requires_an_absolute_file_path ... ok
+test managed_service::tests::managed_service_upstream_cannot_recurse_into_its_gateway_entrypoint ... ok
+test managed_service::tests::maximum_priority_base_router_cannot_shadow_a_managed_route ... ok
+test managed_service::tests::one_gateway_exclusively_owns_the_managed_service_state ... ok
+test managed_service::tests::ready_binding_max_priority_base_router_fails_gateway_construct_closed ... ok
+test managed_service::tests::ready_binding_missing_entrypoint_fails_gateway_construct_closed ... ok
+test managed_service::tests::ready_binding_with_targets_starts_gateway_closed_aligned ... ok
+test managed_service::tests::retiring_state_without_the_exact_drain_key_fails_construct_closed ... ok
+test managed_service::tests::with_managed_service_state_fails_construct_when_owner_lock_held ... ok
+test managed_snapshot::tests::concurrent_applies_are_serialized_by_revision ... ok
+test managed_snapshot::tests::corrupt_durable_journal_fails_closed ... ok
+test managed_snapshot::tests::credential_successor_snapshot_revokes_prior_key_atomically ... ok
+test managed_snapshot::tests::digest_is_over_exact_acl_bytes ... ok
+test managed_snapshot::tests::durable_applied_snapshot_recovers_and_replays_without_reload ... ok
+test managed_snapshot::tests::durable_journal_is_owner_readable_and_writable_only ... ok
+test managed_snapshot::tests::durable_recovery_rejects_group_or_world_accessible_journal ... ok
+test managed_snapshot::tests::durable_recovery_rejects_identity_digest_and_expiry_mismatches ... ok
+test managed_snapshot::tests::durable_snapshot_cannot_change_the_bootstrap_state_file ... ok
+test managed_snapshot::tests::empty_worker_successor_is_rejected_with_prior_scheduled_runtime_retained ... ok
+test managed_snapshot::tests::exact_readiness_ends_at_snapshot_expiry ... ok
+test managed_snapshot::tests::exact_replay_does_not_reload ... ok
+test managed_snapshot::tests::expected_revision_cas_rejects_stale_credential_bearing_successor ... ok
+test managed_snapshot::tests::grant_successor_snapshot_clears_grants_without_revoking_credential ... ok
+test managed_snapshot::tests::inference_policy_expiry_must_match_the_atomic_managed_snapshot ... ok
+test managed_snapshot::tests::managed_snapshot_debug_redacts_acl_content ... ok
+test managed_snapshot::tests::managed_snapshot_types_are_send_and_sync ... ok
+test managed_snapshot::tests::post_reload_storage_failure_restores_the_prior_runtime_and_journal ... ok
+test managed_snapshot::tests::post_reload_storage_failure_rolls_runtime_back_and_disables_readiness ... ok
+test managed_snapshot::tests::prepared_journal_is_completed_only_after_recovery ... ok
+test managed_snapshot::tests::selector_requires_all_exact_identity_fields ... ok
+test managed_snapshot::tests::stale_worker_successor_is_rejected_with_prior_scheduled_runtime_retained ... ok
+test managed_snapshot::tests::target_successor_snapshot_withdraws_primary_with_fallback_retained ... ok
+test managed_snapshot::tests::unknown_tokenizer_revision_successor_is_rejected_with_prior_runtime_retained ... ok
+test managed_snapshot::tests::validate_activation_fails_closed_on_corrupt_managed_snapshot_journal ... ok
+test managed_snapshot::tests::validate_activation_fails_closed_when_managed_snapshot_journal_parent_unusable ... ok
+test middleware::auth::tests::test_api_key_header_must_be_valid ... ok
+test middleware::auth::tests::test_api_key_invalid ... ok
+test middleware::auth::tests::test_api_key_missing ... ok
+test middleware::auth::tests::test_api_key_requires_keys ... ok
+test middleware::auth::tests::test_api_key_valid ... ok
+test middleware::auth::tests::test_auth_middleware_name ... ok
+test middleware::auth::tests::test_basic_auth_invalid ... ok
+test middleware::auth::tests::test_basic_auth_missing_header ... ok
+test middleware::auth::tests::test_basic_auth_requires_password ... ok
+test middleware::auth::tests::test_basic_auth_requires_username ... ok
+test middleware::auth::tests::test_basic_auth_valid ... ok
+test middleware::auth::tests::test_basic_credentials_use_strict_base64 ... ok
+test middleware::body_limit::tests::test_body_limit_max_bytes ... ok
+test middleware::body_limit::tests::test_body_limit_name ... ok
+test middleware::body_limit::tests::test_from_config ... ok
+test middleware::body_limit::tests::test_request_exact_limit ... ok
+test middleware::body_limit::tests::test_request_exceeds_limit ... ok
+test middleware::body_limit::tests::test_request_no_content_length ... ok
+test middleware::body_limit::tests::test_request_within_limit ... ok
+test middleware::body_limit::tests::test_requires_max_body_bytes ... ok
+test middleware::body_limit::tests::test_response_body_413_includes_limit ... ok
+test middleware::body_limit::tests::test_zero_bytes_config_rejected ... ok
+test middleware::body_limit::tests::test_zero_bytes_rejected ... ok
+test middleware::circuit_breaker::tests::abandoned_half_open_probe_restarts_cooldown ... ok
+test middleware::circuit_breaker::tests::half_open_allows_exactly_one_concurrent_probe ... ok
+test middleware::circuit_breaker::tests::invalid_zero_thresholds_and_cooldown_are_rejected ... ok
+test middleware::circuit_breaker::tests::late_closed_generation_outcomes_do_not_mutate_open_or_half_open_state ... ok
+test middleware::circuit_breaker::tests::late_closed_generation_response_cannot_close_a_new_probe ... ok
+test middleware::circuit_breaker::tests::request_tokens_support_multiple_half_open_successes ... ok
+test middleware::circuit_breaker::tests::test_circuit_state_default ... ok
+test middleware::circuit_breaker::tests::test_circuit_state_display ... ok
+test middleware::circuit_breaker::tests::test_circuit_state_serialization ... ok
+test middleware::circuit_breaker::tests::test_default_config ... ok
+test middleware::circuit_breaker::tests::test_failure_count ... ok
+test middleware::circuit_breaker::tests::test_half_open_closes_on_success ... ok
+test middleware::circuit_breaker::tests::test_half_open_reopens_on_failure ... ok
+test middleware::circuit_breaker::tests::test_higher_success_threshold ... ok
+test middleware::circuit_breaker::tests::test_initial_allow_request ... ok
+test middleware::circuit_breaker::tests::test_initial_state_closed ... ok
+test middleware::circuit_breaker::tests::test_manual_reset ... ok
+test middleware::circuit_breaker::tests::test_middleware_allows_when_closed ... ok
+test middleware::circuit_breaker::tests::test_middleware_name ... ok
+test middleware::circuit_breaker::tests::test_middleware_rejects_when_open ... ok
+test middleware::circuit_breaker::tests::test_opens_at_threshold ... ok
+test middleware::circuit_breaker::tests::test_stays_closed_below_threshold ... ok
+test middleware::circuit_breaker::tests::test_success_resets_failure_count ... ok
+test middleware::circuit_breaker::tests::test_transitions_to_half_open_after_cooldown ... ok
+test middleware::circuit_breaker::tests::test_upstream_4xx_is_success ... ok
+test middleware::circuit_breaker::tests::test_upstream_5xx_records_failure ... ok
+test middleware::circuit_breaker::tests::test_upstream_5xx_trips_breaker ... ok
+test middleware::circuit_breaker::tests::test_upstream_success_resets_failures ... ok
+test middleware::circuit_breaker::tests::test_with_defaults ... ok
+test middleware::compress::tests::test_brotli_compress ... ok
+test middleware::compress::tests::test_brotli_compress_empty ... ok
+test middleware::compress::tests::test_brotli_compress_large_data ... ok
+test middleware::compress::tests::test_brotli_quality_clamped ... ok
+test middleware::compress::tests::test_brotli_vs_gzip_size ... ok
+test middleware::compress::tests::test_buffered_response_is_compressed_and_representation_headers_are_rebuilt ... ok
+test middleware::compress::tests::test_compress_empty_data ... ok
+test middleware::compress::tests::test_compress_large_data ... ok
+test middleware::compress::tests::test_compression_levels ... ok
+test middleware::compress::tests::test_custom_config ... ok
+test middleware::compress::tests::test_default_config ... ok
+test middleware::compress::tests::test_default_impl ... ok
+test middleware::compress::tests::test_deflate_uses_the_http_zlib_coding ... ok
+test middleware::compress::tests::test_encoding_display ... ok
+test middleware::compress::tests::test_encoding_header_values ... ok
+test middleware::compress::tests::test_gzip_compress_decompress ... ok
+test middleware::compress::tests::test_gzip_quality_is_clamped ... ok
+test middleware::compress::tests::test_identity_no_compression ... ok
+test middleware::compress::tests::test_is_compressible_case_insensitive ... ok
+test middleware::compress::tests::test_is_compressible_javascript ... ok
+test middleware::compress::tests::test_is_compressible_json ... ok
+test middleware::compress::tests::test_is_compressible_svg ... ok
+test middleware::compress::tests::test_is_compressible_text ... ok
+test middleware::compress::tests::test_is_compressible_xml ... ok
+test middleware::compress::tests::test_middleware_name ... ok
+test middleware::compress::tests::test_negotiate_brotli ... ok
+test middleware::compress::tests::test_negotiate_brotli_preferred_over_gzip ... ok
+test middleware::compress::tests::test_negotiate_case_insensitive ... ok
+test middleware::compress::tests::test_negotiate_deflate ... ok
+test middleware::compress::tests::test_negotiate_empty ... ok
+test middleware::compress::tests::test_negotiate_gzip ... ok
+test middleware::compress::tests::test_negotiate_gzip_preferred ... ok
+test middleware::compress::tests::test_negotiate_honors_quality_before_server_preference ... ok
+test middleware::compress::tests::test_negotiate_identity ... ok
+test middleware::compress::tests::test_negotiate_rejects_zero_quality_and_substring_matches ... ok
+test middleware::compress::tests::test_negotiate_wildcard_respects_explicit_exclusion ... ok
+test middleware::compress::tests::test_no_transform_response_is_not_compressed ... ok
+test middleware::compress::tests::test_not_compressible_binary ... ok
+test middleware::compress::tests::test_request_passthrough ... ok
+test middleware::compress::tests::test_response_already_encoded_skipped ... ok
+test middleware::compress::tests::test_response_body_preparation_is_bounded_and_preserves_variance ... ok
+test middleware::compress::tests::test_zero_quality_preserves_identity_and_sets_vary ... ok
+test middleware::cors::tests::invalid_cors_values_are_rejected ... ok
+test middleware::cors::tests::response_omits_cors_header_for_disallowed_origin ... ok
+test middleware::cors::tests::response_uses_the_request_origin_for_multiple_allowed_origins ... ok
+test middleware::cors::tests::test_cors_defaults ... ok
+test middleware::cors::tests::test_cors_name ... ok
+test middleware::cors::tests::test_cors_non_preflight_passthrough ... ok
+test middleware::cors::tests::test_cors_preflight_allowed ... ok
+test middleware::cors::tests::test_cors_preflight_denied ... ok
+test middleware::cors::tests::test_cors_response_headers ... ok
+test middleware::cors::tests::test_cors_wildcard_origin ... ok
+test middleware::fallback::tests::fallback_short_circuits_with_configured_body ... ok
+test middleware::forward_auth::tests::probe_activation_accepts_reachable_auth_service ... ok
+test middleware::forward_auth::tests::probe_activation_rejects_unreachable_auth_service ... ok
+test middleware::forward_auth::tests::test_auth_rejected_401 ... ok
+test middleware::forward_auth::tests::test_auth_rejected_403 ... ok
+test middleware::forward_auth::tests::test_auth_response_replaces_and_clears_client_identity_headers ... ok
+test middleware::forward_auth::tests::test_auth_service_unreachable ... ok
+test middleware::forward_auth::tests::test_auth_success_200 ... ok
+test middleware::forward_auth::tests::test_auth_url_rejects_non_http_and_embedded_credentials ... ok
+test middleware::forward_auth::tests::test_does_not_forward_client_supplied_forwarding_headers ... ok
+test middleware::forward_auth::tests::test_empty_config_url_rejected ... ok
+test middleware::forward_auth::tests::test_empty_url_rejected ... ok
+test middleware::forward_auth::tests::test_forward_auth_name ... ok
+test middleware::forward_auth::tests::test_forward_auth_url ... ok
+test middleware::forward_auth::tests::test_forwards_method_and_uri ... ok
+test middleware::forward_auth::tests::test_from_config ... ok
+test middleware::forward_auth::tests::test_no_headers_copied_when_empty ... ok
+test middleware::forward_auth::tests::test_requires_auth_url ... ok
+test middleware::forward_auth::tests::test_response_header_allowlist_rejects_hop_by_hop_and_invalid_names ... ok
+test middleware::forward_auth::tests::validate_dedupes_shared_auth_urls ... ok
+test middleware::headers::tests::compatibility_constructor_does_not_silently_drop_invalid_headers ... ok
+test middleware::headers::tests::invalid_header_configuration_is_rejected ... ok
+test middleware::headers::tests::request_header_reads_an_environment_variable ... ok
+test middleware::headers::tests::test_add_request_headers ... ok
+test middleware::headers::tests::test_add_response_headers ... ok
+test middleware::headers::tests::test_empty_headers_passthrough ... ok
+test middleware::headers::tests::test_headers_name ... ok
+test middleware::ip_allow::tests::test_cidr_allowed ... ok
+test middleware::ip_allow::tests::test_cidr_denied ... ok
+test middleware::ip_allow::tests::test_empty_list_rejected ... ok
+test middleware::ip_allow::tests::test_invalid_cidr_rejected ... ok
+test middleware::ip_allow::tests::test_invalid_ip_denied ... ok
+test middleware::ip_allow::tests::test_invalid_single_ip_rejected ... ok
+test middleware::ip_allow::tests::test_ip_allow_name ... ok
+test middleware::ip_allow::tests::test_ipv6_cidr ... ok
+test middleware::ip_allow::tests::test_ipv6_single ... ok
+test middleware::ip_allow::tests::test_mixed_allow_list ... ok
+test middleware::ip_allow::tests::test_multiple_single_ips ... ok
+test middleware::ip_allow::tests::test_request_allowed ... ok
+test middleware::ip_allow::tests::test_request_denied ... ok
+test middleware::ip_allow::tests::test_single_ip_allowed ... ok
+test middleware::ip_allow::tests::test_single_ip_denied ... ok
+test middleware::ip_matcher::tests::test_cidr_match ... ok
+test middleware::ip_matcher::tests::test_empty_matcher ... ok
+test middleware::ip_matcher::tests::test_invalid_cidr_rejected ... ok
+test middleware::ip_matcher::tests::test_invalid_ip_not_allowed ... ok
+test middleware::ip_matcher::tests::test_invalid_single_ip_rejected ... ok
+test middleware::ip_matcher::tests::test_ipv6 ... ok
+test middleware::ip_matcher::tests::test_is_empty_false ... ok
+test middleware::ip_matcher::tests::test_mixed_entries ... ok
+test middleware::ip_matcher::tests::test_single_ip_match ... ok
+test middleware::jwt_auth::tests::configured_hmac_algorithm_is_validated ... ok
+test middleware::jwt_auth::tests::test_claims_serialization ... ok
+test middleware::jwt_auth::tests::test_extract_bearer_token ... ok
+test middleware::jwt_auth::tests::test_extract_raw_token ... ok
+test middleware::jwt_auth::tests::test_from_config ... ok
+test middleware::jwt_auth::tests::test_from_config_custom_header ... ok
+test middleware::jwt_auth::tests::test_from_config_empty_secret ... ok
+test middleware::jwt_auth::tests::test_from_config_missing_secret ... ok
+test middleware::jwt_auth::tests::test_from_secret_empty ... ok
+test middleware::jwt_auth::tests::test_invalid_header_name_is_rejected ... ok
+test middleware::jwt_auth::tests::test_jwt_name ... ok
+test middleware::jwt_auth::tests::test_request_missing_header ... ok
+test middleware::jwt_auth::tests::test_request_with_expired_token ... ok
+test middleware::jwt_auth::tests::test_request_with_valid_token ... ok
+test middleware::jwt_auth::tests::test_request_wrong_secret ... ok
+test middleware::jwt_auth::tests::test_validate_empty_token ... ok
+test middleware::jwt_auth::tests::test_validate_expired_token ... ok
+test middleware::jwt_auth::tests::test_validate_malformed_token ... ok
+test middleware::jwt_auth::tests::test_validate_valid_token ... ok
+test middleware::jwt_auth::tests::test_validate_wrong_secret ... ok
+test middleware::rate_limit::tests::test_rate_limit_429_has_retry_after ... ok
+test middleware::rate_limit::tests::test_rate_limit_allows_within_burst ... ok
+test middleware::rate_limit::tests::test_rate_limit_default_burst ... ok
+test middleware::rate_limit::tests::test_rate_limit_deterministic_refill ... ok
+test middleware::rate_limit::tests::test_rate_limit_isolates_clients ... ok
+test middleware::rate_limit::tests::test_rate_limit_refills_over_time ... ok
+test middleware::rate_limit::tests::test_rate_limit_rejects_over_burst ... ok
+test middleware::rate_limit::tests::test_rate_limit_rejects_zero_rate_or_burst ... ok
+test middleware::rate_limit::tests::test_rate_limit_requires_rate ... ok
+test middleware::rate_limit::tests::test_token_bucket_basic ... ok
+test middleware::rate_limit::tests::test_token_bucket_burst_cap ... ok
+test middleware::rate_limit::tests::test_token_bucket_exhaustion ... ok
+test middleware::retry::tests::test_retry_bounds_are_rejected ... ok
+test middleware::retry::tests::test_retry_config_defaults ... ok
+test middleware::retry::tests::test_retry_does_not_mutate_request_headers ... ok
+test middleware::retry::tests::test_retry_from_config ... ok
+test middleware::retry::tests::test_retry_name ... ok
+test middleware::retry::tests::test_retry_passthrough ... ok
+test middleware::retry::tests::test_retry_policy_defaults ... ok
+test middleware::retry::tests::test_retry_policy_serialization ... ok
+test middleware::retry::tests::test_retry_zero_retries_rejected ... ok
+test middleware::strip_prefix::tests::invalid_prefixes_are_rejected ... ok
+test middleware::strip_prefix::tests::test_strip_prefix ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_exact ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_first_match_wins ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_name ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_no_match ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_preserves_query ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_requires_a_path_segment_boundary ... ok
+test middleware::strip_prefix::tests::test_strip_prefix_wildcard_segment ... ok
+test middleware::tcp_filter::tests::reconfigured_filter_preserves_active_connection_count ... ok
+test middleware::tcp_filter::tests::test_combined_ip_and_limit ... ok
+test middleware::tcp_filter::tests::test_connection_limit ... ok
+test middleware::tcp_filter::tests::test_invalid_ip_entries_rejected ... ok
+test middleware::tcp_filter::tests::test_ip_allowed ... ok
+test middleware::tcp_filter::tests::test_ip_denied ... ok
+test middleware::tcp_filter::tests::test_limit_one ... ok
+test middleware::tcp_filter::tests::test_multiple_permits_concurrent ... ok
+test middleware::tcp_filter::tests::test_no_filter ... ok
+test middleware::tcp_filter::tests::test_no_ip_filter_accepts_all ... ok
+test middleware::tcp_filter::tests::test_permit_decrements_on_drop ... ok
+test middleware::tests::buffered_transforms_observe_completed_response_header_middleware ... ok
+test middleware::tests::custom_registry_builds_an_executable_route_pipeline ... ok
+test middleware::tests::custom_registry_rejects_invalid_and_duplicate_names ... ok
+test middleware::tests::pipeline_exposes_the_smallest_request_body_limit ... ok
+test middleware::tests::test_circuit_breaker_allows_when_closed ... ok
+test middleware::tests::test_empty_pipeline ... ok
+test middleware::tests::test_empty_pipeline_passthrough ... ok
+test middleware::tests::test_pipeline_circuit_breaker_custom_config ... ok
+test middleware::tests::test_pipeline_circuit_breaker_default_config ... ok
+test middleware::tests::test_pipeline_from_config ... ok
+test middleware::tests::test_pipeline_from_config_body_limit ... ok
+test middleware::tests::test_pipeline_from_config_compress ... ok
+test middleware::tests::test_pipeline_from_config_fallback ... ok
+test middleware::tests::test_pipeline_from_config_headers ... ok
+test middleware::tests::test_pipeline_from_config_ip_allow ... ok
+test middleware::tests::test_pipeline_from_config_jwt ... ok
+test middleware::tests::test_pipeline_from_config_retry ... ok
+test middleware::tests::test_pipeline_from_config_strip_prefix ... ok
+test middleware::tests::test_pipeline_is_empty ... ok
+test middleware::tests::test_pipeline_len ... ok
+test middleware::tests::test_pipeline_process_response ... ok
+test middleware::tests::test_pipeline_unknown_middleware_name ... ok
+test middleware::tests::test_pipeline_unknown_middleware_type ... ok
+test node_api::tests::activation_demand_body_lists_unexpired_demand_in_camel_case ... ok
+test node_api::tests::disabled_node_api_policy_cannot_be_prepared ... ok
+test node_api::tests::node_api_exposes_version ... ok
+test node_api::tests::node_api_health_exposes_the_durable_usage_spool ... ok
+test node_api::tests::node_api_matches_only_the_configured_path_boundary ... ok
+test node_api::tests::node_api_policy_reconfiguration_is_prepared_and_published_atomically ... ok
+test node_api::tests::node_api_rejects_operator_endpoints ... ok
+test node_api::tests::node_api_root_prefix_routes_management_subpaths ... ok
+test node_api::tests::version_info_identifies_the_machine_contract ... ok
+test observability::access_log::tests::access_log_guard_emits_on_drop_with_streamed_byte_count ... ok
+test observability::access_log::tests::access_log_request_state_is_send_and_sync ... ok
+test observability::access_log::tests::request_access_log_enriches_and_emits_one_entry ... ok
+test observability::access_log::tests::test_access_log_count ... ok
+test observability::access_log::tests::test_access_log_count_only ... ok
+test observability::access_log::tests::test_access_log_default ... ok
+test observability::access_log::tests::test_access_log_total_entries ... ok
+test observability::access_log::tests::test_entry_all_status_codes ... ok
+test observability::access_log::tests::test_entry_serialization ... ok
+test observability::access_log::tests::test_entry_with_none_fields ... ok
+test observability::access_log::tests::test_request_tracker_build_entry ... ok
+test observability::access_log::tests::test_request_tracker_elapsed ... ok
+test observability::access_log::tests::test_request_tracker_elapsed_increases ... ok
+test observability::metrics::telemetry_tests::backend_pressure_uses_exact_live_backend_state ... ok
+test observability::metrics::telemetry_tests::box_backend_telemetry_tracks_live_slots_without_unbounded_labels ... ok
+test observability::metrics::telemetry_tests::disabled_metrics_expose_no_service_telemetry ... ok
+test observability::metrics::telemetry_tests::event_signal_age_increases_after_the_last_observation ... ok
+test observability::metrics::telemetry_tests::event_signals_are_unknown_until_observed ... ok
+test observability::metrics::telemetry_tests::fallback_retargets_active_and_latency_accounting ... ok
+test observability::metrics::telemetry_tests::prometheus_labels_are_escaped_and_backend_credentials_are_opaque ... ok
+test observability::metrics::telemetry_tests::queue_depth_is_exported_from_the_exact_buffer ... ok
+test observability::metrics::telemetry_tests::reload_preserves_in_flight_accounting_for_an_unchanged_service ... ok
+test observability::metrics::telemetry_tests::reload_removes_orphaned_service_series ... ok
+test observability::metrics::telemetry_tests::service_request_lifetime_is_drop_safe ... ok
+test observability::metrics::telemetry_tests::ttft_is_recorded_only_for_the_first_non_empty_chunk ... ok
+test observability::metrics::telemetry_tests::unconfigured_labels_cannot_create_telemetry_series ... ok
+test observability::metrics::tests::test_backend_requests_are_opaque ... ok
+test observability::metrics::tests::test_connections ... ok
+test observability::metrics::tests::test_default ... ok
+test observability::metrics::tests::test_initial_state ... ok
+test observability::metrics::tests::test_middleware_invocations ... ok
+test observability::metrics::tests::test_prometheus_format ... ok
+test observability::metrics::tests::test_prometheus_format_with_backends ... ok
+test observability::metrics::tests::test_prometheus_format_with_errors ... ok
+test observability::metrics::tests::test_prometheus_format_with_latency ... ok
+test observability::metrics::tests::test_prometheus_format_with_middleware ... ok
+test observability::metrics::tests::test_prometheus_format_with_routers ... ok
+test observability::metrics::tests::test_prometheus_format_with_services ... ok
+test observability::metrics::tests::test_prometheus_has_help_and_type ... ok
+test observability::metrics::tests::test_record_request_increments_total ... ok
+test observability::metrics::tests::test_record_request_status_classes ... ok
+test observability::metrics::tests::test_record_response_bytes ... ok
+test observability::metrics::tests::test_reset ... ok
+test observability::metrics::tests::test_reset_clears_all ... ok
+test observability::metrics::tests::test_router_errors ... ok
+test observability::metrics::tests::test_router_latency ... ok
+test observability::metrics::tests::test_router_requests ... ok
+test observability::metrics::tests::test_service_errors ... ok
+test observability::metrics::tests::test_service_requests ... ok
+test observability::metrics::tests::test_snapshot_serialization ... ok
+test observability::metrics::tests::test_unknown_status_class ... ok
+test observability::tracing::tests::test_child_span ... ok
+test observability::tracing::tests::test_config_default ... ok
+test observability::tracing::tests::test_config_export_enabled ... ok
+test observability::tracing::tests::test_config_propagation_format ... ok
+test observability::tracing::tests::test_config_serialization ... ok
+test observability::tracing::tests::test_extract_b3_multi ... ok
+test observability::tracing::tests::test_extract_b3_single ... ok
+test observability::tracing::tests::test_extract_no_trace ... ok
+test observability::tracing::tests::test_extract_w3c ... ok
+test observability::tracing::tests::test_from_b3_single_invalid ... ok
+test observability::tracing::tests::test_from_b3_single_sampled ... ok
+test observability::tracing::tests::test_from_b3_single_with_parent ... ok
+test observability::tracing::tests::test_from_traceparent_invalid_format ... ok
+test observability::tracing::tests::test_from_traceparent_invalid_hex ... ok
+test observability::tracing::tests::test_from_traceparent_invalid_version ... ok
+test observability::tracing::tests::test_from_traceparent_not_sampled ... ok
+test observability::tracing::tests::test_from_traceparent_valid ... ok
+test observability::tracing::tests::test_generate_span_id_length ... ok
+test observability::tracing::tests::test_generate_trace_id_length ... ok
+test observability::tracing::tests::test_hex_encode ... ok
+test observability::tracing::tests::test_inject_b3 ... ok
+test observability::tracing::tests::test_inject_w3c ... ok
+test observability::tracing::tests::test_is_hex ... ok
+test observability::tracing::tests::test_is_sampled ... ok
+test observability::tracing::tests::test_new_root ... ok
+test observability::tracing::tests::test_span_attributes ... ok
+test observability::tracing::tests::test_span_finish ... ok
+test observability::tracing::tests::test_span_finish_with_error ... ok
+test observability::tracing::tests::test_span_new ... ok
+test observability::tracing::tests::test_span_status_display ... ok
+test observability::tracing::tests::test_to_b3_single_no_parent ... ok
+test observability::tracing::tests::test_to_b3_single_with_parent ... ok
+test observability::tracing::tests::test_to_traceparent ... ok
+test observability::tracing::tests::test_trace_context_display ... ok
+test provider::discovery::tests::detects_route_and_weight_changes_without_a_version_bump ... ok
+test provider::discovery::tests::discovery_provider_new_requires_buildable_http_client ... ok
+test provider::discovery::tests::test_build_routers_config_multiple_routes ... ok
+test provider::discovery::tests::test_build_routers_config_single_route ... ok
+test provider::discovery::tests::test_build_routers_config_skips_unhealthy ... ok
+test provider::discovery::tests::test_build_routers_config_withholds_conflicting_instance_routes ... ok
+test provider::discovery::tests::test_build_services_config_all_unhealthy ... ok
+test provider::discovery::tests::test_build_services_config_multiple_backends ... ok
+test provider::discovery::tests::test_build_services_config_single ... ok
+test provider::discovery::tests::test_build_services_config_skips_unhealthy ... ok
+test provider::discovery::tests::test_has_changed_empty_to_some ... ok
+test provider::discovery::tests::test_has_changed_health_flip ... ok
+test provider::discovery::tests::test_has_changed_no_change ... ok
+test provider::discovery::tests::test_has_changed_version_bump ... ok
+test provider::discovery::tests::test_merge_discovery_adds_new_services ... ok
+test provider::discovery::tests::test_merge_empty_discovery ... ok
+test provider::discovery::tests::test_merge_static_wins_on_collision ... ok
+test provider::discovery::tests::test_metadata_validation_accepts_bounded_contract ... ok
+test provider::discovery::tests::test_metadata_validation_rejects_unsafe_health_path_and_weight ... ok
+test provider::discovery::tests::test_probe_all_expires_last_known_good_after_grace_window ... ok
+test provider::discovery::tests::test_probe_all_retains_last_known_good_during_transient_failure ... ok
+test provider::discovery::tests::test_provider_new ... ok
+test provider::discovery::tests::test_provider_probe_all_empty_seeds ... ok
+test provider::discovery::tests::test_provider_probe_all_unreachable_seeds ... ok
+test provider::discovery::tests::test_provider_probe_seed_unreachable ... ok
+test provider::discovery::tests::test_route_metadata_defaults ... ok
+test provider::discovery::tests::test_service_metadata_defaults ... ok
+test provider::discovery::tests::test_service_metadata_deserialize ... ok
+test provider::discovery::tests::test_service_metadata_roundtrip ... ok
+test provider::discovery::tests::test_spawn_discovery_loop_sends_on_change ... ok
+test provider::discovery::tests::test_update_cache_and_read ... ok
+test provider::discovery::tests::test_well_known_path ... ok
+test provider::docker::tests::generate_config_defaults_priority_zero_when_priority_absent ... ok
+test provider::docker::tests::generate_config_defaults_round_robin_when_strategy_absent ... ok
+test provider::docker::tests::generate_config_fails_closed_on_invalid_port_label ... ok
+test provider::docker::tests::generate_config_fails_closed_on_invalid_priority_label ... ok
+test provider::docker::tests::generate_config_fails_closed_on_invalid_strategy_label ... ok
+test provider::docker::tests::generate_config_fails_closed_on_invalid_weight_label ... ok
+test provider::docker::tests::generate_config_fails_closed_on_missing_or_invalid_ip ... ok
+test provider::docker::tests::generate_config_fails_closed_on_missing_port_label ... ok
+test provider::docker::tests::generate_config_fails_closed_on_tcp_protocol_without_listen_address ... ok
+test provider::docker::tests::generate_config_fails_closed_on_udp_protocol_without_listen_address ... ok
+test provider::docker::tests::generate_config_fails_closed_on_unknown_protocol_label ... ok
+test provider::docker::tests::test_custom_label_prefix ... ok
+test provider::docker::tests::test_discovered_services_merged_with_static ... ok
+test provider::docker::tests::test_generates_router_when_rule_label_present ... ok
+test provider::docker::tests::test_generates_service_from_enabled_container ... ok
+test provider::docker::tests::test_generates_service_with_custom_strategy ... ok
+test provider::docker::tests::test_http_protocol_still_generates_router ... ok
+test provider::docker::tests::test_ipv6_container_address_is_bracketed ... ok
+test provider::docker::tests::test_mixed_protocols_in_multiple_containers ... ok
+test provider::docker::tests::test_multiple_containers_merged_into_config ... ok
+test provider::docker::tests::test_no_router_without_rule_label ... ok
+test provider::docker::tests::test_resolve_ip_falls_back_to_ipv6 ... ok
+test provider::docker::tests::test_resolve_ip_returns_first_nonempty ... ok
+test provider::docker::tests::test_resolve_ip_returns_none_when_empty ... ok
+test provider::docker::tests::test_resolve_ip_uses_deterministic_network_order ... ok
+test provider::docker::tests::test_router_middlewares_split_on_comma ... ok
+test provider::docker::tests::test_sanitize_lowercase ... ok
+test provider::docker::tests::test_sanitize_preserves_dots_dashes ... ok
+test provider::docker::tests::test_sanitize_replaces_invalid_chars ... ok
+test provider::docker::tests::test_sanitize_strips_leading_slash ... ok
+test provider::docker::tests::test_skips_container_with_enable_false ... ok
+test provider::docker::tests::test_skips_container_without_enable_label ... ok
+test provider::docker::tests::test_static_service_and_router_are_authoritative ... ok
+test provider::docker::tests::test_tcp_protocol_generates_entrypoint ... ok
+test provider::docker::tests::test_udp_protocol_generates_entrypoint ... ok
+test provider::file_watcher::tests::gateway_new_at_path_fails_closed_when_config_parent_missing ... ok
+test provider::file_watcher::tests::load_config_fails_closed_when_configured_directory_is_missing ... ok
+test provider::file_watcher::tests::load_merged_gateway_config_fails_closed_on_missing_entrypoint_tls_pem ... ok
+test provider::file_watcher::tests::load_merged_gateway_config_fails_closed_when_directory_missing ... ok
+test provider::file_watcher::tests::load_merged_gateway_config_fails_closed_when_management_token_env_unset ... ok
+test provider::file_watcher::tests::load_merged_gateway_config_merges_directory_from_root_acl ... ok
+test provider::file_watcher::tests::load_merged_gateway_config_probes_file_watch_when_enabled ... ok
+test provider::file_watcher::tests::probe_file_watch_activation_accepts_existing_paths ... ok
+test provider::file_watcher::tests::probe_file_watch_activation_rejects_missing_directory ... ok
+test provider::file_watcher::tests::test_is_config_file_acl ... ok
+test provider::file_watcher::tests::test_is_config_file_other ... ok
+test provider::file_watcher::tests::test_is_config_file_toml_rejected ... ok
+test provider::file_watcher::tests::test_is_relevant_config_event_filters_paths ... ok
+test provider::file_watcher::tests::test_is_relevant_event ... ok
+test provider::file_watcher::tests::test_last_config_initially_none ... ok
+test provider::file_watcher::tests::test_load_config_ignores_non_acl_fragments ... ok
+test provider::file_watcher::tests::test_load_config_invalid_acl ... ok
+test provider::file_watcher::tests::test_load_config_missing_file ... ok
+test provider::file_watcher::tests::test_load_config_rejects_non_acl_main_extension ... ok
+test provider::file_watcher::tests::test_load_config_stores_last_good ... ok
+test provider::file_watcher::tests::test_load_config_valid ... ok
+test provider::file_watcher::tests::test_load_config_with_directory_merges_acl_fragments ... ok
+test provider::file_watcher::tests::test_new_file_watcher ... ok
+test provider::file_watcher::tests::test_reload_count_initial ... ok
+test provider::file_watcher::tests::test_reload_event_failure ... ok
+test provider::file_watcher::tests::test_reload_event_success ... ok
+test provider::file_watcher::tests::test_watch_creates_watcher ... ok
+test provider::file_watcher::tests::test_watch_detects_file_change ... ok
+test provider::file_watcher::tests::test_watch_invalid_config_keeps_last_good ... ok
+test provider::file_watcher::tests::test_with_directory ... ok
+test provider::file_watcher::tests::validate_activation_at_path_attaches_config_parent_watch ... ok
+test provider::file_watcher::tests::validate_activation_fails_closed_when_file_watch_directory_missing ... ok
+test provider::file_watcher::tests::validate_activation_probes_file_watch_notify_when_enabled ... ok
+test provider::file_watcher::tests::watch_fails_closed_when_configured_directory_is_missing ... ok
+test provider::kubernetes_crd::tests::ingress_route_from_configmap_data_accepts_labeled_spec ... ok
+test provider::kubernetes_crd::tests::ingress_route_from_configmap_data_rejects_missing_data ... ok
+test provider::kubernetes_crd::tests::ingress_route_from_configmap_data_rejects_missing_spec ... ok
+test provider::kubernetes_crd::tests::ingress_routes_to_config_fails_closed_on_invalid_backend_strategy ... ok
+test provider::kubernetes_crd::tests::parse_ingress_route_configmap_spec_accepts_valid_payload ... ok
+test provider::kubernetes_crd::tests::parse_ingress_route_configmap_spec_rejects_malformed_json ... ok
+test provider::kubernetes_crd::tests::parse_ingress_route_configmap_spec_rejects_wrong_shape ... ok
+test provider::kubernetes_crd::tests::test_empty_routes ... ok
+test provider::kubernetes_crd::tests::test_ingress_route_serialization ... ok
+test provider::kubernetes_crd::tests::test_ingress_route_tls ... ok
+test provider::kubernetes_crd::tests::test_multiple_routes ... ok
+test provider::kubernetes_crd::tests::test_multiple_routes_in_single_resource ... ok
+test provider::kubernetes_crd::tests::test_route_default_port ... ok
+test provider::kubernetes_crd::tests::test_route_with_middlewares ... ok
+test provider::kubernetes_crd::tests::test_route_with_multiple_backends ... ok
+test provider::kubernetes_crd::tests::test_route_with_strategy_override ... ok
+test provider::kubernetes_crd::tests::test_single_route_conversion ... ok
+test provider::kubernetes_crd::tests::test_strategy_from_str_all ... ok
+test provider::kubernetes_tests::ingress_to_config_applies_explicit_request_timeout_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_defaults_priority_zero_when_priority_annotation_absent ... ok
+test provider::kubernetes_tests::ingress_to_config_defaults_request_timeout_when_annotation_absent ... ok
+test provider::kubernetes_tests::ingress_to_config_defaults_round_robin_when_strategy_annotation_absent ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_empty_request_timeout_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_invalid_priority_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_invalid_request_timeout_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_invalid_strategy_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_named_backend_port_without_number ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_tcp_without_listen ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_udp_without_listen ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_unknown_protocol_annotation ... ok
+test provider::kubernetes_tests::ingress_to_config_fails_closed_on_zero_backend_port ... ok
+test provider::kubernetes_tests::ingress_to_config_uses_explicit_backend_port ... ok
+test provider::kubernetes_tests::test_http_protocol_default_generates_router ... ok
+test provider::kubernetes_tests::test_ingress_multiple_paths ... ok
+test provider::kubernetes_tests::test_ingress_no_http ... ok
+test provider::kubernetes_tests::test_ingress_no_rules ... ok
+test provider::kubernetes_tests::test_ingress_resource_serialization ... ok
+test provider::kubernetes_tests::test_ingress_tls ... ok
+test provider::kubernetes_tests::test_ingress_with_annotations ... ok
+test provider::kubernetes_tests::test_merge_adds_new ... ok
+test provider::kubernetes_tests::test_merge_static_wins ... ok
+test provider::kubernetes_tests::test_mixed_http_and_tcp_ingresses ... ok
+test provider::kubernetes_tests::test_multiple_ingresses ... ok
+test provider::kubernetes_tests::test_parse_csv_empty ... ok
+test provider::kubernetes_tests::test_parse_csv_multiple ... ok
+test provider::kubernetes_tests::test_parse_csv_single ... ok
+test provider::kubernetes_tests::test_rule_empty_catchall ... ok
+test provider::kubernetes_tests::test_rule_exact_path ... ok
+test provider::kubernetes_tests::test_rule_host_and_path ... ok
+test provider::kubernetes_tests::test_rule_host_only ... ok
+test provider::kubernetes_tests::test_rule_path_only ... ok
+test provider::kubernetes_tests::test_rule_root_path_ignored ... ok
+test provider::kubernetes_tests::test_single_ingress_conversion ... ok
+test provider::kubernetes_tests::test_strategy_from_str_invalid ... ok
+test provider::kubernetes_tests::test_strategy_from_str_valid ... ok
+test provider::kubernetes_tests::test_tcp_protocol_generates_entrypoint ... ok
+test provider::kubernetes_tests::test_udp_protocol_generates_entrypoint ... ok
+test proxy::acme::tests::test_cert_info_expired ... ok
+test proxy::acme::tests::test_cert_info_expiring_soon ... ok
+test proxy::acme::tests::test_cert_info_serialization ... ok
+test proxy::acme::tests::test_cert_info_valid ... ok
+test proxy::acme::tests::test_cert_status_display ... ok
+test proxy::acme::tests::test_cert_status_equality ... ok
+test proxy::acme::tests::test_cert_storage_load_missing ... ok
+test proxy::acme::tests::test_cert_storage_not_exists ... ok
+test proxy::acme::tests::test_cert_storage_paths ... ok
+test proxy::acme::tests::test_cert_storage_save_load ... ok
+test proxy::acme::tests::test_challenge_store_add_get ... ok
+test proxy::acme::tests::test_challenge_store_clear ... ok
+test proxy::acme::tests::test_challenge_store_get_missing ... ok
+test proxy::acme::tests::test_challenge_store_new ... ok
+test proxy::acme::tests::test_challenge_store_remove ... ok
+test proxy::acme::tests::test_challenge_type_default ... ok
+test proxy::acme::tests::test_challenge_type_deserialization ... ok
+test proxy::acme::tests::test_challenge_type_serialization ... ok
+test proxy::acme::tests::test_config_default ... ok
+test proxy::acme::tests::test_config_effective_directory_production ... ok
+test proxy::acme::tests::test_config_effective_directory_staging ... ok
+test proxy::acme::tests::test_config_http01_ignores_dns_provider ... ok
+test proxy::acme::tests::test_config_serialization ... ok
+test proxy::acme::tests::test_config_validate_dns01_invalid_provider ... ok
+test proxy::acme::tests::test_config_validate_dns01_missing_provider ... ok
+test proxy::acme::tests::test_config_validate_dns01_with_provider ... ok
+test proxy::acme::tests::test_config_validate_empty_domain ... ok
+test proxy::acme::tests::test_config_validate_invalid_domain ... ok
+test proxy::acme::tests::test_config_validate_missing_domains ... ok
+test proxy::acme::tests::test_config_validate_missing_email ... ok
+test proxy::acme::tests::test_config_validate_ok ... ok
+test proxy::acme::tests::test_extract_token ... ok
+test proxy::acme::tests::test_is_challenge_path ... ok
+test proxy::acme::tests::test_lets_encrypt_urls ... ok
+test proxy::acme::tests::test_sanitize_domain ... ok
+test proxy::acme_account::tests::test_account_key_from_invalid_pkcs8 ... ok
+test proxy::acme_account::tests::test_account_key_generate ... ok
+test proxy::acme_account::tests::test_account_key_jwk ... ok
+test proxy::acme_account::tests::test_account_key_jwk_thumbprint ... ok
+test proxy::acme_account::tests::test_account_key_roundtrip ... ok
+test proxy::acme_account::tests::test_account_key_sign ... ok
+test proxy::acme_client::tests::test_acme_client_challenges_accessor ... ok
+test proxy::acme_client::tests::test_build_jws_no_key_fails ... ok
+test proxy::acme_client::tests::test_build_jws_post_as_get ... ok
+test proxy::acme_client::tests::test_build_jws_with_account ... ok
+test proxy::acme_client::tests::test_build_jws_without_account ... ok
+test proxy::acme_client::tests::test_client_ensure_account_key ... ok
+test proxy::acme_client::tests::test_client_new ... ok
+test proxy::acme_client::tests::test_client_new_invalid_config ... ok
+test proxy::acme_csr::tests::test_build_csr ... ok
+test proxy::acme_csr::tests::test_build_csr_multiple_domains ... ok
+test proxy::acme_csr::tests::test_encode_der_length_long ... ok
+test proxy::acme_csr::tests::test_encode_der_length_medium ... ok
+test proxy::acme_csr::tests::test_encode_der_length_short ... ok
+test proxy::acme_csr::tests::test_pem_encode ... ok
+test proxy::acme_dns::tests::test_cloudflare_solver_api_url ... ok
+test proxy::acme_dns::tests::test_cloudflare_solver_invalid_config ... ok
+test proxy::acme_dns::tests::test_cloudflare_solver_new ... ok
+test proxy::acme_dns::tests::test_config_deserialization_defaults ... ok
+test proxy::acme_dns::tests::test_config_serialization ... ok
+test proxy::acme_dns::tests::test_config_validate_cloudflare_missing_zone ... ok
+test proxy::acme_dns::tests::test_config_validate_missing_token ... ok
+test proxy::acme_dns::tests::test_config_validate_ok ... ok
+test proxy::acme_dns::tests::test_config_validate_route53_missing_zone ... ok
+test proxy::acme_dns::tests::test_create_solver_cloudflare ... ok
+test proxy::acme_dns::tests::test_create_solver_route53 ... ok
+test proxy::acme_dns::tests::test_create_solver_route53_invalid_credentials ... ok
+test proxy::acme_dns::tests::test_dns_provider_default ... ok
+test proxy::acme_dns::tests::test_dns_provider_deserialization ... ok
+test proxy::acme_dns::tests::test_dns_provider_serialization ... ok
+test proxy::acme_dns::tests::test_hex_lower ... ok
+test proxy::acme_dns::tests::test_hmac_sha256 ... ok
+test proxy::acme_dns::tests::test_parse_aws_credentials_empty_key_id ... ok
+test proxy::acme_dns::tests::test_parse_aws_credentials_empty_secret ... ok
+test proxy::acme_dns::tests::test_parse_aws_credentials_missing_separator ... ok
+test proxy::acme_dns::tests::test_parse_aws_credentials_secret_with_slash ... ok
+test proxy::acme_dns::tests::test_parse_aws_credentials_valid ... ok
+test proxy::acme_dns::tests::test_route53_solver_api_path ... ok
+test proxy::acme_dns::tests::test_route53_solver_api_url ... ok
+test proxy::acme_dns::tests::test_route53_solver_change_xml_create ... ok
+test proxy::acme_dns::tests::test_route53_solver_change_xml_delete ... ok
+test proxy::acme_dns::tests::test_route53_solver_invalid_credentials ... ok
+test proxy::acme_dns::tests::test_route53_solver_new ... ok
+test proxy::acme_dns::tests::test_sha256_hex ... ok
+test proxy::acme_dns::tests::test_sigv4_sign_different_bodies_produce_different_signatures ... ok
+test proxy::acme_dns::tests::test_sigv4_sign_different_keys_produce_different_signatures ... ok
+test proxy::acme_dns::tests::test_sigv4_sign_is_deterministic ... ok
+test proxy::acme_dns::tests::test_sigv4_sign_produces_required_headers ... ok
+test proxy::acme_manager::tests::activate_certificate_invokes_sink ... ok
+test proxy::acme_manager::tests::activate_stored_certificate_fails_closed_when_sink_rejects_unusable_pem ... ok
+test proxy::acme_manager::tests::activate_stored_certificate_loads_from_storage ... ok
+test proxy::acme_manager::tests::test_manager_client_access ... ok
+test proxy::acme_manager::tests::test_manager_new ... ok
+test proxy::acme_manager::tests::test_manager_with_check_interval ... ok
+test proxy::acme_types::tests::test_acme_authorization_deserialize ... ok
+test proxy::acme_types::tests::test_acme_challenge_deserialize ... ok
+test proxy::acme_types::tests::test_acme_directory_deserialize ... ok
+test proxy::acme_types::tests::test_acme_directory_deserialize_minimal ... ok
+test proxy::acme_types::tests::test_acme_identifier_deserialize ... ok
+test proxy::acme_types::tests::test_acme_order_deserialize ... ok
+test proxy::acme_types::tests::test_acme_order_with_certificate ... ok
+test proxy::grpc::tests::buffered_grpc_request_body_preserves_data ... ok
+test proxy::grpc::tests::dropping_grpc_body_releases_backend_connection ... ok
+test proxy::grpc::tests::grpc_idle_timeout_releases_backend_connection ... ok
+test proxy::grpc::tests::grpc_proxy_try_new_activates_tls_client ... ok
+test proxy::grpc::tests::grpc_proxy_try_with_ca_file_activates_private_trust_store ... ok
+test proxy::grpc::tests::grpc_proxy_try_with_ca_file_rejects_unusable_pem ... ok
+test proxy::grpc::tests::grpc_request_drops_forwarding_headers_without_context ... ok
+test proxy::grpc::tests::grpc_total_timeout_wins_while_data_remains_active ... ok
+test proxy::grpc::tests::grpc_trailers_strip_connection_nominated_fields ... ok
+test proxy::grpc::tests::test_grpc_frame_sanitizer_preserves_data_and_filters_trailers ... ok
+test proxy::grpc::tests::test_grpc_proxy_default ... ok
+test proxy::grpc::tests::test_grpc_te_normalization_detects_only_the_trailers_token ... ok
+test proxy::grpc::tests::test_is_grpc_request_false ... ok
+test proxy::grpc::tests::test_is_grpc_request_is_case_insensitive_and_accepts_parameters ... ok
+test proxy::grpc::tests::test_is_grpc_request_no_content_type ... ok
+test proxy::grpc::tests::test_is_grpc_request_rejects_grpc_web_and_invalid_prefixes ... ok
+test proxy::grpc::tests::test_is_grpc_request_true ... ok
+test proxy::grpc::tests::test_is_grpc_request_with_proto ... ok
+test proxy::grpc::tests::test_normalized_grpc_backend_h2c ... ok
+test proxy::grpc::tests::test_normalized_grpc_backend_http ... ok
+test proxy::grpc::tests::test_normalized_grpc_backend_https ... ok
+test proxy::grpc::tests::test_normalized_grpc_backend_rejects_non_grpc_scheme ... ok
+test proxy::grpc::tests::test_normalized_grpc_backend_trailing_slash ... ok
+test proxy::http_proxy::tests::builds_upstream_uri_by_reusing_the_request_path ... ok
+test proxy::http_proxy::tests::builds_upstream_uri_with_a_configured_base_path ... ok
+test proxy::http_proxy::tests::client_pool_shard_reduction_matches_modulo ... ok
+test proxy::http_proxy::tests::client_pool_shards_distribute_adjacent_connections ... ok
+test proxy::http_proxy::tests::client_pool_shards_follow_the_active_tokio_runtime ... ok
+test proxy::http_proxy::tests::concurrency_ceiling_proxy_error_names_the_ceiling ... ok
+test proxy::http_proxy::tests::effective_client_ip_accepts_the_leftmost_trusted_address ... ok
+test proxy::http_proxy::tests::effective_client_ip_fails_closed_for_malformed_forwarded_values ... ok
+test proxy::http_proxy::tests::effective_client_ip_supports_bracketed_ipv6_and_ipv4_ports ... ok
+test proxy::http_proxy::tests::effective_client_ip_uses_socket_when_forwarded_headers_are_untrusted ... ok
+test proxy::http_proxy::tests::end_to_end_only_headers_pass_through_unchanged ... ok
+test proxy::http_proxy::tests::http_forward_rejects_non_http_backend_scheme ... ok
+test proxy::http_proxy::tests::inbound_rfc_forwarded_header_is_not_relayed ... ok
+test proxy::http_proxy::tests::owned_exchange_can_elide_unused_backend_accounting ... ok
+test proxy::http_proxy::tests::owned_request_builder_preserves_proxy_semantics ... ok
+test proxy::http_proxy::tests::prepared_connection_reuses_client_pool_shard_hash ... ok
+test proxy::http_proxy::tests::prepared_forwarded_context_preserves_header_semantics ... ok
+test proxy::http_proxy::tests::prepared_forwarded_context_reads_reconfigured_trust_policy ... ok
+test proxy::http_proxy::tests::test_connection_nominated_headers_are_hop_by_hop ... ok
+test proxy::http_proxy::tests::test_forward_404_response ... ok
+test proxy::http_proxy::tests::test_forward_500_response ... ok
+test proxy::http_proxy::tests::test_forward_connection_refused ... ok
+test proxy::http_proxy::tests::test_forward_path_and_query_preserved ... ok
+test proxy::http_proxy::tests::test_forward_success ... ok
+test proxy::http_proxy::tests::test_forward_with_body ... ok
+test proxy::http_proxy::tests::test_forward_with_headers ... ok
+test proxy::http_proxy::tests::test_forward_with_options_adds_forwarded_headers ... ok
+test proxy::http_proxy::tests::test_forward_with_options_appends_forwarded_for ... ok
+test proxy::http_proxy::tests::test_forward_with_options_uses_request_timeout ... ok
+test proxy::http_proxy::tests::test_forwarded_context_helpers ... ok
+test proxy::http_proxy::tests::test_hop_by_hop_headers ... ok
+test proxy::http_proxy::tests::test_http_proxy_custom_timeout ... ok
+test proxy::http_proxy::tests::test_http_proxy_default ... ok
+test proxy::http_proxy::tests::test_proxy_response_fields ... ok
+test proxy::http_proxy::tests::try_with_timeouts_activates_default_upstream_tls_client ... ok
+test proxy::http_proxy::tests::untrusted_forwarded_headers_are_replaced_with_observed_client_identity ... ok
+test proxy::http_proxy::tls_tests::forwards_https_backend_over_alpn_http2 ... ok
+test proxy::http_proxy::tls_tests::rejects_an_untrusted_https_backend_certificate ... ok
+test proxy::http_proxy::tls_tests::try_with_timeouts_and_ca_file_trusts_private_upstream ... ok
+test proxy::http_response_body::tests::expired_total_timeout_wins_over_a_ready_frame ... ok
+test proxy::http_response_body::tests::final_frame_releases_connection_without_an_extra_poll ... ok
+test proxy::http_response_body::tests::idle_timeout_releases_the_backend_connection ... ok
+test proxy::http_response_body::tests::relays_data_and_filters_response_trailers ... ok
+test proxy::http_response_body::tests::total_timeout_wins_after_idle_deadline_was_selected ... ok
+test proxy::http_response_body::tests::total_timeout_wins_over_a_longer_idle_timeout ... ok
+test proxy::streaming::tests::detects_sse_accept_header ... ok
+test proxy::streaming::tests::ignores_non_streaming_accept_header ... ok
+test proxy::streaming::tests::timeout_conversion_saturates ... ok
+test proxy::tcp::tests::test_connect_upstream_invalid ... ok
+test proxy::tcp::tests::test_connect_upstream_valid ... ok
+test proxy::tcp::tests::test_extract_address_bare ... ok
+test proxy::tcp::tests::test_extract_address_h2c ... ok
+test proxy::tcp::tests::test_extract_address_http ... ok
+test proxy::tcp::tests::test_extract_address_http_port ... ok
+test proxy::tcp::tests::test_extract_address_https ... ok
+test proxy::tcp::tests::test_extract_address_https_default_port_and_ignored_path ... ok
+test proxy::tcp::tests::test_extract_address_https_with_path ... ok
+test proxy::tcp::tests::test_extract_address_tcp ... ok
+test proxy::tcp::tests::test_extract_address_trailing_slash ... ok
+test proxy::tcp::tests::test_extract_address_udp ... ok
+test proxy::tls::tests::node_api_client_ca_accepts_clean_trust_anchor_bundle ... ok
+test proxy::tls::tests::node_api_client_ca_refuses_partial_trust_anchor_load ... ok
+test proxy::tls::tests::test_build_tls_acceptor_empty_cert ... ok
+test proxy::tls::tests::test_build_tls_acceptor_empty_key ... ok
+test proxy::tls::tests::test_build_tls_acceptor_from_pem_matches_file_surface ... ok
+test proxy::tls::tests::test_build_tls_acceptor_from_pem_rejects_empty_cert ... ok
+test proxy::tls::tests::test_build_tls_acceptor_invalid_cert_pem ... ok
+test proxy::tls::tests::test_build_tls_acceptor_invalid_key_pem ... ok
+test proxy::tls::tests::test_build_tls_acceptor_missing_cert ... ok
+test proxy::tls::tests::test_build_tls_acceptor_missing_key ... ok
+test proxy::tls::tests::test_build_tls_acceptor_tls_1_3_only ... ok
+test proxy::udp::tests::test_config_custom ... ok
+test proxy::udp::tests::test_config_default ... ok
+test proxy::udp::tests::test_config_rejects_zero_limits ... ok
+test proxy::udp::tests::test_deactivated_policy_rejects_new_datagrams ... ok
+test proxy::udp::tests::test_default_session_timeout ... ok
+test proxy::udp::tests::test_evict_expired_empty ... ok
+test proxy::udp::tests::test_max_datagram_size ... ok
+test proxy::udp::tests::test_proxy_initial_session_count ... ok
+test proxy::udp::tests::test_proxy_new ... ok
+test proxy::udp::tests::test_session_limit_rejects_a_new_client ... ok
+test proxy::udp::tests::test_udp_echo_relay ... ok
+test proxy::websocket::tests::test_build_ws_url_already_ws ... ok
+test proxy::websocket::tests::test_build_ws_url_from_http ... ok
+test proxy::websocket::tests::test_build_ws_url_from_https ... ok
+test proxy::websocket::tests::test_build_ws_url_rejects_non_websocket_scheme ... ok
+test proxy::websocket::tests::test_build_ws_url_trailing_slash ... ok
+test proxy::websocket::tests::test_build_ws_url_with_path_only ... ok
+test proxy::websocket::tests::test_build_ws_url_with_query ... ok
+test proxy::websocket::tests::test_compute_accept_key ... ok
+test proxy::websocket::tests::test_is_websocket_upgrade ... ok
+test proxy::websocket::tests::test_is_websocket_upgrade_case_insensitive ... ok
+test proxy::websocket::tests::test_is_websocket_upgrade_not_websocket ... ok
+test proxy::websocket::tests::test_relay_websocket_upstream_error ... ok
+test proxy::websocket::tests::test_validate_handshake_accepts_rfc_6455_example ... ok
+test proxy::websocket::tests::test_validate_handshake_rejects_invalid_or_duplicate_key ... ok
+test proxy::websocket::tests::test_validate_handshake_rejects_wrong_method_and_http_version ... ok
+test proxy::websocket::tests::test_validate_handshake_requires_connection_upgrade_and_version_13 ... ok
+test router::rule::tests::parser_keeps_conjunctions_inside_backtick_arguments ... ok
+test router::rule::tests::parser_rejects_malformed_host_ports_and_ipv6_authorities ... ok
+test router::rule::tests::parser_rejects_trailing_matcher_content_and_empty_conjunctions ... ok
+test router::rule::tests::parser_requires_argument_commas_and_valid_path_headers ... ok
+test router::rule::tests::test_match_any_of_several_paths ... ok
+test router::rule::tests::test_match_combined_and ... ok
+test router::rule::tests::test_match_headers ... ok
+test router::rule::tests::test_match_host ... ok
+test router::rule::tests::test_match_host_strips_port ... ok
+test router::rule::tests::test_match_method ... ok
+test router::rule::tests::test_match_path ... ok
+test router::rule::tests::test_match_path_prefix ... ok
+test router::rule::tests::test_match_triple_and ... ok
+test router::rule::tests::test_parse_args_trailing_content_after_backtick ... ok
+test router::rule::tests::test_parse_args_whitespace_and_commas ... ok
+test router::rule::tests::test_parse_combined_rule ... ok
+test router::rule::tests::test_parse_empty_rule ... ok
+test router::rule::tests::test_parse_headers ... ok
+test router::rule::tests::test_parse_host ... ok
+test router::rule::tests::test_parse_invalid_matcher ... ok
+test router::rule::tests::test_parse_method ... ok
+test router::rule::tests::test_parse_missing_backtick ... ok
+test router::rule::tests::test_parse_missing_closing_paren ... ok
+test router::rule::tests::test_parse_path ... ok
+test router::rule::tests::test_parse_path_prefix ... ok
+test router::rule::tests::test_parse_triple_rule ... ok
+test router::rule::tests::test_parse_wrong_arg_count_headers ... ok
+test router::rule::tests::test_parse_wrong_arg_count_host ... ok
+test router::tcp::tests::gateway_config_hostsni_routes_compile_and_match_by_entrypoint ... ok
+test router::tcp::tests::gateway_config_rejects_mixed_hostsni_rules ... ok
+test router::tcp::tests::pathprefix_only_routers_leave_tcp_sni_table_empty ... ok
+test router::tcp::tests::test_catch_all_matches_everything ... ok
+test router::tcp::tests::test_exact_match ... ok
+test router::tcp::tests::test_extract_hostsni_backticks ... ok
+test router::tcp::tests::test_extract_hostsni_invalid ... ok
+test router::tcp::tests::test_extract_hostsni_plain_value ... ok
+test router::tcp::tests::test_extract_hostsni_quotes ... ok
+test router::tcp::tests::test_extract_hostsni_single_quotes ... ok
+test router::tcp::tests::test_extract_hostsni_star ... ok
+test router::tcp::tests::test_extract_sni_not_handshake ... ok
+test router::tcp::tests::test_extract_sni_not_tls ... ok
+test router::tcp::tests::test_extract_sni_too_short ... ok
+test router::tcp::tests::test_extract_sni_valid_client_hello ... ok
+test router::tcp::tests::test_parse_catch_all ... ok
+test router::tcp::tests::test_parse_exact ... ok
+test router::tcp::tests::test_parse_invalid ... ok
+test router::tcp::tests::test_parse_wildcard ... ok
+test router::tcp::tests::test_parse_with_quotes ... ok
+test router::tcp::tests::test_resolved_route_clone ... ok
+test router::tcp::tests::test_table_empty ... ok
+test router::tcp::tests::test_table_from_routes ... ok
+test router::tcp::tests::test_table_invalid_rule ... ok
+test router::tcp::tests::test_table_match_catch_all ... ok
+test router::tcp::tests::test_table_match_exact ... ok
+test router::tcp::tests::test_table_match_wildcard ... ok
+test router::tcp::tests::test_table_no_match ... ok
+test router::tcp::tests::test_table_priority_order ... ok
+test router::tcp::tests::test_wildcard_match ... ok
+test router::tests::borrowed_matches_reuse_resolved_route_metadata ... ok
+test router::tests::generic_route_can_outrank_an_indexed_host_route ... ok
+test router::tests::host_index_preserves_global_priority_and_generic_fallback ... ok
+test router::tests::test_router_table_build ... ok
+test router::tests::test_router_table_empty ... ok
+test router::tests::test_router_table_entrypoint_filter ... ok
+test router::tests::test_router_table_explicit_priority_wins ... ok
+test router::tests::test_router_table_invalid_rule ... ok
+test router::tests::test_router_table_match_exact_path ... ok
+test router::tests::test_router_table_match_path ... ok
+test router::tests::test_router_table_no_match ... ok
+test router::tests::test_router_table_priority_order ... ok
+test router::tests::test_router_table_specific_beats_catchall ... ok
+test scaling::autoscaler::tests::downscale_withdraws_surplus_endpoints_before_executor_mutation ... ok
+test scaling::autoscaler::tests::malformed_accepted_scale_result_is_not_published ... ok
+test scaling::autoscaler::tests::malformed_executor_observation_is_rejected_before_state_publish ... ok
+test scaling::autoscaler::tests::operation_identity_is_stable_and_revision_bound ... ok
+test scaling::autoscaler::tests::rejected_downscale_restores_endpoints_but_ambiguous_result_keeps_them_withdrawn ... ok
+test scaling::autoscaler::tests::test_ambiguous_execution_reconciles_before_retry ... ok
+test scaling::autoscaler::tests::test_autoscaler_empty ... ok
+test scaling::autoscaler::tests::test_autoscaler_executor_name ... ok
+test scaling::autoscaler::tests::test_autoscaler_has_service ... ok
+test scaling::autoscaler::tests::test_autoscaler_new ... ok
+test scaling::autoscaler::tests::test_evaluate_does_not_advance_before_executor_accepts ... ok
+test scaling::autoscaler::tests::test_evaluate_no_change ... ok
+test scaling::autoscaler::tests::test_evaluate_reason_formatting ... ok
+test scaling::autoscaler::tests::test_evaluate_scale_down_allowed_after_cooldown ... ok
+test scaling::autoscaler::tests::test_evaluate_scale_down_blocked_by_cooldown ... ok
+test scaling::autoscaler::tests::test_evaluate_scale_up ... ok
+test scaling::autoscaler::tests::test_evaluate_unknown_service ... ok
+test scaling::autoscaler::tests::test_evaluate_waits_for_executor_replica_observation ... ok
+test scaling::autoscaler::tests::test_executor_call_is_bounded_by_timeout ... ok
+test scaling::autoscaler::tests::test_executor_call_uses_service_timeout_config ... ok
+test scaling::autoscaler::tests::test_failed_execution_retries_without_advancing_replica_state ... ok
+test scaling::autoscaler::tests::test_formula_basic ... ok
+test scaling::autoscaler::tests::test_formula_cc_zero_unlimited ... ok
+test scaling::autoscaler::tests::test_formula_clamped_to_max ... ok
+test scaling::autoscaler::tests::test_formula_clamped_to_min ... ok
+test scaling::autoscaler::tests::test_formula_high_load ... ok
+test scaling::autoscaler::tests::test_formula_includes_queue_depth ... ok
+test scaling::autoscaler::tests::test_formula_utilization_100_percent ... ok
+test scaling::autoscaler::tests::test_formula_zero_load_returns_min ... ok
+test scaling::autoscaler::tests::test_formula_zero_load_with_min ... ok
+test scaling::autoscaler::tests::test_formula_zero_utilization_returns_max ... ok
+test scaling::autoscaler::tests::test_recreated_controller_recovers_without_duplicate_decision ... ok
+test scaling::autoscaler::tests::test_replica_query_is_bounded_by_executor_timeout ... ok
+test scaling::autoscaler::tests::test_tick_executes_decisions ... ok
+test scaling::autoscaler::tests::test_tick_no_metrics_no_decision ... ok
+test scaling::autoscaler::tests::test_tick_uses_authoritative_executor_replica_count ... ok
+test scaling::buffer::tests::readiness_signal_is_durable_for_late_waiters ... ok
+test scaling::buffer::tests::test_buffer_is_send_sync ... ok
+test scaling::buffer::tests::test_capacity_zero ... ok
+test scaling::buffer::tests::test_concurrent_waiters_all_notified ... ok
+test scaling::buffer::tests::test_depth_decremented_on_timeout ... ok
+test scaling::buffer::tests::test_depth_decremented_when_wait_is_cancelled ... ok
+test scaling::buffer::tests::test_needs_scale_up_idempotent ... ok
+test scaling::buffer::tests::test_overflow ... ok
+test scaling::buffer::tests::test_queue_depth_tracking ... ok
+test scaling::buffer::tests::test_ready_after_signal ... ok
+test scaling::buffer::tests::test_service_name ... ok
+test scaling::buffer::tests::test_shutdown_immediate ... ok
+test scaling::buffer::tests::test_shutdown_wakes_waiters ... ok
+test scaling::buffer::tests::test_timeout ... ok
+test scaling::concurrency::tests::test_allowed_under_limit ... ok
+test scaling::concurrency::tests::test_at_capacity ... ok
+test scaling::concurrency::tests::test_at_capacity_count ... ok
+test scaling::concurrency::tests::test_at_capacity_count_unlimited ... ok
+test scaling::concurrency::tests::test_limiter_limit ... ok
+test scaling::concurrency::tests::test_select_with_capacity_all_at_capacity ... ok
+test scaling::concurrency::tests::test_select_with_capacity_picks_least_loaded ... ok
+test scaling::concurrency::tests::test_select_with_capacity_skips_at_capacity ... ok
+test scaling::concurrency::tests::test_select_with_capacity_skips_unhealthy ... ok
+test scaling::concurrency::tests::test_total_in_flight ... ok
+test scaling::concurrency::tests::test_unlimited_always_allowed ... ok
+test scaling::executor::tests::box_endpoint_observation_validation_is_strict_and_deterministic ... ok
+test scaling::executor::tests::box_executor_client_initialization_failure_is_explicit ... ok
+test scaling::executor::tests::box_executor_does_not_follow_redirects ... ok
+test scaling::executor::tests::box_executor_matches_box_scale_v1_wire_contract ... ok
+test scaling::executor::tests::box_executor_rejects_oversized_control_response_before_parsing ... ok
+test scaling::executor::tests::box_executor_rejects_path_delimiter_in_service_name ... ok
+test scaling::executor::tests::box_executor_try_new_succeeds_for_default_client ... ok
+test scaling::executor::tests::probe_box_scale_activation_rejects_unreachable_executor ... ok
+test scaling::executor::tests::test_box_executor_name ... ok
+test scaling::executor::tests::test_executor_trait_is_send_sync ... ok
+test scaling::executor::tests::test_mock_default ... ok
+test scaling::executor::tests::test_mock_execute_updates_replicas ... ok
+test scaling::executor::tests::test_mock_executor_name ... ok
+test scaling::executor::tests::test_mock_multiple_services ... ok
+test scaling::executor::tests::test_mock_records_decisions ... ok
+test scaling::executor::tests::test_mock_records_multiple_decisions ... ok
+test scaling::executor::tests::test_mock_returns_replicas ... ok
+test scaling::executor::tests::test_scale_decision_serialization ... ok
+test scaling::executor::tests::test_scale_direction_display ... ok
+test scaling::executor::tests::test_scale_direction_eq ... ok
+test scaling::executor::tests::test_scale_result_serialization ... ok
+test scaling::revision::tests::revision_selection_falls_through_to_an_enabled_revision_below_capacity ... ok
+test scaling::revision::tests::revision_selection_honors_container_capacity ... ok
+test scaling::revision::tests::test_50_50_split ... ok
+test scaling::revision::tests::test_90_10_split ... ok
+test scaling::revision::tests::test_empty_revisions ... ok
+test scaling::revision::tests::test_fallback_to_healthy_revision ... ok
+test scaling::revision::tests::test_get_revision ... ok
+test scaling::revision::tests::test_multiple_revisions_three_way_split ... ok
+test scaling::revision::tests::test_retry_selection_skips_failed_revision_backend ... ok
+test scaling::revision::tests::test_revision_load_balancer_access ... ok
+test scaling::revision::tests::test_revision_load_balancer_backends ... ok
+test scaling::revision::tests::test_revision_router_is_send_sync ... ok
+test scaling::revision::tests::test_revision_set_traffic_unknown_revision ... ok
+test scaling::revision::tests::test_revision_traffic_percent_clamping ... ok
+test scaling::revision::tests::test_revision_traffic_percent_set_get ... ok
+test scaling::revision::tests::test_revisions_list ... ok
+test scaling::revision::tests::test_service_name ... ok
+test scaling::revision::tests::test_set_traffic ... ok
+test scaling::revision::tests::test_set_traffic_one_unknown_revision ... ok
+test scaling::revision::tests::test_single_revision_100 ... ok
+test scaling::revision::tests::test_zero_total_weight_returns_none ... ok
+test scaling::revision::tests::zero_weight_revision_never_receives_fallback_traffic ... ok
+test service::failover::tests::test_failover_multiple_primary_backends ... ok
+test service::failover::tests::test_failover_names ... ok
+test service::failover::tests::test_failover_recovers_to_primary ... ok
+test service::failover::tests::test_failover_retry_skips_failed_primary_and_uses_backup_when_needed ... ok
+test service::failover::tests::test_failover_returns_none_when_both_unhealthy ... ok
+test service::failover::tests::test_failover_selector_is_send_sync ... ok
+test service::failover::tests::test_failover_switches_when_primary_unhealthy ... ok
+test service::failover::tests::test_failover_uses_primary_when_healthy ... ok
+test service::health_check::tests::active_health_redirect_does_not_follow_or_mark_healthy ... ok
+test service::health_check::tests::active_http_probe_accepts_only_http_schemes ... ok
+test service::health_check::tests::client_initialization_failure_is_explicit ... ok
+test service::health_check::tests::client_initialization_failure_returns_without_probing ... ok
+test service::health_check::tests::health_checker_try_new_is_send_and_sync ... ok
+test service::health_check::tests::non_http_backends_are_not_marked_unhealthy_by_http_checker ... ok
+test service::health_check::tests::probe_counters_saturate_at_transition_thresholds ... ok
+test service::health_check::tests::probe_counters_track_only_pending_transitions ... ok
+test service::health_check::tests::probe_keys_distinguish_duplicate_urls ... ok
+test service::health_check::tests::slow_backend_does_not_delay_another_probe_result ... ok
+test service::health_check::tests::test_health_checker_new ... ok
+test service::load_balancer::tests::backend_concurrency_reservation_is_atomic_and_released ... ok
+test service::load_balancer::tests::backend_concurrency_reservation_never_exceeds_limit_under_race ... ok
+test service::load_balancer::tests::cloud_managed_target_backends_own_exact_generation_admission ... ok
+test service::load_balancer::tests::dynamic_box_backends_reject_duplicate_slots_and_urls ... ok
+test service::load_balancer::tests::dynamic_box_backends_replace_atomically_and_preserve_unchanged_state ... ok
+test service::load_balancer::tests::managed_target_metric_identity_is_generation_bound_and_order_independent ... ok
+test service::load_balancer::tests::retired_generation_stays_closed_while_successor_admits ... ok
+test service::load_balancer::tests::retry_selection_does_not_repeat_failed_backend ... ok
+test service::load_balancer::tests::retry_selection_excludes_equivalent_backend_after_reload ... ok
+test service::load_balancer::tests::retry_selection_keeps_duplicate_static_slots_independent ... ok
+test service::load_balancer::tests::retry_selection_returns_none_for_single_failed_backend ... ok
+test service::load_balancer::tests::test_all_unhealthy_returns_none ... ok
+test service::load_balancer::tests::test_backend_connection_guards_sum_shards ... ok
+test service::load_balancer::tests::test_backend_connections ... ok
+test service::load_balancer::tests::test_backend_health ... ok
+test service::load_balancer::tests::test_empty_backends ... ok
+test service::load_balancer::tests::test_healthy_count ... ok
+test service::load_balancer::tests::test_least_connections ... ok
+test service::load_balancer::tests::test_least_connections_all_unhealthy ... ok
+test service::load_balancer::tests::test_mixed_counter_index_visits_every_slot ... ok
+test service::load_balancer::tests::test_random_all_unhealthy ... ok
+test service::load_balancer::tests::test_random_returns_something ... ok
+test service::load_balancer::tests::test_random_skips_unhealthy ... ok
+test service::load_balancer::tests::test_round_robin_cycles ... ok
+test service::load_balancer::tests::test_round_robin_healthy_skips_all_unhealthy ... ok
+test service::load_balancer::tests::test_round_robin_single ... ok
+test service::load_balancer::tests::test_round_robin_skips_unhealthy ... ok
+test service::load_balancer::tests::test_sticky_cookie ... ok
+test service::load_balancer::tests::test_weighted_all_unhealthy ... ok
+test service::load_balancer::tests::test_weighted_distribution ... ok
+test service::load_balancer::tests::test_weighted_total_weight_does_not_overflow ... ok
+test service::load_balancer::tests::test_weighted_zero_total_weight ... ok
+test service::mirror::tests::test_mirror_new ... ok
+test service::mirror::tests::test_mirror_percentage_0_clamped ... ok
+test service::mirror::tests::test_mirror_percentage_clamped ... ok
+test service::mirror::tests::test_mirror_request_no_healthy_backend ... ok
+test service::mirror::tests::test_should_mirror_100 ... ok
+test service::mirror::tests::test_should_mirror_10_percent ... ok
+test service::mirror::tests::test_should_mirror_1_percent ... ok
+test service::mirror::tests::test_should_mirror_50_percent ... ok
+test service::mirror::tests::test_should_mirror_deterministic ... ok
+test service::mirror::tests::test_should_mirror_zero ... ok
+test service::passive_health::tests::duplicate_urls_keep_health_state_independent ... ok
+test service::passive_health::tests::ejection_is_allowed_while_a_peer_remains ... ok
+test service::passive_health::tests::last_healthy_backend_is_never_ejected ... ok
+test service::passive_health::tests::response_entry_point_honours_the_guard ... ok
+test service::passive_health::tests::test_config_default ... ok
+test service::passive_health::tests::test_independent_backend_tracking ... ok
+test service::passive_health::tests::test_is_error_status ... ok
+test service::passive_health::tests::test_new ... ok
+test service::passive_health::tests::test_no_recovery_before_timeout ... ok
+test service::passive_health::tests::test_recent_errors_unknown_backend ... ok
+test service::passive_health::tests::test_recent_errors_within_window ... ok
+test service::passive_health::tests::test_record_error_after_unhealthy_ignored ... ok
+test service::passive_health::tests::test_record_error_below_threshold ... ok
+test service::passive_health::tests::test_record_error_non_error_status_ignored ... ok
+test service::passive_health::tests::test_record_error_reaches_threshold ... ok
+test service::passive_health::tests::test_record_response_tracks_only_configured_error_statuses ... ok
+test service::passive_health::tests::test_record_success_no_errors ... ok
+test service::passive_health::tests::test_recover_expired_reenables_after_recovery_time ... ok
+test service::passive_health::tests::test_recover_expired_still_broken_reblacklists_after_threshold ... ok
+test service::passive_health::tests::test_recovery_after_timeout ... ok
+test service::passive_health::tests::test_reset_all ... ok
+test service::passive_health::tests::test_reset_backend ... ok
+test service::passive_health::tests::test_total_errors_unknown_backend ... ok
+test service::passive_health::tests::unguarded_entry_point_keeps_legacy_behaviour ... ok
+test service::sticky::tests::sticky_binding_keeps_duplicate_url_slots_distinct ... ok
+test service::sticky::tests::test_bind_and_get ... ok
+test service::sticky::tests::test_build_cookie ... ok
+test service::sticky::tests::test_clear ... ok
+test service::sticky::tests::test_custom_config ... ok
+test service::sticky::tests::test_evict_expired ... ok
+test service::sticky::tests::test_expired_session_removed ... ok
+test service::sticky::tests::test_extract_session_id ... ok
+test service::sticky::tests::test_extract_session_id_empty_value ... ok
+test service::sticky::tests::test_extract_session_id_not_found ... ok
+test service::sticky::tests::test_extract_session_id_only_cookie ... ok
+test service::sticky::tests::test_generate_session_id_unique ... ok
+test service::sticky::tests::test_get_missing ... ok
+test service::sticky::tests::test_max_sessions_eviction ... ok
+test service::sticky::tests::test_new ... ok
+test service::sticky::tests::test_remove_backend ... ok
+test service::sticky::tests::test_select_backend_no_healthy ... ok
+test service::sticky::tests::test_select_backend_no_session ... ok
+test service::sticky::tests::test_select_backend_stale_session ... ok
+test service::sticky::tests::test_select_backend_unhealthy_sticky ... ok
+test service::sticky::tests::test_select_backend_with_existing_session ... ok
+test service::sticky::tests::test_unbind ... ok
+test service::tests::test_prepare_health_checks_includes_revision_pools ... ok
+test service::tests::test_prepare_health_checks_revalidates_runtime_settings ... ok
+test service::tests::test_registry_allows_box_managed_scale_from_zero_service ... ok
+test service::tests::test_registry_allows_revision_only_service ... ok
+test service::tests::test_registry_applies_request_timeout ... ok
+test service::tests::test_registry_empty ... ok
+test service::tests::test_registry_empty_servers ... ok
+test service::tests::test_registry_from_config ... ok
+test service::tests::test_registry_get_nonexistent ... ok
+test service::tests::test_registry_iter ... ok
+test service::tests::test_registry_len ... ok
+test service::tests::test_registry_multiple_services ... ok
+test service::tests::test_registry_propagates_container_concurrency_to_backend_admission ... ok
+test static_object::cache::tests::content_encoding_is_part_of_the_cache_key_namespace ... ok
+test static_object::cache::tests::namespaced_keys_do_not_collide_and_lru_evicts ... ok
+test static_object::cache::tests::rejects_objects_larger_than_the_byte_budget ... ok
+test static_object::deployment::tests::deployment_static_object_admits_identical_digest_references_within_one_release ... ok
+test static_object::deployment::tests::deployment_static_object_does_not_adopt_another_tenant_or_release ... ok
+test static_object::deployment::tests::deployment_static_object_reads_only_the_exact_cloud_publication_key ... ok
+test static_object::deployment::tests::deployment_static_object_refuses_namespace_escape_bounds_and_conflicting_digest_sizes ... ok
+test static_object::deployment::tests::deployment_static_object_refuses_size_and_same_size_digest_corruption ... ok
+test static_object::deployment::tests::deployment_static_object_refuses_unadmitted_digest_even_if_provider_has_it ... ok
+test static_object::directory::tests::reads_digest_named_files_only ... ok
+test static_object::foundation_tests::selects_manifest_entry_then_admits_digest_bound_bytes ... ok
+test static_object::manifest::tests::accepts_a_sealed_manifest ... ok
+test static_object::manifest::tests::missing_asset_does_not_silently_select_spa_fallback ... ok
+test static_object::manifest::tests::rejects_case_colliding_paths ... ok
+test static_object::manifest::tests::rejects_credential_and_endpoint_snapshot_keys ... ok
+test static_object::manifest::tests::rejects_missing_entry_document_and_bad_digests ... ok
+test static_object::memory::tests::serves_digest_bound_head_and_get_only ... ok
+test static_object::path::tests::accepts_simple_relative_paths ... ok
+test static_object::path::tests::rejects_traversal_and_absolute_forms ... ok
+test static_object::path::tests::request_path_strips_leading_slash ... ok
+test static_object::port::tests::admits_only_exact_size_and_digest ... ok
+test static_object::range::tests::parses_closed_open_and_suffix_ranges ... ok
+test static_object::s3::tests::deployment_static_s3_does_not_follow_signed_request_redirects ... ok
+test static_object::s3::tests::deployment_static_s3_private_ca_is_bounded_and_never_echoes_file_contents ... ok
+test static_object::s3::tests::deployment_static_s3_read_deadline_covers_the_entire_provider_wait ... ok
+test static_object::s3::tests::deployment_static_s3_refuses_missing_or_invalid_credentials_without_disclosure ... ok
+test static_object::s3::tests::deployment_static_s3_refuses_unknown_endpoints_namespaces_and_timeout_escape ... ok
+test static_object::s3::tests::deployment_static_s3_signed_read_uses_cloud_keys_and_never_writes ... ok
+test static_object::serve::tests::admitted_cache_avoids_repeat_object_authority_gets ... ok
+test static_object::serve::tests::head_verifies_via_port_head_without_authority_get ... ok
+test static_object::serve::tests::if_none_match_returns_304_without_body_or_authority_get ... ok
+test static_object::serve::tests::if_range_requires_strong_etag_match_before_applying_bytes_range ... ok
+test static_object::serve::tests::sealed_content_encoding_is_emitted_without_accept_encoding_negotiation ... ok
+test static_object::serve::tests::serves_get_and_head_with_nosniff ... ok
+test static_object::serve::tests::single_byte_range_returns_206_and_unsatisfiable_416 ... ok
+test static_object::serve::tests::snapshot_replacement_purges_cache_while_prior_runtime_arc_still_serves ... ok
+test static_object::serve::tests::spa_fallback_eligibility_rejects_api_namespace ... ok
+test static_object::serve::tests::spa_fallback_never_masks_missing_assets_or_posts ... ok
+test tests::test_gateway_state_default ... ok
+test tests::test_gateway_state_display ... ok
+test tests::test_gateway_state_equality ... ok
+test tests::test_gateway_state_serialization ... ok
+test tests::test_health_status_clone ... ok
+test tests::test_health_status_default ... ok
+test tests::test_health_status_serialization ... ok
+test translation::contract_tests::anthropic_responses_translate_back_to_the_frozen_openai_shapes ... ok
+test translation::contract_tests::anthropic_streams_translate_to_the_frozen_openai_frames ... ok
+test translation::contract_tests::anthropic_string_content_shorthand_translates ... ok
+test translation::contract_tests::anthropic_tool_use_without_object_input_refuses ... ok
+test translation::contract_tests::broken_tool_chain_refuses ... ok
+test translation::contract_tests::cache_lanes_round_trip_through_both_usage_shapes ... ok
+test translation::contract_tests::chat_chunks_translate_to_the_frozen_responses_events ... ok
+test translation::contract_tests::chat_completions_translate_back_to_the_frozen_response_objects ... ok
+test translation::contract_tests::forward_translation_reproduces_the_frozen_anthropic_bodies ... ok
+test translation::contract_tests::malformed_tool_arguments_refuse ... ok
+test translation::contract_tests::mid_conversation_system_message_refuses ... ok
+test translation::contract_tests::non_data_url_image_refuses ... ok
+test translation::contract_tests::openai_responses_translate_back_to_the_frozen_anthropic_shapes ... ok
+test translation::contract_tests::openai_streams_translate_back_to_the_frozen_anthropic_events ... ok
+test translation::contract_tests::responses_defaults_the_completion_bound_fail_closed ... ok
+test translation::contract_tests::responses_requests_translate_to_the_frozen_chat_shapes ... ok
+test translation::contract_tests::responses_stream_refuses_post_terminal_and_bad_sentinels ... ok
+test translation::contract_tests::reverse_stream_refuses_post_terminal_input_and_bad_sentinels ... ok
+test translation::contract_tests::reverse_translation_reproduces_the_openai_bodies_minus_ledgered_fields ... ok
+test translation::contract_tests::round_trip_through_both_dialects_is_stable ... ok
+test translation::contract_tests::stateful_responses_surfaces_refuse_closed ... ok
+test translation::contract_tests::stream_translation_refuses_unknown_events_and_post_stop_input ... ok
+test translation::contract_tests::unknown_roles_refuse_with_a_field_error ... ok
+test translation::contract_tests::unknown_stop_and_finish_reasons_refuse ... ok
+test usage::acknowledgement_tests::acknowledgement_cursor_past_the_epoch_fails_closed_on_restart ... ok
+test usage::acknowledgement_tests::acknowledgement_manifest_size_is_constant_across_sequence_widths ... ok
+test usage::acknowledgement_tests::acknowledging_a_closed_epoch_reclaims_only_its_segment ... ok
+test usage::acknowledgement_tests::exact_acknowledgement_is_contiguous_idempotent_and_restart_durable ... ok
+test usage::acknowledgement_tests::legacy_manifest_migrates_without_losing_retained_records ... ok
+test usage::acknowledgement_tests::malformed_fixed_width_acknowledgement_fails_closed ... ok
+test usage::acknowledgement_tests::restart_reclaims_a_current_epoch_that_was_fully_acknowledged ... ok
+test usage::acknowledgement_tests::startup_finishes_a_committed_retiring_epoch ... ok
+test usage::acknowledgement_tests::startup_finishes_retirement_after_the_segment_was_already_removed ... ok
+test usage::acknowledgement_tests::v2_manifest_migrates_to_v3_without_losing_acknowledgement ... ok
+test usage::cloud_ingest::tests::accepts_cloud_contract_golden_batch_json ... ok
+test usage::cloud_ingest::tests::batch_and_receipt_reject_unknown_json_fields ... ok
+test usage::cloud_ingest::tests::batch_rejects_noncontiguous_and_skipped_after_cursors ... ok
+test usage::cloud_ingest::tests::batch_schema_constants_match_cloud_contracts ... ok
+test usage::cloud_ingest::tests::duplicate_ack_and_process_restart_are_idempotent ... ok
+test usage::cloud_ingest::tests::prefix_ack_then_next_upload_drains_remaining_backlog ... ok
+test usage::cloud_ingest::tests::process_restart_resumes_after_persisted_prefix_ack ... ok
+test usage::cloud_ingest::tests::receipt_rejects_batch_id_mismatch ... ok
+test usage::cloud_ingest::tests::receipt_without_ack_cursor_does_not_advance_watermark ... ok
+test usage::cloud_ingest::tests::record_rejects_tampered_payload_hash ... ok
+test usage::cloud_ingest::tests::transport_failure_then_retry_preserves_unacked_backlog ... ok
+test usage::cloud_ingest::tests::uploader_applies_highest_contiguous_ack_and_reclaims ... ok
+test usage::cloud_ingest::tests::uploader_rejects_ack_past_batch_tip ... ok
+test usage::compaction_tests::acknowledgement_can_compact_the_same_closed_epoch_more_than_once ... ok
+test usage::compaction_tests::compacted_prefix_without_a_matching_acknowledgement_fails_closed ... ok
+test usage::compaction_tests::invalid_compaction_staging_fails_before_the_original_is_removed ... ok
+test usage::compaction_tests::partial_closed_epoch_is_compacted_without_reencoding_retained_records ... ok
+test usage::compaction_tests::partial_current_epoch_is_compacted_on_the_next_startup ... ok
+test usage::compaction_tests::partial_epoch_compaction_releases_capacity_for_new_records ... ok
+test usage::compaction_tests::probe_activation_fails_closed_when_compacting_epoch_final_is_a_directory ... ok
+test usage::compaction_tests::probe_activation_projects_partial_ack_compaction_before_capacity_like_open ... ok
+test usage::compaction_tests::startup_discards_a_compaction_not_committed_to_the_manifest ... ok
+test usage::compaction_tests::startup_finishes_retirement_of_a_previously_compacted_epoch ... ok
+test usage::compaction_tests::startup_recovers_every_compaction_publication_crash_point ... ok
+test usage::compaction_tests::truncated_compaction_staging_fails_before_the_original_is_removed ... ok
+test usage::http_transport::tests::http_transport_posts_batch_and_parses_receipt ... ok
+test usage::http_transport::tests::http_transport_rejects_malformed_receipt_json ... ok
+test usage::http_transport::tests::http_transport_rejects_non_ok_status_without_parsing_body ... ok
+test usage::http_transport::tests::http_transport_rejects_wrong_receipt_schema_and_unknown_fields ... ok
+test usage::http_transport::tests::rejects_empty_endpoint_or_token ... ok
+test usage::http_transport::tests::rejects_empty_mtls_material ... ok
+test usage::http_transport::tests::transport_errors_surface_nested_source_causes ... ok
+test usage::ledger_double::tests::ledger_acks_contiguous_records_and_refuses_wrong_after ... ok
+test usage::ledger_double::tests::ledger_rejects_event_id_payload_conflicts ... ok
+test usage::ledger_double::tests::ledger_types_are_send_sync ... ok
+test usage::ledger_double::tests::ledger_wrong_after_does_not_advertise_tip_outside_batch ... ok
+test usage::ledger_double::tests::uploader_drains_against_in_memory_cloud_ledger ... ok
+test usage::ledger_double::tests::uploader_recovers_after_hold_when_full_window_includes_tip ... ok
+test usage::lifecycle::contract_tests::cloud_decode_rejects_forbidden_prompt_fields_on_gateway_shape ... ok
+test usage::lifecycle::contract_tests::cloud_decode_rejects_sentinel_token_split ... ok
+test usage::lifecycle::contract_tests::gateway_lifecycle_encode_carries_token_split_through_cloud_decode ... ok
+test usage::lifecycle::contract_tests::gateway_lifecycle_encode_passes_cloud_decode_for_all_kinds ... ok
+test usage::lifecycle::contract_tests::inference_endpoint_wire_values_match_cloud_usage_endpoint_v1 ... ok
+test usage::lifecycle::contract_tests::lifecycle_schema_id_matches_cloud_contracts ... ok
+test usage::lifecycle::contract_tests::measurement_completeness_unknown_without_tokens_matches_cloud ... ok
+test usage::lifecycle::contract_tests::partial_split_without_total_stays_upstream_usage ... ok
+test usage::lifecycle::tests::hr5_routed_requests_carry_prompt_free_routing_facts ... ok
+test usage::lifecycle::tests::request_started_payload_matches_cloud_lifecycle_schema ... ok
+test usage::mtls_ingest_tests::bearer_transport_cannot_satisfy_mtls_required_usage_endpoint ... ok
+test usage::mtls_ingest_tests::mtls_transport_recovers_after_transient_cloud_failure ... ok
+test usage::tests::a_spool_directory_is_exclusively_owned_by_one_process ... ok
+test usage::tests::append_is_durable_ordered_and_byte_preserving ... ok
+test usage::tests::capacity_and_event_size_fail_explicitly_without_advancing_sequence ... ok
+test usage::tests::dropping_a_terminal_reservation_releases_capacity ... ok
+test usage::tests::gateway_identity_mismatch_and_corruption_fail_closed ... ok
+test usage::tests::probe_activation_accepts_deleted_retiring_epoch_like_open ... ok
+test usage::tests::probe_activation_fails_closed_when_exclusive_lock_is_held ... ok
+test usage::tests::probe_activation_fails_closed_when_prepared_epoch_record_is_corrupt ... ok
+test usage::tests::probe_activation_fails_closed_when_ready_epoch_record_is_corrupt ... ok
+test usage::tests::probe_activation_fails_closed_when_recovery_artifact_is_a_directory ... ok
+test usage::tests::probe_activation_fails_closed_when_spool_parent_is_not_a_directory ... ok
+test usage::tests::probe_activation_fails_closed_when_usage_spool_directory_is_not_writable ... ok
+test usage::tests::probe_activation_projects_empty_epoch_reclaim_before_capacity_like_open ... ok
+test usage::tests::probe_activation_rejects_missing_boot_epoch_headroom_like_open ... ok
+test usage::tests::probe_activation_rejects_retained_bytes_over_capacity_like_open ... ok
+test usage::tests::probe_activation_rejects_untracked_paths_like_open ... ok
+test usage::tests::probe_activation_write_probe_leaves_no_untracked_artifact ... ok
+test usage::tests::restart_retains_old_epochs_and_exact_event_replay_is_idempotent ... ok
+test usage::tests::shutdown_drains_an_unobserved_terminal_append ... ok
+test usage::tests::spool_storage_is_private_and_insecure_permissions_fail_closed ... ok
+test usage::tests::terminal_reservation_survives_response_side_enqueue_and_flushes_before_shutdown ... ok
+test usage::tests::unknown_replay_cursor_is_reported_as_a_gap ... ok
+
+failures:
+
+---- entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts stdout ----
+
+thread 'entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts' (3289748) panicked at apps/gateway/src/entrypoint/inference_tests.rs:4775:5:
+the broken stream surfaces to the client
+
+---- entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model stdout ----
+
+thread 'entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model' (3291924) panicked at apps/gateway/src/entrypoint/platform_model_tests.rs:789:5:
+assertion `left == right` failed
+  left: 200
+ right: 404
+
+---- entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route stdout ----
+
+thread 'entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route' (3291925) panicked at apps/gateway/src/entrypoint/platform_model_tests.rs:703:5:
+assertion `left == right` failed
+  left: 503
+ right: 404
+
+---- entrypoint::platform_model_tests::signed_in_callers_use_platform_ocr_and_apofasi stdout ----
+
+thread 'tokio-rt-worker' (3291928) panicked at /home/user/.cargo/registry/src/mirrors.ustc.edu.cn-38d0e5eb5da2abae/ort-2.0.0-rc.10/src/lib.rs:111:33:
+An error occurred while attempting to load the ONNX Runtime binary at `libonnxruntime.so`: libonnxruntime.so: cannot open shared object file: No such file or directory
+
+thread 'entrypoint::platform_model_tests::signed_in_callers_use_platform_ocr_and_apofasi' (3291927) panicked at apps/gateway/src/entrypoint/platform_model_tests.rs:511:5:
+assertion `left == right` failed
+  left: 503
+ right: 200
+
+---- entrypoint::platform_model_tests::supplier_binding_replaces_the_platform_model_until_removed stdout ----
+
+thread 'entrypoint::platform_model_tests::supplier_binding_replaces_the_platform_model_until_removed' (3291929) panicked at apps/gateway/src/entrypoint/platform_model_tests.rs:637:5:
+assertion `left == right` failed
+  left: 503
+ right: 200
+
+---- entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold stdout ----
+
+thread 'entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold' (3292181) panicked at apps/gateway/src/entrypoint/tests.rs:3000:5:
+assertion `left == right` failed
+  left: "broken"
+ right: "{\"error\":\"No healthy backends\"}"
+
+---- gateway::tests::test_gateway_keeps_serving_when_the_management_plane_cannot_start stdout ----
+
+thread 'gateway::tests::test_gateway_keeps_serving_when_the_management_plane_cannot_start' (3292473) panicked at apps/gateway/src/gateway/tests.rs:396:22:
+the data plane must keep serving: Other("Failed to bind 0.0.0.0:80: Permission denied (os error 13)")
+
+
+failures:
+    entrypoint::inference_tests::hr_c5_no_re_route_after_the_response_starts
+    entrypoint::platform_model_tests::embedding_and_rerank_suppliers_replace_the_platform_model
+    entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route
+    entrypoint::platform_model_tests::signed_in_callers_use_platform_ocr_and_apofasi
+    entrypoint::platform_model_tests::supplier_binding_replaces_the_platform_model_until_removed
+    entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold
+    gateway::tests::test_gateway_keeps_serving_when_the_management_plane_cannot_start
+
+test result: FAILED. 2106 passed; 7 failed; 5 ignored; 0 measured; 0 filtered out; finished in 184.13s
+
+error: test failed, to rerun pass `-p a3s-gateway --lib`

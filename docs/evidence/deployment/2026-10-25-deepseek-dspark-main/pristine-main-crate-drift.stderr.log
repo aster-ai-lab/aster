@@ -1,0 +1,8 @@
+drift ratchet grew (6 new):
+  a3s-box-runtime: CONTENT-DRIFT
+  a3s-okf: CONTENT-DRIFT
+  a3s-runtime: CONTENT-DRIFT
+  a3s-sandbox: CONTENT-DRIFT
+  a3s-use: CONTENT-DRIFT
+  a3s-use-ocr: CONTENT-DRIFT
+the drift ratchet only shrinks: update the baseline only when drift was removed

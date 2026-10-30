@@ -1,0 +1,10 @@
+{
+  "id": "deepseek-v41-flash-1017-xq-1m",
+  "object": "model",
+  "created": 1792927374,
+  "owned_by": "local",
+  "context_length": 1048576,
+  "format": "gguf",
+  "size_bytes": 162954903552,
+  "sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389"
+}

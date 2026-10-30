@@ -32,8 +32,8 @@ Reference: `kitlangton/scrawl@7b184c67767a1aee6c1d44640d94d8446cd5fed1`. Every r
 | Localhost port → project → Aster session | Router + native process inspection | Exact/repository root matching and bounds | pending |
 | Smart send/offer/keep, runner-up and undo window | Router + review UI | Evidence replay and explicit recipient behavior | pending |
 | Cabled iPhone mirror/native video and flags | Swift helper + device adapter | Available-device acceptance or explicit hardware blocker | pending |
-| ScrawlKit appFrames and ReplayKit | Swift package | Swift tests and import/cross-reader proof | pending |
-| ScrawlKit gestures, events and app context | Swift package | Ordered timeline and manifest proof | pending |
+| CaptureKit appFrames and ReplayKit | Swift package | Swift tests and import/cross-reader proof | pending |
+| CaptureKit gestures, events and app context | Swift package | Ordered timeline and manifest proof | pending |
 | Pairing, USB import and delivery replies | Swift/Rust ingest | Protocol fixtures and idempotency | pending |
 | Durable HTTPS outbox and retry classification | Swift package | Persistence, retry, permanent failure and 2xx deletion | pending |
 | Headless authenticated ingest service | Rust ingest | Bounded payload, auth and delivery tests | pending |
@@ -44,6 +44,6 @@ Reference: `kitlangton/scrawl@7b184c67767a1aee6c1d44640d94d8446cd5fed1`. Every r
 | Linux capture/input/transcription | New Linux adapter | Linux native evidence or explicit incomplete | pending |
 | Signed helper and packaged permissions | Studio delivery | Installed signed app, helper signature and native permissions | pending |
 
-The separate Scrawl updater, branded installer and OpenCode recipient are not copied. Aster's existing updater, package and session routing replace them. ScrawlKit package/source names and the `.scrawl` evidence contract remain compatible.
+The separate Scrawl updater, branded installer and OpenCode recipient are not copied. Aster's existing updater, package and session routing replace them. Current package/source names use CaptureKit; legacy `.scrawl` bundles and `scrawl.json` manifests remain readable in place.
 
 Current bounded macOS acceptance and remaining gaps are recorded in [the native outcome](../../../docs/evidence/desktop/2026-10-30-scrawl-evidence/OUTCOME.md). The composite target/native-island row remains pending because external-window recording was not completed.

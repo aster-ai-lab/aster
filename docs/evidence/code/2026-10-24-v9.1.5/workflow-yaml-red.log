@@ -1,0 +1,4 @@
+<stdin>:100:102: could not parse as YAML: mapping values are not allowed in this context [syntax-check]
+    |
+100 |         run: cargo test --locked -p a3s-code-core --lib -- agent_api::goal_facade::tests fact_control:: goal_control:: hitl:: tool_confirmation:: --test-threads=4
+    |                                                                                                      ^~

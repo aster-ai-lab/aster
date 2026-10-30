@@ -1,0 +1,73 @@
+{
+  "unix": 1792882241.1494405,
+  "phase": "passed",
+  "clients": {
+    "unix": 1792882242.1939795,
+    "clients": [
+      {
+        "name": "xolotl-fullwindow-long-suite-v56-intent.json",
+        "alive": false,
+        "phases": {
+          "suite-result.json": "failed"
+        }
+      },
+      {
+        "name": "xolotl-post-concurrency-v66-intent.json",
+        "alive": false,
+        "phases": {
+          "request-result.json": "passed"
+        }
+      },
+      {
+        "name": "xolotl-natural-fixtures-v67-intent.json",
+        "alive": false,
+        "phases": {
+          "prepare-result.json": "passed"
+        }
+      },
+      {
+        "name": "xolotl-draft-extended-v53-off_repeat-intent.json",
+        "alive": false,
+        "phases": {
+          "request-result.json": "passed"
+        }
+      }
+    ]
+  },
+  "optimization": {
+    "unix": 1792882246.7131193,
+    "supervisor_alive": true,
+    "slots": [
+      {
+        "id": 0,
+        "n_ctx": 1048576,
+        "is_processing": false,
+        "n_prompt_tokens": 1048567
+      },
+      {
+        "id": 1,
+        "n_ctx": 1048576,
+        "is_processing": false,
+        "n_prompt_tokens": 1048567
+      }
+    ],
+    "phase": "serving",
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4"
+  },
+  "formal": {
+    "unix": 1792882248.3771942,
+    "observer_result": null,
+    "health": {
+      "status": "ok",
+      "max_context": 1048576,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "display_name": null,
+      "images": false,
+      "api_key": true,
+      "image_generation": false,
+      "loaded": true,
+      "service": "strata"
+    },
+    "status": 200
+  }
+}

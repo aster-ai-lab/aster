@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::agent_view::task_icon_mouse_tests::tasks_pane_icons_hover_and_click_where_painted' (34248) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\task_icon_mouse_tests.rs:110:10:
+kill icon [✗] painted for a running task
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::task_icon_mouse_tests::tasks_pane_icons_hover_and_click_where_painted ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::task_icon_mouse_tests::tasks_pane_icons_hover_and_click_where_painted
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.19s
+

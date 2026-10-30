@@ -1,0 +1,53 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/use/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests src/lib.rs (target-power/debug/deps/a3s_power-65f37d3f6bb16005)
+
+running 22 tests
+test backend::prism::detect::tests::family_marker_selects_prism ... ok
+test backend::prism::detect::tests::path_detection_covers_shipped_bands ... ok
+test backend::prism::profile::tests::parses_aliases_and_defaults ... ok
+test backend::prism::profile::tests::speculation_profiles_withdraw_prompt_cache ... ok
+test backend::prism::streaming_tests::absent_usage_stays_absent_instead_of_counting_text_chunks ... ok
+test backend::prism::streaming_tests::documented_finish_reasons_preserve_the_upstream_outcome ... ok
+test backend::prism::streaming_tests::dropping_prefill_wait_closes_the_upstream_body ... ok
+test backend::prism::streaming_tests::eof_after_finish_is_an_error_without_a_success_chunk ... ok
+test backend::prism::streaming_tests::terminal_protocol_errors_never_fabricate_a_normal_completion ... ok
+test backend::prism::streaming_tests::tool_deltas_arrive_before_finish_and_keep_trailing_authoritative_usage ... ok
+test backend::prism::streaming_tests::unknown_finish_reason_never_becomes_a_success_chunk ... ok
+test backend::prism::tests::baseline_profile_does_not_require_drafter ... ok
+test backend::prism::tests::chat_body_enables_upstream_stream_for_tool_free_requests ... ok
+test backend::prism::tests::chat_body_forwards_tools_and_tool_choice ... ok
+test backend::prism::tests::claims_only_prism_gguf_manifests ... ok
+test backend::prism::tests::detect_helpers_match_bonsai2_names ... ok
+test backend::prism::tests::dspark_profile_accepts_existing_drafter_path ... ok
+test backend::prism::tests::dspark_profile_fails_closed_without_drafter ... ok
+test backend::prism::tests::dspark_profile_rejects_missing_drafter_file ... ok
+test backend::prism::tests::power_spec_modes_fail_closed_on_prism_load ... ok
+test backend::prism::timings::tests::parses_baseline_timings_without_draft ... ok
+test backend::prism::timings::tests::parses_dspark_draft_counters ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 1998 filtered out; finished in 0.16s
+

@@ -1,0 +1,32 @@
+{
+  "schema": "aster.tui.native-cli-boundaries.v1",
+  "platform": "win32",
+  "model": "kimi/k3.1-pro",
+  "source_pair": "aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-pc-windows-msvc",
+  "cases": [
+    {
+      "case": "scheduler-confirmation-cancel",
+      "exit_code": 0,
+      "timed_out": false,
+      "requested_model": "kimi/k3.1-pro",
+      "configuration_source": "original_acl",
+      "seconds": 10.39,
+      "stdout_sha256": "d739fb7702d31d97211deb758b6a8395b3361f630f72774f17d4a6b853457800",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool_calls": 0,
+      "model_turns": 1,
+      "model_requested_tools": [
+        "write"
+      ],
+      "confirmation_answers": [
+        false
+      ],
+      "confirmation_cancelled_before_execution": true,
+      "no_file_effect": true,
+      "result": "pass"
+    }
+  ],
+  "script_sha256": "882cb4fc4ab2291adde37c8d185c6ec24948088a75a4cde35e1d04fe79d57b6f",
+  "config_unchanged": true,
+  "all_passed": true
+}

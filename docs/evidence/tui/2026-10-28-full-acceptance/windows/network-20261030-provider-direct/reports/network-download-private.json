@@ -1,0 +1,358 @@
+{
+  "assertions_finished": true,
+  "case": "network-download-private",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-download-error.json"
+          },
+          "id": "call_6a134b01657b46bb9909fcc4342c2646",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13331,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+            "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_6a134b01657b46bb9909fcc4342c2646",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+            "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_6a134b01657b46bb9909fcc4342c2646",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":5,\\\"url\\\":\\\"http://127.0.0.1/private.bin\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":152},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":152,\"projected_bytes\":152,\"original_estimated_tokens\":38,\"projected_estimated_tokens\":38,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"projected_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"repeat_key\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"content_ref\":\"inline:sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:259fd9e5a630aba1940a33f92176224f0a669b8a6ce794f547cef178d94db2ba\"}",
+        "prepared_digest": "sha256:606f5ffc404cbe666c835d601e26308de5bba92cfe299819a1ec4d2d86d02436",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "connections": 1,
+            "file_path": "payload.bin",
+            "max_bytes": 131072,
+            "timeout": 5,
+            "url": "http://127.0.0.1/private.bin"
+          },
+          "id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+          "name": "download"
+        },
+        "has_text": false,
+        "prompt_tokens": 13591,
+        "text": null,
+        "tool": "download"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+            "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+          "turn": 1
+        },
+        "tool": "download"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+            "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"URL resolves to a non-public address and was blocked: 127.0.0.1\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"projected_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"repeat_key\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"content_ref\":\"inline:sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0d537c694910e1365cf94da38d26050eb5bcd9c439d414c74137ebce42975bda\"}",
+        "prepared_digest": "sha256:4c9720801910956f0b13587e4acca939fbef883837418db2eddd8549a59bf5a3",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13808,
+        "text": "Tool exit code: 1\n\nURL resolves to a non-public address and was blocked: 127.0.0.1",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7a76e65fd15ded47f1061aedf6b711fcd1e8186ca11b2a1113ebbd2d05f4d4c1",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:68782ed911bf164e7e3db26cf219d8508915592f740f81bde674508990b83692",
+          "sha256:47b66b40e8562453b72440f041ca772a4de24851d89c8f3c863dfed06fec4ec0"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dEiHM3\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:18 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file                                                                                                           ♦ Fetch http://127.0.0.1/private.bin                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ♦ Run download 0.0s                                                                              16s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow download?                                                                                                      │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40730",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dEiHM3\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:18 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:18 PM                                                                                                                                 URL resolves to a non-public address and was blocked: 127.0.0.1                                                                                                                                                                                 Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the actual failed download keeps the original destination bytes or leaves no destination, leaks no adjacent download temporary, and its HTTP dispatch boundary matches the requested refusal",
+      "name": "download-refusal-exact-scope",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-dEiHM3\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:18 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:18 PM                                                                                                                                 URL resolves to a non-public address and was blocked: 127.0.0.1                                                                                                                                                                                 Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "network-download-private",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-download-error.json"
+              },
+              "id": "call_6a134b01657b46bb9909fcc4342c2646",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13331,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+                "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_6a134b01657b46bb9909fcc4342c2646",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+                "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_6a134b01657b46bb9909fcc4342c2646",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":5,\\\"url\\\":\\\"http://127.0.0.1/private.bin\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":152},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":152,\"projected_bytes\":152,\"original_estimated_tokens\":38,\"projected_estimated_tokens\":38,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"projected_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"repeat_key\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"content_ref\":\"inline:sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:259fd9e5a630aba1940a33f92176224f0a669b8a6ce794f547cef178d94db2ba\"}",
+            "prepared_digest": "sha256:606f5ffc404cbe666c835d601e26308de5bba92cfe299819a1ec4d2d86d02436",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "connections": 1,
+                "file_path": "payload.bin",
+                "max_bytes": 131072,
+                "timeout": 5,
+                "url": "http://127.0.0.1/private.bin"
+              },
+              "id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+              "name": "download"
+            },
+            "has_text": false,
+            "prompt_tokens": 13591,
+            "text": null,
+            "tool": "download"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+                "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+              "turn": 1
+            },
+            "tool": "download"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-71c092aa-e51f-4ec8-9988-50c077882a86",
+                "thread_id": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_28ed46ffbdfc419d9ab5c43c096f71fc",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"URL resolves to a non-public address and was blocked: 127.0.0.1\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"projected_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"repeat_key\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"content_ref\":\"inline:sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0d537c694910e1365cf94da38d26050eb5bcd9c439d414c74137ebce42975bda\"}",
+            "prepared_digest": "sha256:4c9720801910956f0b13587e4acca939fbef883837418db2eddd8549a59bf5a3",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13808,
+            "text": "Tool exit code: 1\n\nURL resolves to a non-public address and was blocked: 127.0.0.1",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "7a76e65fd15ded47f1061aedf6b711fcd1e8186ca11b2a1113ebbd2d05f4d4c1",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:68782ed911bf164e7e3db26cf219d8508915592f740f81bde674508990b83692",
+              "sha256:47b66b40e8562453b72440f041ca772a4de24851d89c8f3c863dfed06fec4ec0"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "ca630001-e121-4b82-b08e-1a4ea7d59f61"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

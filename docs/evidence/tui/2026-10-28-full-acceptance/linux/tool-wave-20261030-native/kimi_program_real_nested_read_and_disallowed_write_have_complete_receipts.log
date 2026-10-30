@@ -1,0 +1,14 @@
+
+running 1 test
+test tool_wave::kimi_program_real_nested_read_and_disallowed_write_have_complete_receipts ... ORACLE case=tool-wave-program name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=tool-wave-program name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=tool-wave-program name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40374
+ORACLE case=tool-wave-program name=program-real-read-receipt result=pass detail=embedded QuickJS calls the real read tool once and returns its unseen Unicode bytes with complete nested receipts
+ORACLE case=tool-wave-program name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=tool-wave-program name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=42328
+ORACLE case=tool-wave-program name=program-forbidden-nested-write result=pass detail=a script restricted to read fails before dispatching write; no target file or incomplete nested-call receipt is produced
+ORACLE case=tool-wave-program name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 76 filtered out; finished in 46.73s
+

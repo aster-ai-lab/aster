@@ -1,0 +1,33 @@
+{
+  "files": [
+    {
+      "file": "launch_code_service_v118.frozen.py",
+      "sha256": "e034110b0243f7fd4c7fd8697a24ea18418512a7f48a5141fbd744b6e78b3652"
+    },
+    {
+      "file": "manage_code_basic_v118.frozen.py",
+      "sha256": "6c93b4868ab894403ebf12ed849e5a93e78a9085b05af3aa82150e6dbf70fb87"
+    },
+    {
+      "file": "manage_code_extended_v118.frozen.py",
+      "sha256": "7d3a74256dd372b5d565165ec07f5c879868332677f927fb6d8d589bc603d00c"
+    },
+    {
+      "file": "xolotl_code_fullwindow_long_worker_v119.frozen.py",
+      "sha256": "1830b5b63aca22810f137255cad45c3e4b481418d3baf04cdf38eef12110cf97"
+    },
+    {
+      "file": "xolotl_code_fullwindow_suite_worker_v119.frozen.py",
+      "sha256": "cc64be075a1dbe8540bb2075357219759aba238845e0f644b5f06f18e580ca65"
+    },
+    {
+      "file": "manage_code_fullwindow_suite_v119.frozen.py",
+      "sha256": "c27242f1cbb417932cedbbfd998072254d66430d64f2930f757e534e5c3a1095"
+    }
+  ],
+  "model_service_launched": false,
+  "gpu_tested": false,
+  "acceptance_checks_unchanged": true,
+  "cold_request_budget_seconds": 6000,
+  "source_corpus_repeated": false
+}

@@ -19,7 +19,7 @@ ZIP_NAME="Capture-${VERSION}-arm64.zip"
 cd "${REPO_DIR}"
 SPARKLE_DIR="$("${REPO_DIR}/scripts/setup-sparkle.sh")"
 
-taskpolicy -c utility cargo build --release -j 3 --offline
+taskpolicy -c utility cargo build -p capture --features ui --release -j 3 --offline
 
 rm -rf "${APP_BUNDLE}" "${DIST_DIR}/staging" "${UPDATES_DIR}"
 mkdir -p "${APP_BUNDLE}/Contents/MacOS" "${APP_BUNDLE}/Contents/Resources" "${APP_BUNDLE}/Contents/Frameworks" "${DIST_DIR}/staging" "${UPDATES_DIR}"

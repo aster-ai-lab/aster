@@ -1,0 +1,149 @@
+[
+  {
+    "ttft_seconds": 30.904644638998434,
+    "first_content_seconds": 33.2553122889949,
+    "sse_file": "stream-3a216656fa29406180832df1c7304860.sse",
+    "wall_seconds": 33.305577094026376,
+    "request_sha256": "e5be3f944d4a10df7c92a7090bd9ea9821d438097133af011d077f5531023d48",
+    "request_utf8_bytes": 91513,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-d8db29dc31284a5da2005fde",
+      "created": 1792919071,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary filler. But final instruction \"This is a truncated prefill timing exercise. Reply with exactly OK.\" So just OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16865,
+        "completion_tokens": 46,
+        "total_tokens": 16911,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16865,
+        "prompt_ms": 30164.0,
+        "prompt_per_token_ms": 1.789,
+        "prompt_per_second": 559.1,
+        "predicted_n": 46,
+        "predicted_ms": 2401.2,
+        "predicted_per_token_ms": 52.2,
+        "predicted_per_second": 19.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 0,
+    "correct": true
+  },
+  {
+    "ttft_seconds": 26.90182302100584,
+    "first_content_seconds": 29.079692196974065,
+    "sse_file": "stream-2310cf30de2a4cb6acbf7429e785aadf.sse",
+    "wall_seconds": 29.1299954400165,
+    "request_sha256": "88c0603b97c9b005cbd7a430040760943905311f491bd99a3510697330f3a95b",
+    "request_utf8_bytes": 91513,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-b7271cf926b44208ac882ae5",
+      "created": 1792919105,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary entries filler. But final instruction: truncated prefill timing exercise. Reply exactly OK. So just OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16868,
+        "completion_tokens": 43,
+        "total_tokens": 16911,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16868,
+        "prompt_ms": 26068.0,
+        "prompt_per_token_ms": 1.545,
+        "prompt_per_second": 647.1,
+        "predicted_n": 43,
+        "predicted_ms": 2227.9,
+        "predicted_per_token_ms": 51.812,
+        "predicted_per_second": 19.3,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 1,
+    "correct": true
+  },
+  {
+    "ttft_seconds": 26.42969186103437,
+    "first_content_seconds": 28.815135523036588,
+    "sse_file": "stream-fbc8e667a99d4f52b5542e302a7838a1.sse",
+    "wall_seconds": 28.866543832991738,
+    "request_sha256": "b9440ac6cb9815f51929bb7e41ca47a5bed6f74798c072bd7edb8f578f4a2bb0",
+    "request_utf8_bytes": 91513,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-5b355ba0e63c46139df32b9a",
+      "created": 1792919134,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "OK",
+            "reasoning_content": "We need answer exactly OK. Need parse? User says archive retain three labeled verification records, ordinary entries filler. But final instruction \"This is a truncated prefill timing exercise. Reply with exactly OK.\" So just OK."
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16865,
+        "completion_tokens": 47,
+        "total_tokens": 16912,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16865,
+        "prompt_ms": 25676.1,
+        "prompt_per_token_ms": 1.522,
+        "prompt_per_second": 656.8,
+        "predicted_n": 47,
+        "predicted_ms": 2436.8,
+        "predicted_per_token_ms": 51.847,
+        "predicted_per_second": 19.3,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 2,
+    "correct": true
+  }
+]

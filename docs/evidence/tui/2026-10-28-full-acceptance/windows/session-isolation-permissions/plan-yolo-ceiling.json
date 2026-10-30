@@ -1,0 +1,223 @@
+{
+  "assertions_finished": true,
+  "case": "plan-yolo-ceiling",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "planning-proof.txt"
+          },
+          "id": "call_16237f2c5ae24bc399d3f9211f314f9d",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13322,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-874aa148-212e-4c45-abe4-3090389c776c",
+            "thread_id": "2a0eefa3-e157-42d0-8f51-5a2b782882f9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_16237f2c5ae24bc399d3f9211f314f9d",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-874aa148-212e-4c45-abe4-3090389c776c",
+            "thread_id": "2a0eefa3-e157-42d0-8f51-5a2b782882f9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_16237f2c5ae24bc399d3f9211f314f9d",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPLAN-READ-0880be4e-8245-44b6-852f-781b5c5c9aec\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"planning-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":87},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":87,\"projected_bytes\":87,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a56f0c22d95c1a07576525a4cc1ac49010ca822749a8860d7edc31a66e3a7481\",\"projected_digest\":\"sha256:a56f0c22d95c1a07576525a4cc1ac49010ca822749a8860d7edc31a66e3a7481\",\"repeat_key\":\"sha256:a56f0c22d95c1a07576525a4cc1ac49010ca822749a8860d7edc31a66e3a7481\",\"content_ref\":\"inline:sha256:a56f0c22d95c1a07576525a4cc1ac49010ca822749a8860d7edc31a66e3a7481\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:77bc895f263d144d63cc0c9f188b0a84891e84d5da9cf4585fa1db9d428cd00b\"}",
+        "prepared_digest": "sha256:6ce6205c5ec077ac5c31089b12cb095b8b83b5e1f8dc6d7ccbf93087ae7fec1a",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13477,
+        "text": "PLAN-READ-0880be4e-8245-44b6-852f-781b5c5c9aec",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "81895ce4af4b274e1f299b1e3d314daeef2b4d9075bbe249a9c33acd0ec16949",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:e01a1ebff79e731c7e6c3570ac5d837ef2143d5064378dc1f257b422d87cf486"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "content": "PLAN-READ-0880be4e-8245-44b6-852f-781b5c5c9aec",
+            "file_path": "phase-result.txt"
+          },
+          "id": "call_a22dba9457de482b9ae2ca9cf1a75235",
+          "name": "write"
+        },
+        "has_text": false,
+        "prompt_tokens": 13600,
+        "text": null,
+        "tool": "write"
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6f37cceb-511f-4002-82d3-7a605dc4e4b0",
+            "thread_id": "2a0eefa3-e157-42d0-8f51-5a2b782882f9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a22dba9457de482b9ae2ca9cf1a75235",
+          "turn": 2
+        },
+        "tool": "write"
+      },
+      "seq": 14,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6f37cceb-511f-4002-82d3-7a605dc4e4b0",
+            "thread_id": "2a0eefa3-e157-42d0-8f51-5a2b782882f9"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a22dba9457de482b9ae2ca9cf1a75235",
+          "turn": 2
+        },
+        "outcome": "denied",
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "prepared_digest": "sha256:16706d07e086c2c2690877561cfb3936b32bc62c9f9aeed9d56ba1643a548a14",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 15,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13813,
+        "text": "Blocked: the `write` tool denied creation of `phase-result.txt` under the frozen permission policy. No file was created, so I could not verify or read back its contents. `planning-proof.txt` was not changed.",
+        "tool": null
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "5d34e6d26f1f467830dc30aaf2be5780b51dca0a55e2bd5c87474069580c5a7a",
+          "seq": 16
+        },
+        "receipt_keys": [
+          "sha256:e172910b6c784600c0a405224c9c930c596e3f6a17bb8118887edc6d60c92845"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 17,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=26799",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgbg1Z\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify    1:04 AM           any file or call any other tool.                                                                                                                                                                                                                                                                                                                                      ♦ Read 1 file                                                                                                                                                                                                                                   PLAN-READ-0880be4e-8245-44b6-852f-781b5c5c9aec                                                          1:04 AM                                                                                                                                 Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=7 model_turns=2 prompt_tokens=27413",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgbg1Z\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     1:04 AM           Get-Item -LiteralPath phase-result.txt -ErrorAction Stop using the bash tool to verify the output.                      Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt.                                                                                                                                                                                                                                                                       ♦ Thought for 3.7s                                                                                                      ♦ Creating phase-result.txt                                                                                             ♦ Thought for 6.1s                                                                                                █                                                                                                                       █     Blocked: the write tool denied creation of phase-result.txt under the frozen permission policy. No      1:05 AM   █     file was created, so I could not verify or read back its contents. planning-proof.txt was not                     █     changed.                                                                                                          █                                                                                                                       █     Worked for 41s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰─────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "YOLO retains Plan ceiling: actual write denied, no mutation",
+      "name": "plan-ceiling",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-zgbg1Z\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     1:04 AM           Get-Item -LiteralPath phase-result.txt -ErrorAction Stop using the bash tool to verify the output.                      Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt.                                                                                                                                                                                                                                                                       ♦ Thought for 3.7s                                                                                                      ♦ Creating phase-result.txt                                                                                             ♦ Thought for 6.1s                                                                                                █                                                                                                                       █     Blocked: the write tool denied creation of phase-result.txt under the frozen permission policy. No      1:05 AM   █     file was created, so I could not verify or read back its contents. planning-proof.txt was not                     █     changed.                                                                                                          █                                                                                                                       █     Worked for 41s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰─────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

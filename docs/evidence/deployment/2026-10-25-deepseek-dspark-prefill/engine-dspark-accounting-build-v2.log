@@ -1,0 +1,13 @@
+[1/2] Building CXX object CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_generate.cpp.o
+/data/deepseek-v41-xq-1017/Xolotl/tools/v41/engine/ds41_generate.cpp: In function ‘int main(int, char**)’:
+/data/deepseek-v41-xq-1017/Xolotl/tools/v41/engine/ds41_generate.cpp:3275:113: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘int’ [-Wformat=]
+ 3275 |             std::fprintf(stderr, "DSpark totals: verify %.2f ms/pass draft %.2f ms/pass acc %.2f (%ld passes, %ld tokens)\n",
+      |                                                                                                               ~~^
+      |                                                                                                                 |
+      |                                                                                                                 long int
+      |                                                                                                               %d
+ 3276 |                          sp_vms / sp_pass, sp_dms / sp_pass, (double) sp_acc / sp_pass, sp_pass, gen);
+      |                                                                                                  ~~~             
+      |                                                                                                  |
+      |                                                                                                  int
+[2/2] Linking CXX executable ds41_generate

@@ -1,0 +1,39 @@
+{
+  "unix": 1792925567.5258532,
+  "phase": "failed",
+  "completed_controls": [
+    {
+      "index": 0,
+      "prompt_tokens": 1047544,
+      "completion_tokens": 1024,
+      "text_sha256": "d2bfc743e3a52e8f2400129870f29a27feef67767e8375e24d1c6abbf087a957",
+      "canonical_reference_equal": false,
+      "ttft_seconds": 1838.5416840314865,
+      "request_seconds": 1862.7227869359776
+    },
+    {
+      "index": 1,
+      "prompt_tokens": 1047544,
+      "completion_tokens": 1024,
+      "text_sha256": "d2bfc743e3a52e8f2400129870f29a27feef67767e8375e24d1c6abbf087a957",
+      "canonical_reference_equal": false,
+      "ttft_seconds": 1.112174542620778,
+      "request_seconds": 23.66146339289844
+    },
+    {
+      "index": 2,
+      "prompt_tokens": 1047544,
+      "completion_tokens": 1024,
+      "text_sha256": "d2bfc743e3a52e8f2400129870f29a27feef67767e8375e24d1c6abbf087a957",
+      "canonical_reference_equal": false,
+      "ttft_seconds": 0.2564710574224591,
+      "request_seconds": 22.634190850891173
+    }
+  ],
+  "all1024_ID_sequences_equal": true,
+  "new_inference_sent": false,
+  "GPU_executed": false,
+  "raw_control_text_published": false,
+  "profiler_capture_failed": true,
+  "actual1m_decode_hardware_collected": false
+}

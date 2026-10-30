@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::render_editing_value_cursor_pans_to_left_on_overflow_at_start' (32868) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:1690:5:
+assertion `left == right` failed: cursor must pan to column 0 when cursor_byte is at the start, even with overflow
+  left: None
+ right: Some(0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::render_editing_value_cursor_pans_to_left_on_overflow_at_start ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::render_editing_value_cursor_pans_to_left_on_overflow_at_start
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

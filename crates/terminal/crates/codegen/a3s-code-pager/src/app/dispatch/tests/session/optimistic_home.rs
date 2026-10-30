@@ -635,6 +635,28 @@ fn welcome_menu_enter_activates_item_when_prompt_unfocused() {
 }
 
 #[test]
+fn welcome_escape_then_menu_navigation_opens_sessions() {
+    let mut app = test_app();
+    maybe_create_home_session(&mut app);
+    app.welcome_prompt_focused = true;
+    app.welcome_menu_index = None;
+
+    app.handle_input(&key_event(KeyCode::Esc, KeyModifiers::NONE));
+    assert!(!app.welcome_prompt_focused);
+    for expected in [Some(0), Some(1)] {
+        app.handle_input(&key_event(KeyCode::Down, KeyModifiers::NONE));
+        assert_eq!(app.welcome_menu_index, expected);
+    }
+    let outcome = app.handle_input(&key_event(KeyCode::Enter, KeyModifiers::NONE));
+
+    assert!(matches!(
+        outcome,
+        InputOutcome::Action(Action::FetchSessionList)
+    ));
+    assert!(matches!(app.active_view, ActiveView::Welcome));
+}
+
+#[test]
 fn welcome_overlay_paste_does_not_reach_composer() {
     let mut app = test_app();
     maybe_create_home_session(&mut app);

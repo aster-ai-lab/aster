@@ -1,0 +1,72 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/driver.rs:611:
+         let deadline = Instant::now() + Duration::from_secs(15);
+         loop {
+             let raw = std::fs::read_to_string(trace).unwrap_or_default();
+[31m-            if let Some(info) = raw.lines().rev().filter_map(|line| {
+(B[m[31m-                let entry = serde_json::from_str::<Value>(line).ok()?;
+(B[m[31m-                let info = entry["message"]["result"]["result"].clone();
+(B[m[31m-                (info["sessionId"].as_str() == Some(id)
+(B[m[31m-                    && info["turnIndex"].as_u64() == Some(turn))
+(B[m[31m-                .then_some(info)
+(B[m[31m-            }).next() {
+(B[m[32m+            if let Some(info) = raw
+(B[m[32m+                .lines()
+(B[m[32m+                .rev()
+(B[m[32m+                .filter_map(|line| {
+(B[m[32m+                    let entry = serde_json::from_str::<Value>(line).ok()?;
+(B[m[32m+                    let info = entry["message"]["result"]["result"].clone();
+(B[m[32m+                    (info["sessionId"].as_str() == Some(id)
+(B[m[32m+                        && info["turnIndex"].as_u64() == Some(turn))
+(B[m[32m+                    .then_some(info)
+(B[m[32m+                })
+(B[m[32m+                .next()
+(B[m[32m+            {
+(B[m                 return info;
+             }
+             assert!(
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/functional.rs:671:
+     assert_eq!(marker["id"].as_str(), Some(id.as_str()));
+     let backend_cwd = marker["workspace"].as_str().unwrap();
+     assert_eq!(
+[31m-        std::path::Path::new(backend_cwd)
+(B[m[31m-            .canonicalize()
+(B[m[31m-            .unwrap(),
+(B[m[32m+        std::path::Path::new(backend_cwd).canonicalize().unwrap(),
+(B[m         tui.workspace.canonicalize().unwrap()
+     );
+     assert!(info.contains("Session ID:"), "{info}");
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/functional.rs:712:
+     tui.dismiss();
+ 
+     let first = tui.turn("Do not call tools. Reply only SESSION-INFO-FIRST-OK.", None);
+[31m-    assert!(tui
+(B[m[31m-        .assistant_text(&first)
+(B[m[31m-        .contains("SESSION-INFO-FIRST-OK"));
+(B[m[32m+    assert!(tui.assistant_text(&first).contains("SESSION-INFO-FIRST-OK"));
+(B[m     assert!(!first.iter().any(|fact| fact["type"] == "tool.prepared"));
+     let facts = tui.facts();
+     let turns = facts
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/functional.rs:730:
+     let used = backend["context"]["used"].as_u64().unwrap();
+     assert!(used > 0);
+     let usage_pct = (used as f64 / context_total as f64 * 100.0).round() as u8;
+[31m-    assert_eq!(backend["context"]["usagePct"].as_u64(), Some(u64::from(usage_pct)));
+(B[m[32m+    assert_eq!(
+(B[m[32m+        backend["context"]["usagePct"].as_u64(),
+(B[m[32m+        Some(u64::from(usage_pct))
+(B[m[32m+    );
+(B[m     tui.command("/session-info");
+     let info = tui.wait_for("Turn: 1", 8);
+     assert!(
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/functional.rs:766:
+     );
+     tui.dismiss();
+ 
+[31m-    let second = tui.turn("Do not call tools. Reply only SESSION-INFO-SECOND-OK.", None);
+(B[m[32m+    let second = tui.turn(
+(B[m[32m+        "Do not call tools. Reply only SESSION-INFO-SECOND-OK.",
+(B[m[32m+        None,
+(B[m[32m+    );
+(B[m     assert!(tui
+         .assistant_text(&second)
+         .contains("SESSION-INFO-SECOND-OK"));

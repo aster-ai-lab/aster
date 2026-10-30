@@ -1,0 +1,16 @@
+{
+  "unix": 1792876323.1698983,
+  "prepare-result.json": {
+    "schema": "aster-xolotl-fullwindow-long-prepare-v54",
+    "unix": 1792876247.5160513,
+    "phase": "failed",
+    "gpu_executed": false,
+    "credentials_copied": false,
+    "acceptance_unit_methods_passed": 6,
+    "error": "ModuleNotFoundError: No module named 'regex'",
+    "finished_unix": 1792876247.6402607
+  },
+  "unit-tests.log": "test_complete_cold_and_exact_warm_answer (__main__.FullWindowAcceptanceTests) ... ok\ntest_incomplete_http_sse_and_output_budget_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_missing_or_inline_continuation_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_reservation_and_cache_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_timing_and_identity_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_wrong_or_partial_record_values_refused (__main__.FullWindowAcceptanceTests) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n",
+  "exact_cpu_process_alive": false,
+  "failure_log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/fullwindow-long-fixture-v54-cpu/xolotl_fullwindow_long_prepare_v54.frozen.py\", line 40, in <module>\n    import serve_ds41 as D\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/v41/serve/serve_ds41.py\", line 35, in <module>\n    import strata_tokenizer as ST  # noqa: E402\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52/source/tools/strata_tokenizer.py\", line 22, in <module>\n    import regex\nModuleNotFoundError: No module named 'regex'\n"
+}

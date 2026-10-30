@@ -1,0 +1,38 @@
+{
+  "unix": 1792865788.818881,
+  "result": {
+    "schema": "aster-xolotl-full1m-qualification-v17",
+    "unix": 1792865737.6117733,
+    "phase": "prefilling",
+    "tests": [],
+    "client": "yangchao-dev",
+    "destination": "http://100.97.210.241:30003/v1",
+    "full_1m_length_qualified": false,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "context_safety_tokens": 8,
+    "actual_prompt_tokens": 1048504,
+    "max_new_tokens": 64,
+    "prompt_plus_output_tokens": 1048568,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "0149634cc9fbae367f049cd432cc316a98454a0f814725e56fce2563b0b77d5f",
+    "prompt_bytes": 4193972,
+    "record_token_positions": {
+      "begin": 19,
+      "middle": 524241,
+      "end": 1048465
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "current_test": "cold-full1m-three-records",
+    "request_started_unix": 1792865742.3362694,
+    "payload_bytes": 4194199,
+    "http_status": 200
+  },
+  "exact_client_alive": true
+}

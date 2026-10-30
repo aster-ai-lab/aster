@@ -1,0 +1,30 @@
+
+running 1 test
+test input_controls::kimi_selection_replace_and_delete_preserve_unicode_draft ... ORACLE case=selection-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=selection-edit-controls name=draft-redraw result=pass detail=one key operation removes "WRONG"; additional display wait=2 ms
+ORACLE case=selection-edit-controls name=selection-replace result=pass detail=typing replaces exactly the keyboard-selected suffix without submitting
+ORACLE case=selection-edit-controls name=draft-redraw result=pass detail=one key operation removes "RIGHT"; additional display wait=1 ms
+ORACLE case=selection-edit-controls name=selection-delete result=pass detail=Backspace deletes only the selected suffix and preserves the Unicode draft
+ORACLE case=selection-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13191
+ORACLE case=selection-edit-controls name=selection-edit-controls result=pass detail=selection replacement and deletion preserve exact Unicode text in one model request
+ORACLE case=selection-edit-controls name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 46 filtered out; finished in 15.71s
+
+
+running 1 test
+test input_controls::kimi_multiline_undo_redo_clear_and_stash_restore_exact_draft ... ORACLE case=multiline-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=2 ms
+ORACLE case=multiline-edit-controls name=multiline-undo-redo result=pass detail=undo and redo restore the final line without submitting
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=1 ms
+ORACLE case=multiline-edit-controls name=multiline-stash-pop result=pass detail=stash and pop restore all three lines
+ORACLE case=multiline-edit-controls name=draft-redraw result=pass detail=one key operation removes "UNDO-STASH-CLEAR."; additional display wait=1 ms
+ORACLE case=multiline-edit-controls name=multiline-clear-undo result=pass detail=clear and undo restore the complete multiline draft
+ORACLE case=multiline-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13204
+ORACLE case=multiline-edit-controls name=multiline-edit-controls result=pass detail=multiline undo, redo, clear and stash preserve every Unicode byte in one model request
+ORACLE case=multiline-edit-controls name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 46 filtered out; finished in 24.05s
+

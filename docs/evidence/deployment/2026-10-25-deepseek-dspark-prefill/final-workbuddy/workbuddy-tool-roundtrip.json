@@ -1,0 +1,149 @@
+{
+    "at":  "2026-10-25T13:47:17.3887901+00:00",
+    "base_url":  "http://117.162.0.179:8080/v1",
+    "cases":  [
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  7.5546789,
+                      "result_seconds":  4.8254041999999995,
+                      "tool_call_id":  "call_6a62a9219f8f4c3baf6bea2f",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-7c73caab3c8f4a41",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-json-call.json",
+                                             "deepseek-v4.1-flash-auto-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  20,
+                                        "prompt_tokens":  290,
+                                        "total_tokens":  310
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-named-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  6.9086770999999993,
+                      "result_seconds":  4.7764478,
+                      "tool_call_id":  "call_7d91f3d704a244e8ad35f13a",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-3b529344e98a4914",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-named-sse-call.sse",
+                                             "deepseek-v4.1-flash-named-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  10,
+                                        "prompt_tokens":  280,
+                                        "total_tokens":  290
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-required-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  6.8142536,
+                      "result_seconds":  4.9784906,
+                      "tool_call_id":  "call_26c840eddc304c9796ec84ad",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-d1f9be3eca3d4e85",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-required-json-call.json",
+                                             "deepseek-v4.1-flash-required-json-result.json"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  20,
+                                        "prompt_tokens":  290,
+                                        "total_tokens":  310
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-auto-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "call_status":  200,
+                      "result_status":  200,
+                      "call_seconds":  6.8169625,
+                      "result_seconds":  4.7646697,
+                      "tool_call_id":  "call_a6b95dc3caa2477d9035d23a",
+                      "arguments":  {
+                                        "id":  17
+                                    },
+                      "verification":  "proof-0c42df7489cb4f7a",
+                      "response_files":  [
+                                             "deepseek-v4.1-flash-auto-sse-call.sse",
+                                             "deepseek-v4.1-flash-auto-sse-result.sse"
+                                         ],
+                      "usage":  [
+                                    {
+                                        "completion_tokens":  60,
+                                        "prompt_tokens":  490,
+                                        "total_tokens":  550
+                                    },
+                                    {
+                                        "completion_tokens":  20,
+                                        "prompt_tokens":  290,
+                                        "total_tokens":  310
+                                    }
+                                ]
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-json",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  false,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  5.871274,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-json.json"
+                  },
+                  {
+                      "case":  "deepseek-v4.1-flash-hi-tools-sse",
+                      "model":  "deepseek-v4.1-flash",
+                      "stream":  true,
+                      "passed":  true,
+                      "status":  200,
+                      "seconds":  0.6187095,
+                      "response_file":  "deepseek-v4.1-flash-hi-tools-sse.sse"
+                  }
+              ],
+    "all_passed":  true
+}

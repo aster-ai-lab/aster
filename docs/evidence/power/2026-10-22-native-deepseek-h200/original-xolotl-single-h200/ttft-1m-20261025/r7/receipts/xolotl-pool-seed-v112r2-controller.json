@@ -1,0 +1,174 @@
+{
+  "unix": 1792892428.7640479,
+  "phase": "comparison_completed",
+  "profiles": [
+    {
+      "profile": "pool_off",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 37.10260251071304,
+          "cold_ttft_seconds": 17.466755617875606,
+          "restored_seconds": 25.522302580066025,
+          "restored_ttft_seconds": 0.018420793116092682,
+          "repeated_seconds": 22.976548321079463,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 52.30066881002858,
+          "cold_ttft_seconds": 29.44372253632173,
+          "restored_seconds": 26.073732452001423,
+          "restored_ttft_seconds": 0.048779203090816736,
+          "repeated_seconds": 23.168938744347543,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1250994282308966,
+        "ttft_p95_seconds": 0.15754788427148014,
+        "api_wall_completion_tok_s": 85.24627193967657,
+        "stream_interval_tok_s_estimate": 94.86655441747784
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 107.95972601091489,
+        "api_wall_completion_tok_s": 75.88014811348981,
+        "stream_interval_tok_s_estimate": 75.90878406361936,
+        "ttft_p50_seconds": 0.010812310501933098,
+        "ttft_min_seconds": 0.01010194281116128,
+        "ttft_max_seconds": 0.011443051043897867
+      }
+    },
+    {
+      "profile": "pool_on",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 33.62289581075311,
+          "cold_ttft_seconds": 14.940016196109354,
+          "restored_seconds": 17.743096912279725,
+          "restored_ttft_seconds": 0.028363704215735197,
+          "repeated_seconds": 14.855859884992242,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 46.123465979937464,
+          "cold_ttft_seconds": 27.07826703088358,
+          "restored_seconds": 17.348084321711212,
+          "restored_ttft_seconds": 0.05694234697148204,
+          "repeated_seconds": 15.2323676222004,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1331204674206674,
+        "ttft_p95_seconds": 0.16394843976013362,
+        "api_wall_completion_tok_s": 81.59944632673421,
+        "stream_interval_tok_s_estimate": 93.2901974790026
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.71292388765141,
+        "api_wall_completion_tok_s": 75.35442619928025,
+        "stream_interval_tok_s_estimate": 75.38407085733421,
+        "ttft_p50_seconds": 0.010500052012503147,
+        "ttft_min_seconds": 0.010207006242126226,
+        "ttft_max_seconds": 0.01165191875770688
+      }
+    },
+    {
+      "profile": "pool_off_repeat",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 35.48906554793939,
+          "cold_ttft_seconds": 16.730476169846952,
+          "restored_seconds": 25.673686061054468,
+          "restored_ttft_seconds": 0.023286116309463978,
+          "repeated_seconds": 23.0047889649868,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 44.6006582248956,
+          "cold_ttft_seconds": 27.061246296856552,
+          "restored_seconds": 25.20791796501726,
+          "restored_ttft_seconds": 0.050069058779627085,
+          "repeated_seconds": 23.072757394053042,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.13300296920351684,
+        "ttft_p95_seconds": 0.16180723498109728,
+        "api_wall_completion_tok_s": 83.31725333521163,
+        "stream_interval_tok_s_estimate": 92.89463693755049
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.289218546357,
+        "api_wall_completion_tok_s": 75.64926693503773,
+        "stream_interval_tok_s_estimate": 75.78335923903546,
+        "ttft_p50_seconds": 0.010882599744945765,
+        "ttft_min_seconds": 0.009576506912708282,
+        "ttft_max_seconds": 0.16826432617381215
+      }
+    }
+  ],
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "goal_complete": false,
+  "performance_300_qualified": false,
+  "resumes": "xolotl-pool-seed-v112r1-controller.json",
+  "resume_reason": "Exact last profile recovered only after absent root/fresh resource proof; completed measurements preserved",
+  "profile": "pool_off_repeat",
+  "observed_unix": 1792893026.233884,
+  "service_phase": "stopped",
+  "client_phase": "failed",
+  "client_tests": 13,
+  "finished_unix": 1792893026.233884
+}

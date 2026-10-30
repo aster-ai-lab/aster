@@ -73,6 +73,26 @@
   background: #14171e;
 }
 
+/* Embedded artifact previews fit the pane, not the browser window. Show slide
+   content directly instead of hiding it behind entrance animations. */
+.work-presentation-preview {
+  container-type: size;
+  gap: 12px;
+  padding: 16px 20px 12px;
+  background: var(--a3s-bg);
+}
+
+.work-presentation-preview .work-presentation-player-stage {
+  container-type: size;
+}
+
+.work-presentation-preview .work-presentation-transition-layer {
+  width: 100%;
+  max-height: none;
+  width: min(100%, calc(100cqh * var(--work-slide-preview-ratio)));
+  max-height: 100cqh;
+}
+
 .work-presentation-blank-screen {
   position: absolute;
   inset: 0;

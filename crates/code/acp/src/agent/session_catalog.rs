@@ -160,12 +160,29 @@ impl A3sCodeAgent {
                     skipped_entries: 0,
                 }
             };
-            // Existing Code markers/facts do not store an authoritative
-            // headless kind. Unknown is never invented from a title or id.
+            // Kind comes only from the persisted launch marker, never from a title or id.
             let unclassified = if includes_build && headless != HeadlessPolicy::Include {
-                page.incomplete |= !page.sessions.is_empty() || page.truncated;
-                let count = page.sessions.len();
-                page.sessions.clear();
+                page.incomplete |= page
+                    .sessions
+                    .iter()
+                    .any(|entry| entry.session_kind.is_none())
+                    || page.truncated;
+                let count = page
+                    .sessions
+                    .iter()
+                    .filter(|entry| entry.session_kind.is_none())
+                    .count();
+                page.sessions.retain(|entry| match headless {
+                    HeadlessPolicy::Include => true,
+                    HeadlessPolicy::Exclude => {
+                        entry.session_kind
+                            == Some(a3s_code_core::session_folder::SessionKind::Interactive)
+                    }
+                    HeadlessPolicy::Only => {
+                        entry.session_kind
+                            == Some(a3s_code_core::session_folder::SessionKind::Headless)
+                    }
+                });
                 count
             } else {
                 0

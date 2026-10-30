@@ -1,0 +1,11 @@
+
+running 1 test
+test network_tools_wave::kimi_download_declared_size_limit_leaves_no_destination_or_partial ... ORACLE case=network-download-size name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=network-download-size name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=network-download-size name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40272
+ORACLE case=network-download-size name=download-refusal-exact-scope result=pass detail=the actual failed download keeps the original destination bytes or leaves no destination, leaks no adjacent download temporary, and its HTTP dispatch boundary matches the requested refusal
+ORACLE case=network-download-size name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 30.84s
+

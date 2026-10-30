@@ -1,0 +1,345 @@
+[
+  {
+    "ttft_seconds": 1.8986478679580614,
+    "first_content_seconds": null,
+    "sse_file": "stream-e85b3bb91d49439bafa4ca390960eadd.sse",
+    "wall_seconds": 6.006338005012367,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-9fb85d1001a442bca462d88e",
+      "created": 1792932564,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words, concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute. Need concrete bottlenecks: PCIe bandwidth, NVMe latency/bandwidth, VRAM"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 86,
+        "prompt_ms": 1895.1,
+        "prompt_per_token_ms": 22.036,
+        "prompt_per_second": 45.4,
+        "predicted_n": 128,
+        "predicted_ms": 4107.4,
+        "predicted_per_token_ms": 32.089,
+        "predicted_per_second": 31.2,
+        "draft_n": 76,
+        "draft_n_accepted": 66
+      }
+    },
+    "trial": 0,
+    "warmup": true
+  },
+  {
+    "ttft_seconds": 0.011161780043039471,
+    "first_content_seconds": null,
+    "sse_file": "stream-68ad87f846374780b9efea97a3395e15.sse",
+    "wall_seconds": 3.6759131959988736,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-8989c5e1837c44a0bed6aed3",
+      "created": 1792932570,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather, combine. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 8.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 3664.2,
+        "predicted_per_token_ms": 28.627,
+        "predicted_per_second": 34.9,
+        "draft_n": 79,
+        "draft_n_accepted": 69
+      }
+    },
+    "trial": 1,
+    "warmup": false
+  },
+  {
+    "ttft_seconds": 0.008165456005372107,
+    "first_content_seconds": null,
+    "sse_file": "stream-7d5bb78276224c35b925b15c7a60205b.sse",
+    "wall_seconds": 3.7370839179493487,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-06f85188008a4a4e99e63f1b",
+      "created": 1792932574,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute. Bottlenecks: PCIe bandwidth, NVMe latency/bandwidth, VRAM"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 5.1,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 3728.2,
+        "predicted_per_token_ms": 29.127,
+        "predicted_per_second": 34.3,
+        "draft_n": 80,
+        "draft_n_accepted": 69
+      }
+    },
+    "trial": 2,
+    "warmup": false
+  },
+  {
+    "ttft_seconds": 0.008122974017169327,
+    "first_content_seconds": null,
+    "sse_file": "stream-954d4a93aa7c45ef89278932d211dcb3.sse",
+    "wall_seconds": 3.697147617000155,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-b31641f43cc84ce9847aa486",
+      "created": 1792932577,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather, combine. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 5.1,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 3688.2,
+        "predicted_per_token_ms": 28.814,
+        "predicted_per_second": 34.7,
+        "draft_n": 80,
+        "draft_n_accepted": 69
+      }
+    },
+    "trial": 3,
+    "warmup": false
+  },
+  {
+    "ttft_seconds": 0.008093714015558362,
+    "first_content_seconds": null,
+    "sse_file": "stream-986841f0ebe34baeabb612476208ff77.sse",
+    "wall_seconds": 3.648196911031846,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-15bf47b2f5bc4b83a3fee404",
+      "created": 1792932581,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather, combine. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 5.1,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 3639.4,
+        "predicted_per_token_ms": 28.433,
+        "predicted_per_second": 35.2,
+        "draft_n": 79,
+        "draft_n_accepted": 69
+      }
+    },
+    "trial": 4,
+    "warmup": false
+  },
+  {
+    "ttft_seconds": 0.008079916005954146,
+    "first_content_seconds": null,
+    "sse_file": "stream-f416c91a199d4af48183a1c43898f211.sse",
+    "wall_seconds": 3.6204318960080855,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-1ba376e99b544e1d9a8730b7",
+      "created": 1792932585,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather, combine. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 5.1,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 3611.6,
+        "predicted_per_token_ms": 28.216,
+        "predicted_per_second": 35.4,
+        "draft_n": 79,
+        "draft_n_accepted": 70
+      }
+    },
+    "trial": 5,
+    "warmup": false
+  },
+  {
+    "ttft_seconds": 0.008095855999272317,
+    "first_content_seconds": null,
+    "sse_file": "stream-57a199a7b1904bbd83488bb0e060eeb9.sse",
+    "wall_seconds": 4.106932107009925,
+    "request_sha256": "315117f5a5de21c86bb6af95b42ffddc8da4b25f5f88be849a2abfa329356760",
+    "request_utf8_bytes": 452,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-02ef889ed28c41d1b32b2b6e",
+      "created": 1792932588,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover components bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, memory hierarchy. CPU orchestrates, RAM holds weights/activations/KV cache maybe, NVMe stores model shards, PCIe transfers, GPU VRAM holds active experts/weights, CUDA kernels compute. Need concrete bottlenecks: PCIe bandwidth, NVMe IOPS/band"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 5.1,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 4098.1,
+        "predicted_per_token_ms": 32.016,
+        "predicted_per_second": 31.2,
+        "draft_n": 83,
+        "draft_n_accepted": 62
+      }
+    },
+    "trial": 6,
+    "warmup": false
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "unix": 1792897000.980354,
+  "phase": "executed",
+  "label": "phase-simd-v139-control_a",
+  "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/sealed-phase-simd-v139-control_a.py",
+  "bytes": 57355,
+  "sha256": "7c962ca7a0b85f307a2304f5ff875ee6ca0d4814390db189bc010e09cbffefab",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "credentials_copied": false,
+  "inline_exec_payload_replaced": true,
+  "stage": {
+    "staged": true,
+    "bytes": 57355,
+    "sha256": "7c962ca7a0b85f307a2304f5ff875ee6ca0d4814390db189bc010e09cbffefab"
+  },
+  "result": {
+    "pid": 4754,
+    "start_ticks": 712628350,
+    "uid": 10250,
+    "unix": 1792897012.5176113,
+    "deadline_seconds": 13651
+  }
+}

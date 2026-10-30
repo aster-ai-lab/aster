@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::privacy_banner::tests::height_reserves_every_row_the_banner_paints' (29984) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\privacy_banner.rs:333:13:
+width 18: title must never be clipped, got "Help improve A3S C"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::privacy_banner::tests::height_reserves_every_row_the_banner_paints ... FAILED
+
+failures:
+
+failures:
+    views::privacy_banner::tests::height_reserves_every_row_the_banner_paints
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

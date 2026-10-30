@@ -1,0 +1,212 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/use/Cargo.toml
+workspace: /code/aster/.wt-deepseek-platform-runtime/apps/cloud/Cargo.toml
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-runtime` (lib) generated 1 warning (run `cargo fix --lib -p a3s-runtime` to apply 1 suggestion)
+   Compiling a3s-power v0.10.0 (/code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power)
+warning: unused imports: `SystemOneRequest` and `SystemOneResponse`
+  --> crates/power/src/backend/llamacpp.rs:37:24
+   |
+37 |     EmbeddingResponse, SystemOneRequest, SystemOneResponse,
+   |                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-power` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-power --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.96s
+     Running unittests src/lib.rs (target-power/debug/deps/a3s_power-65f37d3f6bb16005)
+
+running 180 tests
+test config::acl::kv_fp4_tests::xolotl_fp4_kv_acl_is_opt_in_and_rejects_coercion ... ok
+test config::acl::kv_fp4_tests::xolotl_fp4_kv_preserves_acl_block_last_assignment_semantics ... ok
+test config::acl::managed_tests::xolotl_managed_acl_round_trip_preserves_the_exact_runtime_binding ... ok
+test config::acl::managed_tests::xolotl_managed_acl_schema_refuses_unknown_or_missing_authority_fields ... ok
+test config::acl::managed_tests::xolotl_tuning_native_acl_round_trip_and_closed_schema ... ok
+test config::acl::tests::aggregated_profile_rejects_transport_opt_in ... ok
+test config::acl::tests::execution_profile_rejects_unknown_fields ... ok
+test config::acl::tests::omitted_execution_profile_defaults_to_aggregated ... ok
+test config::acl::tests::rejects_duplicate_labeled_map_entries ... ok
+test config::acl::tests::rejects_unknown_attributes ... ok
+test config::acl::tests::round_trips_backend_owned_phase_executor_opt_in ... ok
+test config::acl::tests::round_trips_buffered_host_loopback_transport_opt_in ... ok
+test config::acl::tests::round_trips_closed_acl ... ok
+test config::acl::tests::round_trips_closed_prefill_decode_execution_profile ... ok
+test config::acl::tests::round_trips_direct_device_memory_pull_transport_opt_in ... ok
+test config::acl::tests::round_trips_llamacpp_phase_execution_opt_in ... ok
+test config::acl::tests::round_trips_pending_phase_execution_opt_in ... ok
+test config::acl::tests::round_trips_profile_bound_state_ownership_opt_in ... ok
+test config::acl::tests::xolotl_block_is_omitted_until_it_changes_and_then_round_trips ... ok
+test config::http_admission_tests::finite_http_defaults_and_acl_roundtrip ... ok
+test config::http_admission_tests::invalid_http_policy_is_refused ... ok
+test config::tests::basic::test_bind_address ... ok
+test config::tests::basic::test_config_deserialize_acl ... ok
+test config::tests::basic::test_config_roundtrip ... ok
+test config::tests::basic::test_config_serialize_acl ... ok
+test config::tests::basic::test_default_config ... ok
+test config::tests::basic::test_default_keep_alive ... ok
+test config::tests::basic::test_env_a3s_power_data_dir ... ok
+test config::tests::basic::test_env_a3s_power_gpu_attestation_nras_rest ... ok
+test config::tests::basic::test_env_a3s_power_gpu_attestation_nras_timeout_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_gpu_attestation_nvattest_cli ... ok
+test config::tests::basic::test_env_a3s_power_gpu_attestation_nvattest_timeout_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_gpu_attestation_paths ... ok
+test config::tests::basic::test_env_a3s_power_gpu_layers ... ok
+test config::tests::basic::test_env_a3s_power_gpu_layers_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_host ... ok
+test config::tests::basic::test_env_a3s_power_keep_alive ... ok
+test config::tests::basic::test_env_a3s_power_max_models ... ok
+test config::tests::basic::test_env_a3s_power_max_models_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_port ... ok
+test config::tests::basic::test_env_a3s_power_port_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_prompt_cache_settings ... ok
+test config::tests::basic::test_env_a3s_power_proxy_effective_prompt_digest ... ok
+test config::tests::basic::test_env_a3s_power_redact_logs ... ok
+test config::tests::basic::test_env_a3s_power_redact_logs_false_overrides_true ... ok
+test config::tests::basic::test_env_a3s_power_spec_draft_max_invalid_rejected ... ok
+test config::tests::basic::test_env_a3s_power_speculative_settings ... ok
+test config::tests::basic::test_env_a3s_power_tee_mode ... ok
+test config::tests::basic::test_env_a3s_power_tee_mode_false_overrides_true ... ok
+test config::tests::basic::test_gpu_attestation_config_defaults ... ok
+test config::tests::basic::test_gpu_attestation_config_deserialize_acl ... ok
+test config::tests::basic::test_gpu_attestation_config_serialization ... ok
+test config::tests::basic::test_gpu_attestation_nras_rest_deserialize_acl ... ok
+test config::tests::basic::test_gpu_attestation_nras_rest_serialization ... ok
+test config::tests::basic::test_gpu_attestation_nvattest_cli_deserialize_acl ... ok
+test config::tests::basic::test_gpu_attestation_nvattest_cli_serialization ... ok
+test config::tests::basic::test_gpu_config_defaults ... ok
+test config::tests::basic::test_gpu_config_deserialize_acl ... ok
+test config::tests::basic::test_gpu_config_missing_uses_defaults ... ok
+test config::tests::basic::test_parse_keep_alive_hours ... ok
+test config::tests::basic::test_parse_keep_alive_invalid_returns_error ... ok
+test config::tests::basic::test_parse_keep_alive_minutes ... ok
+test config::tests::basic::test_parse_keep_alive_never ... ok
+test config::tests::basic::test_parse_keep_alive_overflow_returns_error ... ok
+test config::tests::basic::test_parse_keep_alive_raw_number ... ok
+test config::tests::basic::test_parse_keep_alive_seconds ... ok
+test config::tests::basic::test_parse_keep_alive_zero ... ok
+test config::tests::basic::test_proxy_effective_prompt_digest_defaults ... ok
+test config::tests::basic::test_proxy_effective_prompt_digest_deserialize_acl ... ok
+test config::tests::basic::test_proxy_effective_prompt_digest_serialization ... ok
+test config::tests::basic::test_speculative_settings_deserialize_acl ... ok
+test config::tests::policy::test_allowed_tee_types_defaults_to_empty ... ok
+test config::tests::policy::test_allowed_tee_types_from_acl ... ok
+test config::tests::policy::test_api_keys_defaults_to_empty ... ok
+test config::tests::policy::test_api_keys_from_acl ... ok
+test config::tests::policy::test_api_keys_not_serialized_when_empty ... ok
+test config::tests::policy::test_api_keys_serialized_when_set ... ok
+test config::tests::policy::test_audit_log_defaults_to_false ... ok
+test config::tests::policy::test_audit_log_env_false_overrides_true ... ok
+test config::tests::policy::test_audit_log_env_override ... ok
+test config::tests::policy::test_config_acl_invalid ... ok
+test config::tests::policy::test_config_new_fields_defaults ... ok
+test config::tests::policy::test_config_tee_fields_from_acl ... ok
+test config::tests::policy::test_config_use_mmap_from_acl ... ok
+test config::tests::policy::test_effective_allowed_tee_types_development_remains_permissive ... ok
+test config::tests::policy::test_effective_allowed_tee_types_strict_defaults_to_hardware ... ok
+test config::tests::policy::test_effective_allowed_tee_types_strict_filters_simulated ... ok
+test config::tests::policy::test_env_a3s_power_api_keys ... ok
+test config::tests::policy::test_env_a3s_power_api_keys_empty_ignored ... ok
+test config::tests::policy::test_env_a3s_power_api_keys_trims_whitespace ... ok
+test config::tests::policy::test_env_a3s_power_ra_tls ... ok
+test config::tests::policy::test_env_a3s_power_ra_tls_false_overrides_true ... ok
+test config::tests::policy::test_env_a3s_power_tee_policy_mode ... ok
+test config::tests::policy::test_env_a3s_power_tls_port ... ok
+test config::tests::policy::test_env_a3s_power_tls_port_invalid_rejected ... ok
+test config::tests::policy::test_env_a3s_power_vsock_port ... ok
+test config::tests::policy::test_env_a3s_power_vsock_port_invalid_rejected ... ok
+test config::tests::policy::test_expected_measurements_from_acl ... ok
+test config::tests::policy::test_gpu_config_cpu_tensors_from_acl ... ok
+test config::tests::policy::test_gpu_config_tensor_split_default_empty ... ok
+test config::tests::policy::test_gpu_config_tensor_split_from_acl ... ok
+test config::tests::policy::test_gpu_config_tensor_split_serialization_skips_empty ... ok
+test config::tests::policy::test_load_config_acl_file ... ok
+test config::tests::policy::test_model_signing_key_defaults_to_none ... ok
+test config::tests::policy::test_model_signing_key_from_acl ... ok
+test config::tests::policy::test_ra_tls_defaults_to_false ... ok
+test config::tests::policy::test_ra_tls_from_acl ... ok
+test config::tests::policy::test_ra_tls_not_serialized_when_false ... ok
+test config::tests::policy::test_ra_tls_serialized_when_true ... ok
+test config::tests::policy::test_tee_policy_mode_from_acl ... ok
+test config::tests::policy::test_tee_strict_env_removes_simulated ... ok
+test config::tests::policy::test_tee_strict_env_sets_hardware_defaults_when_empty ... ok
+test config::tests::policy::test_tls_port_defaults_to_none ... ok
+test config::tests::policy::test_tls_port_from_acl ... ok
+test config::tests::policy::test_tls_port_not_serialized_when_none ... ok
+test config::tests::policy::test_tls_port_serialized_when_set ... ok
+test config::tests::policy::test_tls_sans_defaults_to_empty ... ok
+test config::tests::policy::test_tls_sans_from_acl ... ok
+test config::tests::policy::test_to_acl_includes_policy_fields_when_set ... ok
+test config::tests::policy::test_vsock_port_defaults_to_none ... ok
+test config::tests::policy::test_vsock_port_from_acl ... ok
+test config::tests::policy::test_vsock_port_not_serialized_when_none ... ok
+test config::tests::policy::test_vsock_port_serialized_when_set ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_audit_log ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_gpu_attestation_source ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_keep_alive ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_proxy_effective_prompt_digest ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_proxy_effective_prompt_digest_required ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_ra_tls ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_redact_logs ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_tee_mode ... ok
+test config::tests::validation::test_load_from_rejects_invalid_env_tee_policy_mode ... ok
+test config::tests::validation::test_load_from_rejects_invalid_keep_alive ... ok
+test config::tests::validation::test_load_from_rejects_invalid_model_signing_key ... ok
+test config::tests::validation::test_load_from_rejects_unknown_spec_mode ... ok
+test config::tests::validation::test_validate_accepts_corelib_nvattest_with_architecture ... ok
+test config::tests::validation::test_validate_accepts_model_neutral_dspark_strategy ... ok
+test config::tests::validation::test_validate_accepts_typed_dflash2_strategy ... ok
+test config::tests::validation::test_validate_accepts_valid_nras_rest_config ... ok
+test config::tests::validation::test_validate_audit_encrypt_with_key_source ... ok
+test config::tests::validation::test_validate_bounds_cpu_tensor_name_count ... ok
+test config::tests::validation::test_validate_default_config_no_warnings ... ok
+test config::tests::validation::test_validate_keep_alive_overflow_returns_error ... ok
+test config::tests::validation::test_validate_keep_alive_valid_formats ... ok
+test config::tests::validation::test_validate_model_signing_key_valid_hex ... ok
+test config::tests::validation::test_validate_rejects_ambiguous_gpu_evidence_sources ... ok
+test config::tests::validation::test_validate_rejects_ambiguous_gpu_verdict_sources ... ok
+test config::tests::validation::test_validate_rejects_audit_encrypt_without_key_source ... ok
+test config::tests::validation::test_validate_rejects_conflicting_tensor_placement ... ok
+test config::tests::validation::test_validate_rejects_corelib_nvattest_without_architecture ... ok
+test config::tests::validation::test_validate_rejects_duplicate_cpu_tensor_names ... ok
+test config::tests::validation::test_validate_rejects_duplicate_gpu_tensor_names ... ok
+test config::tests::validation::test_validate_rejects_invalid_cpu_tensor_names ... ok
+test config::tests::validation::test_validate_rejects_invalid_keep_alive ... ok
+test config::tests::validation::test_validate_rejects_invalid_nvattest_gpu_evidence_source ... ok
+test config::tests::validation::test_validate_rejects_invalid_nvattest_verifier ... ok
+test config::tests::validation::test_validate_rejects_invalid_speculative_draft_bounds ... ok
+test config::tests::validation::test_validate_rejects_model_signing_key_non_hex ... ok
+test config::tests::validation::test_validate_rejects_model_signing_key_wrong_length ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_invalid_architecture ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_invalid_claims_version ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_with_configured_verdict ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_without_architecture ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_without_evidence ... ok
+test config::tests::validation::test_validate_rejects_nras_rest_zero_timeout ... ok
+test config::tests::validation::test_validate_rejects_nvattest_zero_timeout ... ok
+test config::tests::validation::test_validate_rejects_ra_tls_without_tee_mode ... ok
+test config::tests::validation::test_validate_rejects_ra_tls_without_tls_port ... ok
+test config::tests::validation::test_validate_rejects_rotating_provider_empty_sources ... ok
+test config::tests::validation::test_validate_rejects_tls_port_without_tls_feature ... ok
+test config::tests::validation::test_validate_rejects_unbounded_prompt_cache_settings ... ok
+test config::tests::validation::test_validate_rejects_unbounded_worker_observation_ttl ... ok
+test config::tests::validation::test_validate_rejects_unknown_key_provider ... ok
+test config::tests::validation::test_validate_rejects_unknown_spec_mode ... ok
+test config::tests::validation::test_validate_rotating_provider_with_sources_is_valid ... ok
+test config::tests::validation::test_validate_streaming_decrypt ... ok
+test config::xolotl_dspark::tests::acl_roundtrip_and_unknown_or_incomplete_draft_are_closed ... ok
+test config::xolotl_dspark::tests::indexer_tile_is_optional_canonical_and_bounded_through_acl ... ok
+test config::xolotl_dspark::tests::rejects_invalid_paths_digests_and_bounds ... ok
+test config::xolotl_dspark::tests::typed_draft_emits_only_the_closed_canonical_environment ... ok
+
+test result: ok. 180 passed; 0 failed; 0 ignored; 0 measured; 1842 filtered out; finished in 0.06s
+

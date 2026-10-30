@@ -1,0 +1,49 @@
+{
+  "schema": "aster-xolotl-engram-fp8-simd-v136",
+  "upstream_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "original_source_sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b",
+  "default_enabled": false,
+  "compile_flag": "ASTER_XQ_ENGRAM_FP8_SIMD",
+  "closed_values": [
+    0,
+    1
+  ],
+  "cpu_isa": "runtime AVX2 detection; original scalar fallback",
+  "normal_exact_scale_range": [
+    10,
+    246
+  ],
+  "arithmetic": "Translate FP32 exponent bits only for normal products; preserve signed zeros/NaNs; original arithmetic otherwise",
+  "source_reads_changed": false,
+  "row_order_changed": false,
+  "model_weights_changed": false,
+  "gpu_qualified": false,
+  "model_speed_claimed": false,
+  "files": [
+    {
+      "file": "ds41_engram.cpp",
+      "bytes": 37959,
+      "sha256": "8196c7cb227c74cd8c083d738e29b220ca79ce902cefbe949806e284484a4a44"
+    },
+    {
+      "file": "ds41_engram.original.cpp",
+      "bytes": 37273,
+      "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b"
+    },
+    {
+      "file": "aster_engram_fp8_simd.hpp",
+      "bytes": 6240,
+      "sha256": "869ebd68e50af97f2d73a684717c415b514d873b7816fc724e9775eace680fe2"
+    },
+    {
+      "file": "fp8_simd_exact_test.cpp",
+      "bytes": 5278,
+      "sha256": "63c6926172faa35abd2cef679eabab848fa6bbb10e48483c426df42705e1f1e5"
+    },
+    {
+      "file": "engram-fp8-simd-v136.patch",
+      "bytes": 2709,
+      "sha256": "fcdfb02bf0fec2baaaecc4910389fac708653464fb7d56ca98fd0b776cf292bf"
+    }
+  ]
+}

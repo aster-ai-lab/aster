@@ -1,0 +1,16 @@
+{
+  "source_pair_digest": "cce6babdd0286057a56ad1677bb6154237444994",
+  "base": "89418e07dd5bc78d0e705f8d99f960cc7023dd0c",
+  "bytes": 9308,
+  "sha256": "ebf4ac4e4fe01e8e4380b0279b9f8d989085d9f6f898e6dc0e577150b3f6495a",
+  "tracked_paths": [
+    "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs"
+  ],
+  "new_paths": [
+    "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli_cwd_tests.rs"
+  ],
+  "reverse_check": "passed",
+  "created_utc": "2026-10-29T07:06:42.330387+00:00"
+}

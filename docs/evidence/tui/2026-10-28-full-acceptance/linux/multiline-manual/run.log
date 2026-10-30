@@ -1,0 +1,19 @@
+
+running 2 tests
+test context_and_input::kimi_multiline_mode_inserts_literal_newlines_before_manual_submission ... ORACLE case=multiline-manual-enter name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=multiline-manual-enter name=manual-enter-newline result=pass detail=bare Enter in multiline mode keeps the draft local
+ORACLE case=multiline-manual-enter name=manual-enter-newline result=pass detail=bare Enter in multiline mode keeps the draft local
+ORACLE case=multiline-manual-enter name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13204
+ORACLE case=multiline-manual-enter name=multiline-manual-enter result=pass detail=literal bare-Enter newlines and Unicode text reach one exact model request
+ORACLE case=multiline-manual-enter name=quit result=pass detail=exit 0
+ok
+test context_and_input::kimi_normal_mode_alt_and_backslash_enter_insert_literal_newlines ... ORACLE case=multiline-alt-backslash name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=multiline-alt-backslash name=alt-enter-newline result=pass detail=Alt+Enter in normal mode keeps the draft local
+ORACLE case=multiline-alt-backslash name=backslash-enter-newline result=pass detail=backslash then Enter keeps the draft local
+ORACLE case=multiline-alt-backslash name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13207
+ORACLE case=multiline-alt-backslash name=multiline-alt-backslash result=pass detail=Alt+Enter and backslash-continuation produce one exact multiline model request
+ORACLE case=multiline-alt-backslash name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 24.51s
+

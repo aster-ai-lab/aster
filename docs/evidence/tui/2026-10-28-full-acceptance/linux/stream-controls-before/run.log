@@ -1,0 +1,62 @@
+
+running 2 tests
+test stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing ... ORACLE case=direct-shell-capability name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-unknown-linux-gnu
+
+thread 'stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing' (7614) panicked at crates/code/acp/tests/aster_tui_live_e2e/stream_controls.rs:140:9:
+direct shell metadata was silently routed into model inference
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order ... ORACLE case=queue-edit-delete-drain name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-unknown-linux-gnu
+
+thread 'stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order' (7723) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:335:9:
+timeout waiting for "queued"
+                                                                                                                        
+  /t/aster-kimi-1XoaBI/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Use the bash tool exactly once to run sleep 20; cat queue-proof.txt. Reply with its exact output.     9:06 AM    
+       Do not call other tools or modify any file.                                                                      
+                                                                                                                        
+                                                                                                                        
+     ◆ Thought for 2.7s                                                                                                 
+     ◆ Run sleep 20; cat queue-proof.txt                                                                                
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+    #1 Reply only QUEUED-FIRST-OK. Do not call any tools.                                                               
+                                                                                                                        
+    ⠼ Run sleep 20; cat queue-proof.txt 8.6s                                                      15s ⇣13.3k [↓][stop]  
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  
+                                                                                                                        
+  Enter:send now  │  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+b:send to bg  │  Ctrl+;:queue  │  Ctrl+x:shortcuts       
+                                                                                                                        
+FAILED
+
+failures:
+
+failures:
+    stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing
+    stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 29 filtered out; finished in 39.55s
+

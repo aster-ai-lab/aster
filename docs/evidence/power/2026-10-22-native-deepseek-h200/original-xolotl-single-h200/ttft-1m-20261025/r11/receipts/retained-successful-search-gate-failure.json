@@ -1,0 +1,22 @@
+{
+  "unix": 1792920984.0138507,
+  "phase": "failed",
+  "client": "installed WorkBuddy CLI",
+  "gui_test_passed": false,
+  "base_url": "http://10.102.93.68/v1",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "tools_profile": [
+    "WebSearch"
+  ],
+  "no_session_persistence": true,
+  "public_search_only": true,
+  "search_tool_roundtrip_passed": false,
+  "raw_output_publication_permitted": false,
+  "client_pid": 197352,
+  "events": 55,
+  "search_calls": 1,
+  "elapsed_seconds": 26.561999999918044,
+  "error": "RuntimeError: WorkBuddy must perform exactly one search and then give the actual official link",
+  "seconds": 26.92199999978766,
+  "finished_unix": 1792921010.93175
+}

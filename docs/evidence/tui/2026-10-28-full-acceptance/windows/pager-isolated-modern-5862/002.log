@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'acp::a3s_spawn::tests::a_set_override_stops_when_the_path_cannot_be_executed' (54244) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\acp\a3s_spawn.rs:423:9:
+assertion `left == right` failed
+  left: Some("C:\\Users\\admin\\AppData\\Local\\Temp\\pager-acp-override-54724-1793250011655524500\\plain")
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test acp::a3s_spawn::tests::a_set_override_stops_when_the_path_cannot_be_executed ... FAILED
+
+failures:
+
+failures:
+    acp::a3s_spawn::tests::a_set_override_stops_when_the_path_cannot_be_executed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

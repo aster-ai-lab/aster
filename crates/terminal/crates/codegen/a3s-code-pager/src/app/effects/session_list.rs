@@ -111,6 +111,7 @@ fn parse_session_picker_entries_with(
             let id = v
                 .get("sessionId")
                 .or_else(|| v.get("session_id"))
+                .or_else(|| v.get("id"))
                 .and_then(Value::as_str)?
                 .to_owned();
             let summary = v

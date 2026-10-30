@@ -1,0 +1,40 @@
+{
+  "parents": [
+    {
+      "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200",
+      "archive_sha256": "dc71866f8f53fee0f311f8e3d81f773880bc28954cec5eb35f23cd93660e5444",
+      "archive_bytes": 776906,
+      "members": [
+        "ds41_dense.cpp.o",
+        "ds41_engram.cpp.o"
+      ],
+      "source_sha256": "8fcccf32e5162be88862469eb69421da6d988d9ffc37a542a4982887bfad0c19",
+      "source_bytes": 193588,
+      "dense_compile_commands": []
+    },
+    {
+      "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-300-0b1716ac50e0/xolotl-split-rows-h200",
+      "archive_sha256": "185c21b064430066f4ba66076b4853282fc80df82258171b341770b0b49a35c8",
+      "archive_bytes": 777530,
+      "members": [
+        "ds41_dense.cpp.o",
+        "ds41_engram.cpp.o"
+      ],
+      "source_sha256": "1773c49096f1634258e5c04ad48042d9db2d8d0353f1a749de2d169859250096",
+      "source_bytes": 194252,
+      "dense_compile_commands": []
+    }
+  ],
+  "files": [
+    {
+      "name": "ds41_dense.original.cpp",
+      "bytes": 193588,
+      "sha256": "8fcccf32e5162be88862469eb69421da6d988d9ffc37a542a4982887bfad0c19"
+    },
+    {
+      "name": "lightning-indexer.original.cu",
+      "bytes": 24750,
+      "sha256": "957dea8b4e66a1c9c63058a546f0eeb716a64c388f81e8aca7cf2bcf1b661aac"
+    }
+  ]
+}

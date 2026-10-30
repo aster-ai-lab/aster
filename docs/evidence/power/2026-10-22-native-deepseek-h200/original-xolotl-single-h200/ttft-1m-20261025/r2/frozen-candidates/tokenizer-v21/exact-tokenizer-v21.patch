@@ -1,0 +1,24 @@
+--- a/tools/v41/serve/serve_ds41.py
++++ b/tools/v41/serve/serve_ds41.py
+@@ -21,6 +21,7 @@
+ import re
+ import sys
+ from pathlib import Path
++from aster_token_cache import ExactEncodeCache
+ 
+ HERE = Path(__file__).resolve().parent
+ V41 = HERE.parent
+@@ -45,6 +46,13 @@
+     def __init__(self, tokens, merges, token_types=None, pre="joyai-llm", **k):
+         super().__init__(tokens, merges, token_types, pre="joyai-llm", **k)
+         self._literal = {i: t.encode("utf-8") for t, i in self.special_tokens.items()}
++        self._aster_encode_memo = ExactEncodeCache(super().encode)
++
++    def encode(self, text: str, parse_special: bool = False, plain=()) -> list[int]:
++        memo = getattr(self, "_aster_encode_memo", None)
++        if memo is None:
++            return super().encode(text, parse_special=parse_special, plain=plain)
++        return memo.encode(text, parse_special=parse_special, plain=plain)
+ 
+     def token_bytes(self, i: int) -> bytes:
+         # V4.1's special tokens (<｜User｜>, <｜end▁of▁sentence｜>, ...) are not in the byte alphabet: they decode to

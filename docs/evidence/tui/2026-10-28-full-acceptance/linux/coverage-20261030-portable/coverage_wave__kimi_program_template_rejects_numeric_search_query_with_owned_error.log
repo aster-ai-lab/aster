@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_program_template_rejects_numeric_search_query_with_owned_error ... ORACLE case=coverage-program-typed-error name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-program-typed-error name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=coverage-program-typed-error name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=40367
+ORACLE case=coverage-program-typed-error name=template-typed-parameter-error result=pass detail=a numeric template query is preserved to the real nested search boundary and returns one failed complete receipt without retries
+ORACLE case=coverage-program-typed-error name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 29.58s
+

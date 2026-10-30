@@ -1,0 +1,22 @@
+
+running 1 test
+test functional::kimi_home_picker_cancel_and_return_preserves_existing_session ... ORACLE case=home-return name=source-pair result=pass detail=aster-cli-pair-v1:a2188f93f97c2608c63bc3e38e9bf08e32eaedef:x86_64-unknown-linux-gnu
+ORACLE case=home-return name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13184
+ORACLE case=home-return name=session-kind-marker result=pass detail={
+  "schema": "a3s.code.session-folder.v1",
+  "id": "811a9a73-1bb1-4c42-96e8-ab38cb0db754",
+  "created_at": "2026-10-30T03:20:51.201061564+08:00",
+  "workspace": "/tmp/aster-kimi-Wy82BQ/workspace",
+  "effect_log": "811a9a73-1bb1-4c42-96e8-ab38cb0db754.jsonl",
+  "sessionKind": "interactive"
+}
+ORACLE case=home-return name=home-welcome result=pass detail=/home reaches the welcome screen without creating a session or changing the original fact log
+ORACLE case=home-return name=home-picker-cancelled result=pass detail=closing the picker preserves the original session and creates no model turn or session fact log
+ORACLE case=home-return name=home-return-restored result=pass detail=the original id and transcript return without a new session, model request or history mutation
+ORACLE case=home-return name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13238
+ORACLE case=home-return name=home-return-usable result=pass detail=the returned original session completes a fresh real Kimi turn
+ORACLE case=home-return name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 50 filtered out; finished in 23.54s
+

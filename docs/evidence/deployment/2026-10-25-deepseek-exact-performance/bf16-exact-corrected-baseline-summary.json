@@ -1,0 +1,30 @@
+{
+  "at_epoch": 1792912828.3679175,
+  "source": "completed raw native HTTP responses; one GPU6 engine",
+  "exact_routing": true,
+  "route_biases": [
+    0,
+    0,
+    0
+  ],
+  "effective_startup_pcie_fraction": 0.75,
+  "attempted_request_pcie_sweep_valid": false,
+  "quality_passed": 5,
+  "completed_trials": 9,
+  "non_warmup_decode_rates": [
+    5.2,
+    5.2,
+    5.3,
+    5.4,
+    5.4,
+    5.3
+  ],
+  "median_decode_tokens_per_second": 5.3,
+  "packed_kv": false,
+  "context_capacity": 1048576,
+  "not_claimed": [
+    "PCIe parameter optimization",
+    "full 1M completed inference",
+    "same-quality equivalence with biased routing"
+  ]
+}

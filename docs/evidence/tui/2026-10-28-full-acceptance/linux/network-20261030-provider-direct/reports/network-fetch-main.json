@@ -1,0 +1,353 @@
+{
+  "assertions_finished": true,
+  "case": "network-fetch-main",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-fetch-main.json"
+          },
+          "id": "call_9fc130efdf2544259648aee2e40564b7",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13210,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+            "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_9fc130efdf2544259648aee2e40564b7",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+            "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_9fc130efdf2544259648aee2e40564b7",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"body_only\\\":true,\\\"format\\\":\\\"markdown\\\",\\\"max_chars\\\":1000,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/main.html\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-main.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":160},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":160,\"projected_bytes\":160,\"original_estimated_tokens\":40,\"projected_estimated_tokens\":40,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"projected_digest\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"repeat_key\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"content_ref\":\"inline:sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5bb8949e8203a5d29119038113b93a7d78e47b6fdf7b849abb51845e029f734b\"}",
+        "prepared_digest": "sha256:ca362b002aaeb359a8d11b6796984105bc3e0345709432bde7380c5e28a37d66",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "body_only": true,
+            "format": "markdown",
+            "max_chars": 1000,
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/main.html"
+          },
+          "id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+          "name": "web_fetch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13395,
+        "text": null,
+        "tool": "web_fetch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+            "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+          "turn": 1
+        },
+        "tool": "web_fetch"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+            "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"# Fixture main\\n\\nFETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634\\n\\n[Target](http://aster-fixture.example.test/target)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/main.html\"],\"document_kind\":\"html\",\"content_type\":\"text/html\",\"range\":{\"offset\":0,\"requested_max_chars\":1000,\"applied_max_chars\":1000,\"returned_chars\":113,\"total_chars\":113,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":null,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":117,\"projected_bytes\":117,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"projected_digest\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"repeat_key\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"content_ref\":\"inline:sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:79282a216964735bba3e3f9cdbc5755af0923cc64f7a63490df72bc1a25465ad\"}",
+        "prepared_digest": "sha256:66f545043c87117ba4e4c3e1e6f13f99c363bc351552a60d87416d683df8276f",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13618,
+        "text": "# Fixture main\n\nFETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634\n\nLink: [Target](http://aster-fixture.example.test/target)",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "346c941188820d9b8f0c80fa84783471f0e5daa8ffca89fbef0af9ff1d6793be",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:1d353fa5ee8c52ab4e86f872bfee0ee019c71539d1652332de801569f24f3e87",
+          "sha256:bdc396427c1f037b6a1bb9ad70f3d423d691134310071d6056e6ed9f0ecc4f40"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=40223",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fXcnlr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-main.json once. Call web_fetch exactly once with its exact JSON object as          2:14 PM    \n       arguments. Report the actual main content and link, without retrying, inventing content or calling               \n       other tools.                                                                                                     \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n                                                                                                                        \n     Fixture main                                                                                            2:15 PM    \n                                                                                                                        \n     FETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634                                                                    \n                                                                                                                        \n     Link: Target (http://aster-fixture.example.test/target)                                                            \n                                                                                                                        \n     Worked for 29s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the real HTTP response is converted to Markdown from its semantic main; unseen Unicode content and the actual link survive while header, footer and script do not; the source anchor matches the request",
+      "name": "web-fetch-real-main-and-link",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fXcnlr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-fetch-main.json once. Call web_fetch exactly once with its exact JSON object as          2:14 PM    \n       arguments. Report the actual main content and link, without retrying, inventing content or calling               \n       other tools.                                                                                                     \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n                                                                                                                        \n     Fixture main                                                                                            2:15 PM    \n                                                                                                                        \n     FETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634                                                                    \n                                                                                                                        \n     Link: Target (http://aster-fixture.example.test/target)                                                            \n                                                                                                                        \n     Worked for 29s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "network-fetch-main",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-fetch-main.json"
+              },
+              "id": "call_9fc130efdf2544259648aee2e40564b7",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13210,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+                "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_9fc130efdf2544259648aee2e40564b7",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+                "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_9fc130efdf2544259648aee2e40564b7",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"body_only\\\":true,\\\"format\\\":\\\"markdown\\\",\\\"max_chars\\\":1000,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/main.html\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-fetch-main.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":160},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":160,\"projected_bytes\":160,\"original_estimated_tokens\":40,\"projected_estimated_tokens\":40,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"projected_digest\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"repeat_key\":\"sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"content_ref\":\"inline:sha256:c7478ba6786f644723a3f7dd44ac1c508065f1eb9c0463cefd5b9dc99dd1a54e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:5bb8949e8203a5d29119038113b93a7d78e47b6fdf7b849abb51845e029f734b\"}",
+            "prepared_digest": "sha256:ca362b002aaeb359a8d11b6796984105bc3e0345709432bde7380c5e28a37d66",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "body_only": true,
+                "format": "markdown",
+                "max_chars": 1000,
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/main.html"
+              },
+              "id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+              "name": "web_fetch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13395,
+            "text": null,
+            "tool": "web_fetch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+                "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+              "turn": 1
+            },
+            "tool": "web_fetch"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-931ef2e7-54e0-4c22-bfd9-c092788ee6b5",
+                "thread_id": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_5298903f18ad4e8f9a901bc9dd224ca0",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"# Fixture main\\n\\nFETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634\\n\\n[Target](http://aster-fixture.example.test/target)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"http://aster-fixture.example.test/main.html\"],\"document_kind\":\"html\",\"content_type\":\"text/html\",\"range\":{\"offset\":0,\"requested_max_chars\":1000,\"applied_max_chars\":1000,\"returned_chars\":113,\"total_chars\":113,\"next_offset\":null,\"eof\":true,\"limit_clamped\":false},\"artifact_uri\":null,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":117,\"projected_bytes\":117,\"original_estimated_tokens\":30,\"projected_estimated_tokens\":30,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"projected_digest\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"repeat_key\":\"sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"content_ref\":\"inline:sha256:32499498642a8f98972f33f9b33c10032ff7718aab3d2f20b1dce939965b4b2c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:79282a216964735bba3e3f9cdbc5755af0923cc64f7a63490df72bc1a25465ad\"}",
+            "prepared_digest": "sha256:66f545043c87117ba4e4c3e1e6f13f99c363bc351552a60d87416d683df8276f",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13618,
+            "text": "# Fixture main\n\nFETCH-中文-1cefeccf-ad7b-49cb-a116-64cc6c74e634\n\nLink: [Target](http://aster-fixture.example.test/target)",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "346c941188820d9b8f0c80fa84783471f0e5daa8ffca89fbef0af9ff1d6793be",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:1d353fa5ee8c52ab4e86f872bfee0ee019c71539d1652332de801569f24f3e87",
+              "sha256:bdc396427c1f037b6a1bb9ad70f3d423d691134310071d6056e6ed9f0ecc4f40"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "01c68710-b4a6-4f58-9d4a-536aa891e1ac"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,14 @@
+
+running 1 test
+test workspace_trust::kimi_workspace_trust_accept_restart_and_second_workspace_are_scoped ... ORACLE case=trust-accept name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=trust-accept name=trust-prompt result=pass detail=release-stamped trust gate blocks the declared process and all session/model work
+ORACLE case=trust-accept name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26603
+ORACLE case=trust-accept name=trust-accept result=pass detail=the shown workspace grant starts its declared command and permits a real Kimi read
+ORACLE case=trust-accept name=quit result=pass detail=exit 0
+ORACLE case=trust-accept name=trust-restart result=pass detail=the original workspace reuses its grant after a real process restart
+ORACLE case=trust-accept name=quit result=pass detail=exit 0
+ORACLE case=trust-accept name=trust-workspace-scope result=pass detail=a second workspace asks again and declining it leaves the original grant byte-identical
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 36 filtered out; finished in 34.82s
+

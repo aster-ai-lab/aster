@@ -1,0 +1,18 @@
+{
+    "source_pair":  "aster-cli-pair-v1:4fe1c6c8c4de5d03acd36b95640201d44a8ce4d3:x86_64-pc-windows-msvc",
+    "folder":  "D:/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-windows/session-isolation-20261029165943475",
+    "files":  [
+                  {
+                      "name":  "aster.exe",
+                      "sha256":  "73d7c9b4feda8e6573d41a2ddee1329fa50cf8dda9419f36ab4ea650f7f41a8f",
+                      "bytes":  324001792
+                  },
+                  {
+                      "name":  "a3s-code-acp.exe",
+                      "sha256":  "406b48da0501928e678687a4d6219d1e7fd8ed09e1c2b2b75bcc5b8a50c95ba4",
+                      "bytes":  185467904
+                  }
+              ],
+    "build_json":  "D:/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/windows/session-isolation-build/build.jsonl",
+    "created_at":  "2026-10-29T16:59:43.4753674+00:00"
+}

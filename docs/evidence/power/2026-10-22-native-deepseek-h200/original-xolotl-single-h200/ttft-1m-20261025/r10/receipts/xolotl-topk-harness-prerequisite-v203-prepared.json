@@ -1,0 +1,11 @@
+{
+  "parent": "manage_topk_harness_v195r1.py",
+  "parent_sha256": "e9c6e01d6261e5f9c3f754262f8ab7b87c097d245b2364650bb934abd93e579f",
+  "candidate": "manage_topk_harness_v203.py",
+  "candidate_sha256": "f4d1aa6574382808f89ee910fe84559a60750283f505d6bf3e1952e5e6b0697b",
+  "failed_diagnostic": "xolotl-ncu-actual1m-v172r2-latest.json",
+  "hardware_counters_collected": false,
+  "model_requests_started": false,
+  "exact38_operator_and_graph_gates_changed": false,
+  "rationale": "Operator correctness does not depend on successful unrelated hardware sampling. Exact old profiler termination, native reap, one owned GPU, idle state and finite lease remain mandatory."
+}

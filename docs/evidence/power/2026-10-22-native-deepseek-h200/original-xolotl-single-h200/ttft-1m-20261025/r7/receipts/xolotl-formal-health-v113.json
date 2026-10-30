@@ -1,0 +1,45 @@
+{
+  "unix": 1792891396.7304492,
+  "formal_job": "aster-xolotl-1mc9-e81ede480e07-8789662",
+  "formal_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+  "formal_phase": "Running",
+  "replicas": [
+    {
+      "name": "aster-xolotl-1mc9-e81ede480e07-8789662-5s74q",
+      "phase": "Running"
+    }
+  ],
+  "readiness": {
+    "unix": 1792891404.0449471,
+    "result": {
+      "schema": "aster-xolotl-readiness-watch-v65",
+      "unix": 1792891371.090937,
+      "phase": "ready",
+      "allocation_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+      "observation_only": true,
+      "failures": [],
+      "job_phase": "Running",
+      "last_ready_unix": 1792891371.409879,
+      "health_status": 200,
+      "scope": "jump host direct to the owned VIP; no inference request"
+    },
+    "exact_observer_alive": true
+  },
+  "windows_direct_health": {
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "max_context": 1048576,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "display_name": null,
+      "images": false,
+      "api_key": true,
+      "image_generation": false,
+      "loaded": true,
+      "service": "strata"
+    },
+    "seconds": 0.06199999991804361
+  },
+  "inference_sent": false,
+  "service_restarted": false
+}

@@ -1,0 +1,57 @@
+
+running 1 test
+test coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection ... ORACLE case=coverage-read-viewer name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=coverage-read-viewer name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=30016
+
+thread 'coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection' (24004) panicked at crates\code\acp\tests\aster_tui_live_e2e\coverage_wave.rs:517:9:
+expected "VIEW-ROW-119"
+                                                                                                                        
+  C:\W\T\aster-kimi-XDm1Ck\workspace                                                                        16K / 128K  
+   ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮   
+   │                                                                                                            [x] │  █
+   │  46      46VIEW-ROW-045 df5138442cae43b58e2bf43358a020d5                                                    ▲  │  █
+   │  47      47VIEW-ROW-046 df5138442cae43b58e2bf43358a020d5                                                       │  █
+   │  48      48VIEW-ROW-047 df5138442cae43b58e2bf43358a020d5                                                       │  █
+ ┌ │  49      49VIEW-ROW-048 df5138442cae43b58e2bf43358a020d5                                                       │ ┐█
+ │ │  50      50VIEW-ROW-049 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  51      51VIEW-ROW-050 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  52      52VIEW-ROW-051 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  53      53VIEW-ROW-052 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  54      54VIEW-ROW-053 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  55      55VIEW-ROW-054 df5138442cae43b58e2bf43358a020d5                                                       │ │█
+ │ │  56      56VIEW-ROW-055 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  57      57VIEW-ROW-056 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  58      58VIEW-ROW-057 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  59      59VIEW-ROW-058 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  60      60VIEW-ROW-059 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  61      61VIEW-ROW-060 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  62      62VIEW-ROW-061 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  63      63VIEW-ROW-062 df5138442cae43b58e2bf43358a020d5                                                       │ │ 
+ │ │  64      64VIEW-ROW-063 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  65      65VIEW-ROW-064 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  66      66VIEW-ROW-065 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  67      67VIEW-ROW-066 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  68      68VIEW-ROW-067 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  69      69VIEW-ROW-068 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  70      70VIEW-ROW-069 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  71      71VIEW-ROW-070 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  72      72VIEW-ROW-071 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ │ │  73      73VIEW-ROW-072 df5138442cae43b58e2bf43358a020d5                                                      █│ │ 
+ ┆ │  74      74VIEW-ROW-073 df5138442cae43b58e2bf43358a020d5                                                      █│ ┆ 
+   │  75      75VIEW-ROW-074 df5138442cae43b58e2bf43358a020d5                                                      █│   
+  ╭│  76      76VIEW-ROW-075 df513                                                                                 █│╮  
+  │╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯│  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Esc:close  │  Enter:quote  │  /:search  │  f:filter  │  v:select  │  w:wrap  │  Shift+y:copy path                     
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 95 filtered out; finished in 23.97s
+

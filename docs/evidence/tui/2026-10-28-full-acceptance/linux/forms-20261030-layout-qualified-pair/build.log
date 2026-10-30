@@ -1,0 +1,11 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager)
+   Compiling aster v0.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/aster)
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp)
+   Compiling a3s-code-pager-minimal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-pager-minimal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3m 53s

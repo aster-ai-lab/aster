@@ -1,0 +1,166 @@
+{
+  "case": "form-submit",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1b5b3e3bd374c23f0325bd2e631c24becc0b9214:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "form-required",
+      "detail": "native required-field validation blocks empty submission",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-pdJzke\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with prompt 'Fill in details' and the exact JSON      9:38 PM           Render document from that file. After the user answers, report the returned values without calling                      other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ♦ Run ask_user_form 0.4s                                                                         14s ↓13.7k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Fill in details · Aster form                                                                                         │                                                                                                                       │  1 Name (required)                                                                                                    │  2 Amount            3.0                                                                                              │  3 Ready (required)  [ ]                                                                                              │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "name": "form-range",
+      "detail": "native numeric validation blocks amount 6",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-pdJzke\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with prompt 'Fill in details' and the exact JSON      9:38 PM           Render document from that file. After the user answers, report the returned values without calling                      other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 2.3s                                                                         16s ↓13.7k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Fill in details · Aster form                                                                                         │                                                                                                                       │  1 Name (required)   Ada                                                                                              │  2 Amount            6                                                                                                │        max 5                                                                                                          │  3 Ready (required)  [x]                                                                                              │                                                                                                                       │  y (•) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "name": "form-submit",
+      "detail": "actual ACP/Core tool receipt contains Ada, 4 and true",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-pdJzke\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read form.json. Call ask_user_form exactly once with prompt 'Fill in details' and the exact JSON      9:38 PM           Render document from that file. After the user answers, report the returned values without calling                      other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 1.9s                                                                                                                                                                                                                              Returned values:                                                                                        9:39 PM                                                                                                                                 {                                                                                                                         \"name\": \"Ada\",                                                                                                          \"amount\": 4.0,                                                                                                          \"ready                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Responding… 0.0s                                                                               25s ↓13.7k [stop]                                                                                                                            ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                                                                                                                                         "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13465,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_767c54961b774489a9ed547821ff8061",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-16a4e4b8-3da4-419f-a82a-26783b7dec37",
+            "thread_id": "462dc038-f544-4751-8d6a-5de71b9e4eba",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_767c54961b774489a9ed547821ff8061",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-16a4e4b8-3da4-419f-a82a-26783b7dec37",
+            "thread_id": "462dc038-f544-4751-8d6a-5de71b9e4eba",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:015cf8566f920d2bee33ac9ae21379327372a453785a98fa8619b05bcadc9c89",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"root\\\":\\\"root\\\",\\\"elements\\\":{\\\"root\\\":{\\\"type\\\":\\\"Card\\\",\\\"props\\\":{\\\"title\\\":\\\"Aster form\\\"},\\\"children\\\":[\\\"name\\\",\\\"amount\\\",\\\"ready\\\",\\\"submit\\\"]},\\\"name\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"type\\\":\\\"text\\\",\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}}},\\\"amount\\\":{\\\"type\\\":\\\"Input\\\",\\\"props\\\":{\\\"label\\\":\\\"Amount\\\",\\\"type\\\":\\\"number\\\",\\\"min\\\":1,\\\"max\\\":5,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/amount\\\"}}},\\\"ready\\\":{\\\"type\\\":\\\"Checkbox\\\",\\\"props\\\":{\\\"label\\\":\\\"Ready\\\",\\\"required\\\":true,\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/ready\\\"}}},\\\"submit\\\":{\\\"type\\\":\\\"Button\\\",\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"}}},\\\"state\\\":{\\\"form\\\":{\\\"name\\\":\\\"\\\",\\\"amount\\\":3,\\\"ready\\\":false}}}\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":611},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":611,\"projected_bytes\":611,\"original_estimated_tokens\":153,\"projected_estimated_tokens\":153,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"projected_digest\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"repeat_key\":\"sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"content_ref\":\"inline:sha256:a4dd94b9671a8fea03a432c6ad31f0b7221c0a7a1448522409f79ebf5b3ebade\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:777134080c293bb6c07f438b4272f08692cc3dd774d5c82097b1288fd0e460ce\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13742,
+        "has_text": false,
+        "tool": "ask_user_form"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_44fae113f36d4769b7605f4a1359b7d0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-16a4e4b8-3da4-419f-a82a-26783b7dec37",
+            "thread_id": "462dc038-f544-4751-8d6a-5de71b9e4eba",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "ask_user_form"
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_44fae113f36d4769b7605f4a1359b7d0",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-16a4e4b8-3da4-419f-a82a-26783b7dec37",
+            "thread_id": "462dc038-f544-4751-8d6a-5de71b9e4eba",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:65072fdce3b0291f3c122a2367301f6852da691a3a74ad1fcc058d91cae63031",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-462dc038-f544-4751-8d6a-5de71b9e4eba-run-16a4e4b8-3da4-419f-a82a-26783b7dec37-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"name\\\":\\\"Ada\\\",\\\"amount\\\":4.0,\\\"ready\\\":true},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":234,\"projected_bytes\":234,\"original_estimated_tokens\":59,\"projected_estimated_tokens\":59,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:afbe72503541236e0f75818c7ffc98ed6efe7096f8efd8666eb74409a9a57825\",\"projected_digest\":\"sha256:afbe72503541236e0f75818c7ffc98ed6efe7096f8efd8666eb74409a9a57825\",\"repeat_key\":\"sha256:afbe72503541236e0f75818c7ffc98ed6efe7096f8efd8666eb74409a9a57825\",\"content_ref\":\"inline:sha256:afbe72503541236e0f75818c7ffc98ed6efe7096f8efd8666eb74409a9a57825\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:e787c098ba8215ac87cc2cda197066ea4cfc3b1d8b9563fea45847895c65d370\"}"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14107,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 13,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:06eacf1a815028c82d0d09e8b9f73c6db8e32c9c79146234fc74bb055c4c84fe",
+          "sha256:f938a727273302b53bef2dc9b978ae28363e76b7207f3e392e73f8eb2bb1abca"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 12,
+          "digest": "786f54f92e6b84cc9a1e54eaf5d14a7f541a94a692a51999b00cb19266ebfaa7"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

@@ -1,0 +1,55 @@
+
+running 1 test
+test forms_catalog::kimi_catalog_forms_render_all_components_and_preserve_typed_edits ... ORACLE case=form-all-components name=source-pair result=pass detail=aster-cli-pair-v1:70f49387956f5bba7ade5552b9ca82291464886f:x86_64-unknown-linux-gnu
+
+thread 'forms_catalog::kimi_catalog_forms_render_all_components_and_preserve_typed_edits' (11083) panicked at crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs:57:9:
+missing native catalog content Latency: 42ms:                                                                                                                         
+  /t/aster-kimi-SA4IVI/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     10:58 AM    
+       from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                
+       without calling other tools or modifying files.                                                                  
+                                                                                                                        
+                                                                                                                        
+     ◈ Read 1 file                                                                                                      
+     ◆ ask_user_form                                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+    ◆ Run ask_user_form 0.0s                                                                         26s ⇣13.9k [stop]  
+                                                                                                                        
+  ┃                                                                                                                     
+  ┃  MCP “Aster” requests your input                                                                                    
+  ┃                                                                                                                     
+  ┃  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                           
+  ┃                                                                                                                     
+  ┃  1 Name (required)                                                                                                  
+  ┃  2 Count               2.0                                                                                          
+  ┃  3 Email               seed@example.invalid                                                                         
+  ┃  4 Phone               seed-phone                                                                                   
+  ┃  ↓ more                                                                                                             
+  ┃  y (○) Accept                                                                                                       
+  ┃  d (○) Decline                                                                                                      
+  ┃                                                                                                                     
+                                                                                                                        
+  Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                           
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    forms_catalog::kimi_catalog_forms_render_all_components_and_preserve_typed_edits
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 63 filtered out; finished in 33.52s
+

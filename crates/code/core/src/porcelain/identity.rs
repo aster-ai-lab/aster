@@ -57,7 +57,9 @@ pub(super) fn stamp_paths(
         *path_budget -= 1;
         #[cfg(unix)]
         let stamp = observe_identity_unix(root, path, byte_budget, true);
-        #[cfg(not(unix))]
+        #[cfg(windows)]
+        let stamp = observe_identity_windows(root, path, byte_budget, true);
+        #[cfg(not(any(unix, windows)))]
         let stamp = observe_file_identity(root, path, byte_budget);
         match stamp {
             Some(stamp) => stamps.push(stamp),
@@ -146,7 +148,11 @@ pub(crate) fn observe_file_identity(
     {
         observe_identity_unix(root, relative, budget, false)
     }
-    #[cfg(not(unix))]
+    #[cfg(windows)]
+    {
+        observe_identity_windows(root, relative, budget, false)
+    }
+    #[cfg(not(any(unix, windows)))]
     {
         // Never substitute a following open on platforms where this observer
         // has no descriptor-anchored implementation. Receipts stay incomplete.
@@ -181,7 +187,7 @@ pub(super) fn tool_file_identity(stamp: &ContentStamp) -> Option<a3s_effect::Too
     })
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 pub(super) fn missing_identity(relative: &str) -> ContentStamp {
     ContentStamp {
         path: relative.to_string(),
@@ -196,7 +202,7 @@ pub(super) fn missing_identity(relative: &str) -> ContentStamp {
     }
 }
 
-#[cfg(any(unix, test))]
+#[cfg(any(unix, windows, test))]
 pub(super) fn read_content_digest(
     reader: &mut impl Read,
     len: u64,
@@ -225,7 +231,7 @@ pub(super) fn read_content_digest(
     (read == len).then(|| format!("{:x}", digest.finalize()))
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 pub(super) fn relative_components(relative: &Path) -> Option<Vec<&std::ffi::OsStr>> {
     let mut parts = Vec::new();
     for part in relative.components() {
@@ -627,7 +633,7 @@ pub(super) fn directory_errno() -> Option<*mut libc::c_int> {
     None
 }
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 pub(super) fn directory_entries(
     _root: &Path,
     _relative: &Path,

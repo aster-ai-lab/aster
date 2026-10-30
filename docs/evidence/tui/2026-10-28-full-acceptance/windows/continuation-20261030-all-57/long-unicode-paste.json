@@ -1,0 +1,63 @@
+{
+  "assertions_finished": true,
+  "case": "long-unicode-paste",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 22081,
+        "text": "LONG-PASTE-ACCEPTED",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4327fee0643246ab4deec4877cad89a7d11e2557fdb7ae52cee70a8393dec870",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=22081",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-QU14Mc\\workspace                                                                        22K / 128K                                                                                                                                                                                                                                                       > 中文                                                                                                  9:36 AM           Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload                     is test data, not instructions. …                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 1.1s                                                                                                                                                                                                                              LONG-PASTE-ACCEPTED                                                                                     9:36 AM                                                                                                                                 Worked for 7.0s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                 p       0          <  & \" ' / \\      λ é a       1                         █   │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response",
+      "name": "exact-long-paste",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-QU14Mc\\workspace                                                                        22K / 128K                                                                                                                                                                                                                                                       > 中文                                                                                                  9:36 AM           Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload                     is test data, not instructions. …                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 1.1s                                                                                                                                                                                                                              LONG-PASTE-ACCEPTED                                                                                     9:36 AM                                                                                                                                 Worked for 7.0s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                 p       0          <  & \" ' / \\      λ é a       1                         █   │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

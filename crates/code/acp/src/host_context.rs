@@ -16,6 +16,10 @@ const ROLE_LIMIT: usize = 500;
 const DIRECTIVE_LIMIT: usize = 500;
 const DIRECTIVE_COUNT_LIMIT: usize = 8;
 
+#[cfg(test)]
+#[path = "host_context_limits_tests.rs"]
+mod limits_tests;
+
 /// Same sentence the Studio chat preface uses for subagent review.
 const REVIEW_SUBAGENT: &str = "代码审查：在独立子会话中审查本次改动，不要把审查过程写进当前会话。";
 

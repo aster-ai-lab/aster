@@ -5,6 +5,9 @@
 //! `a3s-code-acp`. Palette and launch cases spawn `aster` on a PTY.
 //! Nothing here substitutes a scripted `LlmClient` or the pager's content mock.
 
+// These fixtures execute POSIX shell scripts and require Unix executable modes.
+#![cfg(unix)]
+
 #[path = "support/binaries.rs"]
 mod binaries;
 

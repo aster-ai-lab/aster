@@ -2396,6 +2396,7 @@ mod announcements;
 mod scheduled_tasks;
 mod queue_and_adoption;
 mod plan_mode;
+mod plan_transition_order;
 mod reconnect;
 mod turn_completion;
 mod hooks;

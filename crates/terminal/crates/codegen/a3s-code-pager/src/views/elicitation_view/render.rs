@@ -111,6 +111,9 @@ fn build_body_rows(
                 }
                 rows.push(BodyRow::Field(i));
                 if field.error.is_some() {
+                    if state.focus == ElicitationFocus::Actions && cursor_row.is_none() {
+                        cursor_row = Some(rows.len());
+                    }
                     rows.push(BodyRow::FieldError(i));
                 }
                 if is_cur && state.focus == ElicitationFocus::Editing && field.is_multi_select() {

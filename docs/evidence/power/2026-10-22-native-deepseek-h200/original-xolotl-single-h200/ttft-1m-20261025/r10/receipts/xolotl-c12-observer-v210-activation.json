@@ -1,0 +1,16 @@
+{
+  "unix": 1792910738.3457923,
+  "phase": "observer_activated",
+  "proof": {
+    "unix": 1792910743.4137676,
+    "old_phase": "Stopped",
+    "formal_phase": "Running",
+    "new_phase": "Running",
+    "maximum_task_GPUs": 2
+  },
+  "current_optimization_uid": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+  "current_optimization_phase": "Running",
+  "service_changed": false,
+  "model_forward_started": false,
+  "resource_probe_phase": "passed"
+}

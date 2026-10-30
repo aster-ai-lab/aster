@@ -1,0 +1,302 @@
+{
+  "issue": "https://github.com/aster-ai-lab/aster/issues/212",
+  "sourceBase": "2b6d89f461305c1709617a8475d8c27ff4febe0c",
+  "studioBase": "a379e3aa8acd69664d2e713bd4720dbdbbe62e22",
+  "studioCommit": "d97043d7d4c3593428cd78680e48ff9b1422ef92",
+  "sourceFiles": [
+    {
+      "path": "packages/office/patches/@fortune-sheet%2Fcore@1.0.4.patch",
+      "sha256": "4f826ce89652b8031474a996bdc52cc169eb4f9781bb6c764bb624497980989e",
+      "bytes": 114303
+    },
+    {
+      "path": "apps/studio/pnpm-lock.yaml",
+      "sha256": "16e0ab16822797570d87c1adcb8105bd60ec8fcf026211bfc85615487dfbd919",
+      "bytes": 1493247
+    },
+    {
+      "path": "apps/studio/scripts/__tests__/officeShortcutLocale.test.ts",
+      "sha256": "94808ba13a3401a57042734793bd509f0561cc93562ff5ed1f8aa6c7928cb67a",
+      "bytes": 1437
+    }
+  ],
+  "checks": {
+    "unitBefore": {
+      "passed": 0,
+      "failed": 1
+    },
+    "unitAfter": {
+      "passed": 1,
+      "failed": 0
+    },
+    "browserBefore": {
+      "passed": 2,
+      "failed": 2
+    },
+    "browserAfter": {
+      "passed": 4,
+      "failed": 0
+    },
+    "officeBuildExit": 0,
+    "rendererBuildExit": 0,
+    "offlineFrozenInstallExit": 0,
+    "oxlintExit": 0,
+    "eslintExit": 0,
+    "formatExit": 0
+  },
+  "browserArchive": [
+    {
+      "path": "browser.cjs",
+      "bytes": 3918,
+      "sha256": "18d2af1ad1c5de6fc029e76c8b717366c37d609c844397f5f6915c98a70072cc"
+    },
+    {
+      "path": "preview.tsx",
+      "bytes": 847,
+      "sha256": "58330fe9d8e527c85ade5c341b06faaf097dce5820e6f9527cd5550cbdecc078"
+    },
+    {
+      "path": "vite.config.mts",
+      "bytes": 740,
+      "sha256": "e437494899020b11e8d3e2b64bd3834557eb37d4b129ab1c2e2c4c874498c103"
+    },
+    {
+      "path": "index.html",
+      "bytes": 197,
+      "sha256": "eca4af5eb5c386012d5dceae8eda4e64afa3e87dbc5ee483feff808f2b6d853f"
+    },
+    {
+      "path": "before/chromium-en.aria.txt",
+      "bytes": 2379,
+      "sha256": "72b4d60dcef238203f20377786efa9d25a1697479c2699d5f2f7cf572658b454"
+    },
+    {
+      "path": "before/chromium-en.json",
+      "bytes": 1106,
+      "sha256": "95c0ad1ab8774402119f805162f7853b4cb1a722ae29cc0cd10e9f351dfe151a"
+    },
+    {
+      "path": "before/chromium-en.png",
+      "bytes": 32373,
+      "sha256": "c3caab51ee6aca256a6df49419db4b25b26f24697b05ff0a5d8a307f63fd7314"
+    },
+    {
+      "path": "before/chromium-zh.aria.txt",
+      "bytes": 2514,
+      "sha256": "c298b9d6df30b1a2f83d87fc1c292a261f06c4255ca3f4564e5736d279a771ba"
+    },
+    {
+      "path": "before/chromium-zh.json",
+      "bytes": 2820,
+      "sha256": "41bd8c365d719c92f0b9347c948529040b355a47d88ca33305a51076a673930a"
+    },
+    {
+      "path": "before/chromium-zh.png",
+      "bytes": 32190,
+      "sha256": "cffde90cff21a0aeaf40800f87bec75819eaa5e8c1593e2f4856482b2951750a"
+    },
+    {
+      "path": "before/results.json",
+      "bytes": 8223,
+      "sha256": "7cba05ee153763017170290ea35b7fc7ea6610e1e4a58f8f80ac7075d9fdf120"
+    },
+    {
+      "path": "before/webkit-en.aria.txt",
+      "bytes": 2379,
+      "sha256": "72b4d60dcef238203f20377786efa9d25a1697479c2699d5f2f7cf572658b454"
+    },
+    {
+      "path": "before/webkit-en.json",
+      "bytes": 1104,
+      "sha256": "07d5d394c115d3c8976abd1a3c9ec8af40e8e07e9fe75bc42de9f9271b1f2169"
+    },
+    {
+      "path": "before/webkit-en.png",
+      "bytes": 50532,
+      "sha256": "0b5c310af10090a82ac9af3c09c65d0260d34cf03a51a9846b5c2d0ffe3391e4"
+    },
+    {
+      "path": "before/webkit-zh.aria.txt",
+      "bytes": 2514,
+      "sha256": "c298b9d6df30b1a2f83d87fc1c292a261f06c4255ca3f4564e5736d279a771ba"
+    },
+    {
+      "path": "before/webkit-zh.json",
+      "bytes": 2818,
+      "sha256": "614b8329b24ca48ea343c2388937dd12731254c49f5c0ae3ecf0c06e457ab295"
+    },
+    {
+      "path": "before/webkit-zh.png",
+      "bytes": 50372,
+      "sha256": "41d306ce7c2c3066342b333795e41548613205d7a7421ad5d6c315dcae5d573e"
+    },
+    {
+      "path": "after/chromium-en.aria.txt",
+      "bytes": 2379,
+      "sha256": "72b4d60dcef238203f20377786efa9d25a1697479c2699d5f2f7cf572658b454"
+    },
+    {
+      "path": "after/chromium-en.json",
+      "bytes": 1106,
+      "sha256": "95c0ad1ab8774402119f805162f7853b4cb1a722ae29cc0cd10e9f351dfe151a"
+    },
+    {
+      "path": "after/chromium-en.png",
+      "bytes": 32373,
+      "sha256": "c3caab51ee6aca256a6df49419db4b25b26f24697b05ff0a5d8a307f63fd7314"
+    },
+    {
+      "path": "after/chromium-zh.aria.txt",
+      "bytes": 2444,
+      "sha256": "1e09089cc2a3375d37d6a5c209902db489da65eba8e9700887d2178f53fbfb4b"
+    },
+    {
+      "path": "after/chromium-zh.json",
+      "bytes": 1142,
+      "sha256": "d5743afeaaa485986fec714573900d8dc784cd2644a329d7825fd769cf5777ba"
+    },
+    {
+      "path": "after/chromium-zh.png",
+      "bytes": 32190,
+      "sha256": "cffde90cff21a0aeaf40800f87bec75819eaa5e8c1593e2f4856482b2951750a"
+    },
+    {
+      "path": "after/results.json",
+      "bytes": 4831,
+      "sha256": "f279b34f0c156fe52fe3a506ef915a468e6f46c34e3df71c0fe6e0bd0c58840a"
+    },
+    {
+      "path": "after/webkit-en.aria.txt",
+      "bytes": 2379,
+      "sha256": "72b4d60dcef238203f20377786efa9d25a1697479c2699d5f2f7cf572658b454"
+    },
+    {
+      "path": "after/webkit-en.json",
+      "bytes": 1104,
+      "sha256": "07d5d394c115d3c8976abd1a3c9ec8af40e8e07e9fe75bc42de9f9271b1f2169"
+    },
+    {
+      "path": "after/webkit-en.png",
+      "bytes": 50532,
+      "sha256": "0b5c310af10090a82ac9af3c09c65d0260d34cf03a51a9846b5c2d0ffe3391e4"
+    },
+    {
+      "path": "after/webkit-zh.aria.txt",
+      "bytes": 2444,
+      "sha256": "1e09089cc2a3375d37d6a5c209902db489da65eba8e9700887d2178f53fbfb4b"
+    },
+    {
+      "path": "after/webkit-zh.json",
+      "bytes": 1140,
+      "sha256": "84cfd2ab096e5be62110f15dff8e17f97fa97d2c5329793020d9dc3b4f4ca13d"
+    },
+    {
+      "path": "after/webkit-zh.png",
+      "bytes": 50372,
+      "sha256": "41d306ce7c2c3066342b333795e41548613205d7a7421ad5d6c315dcae5d573e"
+    },
+    {
+      "path": "fixture-diagnostics/initial-editing-focus.json",
+      "bytes": 8767,
+      "sha256": "546ba75f2d1464c875535791a4f49d28895afeb5b44dc92fd0b71cf6cc565de0"
+    },
+    {
+      "path": "fixture-diagnostics/selected-range-before.json",
+      "bytes": 7857,
+      "sha256": "d2c14ec09515b4e8767ed4047b1f724b4730ced0aa619aa284f4323befa8ad27"
+    },
+    {
+      "path": "fixture-diagnostics/selected-range-after.json",
+      "bytes": 4941,
+      "sha256": "6b283c9bac83627ef6c4ab1d8a40abc5ffadfb36d8ddde3b8d6f0ea80102482d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "unit-before.log.gz",
+      "bytes": 1987,
+      "sha256": "bc38384d494b6faa037c51abb42fa33acd5f6acfa7183ff5f84139bdea804699"
+    },
+    {
+      "path": "unit-after.log.gz",
+      "bytes": 936,
+      "sha256": "ed2b0779297ceb46fdca07f551b93a5d020c163d8103ca415928c67303c107b7"
+    },
+    {
+      "path": "browser-before.log.gz",
+      "bytes": 788,
+      "sha256": "ab6325debb747abfc3f4940c849a699ea4ff446adedefc164aab5ecedbb2e9b3"
+    },
+    {
+      "path": "browser-after.log.gz",
+      "bytes": 127,
+      "sha256": "9dceec018924421e55c25a1f6733d211789dda4e8b686aa7d6fe5458168c7281"
+    },
+    {
+      "path": "lockfile.log.gz",
+      "bytes": 680,
+      "sha256": "df4960fed23cd5f55f1f148e0338777264b48f2a8a7feedc1f9acb3cafa2817c"
+    },
+    {
+      "path": "install.log.gz",
+      "bytes": 212,
+      "sha256": "e649b94b83ad1dfcde002d6461e989d658010ca26fd2d357933d4dd1820a61c1"
+    },
+    {
+      "path": "office-build.log.gz",
+      "bytes": 2032,
+      "sha256": "63dd0ceda8b6582966d943d3c09e858b1b6a81fed0e1446a9350fe518f58e4fd"
+    },
+    {
+      "path": "renderer-build.log.gz",
+      "bytes": 1193,
+      "sha256": "f3b1585b0b40927cdcae06a5b49209a6d968083c7f88eeb77e43f0b6b4cf5e6a"
+    },
+    {
+      "path": "oxlint.log.gz",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "path": "eslint.log.gz",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "path": "format-final.log.gz",
+      "bytes": 109,
+      "sha256": "11b4c1cb5d22dc1207046408c4cc8532b47357fc607d8c880da0202233f1f7fa"
+    },
+    {
+      "path": "source-fidelity.json",
+      "bytes": 10703,
+      "sha256": "a7e656895c647184326a84217aff2bf895b43465d18c0d2e5bdea6b14caaee78"
+    },
+    {
+      "path": "kernel-rebuild.json",
+      "bytes": 489,
+      "sha256": "906b633e950c509e781abf43a54d43f803368472f44fa694e0336a4121b4c5ad"
+    },
+    {
+      "path": "renderer-bundle.json",
+      "bytes": 237,
+      "sha256": "00c9d90e0a98b65df1f9e135b5b63a99cce433226e1a3bcf9f04d2601101163a"
+    },
+    {
+      "path": "browser-environment.json",
+      "bytes": 474,
+      "sha256": "05580a77aabccd8090d2c1c0d82dcf9ba705cd74f689d2063f7a1d1517ee2c70"
+    },
+    {
+      "path": "browser-proof.tar.gz",
+      "bytes": 271105,
+      "sha256": "44dc0a6bb0ee9e6224595e5f1f9a3ec5bf457b30b63eb1748911d9c6e453d509"
+    }
+  ],
+  "fixtureNotes": [
+    "The first keyboard probe used an actively edited formula input; editing intercepts the chord. The final probe focuses the actual shortcut region before pressing Ctrl+Shift+F.",
+    "An explicit valid selection suppresses the introduction by design. The final fixture uses Fortune default selection, which renders its introduction. Both receipts are retained.",
+    "Final before and after use identical preview, browser script, expectations, sheet data, and deadlines. Only the core package alias selects the retained baseline or newly installed patch.",
+    "A3S Test could not start: browser adapter 0.3.2 is outside >=0.4.0,<0.5.0. Existing Playwright was used; all owned browser contexts and the dedicated Vite server were closed."
+  ]
+}

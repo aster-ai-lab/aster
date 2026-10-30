@@ -1,0 +1,55 @@
+
+running 1 test
+ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_sessions_help_uses_reachable_entry' (51364) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:172:9:
+Code shortcut help advertises unsupported "/resume":                                                                                                                         
+  C:\W\T\aster-kimi-nJeYFm\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Open sessions                                                               │                    
+                    │  Ctrl+r                                                                      │                    
+                    │                                                                              │                    
+                    │  Opens the session browser to resume or switch between past conversations.   │                    
+                    │                                                                              │                    
+                    │  Select one to reattach to its full history. `/resume` does the same.        │                    
+                    │                                                                              │                    
+                    │  Separate from the Agent Dashboard (Ctrl+\), which manages many live agents  │                    
+                    │  at once.                                                                    │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test input_controls::kimi_sessions_help_uses_reachable_entry ... FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_sessions_help_uses_reachable_entry
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 3.93s
+

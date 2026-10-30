@@ -346,6 +346,29 @@ impl FileLog {
         rewrite?;
         Ok(removed)
     }
+
+    fn rewrite_compacted(
+        &self,
+        thread_id: &str,
+        opened: &OpenedLog,
+        retained: &[Fact],
+    ) -> Result<(), ActorError> {
+        let bytes = encode_facts(retained, MAX_LOG_BYTES, false)?;
+        let tmp = Self::tmp_name(thread_id);
+        let mut file = self.create_new(&tmp)?;
+        let rewrite = (|| {
+            file.write_all(&bytes).map_err(storage_error)?;
+            file.sync_all().map_err(storage_error)?;
+            self.check_current(thread_id, opened)?;
+            self.dir
+                .rename(&tmp, &self.dir, Self::name(thread_id))
+                .map_err(storage_error)
+        })();
+        if rewrite.is_err() {
+            let _ = self.dir.remove_file(&tmp);
+        }
+        rewrite
+    }
 }
 
 impl LogStore for FileLog {
@@ -374,28 +397,54 @@ impl LogStore for FileLog {
             .lock()
             .unwrap_or_else(|poison| poison.into_inner());
         let _writer = self.prepare_writer_fence(thread_id)?;
-        let opened = self.read_opened(thread_id, true)?;
-        let current = opened
+        let mut opened = self.read_opened(thread_id, true)?;
+        let mut current = opened
             .as_ref()
-            .map(|opened| opened.facts.as_slice())
+            .map(|opened| opened.facts.clone())
             .unwrap_or_default();
-        let next = commit(current, facts, cause)?;
+        let mut next = commit(&current, facts, cause)?;
         if next.len() == current.len() {
             return Ok(next);
         }
         if next.len() > MAX_LOG_FACTS {
             return Err(storage_error("fact log fact-count limit exceeded"));
         }
-        let length = opened
-            .as_ref()
-            .map(|opened| opened.metadata.len())
-            .unwrap_or(0);
-        let needs_separator = opened.as_ref().is_some_and(|opened| opened.needs_separator);
-        let bytes = encode_facts(
-            &next[current.len()..],
-            MAX_LOG_BYTES - length,
-            needs_separator,
-        )?;
+        let added = next[current.len()..].to_vec();
+        let mut compacted = false;
+        let bytes = loop {
+            let length = opened
+                .as_ref()
+                .map(|opened| opened.metadata.len())
+                .unwrap_or(0);
+            let needs_separator = opened.as_ref().is_some_and(|opened| opened.needs_separator);
+            match encode_facts(&added, MAX_LOG_BYTES - length, needs_separator) {
+                Ok(bytes) => break bytes,
+                Err(error) if compacted || !is_byte_limit_error(&error) => return Err(error),
+                Err(error) => {
+                    let Some(opened_log) = opened.as_ref() else {
+                        return Err(error);
+                    };
+                    let Some(retained) = compacted_message_prefix(&opened_log.facts) else {
+                        return Err(error);
+                    };
+                    self.rewrite_compacted(thread_id, opened_log, &retained)?;
+                    opened = self.read_opened(thread_id, true)?;
+                    current = opened
+                        .as_ref()
+                        .map(|opened| opened.facts.clone())
+                        .unwrap_or_default();
+                    next = current
+                        .iter()
+                        .cloned()
+                        .chain(added.iter().cloned())
+                        .collect();
+                    if next.len() > MAX_LOG_FACTS {
+                        return Err(storage_error("fact log fact-count limit exceeded"));
+                    }
+                    compacted = true;
+                }
+            }
+        };
         let mut file = match opened {
             Some(opened) => {
                 self.check_current(thread_id, &opened)?;
@@ -410,6 +459,44 @@ impl LogStore for FileLog {
         file.sync_all().map_err(storage_error)?;
         Ok(next)
     }
+}
+
+/// Replace model-visible messages already covered by the latest compaction
+/// summary with tiny tombstones. Seq, key and every non-transcript fact stay in
+/// place, so replay still sees a contiguous log with no duplicated identities.
+fn compacted_message_prefix(facts: &[Fact]) -> Option<Vec<Fact>> {
+    let anchor = facts
+        .iter()
+        .rposition(|fact| fact.kind == "compaction.done")?;
+    let mut pruned = false;
+    let retained = facts
+        .iter()
+        .enumerate()
+        .map(|(index, fact)| {
+            if index < anchor
+                && matches!(
+                    fact.kind.as_str(),
+                    "user.message" | "model.turn" | "tool.result" | "question.answered"
+                )
+            {
+                pruned = true;
+                Fact {
+                    seq: fact.seq,
+                    kind: "compaction.pruned".into(),
+                    key: fact.key.clone(),
+                    cause: fact.cause.clone(),
+                    payload: serde_json::json!({}),
+                }
+            } else {
+                fact.clone()
+            }
+        })
+        .collect::<Vec<_>>();
+    pruned.then_some(retained)
+}
+
+fn is_byte_limit_error(error: &ActorError) -> bool {
+    matches!(error, ActorError::Schema(message) if message == "fact log byte limit exceeded")
 }
 
 fn validate_regular(metadata: &Metadata) -> Result<(), ActorError> {

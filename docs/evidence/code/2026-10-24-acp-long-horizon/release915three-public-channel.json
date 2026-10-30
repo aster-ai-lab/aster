@@ -1,0 +1,29 @@
+{
+  "published_latest_manifest_verified": true,
+  "manifest_url": "https://github.com/aster-ai-lab/aster/releases/latest/download/latest.json",
+  "manifest_sha256": "b4692474b720ae7af21ee7179d145d793b1ed77b41b9d9bc7ee0f3b219d3612d",
+  "platforms": [
+    "macos",
+    "linux",
+    "windows"
+  ],
+  "actual_public_network_updater_check": {
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster",
+      "update",
+      "--check",
+      "--json"
+    ],
+    "exit_code": 0,
+    "status": {
+      "currentVersion": "0.1.3 (220562fe9912)",
+      "latestVersion": "0.1.3",
+      "updateAvailable": false,
+      "installer": "aster-cli",
+      "channel": "unknown",
+      "autoUpdate": false,
+      "error": null
+    }
+  },
+  "scope": "real public latest channel and actual installed release --check; full payload bytes were verified by server digests rather than redownloaded"
+}

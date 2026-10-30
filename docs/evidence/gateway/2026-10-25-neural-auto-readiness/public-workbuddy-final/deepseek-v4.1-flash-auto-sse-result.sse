@@ -1,0 +1,28 @@
+data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"proof"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"-"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"212"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"ede"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"84"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"b"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"4"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"b"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"448"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"ab"},"finish_reason":null,"index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"attestation_receipt":{"decoding":{"parameters":{"frequency_penalty":null,"max_completion_tokens":null,"max_tokens":512,"min_p":null,"mirostat":null,"mirostat_eta":null,"mirostat_tau":null,"modalities":null,"n":null,"num_ctx":null,"parallel_tool_calls":false,"penalize_newline":null,"presence_penalty":null,"repeat_last_n":null,"repeat_penalty":null,"seed":null,"stream":true,"temperature":0.0,"tfs_z":null,"top_k":null,"top_p":null,"typical_p":null},"stream_options_sha256":"32a3a72925fa09a1e0f4d3f525264edb5e3c19b6c99cc09518ea7d5409b90aad","tool_choice_sha256":"30a0924a3360be687d1df9fcbbfdff62c01bc0fd14036ab9076cf7f451568666","tools_sha256":"f13ef582d2f83d313b508c1846590eb153d14715033061539bc18354ab2d2cb8"},"input":{"kind":"chat.messages","sha256":"ce27997b555e7ee8cd0786c026976367e235be4b070f715aa4d40de96bd57087"},"model":"deepseek-v41-flash-1017-xq-1m","request_type":"chat-completion","runtime_policy":{"execution":{"gpu_sha256":"8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49","inference_sha256":"b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"}},"schema":"a3s.power.inference-receipt.v2"},"attestation_receipt_sha256":"ba9bd3f512e1ec53282d2bac46e7eb97c7d84de3a9100c0b0ecbe345fd9b70d2","choices":[],"created":1792944555,"id":"chatcmpl-19e141ae-35e7-418c-9d0a-354b0ab0776a","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk","prism_upstream":{"source":"upstream-reported","usage":{"completion_tokens":10,"prompt_tokens":280,"total_tokens":290}},"usage":{"completion_tokens":10,"prompt_tokens":280,"total_tokens":290}}
+
+data: [DONE]
+

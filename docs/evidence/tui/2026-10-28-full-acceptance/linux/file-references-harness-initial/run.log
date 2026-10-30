@@ -1,0 +1,62 @@
+
+running 2 tests
+test file_references::kimi_file_completion_selects_real_file_and_line_range ... ORACLE case=file-ref-selection name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+
+thread 'file_references::kimi_file_completion_selects_real_file_and_line_range' (3504) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:363:9:
+timeout waiting for "SECOND"
+                                                                                                                        
+  /t/aster-kimi-hAk791/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ @ref-target.txt                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work ... ORACLE case=file-ref-missing name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+
+thread 'file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work' (4993) panicked at crates/code/acp/tests/aster_tui_live_e2e/file_references.rs:59:9:
+refused file reference started model work
+FAILED
+
+failures:
+
+failures:
+    file_references::kimi_file_completion_selects_real_file_and_line_range
+    file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 40 filtered out; finished in 22.52s
+

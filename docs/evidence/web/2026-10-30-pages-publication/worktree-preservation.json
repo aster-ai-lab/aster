@@ -1,0 +1,14 @@
+{
+  "parent": {
+    "head": "d35f4cd5a5795de42a7fccb5a7f783cc51ed524a",
+    "index_tree": "7887edca2c89acd4c1fd9b733d4c6070b94de7c5",
+    "staged_paths_count": 161,
+    "unchanged": true
+  },
+  "studio": {
+    "head": "0555e1034c0015de99896213bb135a787612bb69",
+    "index_tree": "ef81b7f8f38bec96268965499f9439cf6094f157",
+    "staged_paths_count": 0,
+    "unchanged": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "out": "/code/aster/.wt-deepseek-dspark-main-20261025/docs/evidence/gateway/2026-10-25-neural-auto-readiness/post-health-native-profile",
+  "profile": "selected-dspark-health-fixed-899084c8",
+  "routes": [
+    "default"
+  ],
+  "decode_trials": 7,
+  "stream_io": true,
+  "prefill": false
+}

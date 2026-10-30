@@ -875,7 +875,15 @@ fn dispatch_cycle_mode_inner(app: &mut AppView) -> Vec<Effect> {
         agent.stage_session_mode(target_mode.clone());
         effects.push(Effect::SetSessionMode {
             session_id: session_id.clone(),
-            mode_id: acp::SessionModeId::new(target_mode.as_id()),
+            // Code combines session mode and permissions in one ACP posture.
+            // Exiting Plan with YOLO already on must retain that posture.
+            mode_id: acp::SessionModeId::new(
+                if crate::app::a3s_code_active() && *next == ModeChoice::AlwaysApprove {
+                    "yolo"
+                } else {
+                    target_mode.as_id()
+                },
+            ),
         });
     }
 

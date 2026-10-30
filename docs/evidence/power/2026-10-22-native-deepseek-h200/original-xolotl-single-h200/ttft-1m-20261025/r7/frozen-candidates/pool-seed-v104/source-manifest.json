@@ -1,0 +1,86 @@
+{
+  "parent": "admission-seed-v93 generator/c96 native",
+  "files": [
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "ds41_conv_pool.cpp",
+      "bytes": 36012,
+      "sha256": "b72f510acf36522ad78f3eb97ee4a827c57d81f5edd40cf3dc6f12ebe675f552"
+    },
+    {
+      "file": "ds41_conv_pool.cpp.original",
+      "bytes": 36012,
+      "sha256": "b72f510acf36522ad78f3eb97ee4a827c57d81f5edd40cf3dc6f12ebe675f552"
+    },
+    {
+      "file": "ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_pool.hpp.original",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp.original",
+      "bytes": 19277,
+      "sha256": "aadb728a453397a76b6408761de10d8ad715e36daa7962c72df08ffe56760dfd"
+    },
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 226092,
+      "sha256": "2a1b90d79f2376b5cd667b956fad856122abd052bb3a5c67091a1e6774e7a8c3"
+    },
+    {
+      "file": "original-source-manifest.json",
+      "bytes": 555,
+      "sha256": "56d74c7189e545be32c3a6c559a6d150a383a7f7d9860c3cfbf3eb6c27823044"
+    },
+    {
+      "file": "pool-seed-v104.patch",
+      "bytes": 10025,
+      "sha256": "cb513d8e27f38e105425185a073a2affb4bb7b036ac305e37ec51e834fdc0214"
+    },
+    {
+      "file": "test_ds41_conv_pool.cpp",
+      "bytes": 19655,
+      "sha256": "8a568e31d15e9e760753914ae8e6577bd5bf4e0eba84b79387dbcfdeeda32536"
+    },
+    {
+      "file": "test_ds41_conv_pool.cpp.original",
+      "bytes": 19655,
+      "sha256": "8a568e31d15e9e760753914ae8e6577bd5bf4e0eba84b79387dbcfdeeda32536"
+    },
+    {
+      "file": "test_pool_seed.cpp",
+      "bytes": 5668,
+      "sha256": "9606e27ba95ff3d603fb4abc80046f646ff062344ae703f9928d7afb103883c8"
+    }
+  ],
+  "opt_in_flag": "ASTER_XQ_POOL_DRAFT_SEED=0|1",
+  "default_enabled": false,
+  "pool_budget_accounts_metadata": true,
+  "partial_boundary_seed_reuse": false,
+  "gpu_qualified": false,
+  "performance_claimed": false
+}

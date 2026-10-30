@@ -1,0 +1,16 @@
+{
+  "signal_sent": true,
+  "pid": 440,
+  "unix": 1792864803.8848026,
+  "health_before_stop": {
+    "status": "ok",
+    "max_context": 1048576,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "display_name": null,
+    "images": false,
+    "api_key": true,
+    "image_generation": false,
+    "loaded": true,
+    "service": "strata"
+  }
+}

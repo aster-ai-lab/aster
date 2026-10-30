@@ -1,0 +1,129 @@
+{
+  "complete_for_F04_02": true,
+  "model": "kimi/k3.1-pro",
+  "product_pair_reused": false,
+  "platforms": [
+    {
+      "platform": "windows",
+      "report": "windows/home-return/home-return.json",
+      "report_sha256": "49c06dee2b9bcdf7b7b2f513bda9682120c53c00e902c29f39be00febc6ff38c",
+      "source_pair": "aster-cli-pair-v1:a2188f93f97c2608c63bc3e38e9bf08e32eaedef:x86_64-pc-windows-msvc",
+      "oracle_names": [
+        "source-pair",
+        "settled-turn",
+        "session-kind-marker",
+        "home-welcome",
+        "home-picker-cancelled",
+        "home-return-restored",
+        "settled-turn",
+        "home-return-usable",
+        "quit"
+      ],
+      "test_binary_sha256": "209ebf2905a478373cd1aa2509ba10959149b86cc7fe950f564594771e999de8",
+      "functional_source_sha256": "a3ebc969f3d80183bc6380ffda11f74cd5d9f942dd27bf9b47ca699131aa115a",
+      "pair": {
+        "source_pair": "aster-cli-pair-v1:a2188f93f97c2608c63bc3e38e9bf08e32eaedef:x86_64-pc-windows-msvc",
+        "folder": "D:/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-windows/home-return-20261029191602093",
+        "files": [
+          {
+            "name": "aster.exe",
+            "sha256": "fabc78095a239cea2fdc0e6353c4417434dbe4003b06fd3713a094fb9a7ba0dc",
+            "bytes": 324002816
+          },
+          {
+            "name": "a3s-code-acp.exe",
+            "sha256": "d97dbb2e37ea748a4c7b13eec92c5ff72d0d727c9ea1c8b7123a806c4e815116",
+            "bytes": 185496064
+          }
+        ],
+        "build_json": "D:/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/windows/home-return-build/build.jsonl",
+        "created_at": "2026-10-29T19:16:02.0935069+00:00"
+      }
+    },
+    {
+      "platform": "linux",
+      "report": "linux/home-return/home-return.json",
+      "report_sha256": "4f8231af3e3480f99d2693fc6d13594be3d89422a74e8c74516f33fb6818c60c",
+      "source_pair": "aster-cli-pair-v1:a2188f93f97c2608c63bc3e38e9bf08e32eaedef:x86_64-unknown-linux-gnu",
+      "oracle_names": [
+        "source-pair",
+        "settled-turn",
+        "session-kind-marker",
+        "home-welcome",
+        "home-picker-cancelled",
+        "home-return-restored",
+        "settled-turn",
+        "home-return-usable",
+        "quit"
+      ],
+      "test_binary_sha256": "d60bccc6cf60c32518504bc02a293fcbf50e758dea16377778b2d6b174ada89a",
+      "functional_source_sha256": "a3ebc969f3d80183bc6380ffda11f74cd5d9f942dd27bf9b47ca699131aa115a",
+      "pair": {
+        "source_pair": "aster-cli-pair-v1:a2188f93f97c2608c63bc3e38e9bf08e32eaedef:x86_64-unknown-linux-gnu",
+        "folder": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/home-return-20261029192004653221",
+        "files": [
+          {
+            "name": "aster",
+            "sha256": "436682235cdeddad2bd063843d904b63e79208fa53022094b74975796380f9a7",
+            "bytes": 1115620040
+          },
+          {
+            "name": "a3s-code-acp",
+            "sha256": "9f170f0fe8c7d3c42f7c8e1c17eab10c39b2dbb0e214e89911be950e1cac481d",
+            "bytes": 415476432
+          }
+        ],
+        "build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/home-return-build/build.jsonl",
+        "created_at": "2026-10-29T19:20:04.653221+00:00"
+      }
+    }
+  ],
+  "source": {
+    "source_pair_digest": "a2188f93f97c2608c63bc3e38e9bf08e32eaedef",
+    "base": "a21925eef70d1ee80ced350bb851926b7f64e2c5",
+    "bytes": 99216,
+    "sha256": "32111984afdf759ff9a0193c1016e009a118b756355b5e6e7f66ed44add2b24e",
+    "tracked_paths": [
+      "crates/code/acp/src/agent.rs",
+      "crates/code/acp/src/agent/session_catalog.rs",
+      "crates/code/acp/src/agent/session_catalog_tests.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "crates/code/core/prompts/common/runtime_contract.md",
+      "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "crates/code/core/src/fact_control/tool_history_tests.rs",
+      "crates/code/core/src/fact_control/tool_results.rs",
+      "crates/code/core/src/session_folder.rs",
+      "crates/code/core/src/session_folder/catalog.rs",
+      "crates/code/core/src/tools/builtin/bash.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/foreign.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/optimistic_home.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs"
+    ],
+    "new_paths": [
+      "crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs"
+    ],
+    "reverse_check": "passed",
+    "created_utc": "2026-10-29T19:13:39.743986+00:00"
+  }
+}

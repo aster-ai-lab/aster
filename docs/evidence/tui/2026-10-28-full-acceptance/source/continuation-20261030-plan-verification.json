@@ -1,0 +1,21 @@
+{
+  "schema": "aster.tui.plan-search-exec.v1",
+  "model": "kimi/k3.1-pro",
+  "complete_for_F01_02_and_F09_01": true,
+  "complete_for_full_acceptance": false,
+  "source": "source/continuation-20261030-harness-plan.json",
+  "reports": [
+    {
+      "platform": "windows",
+      "file": "windows/continuation-20261030-plan-search-exec/plan-search-exec-deny.json",
+      "sha256": "33765b1351d286eff9d5423f571fad1d8c3aa726a374e05e7e63c4c2297a93b9",
+      "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc"
+    },
+    {
+      "platform": "linux",
+      "file": "linux/continuation-20261030-plan-search-exec/plan-search-exec-deny.json",
+      "sha256": "070b4e9dce22342a1f56bdf9e518be6fdc176cfaa615cb9479d02b9263070650",
+      "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu"
+    }
+  ]
+}

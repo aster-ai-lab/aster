@@ -124,6 +124,7 @@ jobs:
             gh release create desktop-stable \
               --title "Aster desktop stable channel" \
               --notes "Rolling channel release. The manifest desktop-latest.json names the current version; historical archives stay attached." \
+              --latest=false \
               "dist/$asset" dist/desktop-latest.json
           fi
           gh release view desktop-stable --json assets --jq '.assets[].name'

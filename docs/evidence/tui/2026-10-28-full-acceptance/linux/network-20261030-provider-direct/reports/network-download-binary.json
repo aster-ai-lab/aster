@@ -1,0 +1,531 @@
+{
+  "assertions_finished": true,
+  "case": "network-download-binary",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-download-binary.json"
+          },
+          "id": "call_fcede968019140299bc16dc0018cae6d",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13232,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_fcede968019140299bc16dc0018cae6d",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_fcede968019140299bc16dc0018cae6d",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"expected_sha256\\\":\\\"4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2\\\",\\\"file_path\\\":\\\"artifacts/下载 payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":10,\\\"url\\\":\\\"http://aster-fixture.example.test/blob\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-binary.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":265},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":265,\"projected_bytes\":265,\"original_estimated_tokens\":67,\"projected_estimated_tokens\":67,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"projected_digest\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"repeat_key\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"content_ref\":\"inline:sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6e5f0d24f0c0aebe3b9a56ebf95406f5d109a5aeedaa1f03a424afd6d027dfca\"}",
+        "prepared_digest": "sha256:8df819c566d73d1ebdc4adf723154f1c49112a7ce4fe923b3504848a02797b97",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "connections": 1,
+            "expected_sha256": "4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2",
+            "file_path": "artifacts/下载 payload.bin",
+            "max_bytes": 131072,
+            "timeout": 10,
+            "url": "http://aster-fixture.example.test/blob"
+          },
+          "id": "call_f89a2f44a9064bae9eb4f046d074b558",
+          "name": "download"
+        },
+        "has_text": false,
+        "prompt_tokens": 13486,
+        "text": null,
+        "tool": "download"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_f89a2f44a9064bae9eb4f046d074b558",
+          "turn": 1
+        },
+        "tool": "download"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "kind": "directory",
+                "mode": 16877
+              },
+              "before": {
+                "kind": "missing"
+              },
+              "path": "artifacts"
+            },
+            {
+              "after": {
+                "content_digest": "sha256:4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2",
+                "kind": "file",
+                "mode": 33152
+              },
+              "before": {
+                "kind": "missing"
+              },
+              "path": "artifacts/下载 payload.bin"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_f89a2f44a9064bae9eb4f046d074b558",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Downloaded 65536 bytes to /tmp/aster-kimi-lJ42Gr/workspace/artifacts/下载 payload.bin using sequential\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"artifacts/下载 payload.bin\",\"bytes\":65536,\"content_type\":\"application/octet-stream\",\"strategy\":\"sequential\",\"connections\":1,\"range_supported\":false,\"overwritten\":false,\"source_anchors\":[\"http://aster-fixture.example.test/blob\"],\"sha256\":\"4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":104,\"projected_bytes\":104,\"original_estimated_tokens\":26,\"projected_estimated_tokens\":26,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"projected_digest\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"repeat_key\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"content_ref\":\"inline:sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:05f3b81f7ad92fabc362b7a364d6f4f4ded3994716d1f97df2314d20ecbc108d\"}",
+        "prepared_digest": "sha256:614db8194ec05ba296a14f554e2547e4f7ea3c66523c353e4b17a432d7b09f63",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "test -f 'artifacts/下载 payload.bin'"
+          },
+          "id": "call_d71b920b56784c5b9f0af862116a01ad",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13920,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_d71b920b56784c5b9f0af862116a01ad",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 15,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+            "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_d71b920b56784c5b9f0af862116a01ad",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'artifacts/下载 payload.bin'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:artifacts/下载 payload.bin\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:artifacts/下载 payload.bin\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: artifacts/下载 payload.bin\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"b3b5eab35bbd507c102454e465e0eb331b000e06b94803a28bafd58a365954d0\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+        "prepared_digest": "sha256:8e5eafa07affc4e4cfcc6e271c2abe9d10383240608d7e2f560b5483cb940a6d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 16,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13850,
+        "text": "Download succeeded: 65,536 bytes saved to `artifacts/下载 payload.bin`.\n\nVerification command `test -f 'artifacts/下载 payload.bin'` exited with code **0**, confirming the file exists and is a regular file. No stdout or stderr output.",
+        "tool": null
+      },
+      "seq": 17,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": "b3b5eab35bbd507c102454e465e0eb331b000e06b94803a28bafd58a365954d0",
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "7ddbf8e1ec6121eb77617a9c2da0c07e455a7ef05659d3212e35e3e9ace86f2c",
+          "seq": 17
+        },
+        "receipt_keys": [
+          "sha256:6bdd0eb82bed4852d5ce6aab2f4ad09feb04789d9f3b7792ce0636557c3cb30c",
+          "sha256:5b514073f9b994e9888fb310f60714b953a5cd94fd821ed1f1c91705697374c0",
+          "sha256:23d9dc1e1c6f925c71b57c3fbf4adefff113acd9061c2741a0960f1d2c0c4733"
+        ],
+        "terminal": "verified"
+      },
+      "seq": 18,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-lJ42Gr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-binary.json once. Call download exactly once with its exact JSON object as      2:11 PM    \n       arguments. After success, use bash exactly once with this exact independent verification command:                \n       test -f 'artifacts/下载 payload.bin'. Report its actual result. Do not call other tools, modify …                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Fetch http://aster-fixture.example.test/blob                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run download 0.0s                                                                              13s ⇣13.5k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow download?                                                                                                    \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-lJ42Gr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-binary.json once. Call download exactly once with its exact JSON object as      2:11 PM    \n       arguments. After success, use bash exactly once with this exact independent verification command:                \n       test -f 'artifacts/下载 payload.bin'. Report its actual result. Do not call other tools, modify …                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n     ◆ Run test -f 'artifacts/下载 payload.bin'                                                                         \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run test -f 'artifacts/下载 payload.bin' 0.0s                                               27s ⇣13.9k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=16 model_turns=4 prompt_tokens=54488",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-lJ42Gr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-binary.json once. Call download exactly once with its exact JSON object as      2:11 PM    \n       arguments. After success, use bash exactly once with this exact independent verification command:                \n       test -f 'artifacts/下载 payload.bin'. Report its actual result. Do not call other tools, modify …                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n     ◆ Run test -f 'artifacts/下载 payload.bin'                                                                         \n     ◆ Thought for 2.1s                                                                                                 \n                                                                                                                        \n     Download succeeded: 65,536 bytes saved to artifacts/下载 payload.bin.                                   2:11 PM    \n                                                                                                                        \n     Verification command test -f 'artifacts/下载 payload.bin' exited with code 0, confirming the file                  \n     exists and is a regular file. No stdout or stderr output.                                                          \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the actual native downloader writes all unseen binary bytes to a Unicode path containing a space, verifies the supplied SHA-256 and completes a real independent shell check without temporary-file leaks",
+      "name": "download-binary-exact-bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-lJ42Gr/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-binary.json once. Call download exactly once with its exact JSON object as      2:11 PM    \n       arguments. After success, use bash exactly once with this exact independent verification command:                \n       test -f 'artifacts/下载 payload.bin'. Report its actual result. Do not call other tools, modify …                \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website                                                                                   \n     ◆ Run test -f 'artifacts/下载 payload.bin'                                                                         \n     ◆ Thought for 2.1s                                                                                                 \n                                                                                                                        \n     Download succeeded: 65,536 bytes saved to artifacts/下载 payload.bin.                                   2:11 PM    \n                                                                                                                        \n     Verification command test -f 'artifacts/下载 payload.bin' exited with code 0, confirming the file                  \n     exists and is a regular file. No stdout or stderr output.                                                          \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 34s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "network-download-binary",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-download-binary.json"
+              },
+              "id": "call_fcede968019140299bc16dc0018cae6d",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13232,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_fcede968019140299bc16dc0018cae6d",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_fcede968019140299bc16dc0018cae6d",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"expected_sha256\\\":\\\"4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2\\\",\\\"file_path\\\":\\\"artifacts/下载 payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":10,\\\"url\\\":\\\"http://aster-fixture.example.test/blob\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-binary.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":265},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":265,\"projected_bytes\":265,\"original_estimated_tokens\":67,\"projected_estimated_tokens\":67,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"projected_digest\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"repeat_key\":\"sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"content_ref\":\"inline:sha256:6b58d3b587b276762d5afa6c0aea83488ae2f7307503a944f62487113f837e86\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6e5f0d24f0c0aebe3b9a56ebf95406f5d109a5aeedaa1f03a424afd6d027dfca\"}",
+            "prepared_digest": "sha256:8df819c566d73d1ebdc4adf723154f1c49112a7ce4fe923b3504848a02797b97",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "connections": 1,
+                "expected_sha256": "4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2",
+                "file_path": "artifacts/下载 payload.bin",
+                "max_bytes": 131072,
+                "timeout": 10,
+                "url": "http://aster-fixture.example.test/blob"
+              },
+              "id": "call_f89a2f44a9064bae9eb4f046d074b558",
+              "name": "download"
+            },
+            "has_text": false,
+            "prompt_tokens": 13486,
+            "text": null,
+            "tool": "download"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_f89a2f44a9064bae9eb4f046d074b558",
+              "turn": 1
+            },
+            "tool": "download"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [
+                {
+                  "after": {
+                    "kind": "directory",
+                    "mode": 16877
+                  },
+                  "before": {
+                    "kind": "missing"
+                  },
+                  "path": "artifacts"
+                },
+                {
+                  "after": {
+                    "content_digest": "sha256:4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2",
+                    "kind": "file",
+                    "mode": 33152
+                  },
+                  "before": {
+                    "kind": "missing"
+                  },
+                  "path": "artifacts/下载 payload.bin"
+                }
+              ],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_f89a2f44a9064bae9eb4f046d074b558",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Downloaded 65536 bytes to /tmp/aster-kimi-lJ42Gr/workspace/artifacts/下载 payload.bin using sequential\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"artifacts/下载 payload.bin\",\"bytes\":65536,\"content_type\":\"application/octet-stream\",\"strategy\":\"sequential\",\"connections\":1,\"range_supported\":false,\"overwritten\":false,\"source_anchors\":[\"http://aster-fixture.example.test/blob\"],\"sha256\":\"4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":104,\"projected_bytes\":104,\"original_estimated_tokens\":26,\"projected_estimated_tokens\":26,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"projected_digest\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"repeat_key\":\"sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"content_ref\":\"inline:sha256:172c6333a231b1521b2f501606a4bdf15ecbce5fa5bb915ff8ac0d1676d773cd\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:05f3b81f7ad92fabc362b7a364d6f4f4ded3994716d1f97df2314d20ecbc108d\"}",
+            "prepared_digest": "sha256:614db8194ec05ba296a14f554e2547e4f7ea3c66523c353e4b17a432d7b09f63",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "test -f 'artifacts/下载 payload.bin'"
+              },
+              "id": "call_d71b920b56784c5b9f0af862116a01ad",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 13920,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_d71b920b56784c5b9f0af862116a01ad",
+              "turn": 1
+            },
+            "tool": "bash"
+          },
+          "seq": 15,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-32ddeb16-819a-4d6a-9b41-08d060b922db",
+                "thread_id": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_d71b920b56784c5b9f0af862116a01ad",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'artifacts/下载 payload.bin'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:artifacts/下载 payload.bin\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:artifacts/下载 payload.bin\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: artifacts/下载 payload.bin\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"b3b5eab35bbd507c102454e465e0eb331b000e06b94803a28bafd58a365954d0\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+            "prepared_digest": "sha256:8e5eafa07affc4e4cfcc6e271c2abe9d10383240608d7e2f560b5483cb940a6d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 16,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13850,
+            "text": "Download succeeded: 65,536 bytes saved to `artifacts/下载 payload.bin`.\n\nVerification command `test -f 'artifacts/下载 payload.bin'` exited with code **0**, confirming the file exists and is a regular file. No stdout or stderr output.",
+            "tool": null
+          },
+          "seq": 17,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": "b3b5eab35bbd507c102454e465e0eb331b000e06b94803a28bafd58a365954d0",
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "7ddbf8e1ec6121eb77617a9c2da0c07e455a7ef05659d3212e35e3e9ace86f2c",
+              "seq": 17
+            },
+            "receipt_keys": [
+              "sha256:6bdd0eb82bed4852d5ce6aab2f4ad09feb04789d9f3b7792ce0636557c3cb30c",
+              "sha256:5b514073f9b994e9888fb310f60714b953a5cd94fd821ed1f1c91705697374c0",
+              "sha256:23d9dc1e1c6f925c71b57c3fbf4adefff113acd9061c2741a0960f1d2c0c4733"
+            ],
+            "terminal": "verified"
+          },
+          "seq": 18,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "f87b7b5c-94fa-4d34-ad06-f34771a94de3"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

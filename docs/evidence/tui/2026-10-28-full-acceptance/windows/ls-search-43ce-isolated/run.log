@@ -1,0 +1,19 @@
+
+running 1 test
+ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-pc-windows-msvc
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27103
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27789
+ORACLE case=ls-search-contracts name=search-unsupported-combination result=pass detail=the original content-plus-pagination request is explicitly refused according to the published search contract
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=28504
+ORACLE case=ls-search-contracts name=search-context result=pass detail=one scoped content search returns both unknown context tokens and excludes outside content
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=29523
+ORACLE case=ls-search-contracts name=search-bounded-page result=pass detail=files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30212
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30938
+ORACLE case=ls-search-contracts name=search-no-match result=pass detail=the actual scoped no-match receipt succeeds without returning fixture contents or changing their bytes
+ORACLE case=ls-search-contracts name=quit result=pass detail=exit 0
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 166.83s
+

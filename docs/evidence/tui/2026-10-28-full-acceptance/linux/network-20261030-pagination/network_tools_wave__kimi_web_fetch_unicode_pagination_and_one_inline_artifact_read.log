@@ -1,0 +1,13 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read ... ORACLE case=network-fetch-pages-inline-read name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=network-fetch-pages-inline-read name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40238
+ORACLE case=network-fetch-pages-inline-read name=web-fetch-unicode-first-page result=pass detail=the actual first response returns exactly 17 Unicode characters and binds a full-text content-addressed artifact
+ORACLE case=network-fetch-pages-inline-read name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27836
+ORACLE case=network-fetch-pages-inline-read name=settled-turn result=pass detail=facts=10 model_turns=3 prompt_tokens=43416
+ORACLE case=network-fetch-pages-inline-read name=web-fetch-one-artifact-read-and-eof result=pass detail=one actual inline read retrieves all retained Unicode bytes without HTTP, and the second real fetch continues at character 17 to EOF with the same artifact identity
+ORACLE case=network-fetch-pages-inline-read name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 113 filtered out; finished in 68.74s
+

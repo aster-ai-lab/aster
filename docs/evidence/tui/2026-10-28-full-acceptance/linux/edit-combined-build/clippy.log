@@ -1,0 +1,248 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/core/src/agent/tool_completion_runtime.rs:316:5
+    |
+316 | /     pub(crate) fn record_native_artifact_verification(
+317 | |         &self,
+318 | |         call: &ToolCall,
+319 | |         result: &a3s_effect::ToolExecutionResultV1,
+...   |
+324 | |         nested: Option<&crate::harness_loop::MutationLedger>,
+325 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: casting to the same type is unnecessary (`u64` -> `u64`)
+  --> crates/code/core/src/fact_control/receipts.rs:95:51
+   |
+95 |             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `request.identity.turn`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_cast
+   = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+    --> crates/code/core/src/porcelain.rs:1587:6
+     |
+1587 | ) -> Option<(Vec<(std::ffi::OsString, libc::stat)>, bool, bool)> {
+     |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#type_complexity
+     = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: stripping a prefix manually
+   --> crates/code/core/src/workspace/retrieval/rerank.rs:632:33
+    |
+632 |                     let after = &rest[identifier.len()..];
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: the prefix was tested here
+   --> crates/code/core/src/workspace/retrieval/rerank.rs:631:17
+    |
+631 |                 if rest.starts_with(identifier) {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_strip
+    = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+    |
+631 ~                 if let Some(after) = rest.strip_prefix(identifier) {
+632 ~                     if after.is_empty()
+    |
+
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp)
+warning: `a3s-code-core` (lib) generated 9 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps` to apply 4 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p a3s-embedding -- --no-deps` to apply 2 suggestions)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/src/agent/emit.rs:133:5
+    |
+133 | /     pub(super) async fn emit_tool_call_completed(
+134 | |         &self,
+135 | |         session_id: &acp::SessionId,
+136 | |         id: &str,
+...   |
+141 | |         metadata: Option<&serde_json::Value>,
+142 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/agent/tool_render.rs:179:8
+    |
+179 |     if metadata.get("validated")?.as_bool()? != true
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+    = note: `#[warn(clippy::bool_comparison)]` on by default
+
+warning: this function has too many arguments (9/7)
+   --> crates/code/acp/src/agent/turn.rs:395:5
+    |
+395 | /     pub(super) async fn stream_turn(
+396 | |         &self,
+397 | |         session_id: &acp::SessionId,
+398 | |         session: &AgentSession,
+...   |
+404 | |         requested_posture: Option<PermissionPosture>,
+405 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: unneeded `return` statement
+  --> crates/code/acp/src/office_file.rs:26:9
+   |
+26 |         return crate::artifact_image::render_png(svg);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+   = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+   |
+26 -         return crate::artifact_image::render_png(svg);
+26 +         crate::artifact_image::render_png(svg)
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/office_file.rs:193:12
+    |
+193 |         if metadata.get("validated")?.as_bool()? != true
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+
+warning: the borrowed expression implements the required traits
+   --> crates/code/acp/src/unattended.rs:414:37
+    |
+414 |             progress.remember_error(&error.to_string());
+    |                                     ^^^^^^^^^^^^^^^^^^ help: change this to: `error.to_string()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_borrows_for_generic_args
+    = note: `#[warn(clippy::needless_borrows_for_generic_args)]` on by default
+
+warning: `a3s-code-acp` (lib) generated 8 warnings (run `cargo clippy --fix --lib -p a3s-code-acp -- --no-deps` to apply 4 suggestions)
+warning: unused variable: `screen`
+   --> crates/code/acp/tests/aster_tui_live_e2e/driver.rs:651:21
+    |
+651 |                 let screen = loop {
+    |                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_screen`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: called `Iterator::last` on a `DoubleEndedIterator`; this will needlessly iterate the entire iterator
+   --> crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs:167:22
+    |
+167 | ... = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).last().un...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#double_ended_iterator_last
+    = note: `#[warn(clippy::double_ended_iterator_last)]` on by default
+help: try
+    |
+167 -         let answer = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).last().unwrap().to_owned();
+167 +         let answer = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).next_back().unwrap().to_owned();
+    |
+
+warning: `a3s-code-acp` (test "aster_tui_live_e2e") generated 2 warnings (run `cargo clippy --fix --test "aster_tui_live_e2e" -p a3s-code-acp -- --no-deps` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 23s

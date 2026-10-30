@@ -1,0 +1,19 @@
+{
+  "out": "/data/deepseek-v41-xq-1017/native-kv-after-fp4-exact-v3-20261025",
+  "profile": "Exact routing + NVFP4/MXFP4 KV; 8 threads, 60 GiB arena",
+  "routes": [
+    "default"
+  ],
+  "decode_trials": 7,
+  "prefill": true,
+  "kv_fp4": true,
+  "actual_startup_route_biases": [
+    0,
+    0,
+    0
+  ],
+  "actual_startup_pcie_fraction": 0.75,
+  "config_sha256": "83a51a866f0b436a20510207ce6dc4d76437240c1890d67a3200e1cc0384a978",
+  "power_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+  "gpu_uuid": "GPU-ab93a347-c678-1d71-0e85-0f520463debe"
+}

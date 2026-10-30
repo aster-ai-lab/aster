@@ -19,9 +19,15 @@ pub(crate) struct UsageFactBody {
     subject_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     org_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    credential_id: Option<String>,
     model_id: String,
     endpoint: String,
     tokens: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prompt_tokens: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    completion_tokens: Option<u64>,
     succeeded: bool,
     occurred_at: i64,
 }
@@ -50,6 +56,8 @@ pub(crate) fn report_principal_usage(
     attribution: &UsageAttribution,
     total_tokens: u64,
     status: u16,
+    prompt_tokens: Option<u64>,
+    completion_tokens: Option<u64>,
 ) {
     let Some(attribution) = platform_attribution(attribution) else {
         static LOGGED: OnceLock<()> = OnceLock::new();
@@ -65,7 +73,14 @@ pub(crate) fn report_principal_usage(
         .duration_since(std::time::UNIX_EPOCH)
         .map(|duration| duration.as_secs() as i64)
         .unwrap_or(0);
-    let body = usage_fact_body(&attribution, total_tokens, status, occurred_at);
+    let body = usage_fact_body(
+        &attribution,
+        total_tokens,
+        status,
+        occurred_at,
+        prompt_tokens,
+        completion_tokens,
+    );
     let url = std::env::var("A3S_USAGE_INGEST_URL").unwrap_or_default();
     let token = std::env::var("A3S_GATEWAY_ADMIN_TOKEN").unwrap_or_default();
     submit_usage_fact(url.trim(), token.trim(), body);
@@ -76,6 +91,8 @@ pub(crate) fn usage_fact_body(
     total_tokens: u64,
     status: u16,
     occurred_at: i64,
+    prompt_tokens: Option<u64>,
+    completion_tokens: Option<u64>,
 ) -> UsageFactBody {
     let org_id = attribution
         .subject
@@ -88,9 +105,12 @@ pub(crate) fn usage_fact_body(
         transaction_id: attribution.request_id.to_string(),
         subject_id: attribution.subject.subject.to_string(),
         org_id,
+        credential_id: Some(attribution.subject.credential_id.to_string()),
         model_id: attribution.model.clone(),
         endpoint: attribution.endpoint.as_str().to_owned(),
         tokens: total_tokens,
+        prompt_tokens,
+        completion_tokens,
         succeeded: status < 400,
         occurred_at,
     }
@@ -188,6 +208,8 @@ mod tests {
                 credential_id: uuid::Uuid::nil(),
                 subject: Arc::from("11111111-1111-1111-1111-111111111111"),
                 org: org.map(Arc::from),
+                allowed_models: None,
+                rpm_limit: None,
             },
             model: "boyue/demo".into(),
             endpoint: InferenceEndpoint::ChatCompletions,
@@ -197,7 +219,7 @@ mod tests {
 
     #[test]
     fn an_empty_org_is_omitted() {
-        let body = usage_fact_body(&attribution(Some("  ")), 12, 200, 1_700_000_000);
+        let body = usage_fact_body(&attribution(Some("  ")), 12, 200, 1_700_000_000, None, None);
         let json = serde_json::to_value(&body).unwrap();
         assert!(json.get("org_id").is_none());
         assert_eq!(json["subject_id"], "11111111-1111-1111-1111-111111111111");
@@ -209,7 +231,14 @@ mod tests {
 
     #[test]
     fn a_client_org_is_only_a_hint() {
-        let body = usage_fact_body(&attribution(Some("org-1")), 0, 500, 1_700_000_000);
+        let body = usage_fact_body(
+            &attribution(Some("org-1")),
+            0,
+            500,
+            1_700_000_000,
+            None,
+            None,
+        );
         assert_eq!(body.org_id.as_deref(), Some("org-1"));
         assert!(!body.succeeded);
     }
@@ -252,6 +281,10 @@ mod tests {
 
     #[test]
     fn an_empty_url_does_not_need_a_runtime() {
-        submit_usage_fact("", "token", usage_fact_body(&attribution(None), 1, 200, 1));
+        submit_usage_fact(
+            "",
+            "token",
+            usage_fact_body(&attribution(None), 1, 200, 1, None, None),
+        );
     }
 }

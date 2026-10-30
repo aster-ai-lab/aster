@@ -1,0 +1,66 @@
+// Exact optional vector decoder for the pinned Xolotl Engram FP8/E8M0 rows.
+// Normal finite products are exponent translations of exactly represented FP8.
+// Keep the original arithmetic for the underflow/overflow range and non-AVX2 CPUs.
+#pragma once
+#include <cmath>
+#include <cstdint>
+
+#ifndef ASTER_XQ_ENGRAM_FP8_SIMD
+#define ASTER_XQ_ENGRAM_FP8_SIMD 0
+#endif
+#if ASTER_XQ_ENGRAM_FP8_SIMD != 0 && ASTER_XQ_ENGRAM_FP8_SIMD != 1
+#error "ASTER_XQ_ENGRAM_FP8_SIMD must be 0 or 1"
+#endif
+#if ASTER_XQ_ENGRAM_FP8_SIMD && defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
+#include <immintrin.h>
+#define ASTER_ENGRAM_HAS_AVX2_TARGET 1
+#else
+#define ASTER_ENGRAM_HAS_AVX2_TARGET 0
+#endif
+
+namespace aster_engram_fp8 {
+inline bool avx2_enabled() {
+#if ASTER_ENGRAM_HAS_AVX2_TARGET
+    static const bool enabled = __builtin_cpu_supports("avx2") != 0;
+    return enabled;
+#else
+    return false;
+#endif
+}
+
+#if ASTER_ENGRAM_HAS_AVX2_TARGET
+__attribute__((target("avx2"))) inline void normal32(const uint8_t * w, uint8_t scale, float * out) {
+    alignas(32) static constexpr uint32_t fp8_bits[256] = {
+@TABLE@
+    };
+    const __m256i delta = _mm256_set1_epi32((static_cast<int>(scale) - 127) * 8388608);
+    const __m256i low7 = _mm256_set1_epi32(127);
+    const __m256i zero = _mm256_setzero_si256();
+    for (int i = 0; i < 32; i += 8) {
+        const __m128i bytes = _mm_loadl_epi64(reinterpret_cast<const __m128i *>(w + i));
+        const __m256i indices = _mm256_cvtepu8_epi32(bytes);
+        const __m256i bits = _mm256_i32gather_epi32(reinterpret_cast<const int *>(fp8_bits), indices, 4);
+        const __m256i magnitude = _mm256_and_si256(indices, low7);
+        const __m256i special = _mm256_or_si256(_mm256_cmpeq_epi32(magnitude, zero),
+                                               _mm256_cmpeq_epi32(magnitude, low7));
+        const __m256i translated = _mm256_add_epi32(bits, delta);
+        const __m256i result = _mm256_blendv_epi8(translated, bits, special);
+        _mm256_storeu_ps(out + i, _mm256_castsi256_ps(result));
+    }
+}
+#endif
+
+template<class Decoder>
+inline void dequantize32(const uint8_t * w, uint8_t scale, float * out, Decoder decoder) {
+#if ASTER_ENGRAM_HAS_AVX2_TARGET
+    // For EVERY finite nonzero FP8, scales10..246 keep the FP32 product normal.
+    // Signed zeros and signed NaNs retain the exact scalar decoder's bits.
+    if (scale >= 10 && scale <= 246 && avx2_enabled()) {
+        normal32(w, scale, out);
+        return;
+    }
+#endif
+    const float factor = std::ldexp(1.0f, static_cast<int>(scale) - 127);
+    for (int i = 0; i < 32; ++i) out[i] = decoder(w[i]) * factor;
+}
+}  // namespace aster_engram_fp8

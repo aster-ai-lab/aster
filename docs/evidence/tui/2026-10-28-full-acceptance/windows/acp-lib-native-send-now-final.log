@@ -1,0 +1,505 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo fix --lib -p a3s-tty-utils` to apply 1 suggestion)
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp)
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+   Compiling a3s-embedding v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\embedding)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates\embedding\src\vector\hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates\embedding\src\hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates\embedding\src\vector\hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates\embedding\src\vector\hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: variable does not need to be mutable
+   --> crates\code\acp\src\unattended.rs:223:9
+    |
+223 |     let mut builder = std::fs::DirBuilder::new();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\deps\a3s_code_acp-7471278137a73c4d.lib 和对象 D:\code\aster\target\debug\deps\a3s_code_acp-7471278137a73c4d.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (lib test) generated 2 warnings (run `cargo fix --lib -p a3s-code-acp --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 45.29s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\a3s_code_acp-7471278137a73c4d.exe)
+
+running 366 tests
+test agent::client_permission_tests::cli_permission_allow_cannot_relax_plan_or_research_and_deny_stays_binding ... ok
+test agent::client_permission_tests::cli_permission_allow_preserves_the_host_source_review_ceiling ... ok
+test agent::client_permission_tests::cli_permission_deny_is_applied_during_research_admission ... ok
+test agent::client_permission_tests::cli_permission_deny_survives_yolo_mode_and_model_replacement ... ok
+test agent::client_permission_tests::cli_permission_invalid_metadata_is_refused_before_state_changes ... ok
+test agent::client_permission_tests::cli_permission_whitespace_keeps_the_cli_rules_meaning ... ok
+test agent::document_read_agent_tests::opted_in_agent_registers_reader_on_open_and_replacement_only ... ok
+test agent::engineering_tests::engineering_explicit_conflict_refuses_acp_load_without_changing_source ... ok
+test agent::engineering_tests::engineering_original_budget_and_legacy_rebind_refuse_before_provider ... ok
+test agent::engineering_tests::engineering_real_model_acp_new_model_replacement_and_new_host_reopen ... ignored, requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model
+test agent::engineering_tests::engineering_shared_host_options_preserve_policy_and_contracts_after_file_reopen ... ok
+test agent::engineering_tests::engineering_unknown_meta_refuses_new_and_load_before_activation ... ok
+test agent::engineering_tests::new_sessions_default_to_engineering_and_reopen_preserves_selection ... ok
+test agent::goal_tests::bound_goal_clear_retains_real_model_history_through_acp_reload ... ignored, requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model
+test agent::goal_tests::bound_goal_clear_uses_original_facts_and_keeps_legacy_source_after_acp_reload ... ok
+test agent::goal_tests::bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable ... ok
+test agent::goal_tests::chinese_goal_status_is_concise_and_does_not_claim_completion_when_paused ... ok
+test agent::goal_tests::explicit_new_goals_use_default_bounds_and_trusted_disable_wins ... ok
+test agent::goal_tests::goal_state_snapshot_previews_tick_without_queueing_or_appending_facts ... ok
+test agent::goal_tests::same_session_other_host_cannot_write_or_retire_legacy_goal_after_import ... ok
+test agent::goal_tests::session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen ... ignored, requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model
+test agent::goal_tests::unowned_workspace_goal_is_not_automatically_claimed_by_new_sessions ... ok
+test agent::host_methods::tests::every_host_method_parses_back_from_its_name ... ok
+test agent::host_methods::tests::protocol_and_unknown_methods_are_outside_the_host_set ... ok
+test agent::local_embedding::byo_factory_tests::embedded_light_then_registered_factory_serves_the_opt_in ... ok
+test agent::memory_management::tests::management_works_without_model_or_session_and_refuses_another_workspace ... ok
+test agent::memory_sessions_tests::two_acp_host_sessions_recall_and_write_the_same_durable_collection ... ok
+test agent::native_send_now_tests::send_now_retires_the_real_native_worker_before_admitting_the_next_turn ... ok
+test agent::permission_state_tests::invalid_permission_seed_is_refused_before_creating_any_session ... ok
+test agent::permission_state_tests::mode_changes_cannot_relax_research_admission_and_new_denies_survive_cleanup ... ok
+test agent::permission_state_tests::mode_parsing_is_closed_and_canonical_before_mutation ... ok
+test agent::permission_state_tests::model_and_effort_replacement_keep_denies_and_the_original_queue ... ok
+test agent::permission_state_tests::reconciliation_wire_error_carries_an_action_and_refuses_retry ... ok
+test agent::permission_state_tests::research_cleanup_restores_current_mode_on_return_and_drop ... ok
+test agent::permission_state_tests::session_creation_publishes_and_applies_the_same_permission_postures ... ok
+test agent::permission_state_tests::stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity ... ok
+test agent::permission_state_tests::unknown_session_model_change_does_not_activate_or_create_a_session ... ok
+test agent::reasoning_transport_tests::effort_switch_preserves_history_and_exposes_existing_anthropic_none_semantics ... ok
+test agent::reasoning_transport_tests::explicit_effort_default_clears_override_and_absence_preserves_selection ... ok
+test agent::reasoning_transport_tests::terminal_initial_effort_reaches_new_session_and_allows_later_selection ... ok
+test agent::reasoning_transport_tests::unsupported_effort_is_refused_without_replacing_the_session ... ok
+test agent::registration_cleanup_tests::native_registration_failure_closes_and_settles_the_open_session ... REGISTRATION_CLEANUP {"cancelled":true,"closed":true,"error":"Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"native plugin workspace is unavailable\")) }","failure":"workspace_unavailable","resources_settled":1}
+REGISTRATION_CLEANUP {"cancelled":true,"closed":true,"error":"Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"Capability runtime error: Session runtime tool name 'office_read' conflicts with a compatibility value\")) }","failure":"office_read","resources_settled":1}
+REGISTRATION_CLEANUP {"cancelled":true,"closed":true,"error":"Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"Capability runtime error: Session runtime tool name 'office_file' conflicts with a compatibility value\")) }","failure":"office_file","resources_settled":1}
+REGISTRATION_CLEANUP {"cancelled":true,"closed":true,"error":"Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"Capability runtime error: Session runtime tool name 'output_check' conflicts with a compatibility value\")) }","failure":"output_check","resources_settled":1}
+ok
+test agent::resume_tests::a_foreign_existing_record_and_corrupt_local_record_share_not_found ... ok
+test agent::resume_tests::a_valid_record_reaches_ordinary_model_validation_instead_of_blanket_refusal ... ok
+test agent::resume_tests::existing_fact_record_is_admitted_without_activating_any_surface ... ok
+test agent::resume_tests::foreign_resume_refuses_before_touching_the_requested_workspace ... foreign resume observations: {"createdForeignStateDirectory":false,"initializedCoreAgent":false}
+ok
+test agent::resume_tests::refused_resume_does_not_admit_an_opted_in_document_surface ... ok
+test agent::resume_tests::snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot ... ok
+test agent::resume_tests::unknown_resume_refuses_before_any_session_or_model_initialization ... unknown resume observations: {"createdSnapshotStore":false,"createdStateDirectory":false,"initializedCoreAgent":false}
+ok
+test agent::retrieval_seam_tests::retrieval_seam_stays_closed_until_a_provider_is_injected ... ok
+test agent::review_tests::admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenarios ... ok
+test agent::review_tests::review_admission_binds_session_policy_and_current_target_bytes_without_a_model ... ok
+test agent::review_tests::review_real_model_findings_are_admitted_for_current_bytes_and_stale_after_an_edit ... ignored, requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model
+test agent::run_observation_agent_tests::actual_acp_failure_and_cancel_close_only_with_the_core_terminal_outcome ... ok
+test agent::run_observation_agent_tests::actual_acp_prompt_projects_core_runs_and_keeps_commands_and_legacy_clients_unobserved ... ok
+test agent::session_catalog_tests::acp_wire_initialize_then_list_returns_persisted_facts ... session catalog wire response: {"id":2,"jsonrpc":"2.0","result":{"_meta":{"a3sCode/sessionCatalog":{"headlessPolicy":"include","incomplete":false,"kindFacets":null,"schema":"a3s.code.session-catalog.v1","skippedEntries":0,"truncated":false,"unclassifiedPageEntries":0},"x.ai/listScope":"cwd"},"sessions":[{"_meta":{"a3sCode/sessionCatalog":"a3s.code.session-catalog.v1"},"createdAt":"2026-10-29T03:44:43.960619200Z","cwd":"\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpauHgdA","factCount":1,"firstPrompt":"通过 ACP 查询事实","firstPromptTruncated":false,"id":"wire-session","numMessages":1,"source":"local","summary":"通过 ACP 查询事实","updatedAt":"2026-10-29T03:44:43.960619200Z"}]}}
+ok
+test agent::session_catalog_tests::chat_facet_does_not_read_or_mislabel_code_sessions ... ok
+test agent::session_catalog_tests::concurrent_inventory_is_refused_without_queuing_or_creating_state ... ok
+test agent::session_catalog_tests::corrupt_logs_are_visible_as_partial_inventory ... ok
+test agent::session_catalog_tests::dropped_request_keeps_admission_until_its_blocking_worker_exits ... ok
+test agent::session_catalog_tests::empty_workspace_does_not_create_state ... ok
+test agent::session_catalog_tests::foreign_and_missing_workspace_share_not_found_even_with_relaxation ... ok
+test agent::session_catalog_tests::invalid_fields_closed_sets_and_bounds_are_rejected ... ok
+test agent::session_catalog_tests::list_reads_workspace_facts_without_initializing_an_agent_or_store ... ok
+test agent::session_catalog_tests::query_limit_and_projection_use_legacy_facts ... ok
+test agent::session_catalog_tests::unknown_session_kind_is_never_invented_for_a_filtered_view ... ok
+test agent::session_setup_tests::blank_launch_model_session_and_prompt_use_the_no_model_sentence ... ok
+test agent::session_setup_tests::disk_attestor_is_installed_only_for_opted_in_non_review_sessions ... ok
+test agent::session_setup_tests::durable_collection_stays_closed_until_the_first_recall ... ok
+test agent::session_setup_tests::empty_launch_model_is_omitted_and_named ... ok
+test agent::session_setup_tests::host_contract_setup_is_scoped_and_refuses_invalid_roots_before_activation ... ok
+test agent::session_setup_tests::host_session_status_names_live_search_and_closed_semantic ... ok
+test agent::session_setup_tests::initialize_refuses_invalid_prompt_metadata_instead_of_silently_ignoring_it ... ok
+test agent::session_setup_tests::initialize_rules_append_without_replacing_host_or_unattended_contracts ... ok
+test agent::session_setup_tests::malformed_office_capability_refuses_before_session_admission ... ok
+test agent::session_setup_tests::office_tools_follow_only_the_explicit_host_capability ... ok
+test agent::session_setup_tests::source_review_has_no_tools_even_after_a_yolo_mode_change ... ok
+test agent::session_setup_tests::trusted_acl_presentation_reaches_the_host_session_without_changing_default ... ok
+test agent::session_setup_tests::trusted_session_hook_runs_and_a_pending_hook_does_not ... ok
+test agent::session_setup_tests::typed_setup_preserves_host_safety_and_context_without_activation ... ok
+test agent::tests::a_core_error_is_not_a_completed_turn ... ok
+
+thread 'agent::tests::a_dead_turn_worker_names_its_cause' (51972) panicked at crates\code\acp\src\agent_tests.rs:849:9:
+spine exploded
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent::tests::a_dead_turn_worker_names_its_cause ... ok
+test agent::tests::a_question_id_is_prompted_once ... ok
+test agent::tests::a_typed_followup_message_is_trimmed_and_blank_counts_as_absent ... ok
+test agent::tests::approval_deadline::host_tool_confirmation_policy_uses_the_existing_human_ask_deadline ... ok
+test agent::tests::approval_deadline::human_approval_deadline_preserves_default_disable_and_large_value_semantics ... ok
+test agent::tests::budget_line_states_a_maximum ... ok
+test agent::tests::cancelled_acquisition_returns_its_waiting_slot ... ok
+test agent::tests::cc_switch_picker_label_includes_other_profiles ... ok
+test agent::tests::choice_questions_use_the_dialog_not_a_transcript_line ... ok
+test agent::tests::completion_bell_respects_the_configured_floor_and_signal ... ok
+test agent::tests::configured_skill_directory_that_is_missing_is_named ... ok
+test agent::tests::confirmation_then_execution_opens_one_tool_row ... ok
+test agent::tests::count_limits::interactive_count_is_unbounded_without_an_explicit_limit_for_every_effort ... ok
+test agent::tests::count_limits::interactive_explicit_acl_count_wins_over_every_effort_including_zero ... ok
+test agent::tests::cursor_catalog_uses_the_logged_in_account_label ... ok
+test agent::tests::delete_names_a_sessions_path_that_is_not_a_directory ... ok
+test agent::tests::delete_removes_only_the_named_id ... ok
+test agent::tests::duplicate_product_home_collapses ... ok
+test agent::tests::effort_limits_preserve_thinking_and_parallel_resource_settings ... ok
+test agent::tests::effort_tokens_adjust_thinking_without_setting_a_tool_ceiling ... ok
+test agent::tests::empty_registry_still_states_the_product_boundary ... ok
+test agent::tests::end_text_fills_a_turn_that_had_no_deltas ... ok
+test agent::tests::four_homes_when_inputs_differ ... ok
+test agent::tests::free_text_only_questions_get_one_carrying_row_when_allowed ... ok
+test agent::tests::high_depth_is_about_the_user_outcome ... ok
+test agent::tests::interactive_session_store_dir_from_configured_sessions_dir_wins ... ok
+test agent::tests::interactive_session_store_dir_from_os_home_joins_dot_a3s_session_store ... ok
+test agent::tests::interactive_session_store_dir_from_product_env_joins_session_store ... ok
+test agent::tests::interactive_session_store_dir_from_relative_fallback_without_homes ... ok
+test agent::tests::interactive_skill_dirs_load_an_explicit_profile_without_reading_home ... ok
+test agent::tests::local_note_is_searchable ... ok
+test agent::tests::new_session_attaches_file_session_store ... ok
+test agent::tests::only_a_learnable_bash_command_offers_allow_always_and_only_it_learns ... ok
+test agent::tests::permission_response_maps_allow_and_reject ... ok
+test agent::tests::question_options_are_not_permission_grants ... ok
+test agent::tests::question_permission_requests_carry_the_question_meta ... ok
+test agent::tests::reasoning_menu_follows_the_model ... ok
+test agent::tests::reasoning_meta_offers_parseable_budget_levels ... ok
+test agent::tests::sampling_consent_resolves_the_owning_session ... ok
+test agent::tests::seam_admission_acp_permission_and_goal ... ok
+test agent::tests::selected_question_option_is_the_answer_text ... ok
+core manager mcp=[{"name":"github","transport":{"type":"stdio","command":"npx","args":["-y","@modelcontextprotocol/server-github"]},"enabled":true,"env":{"GITHUB_PERSONAL_ACCESS_TOKEN":"ghp_x"},"tool_timeout_secs":60},{"name":"linear","transport":{"type":"streamable-http","url":"https://mcp.linear.app/mcp","headers":{"LINEAR_API_KEY":"lin_x"}},"enabled":true,"env":{},"tool_timeout_secs":60}]
+test agent::tests::session_new_mcp_servers_land_on_the_core_manager ... ok
+test agent::tests::session_new_plugin_tool_runs_the_unpacked_executable ... ok
+test agent::tests::set_session_model_keeps_the_sessions_mcp_contribution_alive ... ok
+test agent::tests::set_session_model_replaces_a_live_session ... ok
+test agent::tests::skill_home_from_prefers_nonempty_home_then_userprofile ... ok
+test agent::tests::studio_host_keeps_the_budget_line_in_the_session_options ... ok
+local-asset deny skill=denied connector=denied wiki=denied
+test agent::tests::studio_local_assets_session_opens_only_the_selected_item ... ok
+test agent::tests::subagent_progress_reports_the_resolved_window ... ok
+test agent::tests::task_maps_to_acp_plan_entry_status_and_priority ... ok
+test agent::tests::the_model_config_option_selects_the_session_model ... ok
+test agent::tests::tool_cards_use_pager_kind_and_raw_input ... ok
+test agent::tests::tool_publication::failed_reads_and_unverified_metadata_do_not_become_publications ... ok
+test agent::tests::tool_publication::validated_publication_survives_an_invalid_truncated_json_preview ... ok
+test agent::tests::tui_mappings_cover_cards_catalog_and_questions ... ok
+test agent::tests::tui_session_function_coverage_is_at_least_95_percent ... ok
+test agent::tests::tui_turn_renders_every_pager_event ... ok
+test agent::tests::turn_outcome_payload_names_the_wire_shape ... ok
+test agent::tests::turn_queue_rejects_beyond_the_bound_and_frees_slots_on_drop ... ok
+test agent::tests::unanswered_asks_fail_closed_at_the_deadline ... ok
+test agent::tests::union_mcp_desired_covers_remodel_and_close_shapes ... ok
+test agent::tests::union_mcp_desired_dedupes_a_same_definition_shared_name ... ok
+test agent::tests::union_mcp_desired_keeps_same_session_updates_later_wins ... ok
+test agent::tests::union_mcp_desired_refuses_a_cross_session_name_takeover ... ok
+test agent::tests::unknown_model_id_is_rejected_before_session_lookup ... ok
+test agent::tests::user_question_choices_round_trip_typed_and_selected_answers ... ok
+test agent::tests::user_question_with_form_round_trips_the_submitted_values ... ok
+test agent::tests::watched_skill_dirs_include_home_agent_roots_before_they_exist ... ok
+test agent::tests::workspace_and_home_skill_roots_are_loaded_when_they_exist ... ok
+test agent::turn::usage_meta_tests::the_usage_update_carries_the_full_accounting_in_meta ... ok
+test agent::turn_input_tests::direct_bash_metadata_is_never_reinterpreted_as_model_text ... ok
+test agent::turn_input_tests::malformed_send_now_is_refused_without_cancelling_a_turn ... ok
+test agent::turn_input_tests::ordinary_text_and_unrelated_metadata_preserve_exact_user_bytes ... ok
+test agent::turn_input_tests::send_now_cancels_before_waiting_for_the_previous_turn_permit ... ok
+test agent::turn_terminal_tests::a_worker_return_without_a_terminal_is_a_failed_turn ... ok
+test agent::turn_terminal_tests::an_explicit_terminal_preserves_success_failure_and_cancellation ... ok
+test agent::turn_terminal_tests::cancellation_after_event_eof_returns_while_retaining_the_live_worker_permit ... ok
+test agent::turn_terminal_tests::forced_stop_is_not_a_successful_end_turn ... ok
+test agent::turn_terminal_tests::stop_interrupts_unanswered_permissions_questions_and_forms ... ok
+test approval_learning::tests::a_learned_rule_does_not_cover_a_different_subcommand_or_a_chain ... ok
+test approval_learning::tests::bypass_corpus_is_never_learnable ... ok
+test approval_learning::tests::caps_each_workspace_oldest_first ... ok
+test approval_learning::tests::malformed_or_tampered_store_learns_nothing_and_refuses_to_write ... ok
+test approval_learning::tests::non_bash_tools_never_match ... ok
+test approval_learning::tests::repository_seeded_approvals_are_ignored ... ok
+test approval_learning::tests::rules_are_keyed_by_workspace_and_round_trip_through_acl ... ok
+test approval_learning::tests::rules_are_program_plus_the_subcommand_that_carries_the_risk ... ok
+test approval_learning::tests::workspace_labels_round_trip_native_and_quoted_paths ... ok
+test artifact_image::tests::produces_png_with_the_svg_dimensions_and_internal_gradient ... ok
+test artifact_image::tests::refuses_empty_malformed_oversized_and_excessively_complex_svg ... ok
+test artifact_image::tests::refuses_external_resources_and_unsafe_xml_before_rendering ... ok
+test cc_switch::live_db_smoke::loads_local_cc_switch_when_present ... ok
+test cc_switch::tests::collapsed_slots_keep_two_ids_and_the_matching_name ... ok
+test cc_switch::tests::context_window_suffix_is_not_part_of_the_api_model_id ... ok
+test cc_switch::tests::merge_into_config_fills_missing_default ... ok
+test cc_switch::tests::provider_from_settings_prefers_local_proxy ... ok
+test cc_switch::tests::provider_from_settings_reads_env_models ... ok
+test cc_switch::tests::provider_without_token_is_skipped ... ok
+test cc_switch::tests::two_providers_keep_the_same_model_id ... ok
+test codex_account::live_account_smoke::loads_local_codex_account_when_present ... ok
+test codex_account::tests::a_live_login_imports_cached_models_with_a_fixed_identity ... ok
+test codex_account::tests::a_missing_cache_falls_back_to_the_configured_or_placeholder_model ... ok
+test codex_account::tests::a_missing_token_or_account_id_is_not_an_error ... ok
+test codex_account::tests::a_trusted_acl_opt_in_imports_the_account_through_the_launch_loader ... ok
+test codex_account::tests::an_expired_access_token_is_not_imported ... ok
+test codex_account::tests::merge_replaces_a_stale_codex_provider_and_respects_the_disable_env ... ok
+test config::tests::a_logged_in_account_is_not_imported_without_a_host_opt_in ... ok
+test config::tests::a_workspace_layer_cannot_opt_the_host_into_an_account_import ... ok
+test config::tests::empty_user_acl_is_replaced_and_then_left_alone ... ok
+test config::tests::execution_capabilities::capability_settings_are_host_owned_in_actual_layer_loading ... ok
+test config::tests::execution_capabilities::explicit_capability_config_does_not_merge_user_or_workspace_defaults ... ok
+test config::tests::execution_capabilities::invalid_capability_config_refuses_instead_of_falling_back ... ok
+test config::tests::explicit_config_keeps_sandbox_authority ... ok
+test config::tests::first_run_acl_is_created_once_and_can_open_a_session_model ... ok
+test config::tests::goal_control::goal_control_actual_workspace_layer_cannot_activate_or_override_host ... ok
+test config::tests::goal_control::goal_control_explicit_host_file_retains_authority ... ok
+test config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback ... ok
+test config::tests::layered_home_and_workspace_config_overlay_instead_of_shadow ... ok
+test config::tests::load_launch_config_keeps_slash_in_model_id ... ok
+test config::tests::load_launch_config_reads_explicit_acl ... ok
+test config::tests::no_config_anywhere_starts_without_writing_a_file ... ok
+test config::tests::the_host_opts_in_through_trusted_acl_or_the_launcher_list ... ok
+test config::tests::trusted_declared_default_survives_a_withheld_workspace_default ... ok
+test config::tests::userprofile_supplies_home_when_home_is_unset ... ok
+test config::tests::withheld_workspace_default_launches_with_the_cursor_account ... ok
+test config::tests::without_any_acl_only_the_launcher_list_can_bootstrap_an_account ... ok
+test config::tests::workspace_layer_cannot_arm_the_sandbox_posture ... ok
+test config::tests::workspace_layer_cannot_narrow_the_host_sandbox_posture ... ok
+test config::tests::workspace_only_providers_do_not_self_provision ... ok
+test cursor_account::tests::auth_info_without_a_token_does_not_import ... ok
+test cursor_account::tests::catalog_list_does_not_request_write_or_shell_access ... ok
+test cursor_account::tests::different_ide_account_keeps_the_cli_token ... ok
+test cursor_account::tests::expired_jwt_is_not_imported ... ok
+test cursor_account::tests::fixture_login_merges_model_ids_without_logging_the_bearer ... ok
+test cursor_account::tests::live_cursor_catalog_matches_agent_models ... ignored, reads this machine's Cursor login and prints model ids only
+test cursor_account::tests::live_cursor_completion_returns_assistant_text ... ignored, one short completion on the logged-in Cursor account
+test cursor_account::tests::missing_login_and_disable_switch_merge_nothing ... ok
+test cursor_account::tests::preset_default_model_is_kept_until_prefer_is_set ... ok
+test cursor_account::tests::usable_models_json_uses_display_model_id ... ok
+test document_read::run_tests::a_native_release_that_never_acknowledges_refuses_success_at_the_run_deadline ... ok
+test document_read::run_tests::actual_harness_keeps_clean_native_model_across_turns_and_releases_it_before_success ... ignored, requires separately built Studio workspace_document_stdio probe
+test document_read::run_tests::cancellation_during_native_release_waits_for_cleanup_and_refuses_prior_success ... ok
+test document_read::run_tests::denied_read_and_forged_owner_input_cannot_pin_a_native_resource ... ok
+test document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat ... ok
+test document_read::run_tests::native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns ... ok
+test document_read::run_tests::plain_context_cannot_promote_a_document_pin_to_a_fabricated_run ... ok
+test document_read::run_tests::refused_native_release_cannot_complete_a_pinned_document_run ... ok
+test document_read::tests::actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications ... ok
+test document_read::tests::actual_harness_acp_reads_native_unsaved_document_across_process_boundary ... ignored, requires the separately built Studio native document probe
+test document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations ... ok
+test document_read::tests::actual_run_without_read_authority_never_calls_document_host ... ok
+test document_read::tests::cancelled_actual_turn_cannot_accept_late_document_reply ... ok
+test document_read::tests::document_read_contract_distinguishes_text_paths_from_binary_documents ... ok
+test document_read::tests::plain_tool_context_cannot_use_bridge ... ok
+test document_read::tests::stopping_transport_releases_waiting_tool_without_accepting_host_text ... ok
+test document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation ... ok
+test engineering::tests::a_goal_step_subject_binds_every_scope_field_and_a_session_target_keeps_the_old_subject ... ok
+test engineering::tests::explicit_policy_is_validated_and_omission_keeps_defaults ... ok
+test engineering::tests::malformed_or_unknown_experiment_never_defaults ... ok
+test form_request::tests::cancelled_forms_return_an_explicit_error ... ok
+test form_request::tests::json_render_request_round_trips_without_a_core_session ... ok
+test form_request::tests::refuses_non_object_answers_and_preserves_typed_values ... ok
+test goal::import::tests::bounded_reader_keeps_the_source_and_refuses_special_files ... ok
+test goal::import::tests::malformed_ambiguous_and_oversize_sources_refuse ... ok
+test goal::import::tests::source_selection_is_exact_and_never_invents_criteria_or_unpauses ... ok
+test goal::persistence::tests::legacy_log_session_keeps_its_original_fact_directory ... ok
+test goal::persistence::tests::malformed_session_goal_is_not_silently_replaced_or_executed ... ok
+test goal::persistence::tests::retirement_requires_exact_active_governing_goal_and_settled_owner ... ok
+test goal::persistence::tests::session_goals_isolate_siblings_preserve_workspace_source_and_reopen ... ok
+test goal::tests::legacy_commands_follow_the_host_language_without_repeating_the_objective ... ok
+test goal::tests::missing_goal_does_not_start_a_turn ... ok
+test goal::tests::parse_rejects_a_longer_token ... ok
+test goal::tests::parse_verbs_and_objectives ... ok
+test goal::tests::product_default_bounds_are_finite_and_explicit ... ok
+test goal::tests::set_enables_planning_and_keeps_the_objective ... ok
+test goal::tests::status_pause_resume_and_clear_round_trip ... ok
+test grok_account::live_account_smoke::loads_local_grok_account_when_present ... ok
+test grok_account::tests::merge_into_config_fills_missing_default ... ok
+test grok_account::tests::pick_credential_prefers_oidc ... ok
+test grok_account::tests::provider_from_parts_reads_cache_models ... ok
+test harness_assemble::tests::a_fourth_list_is_refused ... ok
+test harness_assemble::tests::absent_meta_is_the_default_list ... ok
+test harness_assemble::tests::host_list_installs_the_builtin_registry ... ok
+test host_context::limits_tests::host_guidelines_keep_a_fixed_unicode_character_bound ... ok
+test host_context::tests::completion_attestation_requires_a_known_explicit_host_mode ... ok
+test host_context::tests::guidelines_are_bounded_without_truncating_host_delivery_requirements ... ok
+test host_context::tests::host_text_lands_in_extra_and_keeps_the_budget_line ... ok
+test host_context::tests::inline_review_and_unknown_language_add_nothing ... ok
+test host_context::tests::missing_meta_is_a_no_op ... ok
+test host_context::tests::office_tools_require_explicit_boolean_metadata ... ok
+test host_context::tests::plan_first_is_its_own_flag ... ok
+test host_context::tests::research_denies_writes_and_keeps_caller_denies ... ok
+test host_context::tests::role_replaces_the_default_identity_line ... ok
+test host_context::tests::source_review_is_an_explicit_boolean_restriction ... ok
+test host_context::tests::turn_directives_prefix_the_model_string_only ... ok
+test local_assets::tests::a_connector_without_a_usage_note_opens_as_its_transport ... ok
+test local_assets::tests::crlf_note_and_asset_body_match_lf_and_a_missing_closer_fails ... ok
+test local_assets::tests::open_skips_the_file_when_the_tool_is_denied ... ok
+test log_file::tests::daily_log_writer_routes_to_the_env_dir ... ok
+test log_file::tests::daily_log_writes_and_prunes ... ok
+agent log file reached the size cap; stopping writes for today
+test log_file::tests::size_cap_warns_on_stderr_without_reentering_the_log_lock ... ok
+test log_file::tests::writer_reports_full_writes_even_without_a_file ... ok
+test office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory ... ok
+test office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes ... ok
+test office_file::tests::authority_revoked_at_publication_removes_staging_and_releases_the_write_claim ... ok
+test office_file::tests::columns_and_explicit_tool_denies_keep_their_contract ... ok
+test office_file::tests::invalid_extended_inputs_and_formula_errors_never_publish ... ok
+test office_file::tests::invalid_input_no_clobber_and_cancellation_never_publish ... ok
+test office_file::tests::missing_parent_directory_reports_its_full_path ... ok
+test office_file::tests::native_document_preserves_ordered_paragraphs_and_table_cells ... ok
+test office_file::tests::native_png_is_a_real_image_file_and_invalid_svg_does_not_publish ... ok
+test office_file::tests::native_presentation_contains_all_requested_slides_and_saved_text ... ok
+test office_file::tests::native_workbook_saves_reopens_and_preserves_typed_cells_and_sheet_names ... ok
+mutation=none observed_model_calls=4 verified=true
+test office_file::tests::nested_verification::native_png_proofs_survive_program_batch_and_parallel_nested_calls ... ok
+mutation=none observed_model_calls=5 verified=true
+test office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness ... ok
+mutation=forged_metadata observed_model_calls=3 verified=false
+mutation=failed_write observed_model_calls=3 verified=false
+mutation=same_bytes observed_model_calls=3 verified=false
+mutation=tamper observed_model_calls=3 verified=false
+mutation=failed_wrapper observed_model_calls=3 verified=false
+test office_file::tests::nested_verification::nested_native_proofs_never_cover_unverified_failed_or_changed_writes ... ok
+test office_file::tests::presentation_embeds_a_real_png_chart_below_the_title_inside_the_slide ... ok
+test office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates ... ok
+test office_file::tests::workbook_explicit_formulas_recalculate_and_formats_survive_readback ... ok
+test office_file::tests::workspace_write_capability_and_missing_session_are_refused ... ok
+test office_read::tests::cell_conversion_refuses_invalid_values_and_keeps_missing_distinct_from_zero ... ok
+test office_read::tests::discovery::workbook_sheet_paths_survive_bounded_output_before_cell_details ... ok
+test office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission ... ok
+test office_read::tests::native_docx_reads_preserve_paragraph_and_table_locations ... ok
+test office_read::tests::native_pptx_reads_preserve_slide_and_shape_locations ... ok
+test office_read::tests::native_reads_keep_the_selected_credential_and_hardlink_boundary ... ok
+test office_read::tests::native_reads_preserve_cells_types_formulas_formats_positions_and_source_bytes ... ok
+test office_read::tests::output_and_argument_bounds_refuse_unbounded_reads ... ok
+test office_read::tests::source_reads_refuse_malformed_oversized_unknown_and_unavailable_inputs ... ok
+test office_read::tests::tool_entry_requires_a_live_read_scope ... ok
+test output_check::metrics::tests::percentage_output_uses_ascii_signs_and_omits_insignificant_zeros ... ok
+test output_check::metrics::tests::text_measurement_counts_unicode_and_punctuation_without_guessing_words ... ok
+test output_check::metrics::tests::undefined_and_overflowing_percentages_are_refused ... ok
+test output_check::sequence_tests::date_spans_require_explicit_counting_and_validate_calendar_dates ... ok
+test output_check::sequence_tests::projected_schema_and_governed_execution_accept_the_same_action_fields ... ok
+test output_check::sequence_tests::sequences_report_every_decrease_and_keep_missing_and_zero_distinct ... ok
+test output_check::tests::missing_values_stay_missing_and_unknown_arguments_are_refused ... ok
+test output_check::tests::provenance_accepts_source_records_and_task_authorized_derived_records ... ok
+test output_check::tests::provenance_refuses_invalid_record_keys_and_unknown_arguments ... ok
+test output_check::tests::provenance_reports_missing_unexpected_duplicate_and_changed_records ... ok
+test plugin_mcp::admission_tests::boxed_http_admission_preserves_config_without_opening_a_transport ... ok
+test plugin_mcp::admission_tests::external_stdio_and_invalid_timeout_still_refuse_admission ... ok
+test run_observation::tests::observations_require_explicit_protocol_and_correlated_prompt_identity ... ok
+test sampling_consent::tests::a_closed_consent_surface_refuses_without_parking ... ok
+test sampling_consent::tests::a_denial_refuses ... ok
+test sampling_consent::tests::a_dropped_reply_refuses ... ok
+test sampling_consent::tests::an_answered_yes_approves_and_names_the_server ... ok
+test sampling_consent::tests::an_unanswered_ask_times_out_refused ... ok
+test turn_cancel::tests::cancel_matches_only_the_recorded_generation ... ok
+test turn_cancel::tests::detached_permit_blocks_until_the_join_ends ... ok
+test turn_cancel::tests::multi_thread_local_set_observes_cancel_while_spawned_work_blocks ... ok
+test unattended::result::tests::a_child_tool_http_401_outranks_stream_closed_class ... ok
+test unattended::result::tests::a_clean_worker_exit_is_not_the_generic_stream_closed_reason ... ok
+test unattended::result::tests::a_historical_boyue_invalid_token_line_is_still_provider_rejected ... ok
+test unattended::result::tests::an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error ... ok
+test unattended::result::tests::artifact_evidence_counter_walks_nested_tool_metadata ... ok
+test unattended::result::tests::execution_deadline_is_reported_as_timed_out ... ok
+test unattended::result::tests::goal_deadline_keeps_its_terminal_reason_through_adapter_context ... ok
+test unattended::result::tests::missing_action_evidence_is_a_terminal_failure ... ok
+test unattended::result::tests::remembered_http_402_outranks_stream_closed_class ... ok
+test unattended::result::tests::rendered_deadline_words_do_not_grant_a_host_timeout_result ... ok
+test unattended::result::tests::report_serializes_terminal_reason_and_counters ... ok
+test unattended::result::tests::reported_errors_are_bounded_without_breaking_utf8 ... ok
+test unattended::result::tests::result_persistence_is_atomic_and_replaces_previous_report ... ok
+test unattended::result::tests::retry_exhaustion_is_classified_as_provider_exhausted ... ok
+test unattended::result::tests::stream_eof_is_reported_as_a_failed_terminal_reason ... ok
+test unattended::result::tests::typed_provider_failure_metadata_is_retained_in_report ... ok
+test unattended::result::tests::typed_provider_response_is_classified_without_text_matching ... ok
+test unattended::result::tests::typed_provider_response_wins_over_deadline_words_in_body ... ok
+test unattended::result::tests::typed_retry_exhaustion_is_classified_without_rendered_text ... ok
+test unattended::result::tests::typed_retry_failure_status_is_retained_in_report ... ok
+test unattended::tests::a_failed_tool_that_reports_http_401_is_a_provider_rejection ... ok
+test unattended::tests::a_goal_launch_has_a_small_stall_bound_within_the_run_deadline ... ok
+test unattended::tests::a_tool_using_stop_after_a_bind_is_not_a_grade_until_the_cap ... ok
+test unattended::tests::an_engineering_launch_puts_the_named_policy_on_every_session ... ok
+test unattended::tests::auto_approval_never_parks_a_tool ... ok
+test unattended::tests::distinct_mutation_digests_do_not_consume_the_idle_retry_budget ... ok
+test unattended::tests::events_count_into_the_record_and_the_gate_digest_is_read_back ... ok
+test unattended::tests::host_notes_keep_the_bind_distinct_from_the_grader ... ok
+test unattended::tests::host_report_binds_a_passed_required_check_to_the_digest ... ok
+test unattended::tests::idle_and_non_terminal_retries_still_stop ... ok
+test unattended::tests::the_profile_answers_for_itself_with_every_capability_on ... ok
+test wiki_search::tests::agent_scope_stays_in_that_agents_folder ... ok
+test wiki_search::tests::published_search_uses_the_same_generation_as_search_wiki ... ok
+test wiki_search::tests::team_passages_join_the_same_search_result ... ok
+
+test result: ok. 358 passed; 0 failed; 8 ignored; 0 measured; 0 filtered out; finished in 112.02s
+

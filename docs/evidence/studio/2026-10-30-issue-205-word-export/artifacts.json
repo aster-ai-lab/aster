@@ -1,0 +1,87 @@
+[
+  {
+    "path": "OUTCOME.md",
+    "bytes": 5132,
+    "sha256": "1325e388a274a02bb59dbe6eaed833923452f9767012fbf4c992c66fbc10a7aa"
+  },
+  {
+    "path": "artifacts/chromium-issue-205-export.png",
+    "bytes": 80718,
+    "sha256": "fb2c58d7950e1fec203531aa69c1d54af9a130b714a20aa5f70ebf78bac93734"
+  },
+  {
+    "path": "artifacts/chromium-issue-205.docx",
+    "bytes": 30116,
+    "sha256": "3f0cfced53525037471755d6be45e801f5dbe9d7e31a27c9fb9ba09c07f946fb"
+  },
+  {
+    "path": "artifacts/native-quicklook.png",
+    "bytes": 92658,
+    "sha256": "8404f0f2b1e0707dc92a318d35f2790911f4a21e775856cc7ac39a8a33e06373"
+  },
+  {
+    "path": "artifacts/webkit-issue-205-export.png",
+    "bytes": 104379,
+    "sha256": "60ccde33cd114b583f2452803a114eb510934a4e626116d689a4974748d0d489"
+  },
+  {
+    "path": "artifacts/webkit-issue-205.docx",
+    "bytes": 30116,
+    "sha256": "7007d224696fb1753b7d927bb33ca45290db44a054211414b5b5d747ee0e5d50"
+  },
+  {
+    "path": "checks.json",
+    "bytes": 3802,
+    "sha256": "bbc20271b5ed8687b2e3d4d5ebb8325507f4797251312a8469f5b61be0f9b2f2"
+  },
+  {
+    "path": "docx-validation.json",
+    "bytes": 1349,
+    "sha256": "702e3088ca9b33a1fd1a5e4665f6e97dcd7e19677d7c1c95b1734307a6e43e04"
+  },
+  {
+    "path": "issues-at-publication.json",
+    "bytes": 464,
+    "sha256": "f191c62ec4c9cf1c6e285d281d01200f7a73b487f880c33bf6d936cdef278a8f"
+  },
+  {
+    "path": "logs/baseline-ci-failed.log.gz",
+    "bytes": 830,
+    "sha256": "738abc12a91c9e96d564f9a27d22c7901bffeaa48441f426b683f93e13722e27"
+  },
+  {
+    "path": "logs/browser-exact-sample.log",
+    "bytes": 694,
+    "sha256": "d6452456f2e0a64cdae0713c9bb282d458a6d8ff6d4cf7f51066f8495221b2c5"
+  },
+  {
+    "path": "logs/cargo-fmt.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "logs/cargo-metadata.stderr",
+    "bytes": 498,
+    "sha256": "66044f588d7a4b0e665835d680699cc36143b604bfe9d2d3d0b03e191ae4fddf"
+  },
+  {
+    "path": "logs/format.log",
+    "bytes": 112,
+    "sha256": "038252788120727d93fe8a7cf8cbc93f8fe9e769c7419aac96da5dabc9e903ca"
+  },
+  {
+    "path": "logs/quicklook.log",
+    "bytes": 372,
+    "sha256": "04938016b42e46bbb02871263c29f94855fe25e483a3c5e0a827ed693831d2a2"
+  },
+  {
+    "path": "logs/renderer-tests.log.gz",
+    "bytes": 945,
+    "sha256": "5999418b83f496534f6755be69649ec456e1f41c859b9004fe9eaec0c207f0dd"
+  },
+  {
+    "path": "studio-merge-verification.json",
+    "bytes": 299,
+    "sha256": "73442aab09c01fba0ed358d441742d7a3398f460023bff75029b8329074b9fc8"
+  }
+]

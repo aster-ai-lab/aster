@@ -1,0 +1,116 @@
+[
+  {
+    "name": "app::agent_view::links::link_click_tests::privacy_banner_owns_slot_and_clicks_dispatch",
+    "log": "001.log",
+    "exit_code": 101,
+    "seconds": 1.003693
+  },
+  {
+    "name": "app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface",
+    "log": "002.log",
+    "exit_code": 101,
+    "seconds": 0.811812
+  },
+  {
+    "name": "app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok",
+    "log": "003.log",
+    "exit_code": 101,
+    "seconds": 0.777482
+  },
+  {
+    "name": "app::effects::tests::permission_ack_failure_narrows_ui_without_writing_preference",
+    "log": "004.log",
+    "exit_code": 101,
+    "seconds": 0.669395
+  },
+  {
+    "name": "doctor_cmd::tests::fake_standalone_facts_compose_through_shared_view",
+    "log": "005.log",
+    "exit_code": 101,
+    "seconds": 0.804353
+  },
+  {
+    "name": "scrollback::blocks::user::tests::invalid_token_ranges_are_dropped",
+    "log": "006.log",
+    "exit_code": 101,
+    "seconds": 0.592751
+  },
+  {
+    "name": "scrollback::blocks::user::tests::mid_text_multiple_tokens_each_teal",
+    "log": "007.log",
+    "exit_code": 101,
+    "seconds": 0.576059
+  },
+  {
+    "name": "scrollback::blocks::user::tests::mid_text_token_on_second_logical_line",
+    "log": "008.log",
+    "exit_code": 101,
+    "seconds": 0.574693
+  },
+  {
+    "name": "scrollback::text_selection::tests::semantic_selection_single_row_word_and_url",
+    "log": "009.log",
+    "exit_code": 101,
+    "seconds": -1.830012
+  },
+  {
+    "name": "views::announcements::tests::render_promo_row_button_and_hide_affordances",
+    "log": "010.log",
+    "exit_code": 101,
+    "seconds": 0.582956
+  },
+  {
+    "name": "views::mcps_modal::tests::managed_connectors_url_display_strips_scheme",
+    "log": "011.log",
+    "exit_code": 101,
+    "seconds": 0.476186
+  },
+  {
+    "name": "views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url",
+    "log": "012.log",
+    "exit_code": 101,
+    "seconds": 0.490685
+  },
+  {
+    "name": "views::model_config::document::tests::user_home_uses_userprofile_when_home_is_empty",
+    "log": "013.log",
+    "exit_code": 101,
+    "seconds": 0.477899
+  },
+  {
+    "name": "views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow",
+    "log": "014.log",
+    "exit_code": 101,
+    "seconds": 0.572113
+  },
+  {
+    "name": "views::privacy_banner::tests::each_legal_link_hits_its_own_words",
+    "log": "015.log",
+    "exit_code": 101,
+    "seconds": 0.57363
+  },
+  {
+    "name": "views::privacy_banner::tests::height_reserves_every_row_the_banner_paints",
+    "log": "016.log",
+    "exit_code": 101,
+    "seconds": 0.594501
+  },
+  {
+    "name": "views::prompt_widget::tests::accept_arg_completion_replaces_arg_range",
+    "log": "017.log",
+    "exit_code": 101,
+    "seconds": 0.756038
+  },
+  {
+    "name": "views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns",
+    "log": "018.log",
+    "exit_code": 101,
+    "seconds": 0.542489
+  },
+  {
+    "name": "views::status_line::tests::render_ansi_emits_absolute_link_spans",
+    "log": "019.log",
+    "exit_code": 101,
+    "seconds": 0.60166
+  }
+]

@@ -1,0 +1,13 @@
+
+running 1 test
+test functional::kimi_history_recall_edit_and_resubmit_uses_exact_draft ... ORACLE case=history-edit-resubmit name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=history-edit-resubmit name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13189
+ORACLE case=history-edit-resubmit name=history-recall result=pass detail=the previous prompt is restored into the composer without another request
+ORACLE case=history-edit-resubmit name=history-edit result=pass detail=the recalled draft is edited locally before explicit resubmission
+ORACLE case=history-edit-resubmit name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13245
+ORACLE case=history-edit-resubmit name=history-edit-resubmit result=pass detail=the exact recalled and edited drafts are two distinct requests in order on the same session
+ORACLE case=history-edit-resubmit name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 47 filtered out; finished in 21.19s
+

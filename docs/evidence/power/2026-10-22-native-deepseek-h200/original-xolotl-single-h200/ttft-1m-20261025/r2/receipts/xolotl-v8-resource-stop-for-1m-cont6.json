@@ -1,0 +1,20 @@
+{
+  "unix": 1792858381.6230643,
+  "phase": "stop_command_returned",
+  "old_allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+  "old_replica_uid": "757bad6d-8d65-4ed8-9a6c-7fec31203365",
+  "serving_allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "old_gpu_idle_proof": {
+    "unix": 1792858388.9066029,
+    "old_api_reaped": true,
+    "gpu_apps": ""
+  },
+  "maximum_h200": 2,
+  "result": {
+    "unix": 1792858391.9616838,
+    "stop_cli_exit": 0,
+    "stopped_name": "aster-xolotl-serving-9c996c5a434b-29049516",
+    "stopped_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+    "new_public_service_preserved": true
+  }
+}

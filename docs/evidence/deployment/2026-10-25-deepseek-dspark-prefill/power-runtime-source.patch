@@ -1,0 +1,2218 @@
+diff --git a/src/api/health.rs b/src/api/health.rs
+index 534d80f..024a6b5 100644
+--- a/src/api/health.rs
++++ b/src/api/health.rs
+@@ -128,8 +128,13 @@ pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
+         .map(str::to_string)
+         .collect::<Vec<_>>();
+     let loaded_speculative_artifacts = state.backends.loaded_speculative_artifacts().await;
++    let readiness = state.backends.runtime_readiness().await;
++    let ready = readiness.is_ok();
++    if let Err(error) = &readiness {
++        tracing::warn!(reason = %state.sanitize_error(&error.to_string()), "owned backend is not ready");
++    }
+     let resp = HealthResponse {
+-        status: "ok".to_string(),
++        status: if ready { "ok" } else { "not_ready" }.to_string(),
+         version: env!("CARGO_PKG_VERSION").to_string(),
+         uptime_seconds: state.uptime().as_secs(),
+         loaded_models: state.loaded_model_count(),
+@@ -170,7 +175,14 @@ pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
+         worker: Some(state.worker_observation()),
+         tee,
+     };
+-    (StatusCode::OK, Json(resp))
++    (
++        if ready {
++            StatusCode::OK
++        } else {
++            StatusCode::SERVICE_UNAVAILABLE
++        },
++        Json(resp),
++    )
+ }
+ 
+ #[cfg(test)]
+@@ -517,3 +529,7 @@ mod tests {
+         assert!(!tee.attestation_available);
+     }
+ }
++
++#[cfg(test)]
++#[path = "health_managed_tests.rs"]
++mod managed_tests;
+diff --git a/src/api/openai/chat.rs b/src/api/openai/chat.rs
+index f829c26..9255552 100644
+--- a/src/api/openai/chat.rs
++++ b/src/api/openai/chat.rs
+@@ -13,6 +13,10 @@ use crate::server::state::AppState;
+ #[path = "chat_runtime.rs"]
+ mod runtime;
+ 
++#[cfg(test)]
++#[path = "chat_policy_tests.rs"]
++mod policy_tests;
++
+ fn chunk_emits_token(chunk: &ChatResponseChunk) -> bool {
+     !chunk.done
+         || !chunk.content.is_empty()
+@@ -249,12 +253,6 @@ pub async fn handler(
+         if let Some(message) = unsupported_local_message_role_message(&request) {
+             return openai_error("unsupported_message_role", &message).into_response();
+         }
+-        if let Some(message) = unsupported_local_tool_choice_message(&request) {
+-            return openai_error("unsupported_tool_choice", &message).into_response();
+-        }
+-        if let Some(message) = unsupported_local_parallel_tool_calls_message(&request) {
+-            return openai_error("unsupported_parallel_tool_calls", &message).into_response();
+-        }
+     }
+ 
+     let runtime_policy =
+@@ -276,6 +274,16 @@ pub async fn handler(
+                 .into_response();
+         }
+     };
++    if !matches!(manifest.format, crate::model::manifest::ModelFormat::Remote)
++        && !backend.supports_openai_tool_selection()
++    {
++        if let Some(message) = unsupported_local_tool_choice_message(&request) {
++            return openai_error("unsupported_tool_choice", &message).into_response();
++        }
++        if let Some(message) = unsupported_local_parallel_tool_calls_message(&request) {
++            return openai_error("unsupported_parallel_tool_calls", &message).into_response();
++        }
++    }
+     if let Some(message) = super::unsupported_local_response_format_for_backend(
+         &manifest.format,
+         backend.name(),
+@@ -487,11 +495,7 @@ pub async fn handler(
+         }
+         Err(error) => {
+             resources.audit_failure(error.to_string());
+-            let code = if matches!(&error, crate::error::PowerError::InvalidRequest(_)) {
+-                "invalid_request"
+-            } else {
+-                "server_error"
+-            };
++            let code = runtime::backend_error_code(&error);
+             openai_error(code, &state.sanitize_error(&error.to_string())).into_response()
+         }
+     }
+diff --git a/src/api/openai/chat_runtime.rs b/src/api/openai/chat_runtime.rs
+index f54d642..ba6f60b 100644
+--- a/src/api/openai/chat_runtime.rs
++++ b/src/api/openai/chat_runtime.rs
+@@ -17,6 +17,16 @@ use std::pin::Pin;
+ use std::sync::Arc;
+ use std::time::{Duration, Instant};
+ use zeroize::Zeroize;
++pub(super) fn backend_error_code(error: &crate::error::PowerError) -> &'static str {
++    match error {
++        crate::error::PowerError::InvalidRequest(_)
++        | crate::error::PowerError::InvalidFormat(_) => "invalid_request",
++        crate::error::PowerError::BackendNotAvailable(_) => "backend_unavailable",
++        crate::error::PowerError::ModelNotFound(_) => "model_not_found",
++        _ => "server_error",
++    }
++}
++
+ type ChatStream = Pin<Box<dyn Stream<Item = crate::error::Result<ChatResponseChunk>> + Send>>;
+ const CLEANUP_TIMEOUT: Duration = Duration::from_secs(2);
+ pub(super) fn meaningful(chunk: &ChatResponseChunk) -> bool {
+@@ -534,7 +544,8 @@ async fn buffered(mut owned: OwnedSource, p: Presentation, prism: bool) -> Respo
+                 let message = owned.resources.state().sanitize_error(&error.to_string());
+                 drop(owned.stream.take());
+                 owned.resources.finish().await;
+-                return super::super::openai_error("server_error", &message).into_response();
++                return super::super::openai_error(backend_error_code(&error), &message)
++                    .into_response();
+             }
+         };
+         if !ttft && meaningful(&chunk) {
+@@ -580,7 +591,7 @@ async fn buffered(mut owned: OwnedSource, p: Presentation, prism: bool) -> Respo
+         response["choices"][0]["message"]["tool_calls"] = json!(tools);
+     }
+     if !thinking.is_empty() {
+-        response["choices"][0]["message"]["thinking"] = json!(thinking);
++        response["choices"][0]["message"]["reasoning_content"] = json!(thinking);
+     }
+     if let Some(usage) = accounting.usage(p.suppress) {
+         response["usage"] = usage.json();
+diff --git a/src/api/openai/chat_runtime_tests.rs b/src/api/openai/chat_runtime_tests.rs
+index 96bd856..aeae250 100644
+--- a/src/api/openai/chat_runtime_tests.rs
++++ b/src/api/openai/chat_runtime_tests.rs
+@@ -418,3 +418,83 @@ async fn privacy_preserves_success_audit_and_unredacted_host_failure_contract()
+         assert_eq!(events[0].tokens, Some(10));
+     }
+ }
++
++#[tokio::test]
++async fn buffered_reasoning_tool_message_can_be_replayed_through_request_and_receipt_validation() {
++    for prism in [false, true] {
++        let (resources, _, _) = resources().await;
++        let mut thought = chunk();
++        thought.thinking_content = Some("Need the offered record.".into());
++        let mut tool = chunk();
++        tool.tool_calls = Some(vec![call(
++            0,
++            "call_record_17",
++            "lookup_record",
++            r#"{"id":17}"#,
++        )]);
++        let mut terminal = chunk();
++        terminal.done = true;
++        terminal.done_reason = Some("tool_calls".into());
++        terminal.upstream_timings = Some(
++            json!({"source":"upstream-reported","usage":{"prompt_tokens":4,"completion_tokens":3,"total_tokens":7}}),
++        );
++        let source = Box::pin(futures::stream::iter(vec![
++            Ok(thought),
++            Ok(tool),
++            Ok(terminal),
++        ]));
++        let response = respond(source, resources, presentation(false, false), prism).await;
++        assert_eq!(response.status(), axum::http::StatusCode::OK);
++        let bytes = axum::body::to_bytes(response.into_body(), 64 * 1024)
++            .await
++            .unwrap();
++        let value: Value = serde_json::from_slice(&bytes).unwrap();
++        let message = &value["choices"][0]["message"];
++        assert_eq!(message["reasoning_content"], "Need the offered record.");
++        assert!(message.get("thinking").is_none());
++        assert_eq!(
++            message["tool_calls"][0]["function"]["arguments"],
++            r#"{"id":17}"#
++        );
++        assert_eq!(value["choices"][0]["finish_reason"], "tool_calls");
++        let replay: crate::api::types::ChatCompletionRequest = serde_json::from_value(json!({
++            "model":"test","messages":[{"role":"user","content":"Read record 17."},message,
++                {"role":"tool","tool_call_id":"call_record_17","content":"record contents"}],
++            "tools":[{"type":"function","function":{"name":"lookup_record","parameters":{"type":"object","properties":{"id":{"type":"integer"}},"required":["id"]}}}],
++            "tool_choice":"none"
++        })).unwrap();
++        assert!(!replay.has_thinking_inputs());
++        assert!(replay.unsupported_message_fields_message().is_none());
++        assert!(crate::api::receipt::chat_receipt(&replay).is_ok());
++    }
++}
++
++#[tokio::test]
++async fn buffered_upstream_errors_keep_client_and_unavailable_http_status_and_release_admission() {
++    for (error, status) in [
++        (
++            crate::error::PowerError::InvalidRequest("upstream rejected input".into()),
++            400,
++        ),
++        (
++            crate::error::PowerError::BackendNotAvailable("upstream unavailable".into()),
++            503,
++        ),
++        (
++            crate::error::PowerError::InferenceFailed("upstream fault".into()),
++            500,
++        ),
++    ] {
++        let (resources, state, _) = resources().await;
++        let response = respond(
++            Box::pin(futures::stream::iter(vec![Err(error)])),
++            resources,
++            presentation(false, false),
++            true,
++        )
++        .await;
++        assert_eq!(response.status().as_u16(), status);
++        assert_eq!(state.metrics.active_requests(), 0);
++        assert_eq!(state.metrics.running_requests(), 0);
++    }
++}
+diff --git a/src/backend/mod.rs b/src/backend/mod.rs
+index 5da04a6..fb49499 100644
+--- a/src/backend/mod.rs
++++ b/src/backend/mod.rs
+@@ -4,6 +4,7 @@ pub mod gpu;
+ pub mod json_schema;
+ pub mod llamacpp;
+ pub mod mistralrs_backend;
++mod openai_compat;
+ pub mod picolm;
+ pub mod picolm_ops;
+ pub mod prism;
+@@ -106,6 +107,12 @@ pub trait Backend: Send + Sync {
+         self.supports(&manifest.format)
+     }
+ 
++    /// The backend forwards explicit OpenAI tool selection and validates its
++    /// generated tool names, complete arguments, and single-call policy.
++    fn supports_openai_tool_selection(&self) -> bool {
++        false
++    }
++
+     /// Chat chunks carry exact final token usage in `upstream_timings.usage`.
+     /// This also supports locally executed native models whose UTF-8/SSE
+     /// fragments are not one-to-one with model tokens. Missing or malformed
+@@ -144,6 +151,11 @@ pub trait Backend: Send + Sync {
+         Vec::new()
+     }
+ 
++    /// Readiness of resources explicitly owned by this backend.
++    async fn runtime_readiness(&self) -> Result<()> {
++        Ok(())
++    }
++
+     /// Load a model into memory, ready for inference.
+     async fn load(&self, manifest: &ModelManifest) -> Result<()>;
+ 
+@@ -299,6 +311,14 @@ impl BackendRegistry {
+         }
+     }
+ 
++    /// Refuse health while an explicitly managed runtime is unavailable.
++    pub async fn runtime_readiness(&self) -> Result<()> {
++        for backend in &self.backends {
++            backend.runtime_readiness().await?;
++        }
++        Ok(())
++    }
++
+     /// Register a new backend. Backends registered first have higher priority.
+     pub fn register(&mut self, backend: Arc<dyn Backend>) {
+         self.backends.push(backend);
+diff --git a/src/backend/prism/mod.rs b/src/backend/prism/mod.rs
+index 684c574..4887f82 100644
+--- a/src/backend/prism/mod.rs
++++ b/src/backend/prism/mod.rs
+@@ -35,8 +35,8 @@ use crate::model::manifest::{ModelFormat, ModelManifest};
+ 
+ use super::prompt_cache::PromptCacheSupport;
+ use super::types::{
+-    ChatMessage, ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk,
+-    EmbeddingRequest, EmbeddingResponse,
++    ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk, EmbeddingRequest,
++    EmbeddingResponse,
+ };
+ use super::{ensure_non_speculative_mode, Backend, SpeculativeMetricsSnapshot};
+ 
+@@ -197,7 +197,8 @@ impl PrismBackend {
+         model_name: &str,
+         request: ChatRequest,
+     ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>> {
+-        let body = build_prism_chat_body(model_name, &request, true);
++        let tool_policy = crate::backend::openai_compat::ChatToolPolicy::from_request(&request)?;
++        let body = build_prism_chat_body(model_name, &request, true)?;
+         let base = self.upstream_base()?;
+         let http = self.http.clone();
+         let healthy = Arc::clone(&self.healthy_upstream);
+@@ -222,27 +223,14 @@ impl PrismBackend {
+                 })?;
+             if !response.status().is_success() {
+                 *healthy.lock().await = None;
+-                return Err(PowerError::InferenceFailed(format!(
+-                    "prism upstream stream returned {}",
+-                    response.status()
+-                )));
+             }
+-            let content_type = response
+-                .headers()
+-                .get(reqwest::header::CONTENT_TYPE)
+-                .and_then(|value| value.to_str().ok())
+-                .and_then(|value| value.split(';').next())
+-                .map(str::trim);
+-            if content_type != Some("text/event-stream") {
+-                return Err(PowerError::InferenceFailed(
+-                    "prism upstream did not return text/event-stream".into(),
+-                ));
+-            }
+-            Ok(stream::chat_response_stream(
++            let response = crate::backend::openai_compat::require_chat_stream(response)?;
++            Ok::<_, PowerError>(stream::chat_response_stream(
+                 response,
+                 model,
+                 profile,
+                 spec_metrics,
++                tool_policy,
+             ))
+         };
+         Ok(Box::pin(futures::stream::once(startup).try_flatten()))
+@@ -312,72 +300,16 @@ fn build_prism_chat_body(
+     model_name: &str,
+     request: &ChatRequest,
+     stream: bool,
+-) -> serde_json::Value {
+-    let messages: Vec<serde_json::Value> = request
+-        .messages
+-        .iter()
+-        .map(prism_chat_message_json)
+-        .collect();
+-
+-    let mut body = serde_json::json!({
+-        "model": model_name,
+-        "messages": messages,
+-        "stream": stream,
+-    });
+-    if stream {
+-        // Usage arrives in a separate final event on OpenAI-compatible servers.
+-        body["stream_options"] = serde_json::json!({ "include_usage": true });
+-    }
+-    if let Some(temp) = request.temperature {
+-        body["temperature"] = temp.into();
+-    }
+-    if let Some(top_p) = request.top_p {
+-        body["top_p"] = top_p.into();
+-    }
+-    if let Some(max_tokens) = request.max_tokens {
+-        body["max_tokens"] = max_tokens.into();
+-    }
+-    if let Some(ref tools) = request.tools {
+-        if !tools.is_empty() {
+-            body["tools"] = serde_json::to_value(tools).unwrap_or(serde_json::json!([]));
+-        }
+-    }
+-    if let Some(ref tool_choice) = request.tool_choice {
+-        body["tool_choice"] =
+-            serde_json::to_value(tool_choice).unwrap_or(serde_json::json!("auto"));
+-    }
+-    if let Some(ref stop) = request.stop {
+-        body["stop"] = serde_json::to_value(stop).unwrap_or(serde_json::Value::Null);
+-    }
+-    body
+-}
+-
+-fn prism_chat_message_json(message: &ChatMessage) -> serde_json::Value {
+-    let mut obj = serde_json::Map::new();
+-    obj.insert("role".into(), serde_json::json!(message.role));
+-    obj.insert(
+-        "content".into(),
+-        serde_json::to_value(&message.content).unwrap_or(serde_json::json!("")),
+-    );
+-    if let Some(ref name) = message.name {
+-        obj.insert("name".into(), serde_json::json!(name));
+-    }
+-    if let Some(ref tool_calls) = message.tool_calls {
+-        if !tool_calls.is_empty() {
+-            obj.insert(
+-                "tool_calls".into(),
+-                serde_json::to_value(tool_calls).unwrap_or(serde_json::json!([])),
+-            );
+-        }
+-    }
+-    if let Some(ref tool_call_id) = message.tool_call_id {
+-        obj.insert("tool_call_id".into(), serde_json::json!(tool_call_id));
+-    }
+-    serde_json::Value::Object(obj)
++) -> Result<serde_json::Value> {
++    crate::backend::openai_compat::chat_request_body(model_name, request, stream)
+ }
+ 
+ #[async_trait]
+ impl Backend for PrismBackend {
++    fn supports_openai_tool_selection(&self) -> bool {
++        true
++    }
++
+     fn name(&self) -> &str {
+         "prism"
+     }
+@@ -718,7 +650,7 @@ mod tests {
+             session_id: None,
+         };
+ 
+-        let body = build_prism_chat_body("bonsai2-ptq1", &request, false);
++        let body = build_prism_chat_body("bonsai2-ptq1", &request, false).unwrap();
+         assert_eq!(body["model"], "bonsai2-ptq1");
+         assert_eq!(body["max_tokens"], 128);
+         assert_eq!(body["stream"], false);
+@@ -776,7 +708,7 @@ mod tests {
+             images: None,
+             session_id: None,
+         };
+-        let body = build_prism_chat_body("bonsai2-ptq1", &request, true);
++        let body = build_prism_chat_body("bonsai2-ptq1", &request, true).unwrap();
+         assert_eq!(body["stream"], true);
+     }
+ }
+diff --git a/src/backend/prism/stream.rs b/src/backend/prism/stream.rs
+index 125b00a..61c19c7 100644
+--- a/src/backend/prism/stream.rs
++++ b/src/backend/prism/stream.rs
+@@ -1,354 +1,39 @@
+-//! Bounded SSE decoding and an owned Prism chat response stream.
+-
+-use std::pin::Pin;
+-use std::sync::Arc;
+-
++//! Prism observation policy over the shared OpenAI response protocol.
++use super::{PrismProfile, UpstreamSpecMetrics, UpstreamTimings};
++use crate::backend::types::ChatResponseChunk;
++use crate::error::{PowerError, Result};
+ use futures::{Stream, StreamExt};
+-use serde_json::Value;
++use std::sync::Arc;
+ use tokio::sync::Mutex;
+ 
+-use crate::backend::types::{ChatResponseChunk, FunctionCall, ToolCall};
+-use crate::error::{PowerError, Result};
+-
+-use super::{PrismProfile, UpstreamSpecMetrics, UpstreamTimings};
+-
+-const MAX_SSE_BUFFER_BYTES: usize = 8 * 1024 * 1024;
+-
+-type ByteStream = Pin<Box<dyn Stream<Item = reqwest::Result<Vec<u8>>> + Send>>;
+-
+-struct ChatStreamState {
+-    bytes: ByteStream,
+-    buffer: Vec<u8>,
+-    finish_reason: Option<String>,
+-    finished: bool,
+-    timings: Option<UpstreamTimings>,
+-    usage: Option<Value>,
+-    model: String,
+-    profile: PrismProfile,
+-    metrics: Arc<Mutex<UpstreamSpecMetrics>>,
+-}
+-
+-/// No spawned producer: dropping this stream drops its upstream HTTP body.
++/// The shared stream owns HTTP startup/body; this wrapper only records the
++/// backend's speculative observation after a complete protocol termination.
+ pub(super) fn chat_response_stream(
+     response: reqwest::Response,
+     model: String,
+     profile: PrismProfile,
+     metrics: Arc<Mutex<UpstreamSpecMetrics>>,
++    tool_policy: crate::backend::openai_compat::ChatToolPolicy,
+ ) -> impl Stream<Item = Result<ChatResponseChunk>> + Send {
+-    let bytes = Box::pin(
+-        response
+-            .bytes_stream()
+-            .map(|part| part.map(|bytes| bytes.to_vec())),
+-    );
+-    let state = ChatStreamState {
+-        bytes,
+-        buffer: Vec::new(),
+-        finish_reason: None,
+-        finished: false,
+-        timings: None,
+-        usage: None,
+-        model,
+-        profile,
+-        metrics,
+-    };
+-    futures::stream::try_unfold(state, |mut state| async move {
+-        if state.finished {
+-            return Ok(None);
+-        }
+-        loop {
+-            let event = next_sse_event(&mut state.bytes, &mut state.buffer)
+-                .await
+-                .ok_or_else(|| protocol_error("stream ended before [DONE]"))??;
+-            let Some(json) = event else {
+-                if state.finish_reason.is_none() {
+-                    return Err(protocol_error("[DONE] arrived without a finish reason"));
+-                }
+-                if let Some(timings) = &state.timings {
+-                    if state.profile.expects_speculation_timings() && !timings.speculation_engaged()
+-                    {
+-                        tracing::warn!(
+-                            model = %state.model,
+-                            profile = state.profile.as_str(),
+-                            "prism speculation profile selected but upstream timings have no draft_n"
+-                        );
++    crate::backend::openai_compat::chat_response_stream(response, false, tool_policy)
++        .then(move |result| {
++            let metrics = Arc::clone(&metrics);
++            let model = model.clone();
++            async move {
++                let mut chunk = result?;
++                if let Some(value) = chunk.upstream_timings.as_ref().and_then(|v|v.get("timings")) {
++                    let timings: UpstreamTimings = serde_json::from_value(value.clone())
++                        .map_err(|e|PowerError::InferenceFailed(format!("prism upstream protocol error: invalid timings: {e}")))?;
++                    chunk.prompt_eval_duration_ns = timings.prompt_eval_duration_ns();
++                    if chunk.done {
++                        if profile.expects_speculation_timings() && !timings.speculation_engaged() {
++                            tracing::warn!(model = %model, profile = profile.as_str(),
++                                "prism speculation profile selected but upstream timings have no draft_n");
++                        }
++                        metrics.lock().await.observe(&timings);
+                     }
+-                    state.metrics.lock().await.observe(timings);
+-                }
+-                state.finished = true;
+-                let chunk = state.chunk(String::new(), None, None, true);
+-                return Ok(Some((chunk, state)));
+-            };
+-            if json.get("error").is_some_and(|error| !error.is_null()) {
+-                return Err(protocol_error("upstream reported a stream error"));
+-            }
+-            if let Some(timings) = json.get("timings").filter(|value| !value.is_null()) {
+-                state.timings = Some(serde_json::from_value(timings.clone()).map_err(|error| {
+-                    protocol_error(&format!("invalid upstream timings: {error}"))
+-                })?);
+-            }
+-            if let Some(usage) = json.get("usage").filter(|value| !value.is_null()) {
+-                validate_usage(usage)?;
+-                state.usage = Some(usage.clone());
+-            }
+-            let Some(choices) = json.get("choices") else {
+-                if json.get("usage").is_some() || json.get("timings").is_some() {
+-                    continue;
+                 }
+-                return Err(protocol_error("event has no choices or observation"));
+-            };
+-            let choices = choices
+-                .as_array()
+-                .ok_or_else(|| protocol_error("choices is not an array"))?;
+-            if choices.is_empty() {
+-                continue;
+-            }
+-            if choices.len() != 1 {
+-                return Err(protocol_error("multiple choices are unsupported"));
+-            }
+-            let choice = &choices[0];
+-            if choice
+-                .get("index")
+-                .is_some_and(|index| index.as_u64() != Some(0))
+-            {
+-                return Err(protocol_error("unexpected choice index"));
+-            }
+-            let delta = choice
+-                .get("delta")
+-                .and_then(Value::as_object)
+-                .ok_or_else(|| protocol_error("choice has no delta object"))?;
+-            let content = optional_string(delta.get("content"), "content")?.unwrap_or_default();
+-            let thinking = optional_string(delta.get("reasoning_content"), "reasoning_content")?
+-                .or(optional_string(delta.get("thinking"), "thinking")?)
+-                .filter(|value| !value.is_empty());
+-            let calls = parse_tool_deltas(delta.get("tool_calls"))?;
+-            let has_payload = !content.is_empty() || thinking.is_some() || calls.is_some();
+-            if state.finish_reason.is_some() && has_payload {
+-                return Err(protocol_error("payload arrived after the finish reason"));
+-            }
+-            if let Some(reason) = optional_string(choice.get("finish_reason"), "finish_reason")? {
+-                if !matches!(
+-                    reason.as_str(),
+-                    "stop" | "length" | "tool_calls" | "function_call" | "content_filter"
+-                ) {
+-                    return Err(protocol_error("unsupported finish reason"));
+-                }
+-                if state
+-                    .finish_reason
+-                    .as_ref()
+-                    .is_some_and(|previous| previous != &reason)
+-                {
+-                    return Err(protocol_error("invalid or conflicting finish reason"));
+-                }
+-                state.finish_reason = Some(reason);
+-            }
+-            if has_payload {
+-                let chunk = state.chunk(content, thinking, calls, false);
+-                return Ok(Some((chunk, state)));
++                Ok(chunk)
+             }
+-            // A finish event does not end the stream: authoritative usage and
+-            // timings may follow it in a separate choices=[] event.
+-        }
+-    })
++        })
+ }
+-
+-impl ChatStreamState {
+-    fn chunk(
+-        &self,
+-        content: String,
+-        thinking_content: Option<String>,
+-        tool_calls: Option<Vec<ToolCall>>,
+-        done: bool,
+-    ) -> ChatResponseChunk {
+-        let upstream_timings = if self.timings.is_some() || self.usage.is_some() {
+-            let mut observation = serde_json::json!({ "source": "upstream-reported" });
+-            if let Some(timings) = &self.timings {
+-                observation["timings"] = serde_json::json!(timings);
+-            }
+-            if let Some(usage) = &self.usage {
+-                observation["usage"] = usage.clone();
+-            }
+-            Some(observation)
+-        } else {
+-            None
+-        };
+-        ChatResponseChunk {
+-            content,
+-            thinking_content,
+-            done,
+-            prompt_tokens: self
+-                .usage
+-                .as_ref()
+-                .and_then(|usage| usage.get("prompt_tokens"))
+-                .and_then(Value::as_u64)
+-                .and_then(|count| u32::try_from(count).ok()),
+-            done_reason: done.then(|| self.finish_reason.clone()).flatten(),
+-            prompt_eval_duration_ns: self
+-                .timings
+-                .as_ref()
+-                .and_then(UpstreamTimings::prompt_eval_duration_ns),
+-            tool_calls,
+-            upstream_timings,
+-        }
+-    }
+-}
+-
+-fn optional_string(value: Option<&Value>, field: &str) -> Result<Option<String>> {
+-    match value {
+-        None | Some(Value::Null) => Ok(None),
+-        Some(Value::String(value)) => Ok(Some(value.clone())),
+-        _ => Err(protocol_error(&format!("{field} is not a string"))),
+-    }
+-}
+-
+-fn validate_usage(usage: &Value) -> Result<()> {
+-    let count = |field| {
+-        usage
+-            .get(field)
+-            .and_then(Value::as_u64)
+-            .ok_or_else(|| protocol_error(&format!("usage.{field} is not an unsigned integer")))
+-    };
+-    let prompt = count("prompt_tokens")?;
+-    let completion = count("completion_tokens")?;
+-    let total = count("total_tokens")?;
+-    if prompt.checked_add(completion) != Some(total) {
+-        return Err(protocol_error("usage token counts are inconsistent"));
+-    }
+-    Ok(())
+-}
+-
+-fn parse_tool_deltas(value: Option<&Value>) -> Result<Option<Vec<ToolCall>>> {
+-    let calls = match value {
+-        None | Some(Value::Null) => return Ok(None),
+-        Some(Value::Array(calls)) if calls.is_empty() => return Ok(None),
+-        Some(Value::Array(calls)) => calls,
+-        _ => return Err(protocol_error("tool_calls is not an array")),
+-    };
+-    let mut deltas = Vec::with_capacity(calls.len());
+-    for call in calls {
+-        let index = call
+-            .get("index")
+-            .and_then(Value::as_u64)
+-            .and_then(|index| u32::try_from(index).ok())
+-            .ok_or_else(|| protocol_error("tool delta requires an explicit u32 index"))?;
+-        let function = match call.get("function") {
+-            None | Some(Value::Null) => None,
+-            Some(Value::Object(function)) => Some(function),
+-            _ => return Err(protocol_error("tool function is not an object")),
+-        };
+-        let tool_type = optional_string(call.get("type"), "tool type")?.unwrap_or_default();
+-        if !tool_type.is_empty() && tool_type != "function" {
+-            return Err(protocol_error("unsupported tool type"));
+-        }
+-        deltas.push(ToolCall {
+-            id: optional_string(call.get("id"), "tool id")?.unwrap_or_default(),
+-            tool_type,
+-            index: Some(index),
+-            function: FunctionCall {
+-                name: optional_string(
+-                    function.and_then(|value| value.get("name")),
+-                    "function name",
+-                )?
+-                .unwrap_or_default(),
+-                arguments: optional_string(
+-                    function.and_then(|value| value.get("arguments")),
+-                    "function arguments",
+-                )?
+-                .unwrap_or_default(),
+-            },
+-        });
+-    }
+-    Ok(Some(deltas))
+-}
+-
+-/// Read a complete SSE frame, retaining bounded residual bytes between calls.
+-/// Raw EOF and explicit [DONE] are distinct so callers cannot bless truncation.
+-pub(super) async fn next_sse_event<S, T>(
+-    stream: &mut S,
+-    buffer: &mut Vec<u8>,
+-) -> Option<Result<Option<Value>>>
+-where
+-    S: Stream<Item = reqwest::Result<T>> + Unpin,
+-    T: AsRef<[u8]>,
+-{
+-    loop {
+-        if let Some(end) = frame_end(buffer) {
+-            if end > MAX_SSE_BUFFER_BYTES {
+-                return Some(Err(sse_buffer_limit_error()));
+-            }
+-            let frame: Vec<u8> = buffer.drain(..end).collect();
+-            let frame = match std::str::from_utf8(&frame) {
+-                Ok(frame) => frame,
+-                Err(error) => return Some(Err(protocol_error(&format!("invalid UTF-8: {error}")))),
+-            };
+-            let data: Vec<&str> = frame
+-                .lines()
+-                .filter_map(|line| {
+-                    line.strip_prefix("data:")
+-                        .map(|value| value.strip_prefix(' ').unwrap_or(value))
+-                        .or_else(|| (line == "data").then_some(""))
+-                })
+-                .collect();
+-            if data.is_empty() {
+-                continue;
+-            }
+-            let data = data.join("\n");
+-            if data.trim() == "[DONE]" {
+-                return Some(Ok(None));
+-            }
+-            if data.trim().is_empty() {
+-                continue;
+-            }
+-            return Some(
+-                serde_json::from_str(&data)
+-                    .map(Some)
+-                    .map_err(|error| protocol_error(&format!("invalid SSE JSON: {error}"))),
+-            );
+-        }
+-        match stream.next().await {
+-            Some(Ok(bytes)) => {
+-                let bytes = bytes.as_ref();
+-                if buffer.len().saturating_add(bytes.len()) > MAX_SSE_BUFFER_BYTES {
+-                    return Some(Err(sse_buffer_limit_error()));
+-                }
+-                buffer.extend_from_slice(bytes);
+-            }
+-            Some(Err(error)) => {
+-                return Some(Err(protocol_error(&format!("stream read failed: {error}"))));
+-            }
+-            None if buffer.is_empty() => return None,
+-            None => {
+-                return Some(Err(protocol_error(
+-                    "stream ended with an incomplete SSE frame",
+-                )))
+-            }
+-        }
+-    }
+-}
+-
+-fn frame_end(buffer: &[u8]) -> Option<usize> {
+-    let mut line_start = 0;
+-    for (index, byte) in buffer.iter().enumerate() {
+-        if *byte == b'\n' {
+-            let line = &buffer[line_start..index];
+-            if line.is_empty() || line == b"\r" {
+-                return Some(index + 1);
+-            }
+-            line_start = index + 1;
+-        }
+-    }
+-    None
+-}
+-
+-fn protocol_error(message: &str) -> PowerError {
+-    PowerError::InferenceFailed(format!("prism upstream protocol error: {message}"))
+-}
+-
+-fn sse_buffer_limit_error() -> PowerError {
+-    protocol_error(&format!(
+-        "SSE frame buffer exceeded {MAX_SSE_BUFFER_BYTES} bytes"
+-    ))
+-}
+-
+-#[cfg(test)]
+-#[path = "stream_tests.rs"]
+-mod tests;
+diff --git a/src/backend/prism/stream_tests.rs b/src/backend/prism/stream_tests.rs
+deleted file mode 100644
+index 823cec8..0000000
+--- a/src/backend/prism/stream_tests.rs
++++ /dev/null
+@@ -1,125 +0,0 @@
+-use super::*;
+-
+-fn chunks(bytes: &[u8], width: usize) -> impl Stream<Item = reqwest::Result<Vec<u8>>> + Unpin {
+-    futures::stream::iter(
+-        bytes
+-            .chunks(width)
+-            .map(|part| Ok(part.to_vec()))
+-            .collect::<Vec<_>>(),
+-    )
+-}
+-
+-#[tokio::test]
+-async fn sse_handles_fragmented_utf8_crlf_and_explicit_done() {
+-    let mut bytes = chunks(
+-        "data: {\"text\":\"你好\"}\r\n\r\ndata: [DONE]\r\n\r\n".as_bytes(),
+-        1,
+-    );
+-    let mut buffer = Vec::new();
+-    let event = next_sse_event(&mut bytes, &mut buffer)
+-        .await
+-        .unwrap()
+-        .unwrap()
+-        .unwrap();
+-    assert_eq!(event["text"], "你好");
+-    assert!(next_sse_event(&mut bytes, &mut buffer)
+-        .await
+-        .unwrap()
+-        .unwrap()
+-        .is_none());
+-    assert!(next_sse_event(&mut bytes, &mut buffer).await.is_none());
+-}
+-
+-#[tokio::test]
+-async fn sse_handles_comments_and_multiline_data_frames() {
+-    let mut bytes = chunks(
+-        b": keepalive\n\nevent: message\ndata: {\ndata: \"value\": 7\n data: ignored\ndata: }\n\n",
+-        3,
+-    );
+-    let event = next_sse_event(&mut bytes, &mut Vec::new())
+-        .await
+-        .unwrap()
+-        .unwrap()
+-        .unwrap();
+-    assert_eq!(event["value"], 7);
+-}
+-
+-#[tokio::test]
+-async fn sse_rejects_oversized_input_before_growing_the_buffer() {
+-    let mut bytes = chunks(
+-        &vec![b'x'; MAX_SSE_BUFFER_BYTES + 1],
+-        MAX_SSE_BUFFER_BYTES + 1,
+-    );
+-    let mut buffer = Vec::new();
+-    let error = next_sse_event(&mut bytes, &mut buffer)
+-        .await
+-        .unwrap()
+-        .unwrap_err();
+-    assert!(error.to_string().contains("buffer exceeded"));
+-    assert!(buffer.len() <= MAX_SSE_BUFFER_BYTES);
+-}
+-
+-#[tokio::test]
+-async fn sse_rejects_incomplete_frames_invalid_utf8_and_bad_json() {
+-    for input in [
+-        b"data: {}".as_slice(),
+-        b"data: \xff\n\n".as_slice(),
+-        b"data: {bad}\n\n".as_slice(),
+-    ] {
+-        let mut bytes = chunks(input, 1);
+-        assert!(next_sse_event(&mut bytes, &mut Vec::new())
+-            .await
+-            .unwrap()
+-            .is_err());
+-    }
+-}
+-
+-#[tokio::test]
+-async fn sse_propagates_transport_read_errors() {
+-    let error = reqwest::Client::new()
+-        .get("://invalid")
+-        .build()
+-        .unwrap_err();
+-    let mut bytes = futures::stream::iter(vec![Err::<Vec<u8>, _>(error)]);
+-    let error = next_sse_event(&mut bytes, &mut Vec::new())
+-        .await
+-        .unwrap()
+-        .unwrap_err();
+-    assert!(error.to_string().contains("stream read failed"));
+-}
+-
+-#[test]
+-fn tool_deltas_preserve_explicit_indexes_and_empty_continuation_metadata() {
+-    let calls = serde_json::json!([
+-        {"index": 1, "id": "call_b", "type": "function", "function": {"name": "write", "arguments": "{\"x\":"}},
+-        {"index": 0, "function": {"arguments": "42}"}}
+-    ]);
+-    let parsed = parse_tool_deltas(Some(&calls)).unwrap().unwrap();
+-    assert_eq!(parsed[0].index, Some(1));
+-    assert_eq!(parsed[0].function.name, "write");
+-    assert_eq!(parsed[1].index, Some(0));
+-    assert_eq!(parsed[1].id, "");
+-    assert_eq!(parsed[1].tool_type, "");
+-    assert_eq!(parsed[1].function.name, "");
+-    assert_eq!(parsed[1].function.arguments, "42}");
+-}
+-
+-#[test]
+-fn malformed_tool_deltas_and_inconsistent_usage_fail_closed() {
+-    for calls in [
+-        serde_json::json!([{"id": "missing_index"}]),
+-        serde_json::json!([{"index": -1}]),
+-        serde_json::json!([{"index": 0, "function": {"arguments": {}}}]),
+-        serde_json::json!([{"index": 0, "function": "wrong"}]),
+-        serde_json::json!([{"index": 0, "type": "nonsense"}]),
+-    ] {
+-        assert!(parse_tool_deltas(Some(&calls)).is_err());
+-    }
+-    for usage in [
+-        serde_json::json!({"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 4}),
+-        serde_json::json!({"prompt_tokens": -1, "completion_tokens": 2, "total_tokens": 1}),
+-        serde_json::json!({"prompt_tokens": 1, "completion_tokens": 2}),
+-    ] {
+-        assert!(validate_usage(&usage).is_err());
+-    }
+-}
+diff --git a/src/backend/prism/streaming_tests.rs b/src/backend/prism/streaming_tests.rs
+index e1965b2..c34595d 100644
+--- a/src/backend/prism/streaming_tests.rs
++++ b/src/backend/prism/streaming_tests.rs
+@@ -1,3 +1,4 @@
++#![cfg(test)]
+ //! Loopback transport proofs: no model, GPU, downloads, or external service.
+ 
+ use std::convert::Infallible;
+@@ -350,18 +351,29 @@ async fn documented_finish_reasons_preserve_the_upstream_outcome() {
+     ] {
+         let fixture = fixture().await;
+         let backend = backend(&fixture.base).await;
++        let has_call = matches!(reason, "tool_calls" | "function_call");
++        let delta = if has_call {
++            json!({"tool_calls":[{"index":0,"id":"call-finish","type":"function","function":{"name":"write","arguments":"{}"}}]})
++        } else {
++            json!({})
++        };
+         fixture
+             .body
+             .send(event(
+-                json!({"choices": [{"delta": {}, "finish_reason": reason}]}),
++                json!({"choices":[{"delta":delta,"finish_reason":reason}]}),
+             ))
+             .await
+             .unwrap();
+         fixture.body.send("data: [DONE]\n\n".into()).await.unwrap();
+         let mut stream = backend
+-            .chat("prism-test", request(false, true))
++            .chat("prism-test", request(has_call, true))
+             .await
+             .unwrap();
++        if has_call {
++            let call = next_chunk(&mut stream).await;
++            assert!(!call.done);
++            assert_eq!(call.tool_calls.unwrap()[0].function.name, "write");
++        }
+         let terminal = next_chunk(&mut stream).await;
+         assert!(terminal.done);
+         assert_eq!(terminal.done_reason.as_deref(), Some(reason));
+diff --git a/src/backend/test_utils.rs b/src/backend/test_utils.rs
+index adf410f..fe08da2 100644
+--- a/src/backend/test_utils.rs
++++ b/src/backend/test_utils.rs
+@@ -30,6 +30,7 @@ pub struct MockBackend {
+     streaming_load_succeeds: bool,
+     supports_streaming_load: bool,
+     supports_remote: bool,
++    openai_tool_selection: bool,
+     prompt_cache_support: PromptCacheSupport,
+     unload_succeeds: bool,
+     cleanup_succeeds: bool,
+@@ -56,6 +57,11 @@ pub struct MockBackend {
+ }
+ 
+ impl MockBackend {
++    pub fn with_openai_tool_selection(mut self) -> Self {
++        self.openai_tool_selection = true;
++        self
++    }
++
+     /// Create a mock backend where all operations succeed.
+     pub fn success() -> Self {
+         Self {
+@@ -67,6 +73,7 @@ impl MockBackend {
+             streaming_load_succeeds: true,
+             supports_streaming_load: false,
+             supports_remote: false,
++            openai_tool_selection: false,
+             prompt_cache_support: PromptCacheSupport::Unsupported,
+             unload_succeeds: true,
+             cleanup_succeeds: true,
+@@ -96,6 +103,7 @@ impl MockBackend {
+             streaming_load_succeeds: false,
+             supports_streaming_load: false,
+             supports_remote: false,
++            openai_tool_selection: false,
+             prompt_cache_support: PromptCacheSupport::Unsupported,
+             unload_succeeds: true,
+             cleanup_succeeds: true,
+@@ -125,6 +133,7 @@ impl MockBackend {
+             streaming_load_succeeds: true,
+             supports_streaming_load: false,
+             supports_remote: false,
++            openai_tool_selection: false,
+             prompt_cache_support: PromptCacheSupport::Unsupported,
+             unload_succeeds: false,
+             cleanup_succeeds: true,
+@@ -154,6 +163,7 @@ impl MockBackend {
+             streaming_load_succeeds: true,
+             supports_streaming_load: false,
+             supports_remote: false,
++            openai_tool_selection: false,
+             prompt_cache_support: PromptCacheSupport::Unsupported,
+             unload_succeeds: true,
+             cleanup_succeeds: false,
+@@ -183,6 +193,7 @@ impl MockBackend {
+             streaming_load_succeeds: true,
+             supports_streaming_load: false,
+             supports_remote: false,
++            openai_tool_selection: false,
+             prompt_cache_support: PromptCacheSupport::Unsupported,
+             unload_succeeds: true,
+             cleanup_succeeds: true,
+@@ -287,6 +298,10 @@ impl MockBackend {
+ 
+ #[async_trait]
+ impl Backend for MockBackend {
++    fn supports_openai_tool_selection(&self) -> bool {
++        self.openai_tool_selection
++    }
++
+     fn name(&self) -> &str {
+         self.backend_name
+     }
+diff --git a/src/backend/xolotl/mod.rs b/src/backend/xolotl/mod.rs
+index a3be718..c1bfa36 100644
+--- a/src/backend/xolotl/mod.rs
++++ b/src/backend/xolotl/mod.rs
+@@ -7,12 +7,16 @@
+ //! Omitting `--split-device` on a split keeps at most two visible CUDA devices,
+ //! and `--layer-split auto` is one cut at `n_layers / 2`.
+ //!
+-//! Power does not link Xolotl kernels and does not spawn `ds41_generate`.
+-//! `--serve` speaks the engine line protocol. Chat posts one non-streaming
+-//! OpenAI request to `serve_ds41.py` (`tools/v41/serve/serve_ds41.py`, port 8150).
++//! With an explicit ACL `managed` block, Power owns the packaged adapter and
++//! real resident engine as one process group, proves READY and model identity,
++//! and reports failed readiness if either process is lost. The external
++//! upstream mode remains available when the block is absent.
+ 
+ mod detect;
++mod managed;
+ mod plan;
++mod prepare;
++pub(crate) use prepare::prepare_managed_model;
+ 
+ use std::collections::HashMap;
+ use std::pin::Pin;
+@@ -21,7 +25,7 @@ use std::time::Duration;
+ 
+ use async_trait::async_trait;
+ use futures::stream;
+-use futures::Stream;
++use futures::{Stream, TryStreamExt};
+ 
+ use crate::config::{PowerConfig, XolotlConfig};
+ use crate::error::{PowerError, Result};
+@@ -39,17 +43,18 @@ pub use plan::{
+     CudaDevice, XolotlLaunchPlan,
+ };
+ 
+-/// Front for one XQ pack. The GPU process stays outside this type.
++/// Front for one XQ pack, with optional ownership of its resident process.
+ pub struct XolotlBackend {
+     config: Arc<PowerConfig>,
+     http: reqwest::Client,
+     /// Injected inventory. Production load calls `nvidia-smi` when this is empty.
+     devices: Option<Vec<CudaDevice>>,
+     loaded: tokio::sync::RwLock<HashMap<String, XolotlLaunchPlan>>,
++    engine: tokio::sync::Mutex<Option<managed::ManagedEngine>>,
+ }
+ 
+-/// Reqwest's 30s default ends a cold XQ expert-cache response before tokens return.
+-const UPSTREAM_TIMEOUT: Duration = Duration::from_secs(15 * 60);
++/// Bounded deadline for cold expert-cache inference and million-token prefill.
++const UPSTREAM_TIMEOUT: Duration = Duration::from_secs(2 * 60 * 60);
+ 
+ fn upstream_client() -> reqwest::Client {
+     reqwest::Client::builder()
+@@ -65,6 +70,7 @@ impl XolotlBackend {
+             http: upstream_client(),
+             devices: None,
+             loaded: tokio::sync::RwLock::new(HashMap::new()),
++            engine: tokio::sync::Mutex::new(None),
+         }
+     }
+ 
+@@ -75,14 +81,26 @@ impl XolotlBackend {
+     }
+ 
+     async fn loaded_plan(&self, model_name: &str) -> Result<XolotlLaunchPlan> {
+-        self.loaded
++        let plan = self
++            .loaded
+             .read()
+             .await
+             .get(model_name)
+             .cloned()
+             .ok_or_else(|| {
+                 PowerError::ModelNotFound(format!("xolotl model '{model_name}' is not loaded"))
+-            })
++            })?;
++        if self.config.xolotl.managed.is_some() {
++            self.engine
++                .lock()
++                .await
++                .as_mut()
++                .ok_or_else(|| {
++                    PowerError::InferenceFailed("managed Xolotl engine is absent".into())
++                })?
++                .ensure_alive()?;
++        }
++        Ok(plan)
+     }
+ 
+     async fn post_json(&self, url: &str, body: &serde_json::Value) -> Result<serde_json::Value> {
+@@ -160,33 +178,7 @@ fn chat_body(model_name: &str, request: &ChatRequest) -> Result<serde_json::Valu
+             "xolotl chat refuses image inputs".into(),
+         ));
+     }
+-    if request
+-        .tools
+-        .as_ref()
+-        .is_some_and(|tools| !tools.is_empty())
+-    {
+-        return Err(PowerError::InferenceFailed(
+-            "xolotl chat refuses tool definitions on this non-streaming upstream path".into(),
+-        ));
+-    }
+-    let messages = serde_json::to_value(&request.messages).map_err(|error| {
+-        PowerError::InferenceFailed(format!(
+-            "xolotl chat messages could not be encoded: {error}"
+-        ))
+-    })?;
+-    let mut body = serde_json::json!({
+-        "model": model_name,
+-        "messages": messages,
+-        "stream": false,
+-    });
+-    copy_sampling(
+-        &mut body,
+-        request.temperature,
+-        request.top_p,
+-        request.max_tokens,
+-        request.stop.as_ref(),
+-    );
+-    Ok(body)
++    crate::backend::openai_compat::chat_request_body(model_name, request, true)
+ }
+ 
+ fn completion_body(model_name: &str, request: &CompletionRequest) -> Result<serde_json::Value> {
+@@ -261,37 +253,6 @@ fn prompt_tokens(json: &serde_json::Value) -> Option<u32> {
+         .and_then(|value| u32::try_from(value).ok())
+ }
+ 
+-fn chat_stream(
+-    content: String,
+-    prompt_tokens: Option<u32>,
+-    done_reason: String,
+-) -> Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>> {
+-    let mut chunks = Vec::new();
+-    if !content.is_empty() {
+-        chunks.push(Ok(ChatResponseChunk {
+-            content,
+-            thinking_content: None,
+-            done: false,
+-            prompt_tokens: None,
+-            done_reason: None,
+-            prompt_eval_duration_ns: None,
+-            tool_calls: None,
+-            upstream_timings: None,
+-        }));
+-    }
+-    chunks.push(Ok(ChatResponseChunk {
+-        content: String::new(),
+-        thinking_content: None,
+-        done: true,
+-        prompt_tokens,
+-        done_reason: Some(done_reason),
+-        prompt_eval_duration_ns: None,
+-        tool_calls: None,
+-        upstream_timings: None,
+-    }));
+-    Box::pin(stream::iter(chunks))
+-}
+-
+ fn completion_stream(
+     text: String,
+     prompt_tokens: Option<u32>,
+@@ -329,10 +290,18 @@ fn bounded_text(text: &str) -> &str {
+ 
+ #[async_trait]
+ impl Backend for XolotlBackend {
++    fn supports_openai_tool_selection(&self) -> bool {
++        true
++    }
++
+     fn name(&self) -> &str {
+         "xolotl"
+     }
+ 
++    fn reports_exact_chat_usage(&self) -> bool {
++        true
++    }
++
+     fn supports(&self, format: &ModelFormat) -> bool {
+         let _ = format;
+         false
+@@ -342,6 +311,22 @@ impl Backend for XolotlBackend {
+         is_xolotl_required_manifest(manifest)
+     }
+ 
++    async fn runtime_readiness(&self) -> Result<()> {
++        if self.config.xolotl.managed.is_none() {
++            return Ok(());
++        }
++        let mut owner = self.engine.try_lock().map_err(|_| {
++            PowerError::InferenceFailed("managed Xolotl is starting or stopping".into())
++        })?;
++        owner
++            .as_mut()
++            .ok_or_else(|| {
++                PowerError::InferenceFailed("managed Xolotl model is not loaded".into())
++            })?
++            .probe(&self.http)
++            .await
++    }
++
+     async fn load(&self, manifest: &ModelManifest) -> Result<()> {
+         ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+         if !is_xolotl_required_manifest(manifest) {
+@@ -365,15 +350,54 @@ impl Backend for XolotlBackend {
+         })
+         .await
+         .map_err(|error| PowerError::Config(format!("xolotl artifact check failed: {error}")))??;
+-        self.loaded
+-            .write()
+-            .await
+-            .insert(manifest.name.clone(), launch);
++        let mut loaded = self.loaded.write().await;
++        if let Some(managed) = &self.config.xolotl.managed {
++            let mut owner = self.engine.lock().await;
++            if !loaded.is_empty() {
++                if !loaded.contains_key(&manifest.name) {
++                    return Err(PowerError::InferenceFailed(
++                        "managed Xolotl already owns another model".into(),
++                    ));
++                }
++                return owner
++                    .as_mut()
++                    .ok_or_else(|| {
++                        PowerError::InferenceFailed("managed Xolotl lost its owner".into())
++                    })?
++                    .probe(&self.http)
++                    .await;
++            }
++            if owner.is_some() {
++                return Err(PowerError::InferenceFailed(
++                    "managed Xolotl retained an unregistered owner".into(),
++                ));
++            }
++            let origin = require_upstream(&self.config.xolotl)?;
++            *owner = Some(
++                managed::ManagedEngine::start(
++                    managed,
++                    &launch,
++                    &origin,
++                    &manifest.name,
++                    &self.http,
++                )
++                .await?,
++            );
++        }
++        loaded.insert(manifest.name.clone(), launch);
+         Ok(())
+     }
+ 
+     async fn unload(&self, model_name: &str) -> Result<()> {
+-        self.loaded.write().await.remove(model_name);
++        let mut loaded = self.loaded.write().await;
++        if self.config.xolotl.managed.is_some() && loaded.contains_key(model_name) {
++            let mut owner = self.engine.lock().await;
++            if let Some(engine) = owner.as_mut() {
++                engine.stop().await?;
++            }
++            *owner = None;
++        }
++        loaded.remove(model_name);
+         Ok(())
+     }
+ 
+@@ -384,18 +408,30 @@ impl Backend for XolotlBackend {
+     ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>> {
+         ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+         let launch = self.loaded_plan(model_name).await?;
++        let tool_policy = crate::backend::openai_compat::ChatToolPolicy::from_request(&request)?;
+         let body = chat_body(model_name, &request)?;
+         let upstream = require_upstream(&self.config.xolotl)
+             .map_err(|error| upstream_error(&launch, error))?;
+-        let json = self
+-            .post_json(&format!("{upstream}/v1/chat/completions"), &body)
+-            .await?;
+-        let content = string_field(&json, "/choices/0/message/content", "chat content")?;
+-        Ok(chat_stream(
+-            content,
+-            prompt_tokens(&json),
+-            finish_reason(&json),
+-        ))
++        let http = self.http.clone();
++        let url = format!("{upstream}/v1/chat/completions");
++        // The stream owns startup and the response: dropping it cancels reads
++        // during header waits, million-token prefill, and token generation.
++        let startup = async move {
++            let response = http
++                .post(&url)
++                .header(reqwest::header::ACCEPT, "text/event-stream")
++                .json(&body)
++                .send()
++                .await
++                .map_err(|e| PowerError::InferenceFailed(format!("xolotl stream failed: {e}")))?;
++            let response = crate::backend::openai_compat::require_chat_stream(response)?;
++            Ok::<_, PowerError>(crate::backend::openai_compat::chat_response_stream(
++                response,
++                true,
++                tool_policy,
++            ))
++        };
++        Ok(Box::pin(stream::once(startup).try_flatten()))
+     }
+ 
+     async fn complete(
+@@ -642,15 +678,21 @@ mod tests {
+     async fn chat_handler(
+         State(state): State<UpstreamState>,
+         Json(body): Json<Value>,
+-    ) -> Json<Value> {
++    ) -> axum::response::Response {
++        use axum::response::IntoResponse;
+         *state.chat.lock().expect("chat body lock") = Some(body);
+-        Json(json!({
+-            "choices": [{
+-                "message": {"role": "assistant", "content": "ready"},
+-                "finish_reason": "stop"
+-            }],
+-            "usage": {"prompt_tokens": 4}
+-        }))
++        let events = [
++            json!({"choices":[{"index":0,"delta":{"content":"ready","reasoning_content":"measured reasoning"},"finish_reason":null}]}),
++            json!({"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],
++                "usage":{"prompt_tokens":4,"completion_tokens":17,"total_tokens":21},
++                "timings":{"prompt_n":4,"prompt_ms":2.0,"predicted_n":17,"predicted_ms":200.0,"predicted_per_second":85.0}}),
++        ];
++        let mut wire = events
++            .iter()
++            .map(|event| format!("data: {event}\n\n"))
++            .collect::<String>();
++        wire.push_str("data: [DONE]\n\n");
++        ([("content-type", "text/event-stream")], wire).into_response()
+     }
+ 
+     async fn completion_handler(
+@@ -665,7 +707,7 @@ mod tests {
+     }
+ 
+     #[tokio::test]
+-    async fn chat_and_completion_forward_one_json_response() {
++    async fn chat_streams_and_completion_forwards_json_response() {
+         let chat = Arc::new(Mutex::new(None));
+         let completion_body = Arc::new(Mutex::new(None));
+         let app = Router::new()
+@@ -709,10 +751,19 @@ mod tests {
+         assert!(done.done);
+         assert_eq!(done.done_reason.as_deref(), Some("stop"));
+         assert_eq!(done.prompt_tokens, Some(4));
++        assert_eq!(
++            first.thinking_content.as_deref(),
++            Some("measured reasoning")
++        );
++        assert!(backend.reports_exact_chat_usage());
++        let observation = done.upstream_timings.as_ref().unwrap();
++        assert_eq!(observation["usage"]["completion_tokens"], 17);
++        assert_eq!(observation["timings"]["predicted_per_second"], 85.0);
++        assert_eq!(done.prompt_eval_duration_ns, Some(2_000_000));
+         assert!(stream.next().await.is_none());
+ 
+         let body = chat.lock().expect("chat body lock").clone().unwrap();
+-        assert_eq!(body["stream"], json!(false));
++        assert_eq!(body["stream"], json!(true));
+         assert_eq!(body["messages"][0]["content"], json!("hello"));
+         assert_eq!(body["temperature"], json!(1.0));
+         assert_eq!(body["top_p"], json!(1.0));
+@@ -771,3 +822,7 @@ mod tests {
+         server.join().unwrap();
+     }
+ }
++
++#[cfg(test)]
++#[path = "streaming_tests.rs"]
++mod streaming_tests;
+diff --git a/src/backend/xolotl/plan.rs b/src/backend/xolotl/plan.rs
+index f7756ee..a81d0de 100644
+--- a/src/backend/xolotl/plan.rs
++++ b/src/backend/xolotl/plan.rs
+@@ -145,10 +145,47 @@ pub fn plan(
+     let model = require_model_path(xolotl, manifest)?;
+     let engram = require_engram(xolotl)?;
+     let rank = require_rank(xolotl)?;
+-    match placement(xolotl)? {
++    let mut launch = match placement(xolotl)? {
+         Placement::H200 => plan_h200(xolotl, devices, bin, model, engram, rank),
+         Placement::Rtx4090 => plan_rtx_4090(xolotl, devices, bin, model, engram, rank),
++    }?;
++    if let Some(tuning) = &xolotl.tuning {
++        tuning.append_args(&mut launch.argv)?;
+     }
++    // Cache-residency routing biases change the model's selected experts. The
++    // upstream defaults can loop on simple arithmetic, so every owned plan
++    // explicitly preserves exact model routing, independent of cache state.
++    launch.argv.extend(
++        [
++            "--route-bias",
++            "0",
++            "--route-bias-file",
++            "0",
++            "--route-bias-remote",
++            "0",
++        ]
++        .into_iter()
++        .map(str::to_owned),
++    );
++    if let Some(dspark) = &xolotl.dspark {
++        if xolotl.gpus.len() != 1
++            || xolotl.layer_split != RTX_4090_LAYER_SPLIT
++            || xolotl.cuda_architecture != RTX_4090_COMPUTE_CAPABILITY
++            || xolotl.managed.is_none()
++            || xolotl.tuning.is_none()
++            || !xolotl.kv_fp4
++        {
++            return Err(PowerError::Config(
++                "xolotl.dspark requires the managed single-4090 FP4-KV plan with explicit tuning"
++                    .into(),
++            ));
++        }
++        dspark.append_env(&mut launch.env)?;
++    }
++    if xolotl.kv_fp4 {
++        launch.argv.push("--kv-fp4".into());
++    }
++    Ok(launch)
+ }
+ 
+ /// Parse nvidia-smi CSV and admit a placement with [`plan`].
+@@ -487,7 +524,7 @@ fn require_rtx_4090(index: u32, devices: &[CudaDevice]) -> Result<()> {
+     };
+     if !is_geforce_rtx_4090(&device.name) {
+         return Err(PowerError::Config(format!(
+-            "GPU {index} ({}) is not a GeForce RTX 4090",
++            "GPU {index} ({}) is not a GeForce RTX 4090 or RTX 4090 D",
+             device.name
+         )));
+     }
+@@ -507,26 +544,13 @@ fn require_rtx_4090(index: u32, devices: &[CudaDevice]) -> Result<()> {
+     Ok(())
+ }
+ 
+-/// `GeForce RTX 4090` at the end of the product name. A trailing suffix
+-/// (`Ti`, `D`, `Laptop`) is a different card.
++/// Explicit product identities admitted for the sm_89 / 24 GiB single-card plan.
++/// The 4090 D identity is observed from nvidia-smi on the deployment host.
+ fn is_geforce_rtx_4090(name: &str) -> bool {
+-    let phrase = "GeForce RTX 4090";
+-    let bytes = name.as_bytes();
+-    let needle = phrase.as_bytes();
+-    let mut start = 0;
+-    while let Some(relative) = bytes[start..]
+-        .windows(needle.len())
+-        .position(|window| window == needle)
+-    {
+-        let at = start + relative;
+-        let before_ok = at == 0 || !bytes[at - 1].is_ascii_alphanumeric();
+-        let after = at + needle.len();
+-        if before_ok && name[after..].trim().is_empty() {
+-            return true;
+-        }
+-        start = at + 1;
+-    }
+-    false
++    matches!(
++        name.trim(),
++        "GeForce RTX 4090" | "NVIDIA GeForce RTX 4090" | "NVIDIA GeForce RTX 4090 D"
++    )
+ }
+ 
+ fn bounded_token(name: &str, token: &str) -> bool {
+@@ -622,15 +646,19 @@ fn require_rank(config: &XolotlConfig) -> Result<PathBuf> {
+ }
+ 
+ fn engram_segments(value: &str) -> Result<Vec<&str>> {
+-    let separator = if value.contains(';') { ';' } else { ':' };
++    let separator = if cfg!(windows) || value.contains(';') {
++        ';'
++    } else {
++        ':'
++    };
+     let segments = value
+         .split(separator)
+         .map(str::trim)
+         .filter(|segment| !segment.is_empty())
+         .collect::<Vec<_>>();
+-    if segments.len() < 2 {
++    if segments.is_empty() {
+         return Err(PowerError::Config(
+-            "xolotl.engram needs at least two directories separated by ':' on Linux or ';' on Windows".into(),
++            "xolotl.engram needs at least one directory; multiple directories use ':' on Linux or ';' on Windows".into(),
+         ));
+     }
+     Ok(segments)
+@@ -987,6 +1015,67 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn explicit_one_million_context_and_cache_plan_is_bounded() {
++        let mut config = rtx_4090_config(Path::new("/models/xq"), 0);
++        let manifest = manifest_for(&config);
++        let tuning = crate::config::XolotlTuning {
++            context_tokens: 1_048_576,
++            cpu_threads: 16,
++            arena_gib: 120,
++            prompt_batch: 8192,
++            prefill_chunk: 512,
++            pcie_bp: 7500,
++            tier_batch_pcie_bp: 10_000,
++        };
++        config.xolotl.tuning = Some(tuning.clone());
++        let launch = plan(&config, &manifest, &[rtx_4090(0)]).unwrap();
++        assert_eq!(arg_value(&launch.argv, "--ctx").unwrap(), "1048576");
++        assert_eq!(arg_value(&launch.argv, "--arena-gib").unwrap(), "120");
++        assert_eq!(arg_value(&launch.argv, "--pcie").unwrap(), "0.7500");
++        assert_eq!(
++            arg_value(&launch.argv, "--tier-batch-pcie").unwrap(),
++            "1.0000"
++        );
++        assert_eq!(launch.argv.len(), 32);
++        assert_eq!(
++            &launch.argv[26..],
++            &[
++                "--route-bias",
++                "0",
++                "--route-bias-file",
++                "0",
++                "--route-bias-remote",
++                "0"
++            ]
++        );
++        for invalid in [
++            crate::config::XolotlTuning {
++                context_tokens: 2_097_152,
++                ..tuning.clone()
++            },
++            crate::config::XolotlTuning {
++                arena_gib: 193,
++                ..tuning.clone()
++            },
++            crate::config::XolotlTuning {
++                cpu_threads: 0,
++                ..tuning.clone()
++            },
++            crate::config::XolotlTuning {
++                prefill_chunk: 513,
++                ..tuning.clone()
++            },
++            crate::config::XolotlTuning {
++                pcie_bp: 10_001,
++                ..tuning.clone()
++            },
++        ] {
++            config.xolotl.tuning = Some(invalid);
++            assert!(plan(&config, &manifest, &[rtx_4090(0)]).is_err());
++        }
++    }
++
+     #[test]
+     fn rtx_4090_single_card_plan_uses_expert_cache_not_layer_split() {
+         let root = Path::new("/models/xq");
+@@ -1033,6 +1122,19 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn xolotl_single_engram_directory_does_not_require_a_duplicate_copy() {
++        let root = Path::new("/models/xq");
++        let mut config = rtx_4090_config(root, 0);
++        config.xolotl.engram = Some("/models/engram".into());
++        let manifest = manifest_for(&config);
++        let launch = plan(&config, &manifest, &[rtx_4090(0)]).unwrap();
++        assert_eq!(
++            arg_value(&launch.argv, "--engram").unwrap(),
++            "/models/engram"
++        );
++    }
++
+     #[test]
+     fn rtx_4090_partial_config_and_wrong_card_fail_closed() {
+         let root = Path::new("/models/xq");
+@@ -1115,7 +1217,7 @@ mod tests {
+             .contains("MiB"));
+ 
+         let mut suffixed = device.clone();
+-        suffixed.name = "NVIDIA GeForce RTX 4090 D".into();
++        suffixed.name = "NVIDIA GeForce RTX 4090 Ti".into();
+         assert!(plan(&manifest_config, &manifest, &[suffixed])
+             .unwrap_err()
+             .to_string()
+@@ -1129,3 +1231,19 @@ mod tests {
+             .contains("max_concurrent_requests"));
+     }
+ }
++
++#[cfg(test)]
++#[path = "plan_4090d_tests.rs"]
++mod rtx_4090d_tests;
++
++#[cfg(test)]
++#[path = "plan_kv_fp4_tests.rs"]
++mod kv_fp4_tests;
++
++#[cfg(test)]
++#[path = "plan_exact_routing_tests.rs"]
++mod exact_routing_tests;
++
++#[cfg(test)]
++#[path = "plan_dspark_tests.rs"]
++mod dspark_tests;
+diff --git a/src/cli.rs b/src/cli.rs
+index 36d9cdb..ff04858 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -44,8 +44,20 @@ pub struct ServeArgs {
+     pub port: Option<u16>,
+ 
+     /// Config file path
+-    #[arg(long)]
++    #[arg(long, conflicts_with_all = ["config_inline", "config_from_workload_env"])]
+     pub config: Option<String>,
++
++    /// Explicit ACL document for a hosted workload, bounded to 64 KiB.
++    #[arg(long, conflicts_with_all = ["config", "config_from_workload_env"], value_name = "ACL")]
++    pub config_inline: Option<String>,
++
++    /// Read the explicit hosted-workload ACL from A3S_POWER_RUNTIME_ACL.
++    #[arg(long, conflicts_with_all = ["config", "config_inline"])]
++    pub config_from_workload_env: bool,
++
++    /// Validate ACL and resource bounds without opening a listener or loading a model.
++    #[arg(long)]
++    pub check_config: bool,
+ }
+ 
+ /// Model management subcommands.
+@@ -176,3 +188,7 @@ mod tests {
+         assert_eq!(args.port, Some(18080));
+     }
+ }
++
++#[cfg(test)]
++#[path = "cli/xolotl_inline_tests.rs"]
++mod xolotl_inline_tests;
+diff --git a/src/config.rs b/src/config.rs
+index e906e93..d207911 100644
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -9,6 +9,9 @@ use crate::dirs;
+ use crate::error::{PowerError, Result};
+ use crate::speculative::SpeculativeStrategy;
+ 
++mod xolotl_dspark;
++pub use xolotl_dspark::XolotlDSparkConfig;
++
+ /// Default maximum number of resident llama.cpp MTP recurrent-state snapshots.
+ pub const DEFAULT_SPEC_MTP_RECURRENT_SNAPSHOTS: u32 = 7;
+ 
+@@ -348,6 +351,18 @@ fn default_xolotl_layer_split() -> String {
+ #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+ #[serde(deny_unknown_fields)]
+ pub struct XolotlConfig {
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub dspark: Option<XolotlDSparkConfig>,
++    /// Pack the checkpoint's existing FP4 KV grids without changing their values.
++    #[serde(default)]
++    pub kv_fp4: bool,
++    /// Explicit bounded engine resources, including the actual context capacity.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub tuning: Option<XolotlTuning>,
++    /// Explicitly own the packaged resident engine and its HTTP adapter.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub managed: Option<XolotlManagedConfig>,
++
+     /// Claim remains active when this is false, so llama.cpp cannot load an XQ pack.
+     /// Load succeeds only after this is set.
+     #[serde(default)]
+@@ -362,7 +377,7 @@ pub struct XolotlConfig {
+     pub model: Option<String>,
+ 
+     /// Engram directories. Use `:` on Linux and `;` on Windows (`D:\a;E:\b`).
+-    /// At least two directories.
++    /// At least one directory; official safetensors shards can be read in place.
+     #[serde(default, skip_serializing_if = "Option::is_none")]
+     pub engram: Option<String>,
+ 
+@@ -401,6 +416,10 @@ pub struct XolotlConfig {
+ impl Default for XolotlConfig {
+     fn default() -> Self {
+         Self {
++            dspark: None,
++            kv_fp4: false,
++            tuning: None,
++            managed: None,
+             enabled: false,
+             bin: None,
+             model: None,
+@@ -415,6 +434,102 @@ impl Default for XolotlConfig {
+     }
+ }
+ 
++/// Typed settings for the pinned Xolotl engine. No arbitrary argv or environment.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct XolotlTuning {
++    pub context_tokens: u32,
++    pub cpu_threads: u32,
++    pub arena_gib: u32,
++    pub prompt_batch: u32,
++    pub prefill_chunk: u32,
++    pub pcie_bp: u32,
++    pub tier_batch_pcie_bp: u32,
++}
++impl XolotlTuning {
++    pub fn validate(&self) -> Result<()> {
++        if !(4096..=1_048_576).contains(&self.context_tokens)
++            || self.context_tokens % 256 != 0
++            || !(1..=256).contains(&self.cpu_threads)
++            || self.arena_gib > 192
++            || !(256..=8192).contains(&self.prompt_batch)
++            || self.prompt_batch % 256 != 0
++            || !(64..=1024).contains(&self.prefill_chunk)
++            || self.prefill_chunk % 64 != 0
++            || self.prefill_chunk > self.prompt_batch
++            || self.pcie_bp > 10_000
++            || self.tier_batch_pcie_bp > 10_000
++        {
++            return Err(PowerError::Config(
++                "xolotl.tuning exceeds admitted engine resource bounds".into(),
++            ));
++        }
++        Ok(())
++    }
++    pub(crate) fn append_args(&self, argv: &mut Vec<String>) -> Result<()> {
++        self.validate()?;
++        for (flag, value) in [
++            ("--ctx", self.context_tokens.to_string()),
++            ("--threads", self.cpu_threads.to_string()),
++            ("--arena-gib", self.arena_gib.to_string()),
++            ("--prompt-batch", self.prompt_batch.to_string()),
++            ("--prefill-chunk", self.prefill_chunk.to_string()),
++            (
++                "--pcie",
++                format!("{}.{:04}", self.pcie_bp / 10_000, self.pcie_bp % 10_000),
++            ),
++            (
++                "--tier-batch-pcie",
++                format!(
++                    "{}.{:04}",
++                    self.tier_batch_pcie_bp / 10_000,
++                    self.tier_batch_pcie_bp % 10_000
++                ),
++            ),
++        ] {
++            argv.extend([flag.to_string(), value]);
++        }
++        Ok(())
++    }
++}
++
++/// ACL-only settings for a Power-owned Xolotl adapter. Runtime launch facts
++/// cross a bounded stdin message; no secondary settings file is consumed.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct XolotlManagedConfig {
++    pub model_name: String,
++    /// Joined GGUF digest declared by the admitted model package.
++    pub model_sha256: String,
++    /// Ordered, measured immutable package members; empty for a registered joined GGUF.
++    #[serde(default, skip_serializing_if = "Vec::is_empty")]
++    pub model_parts: Vec<XolotlModelPart>,
++    /// Exact Cloud-admitted NVIDIA UUIDs, in the plan's stage order.
++    pub gpu_uuids: Vec<String>,
++    pub python: PathBuf,
++    pub bridge: PathBuf,
++    pub server: PathBuf,
++    pub tokenizer: PathBuf,
++    #[serde(default = "default_xolotl_startup_timeout")]
++    pub startup_timeout_seconds: u64,
++    #[serde(default = "default_xolotl_shutdown_timeout")]
++    pub shutdown_timeout_seconds: u64,
++}
++/// One measured input to the deterministic GGUF byte concatenation.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct XolotlModelPart {
++    pub path: PathBuf,
++    pub size_bytes: u64,
++    pub sha256: String,
++}
++fn default_xolotl_startup_timeout() -> u64 {
++    1800
++}
++fn default_xolotl_shutdown_timeout() -> u64 {
++    15
++}
++
+ /// User-configurable settings for the Power server.
+ #[derive(Debug, Clone, Serialize, Deserialize)]
+ #[serde(deny_unknown_fields)]
+diff --git a/src/config/acl.rs b/src/config/acl.rs
+index be9a3c2..2b275d3 100644
+--- a/src/config/acl.rs
++++ b/src/config/acl.rs
+@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
+ 
+ use a3s_acl::{
+     generate, parse, validate_document, AttributeSchema, Block, BlockSchema, Cardinality, Document,
+-    Schema, Value, ValueSchema,
++    ObjectSchema, Schema, Value, ValueSchema,
+ };
+ use serde_json::{Map, Number};
+ 
+@@ -292,7 +292,76 @@ fn power_schema() -> Schema {
+ }
+ 
+ fn xolotl_schema() -> Schema {
++    let dspark = ObjectSchema::new()
++        .field("sidecar", AttributeSchema::required(ValueSchema::string()))
++        .field(
++            "sidecar_sha256",
++            AttributeSchema::required(ValueSchema::string()),
++        )
++        .field("depth", AttributeSchema::required(ValueSchema::number()))
++        .field(
++            "confidence_bp",
++            AttributeSchema::required(ValueSchema::number()),
++        )
++        .field(
++            "evict_prompt_tokens",
++            AttributeSchema::required(ValueSchema::number()),
++        );
++    let mut tuning = ObjectSchema::new();
++    for field in [
++        "context_tokens",
++        "cpu_threads",
++        "arena_gib",
++        "prompt_batch",
++        "prefill_chunk",
++        "pcie_bp",
++        "tier_batch_pcie_bp",
++    ] {
++        tuning = tuning.field(field, AttributeSchema::required(ValueSchema::number()));
++    }
++    let mut managed = ObjectSchema::new();
++    for field in [
++        "model_name",
++        "model_sha256",
++        "python",
++        "bridge",
++        "server",
++        "tokenizer",
++    ] {
++        managed = managed.field(field, AttributeSchema::required(ValueSchema::string()));
++    }
++    managed = managed.field(
++        "gpu_uuids",
++        AttributeSchema::required(ValueSchema::list(ValueSchema::string())),
++    );
++    for field in ["startup_timeout_seconds", "shutdown_timeout_seconds"] {
++        managed = managed.field(field, AttributeSchema::optional(ValueSchema::number()));
++    }
++    let part = ObjectSchema::new()
++        .field("path", AttributeSchema::required(ValueSchema::string()))
++        .field(
++            "size_bytes",
++            AttributeSchema::required(ValueSchema::number()),
++        )
++        .field("sha256", AttributeSchema::required(ValueSchema::string()));
++    managed = managed.field(
++        "model_parts",
++        AttributeSchema::optional(ValueSchema::list(ValueSchema::object(part))),
++    );
+     Schema::new()
++        .attribute(
++            "dspark",
++            AttributeSchema::optional(ValueSchema::object(dspark)),
++        )
++        .attribute(
++            "tuning",
++            AttributeSchema::optional(ValueSchema::object(tuning)),
++        )
++        .attribute(
++            "managed",
++            AttributeSchema::optional(ValueSchema::object(managed)),
++        )
++        .attribute("kv_fp4", AttributeSchema::optional(ValueSchema::bool()))
+         .attribute("enabled", AttributeSchema::optional(ValueSchema::bool()))
+         .attribute("bin", AttributeSchema::optional(ValueSchema::string()))
+         .attribute("model", AttributeSchema::optional(ValueSchema::string()))
+@@ -1212,3 +1281,11 @@ mod tests {
+         assert!(error.to_string().contains("acl.schema.unknown_attribute"));
+     }
+ }
++
++#[cfg(test)]
++#[path = "xolotl_managed_acl_tests.rs"]
++mod managed_tests;
++
++#[cfg(test)]
++#[path = "xolotl_kv_fp4_acl_tests.rs"]
++mod kv_fp4_tests;
+diff --git a/src/config/behavior.rs b/src/config/behavior.rs
+index c5effe4..4f42b37 100644
+--- a/src/config/behavior.rs
++++ b/src/config/behavior.rs
+@@ -66,6 +66,19 @@ impl PowerConfig {
+     /// Load configuration from a specific file path (A3S ACL format).
+     ///
+     /// After loading from file, applies `A3S_POWER_*` environment variable overrides.
++    /// Parse one explicit bounded ACL document, without layered discovery or
++    /// inherited environment overrides. Hosted workloads bind all settings here.
++    pub fn from_acl(content: &str) -> Result<Self> {
++        if content.len() > 64 * 1024 {
++            return Err(crate::error::PowerError::Acl(
++                "inline ACL exceeds its 64 KiB byte bound".into(),
++            ));
++        }
++        let config = acl::deserialize(content)?;
++        config.validate()?;
++        Ok(config)
++    }
++
+     pub fn load_from(path: &str) -> Result<Self> {
+         let path = std::path::Path::new(path);
+         let content = std::fs::read_to_string(path).map_err(|e| {
+@@ -114,6 +127,13 @@ impl PowerConfig {
+     /// Some legacy operational warnings remain non-fatal, but policy-bearing
+     /// settings that would otherwise be silently ignored return an error.
+     pub fn validate(&self) -> Result<()> {
++        if let Some(dspark) = &self.xolotl.dspark {
++            dspark.validate()?;
++        }
++        if let Some(tuning) = &self.xolotl.tuning {
++            tuning.validate()?;
++        }
++
+         self.gpu.validate()?;
+         self.serving_execution.validate()?;
+         if !(1..=100_000).contains(&self.max_concurrent_requests)
+diff --git a/src/main.rs b/src/main.rs
+index 9ad8ec3..1105c6a 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -17,7 +17,14 @@ async fn main() -> anyhow::Result<()> {
+         }
+         Some(Command::Serve(args)) => {
+             init_tracing();
+-            let mut config = if let Some(ref path) = args.config {
++            let mut config = if args.config_from_workload_env {
++                let content = std::env::var("A3S_POWER_RUNTIME_ACL").map_err(|_| {
++                    anyhow::anyhow!("hosted workload requires UTF-8 A3S_POWER_RUNTIME_ACL")
++                })?;
++                PowerConfig::from_acl(&content)?
++            } else if let Some(ref content) = args.config_inline {
++                PowerConfig::from_acl(content)?
++            } else if let Some(ref path) = args.config {
+                 PowerConfig::load_from(path)?
+             } else {
+                 PowerConfig::load()?
+@@ -28,7 +35,12 @@ async fn main() -> anyhow::Result<()> {
+             if let Some(port) = args.port {
+                 config.port = port;
+             }
+-            a3s_power::server::start(config).await?;
++            config.validate()?;
++            if args.check_config {
++                println!("Power ACL and resource bounds validated");
++            } else {
++                a3s_power::server::start(config).await?;
++            }
+         }
+         Some(Command::Models(cmd)) => {
+             run_models_command(cmd).await?;
+diff --git a/src/runtime_service.rs b/src/runtime_service.rs
+index 975383d..16f1b6c 100644
+--- a/src/runtime_service.rs
++++ b/src/runtime_service.rs
+@@ -74,6 +74,7 @@ impl PowerRuntimeServiceProfile {
+         secrets.extend(self.secrets.clone());
+ 
+         let spec = RuntimeUnitSpec {
++            accelerators: Vec::new(),
+             schema: RuntimeUnitSpec::SCHEMA.into(),
+             unit_id: self.unit_id.clone(),
+             generation: self.generation,
+diff --git a/src/server/mod.rs b/src/server/mod.rs
+index 95330f3..0a214be 100644
+--- a/src/server/mod.rs
++++ b/src/server/mod.rs
+@@ -268,6 +268,10 @@ async fn start_with_options(options: builder::PowerServerOptions) -> Result<()>
+         app_state = app_state.with_key_provider(provider);
+     }
+ 
++    let listener = tokio::net::TcpListener::bind(&bind_addr)
++        .await
++        .map_err(|e| PowerError::Server(format!("Failed to bind to {bind_addr}: {e}")))?;
++
+     // Spawn background keep_alive reaper task
+     spawn_keep_alive_reaper(app_state.clone());
+ 
+@@ -305,12 +309,10 @@ async fn start_with_options(options: builder::PowerServerOptions) -> Result<()>
+         vsock::spawn_vsock_server(vsock_port, app.clone()).await?;
+     }
+ 
+-    let listener = tokio::net::TcpListener::bind(&bind_addr)
+-        .await
+-        .map_err(|e| PowerError::Server(format!("Failed to bind to {bind_addr}: {e}")))?;
+-
+     tracing::info!("Server listening on {bind_addr}");
+ 
++    load_managed_xolotl(&app_state).await?;
++
+     axum::serve(listener, app)
+         .with_graceful_shutdown(shutdown_signal(app_state_for_shutdown))
+         .await
+@@ -476,6 +478,41 @@ async fn shutdown_signal(state: state::AppState) {
+     tracing::info!("Graceful shutdown complete");
+ }
+ 
++async fn load_managed_xolotl(state: &state::AppState) -> Result<()> {
++    let Some(managed) = &state.config.xolotl.managed else {
++        return Ok(());
++    };
++    if !state.config.xolotl.enabled {
++        return Err(PowerError::Config(
++            "managed Xolotl requires xolotl.enabled".into(),
++        ));
++    }
++    let previous = match state.registry.get(&managed.model_name) {
++        Ok(manifest) => Some(manifest),
++        Err(PowerError::ModelNotFound(_)) => None,
++        Err(error) => return Err(error),
++    };
++    if previous
++        .as_ref()
++        .is_some_and(|manifest| !backend::xolotl::is_xolotl_required_manifest(manifest))
++    {
++        return Err(PowerError::Config(
++            "managed Xolotl startup requires the exact XQ manifest".into(),
++        ));
++    }
++    let manifest = backend::xolotl::prepare_managed_model(&state.config, previous).await?;
++    if !backend::xolotl::is_xolotl_required_manifest(&manifest) {
++        return Err(PowerError::Config(
++            "managed Xolotl startup requires the exact XQ manifest".into(),
++        ));
++    }
++    state.registry.register_transient(manifest.clone())?;
++    let backend = state.find_backend_for_manifest(&manifest)?;
++    backend.load(&manifest).await?;
++    state.mark_loaded_with_keep_alive(&manifest.name, std::time::Duration::MAX);
++    Ok(())
++}
++
+ // Unload all models to trigger RAII cleanup (zeroize decrypted weights).
+ async fn unload_models_for_shutdown(state: &state::AppState) {
+     let loaded = state.loaded_model_names();
+@@ -1860,3 +1897,7 @@ mod tests {
+         assert!(err.to_string().contains("embedded credentials"));
+     }
+ }
++
++#[cfg(test)]
++#[path = "xolotl_startup_tests.rs"]
++mod xolotl_startup_tests;
+diff --git a/src/server/router.rs b/src/server/router.rs
+index f76640c..8e98642 100644
+--- a/src/server/router.rs
++++ b/src/server/router.rs
+@@ -1,5 +1,5 @@
+ use axum::body::Body;
+-use axum::extract::State;
++use axum::extract::{DefaultBodyLimit, State};
+ use axum::http::{Request, StatusCode};
+ use axum::middleware;
+ use axum::middleware::Next;
+@@ -95,10 +95,19 @@ pub fn build(state: AppState) -> Router {
+     let rate_limit_rps = state.config.rate_limit_rps;
+ 
+     // Public OpenAI routes retain their opt-in authentication behavior.
+-    let v1_routes = api::openai::routes().layer(middleware::from_fn_with_state(
+-        state.clone(),
+-        auth::middleware,
+-    ));
++    // Million-token requests exceed axum's 2 MiB default even as plain text.
++    // The larger finite bound is selected only by an explicit Xolotl profile.
++    let body_limit = if state.config.xolotl.enabled && state.config.xolotl.tuning.is_some() {
++        16 * 1024 * 1024
++    } else {
++        2 * 1024 * 1024
++    };
++    let v1_routes = api::openai::routes()
++        .layer(DefaultBodyLimit::max(body_limit))
++        .layer(middleware::from_fn_with_state(
++            state.clone(),
++            auth::middleware,
++        ));
+ 
+     // Browser-facing routes receive CORS headers. The internal distributed
+     // protocol is service-to-service only and deliberately has no CORS layer.
+@@ -379,6 +388,50 @@ mod tests {
+         );
+     }
+ 
++    #[tokio::test]
++    async fn xolotl_long_context_body_reaches_model_admission_and_retains_a_finite_bound() {
++        use crate::{
++            backend::BackendRegistry,
++            config::{PowerConfig, XolotlTuning},
++            model::registry::ModelRegistry,
++        };
++        for (enabled, size, expected) in [
++            (false, 3 * 1024 * 1024, StatusCode::PAYLOAD_TOO_LARGE),
++            (true, 3 * 1024 * 1024, StatusCode::NOT_FOUND),
++            (true, 17 * 1024 * 1024, StatusCode::PAYLOAD_TOO_LARGE),
++        ] {
++            let mut cfg = PowerConfig::default();
++            cfg.xolotl.enabled = enabled;
++            cfg.xolotl.tuning = Some(XolotlTuning {
++                context_tokens: 1_048_576,
++                cpu_threads: 8,
++                arena_gib: 60,
++                prompt_batch: 8192,
++                prefill_chunk: 512,
++                pcie_bp: 7500,
++                tier_batch_pcie_bp: 10_000,
++            });
++            let state = AppState::new(
++                Arc::new(ModelRegistry::new()),
++                Arc::new(BackendRegistry::new()),
++                Arc::new(cfg),
++            );
++            let body = serde_json::to_vec(&serde_json::json!({"model":"unregistered-context-fixture", "messages":[{"role":"user","content":"x".repeat(size)}]})).unwrap();
++            let req = Request::builder()
++                .method("POST")
++                .uri("/v1/chat/completions")
++                .header("content-type", "application/json")
++                .body(Body::from(body))
++                .unwrap();
++            let response = build(state).oneshot(req).await.unwrap();
++            assert_eq!(
++                response.status(),
++                expected,
++                "enabled={enabled}, size={size}"
++            );
++        }
++    }
++
+     // --- RateLimiter unit tests ---
+ 
+     #[test]

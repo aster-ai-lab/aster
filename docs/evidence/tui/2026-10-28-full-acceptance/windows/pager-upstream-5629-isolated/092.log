@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'doctor_cmd::tests::fix_preview_contains_exact_change_and_caveats' (46564) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\doctor_cmd\tests.rs:539:6:
+called `Result::unwrap()` on an `Err` value: PlatformUnsupported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test doctor_cmd::tests::fix_preview_contains_exact_change_and_caveats ... FAILED
+
+failures:
+
+failures:
+    doctor_cmd::tests::fix_preview_contains_exact_change_and_caveats
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

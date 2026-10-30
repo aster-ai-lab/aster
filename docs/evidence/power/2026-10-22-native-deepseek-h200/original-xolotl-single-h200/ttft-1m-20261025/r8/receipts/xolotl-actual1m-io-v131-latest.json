@@ -1,0 +1,465 @@
+{
+  "unix": 1792895750.0123348,
+  "native": {
+    "pid": 3737,
+    "start_ticks": 712279251,
+    "executable": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-pool-seed-v106/ds41_generate"
+  },
+  "samples": [
+    {
+      "unix": 1792895741.8164155,
+      "state": "S",
+      "utime": 180608,
+      "stime": 60516,
+      "minor_faults": 68946447,
+      "major_faults": 0,
+      "wchan": "futex_wait_queue_me",
+      "io": "rchar: 157317059677\nwchar: 150322\nsyscr: 33229843\nsyscw: 14188\nread_bytes: 0\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "active_threads": [
+        {
+          "tid": 3742,
+          "state": "D",
+          "utime": 311,
+          "stime": 1730,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb7057a55e0 0x100 0x690db3a98 0x0 0x1 0x7fb7057a50f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3743,
+          "state": "D",
+          "utime": 268,
+          "stime": 1735,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb704fa45e0 0x100 0x13f59d898 0x0 0x1 0x7fb704fa40f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3744,
+          "state": "D",
+          "utime": 324,
+          "stime": 1693,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f5fa65e0 0x100 0x47cfe998 0x0 0x1 0x7fb4f5fa60f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3745,
+          "state": "D",
+          "utime": 281,
+          "stime": 1720,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f57a55e0 0x100 0x53e8bc998 0x0 0x1 0x7fb4f57a50f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3746,
+          "state": "D",
+          "utime": 292,
+          "stime": 1708,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f4fa45e0 0x100 0x248d3dd98 0x0 0x1 0x7fb4f4fa40f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3747,
+          "state": "D",
+          "utime": 316,
+          "stime": 1721,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f47a35e0 0x100 0x786ba6498 0x0 0x1 0x7fb4f47a30f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3748,
+          "state": "D",
+          "utime": 298,
+          "stime": 1723,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f3fa25e0 0x100 0x927dc1e98 0x0 0x1 0x7fb4f3fa20f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3749,
+          "state": "D",
+          "utime": 278,
+          "stime": 1698,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "running\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3750,
+          "state": "D",
+          "utime": 258,
+          "stime": 1704,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f2fa05e0 0x100 0x2e8b47f98 0x0 0x1 0x7fb4f2fa00f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3751,
+          "state": "D",
+          "utime": 326,
+          "stime": 1702,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f279f5e0 0x100 0x73926bc98 0x0 0x1 0x7fb4f279f0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3752,
+          "state": "D",
+          "utime": 281,
+          "stime": 1729,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f1f9e5e0 0x100 0x952984c98 0x0 0x1 0x7fb4f1f9e0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3753,
+          "state": "D",
+          "utime": 294,
+          "stime": 1708,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f179d5e0 0x100 0x3e9289098 0x0 0x1 0x7fb4f179d0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3754,
+          "state": "D",
+          "utime": 332,
+          "stime": 1731,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f0f9c5e0 0x100 0x497652398 0x0 0x1 0x7fb4f0f9c0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3755,
+          "state": "D",
+          "utime": 476,
+          "stime": 1750,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4f079b5e0 0x100 0x337b4f798 0x0 0x1 0x7fb4f079b0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3756,
+          "state": "D",
+          "utime": 312,
+          "stime": 1708,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x2a 0x7fb4eff9a1e0 0x8 0x1712c3cac0 0x0 0x1 0x7fb4eff9a0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3757,
+          "state": "D",
+          "utime": 387,
+          "stime": 1777,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "running\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3758,
+          "state": "D",
+          "utime": 321,
+          "stime": 1709,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "running\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3759,
+          "state": "D",
+          "utime": 267,
+          "stime": 1717,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4ee7975e0 0x100 0x4e49c8a98 0x0 0x1 0x7fb4ee7970f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3760,
+          "state": "D",
+          "utime": 279,
+          "stime": 1710,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4edf965e0 0x100 0x84ad26b98 0x0 0x1 0x7fb4edf960f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3761,
+          "state": "D",
+          "utime": 271,
+          "stime": 1705,
+          "wchan": "0",
+          "syscall": "17 0x29 0x7fb4ed7955e0 0x100 0xa1f21d98 0x0 0x1 0x7fb4ed7950f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3762,
+          "state": "R",
+          "utime": 286,
+          "stime": 1721,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4ecf945e0 0x100 0x9d3049a98 0x0 0x1 0x7fb4ecf940f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3763,
+          "state": "D",
+          "utime": 301,
+          "stime": 1704,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4ec7935e0 0x100 0xf10c5998 0x0 0x1 0x7fb4ec7930f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3764,
+          "state": "D",
+          "utime": 272,
+          "stime": 1696,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x2a 0x7fb4ebf921e0 0x8 0x171a825e20 0x0 0x1 0x7fb4ebf920f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3765,
+          "state": "D",
+          "utime": 314,
+          "stime": 1702,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4eb7915e0 0x100 0x29a349598 0x0 0x1 0x7fb4eb7910f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3766,
+          "state": "D",
+          "utime": 253,
+          "stime": 1735,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4eaf905e0 0x100 0x97d63b198 0x0 0x1 0x7fb4eaf900f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3767,
+          "state": "D",
+          "utime": 312,
+          "stime": 1730,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4ea78f5e0 0x100 0x639fcf898 0x0 0x1 0x7fb4ea78f0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3768,
+          "state": "D",
+          "utime": 301,
+          "stime": 1693,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4e9f8e5e0 0x100 0x19bed5f98 0x0 0x1 0x7fb4e9f8e0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3769,
+          "state": "D",
+          "utime": 274,
+          "stime": 1750,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4e978d5e0 0x100 0x59aca0398 0x0 0x1 0x7fb4e978d0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3770,
+          "state": "R",
+          "utime": 320,
+          "stime": 1703,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4e8f8c5e0 0x100 0x1f0db9698 0x0 0x1 0x7fb4e8f8c0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3771,
+          "state": "D",
+          "utime": 283,
+          "stime": 1743,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x2a 0x7fb4e878b1e0 0x8 0x17336d2f90 0x0 0x1 0x7fb4e878b0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3772,
+          "state": "D",
+          "utime": 273,
+          "stime": 1706,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x29 0x7fb4e7f8a5e0 0x100 0x7c38a8e98 0x0 0x1 0x7fb4e7f8a0f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        },
+        {
+          "tid": 3773,
+          "state": "D",
+          "utime": 309,
+          "stime": 1721,
+          "wchan": "cxiWaitEventWait",
+          "syscall": "17 0x2a 0x7fb4e77891e0 0x8 0x1730b08a20 0x0 0x1 0x7fb4e77890f0 0x7fdf586bd78f\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        }
+      ],
+      "open_files": [
+        {
+          "fd": 2,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-code-v118-full1m_code/engine.log",
+          "fdinfo": "pos:\t52259\nflags:\t0102001\nmnt_id:\t8768\nino:\t565059238485\n"
+        },
+        {
+          "fd": 15,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 16,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 17,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0140000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 45,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t1156017475092\n"
+        },
+        {
+          "fd": 46,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        }
+      ],
+      "log_bytes": 52259,
+      "log_mtime": 1792894124.3666375
+    },
+    {
+      "unix": 1792895745.821043,
+      "state": "R",
+      "utime": 180840,
+      "stime": 60926,
+      "minor_faults": 68975788,
+      "major_faults": 0,
+      "wchan": "0",
+      "io": "rchar: 157353150637\nwchar: 150322\nsyscr: 33500311\nsyscw: 14188\nread_bytes: 0\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "active_threads": [
+        {
+          "tid": 3737,
+          "state": "R",
+          "utime": 165683,
+          "stime": 8005,
+          "wchan": "0",
+          "syscall": "running\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        }
+      ],
+      "open_files": [
+        {
+          "fd": 2,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-code-v118-full1m_code/engine.log",
+          "fdinfo": "pos:\t52259\nflags:\t0102001\nmnt_id:\t8768\nino:\t565059238485\n"
+        },
+        {
+          "fd": 15,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 16,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 17,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0140000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 45,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t1156017475092\n"
+        },
+        {
+          "fd": 46,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        }
+      ],
+      "log_bytes": 52259,
+      "log_mtime": 1792894124.3666375
+    },
+    {
+      "unix": 1792895749.8266273,
+      "state": "R",
+      "utime": 181237,
+      "stime": 60930,
+      "minor_faults": 68976170,
+      "major_faults": 0,
+      "wchan": "0",
+      "io": "rchar: 157353150637\nwchar: 150322\nsyscr: 33500311\nsyscw: 14188\nread_bytes: 0\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "active_threads": [
+        {
+          "tid": 3737,
+          "state": "R",
+          "utime": 166076,
+          "stime": 8011,
+          "wchan": "0",
+          "syscall": "running\n",
+          "stack": "PermissionError: [Errno 13] Permission denied"
+        }
+      ],
+      "open_files": [
+        {
+          "fd": 2,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-code-v118-full1m_code/engine.log",
+          "fdinfo": "pos:\t52259\nflags:\t0102001\nmnt_id:\t8768\nino:\t565059238485\n"
+        },
+        {
+          "fd": 15,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 16,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 17,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0140000\nmnt_id:\t8768\nino:\t18926828761\n"
+        },
+        {
+          "fd": 45,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t1156017475092\n"
+        },
+        {
+          "fd": 46,
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+          "fdinfo": "pos:\t0\nflags:\t0100000\nmnt_id:\t8768\nino:\t18926828761\n"
+        }
+      ],
+      "log_bytes": 52259,
+      "log_mtime": 1792894124.3666375
+    }
+  ],
+  "gpu": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee, 84, 142887, 387.19",
+  "no_inference": true,
+  "no_attach_or_signal": true,
+  "previous_observation_unix": 1792894749.9676733,
+  "delta_from_previous": {
+    "seconds": 999.8589539527893,
+    "utime_ticks": 87361,
+    "stime_ticks": 25617,
+    "minor_faults": 12481844,
+    "major_faults": 0
+  }
+}

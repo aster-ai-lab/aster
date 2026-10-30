@@ -1,0 +1,26 @@
+[
+  {
+    "key": "cli.linux",
+    "status": 200
+  },
+  {
+    "key": "cli.macos",
+    "status": 200
+  },
+  {
+    "key": "cli.windows",
+    "status": 200
+  },
+  {
+    "key": "desktop.kylin",
+    "status": 200
+  },
+  {
+    "key": "desktop.macos",
+    "status": 200
+  },
+  {
+    "key": "desktop.windows",
+    "status": 200
+  }
+]

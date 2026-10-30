@@ -1,0 +1,260 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo fix --lib -p a3s-tty-utils` to apply 1 suggestion)
+warning: field `directory` is never read
+   --> crates\terminal\crates\codegen\a3s-code-config\src\managed_text\source.rs:131:5
+    |
+128 | pub(super) struct ParentAnchor {
+    |                   ------------ field in this struct
+...
+131 |     directory: fs::File,
+    |     ^^^^^^^^^
+    |
+    = note: `ParentAnchor` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-config` (lib) generated 1 warning
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\implementations\web_search\client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: unused variable: `task_ids`
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:1580:51
+     |
+1580 |     async fn collect_shell_state_dumps(&mut self, task_ids: &[String]) {
+     |                                                   ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_ids`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:3315:9
+     |
+3315 |     let mut build_cmd = |with_breakaway: bool| {
+     |         ----^^^^^^^^^
+     |         |
+     |         help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `login_shell_capture` is never read
+   --> crates\terminal\crates\codegen\a3s-code-tools\src\computer\local\terminal.rs:590:5
+    |
+547 | struct LocalTerminalActor {
+    |        ------------------ field in this struct
+...
+590 |     login_shell_capture: bool,
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-tools` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 4 suggestions)
+warning: variable does not need to be mutable
+   --> crates\terminal\crates\codegen\a3s-code-telemetry\src\logs\unified_log.rs:175:13
+    |
+175 |         let mut builder = fs::DirBuilder::new();
+    |             ----^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-telemetry` (lib) generated 1 warning (run `cargo fix --lib -p a3s-code-telemetry` to apply 1 suggestion)
+warning: unused imports: `Command` and `Stdio`
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1024:24
+     |
+1024 |     use std::process::{Command, Stdio};
+     |                        ^^^^^^^  ^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1757:33
+     |
+1757 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1766 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+     |
+     = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `arboard_error` is never read
+    --> crates\terminal\crates\codegen\a3s-code-shared\src\clipboard.rs:1863:33
+     |
+1863 |         let mut arboard_error = None;
+     |                                 ^^^^ this value is reassigned later and never used
+...
+1872 |                 arboard_error = Some(e);
+     |                 ------------- `arboard_error` is overwritten here before the previous value is read
+
+warning: `a3s-code-shared` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-shared` to apply 1 suggestion)
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\build\a3s-code-markdown-654ecdb30b4ef92f\build_script_build-654ecdb30b4ef92f.lib 和对象 D:\code\aster\target\debug\build\a3s-code-markdown-654ecdb30b4ef92f\build_script_build-654ecdb30b4ef92f.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-markdown` (build script) generated 1 warning
+warning: function `default_shell_path` is never used
+  --> crates\terminal\crates\codegen\a3s-code-shell-terminal\src\lib.rs:45:15
+   |
+45 | pub(crate) fn default_shell_path() -> &'static str {
+   |               ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-shell-terminal` (lib) generated 1 warning
+warning: unused import: `std::time::Duration`
+ --> crates\terminal\crates\codegen\a3s-code-pager-render\src\terminal\probe.rs:9:5
+  |
+9 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-pager-render` (lib) generated 1 warning (run `cargo fix --lib -p a3s-code-pager-render` to apply 1 suggestion)
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\crates\code\acp)
+   Compiling aster v0.1.4 (D:\code\aster\apps\aster)
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates\embedding\src\vector\hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates\embedding\src\hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates\embedding\src\vector\hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates\embedding\src\vector\hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: variable does not need to be mutable
+   --> crates\code\acp\src\unattended.rs:223:9
+    |
+223 |     let mut builder = std::fs::DirBuilder::new();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_embedding_provider` is never used
+  --> crates\code\acp\src\agent\local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates\code\acp\src\host_context.rs:51:12
+   |
+44 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+51 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-acp` to apply 1 suggestion)
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\deps\a3s_code_acp.lib 和对象 D:\code\aster\target\debug\deps\a3s_code_acp.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+warning: linker stdout: 正在创建库 D:\code\aster\target\debug\deps\aster.lib 和对象 D:\code\aster\target\debug\deps\aster.exp␍
+         LINK : warning LNK4199: 已忽略 /DELAYLOAD:ProjectedFSLib.dll；未找到来自 ProjectedFSLib.dll 的导入
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster` (bin "aster") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 26.19s

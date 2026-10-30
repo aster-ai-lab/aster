@@ -1,0 +1,125 @@
+{
+  "case": "missing-file",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=26830",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4SRFPk\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool exactly once to read nonexistent-proof.txt. Report its actual error without         5:51 PM           retrying and without calling other tools. Do not create or modify any file.                                                                                                                                                                                                                                                                                           ♦ Read 1 file · 1 failed                                                                                                                                                                                                                        The read failed with exit code 1:                                                                       5:52 PM                                                                                                                                 Failed to read file \\\\?\\C:\\Windows\\Temp\\aster-kimi-4SRFPk\\workspace\\nonexistent-proof.txt: Failed to                    resolve path: 系统找不到指定的文件。 (os error 2)                                                                                                                                                                                               Worked for 13s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "missing-read",
+      "detail": "one actual failed read invocation, completed reply and no created file",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4SRFPk\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool exactly once to read nonexistent-proof.txt. Report its actual error without         5:51 PM           retrying and without calling other tools. Do not create or modify any file.                                                                                                                                                                                                                                                                                           ♦ Read 1 file · 1 failed                                                                                                                                                                                                                        The read failed with exit code 1:                                                                       5:52 PM                                                                                                                                 Failed to read file \\\\?\\C:\\Windows\\Temp\\aster-kimi-4SRFPk\\workspace\\nonexistent-proof.txt: Failed to                    resolve path: 系统找不到指定的文件。 (os error 2)                                                                                                                                                                                               Worked for 13s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13328,
+        "has_text": false,
+        "tool": "read",
+        "call": {
+          "id": "call_811ac80b3b3844f09f2c8c2c5dd01b35",
+          "name": "read",
+          "args": {
+            "file_path": "nonexistent-proof.txt"
+          }
+        },
+        "text": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_811ac80b3b3844f09f2c8c2c5dd01b35",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-42cd9f26-4234-4239-8ab8-dc803830a0a7",
+            "thread_id": "60e62910-2c51-4f7a-9888-566a611b885e",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_811ac80b3b3844f09f2c8c2c5dd01b35",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-42cd9f26-4234-4239-8ab8-dc803830a0a7",
+            "thread_id": "60e62910-2c51-4f7a-9888-566a611b885e",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:14b9e3ff14e3c3fb19ddc96b6af4de9ef8cba828a4271ce4e22446bafe94857d",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Failed to read file \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-4SRFPk\\\\workspace\\\\nonexistent-proof.txt: Failed to resolve path: 系统找不到指定的文件。 (os error 2)\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":161,\"projected_bytes\":161,\"original_estimated_tokens\":41,\"projected_estimated_tokens\":41,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:ceca9bcfe24f4c571b6db6a460b7748f184756b7d9e101fb5e970051544d19b0\",\"projected_digest\":\"sha256:ceca9bcfe24f4c571b6db6a460b7748f184756b7d9e101fb5e970051544d19b0\",\"repeat_key\":\"sha256:ceca9bcfe24f4c571b6db6a460b7748f184756b7d9e101fb5e970051544d19b0\",\"content_ref\":\"inline:sha256:ceca9bcfe24f4c571b6db6a460b7748f184756b7d9e101fb5e970051544d19b0\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f7647d2c8c8bfa265cd8bddc4971d71fca6b556cd3f2b4313ce090e60a74fcbe\"}",
+        "scheduler_output_matches_receipt": true
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13502,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "The read failed with exit code 1:\n\n```text\nFailed to read file \\\\?\\C:\\Windows\\Temp\\aster-kimi-4SRFPk\\workspace\\nonexistent-proof.txt: Failed to resolve path: 系统找不到指定的文件。 (os error 2)\n```"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:76157a4c94e10d3e407320a3aafe5dd68134b9361e1a36c13c01a5076774413c"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "dfc0e88ceb43ae21cef5bb47bafe45c95a4a8da11d7f59cf279bf9ed0d25390c"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

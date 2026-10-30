@@ -1,0 +1,246 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Blocking waiting for file lock on build directory
+    Checking smallvec v1.16.3
+    Checking futures-io v0.3.34
+    Checking serde_json v1.0.154
+    Checking zerocopy v0.8.48
+    Checking windows-sys v0.59.0
+    Checking simd-adler32 v0.3.7
+    Checking winapi v0.3.9
+    Checking getrandom v0.3.4
+    Checking concurrent-queue v2.5.0
+    Checking derive_more v2.1.1
+    Checking rustls v0.23.46
+    Checking anyhow v1.0.104
+    Checking either v1.15.0
+    Checking bytemuck v1.25.2
+    Checking ttf-parser v0.25.1
+    Checking parking_lot_core v0.9.12
+    Checking icu_normalizer v2.0.0
+    Checking cssparser v0.37.0
+    Checking cssparser v0.34.0
+    Checking futures-util v0.3.34
+    Checking tracing-subscriber v0.3.23
+    Checking lsp-types v0.97.0
+    Checking miniz_oxide v0.8.9
+    Checking tempfile v3.27.0
+    Checking winx v0.36.4
+    Checking fs-set-times v0.20.3
+    Checking event-listener v5.4.1
+    Checking fs2 v0.4.3
+    Checking ppv-lite86 v0.2.21
+    Checking ahash v0.8.12
+    Checking rayon v1.12.0
+    Checking roaring v0.11.1
+    Checking parking_lot v0.12.5
+    Checking dashmap v6.2.1
+    Checking selectors v0.26.0
+    Checking idna_adapter v1.2.1
+    Checking event-listener-strategy v0.5.4
+    Checking flate2 v1.1.5
+    Checking cap-primitives v4.0.3
+    Checking selectors v0.38.0
+    Checking rand_chacha v0.3.1
+    Checking tokio v1.53.3
+    Checking string_cache v0.9.0
+    Checking string_cache v0.8.9
+    Checking referencing v0.47.0
+    Checking idna v1.1.0
+    Checking async-lock v3.4.1
+    Checking lopdf v0.42.0
+    Checking a3s-vec v0.1.8 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\vec)
+    Checking cap-std v4.0.2
+    Checking rand v0.8.8
+    Checking futures-executor v0.3.34
+    Checking web_atoms v0.2.3
+    Checking markup5ever v0.14.1
+    Checking url v2.5.8
+    Checking publicsuffix v2.3.0
+    Checking jsonschema v0.47.0
+    Checking rquickjs-core v0.11.0
+    Checking cap-fs-ext v4.0.2
+    Checking futures v0.3.34
+    Checking cookie_store v0.21.1
+    Checking a3s-form-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\form-core)
+    Checking markup5ever v0.38.0
+    Checking markup5ever v0.39.0
+    Checking html5ever v0.29.1
+    Checking html5ever v0.38.0
+    Checking xml5ever v0.38.0
+    Checking html5ever v0.39.0
+    Checking tokio-util v0.7.19
+    Checking tokio-rustls v0.26.6
+    Checking tower v0.5.2
+    Checking async-compression v0.4.19
+    Checking a3s-memory v0.1.5 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\memory)
+    Checking a3s-common v0.1.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\common)
+    Checking sha256 v1.6.0
+    Checking a3s-sandbox v0.2.3 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\sandbox)
+    Checking rquickjs v0.11.0
+    Checking scraper v0.22.0
+    Checking markup5ever_rcdom v0.38.0+unofficial
+    Checking html2text v0.16.7
+    Checking dom_query v0.28.0
+    Checking htmd v0.5.4
+    Checking tower-http v0.6.8
+    Checking h2 v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking a3s-effect v0.2.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\effect)
+    Checking dom_smoothie v0.18.2
+    Checking opentelemetry_sdk v0.21.2
+    Checking a3s-lane v0.5.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\lane)
+    Checking hyper v1.8.1
+    Checking hyper-util v0.1.20
+    Checking hyper-rustls v0.27.7
+    Checking reqwest v0.12.24
+    Checking a3s-search v3.4.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\search)
+    Checking a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates\code\core\src\agent\tool_completion_runtime.rs:316:5
+    |
+316 | /     pub(crate) fn record_native_artifact_verification(
+317 | |         &self,
+318 | |         call: &ToolCall,
+319 | |         result: &a3s_effect::ToolExecutionResultV1,
+...   |
+324 | |         nested: Option<&crate::harness_loop::MutationLedger>,
+325 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: casting to the same type is unnecessary (`u64` -> `u64`)
+  --> crates\code\core\src\fact_control\receipts.rs:95:51
+   |
+95 |             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `request.identity.turn`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_cast
+   = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+  --> crates\code\core\src\porcelain\windows.rs:81:6
+   |
+81 | ) -> Option<(Vec<(OsString, NodeInfo)>, bool, bool)> {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#type_complexity
+   = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\sandbox\guest.rs:535:9
+    |
+535 |         return;
+    |         ^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+    = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+    |
+534 -     if pid == 0 {
+535 -         return;
+534 +     if pid == 0 {
+    |
+
+warning: the following explicit lifetimes could be elided: 'a
+  --> crates\code\core\src\tools\builtin\bash\windows_shell.rs:54:44
+   |
+54 | pub(crate) fn first_usable_host_powershell<'a>(
+   |                                            ^^
+55 |     candidates: &'a [std::path::PathBuf],
+   |                  ^^
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 | ) -> Option<&'a std::path::PathBuf> {
+   |              ^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_lifetimes
+   = note: `#[warn(clippy::needless_lifetimes)]` on by default
+help: elide the lifetimes
+   |
+54 ~ pub(crate) fn first_usable_host_powershell(
+55 ~     candidates: &[std::path::PathBuf],
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 ~ ) -> Option<&std::path::PathBuf> {
+   |
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\tools\builtin\bash.rs:195:13
+    |
+195 |             return None;
+    |             ^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+help: remove `return`
+    |
+195 -             return None;
+195 +             None
+    |
+
+warning: stripping a prefix manually
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:632:33
+    |
+632 |                     let after = &rest[identifier.len()..];
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: the prefix was tested here
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:631:17
+    |
+631 |                 if rest.starts_with(identifier) {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_strip
+    = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+    |
+631 ~                 if let Some(after) = rest.strip_prefix(identifier) {
+632 ~                     if after.is_empty()
+    |
+
+warning: `a3s-code-core` (lib) generated 12 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps` to apply 7 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 39s

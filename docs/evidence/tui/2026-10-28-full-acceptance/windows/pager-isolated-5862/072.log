@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::workspace_membership::tests::foreign_commit_refreshes_through_the_same_store_handle' (42384) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\workspace_membership_tests.rs:749:10:
+called `Result::unwrap()` on an `Err` value: CwdNotAbsolute
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::workspace_membership::tests::foreign_commit_refreshes_through_the_same_store_handle ... FAILED
+
+failures:
+
+failures:
+    app::workspace_membership::tests::foreign_commit_refreshes_through_the_same_store_handle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.07s
+

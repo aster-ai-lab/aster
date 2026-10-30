@@ -1,0 +1,826 @@
+{
+  "schema": "aster-actual1m-simd-literal-r8",
+  "unix": 1792900945.2359993,
+  "actual1m_input_tokens": 1047544,
+  "actual_output_tokens": 1024,
+  "fullwindow_suite_requests": 20,
+  "actual1m_requests": 18,
+  "remainder_passed": true,
+  "cold": {
+    "name": "cold-full1m-1024",
+    "status": 200,
+    "done": true,
+    "finish_reason": "length",
+    "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that a cached copy of data agrees with the authoritative source, or at least agrees with whatever the system promises to expose. In distributed systems the promise is rarely \"always identical\"; it is usually a bounded staleness contract, a monotonicity guarantee, or a read-your-writes guarantee. The engineering problem is that caches are replicated, partitioned, and updated concurrently, so agreement must be maintained across processes, machines, and time. This chapter treats the mechanisms that maintain or relax agreement: invalidation, TTL, write-through and write-back, replication, failover, race conditions, versioning, concrete timelines, pseudocode, monitoring, and operational trade-offs.\n\n## 1. The consistency contract\n\nBefore choosing a mechanism, define what the cache promises. Common contracts:\n\n- **Strong consistency**: a read returns the latest committed write. Requires coordination (leases, version checks, or single-writer ownership).\n- **Linearizable reads**: reads observe a single global order equivalent to a sequential execution.\n- **Read-your-writes**: a client that wrote a value sees it on subsequent reads, even if other clients see stale data.\n- **Monotonic reads**: successive reads by one client never move backward in time.\n- **Bounded staleness**: a read may be stale by at most T seconds or V versions.\n- **Eventual consistency**: reads converge to the latest value once writes stop.\n\nThe contract determines which mechanisms are sufficient. TTL alone gives bounded staleness only if the source of truth is also bounded; invalidation gives convergence but not freshness guarantees unless invalidation is synchronous. Write-through gives strong consistency for the write path but not for reads served by other replicas.\n\nA useful formalization: let `S(t)` be the authoritative value at time `t`, and `C(t)` the cached value. Consistency means `C(t) = S(t')` for some `t'` within the allowed staleness window, and monotonicity means `t'` never decreases for a given client. Versioning makes `t'` explicit by attaching a version number to each value.\n\n## 2. Invalidation\n\nInvalidation is the act of marking or removing cached entries when the underlying data changes. It is the primary mechanism for convergence, because it directly couples cache state to source state.\n\n### 2.1 Invalidation styles\n\n- **Purge (delete)**: remove the entry. The next read misses and refills. Simple, but causes a miss storm after mass invalidation.\n- **Mark stale**: keep the entry but flag it; readers may serve stale data with a warning or refill lazily. Useful when refill is expensive.\n- **Update in place**: overwrite the cached value with the new one. Requires the cache to receive the new value, not just a key.\n- **Version bump**: increment a version so readers can compare and reject stale entries without deleting them.\n\n### 2.2 Push versus pull invalidation\n\nPush invalidation: the writer notifies caches directly (a message, an RPC, a pub/sub topic). Latency is low but the writer must know all cache participants, and notification delivery can fail.\n\nPull invalidation: caches poll a change log or version index. Robust to lost notifications but adds polling latency and load.\n\nHybrid: push with a fallback poll, so a missed notification is eventually corrected.\n\n### 2.3 Invalidation granularity\n\n- **Key-level**: invalidate one key. Precise, but requires the writer to know which keys changed.\n- **Tag/group-level**: invalidate a group (e.g., all keys for a tenant). Cheap to emit, expensive to apply.\n- **Namespace-level**: invalidate everything under a prefix. Used for schema changes or bulk migrations.\n\nGranularity is a trade-off between notification volume and invalidation blast radius. Key-level invalidation is precise but can produce millions of messages; tag-level invalidation is compact but may evict unrelated entries.\n\n### 2.4 Invalidation ordering hazards\n\nInvalidation must be ordered relative to writes. If a write commits at `t1` and invalidation arrives at `t2 > t1`, a reader between `t1` and `t2` sees stale data. If invalidation arrives before the write commits (`t2 < t1`), the cache refills with the old value and remains stale until the next invalidation. The safe pattern is **invalidate after commit**, or invalidate both before and after (double invalidation) to cover the refill window.\n\nPseudocode for commit-then-invalidate:\n\n```\ndef write(key, value):\n    version = store.commit(key, value)      # authoritative write\n    cache.invalidate(key, version)          # after commit\n    return version\n```\n\nPseud",
+    "usage": {
+      "prompt_tokens": 1047544,
+      "completion_tokens": 1024,
+      "total_tokens": 1048568,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "output_sha256": "7f9b16debd8c73a488bdf1ef1ca517afee6c9e27581e6ca2964b7ef86422e7cf",
+    "seconds": 2050.0444087767974,
+    "ttft_seconds": 2012.4815136049874,
+    "first_to_last_text_seconds": 37.55902180401608,
+    "text_chunks": 1014,
+    "response_bytes": 237558
+  },
+  "restored": {
+    "name": "restored-full1m-1024",
+    "status": 200,
+    "done": true,
+    "finish_reason": "length",
+    "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that a cached copy of data agrees with the authoritative source, or at least agrees with whatever the system promises to expose. In distributed systems the promise is rarely \"always identical\"; it is usually a bounded staleness contract, a monotonicity guarantee, or a read-your-writes guarantee. The engineering problem is that caches are replicated, partitioned, and updated concurrently, so agreement must be maintained across processes, machines, and time. This chapter treats the mechanisms that maintain or relax agreement: invalidation, TTL, write-through and write-back, replication, failover, race conditions, versioning, concrete timelines, pseudocode, monitoring, and operational trade-offs.\n\n## 1. The consistency contract\n\nBefore choosing a mechanism, define what the cache promises. Common contracts:\n\n- **Strong consistency**: a read returns the latest committed write. Requires coordination (leases, version checks, or single-writer ownership).\n- **Linearizable reads**: reads observe a single global order equivalent to a sequential execution.\n- **Read-your-writes**: a client that wrote a value sees it on subsequent reads, even if other clients see stale data.\n- **Monotonic reads**: successive reads by one client never move backward in time.\n- **Bounded staleness**: a read may be stale by at most T seconds or V versions.\n- **Eventual consistency**: reads converge to the latest value once writes stop.\n\nThe contract determines which mechanisms are sufficient. TTL alone gives bounded staleness only if the source of truth is also bounded; invalidation gives convergence but not freshness guarantees unless invalidation is synchronous. Write-through gives strong consistency for the write path but not for reads served by other replicas.\n\nA useful formalization: let `S(t)` be the authoritative value at time `t`, and `C(t)` the cached value. Consistency means `C(t) = S(t')` for some `t'` within the allowed staleness window, and monotonicity means `t'` never decreases for a given client. Versioning makes `t'` explicit by attaching a version number to each value.\n\n## 2. Invalidation\n\nInvalidation is the act of marking or removing cached entries when the underlying data changes. It is the primary mechanism for convergence, because it directly couples cache state to source state.\n\n### 2.1 Invalidation styles\n\n- **Purge (delete)**: remove the entry. The next read misses and refills. Simple, but causes a miss storm after mass invalidation.\n- **Mark stale**: keep the entry but flag it; readers may serve stale data with a warning or refill lazily. Useful when refill is expensive.\n- **Update in place**: overwrite the cached value with the new one. Requires the cache to receive the new value, not just a key.\n- **Version bump**: increment a version so readers can compare and reject stale entries without deleting them.\n\n### 2.2 Push versus pull invalidation\n\nPush invalidation: the writer notifies caches directly (a message, an RPC, a pub/sub topic). Latency is low but the writer must know all cache participants, and notification delivery can fail.\n\nPull invalidation: caches poll a change log or version index. Robust to lost notifications but adds polling latency and load.\n\nHybrid: push with a fallback poll, so a missed notification is eventually corrected.\n\n### 2.3 Invalidation granularity\n\n- **Key-level**: invalidate one key. Precise, but requires the writer to know which keys changed.\n- **Tag/group-level**: invalidate a group (e.g., all keys for a tenant). Cheap to emit, expensive to apply.\n- **Namespace-level**: invalidate everything under a prefix. Used for schema changes or bulk migrations.\n\nGranularity is a trade-off between notification volume and invalidation blast radius. Key-level invalidation is precise but can produce millions of messages; tag-level invalidation is compact but may evict unrelated entries.\n\n### 2.4 Invalidation ordering hazards\n\nInvalidation must be ordered relative to writes. If a write commits at `t1` and invalidation arrives at `t2 > t1`, a reader between `t1` and `t2` sees stale data. If invalidation arrives before the write commits (`t2 < t1`), the cache refills with the old value and remains stale until the next invalidation. The safe pattern is **invalidate after commit**, or invalidate both before and after (double invalidation) to cover the refill window.\n\nPseudocode for commit-then-invalidate:\n\n```\ndef write(key, value):\n    version = store.commit(key, value)      # authoritative write\n    cache.invalidate(key, version)          # after commit\n    return version\n```\n\nPseud",
+    "usage": {
+      "prompt_tokens": 1047544,
+      "completion_tokens": 1024,
+      "total_tokens": 1048568,
+      "prompt_tokens_details": {
+        "cached_tokens": 1047544
+      }
+    },
+    "output_sha256": "7f9b16debd8c73a488bdf1ef1ca517afee6c9e27581e6ca2964b7ef86422e7cf",
+    "seconds": 43.643213185016066,
+    "ttft_seconds": 7.864606266841292,
+    "first_to_last_text_seconds": 35.77503077080473,
+    "text_chunks": 1014,
+    "response_bytes": 233819
+  },
+  "c1": {
+    "concurrency": 1,
+    "requests": 8,
+    "completion_tokens": 8192,
+    "wall_seconds": 351.10497394623235,
+    "aggregate_end_to_end_completion_tok_s": 23.33205339681263,
+    "ttft_p50_seconds": 7.855325242271647,
+    "ttft_p95_seconds": 8.026144072203897,
+    "request_p95_seconds": 44.361530147632585,
+    "per_stream_interval_tok_s_estimate": 28.40019190907955
+  },
+  "c2_structurally_completed": 8,
+  "c2_full_output_identity_gate_passed": false,
+  "simd_model_requests": 120,
+  "simd_profiles": [
+    {
+      "profile": "control_a",
+      "basic": {
+        "profile": "control_a",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.1305933187250048,
+          "ttft_p95_seconds": 0.16520167037378997,
+          "api_wall_completion_tok_s": 83.10265525988329,
+          "stream_interval_tok_s_estimate": 92.70616137961304
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 37.94436811283231,
+            "seconds": 38.013056627009064,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.20709420088678598,
+            "seconds": 0.2521276087500155,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.030833708122372627,
+            "seconds": 0.105223230086267,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.4457587748765945,
+            "seconds": 1.4756439817138016,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 37.30219106376171,
+            "seconds": 37.349350014701486,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 36.308698600158095,
+            "seconds": 36.62368994625285,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.4370547896251082,
+            "seconds": 1.4694316969253123,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 37.19043480698019,
+            "seconds": 37.71431816602126,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "control_a",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 108.15536082722247,
+          "api_wall_completion_tok_s": 75.74289371644436,
+          "stream_interval_tok_s_estimate": 75.90025459020148,
+          "ttft_p50_seconds": 0.01123309787362814,
+          "ttft_min_seconds": 0.010003313887864351,
+          "ttft_max_seconds": 0.02638621674850583
+        },
+        "reference_matched": true,
+        "failure_log": null
+      },
+      "model_requests": 40
+    },
+    {
+      "profile": "simd",
+      "basic": {
+        "profile": "simd",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.12841987237334251,
+          "ttft_p95_seconds": 0.16457718168385327,
+          "api_wall_completion_tok_s": 83.98101250843563,
+          "stream_interval_tok_s_estimate": 93.6655648192034
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 37.93860508361831,
+            "seconds": 38.00639138603583,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.20447433507069945,
+            "seconds": 0.24868556018918753,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.032184254843741655,
+            "seconds": 0.09498687414452434,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.42126981401816,
+            "seconds": 1.4511240748688579,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 37.343260125722736,
+            "seconds": 37.3833653787151,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 36.22524325782433,
+            "seconds": 36.566565142944455,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.6291703558526933,
+            "seconds": 1.6624359702691436,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 37.277532670181245,
+            "seconds": 37.625176100991666,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "simd",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 107.34974989807233,
+          "api_wall_completion_tok_s": 76.31130960042509,
+          "stream_interval_tok_s_estimate": 76.35086103013457,
+          "ttft_p50_seconds": 0.010841762879863381,
+          "ttft_min_seconds": 0.009425167925655842,
+          "ttft_max_seconds": 0.01621322799474001
+        },
+        "reference_matched": true,
+        "failure_log": null
+      },
+      "model_requests": 40
+    },
+    {
+      "profile": "control_b",
+      "basic": {
+        "profile": "control_b",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.1318238729145378,
+          "ttft_p95_seconds": 0.22316414630040526,
+          "api_wall_completion_tok_s": 81.60848051831474,
+          "stream_interval_tok_s_estimate": 91.92942363899421
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 38.58185473596677,
+            "seconds": 38.65414143772796,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.21176592772826552,
+            "seconds": 0.2562338821589947,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.032231664285063744,
+            "seconds": 0.108114552218467,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.872501872945577,
+            "seconds": 1.902625157032162,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 38.209817599039525,
+            "seconds": 38.25034091807902,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 37.54947785008699,
+            "seconds": 37.842345690820366,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.7497434429824352,
+            "seconds": 1.7824340900406241,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 38.2691001361236,
+            "seconds": 38.622119984123856,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "control_b",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 108.49781813519076,
+          "api_wall_completion_tok_s": 75.50382248049063,
+          "stream_interval_tok_s_estimate": 75.54464951993525,
+          "ttft_p50_seconds": 0.011005113599821925,
+          "ttft_min_seconds": 0.009927744045853615,
+          "ttft_max_seconds": 0.01709342608228326
+        },
+        "reference_matched": true,
+        "failure_log": null
+      },
+      "model_requests": 40
+    }
+  ],
+  "simd_observed_api_wall_gain_percent": [
+    0.750454407127199,
+    1.0694652183246944
+  ],
+  "simd_actual1m_input_tested": false,
+  "simd_exhaustive_values_per_mode": 786432,
+  "literal_cpu_A_B_A": [
+    {
+      "mode": "control_a",
+      "mark_seconds": 3.1906585097312927,
+      "render_seconds": 0.017354520969092846,
+      "unmark_seconds": 4.475002622231841,
+      "tokenize_seconds": 1.6870078081265092,
+      "staged_seconds": 9.370023461058736,
+      "actual_service_encode_seconds": 9.153777753934264,
+      "prompt_tokens": 1047544,
+      "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "literal_spans": 2,
+      "changed": true,
+      "memo": {
+        "entries": 0,
+        "accounted_bytes": 0,
+        "hits": 0,
+        "misses": 0,
+        "admissions": 0
+      },
+      "scanner": null
+    },
+    {
+      "mode": "literal_scan",
+      "mark_seconds": 0.0985453356988728,
+      "render_seconds": 0.006212606094777584,
+      "unmark_seconds": 0.02795084100216627,
+      "tokenize_seconds": 1.4971446739509702,
+      "staged_seconds": 1.6298534567467868,
+      "actual_service_encode_seconds": 1.6471612737514079,
+      "prompt_tokens": 1047544,
+      "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "literal_spans": 2,
+      "changed": true,
+      "memo": {
+        "entries": 0,
+        "accounted_bytes": 0,
+        "hits": 0,
+        "misses": 0,
+        "admissions": 0
+      },
+      "scanner": {
+        "entries": 1,
+        "accounted_bytes": 633073,
+        "compiled_maps": 1,
+        "fallback_maps": 0,
+        "request_text_retained": false
+      }
+    },
+    {
+      "mode": "control_b",
+      "mark_seconds": 3.1526960437186062,
+      "render_seconds": 0.012328611221164465,
+      "unmark_seconds": 4.46020040800795,
+      "tokenize_seconds": 1.4831098420545459,
+      "staged_seconds": 9.108334905002266,
+      "actual_service_encode_seconds": 9.126679551787674,
+      "prompt_tokens": 1047544,
+      "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "literal_spans": 2,
+      "changed": true,
+      "memo": {
+        "entries": 0,
+        "accounted_bytes": 0,
+        "hits": 0,
+        "misses": 0,
+        "admissions": 0
+      },
+      "scanner": {
+        "entries": 1,
+        "accounted_bytes": 633073,
+        "compiled_maps": 1,
+        "fallback_maps": 0,
+        "request_text_retained": false
+      }
+    }
+  ],
+  "literal_all_ids_exact": true,
+  "canonical_api_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+  "old_direct_template_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+  "canonical_id_difference_count": 6,
+  "native_runtime_id_digest_captured": false,
+  "new_api_cpu_suites": 14,
+  "formal_recovery": {
+    "unix": 1792900784.4269686,
+    "phase": "promoted",
+    "base_url": "http://10.102.93.68/v1",
+    "old_allocation_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+    "new_allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+    "same_existing_key": true,
+    "context_tokens": 1048576,
+    "instance_actual_prompt_tokens_qualified": 132097,
+    "engine_profile_full_1m_length_qualified": true,
+    "engine_profile_evidence": "xolotl-indexer-fullwindow-suite-v45-latest.json",
+    "instance_full_1m_execution_tested": false,
+    "native_tool_roundtrip_passed": true,
+    "workbuddy_gui_e2e_passed": false,
+    "speed_300_qualified": false,
+    "lease_ends_unix": 1792921721.8908198,
+    "switch": {
+      "unix": 1792900795.696459,
+      "before": {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+          "annotations": {
+            "aster.serving/allocation-uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+            "aster.serving/lease-ends-unix": "1792906909.8635943",
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"3a66564e-0a12-4c17-9b41-741fd78e0017\",\"aster.serving/lease-ends-unix\":\"1792906909.8635943\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc9-e81ede480e07-8789662\",\"uid\":\"3a66564e-0a12-4c17-9b41-741fd78e0017\"}],\"resourceVersion\":\"14554371966\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc9-e81ede480e07-8789662\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+            "metallb.universe.tf/address-pool": "bgp-pool-v3",
+            "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+          },
+          "creationTimestamp": "2026-10-24T11:45:48Z",
+          "labels": {
+            "app.kubernetes.io/managed-by": "aster-h200-deployment",
+            "aster-task": "xolotl-single-h200"
+          },
+          "name": "aster-xolotl-api-v3pool-20261024",
+          "namespace": "ailab-hrprdduanyan",
+          "ownerReferences": [
+            {
+              "apiVersion": "rjob.brainpp.cn/v1alpha1",
+              "blockOwnerDeletion": false,
+              "controller": false,
+              "kind": "RJob",
+              "name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+              "uid": "3a66564e-0a12-4c17-9b41-741fd78e0017"
+            }
+          ],
+          "resourceVersion": "14558174220",
+          "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+        },
+        "spec": {
+          "allocateLoadBalancerNodePorts": false,
+          "clusterIP": "10.68.85.120",
+          "clusterIPs": [
+            "10.68.85.120"
+          ],
+          "externalTrafficPolicy": "Cluster",
+          "internalTrafficPolicy": "Cluster",
+          "ipFamilies": [
+            "IPv4"
+          ],
+          "ipFamilyPolicy": "SingleStack",
+          "ports": [
+            {
+              "appProtocol": "http",
+              "name": "openai-http",
+              "port": 80,
+              "protocol": "TCP",
+              "targetPort": 30003
+            }
+          ],
+          "selector": {
+            "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc9-e81ede480e07-8789662"
+          },
+          "sessionAffinity": "None",
+          "type": "LoadBalancer"
+        },
+        "status": {
+          "loadBalancer": {
+            "ingress": [
+              {
+                "ip": "10.102.93.68"
+              }
+            ]
+          }
+        }
+      },
+      "after": {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+          "annotations": {
+            "aster.serving/allocation-uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+            "aster.serving/lease-ends-unix": "1792921721.8908198",
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"1cfa236c-40ba-408f-a45e-003e0261bdf5\",\"aster.serving/lease-ends-unix\":\"1792921721.8908198\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc11-6ef84ac5b528-78529266\",\"uid\":\"1cfa236c-40ba-408f-a45e-003e0261bdf5\"}],\"resourceVersion\":\"14558174220\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc11-6ef84ac5b528-78529266\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+            "metallb.universe.tf/address-pool": "bgp-pool-v3",
+            "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+          },
+          "creationTimestamp": "2026-10-24T11:45:48Z",
+          "labels": {
+            "app.kubernetes.io/managed-by": "aster-h200-deployment",
+            "aster-task": "xolotl-single-h200"
+          },
+          "name": "aster-xolotl-api-v3pool-20261024",
+          "namespace": "ailab-hrprdduanyan",
+          "ownerReferences": [
+            {
+              "apiVersion": "rjob.brainpp.cn/v1alpha1",
+              "blockOwnerDeletion": false,
+              "controller": false,
+              "kind": "RJob",
+              "name": "aster-xolotl-1mc11-6ef84ac5b528-78529266",
+              "uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5"
+            }
+          ],
+          "resourceVersion": "14562516744",
+          "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+        },
+        "spec": {
+          "allocateLoadBalancerNodePorts": false,
+          "clusterIP": "10.68.85.120",
+          "clusterIPs": [
+            "10.68.85.120"
+          ],
+          "externalTrafficPolicy": "Cluster",
+          "internalTrafficPolicy": "Cluster",
+          "ipFamilies": [
+            "IPv4"
+          ],
+          "ipFamilyPolicy": "SingleStack",
+          "ports": [
+            {
+              "appProtocol": "http",
+              "name": "openai-http",
+              "port": 80,
+              "protocol": "TCP",
+              "targetPort": 30003
+            }
+          ],
+          "selector": {
+            "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc11-6ef84ac5b528-78529266"
+          },
+          "sessionAffinity": "None",
+          "type": "LoadBalancer"
+        },
+        "status": {
+          "loadBalancer": {
+            "ingress": [
+              {
+                "ip": "10.102.93.68"
+              }
+            ]
+          }
+        }
+      },
+      "resource_version_precondition": "14558174220",
+      "pre_switch_generation": "42"
+    },
+    "post_switch_service": {
+      "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+      "resource_version": "14562516744",
+      "selector": {
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc11-6ef84ac5b528-78529266"
+      },
+      "load_balancer": {
+        "ingress": [
+          {
+            "ip": "10.102.93.68"
+          }
+        ]
+      }
+    },
+    "endpoint_object_read_permitted": false,
+    "endpoint_read_failure_previously_observed": "Forbidden: endpoints resource is not allowed for the cluster user",
+    "backend_verified_by_unique_nonce_and_kv_reuse": true,
+    "target_pod_prime": {
+      "content": "42",
+      "usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 2,
+        "total_tokens": 355,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "direct_target_pod": "100.104.93.236"
+    },
+    "finished_unix": 1792900806.405701,
+    "windows_forwarding": false,
+    "windows_direct_health": {
+      "status": 200,
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "windows_direct_generation": {
+      "content": "42",
+      "done": true,
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 2,
+        "total_tokens": 355,
+        "prompt_tokens_details": {
+          "cached_tokens": 353
+        }
+      },
+      "ttft_seconds": 0.06199999991804361,
+      "seconds": 0.09299999987706542
+    },
+    "previous_card_already_terminal": true
+  },
+  "experimental_candidates_promoted": false,
+  "actual1m_literal_gpu_comparison_in_progress": true,
+  "goal_complete": false,
+  "single_request300_met": false
+}

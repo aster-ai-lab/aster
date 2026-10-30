@@ -1,0 +1,16 @@
+{
+  "unix": 1792862647.7789016,
+  "phase": "passed_previous_resource_already_terminal",
+  "maximum_physical_h200": 2,
+  "previous_job": "aster-xolotl-500c5-d4b1e973e3de-70822385",
+  "previous_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "previous_phase": "Succeeded",
+  "previous_replica_uid": "1c0e6d7d-05d5-49b8-80da-32455a3e4225",
+  "previous_replica_phase": "Succeeded",
+  "serving_uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+  "serving_gpu": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+  "serving_lease_ends_unix": 1792880432.7702465,
+  "profile_full1m_qualified": true,
+  "instance_actual_prompt_tokens_qualified": 132097,
+  "instance_full1m_execution_tested": false
+}

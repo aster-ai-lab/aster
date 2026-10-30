@@ -1,0 +1,42 @@
+{
+  "unix": 1792907548.8093877,
+  "alive": false,
+  "compile-result.json": {
+    "unix": 1792907458.9997747,
+    "phase": "failed",
+    "GPU_executed": false,
+    "model_changed": false,
+    "command": [
+      "/usr/bin/c++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++20",
+      "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/include",
+      "-I/usr/local/cuda/include",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195-cpu/bench_topk_cccl35_v194.cpp",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/topk-cccl35.o",
+      "-o",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195-cpu/benchmark",
+      "-Wl,-rpath,/usr/local/cuda-12.6/targets/x86_64-linux/lib",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/libggml.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/ggml-cuda/libggml-cuda.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/ggml-cpu/libggml-cpu.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/libggml-base.a",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublas.so",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcudart.so",
+      "/usr/lib/x86_64-linux-gnu/libnccl.so",
+      "-L/usr/local/cuda/targets/x86_64-linux/lib/stubs",
+      "-lcuda",
+      "-fopenmp",
+      "-lpthread",
+      "-ldl",
+      "-lrt"
+    ],
+    "exact_reference_archive_member_sha256": "dda9f0ed7cae7f05f41c1a3a34fb87550afca19ac7157fd137650e008af2c280",
+    "error": "RuntimeError: isolated actual-reference operator harness link failed",
+    "finished_unix": 1792907459.9431362
+  },
+  "worker.log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195-cpu/worker.py\", line 21, in <module>\n    if q.returncode:raise RuntimeError('isolated actual-reference operator harness link failed')\nRuntimeError: isolated actual-reference operator harness link failed\n",
+  "compile.log": "/usr/bin/ld: cannot find /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/ggml-cpu/libggml-cpu.a: No such file or directory\ncollect2: error: ld returned 1 exit status\n"
+}

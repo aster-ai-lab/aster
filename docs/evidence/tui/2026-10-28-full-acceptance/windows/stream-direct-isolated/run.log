@@ -1,0 +1,16 @@
+
+running 1 test
+ORACLE case=direct-shell-capability name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+
+thread 'stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing' (18572) panicked at crates\code\acp\tests\aster_tui_live_e2e\stream_controls.rs:140:9:
+direct shell metadata was silently routed into model inference
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing ... FAILED
+
+failures:
+
+failures:
+    stream_controls::kimi_direct_shell_is_executed_or_explicitly_refused_without_model_routing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 30 filtered out; finished in 10.24s
+

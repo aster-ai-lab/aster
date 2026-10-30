@@ -1,0 +1,103 @@
+{
+  "unix": 1792872647.8399663,
+  "phase": "launched",
+  "profile": "dense128_repeat",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-dense-subbatch-v47-dense128_repeat",
+  "source_public_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-indexer-mask-v44",
+  "allocation_job": "aster-xolotl-1mc7-79269eb61f30-62523144",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "replica": "aster-xolotl-1mc7-79269eb61f30-62523144-h4rkr",
+  "replica_uid": "7bbf9c96-01c8-4f71-8eae-62bd9b967f97",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "pod_ip": "100.97.210.241",
+  "host_ip": "10.102.217.46",
+  "plan": {
+    "schema": "aster-xolotl-attention-subbatch-v47",
+    "binary": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-indexer-mask-v40r2/ds41_generate",
+    "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+    "model_name": "deepseek-v4.1-flash-1017-xq",
+    "lease_ends_unix": 1792884595.778009,
+    "optimization_gpu_uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+    "credential_file_sha256": "1759b9dc5277bfc43590a2ebc4943cd164c2d087235f58d9a7cec3d6b0606644",
+    "selected_qualified_baseline": "D:\\code\\aster\\target\\h200-native\\qualified-xolotl-single-h200-baseline.json",
+    "inputs": [
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+        "bytes": 162954903552,
+        "sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389",
+        "verify_small_sha256": false
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin",
+        "bytes": 122880,
+        "verify_small_sha256": false
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+        "bytes": 5661492320,
+        "verify_small_sha256": false
+      }
+    ],
+    "engine_env": {
+      "STRATA_NO_LARGEPAGES": "1",
+      "STRATA_SERVE_DSPARK": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+      "STRATA_DSPARK_DEPTH": "5",
+      "STRATA_DSPARK_CONF": "0.45",
+      "STRATA_D3_PF": "0",
+      "STRATA_EXP_MODE_T143": "4",
+      "STRATA_EXP_MODE_T11": "0",
+      "ASTER_XQ_SPLIT_MMVQ": "11",
+      "ASTER_XQ_PASS_GRAPH_MIB": "1024",
+      "ASTER_XQ_DENSE_ASYNC_CHAIN": "0",
+      "DS41_GRAPH_REUSE": "1",
+      "STRATA_TEXT_LOG": "0",
+      "STRATA_SERVE_BATCH_TAIL": "1",
+      "STRATA_SERVE_KEEP_CACHE": "1",
+      "STRATA_SERVE_KEEP_MAX": "1048576",
+      "STRATA_SERVE_KEEP_LRU": "1",
+      "ASTER_XQ_PREFILL_QOS": "1",
+      "MIMO_CHUNK_PROF": "1",
+      "STRATA_DENSE_PROF": "1",
+      "ASTER_XQ_KEEP_MIXED": "1",
+      "ASTER_XQ_RESIDENT_MMQ": "1",
+      "ASTER_XQ_INDEXER_MASK_SKIP": "1"
+    },
+    "context_tokens": 1048576,
+    "prefill_batch_tokens": 8192,
+    "conversation_cache_mib": 8192,
+    "conversation_cache_slots": 8,
+    "prefill_chunk_tokens": 128
+  },
+  "credential_file": "D:\\code\\aster\\target\\h200-native\\access-private-xolotl-9c996c5a434b\\api-key.txt",
+  "formal_service_unchanged": true,
+  "changed_control": "attention sub-batch width only; layer-major batch8192, exact routing, original Python API, native binary and all other flags preserved",
+  "files": [
+    {
+      "file": "service-worker.py",
+      "bytes": 8089,
+      "sha256": "50f10d42805b228924eada47d6e7f27b19baee916fa549d7867161cd72850f8b"
+    },
+    {
+      "file": "service-plan.json",
+      "bytes": 2322,
+      "sha256": "76c68923bb0cf6f49af3533996bc25d0882fd03a4fcddc52e491c56658399a3a"
+    },
+    {
+      "file": "server-config.json",
+      "bytes": 1861,
+      "sha256": "8ff7d887cf6d85e4ce181763848350e4bde3dad35a74b9f58a91bb2fcad428d6"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    }
+  ],
+  "process": {
+    "pid": 4636,
+    "start_ticks": 315213380,
+    "uid": 10250,
+    "unix": 1792872657.9176404,
+    "deadline_seconds": 11927
+  }
+}

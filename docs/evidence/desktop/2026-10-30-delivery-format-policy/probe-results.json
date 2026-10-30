@@ -1,0 +1,28 @@
+[
+  {
+    "case": "before",
+    "model": "codex/gpt-6.1-sol",
+    "toolCalls": [],
+    "stopReason": "end_turn",
+    "durationSeconds": 31.715,
+    "tableCount": 2,
+    "endMarkerPresent": true,
+    "allHeadingsPresent": true,
+    "replyCharacters": 548,
+    "replySha256": "aabf040a64ea774191f87111488cc00185369ccb4d57301182b6128f3343c189",
+    "passed": true
+  },
+  {
+    "case": "after",
+    "model": "codex/gpt-6.1-sol",
+    "toolCalls": [],
+    "stopReason": "end_turn",
+    "durationSeconds": 17.383,
+    "tableCount": 2,
+    "endMarkerPresent": true,
+    "allHeadingsPresent": true,
+    "replyCharacters": 522,
+    "replySha256": "3ea03fc02377ddb30ad1dc30d55ff7e318c41d2130949e257c131e773daebcf9",
+    "passed": true
+  }
+]

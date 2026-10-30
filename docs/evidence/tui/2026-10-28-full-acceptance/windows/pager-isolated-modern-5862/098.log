@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'notifications::hooks::tests::omits_session_id_when_none' (52892) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\notifications\hooks.rs:179:53:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "系统找不到指定的文件。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test notifications::hooks::tests::omits_session_id_when_none ... FAILED
+
+failures:
+
+failures:
+    notifications::hooks::tests::omits_session_id_when_none
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

@@ -1,0 +1,21 @@
+{
+  "unix": 1792910616.4991844,
+  "phase": "stop_observed",
+  "job": "aster-xolotl-1mc10-d0ed8472c851-76441859",
+  "job_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "replica": "aster-xolotl-1mc10-d0ed8472c851-76441859-qmx9q",
+  "replica_uid": "e96e8d68-2420-45a8-84f1-510b9f556f16",
+  "idle_proof": {
+    "idle": true,
+    "active": ""
+  },
+  "formal_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "GPU_artifacts_retained_on_GPFS": true,
+  "reason": "All finite profile/operator/CPU-build workers terminal and optimization GPU idle; release expiring C10 before requesting its one-GPU replacement. Formal C11 unchanged, maximum two H200.",
+  "observed": {
+    "unix": 1792910628.3528876,
+    "job_phase": "Running",
+    "replica_phase": "Running",
+    "stop_stdout": "10-25 14:43:47 [INFO] stopped rjob aster-xolotl-1mc10-d0ed8472c851-76441859\n"
+  }
+}

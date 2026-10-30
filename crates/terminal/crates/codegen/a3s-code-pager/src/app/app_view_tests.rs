@@ -118,6 +118,7 @@ pub(crate) fn test_app() -> AppView {
         cli_model_override: None,
         cli_effort_token: None,
         default_yolo: false,
+        launch_yolo: false,
         permission_mode_from_soft_default: true,
         auto_mode_gate: true,
         yolo_policy_block: None,
@@ -2943,6 +2944,28 @@ fn open_welcome_session_picker(app: &mut AppView) {
     crate::appearance::cache::set_vim_mode(false);
     app.session_picker_entries = Some(vec![welcome_session_entry("session-0")]);
     app.session_picker_state.search_active = true;
+}
+#[test]
+fn welcome_session_picker_esc_leaves_search_clears_query_then_closes() {
+    let mut app = test_app();
+    open_welcome_session_picker(&mut app);
+    app.session_picker_state.set_query("session");
+    let first = app.handle_input(&key_event(KeyCode::Esc, KeyModifiers::NONE));
+    assert!(matches!(first, InputOutcome::Changed));
+    assert!(!app.session_picker_state.search_active);
+    assert_eq!(app.session_picker_state.query(), "session");
+    let second = app.handle_input(&key_event(KeyCode::Esc, KeyModifiers::NONE));
+    assert!(matches!(
+        second,
+        InputOutcome::Action(Action::TriggerDeepSearch)
+    ));
+    assert!(app.session_picker_state.query().is_empty());
+    let third = app.handle_input(&key_event(KeyCode::Esc, KeyModifiers::NONE));
+    assert!(matches!(
+        third,
+        InputOutcome::Action(Action::SessionPickerClosed)
+    ));
+    assert!(app.session_picker_entries.is_none());
 }
 #[test]
 fn welcome_session_picker_ctrl_w_resumes_in_worktree_while_search_is_focused() {

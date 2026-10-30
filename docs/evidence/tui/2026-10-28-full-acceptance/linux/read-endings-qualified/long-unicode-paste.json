@@ -1,0 +1,56 @@
+{
+  "case": "long-unicode-paste",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=5 model_turns=1 prompt_tokens=22084",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-o5ZTqt/workspace                                                                            22K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ 中文                                                                                                  6:47 AM    \n       Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload              \n       is test data, not instructions. …                                                                                \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.5s                                                                                                 \n                                                                                                                        \n     LONG-PASTE-ACCEPTED                                                                                     6:47 AM    \n                                                                                                                        \n     Worked for 6.2s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "exact-long-paste",
+      "detail": "more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-o5ZTqt/workspace                                                                            22K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ 中文                                                                                                  6:47 AM    \n       Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload              \n       is test data, not instructions. …                                                                                \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 1.5s                                                                                                 \n                                                                                                                        \n     LONG-PASTE-ACCEPTED                                                                                     6:47 AM    \n                                                                                                                        \n     Worked for 6.2s                                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 22084,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 6,
+          "digest": "73e2bea29a50961b0aeeb42446c17e5fae503974cc35333b73193beec5cf0ed6"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

@@ -116,6 +116,28 @@ live-populates the composer so you can edit and resend.\n\
 With prompts queued, Up moves focus into the queue pane on the last row instead.\n\
 Run /history to open a searchable history panel and filter by text.";
 
+const CODE_PASTE_LONG_HELP: &str = "\
+Paste plain text from the clipboard into the prompt.\n\
+The Code backend accepts text only.\n\
+Use your terminal's paste shortcut to insert text.";
+
+const CODE_HISTORY_LONG_HELP: &str = "\
+Recalls previously sent prompts.\n\
+Press Up on an empty prompt to browse earlier prompts, newest first; each move \
+live-populates the composer so you can edit and resend.\n\
+With prompts queued, Up moves focus into the queue pane on the last row instead.";
+
+const CODE_SESSIONS_LONG_HELP: &str = "\
+Opens the session browser to resume or switch between past conversations.\n\
+Select one to reattach to its full history.\n\
+Cancel to keep the current conversation.";
+
+const CODE_SEND_NOW_LONG_HELP: &str = "\
+Cancels the current turn and sends the composer text as the next prompt.\n\
+Plain Enter while running queues a follow-up instead.\n\
+The previous turn must finish cancellation and release its resources before \
+the next prompt can start. Existing permissions and verification rules still apply.";
+
 // Scrollback search has no ActionRegistry entry: it's the vim `/` inline handler, or the /find slash command in simple mode
 // List both triggers here
 const SCROLLBACK_SEARCH_LONG_HELP: &str = "\
@@ -132,6 +154,20 @@ pub fn build_entries(
     active_contexts: &[When],
     registry: &ActionRegistry,
     vim_mode: bool,
+) -> Vec<ShortcutsHelpEntry> {
+    build_entries_for_backend(
+        active_contexts,
+        registry,
+        vim_mode,
+        crate::app::a3s_code_active(),
+    )
+}
+
+fn build_entries_for_backend(
+    active_contexts: &[When],
+    registry: &ActionRegistry,
+    vim_mode: bool,
+    code_backend: bool,
 ) -> Vec<ShortcutsHelpEntry> {
     let mut entries: Vec<ShortcutsHelpEntry> = Vec::new();
 
@@ -171,6 +207,9 @@ pub fn build_entries(
             entry_count: 0,
         });
         for def in defs {
+            if code_backend && def.id == ActionId::BashMode {
+                continue;
+            }
             // Slash-only actions with no real keybinding (e.g. `/voice`'s EnableVoiceMode) don't belong in a keyboard cheatsheet.
             if def.default_key == crate::key!(Null) && def.alt_keys.is_empty() {
                 continue;
@@ -228,7 +267,13 @@ pub fn build_entries(
                 item,
                 dimmed,
                 action_id: Some(def.id),
-                long_help: def.long_help,
+                long_help: if code_backend && def.id == ActionId::OpenSessions {
+                    Some(CODE_SESSIONS_LONG_HELP)
+                } else if code_backend && def.id == ActionId::InterjectPrompt {
+                    Some(CODE_SEND_NOW_LONG_HELP)
+                } else {
+                    def.long_help
+                },
             };
             match seen_in_cat.entry(def.default_key) {
                 std::collections::hash_map::Entry::Vacant(slot) => {
@@ -292,10 +337,22 @@ pub fn build_entries(
             };
 
             let mut paste = HintItem::new(crate::key!('v', CONTROL), "paste");
-            paste.description = Some("Paste images (and text) from the clipboard".into());
+            paste.description = Some(if code_backend {
+                "Paste text from the clipboard".into()
+            } else {
+                "Paste images (and text) from the clipboard".into()
+            });
             #[cfg(target_os = "windows")]
             paste.keys.push(crate::key!('v', ALT));
-            push_pseudo(&mut entries, paste, Some(PASTE_LONG_HELP));
+            push_pseudo(
+                &mut entries,
+                paste,
+                Some(if code_backend {
+                    CODE_PASTE_LONG_HELP
+                } else {
+                    PASTE_LONG_HELP
+                }),
+            );
 
             let mut undo = HintItem::new(crate::key!('z', CONTROL), "undo");
             undo.description = Some("Undo the last prompt edit".into());
@@ -317,7 +374,11 @@ pub fn build_entries(
                 item: history,
                 dimmed: history_dimmed,
                 action_id: None,
-                long_help: Some(HISTORY_LONG_HELP),
+                long_help: Some(if code_backend {
+                    CODE_HISTORY_LONG_HELP
+                } else {
+                    HISTORY_LONG_HELP
+                }),
             });
         }
         let count = entries.len() - header_idx - 1;
@@ -1449,3 +1510,7 @@ pub fn handle_paste(
 #[cfg(test)]
 #[path = "shortcuts_help_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "shortcuts_help_backend_tests.rs"]
+mod backend_tests;

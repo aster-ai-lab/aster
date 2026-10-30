@@ -1,0 +1,25 @@
+{
+  "unix": 1792879102.950513,
+  "native_numeric": [
+    "serve: reuse lcp=1 pool=8 lp=0 hist=0 snap=-1 prompt=8244 images=0 -> reused=0",
+    "dense prof turn: 1880 attn spans: build 53 ms, alloc 65, gpu compute 3722, engram wait 37691, readback 431, upload 125, finish build 5",
+    "serve: prompt phases: 8244 new = 8244 batch (49.86 s: dense 42.11, experts 4.36, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 8244 tokens (0 reused, batch) in 49.87 s = 165.3 tok/s (experts 1320357 hit / 0 cpu / 105243 pcie / 0 file)",
+    "serve: pass split 93.00 ms/pass = verify 86.06 (dense 62.52, tier 22.42, taps 0.38, logits 0.73) + sample 0.62 + draft 6.30 + other 0.02",
+    "serve: reuse lcp=8304 pool=9 lp=8244 hist=8304 snap=8244 prompt=8346 images=0 -> reused=8304",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 42 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 42 as passes (cache open 0.00 s, seed 0.82 s)",
+    "serve: prompt 8346 tokens (8304 reused, batch) in 0.82 s = 51.4 tok/s (experts 9910 hit / 0 cpu / 170 pcie / 0 file)",
+    "serve: pass split 137.07 ms/pass = verify 134.01 (dense 109.45, tier 23.52, taps 0.37, logits 0.67) + sample 0.17 + draft 2.83 + other 0.06",
+    "serve: reuse lcp=1 pool=9 lp=0 hist=0 snap=-1 prompt=25671 images=0 -> reused=0",
+    "dense prof turn: 4600 attn spans: build 116 ms, alloc 92, gpu compute 9684, engram wait 71936, readback 992, upload 300, finish build 10",
+    "serve: prompt phases: 25671 new = 25671 batch (100.26 s: dense 83.18, experts 10.94, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 25671 tokens (0 reused, batch) in 100.27 s = 256.0 tok/s (experts 3226919 hit / 0 cpu / 292201 pcie / 0 file)",
+    "serve: pass split 154.17 ms/pass = verify 151.15 (dense 122.64, tier 26.71, taps 0.35, logits 1.46) + sample 0.17 + draft 2.76 + other 0.09",
+    "serve: reuse lcp=25673 pool=10 lp=25671 hist=25672 snap=25671 prompt=26537 images=0 -> reused=25672",
+    "dense prof turn: 280 attn spans: build 9 ms, alloc 10, gpu compute 686, engram wait 4, readback 55, upload 19, finish build 1",
+    "serve: prompt phases: 865 new = 865 batch (2.43 s: dense 0.79, experts 1.49, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 26537 tokens (25672 reused, batch) in 2.44 s = 354.4 tok/s (experts 198374 hit / 0 cpu / 9226 pcie / 0 file)",
+    "serve: pass split 133.08 ms/pass = verify 128.00 (dense 94.94, tier 31.75, taps 0.36, logits 0.94) + sample 0.20 + draft 4.83 + other 0.06"
+  ]
+}

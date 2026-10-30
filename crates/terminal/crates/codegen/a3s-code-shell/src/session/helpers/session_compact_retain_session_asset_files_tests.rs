@@ -1,3 +1,7 @@
+#[cfg(unix)]
+use std::os::unix::fs::{symlink as symlink_dir, symlink as symlink_file};
+#[cfg(windows)]
+use std::os::windows::fs::{symlink_dir, symlink_file};
 use std::path::Path;
 
 use super::{MAX_COMPACTION_IMAGE_PATHS, retain_session_asset_files};
@@ -54,9 +58,9 @@ async fn keeps_only_regular_files_inside_the_assets_dir() {
     let outside = elsewhere.path().join("image-2.png");
     std::fs::write(&outside, b"png").unwrap();
     let link_inside = assets.path().join("link-inside.png");
-    std::os::unix::fs::symlink(&inside, &link_inside).unwrap();
+    symlink_file(&inside, &link_inside).unwrap();
     let link_outside = assets.path().join("link-outside.png");
-    std::os::unix::fs::symlink(&outside, &link_outside).unwrap();
+    symlink_file(&outside, &link_outside).unwrap();
     let directory = assets.path().join("nested");
     std::fs::create_dir(&directory).unwrap();
     let missing = assets.path().join("gone.png");
@@ -66,7 +70,7 @@ async fn keeps_only_regular_files_inside_the_assets_dir() {
     std::fs::write(&nested, b"png").unwrap();
     // A symlinked subdirectory would make an outside file look like it sits under `assets/`.
     let link_dir = assets.path().join("link");
-    std::os::unix::fs::symlink(elsewhere.path(), &link_dir).unwrap();
+    symlink_dir(elsewhere.path(), &link_dir).unwrap();
     let through_link_dir = link_dir.join("image-2.png");
     // Resolves into the assets dir, but only through `..`.
     let assets_name = assets.path().file_name().expect("tempdir has a file name");

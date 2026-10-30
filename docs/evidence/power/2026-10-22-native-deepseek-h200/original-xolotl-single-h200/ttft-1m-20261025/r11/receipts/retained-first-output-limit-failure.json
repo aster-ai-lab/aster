@@ -1,0 +1,31 @@
+{
+  "unix": 1792920575.937559,
+  "phase": "prepared_not_deployed",
+  "candidate": "tool-adapter-v267r1",
+  "service_changed": false,
+  "inference_sent": false,
+  "supersedes": "tool-adapter-v267",
+  "previous_hermetic_result": {
+    "methods": 8,
+    "passed": 7,
+    "failed": 1,
+    "case": "explicit max_tokens32 must cap both output-limit fields"
+  },
+  "files": [
+    {
+      "name": "frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557"
+    },
+    {
+      "name": "serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049"
+    },
+    {
+      "name": "aster_tool_roundtrip.py",
+      "bytes": 6062,
+      "sha256": "247bf5fce428f97b892bb155c86b9bf512c46d9fa6343c84102b0863c3b45ab5"
+    }
+  ]
+}

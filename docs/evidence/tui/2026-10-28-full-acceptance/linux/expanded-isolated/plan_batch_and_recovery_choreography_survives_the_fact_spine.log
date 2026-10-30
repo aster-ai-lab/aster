@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::long_horizon_capabilities::plan_batch_and_recovery_choreography_survives_the_fact_spine' (5243) panicked at crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs:181:10:
+fact turn: Session("completion gate: workspace mutation 70bd337e2ed68fe2b83dcab63f58ff5b6c039d47e4289485b1c1e604950a7343 (src/impl.mjs) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): [{\"command\":\"node test.mjs\",\"covers\":[\"src/impl.mjs\"],\"id\":\"node-suite\"}]")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::long_horizon_capabilities::plan_batch_and_recovery_choreography_survives_the_fact_spine ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::long_horizon_capabilities::plan_batch_and_recovery_choreography_survives_the_fact_spine
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 3.75s
+

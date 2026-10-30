@@ -1,0 +1,16 @@
+{
+  "unix": 1792932293.727844,
+  "phase": "retired",
+  "old_UID": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+  "formal_UID": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+  "idle_proof": null,
+  "GPFS_artifacts_retained": true,
+  "maximum_H200": 2,
+  "observed": {
+    "unix": 1792932303.9642808,
+    "stop_sent": false,
+    "job_phase": "Succeeded",
+    "replica_phase": "Succeeded",
+    "both_terminal": true
+  }
+}

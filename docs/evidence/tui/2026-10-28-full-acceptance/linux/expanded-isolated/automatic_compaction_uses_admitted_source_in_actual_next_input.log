@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input' (3001) panicked at crates/code/core/src/agent_api/tests/compact/source_carry.rs:253:5:
+original fact actor must compact
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::compact::source_carry::automatic_compaction_uses_admitted_source_in_actual_next_input
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 0.81s
+

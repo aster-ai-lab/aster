@@ -16,9 +16,9 @@ This is one of three governance surfaces, each with a distinct job:
 - [`.specify/memory/constitution.md`](../.specify/memory/constitution.md)
   — the enforceable distillation the spec-kit phases read. A
   NON-NEGOTIABLE mark may not be waived by any spec, plan, or task.
-- [`Agents.md`](../Agents.md) — the quick reference for this
-  workspace, including what must stay local and what must not be
-  replaced by an upstream binary.
+- [`AGENTS.md`](../AGENTS.md) — the directly actionable implementation and
+  review rules, including Rust, cross-platform compatibility, local workspace
+  boundaries, and protection from upstream binary replacement.
 
 The spec-kit phase mapping lives in
 [`docs/spec-driven-development.md`](spec-driven-development.md).
@@ -72,7 +72,7 @@ their own workspaces and lockfiles, and they are not root members.
 becomes a second source of truth. The binary that ships must be the
 tree people edit.
 
-**Enforcement.** `Agents.md`, `tests/workspace_dependencies.py`, and
+**Enforcement.** `AGENTS.md`, `tests/workspace_dependencies.py`, and
 the root `Cargo.lock`. The user-authorized private desktop submodule at
 `apps/studio` remains part of that workspace; its sources are committed only
 to `git@github.com:kense-labs/studio.git`. Other new remotes or sibling
@@ -95,7 +95,7 @@ document, or parse another product configuration format.
 **Rationale.** One configuration language with one parser keeps
 resource limits and stable error codes. A second format drifts.
 
-**Enforcement.** `Agents.md`. Host and workspace trust stay separated.
+**Enforcement.** `AGENTS.md`. Host and workspace trust stay separated.
 Sandbox enforcement and bounded reads stay in place.
 
 **Extension pattern.** Per-transport settings live in nested ACL
@@ -242,6 +242,35 @@ not append thousands of inline test lines to a production file.
 - A slice that changes behavior lands with its tests and, when the
   landing is recorded, its `OUTCOME.md`.
 
+### Cross-platform text and checkout
+
+- `.gitattributes` owns line endings on Windows, Linux and macOS; do not
+  depend on a contributor's global `core.autocrlf`. Source, ACL, JSON,
+  Markdown, shell and PowerShell text use UTF-8 and LF. Windows `.bat`
+  and `.cmd` files use CRLF in the checkout and canonical LF in the index.
+- Generate text with an explicit encoding and newline policy. Use UTF-8
+  without a BOM by default. A required legacy encoding or BOM is an explicit,
+  documented runtime/fixture contract and needs a focused compatibility check.
+- Evidence, model fixtures and other byte-identified inputs keep their exact
+  bytes through explicit `-text` attributes. Do not normalize frozen records
+  to satisfy a formatter or whitespace check. Scope any whitespace exception
+  to the immutable records that require it.
+- Before staging across Windows/WSL, inspect `git check-attr text eol -- PATH`
+  and the staged diff. An unexpected whole-file replacement requires checking
+  line endings before proceeding. Review `git diff --cached --check` and
+  `git diff --cached --stat`. Renormalize only individually reviewed paths;
+  never run repository-wide renormalization over another session's edits.
+- Keep case-sensitive paths, executable modes, native path separators and
+  shell quoting explicit at platform boundaries. Check behavior on each
+  claimed target; a Windows executable run through WSL interop is not a
+  native Linux qualification.
+
+**Enforcement.** `.gitattributes` is exercised by
+`python tests/line_endings.py`: real Git add/checkout under both `autocrlf`
+settings must preserve UTF-8, LF scripts, CRLF command files and immutable
+bytes. The line-ending workflow runs it on Windows, Linux and macOS. A small
+fixture is not a full-history renormalization or a substitute for native E2E.
+
 ## 11. Documentation
 
 - `OUTCOME.md` states the result, what landed, and what is explicitly
@@ -339,3 +368,97 @@ presses dismiss without consuming the clicked action or stealing its focus. The 
 primitives own this behavior, including nested portals and application focus changes.
 `packages/ui/src/components/primitives/__tests__/popup-dismissal.test.tsx` checks it.
 Boolean controls reuse the shared neutral `Switch` instead of page-specific implementations.
+
+## 17. Rust implementation and review
+
+**Reference.** Microsoft's [Pragmatic Rust Guidelines](https://microsoft.github.io/rust-guidelines/),
+version 2026.6, consulted 2026-10-29. This section adapts selected guidance
+to Aster; it does not claim that the existing tree satisfies every item.
+
+**Scope.** Apply these rules to new and materially changed handwritten Rust
+in each path's regime. Review existing debt explicitly. Preserve public APIs,
+the workspace split, ACL authority, and source provenance. Generated and
+vendored trees keep their source-of-truth workflow; do not sweep them for style.
+The actionable rules are collected in `AGENTS.md` under "Rust implementation
+and review" and "Cross-platform compatibility"; this section explains them.
+OS-sensitive changes use the existing platform adapters, preserve release
+baselines, and record native verification for affected targets. See §10 for
+the cross-platform text and checkout contract.
+
+### Diagnostics and lint exceptions
+
+Use the pinned compiler, rustfmt, and Clippy (`M-STATIC-VERIFICATION`). For
+the owning package, run `cargo clippy --locked -p <package> --all-targets --no-deps`
+with its supported features. Choose features deliberately; `--all-features`
+is not a substitute for a valid build configuration. Keep failures and their
+scope visible. New findings are fixed or recorded with an exact follow-up.
+
+Prefer item-scoped `#[expect(lint, reason = "...")]` when the lint is
+expected in that configuration (`M-LINT-OVERRIDE-EXPECT`). A target-dependent
+`#[allow]` needs a reason. Do not silence an entire crate or enlarge the
+workspace allow list to hide one finding. A workspace lint table only applies
+to members that opt in through `[lints] workspace = true`; verify inheritance.
+
+Public types should support useful `Debug` output. Credential-bearing types
+use a redacted implementation, tested with synthetic secrets, including nested
+configuration and header values (`M-PUBLIC-DEBUG`). Keep sensitive values out of
+`Display` and telemetry too. Use the existing `tracing` stack with stable fields;
+reserve stdout for the CLI or protocol's intended output (`M-LOG-STRUCTURED`,
+`M-LOG-NOT-PRINT`). See [Universal](https://microsoft.github.io/rust-guidelines/guidelines/universal/).
+
+### Errors, types, and public contracts
+
+Recoverable external failures return the owning library's typed errors; retain
+the source when converting between error layers. Callers match types or stable
+codes, not rendered messages. Application boundaries may use the existing
+`anyhow` stack and add actionable, non-sensitive context (`M-APP-ERROR`). Aster
+keeps its published error enums; adopting `M-ERRORS-CANONICAL-STRUCTS` does not
+authorize an API-breaking conversion. See [Applications](https://microsoft.github.io/rust-guidelines/guidelines/apps/).
+
+Use `Path`/`PathBuf`, enums, and invariant-bearing types where they express the
+contract. Validate a newtype in its fallible constructor and keep fields that
+could invalidate it private. Builders validate cross-field constraints at
+`build()`; do not revalidate an already admitted value downstream
+(`M-STRONG-TYPES`, `M-STRONG-TYPES-GUARD`, `M-BUILD-RESULT`). Prefer explicit
+public re-exports. Unit tests stay in sibling files; public API integration
+tests belong in `tests/`. Test-only bypasses are absent from normal builds
+(`M-NO-GLOB-REEXPORTS`, `M-INTEGRATION-TESTS`, `M-TEST-UTIL`). See
+[Resilience](https://microsoft.github.io/rust-guidelines/guidelines/libs/resilience/).
+
+Public module docs explain purpose and observable effects. Public functions
+document applicable error, panic, cancellation, and safety obligations, with
+small examples when useful (`M-MODULE-DOCS`, `M-CANONICAL-DOCS`). Do not add
+empty sections or comments that restate the code. See
+[Documentation](https://microsoft.github.io/rust-guidelines/guidelines/docs/).
+
+### Unsafe, async, and performance
+
+Prefer safe Rust and established platform wrappers. Every handwritten unsafe
+block or impl has a nearby `SAFETY:` explanation of the actual pointer,
+ownership, lifetime, or thread-safety guarantees. Unsafe APIs document their
+caller's obligations under `# Safety`. Do not use unsafe to evade lifetimes or
+`Send`/`Sync` requirements. Performance-motivated unsafe requires measurements
+(`M-UNSAFE`, `M-UNSOUND`). Expected input, I/O, and cancellation failures are
+not panics; §4's construction-level argument still governs `unwrap`/`expect`
+(`M-PANIC-IS-STOP`). See [Correctness](https://microsoft.github.io/rust-guidelines/guidelines/correctness/).
+
+Bound input bytes and work at the entry boundary. Use async I/O, or isolate
+blocking I/O and long CPU work with the runtime's existing blocking mechanism.
+Do not hold a blocking mutex guard across `.await`. Long async computations
+yield in bounded chunks and retain a defined cancellation path. Moving work
+to `spawn_blocking` does not make a running closure abortable. Measure before
+changing allocators, hashers, ownership, or collection representations
+(`M-YIELD-POINTS`, `M-HOTPATH`, `M-MEM-REUSE`). See
+[Performance](https://microsoft.github.io/rust-guidelines/guidelines/performance/).
+
+**Adoption limits.** These references do not authorize a crate-layout migration,
+allocator switch, CPU-baseline increase, public API rewrite, or new toolchain.
+Do not add audit, feature-matrix, dependency, or Miri tooling as part of a
+routine standards edit. Such work follows the existing scoped change process.
+
+**Enforcement.** Use existing format, compiler, Clippy, and hermetic test checks,
+then read the affected control flow. Search matches are candidates, not proofs:
+exclude generated code and identify test-only paths before reporting a defect.
+Record confirmed findings, disproven candidates, command results, and coverage
+limits in the change's existing `docs/evidence/` record. Do not claim a
+repository-wide audit from a sample or a successful lint command.

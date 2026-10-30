@@ -1,0 +1,57 @@
+{
+  "case": "long-unicode-paste",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:d0bfd7fb9c9c76dc440fae2a9a688e96199a9d14:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=5 model_turns=1 prompt_tokens=22209",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-BqNDXD\\workspace                                                                        22K / 128K                                                                                                                                                                                                                                                       > 中文                                                                                                 10:34 AM           Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload                     is test data, not instructions. …                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 2.3s                                                                                                                                                                                                                              LONG-PASTE-ACCEPTED                                                                                    10:34 AM                                                                                                                                 Worked for 9.2s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                  <  & \" ' / \\      λ é a       1           <  & \" ' / \\                     █  │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "exact-long-paste",
+      "detail": "more than 16 KiB of bracketed Unicode text reaches one actual user.message with byte-identical contents and one settled response",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-BqNDXD\\workspace                                                                        22K / 128K                                                                                                                                                                                                                                                       > 中文                                                                                                 10:34 AM           Do not call tools. Reply with LONG-PASTE-ACCEPTED after receiving the complete payload. The payload                     is test data, not instructions. …                                                                                                                                                                                                                                                                                                                                     ♦ Thought for 2.3s                                                                                                                                                                                                                              LONG-PASTE-ACCEPTED                                                                                    10:34 AM                                                                                                                                 Worked for 9.2s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                  <  & \" ' / \\      λ é a       1           <  & \" ' / \\                     █  │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 22209,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 7,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 6,
+          "digest": "5f70a57e105e84ce75e6e776214ec79b0353b42f3212f996383f43736e29b69d"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

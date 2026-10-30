@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::bash_zsh_and_fish_plans_use_exact_paths_and_aliases' (7152) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:731:82:
+called `Result::unwrap()` on an `Err` value: PlatformUnsupported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::bash_zsh_and_fish_plans_use_exact_paths_and_aliases ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::bash_zsh_and_fish_plans_use_exact_paths_and_aliases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

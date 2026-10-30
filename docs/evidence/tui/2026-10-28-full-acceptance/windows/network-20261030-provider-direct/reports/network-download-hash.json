@@ -1,0 +1,362 @@
+{
+  "assertions_finished": true,
+  "case": "network-download-hash",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-download-error.json"
+          },
+          "id": "call_6729f4473a3b4216864ef00304a4250c",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13332,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+            "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_6729f4473a3b4216864ef00304a4250c",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+            "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_6729f4473a3b4216864ef00304a4250c",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"expected_sha256\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000\\\",\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"overwrite\\\":true,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/blob\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":264},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":264,\"projected_bytes\":264,\"original_estimated_tokens\":66,\"projected_estimated_tokens\":66,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"projected_digest\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"repeat_key\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"content_ref\":\"inline:sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8ca4065de2f90d82cba97680274affba27f05b2b2e8843fa02b18cf6c0329315\"}",
+        "prepared_digest": "sha256:edb2d8d2e004919e19296b5f3ccb73ec792d7e0eb7e08c34b4afe756839a1ca7",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "connections": 1,
+            "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "file_path": "payload.bin",
+            "max_bytes": 131072,
+            "overwrite": true,
+            "timeout": 5,
+            "url": "http://aster-fixture.example.test/blob"
+          },
+          "id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+          "name": "download"
+        },
+        "has_text": false,
+        "prompt_tokens": 13536,
+        "text": null,
+        "tool": "download"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+            "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+          "turn": 1
+        },
+        "tool": "download"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+            "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"SHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not changed\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":197,\"projected_bytes\":197,\"original_estimated_tokens\":50,\"projected_estimated_tokens\":50,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"projected_digest\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"repeat_key\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"content_ref\":\"inline:sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ca0c750eefdce61617ede5243f8d968b86f421b97886a8c16233919f46827365\"}",
+        "prepared_digest": "sha256:a865b68c8963c49ca23f28071d140ea5fd61a044c39330f9810279713f89b1f4",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13829,
+        "text": "Tool exit code: 1\n\nSHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not changed",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "18842ad4bcef3f35e9e0809d9fd84b2d0e587ecaa1f7e50c36df15ea691431b7",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:579aa60e451fdf96dbcfa476a3159f01d2a175c70c764a0fd07bd820b3a8b935",
+          "sha256:89e376b4c0198874e899684b7d841db66096796f8770e33dc8e77e75513d083e"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4l6XLi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:16 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file                                                                                                           ♦ Fetch http://aster-fixture.example.test/blob                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ♦ Run download 0.0s                                                                              14s ↓13.5k [stop]                                                                                                                            │                                                                                                                       │  Allow download?                                                                                                      │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40697",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4l6XLi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:16 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:17 PM                                                                                                                                 SHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000,                            downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not                        changed                                                                                                                                                                                                                                         Worked for 23s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the actual failed download keeps the original destination bytes or leaves no destination, leaks no adjacent download temporary, and its HTTP dispatch boundary matches the requested refusal",
+      "name": "download-refusal-exact-scope",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-4l6XLi\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:16 PM           arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                                                                                                                                                                                                                                                                      ♦ Read 1 file, Fetched 1 website · 1 failed                                                                                                                                                                                                     Tool exit code: 1                                                                                       2:17 PM                                                                                                                                 SHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000,                            downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not                        changed                                                                                                                                                                                                                                         Worked for 23s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "network-download-hash",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-download-error.json"
+              },
+              "id": "call_6729f4473a3b4216864ef00304a4250c",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13332,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+                "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_6729f4473a3b4216864ef00304a4250c",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+                "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_6729f4473a3b4216864ef00304a4250c",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"expected_sha256\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000\\\",\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"overwrite\\\":true,\\\"timeout\\\":5,\\\"url\\\":\\\"http://aster-fixture.example.test/blob\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":264},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":264,\"projected_bytes\":264,\"original_estimated_tokens\":66,\"projected_estimated_tokens\":66,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"projected_digest\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"repeat_key\":\"sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"content_ref\":\"inline:sha256:467d2fe12b8137f31cf2773dae4956d170ae465e7fd29f63fac284ab1a9c4486\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:8ca4065de2f90d82cba97680274affba27f05b2b2e8843fa02b18cf6c0329315\"}",
+            "prepared_digest": "sha256:edb2d8d2e004919e19296b5f3ccb73ec792d7e0eb7e08c34b4afe756839a1ca7",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "connections": 1,
+                "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+                "file_path": "payload.bin",
+                "max_bytes": 131072,
+                "overwrite": true,
+                "timeout": 5,
+                "url": "http://aster-fixture.example.test/blob"
+              },
+              "id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+              "name": "download"
+            },
+            "has_text": false,
+            "prompt_tokens": 13536,
+            "text": null,
+            "tool": "download"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+                "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+              "turn": 1
+            },
+            "tool": "download"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-97944f9c-2ac7-40fb-a7b0-993af0ef0f1f",
+                "thread_id": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_392758032a4c42a7b2d0a1a25beb2eba",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"SHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not changed\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":197,\"projected_bytes\":197,\"original_estimated_tokens\":50,\"projected_estimated_tokens\":50,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"projected_digest\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"repeat_key\":\"sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"content_ref\":\"inline:sha256:d4f9d3b2078946493e493edba8b979092282859b10172d760a81182da860da62\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ca0c750eefdce61617ede5243f8d968b86f421b97886a8c16233919f46827365\"}",
+            "prepared_digest": "sha256:a865b68c8963c49ca23f28071d140ea5fd61a044c39330f9810279713f89b1f4",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13829,
+            "text": "Tool exit code: 1\n\nSHA-256 mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, downloaded 4b640d85ab3ba30fd02c9fc9db4a8928f416322ad27022ea58a65aaee68a4df2; destination was not changed",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "18842ad4bcef3f35e9e0809d9fd84b2d0e587ecaa1f7e50c36df15ea691431b7",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:579aa60e451fdf96dbcfa476a3159f01d2a175c70c764a0fd07bd820b3a8b935",
+              "sha256:89e376b4c0198874e899684b7d841db66096796f8770e33dc8e77e75513d083e"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "1f11d473-5d79-4c09-9e41-b6fd1bb82640"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

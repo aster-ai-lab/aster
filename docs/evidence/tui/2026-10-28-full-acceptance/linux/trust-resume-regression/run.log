@@ -1,0 +1,15 @@
+
+running 1 test
+test lifecycle::kimi_resume_and_continue_restore_model_history ... ORACLE case=resume-model-history name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26564
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13447
+ORACLE case=resume-model-history name=--resume result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ORACLE case=resume-model-history name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13528
+ORACLE case=resume-model-history name=--continue result=pass detail=same parent identity; Kimi recalls unseen token from restored conversation without tools
+ORACLE case=resume-model-history name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 36 filtered out; finished in 62.44s
+

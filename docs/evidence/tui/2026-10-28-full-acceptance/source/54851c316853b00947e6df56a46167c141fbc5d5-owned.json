@@ -1,0 +1,21 @@
+{
+  "source_pair_digest": "54851c316853b00947e6df56a46167c141fbc5d5",
+  "base": "a6dd06014e9320bcc6bb43bd23aa8ae7d22724bc",
+  "bytes": 17208,
+  "sha256": "ee4f4ae58045b62e03ac0189ab59363b6848eb3817024077b7f73852c06b351b",
+  "tracked_paths": [
+    "crates/code/core/prompts/common/runtime_contract.md",
+    "crates/code/core/src/agent_api/tests/fact_log.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+    "crates/code/core/src/tools/builtin/bash.rs",
+    "crates/code/core/src/fact_control/tool_results.rs",
+    "crates/code/core/src/fact_control/tool_history_tests.rs"
+  ],
+  "new_paths": [
+    "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+    "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+    "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs"
+  ],
+  "reverse_check": "passed",
+  "created_utc": "2026-10-29T08:13:49.814707+00:00"
+}

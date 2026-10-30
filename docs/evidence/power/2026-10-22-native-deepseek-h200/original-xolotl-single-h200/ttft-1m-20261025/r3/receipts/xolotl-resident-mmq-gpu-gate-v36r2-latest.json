@@ -1,0 +1,114 @@
+{
+  "unix": 1792864394.67626,
+  "result": {
+    "schema": "aster-xolotl-resident-mmq-v35-gpu-gate",
+    "unix": 1792864305.5718448,
+    "phase": "passed",
+    "runs": [
+      {
+        "name": "sized-slot-byte-gate",
+        "returncode": 0,
+        "stdout": "PASS mixed cache: 3 shrink/grow cycles, 194 restored slots, 478 slot byte comparisons, exact live ownership\n",
+        "stderr": ""
+      },
+      {
+        "name": "real-f32-reference-0",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\nok   L0 tok 0 classes 0 1 2 3 4 5  rel 1.112e-02\nok   L0 tok 1 classes 1 2 3 4 5 6  rel 1.058e-02\nok   L39 tok 0 classes 0 1 2 4 5 6  rel 5.360e-03\nok   L39 tok 1 classes 1 2 4 5 6 7  rel 1.123e-02\nok   L0 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.136e-02\nok   L39 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.242e-02\nstats: 120 hit, 0 cpu, 0 pcie, 337 file; worst rel 1.242e-02 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 2 calls, 2 launches: wall 1 ms = waits on reads 0 + wave/copy waits 0 + final sync 1 + other host 0; reader wall 0 ms; GPU grouped kernels 0 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 2 sub-runs; PTQ1_0 -> Q2_0 transcode 0 ms GPU (inside the grouped kernels) over 0 sub-runs, 0.0 GB of ternary read = 0 GB/s\nresident MMQ stage: 0 waves, 0 exact D2D bytes\n",
+        "resident_packing_waves": 0
+      },
+      {
+        "name": "real-f32-reference-1",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\nok   L0 tok 0 classes 0 1 2 3 4 5  rel 1.112e-02\nok   L0 tok 1 classes 1 2 3 4 5 6  rel 1.058e-02\nok   L39 tok 0 classes 0 1 2 4 5 6  rel 5.360e-03\nok   L39 tok 1 classes 1 2 4 5 6 7  rel 1.123e-02\nok   L0 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.135e-02\nok   L39 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.262e-02\nstats: 120 hit, 0 cpu, 0 pcie, 337 file; worst rel 1.262e-02 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 2 calls, 4 launches: wall 8 ms = waits on reads 0 + wave/copy waits 0 + final sync 7 + other host 0; reader wall 0 ms; GPU grouped kernels 1 ms (resident 1); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 33 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 4 sub-runs, 0.3 GB of ternary read = 510 GB/s\nresident MMQ stage: 31 waves, 839854080 exact D2D bytes\n",
+        "resident_packing_waves": 31
+      },
+      {
+        "name": "paired-operator-timing-0",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\ntime L0 chunk 512 tokens (0 remote entries): 379.4 ms\ntime L0 chunk 512 tokens (0 remote entries): 46.0 ms\ntime L0 chunk 512 tokens (0 remote entries): 45.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.2 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.2 ms\nstats: 18432 hit, 0 cpu, 0 pcie, 337 file; worst rel 0.000e+00 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 6 calls, 6 launches: wall 184 ms = waits on reads 0 + wave/copy waits 0 + final sync 183 + other host 0; reader wall 0 ms; GPU grouped kernels 3 ms (resident 3); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 6 sub-runs; PTQ1_0 -> Q2_0 transcode 0 ms GPU (inside the grouped kernels) over 0 sub-runs, 0.0 GB of ternary read = 0 GB/s\nresident MMQ stage: 0 waves, 0 exact D2D bytes\n",
+        "layer_timings": [
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 379.4
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 46.0
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 45.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.2
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.2
+          }
+        ]
+      },
+      {
+        "name": "paired-operator-timing-1",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\ntime L0 chunk 512 tokens (0 remote entries): 360.1 ms\ntime L0 chunk 512 tokens (0 remote entries): 34.7 ms\ntime L0 chunk 512 tokens (0 remote entries): 34.4 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.6 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.6 ms\nstats: 18432 hit, 0 cpu, 0 pcie, 337 file; worst rel 0.000e+00 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 6 calls, 6 launches: wall 175 ms = waits on reads 0 + wave/copy waits 0 + final sync 147 + other host 28; reader wall 0 ms; GPU grouped kernels 2 ms (resident 2); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 75 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 3 sub-runs, 9.5 GB of ternary read = 9877 GB/s\nresident MMQ stage: 69 waves, 21812060160 exact D2D bytes\n",
+        "layer_timings": [
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 360.1
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 34.7
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 34.4
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.6
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.6
+          }
+        ]
+      }
+    ],
+    "model_api_speedup_claimed": false,
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+    "lease_ends_unix": 1792884595.778009,
+    "binary_sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd",
+    "finished_unix": 1792864336.1713917,
+    "real_weight_f32_reference_passed": true,
+    "paired_operator_timing_completed": true
+  },
+  "exact_process_alive": false
+}

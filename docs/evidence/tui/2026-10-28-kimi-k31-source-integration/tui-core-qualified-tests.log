@@ -1,0 +1,107 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\crates\code\core)
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+warning: function `binding_exists` is never used
+    --> crates\code\core\src\effect_isolation\tests.rs:1078:4
+     |
+1078 | fn binding_exists(session_id: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 4 warnings (run `cargo fix --lib -p a3s-code-core --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 00s
+     Running unittests src\lib.rs (target\debug\deps\a3s_code_core-e95e7f9dfb5c77aa.exe)
+
+running 62 tests
+test porcelain::windows::tests::actual_windows_files_have_bounded_byte_identities ... ok
+test porcelain::windows::tests::actual_windows_walk_detects_changes_without_git ... ok
+test porcelain::windows::tests::windows_observer_refuses_escapes_and_streams ... ok
+test porcelain::windows::tests::windows_observer_refuses_reparse_point_ancestors ... ok
+test verification::tests::acceptance_file_exists_quotes_paths_with_spaces ... ok
+test verification::tests::acceptance_file_exists_skips_paths_that_escape_workspace ... ok
+test verification::tests::acceptance_helpers_cover_empty_quote_and_absolute_in_workspace_paths ... ok
+test verification::tests::acceptance_subject_helpers_recognize_passing_shell_acceptance ... ok
+test verification::tests::artifact_uri_collection_walks_arrays_and_nested_objects ... ok
+test verification::tests::bind_host_shell_reports_to_mutations_sets_effect_digest_for_matching_path ... ok
+test verification::tests::contract_admission_refuses_empty_id_command_or_covers ... ok
+test verification::tests::contract_coverage_matches_exact_suffix_and_directory_glob ... ok
+test verification::tests::contract_report_binds_only_a_full_passing_covered_run ... ok
+test verification::tests::contract_report_refuses_failed_partial_and_foreign_runs ... ok
+test verification::tests::contract_report_rejects_masked_status_quoted_mentions_and_modified_arguments ... ok
+test verification::tests::each_active_loop_needs_its_own_acceptance_report_before_goal_emit ... ok
+test verification::tests::format_summary_covers_skipped_failed_and_review_without_subjects ... ok
+test verification::tests::format_summary_includes_actionable_counts_and_subjects ... ok
+test verification::tests::format_summary_mentions_residual_risks ... ok
+test verification::tests::format_summary_needs_review_mentions_pending_subject ... ok
+test verification::tests::format_summary_skipped_mentions_no_reports ... ok
+test verification::tests::go_workspace_preset_uses_go_test_and_vet ... ok
+test verification::tests::goal_achievement_gate_requires_passed_required_checks ... ok
+test verification::tests::goal_emit_requires_acceptance_report_when_machine_acceptance_exists ... ok
+test verification::tests::host_report_for_verified_mutation_path_binds_digest_for_completion_gate ... ok
+test verification::tests::merge_shell_verification_metadata_attaches_rust_preset_report ... ok
+test verification::tests::merge_shell_verification_metadata_without_workspace_keeps_shell_command_only ... ok
+test verification::tests::node_package_manager_detection_and_script_commands_cover_lockfile_variants ... ok
+test verification::tests::node_package_without_scripts_yields_no_preset ... ok
+test verification::tests::node_workspace_preset_detects_lockfile_package_managers ... ok
+test verification::tests::node_workspace_preset_uses_declared_scripts_only ... ok
+test verification::tests::normalize_shell_command_and_preset_coverage_handle_semicolons_and_empty ... ok
+test verification::tests::path_from_existence_check_command_parses_common_forms ... ok
+test verification::tests::powershell_literal_item_checks_require_terminating_errors_and_literal_operands ... ok
+test verification::tests::program_verification_hint_builds_required_and_optional_checks ... ok
+test verification::tests::python_mypy_and_ruff_presets_are_detected_from_config_files ... ok
+test verification::tests::python_pytest_ini_and_mypy_markers_produce_presets ... ok
+test verification::tests::python_workspace_preset_includes_mypy_when_configured ... ok
+test verification::tests::python_workspace_preset_requires_clear_markers ... ok
+test verification::tests::report_fails_when_any_check_fails ... ok
+test verification::tests::report_from_required_program_hint_needs_review ... ok
+test verification::tests::report_passes_when_required_checks_pass ... ok
+test verification::tests::report_to_value_and_residual_risk_update_status ... ok
+test verification::tests::rust_workspace_preset_uses_cargo_commands ... ok
+test verification::tests::shell_command_covers_preset_matches_exact_and_trailing_args ... ok
+test verification::tests::shell_verification_report_attaches_for_goal_acceptance_commands ... ok
+test verification::tests::shell_verification_report_attaches_for_workspace_preset_commands ... ok
+test verification::tests::stale_completed_loop_acceptance_does_not_authorize_or_pollute_active_goal ... ok
+test verification::tests::static_verifier_builds_report ... ok
+test verification::tests::summary_passes_when_reports_pass ... ok
+test verification::tests::summary_prioritizes_failed_checks ... ok
+test verification::tests::summary_skips_empty_reports ... ok
+test verification::tests::summary_tracks_pending_required_checks ... ok
+test verification::tests::supports_goal_achievement_rejects_optional_only_and_residual_risk ... ok
+test verification::tests::verification_command_builds_failed_check_from_exit_code ... ok
+test verification::tests::verification_command_builds_passed_check_with_evidence ... ok
+test verification::tests::verification_command_marks_execution_error_and_exit_mismatch_failed ... ok
+test verification::tests::verification_command_optional_to_check_and_timeout_builder ... ok
+test verification::tests::verification_command_timeout_and_summary_to_value_are_exercised ... ok
+test verification::tests::verification_report_empty_is_skipped_and_residual_risk_needs_review ... ok
+test verification::tests::verification_status_label_covers_all_variants ... ok
+test verification::tests::verification_summary_reports_passed_only_with_required_checks ... ok
+
+test result: ok. 62 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.62s
+

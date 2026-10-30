@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores' (3332) panicked at crates\code\core\src\agent_api\conversation_runtime\memory_retention_tests\lifecycle\support.rs:403:9:
+assertion `left == right` failed
+  left: "C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpSdzzGQ"
+ right: "\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpSdzzGQ"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores ... FAILED
+
+failures:
+
+failures:
+    agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5314 filtered out; finished in 0.05s
+

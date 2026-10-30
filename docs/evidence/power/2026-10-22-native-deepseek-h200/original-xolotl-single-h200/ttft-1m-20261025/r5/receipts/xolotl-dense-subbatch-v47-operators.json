@@ -1,0 +1,36 @@
+{
+  "schema": "aster-xolotl-dense-subbatch-v47-operators",
+  "files": [
+    {
+      "file": "launch_xolotl_dense_subbatch_v47.frozen.py",
+      "bytes": 5640,
+      "sha256": "9123a470ef37e2c4b02d3ee8ae2b3e51d6b59dad7c43b9b4cc75d6d2312e7241"
+    },
+    {
+      "file": "manage_xolotl_dense_subbatch_v47.frozen.py",
+      "bytes": 7056,
+      "sha256": "468c23dbe840958ac00ed2410e56a332d95b1c3ae873a4c0fa089c17a3feac58"
+    },
+    {
+      "file": "drain_xolotl_indexer_after_fullwindow_v45.frozen.py",
+      "bytes": 2785,
+      "sha256": "4fcb4ac498be563a8be646f5f69eebe428e26136f2bfb541e142d8890f09c3f9"
+    },
+    {
+      "file": "run_xolotl_dense_subbatch_v47.frozen.py",
+      "bytes": 5036,
+      "sha256": "59ff9342df2ac3edfeb93fe1bc5903bbf871613f137dfd6e7451009a8f87e9a4"
+    }
+  ],
+  "stages": [
+    "wait for exact V45 passed/gone",
+    "drain exact idle V44",
+    "dense256 basic28",
+    "dense512 basic28",
+    "dense128_repeat basic28"
+  ],
+  "changed_control_only": "attention sub-batch width",
+  "formal_service_unchanged": true,
+  "launched": false,
+  "full1m_new_width_qualified": false
+}

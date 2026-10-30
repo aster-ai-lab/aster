@@ -1,0 +1,35 @@
+[6n[m]0;D:\code\aster\.git\tui_conpty_backspace_probe.exe[?25h[?2004hPROBE_READY
+EVENT Key(KeyEvent { code: Char('A'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('A'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(CONTROL), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(CONTROL), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('B'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('B'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('C'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('C'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(0x0), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(0x0), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(CONTROL), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(CONTROL), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('D'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('D'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEventState(0x0) })
+EVENT Key(KeyEvent { code: Char('E'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventSt
+[29;100Htate(0x0) })
+EVENT Key(KeyEvent { code: Char('E'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEvent
+[29;100HtState(0x0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(0x0), kind: Press, state: KeyEventState(0x
+[29;100Hx0) })
+EVENT Key(KeyEvent { code: Enter, modifiers: KeyModifiers(0x0), kind: Release, state: KeyEventState(
+[29;100H(0x0) })
+EVENT Key(KeyEvent { code: Char('F'), modifiers: KeyModifiers(SHIFT), kind: Press, state: KeyEventSt
+[29;100Htate(0x0) })
+EVENT Key(KeyEvent { code: Char('F'), modifiers: KeyModifiers(SHIFT), kind: Release, state: KeyEvent
+[29;100HtState(0x0) })
+EVENT Key(KeyEvent { code: Backspace, modifiers: KeyModifiers(CONTROL), kind: Press, state: KeyEvent
+[29;100HtState(0x0) })
+EVENT Key(KeyEvent { code: Backspace, modifiers: KeyModifiers(CONTROL), kind: Release, state: KeyEve
+[29;100HentState(0x0) })
+EVENT Key(KeyEvent { code: Backspace, modifiers: KeyModifiers(0x0), kind: Press, state: KeyEventStat
+[29;100Hte(0x0) })
+EVENT Key(KeyEvent { code: Backspace, modifiers: KeyModifiers(0x0), kind: Release, state: KeyEventSt
+[29;100Htate(0x0) })

@@ -1,0 +1,29 @@
+{
+  "unix": 1792880208.8315144,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/engram-storage-probe-v64",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_executed": false,
+  "live_service_changed": false,
+  "source_cache_evicted": false,
+  "files": [
+    {
+      "file": "probe-plan.json",
+      "bytes": 968,
+      "sha256": "ba548ef30a530cdd64f4f90de2de91c18b4433c787ce4b428548ed2a59b4a27e"
+    },
+    {
+      "file": "probe-worker.py",
+      "bytes": 5783,
+      "sha256": "6d27105090441006c91e7bdb211f28ada9e1a126af37abc4bf225c0a844dd0dd"
+    }
+  ],
+  "process": {
+    "pid": 7975,
+    "start_ticks": 315969431,
+    "uid": 10250,
+    "unix": 1792880218.4258354,
+    "budget_seconds": 180,
+    "namespace": "optimization pod"
+  }
+}

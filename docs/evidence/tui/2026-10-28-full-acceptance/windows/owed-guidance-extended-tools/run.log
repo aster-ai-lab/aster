@@ -1,0 +1,43 @@
+
+running 4 tests
+ORACLE case=ls-search-contracts name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-pc-windows-msvc
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27109
+ORACLE case=ls-search-contracts name=ls-bounded-order result=pass detail=one actual ls call returns the directory before the first file and omits entries beyond limit=2
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27809
+ORACLE case=ls-search-contracts name=search-unsupported-combination result=pass detail=the original content-plus-pagination request is explicitly refused according to the published search contract
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=28525
+ORACLE case=ls-search-contracts name=search-context result=pass detail=one scoped content search returns both unknown context tokens and excludes outside content
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=29541
+ORACLE case=ls-search-contracts name=search-bounded-page result=pass detail=files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=30209
+ORACLE case=ls-search-contracts name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=31114
+ORACLE case=ls-search-contracts name=search-no-match result=pass detail=the actual scoped no-match receipt succeeds without returning fixture contents or changing their bytes
+ORACLE case=ls-search-contracts name=quit result=pass detail=exit 0
+test tool_contracts::kimi_ls_and_search_use_actual_scoped_bounded_workspace_results ... ok
+ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-pc-windows-msvc
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27157
+ORACLE case=shell-nonzero-contract name=native-nonzero result=pass detail=one real native command preserves exit 7, independent stdout/stderr tokens, exact working directory and unchanged script bytes
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13835
+ORACLE case=shell-nonzero-contract name=failed-tool-recovery result=pass detail=the same session accepts and completes the next no-tool request after the real failed shell call
+ORACLE case=shell-nonzero-contract name=quit result=pass detail=exit 0
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... ok
+ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-pc-windows-msvc
+ORACLE case=send-now-cancel-ownership name=send-now-owner result=pass detail=the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal
+ORACLE case=send-now-cancel-ownership name=quit result=pass detail=exit 0
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... ok
+ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-pc-windows-msvc
+
+thread 'tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once' (52612) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:328:5:
+assertion `left == right` failed
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 31 filtered out; finished in 348.24s
+

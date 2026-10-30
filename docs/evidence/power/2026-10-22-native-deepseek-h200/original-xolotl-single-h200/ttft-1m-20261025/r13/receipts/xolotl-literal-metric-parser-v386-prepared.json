@@ -1,0 +1,16 @@
+{
+  "unix": 1792934550.0570624,
+  "phase": "prepared",
+  "observed_metadata": "xolotl-literal-metric-names-v385.json",
+  "physical_counter_values_qualified": false,
+  "signed_values_preserved": true,
+  "empty_type_labels_preserved": true,
+  "definitive_metric_names_required": true,
+  "metric_type_and_id_keys_required": true,
+  "worker_sha256": "27595ffbf9feec42d1260e711a6d82d365625398e32040f9074270eedb88642b",
+  "retained_failures": [
+    "strict378/actual380 rejected negative warp counter values",
+    "raw382/actual384 rejected observed empty typeName label"
+  ],
+  "GPU_executed": false
+}

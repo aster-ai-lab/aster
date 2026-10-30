@@ -1,0 +1,76 @@
+{
+  "schema": "aster.tui.continuation-ownership.v1",
+  "model": "kimi/k3.1-pro",
+  "source_pair_digest": "e1a37d311f896ceebb6a7a228a0f6a889f15313b",
+  "complete_for_F04_07": true,
+  "complete_for_full_acceptance": false,
+  "source_patch_sha256": "3a169a531e4853bd0543dd174513abd3802533eaee5d6c7c40587900c45b881e",
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "pair_manifest": ".tmp/paired-cli-windows/continuation-20261030013317798078/pair.json",
+      "binaries": [
+        {
+          "name": "a3s-code-acp.exe",
+          "bytes": 185496064,
+          "sha256": "4fe9e08e3d2a7605748c736f33ac862314ba0c50df5e0624134e878a5fc2fab0"
+        },
+        {
+          "name": "aster.exe",
+          "bytes": 324006912,
+          "sha256": "b2068e724ec3b2603ec4113ad310a4d212ceae7cf4d88115585bba068021d663"
+        }
+      ],
+      "report": {
+        "file": "windows/continuation-20261030-owner/background-session-read-only-owner.json",
+        "sha256": "d3b5e3aafbc3e4526697960423cb959929e8ada43958c4a2db6162a213e89c80"
+      },
+      "required_oracles": [
+        "background-permission-card-owner",
+        "background-permission-owner",
+        "background-response-owner",
+        "background-tool-owner"
+      ],
+      "tty_unit_tests": 39,
+      "tty_doctests": 2,
+      "tty_clippy": "pass",
+      "product_clippy": "fail"
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "pair_manifest": ".tmp/paired-cli-linux/continuation-20261030013826310976/pair.json",
+      "binaries": [
+        {
+          "name": "a3s-code-acp",
+          "bytes": 415476432,
+          "sha256": "bdd8f0d75aef608c9975d8c61676bb71e065c231a13bdd5a57cbe0a7f9bb54a7"
+        },
+        {
+          "name": "aster",
+          "bytes": 1115625736,
+          "sha256": "2d80290240be75f39e0dea65196021c1b2e9bb3c305f28aa6e4692d48de98085"
+        }
+      ],
+      "report": {
+        "file": "linux/continuation-20261030-owner/background-session-read-only-owner.json",
+        "sha256": "839fffe74d8d52944e4f31d34c80fc58f312e5471f08e9ac990e1c12bebf7309"
+      },
+      "required_oracles": [
+        "background-permission-card-owner",
+        "background-permission-owner",
+        "background-response-owner",
+        "background-tool-owner"
+      ],
+      "tty_unit_tests": 75,
+      "tty_doctests": 2,
+      "tty_clippy": "pass",
+      "product_clippy": "fail"
+    }
+  ],
+  "product_clippy_blockers": [
+    "a3s-common: derivable_impls",
+    "a3s-common: unnecessary_sort_by"
+  ]
+}

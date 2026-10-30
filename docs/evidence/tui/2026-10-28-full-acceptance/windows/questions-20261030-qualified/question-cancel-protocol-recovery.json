@@ -1,0 +1,134 @@
+{
+  "assertions_finished": true,
+  "case": "question-cancel-protocol-recovery",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": false,
+        "prompt_tokens": 13343,
+        "text": null,
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13396,
+        "text": "QUESTION-CANCEL-RECOVERED",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "0964ea5bbbe352c6a2e9f75b5ac67aea15907c3713e7f7c4a9cc96685e90c07b",
+          "seq": 9
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:70f49387956f5bba7ade5552b9ca82291464886f:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "the actual ACP prompt response is cancelled, the UI becomes idle, and neither a default answer nor a successful completion fact is fabricated",
+      "name": "question-cancel-wire",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-H3g5ZK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ask_user exactly once with question 'Cancel this question', options ['KEEP-DEFAULT','CHANGE-    10:53 AM           DEFAULT'] and allow_free_text=true. If the question is cancelled, report cancellation without                           retrying. Do not call other tools or modify files.                                                                                                                                                                                                                                                                                                                    ♦ Thought for 2.5s                                                                                                                                                                                                                              Turn cancelled in 4.7s.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=4 model_turns=1 prompt_tokens=13396",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-H3g5ZK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Do not call tools. Reply exactly QUESTION-CANCEL-RECOVERED.                                          10:53 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.9s                                                                                                                                                                                                                              QUESTION-CANCEL-RECOVERED                                                                              10:53 AM                                                                                                                           █     Worked for 5.0s                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the same session completes a fresh real model turn after the cancelled question without reopening it",
+      "name": "question-cancel-recovery",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-H3g5ZK\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Do not call tools. Reply exactly QUESTION-CANCEL-RECOVERED.                                          10:53 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.9s                                                                                                                                                                                                                              QUESTION-CANCEL-RECOVERED                                                                              10:53 AM                                                                                                                           █     Worked for 5.0s                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "question-cancel-protocol-recovery",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": false,
+            "prompt_tokens": 13343,
+            "text": null,
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13396,
+            "text": "QUESTION-CANCEL-RECOVERED",
+            "tool": null
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "0964ea5bbbe352c6a2e9f75b5ac67aea15907c3713e7f7c4a9cc96685e90c07b",
+              "seq": 9
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 10,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "40318342-edb1-495d-9447-e12b597c2515"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

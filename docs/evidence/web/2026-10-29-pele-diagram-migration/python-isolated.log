@@ -1,0 +1,6 @@
+test_valid_page_has_named_controls_and_all_six_exact_release_links (test_site.SiteTest.test_valid_page_has_named_controls_and_all_six_exact_release_links) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 35.936s
+
+OK

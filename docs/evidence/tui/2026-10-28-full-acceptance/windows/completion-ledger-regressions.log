@@ -1,0 +1,99 @@
+
+running 80 tests
+test harness_loop::background_receipt_tests::a_background_path_budget_does_not_become_unresolved_debt ... ok
+test harness_loop::background_receipt_tests::background_fact_projection_binds_real_bytes_mode_and_exact_fact_key_once ... ok
+test harness_loop::background_receipt_tests::background_log_can_reproject_after_conservative_checkpoint_restore ... ok
+test harness_loop::background_receipt_tests::full_log_replay_preserves_later_foreground_after_an_unprojected_background ... ok
+test harness_loop::background_receipt_tests::incomplete_invalid_and_external_background_observations_remain_debt ... ok
+test harness_loop::progress_delta_tests::a_read_only_slice_with_information_progress_counts ... ok
+test harness_loop::progress_delta_tests::a_turn_with_only_new_obligations_reports_information_and_negative_uncertainty ... ok
+test harness_loop::progress_delta_tests::a_zero_delta_turn_is_distinguishable_from_a_productive_one ... ok
+test harness_loop::progress_delta_tests::recorded_debt_stays_visible_across_settlements ... ok
+test harness_loop::progress_delta_tests::slice_progress_includes_its_unsettled_last_turn_exactly_once ... ok
+test harness_loop::progress_delta_tests::slice_uncertainty_is_net_reduction_since_the_slice_started ... ok
+test harness_loop::progress_delta_tests::the_json_shape_of_a_delta_is_the_four_dimensions ... ok
+test harness_loop::progress_delta_tests::the_slice_accumulator_folds_turns_and_resets_on_take ... ok
+test harness_loop::receipt_restore_tests::absent_original_log_cannot_forgive_cached_unknown_or_verified_paths ... ok
+test harness_loop::receipt_restore_tests::an_empty_cache_does_not_invent_debt_or_change_default_projection ... ok
+test harness_loop::receipt_restore_tests::cache_cannot_borrow_unrelated_uncertainty_or_invent_a_missing_claim ... ok
+test harness_loop::receipt_restore_tests::cache_coverage_binds_background_fact_identity_and_rejects_legacy_or_bad_digest ... ok
+test harness_loop::receipt_restore_tests::cache_coverage_requires_every_receipt_and_exact_observed_state ... ok
+test harness_loop::receipt_restore_tests::cached_child_snapshots_and_local_incomplete_flags_need_their_own_provenance ... ok
+test harness_loop::receipt_restore_tests::child_debt_requires_exact_committed_terminal_and_never_a_local_scan_alone ... ok
+test harness_loop::receipt_restore_tests::exact_background_gap_settlement_preserves_unrelated_unknown_operations ... ok
+test harness_loop::receipt_restore_tests::exact_durable_terminal_settles_a_cached_nongit_child_without_a_local_registry ... ok
+test harness_loop::receipt_restore_tests::exact_original_unknown_covers_cached_debt_without_claiming_completion ... ok
+test harness_loop::receipt_restore_tests::later_log_uncertainty_and_current_state_survive_a_stale_checkpoint ... ok
+test harness_loop::receipt_tests::a_captured_attribution_gap_does_not_freeze_and_unknown_still_does ... ok
+test harness_loop::receipt_tests::a_file_created_and_removed_in_one_run_is_not_a_remaining_mutation ... ok
+test harness_loop::receipt_tests::authoritative_after_state_supersedes_stale_bytes_and_survives_cache_round_trip ... ok
+test harness_loop::receipt_tests::deleting_a_file_that_already_existed_stays_on_the_gate ... ok
+test harness_loop::receipt_tests::file_type_mode_and_bytes_each_bind_the_effect_identity ... ok
+test harness_loop::receipt_tests::legacy_cache_retains_its_original_digest_until_typed_observation ... ok
+test harness_loop::receipt_tests::observer_provenance_and_receipt_replay_order_do_not_change_workspace_identity ... ok
+test harness_loop::receipt_tests::repeated_batch_observation_keeps_a_real_file_verification_bound ... ok
+
+thread 'harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths' (36808) panicked at crates\code\core\src\harness_loop\receipt_tests.rs:286:66:
+called `Result::unwrap()` on an `Err` value: Os { code: 123, kind: InvalidFilename, message: "文件名、目录名或卷标语法不正确。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths ... FAILED
+test harness_loop::shell_diagnostic_tests::shell_gate_advice_uses_a_present_exact_file_instead_of_a_deleted_suffix_alias ... ok
+test harness_loop::tests::absorb_open_children_deltas_git_backed_markers ... Initialized empty Git repository in C:/Users/admin/AppData/Local/Temp/.tmpaQZrsg/.git/
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+[master (root-commit) 725402a] i
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+ok
+test harness_loop::tests::absorb_open_children_skips_nongit_without_snapshots ... ok
+test harness_loop::tests::assistant_prose_does_not_satisfy_a_mutation ... ok
+test harness_loop::tests::attach_observation_wraps_non_object_and_none_metadata ... ok
+test harness_loop::tests::background_workspace_child_blocks_narrative_until_its_delta_is_observed ... ok
+test harness_loop::tests::bash_without_changed_paths_is_not_a_mutation ... ok
+test harness_loop::tests::bound_passed_report_allows_verified_terminal ... ok
+test harness_loop::tests::bound_step_closure_is_not_rewritten_as_narrative ... ok
+test harness_loop::tests::completion_waiver_rejects_blank_digest_or_reason ... ok
+test harness_loop::tests::content_digest_for_path_misses_unrelated_records ... ok
+test harness_loop::tests::diagnostic_appears_on_the_next_model_visible_tool_result ... ok
+test harness_loop::tests::empty_required_checks_are_not_a_pass ... ok
+test harness_loop::tests::failed_wrapper_with_changed_paths_opens_the_gate ... ok
+test harness_loop::tests::failed_write_path_without_changed_paths_is_not_a_mutation ... ok
+test harness_loop::tests::fold_different_digests_is_distinct ... ok
+test harness_loop::tests::fold_same_digest_prefers_verified_over_waived ... ok
+test harness_loop::tests::fold_same_digest_waivers_keeps_first_bound_terminal ... ok
+test harness_loop::tests::incomplete_observation_is_not_closed_by_a_waiver_of_a_partial_digest ... ok
+test harness_loop::tests::model_visible_observation_covers_empty_and_already_tagged_output ... ok
+test harness_loop::tests::mutation_feedback_gives_a_literal_path_check_without_granting_verification ... ok
+test harness_loop::tests::nested_batch_write_opens_the_gate ... ok
+test harness_loop::tests::nested_program_write_opens_the_gate ... ok
+test harness_loop::tests::nested_tool_calls_skip_failed_and_nameless_entries ... ok
+test harness_loop::tests::observe_workspace_child_ignores_blank_and_missing_markers ... ok
+test harness_loop::tests::observe_workspace_child_records_settled_paths_and_dedupes_open_markers ... ok
+test harness_loop::tests::open_external_observation_still_continues_once ... ok
+test harness_loop::tests::plan_claim_without_digest_is_ordinary ... ok
+test harness_loop::tests::push_ignores_empty_paths ... ok
+test harness_loop::tests::read_only_tool_does_not_open_the_gate ... ok
+test harness_loop::tests::report_binds_pass_rejects_digest_mismatch_and_empty_required ... ok
+test harness_loop::tests::retrieval_index_stamp_is_not_a_source_mutation ... ok
+test harness_loop::tests::skill_changed_paths_open_the_gate ... ok
+test harness_loop::tests::stale_observation_omits_items ... ok
+test harness_loop::tests::unavailable_observation_does_not_satisfy_the_gate ... ok
+test harness_loop::tests::unbound_mutation_digest_reads_back_the_gate_message ... ok
+test harness_loop::tests::unbound_mutation_does_not_spend_a_continuation_the_model_cannot_close ... ok
+test harness_loop::tests::unbound_mutation_gate_names_a_bash_check_that_closes_it ... ok
+test harness_loop::tests::unseen_workspace_path_opens_the_gate_without_a_second_digest ... ok
+test harness_loop::tests::verification_context_disappears_only_after_this_effect_is_verified ... ok
+test harness_loop::tests::waiver_is_distinct_and_does_not_transfer_to_another_digest ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_background_and_nested_paths_share_the_same_rule ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_create_mutation_or_failed_effect_debt ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_does_not_forgive_unknown_invocation_outcomes ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_filter_keeps_unknown_preimages_bytes_and_mode_changes ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_preserves_prior_mutation_and_its_verification_debt ... ok
+test harness_loop::unchanged_receipt_tests::unchanged_receipt_still_reconciles_a_prior_created_path_that_is_absent_again ... ok
+
+failures:
+
+failures:
+    harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths
+
+test result: FAILED. 79 passed; 1 failed; 0 ignored; 0 measured; 5222 filtered out; finished in 4.05s
+

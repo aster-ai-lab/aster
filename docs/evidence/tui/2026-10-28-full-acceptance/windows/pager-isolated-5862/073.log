@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::workspace_sync::tests::maps_bound_local_build_agent_metadata' (39120) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\workspace_sync.rs:235:50:
+eligible build agent
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::workspace_sync::tests::maps_bound_local_build_agent_metadata ... FAILED
+
+failures:
+
+failures:
+    app::workspace_sync::tests::maps_bound_local_build_agent_metadata
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

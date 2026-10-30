@@ -1,0 +1,56 @@
+{
+  "unix": 1792907200.7715917,
+  "alive": false,
+  "result.json": {
+    "unix": 1792907070.2488036,
+    "phase": "compiled",
+    "GPU_executed": false,
+    "model_changed": false,
+    "tests": [
+      {
+        "mode": "release",
+        "result": {
+          "phase": "passed",
+          "contracts": 14680074,
+          "GPU_executed": false,
+          "speed_claimed": false
+        }
+      },
+      {
+        "mode": "sanitized",
+        "result": {
+          "phase": "passed",
+          "contracts": 14680074,
+          "GPU_executed": false,
+          "speed_claimed": false
+        }
+      }
+    ],
+    "current": "SM90-prototype-compile",
+    "cuda_compile_command": [
+      "/usr/local/cuda/bin/nvcc",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++17",
+      "--generate-code=arch=compute_90,code=sm_90",
+      "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu/headers/cub",
+      "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu/headers/thrust",
+      "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu/headers/libcudacxx/include",
+      "-Xptxas=-v",
+      "-c",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/aster_topk_cccl35_v192.cu",
+      "-o",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/topk-cccl35.o"
+    ],
+    "object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/topk-cccl35.o",
+      "bytes": 422816,
+      "sha256": "a72cb468cb54ca1888610d8a4a005dccc061b3c853e07d387411566cdd3078fd"
+    },
+    "official_header_commit": "28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+    "all_original_GPU_archives_unchanged": true,
+    "finished_unix": 1792907084.1687822
+  },
+  "worker.log": "",
+  "SM90-prototype-compile.stderr.log": "ub16_V_300500_SM_9006detail4topk16DeviceTopKKernelINS2_26policy_selector_from_typesImEEPmS6_PNS0_8NullTypeES8_jjmNS2_16extract_bin_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEENS2_24identify_candidates_op_tImLSA_1ELi11ESB_Lb1EEEEEvT0_T1_T2_T3_PT6_PT4_SK_SM_PNS2_7CounterIN4cuda3std3__415iterator_traitsISF_vE10value_typeESL_T5_EESM_SL_SU_SL_T7_T8_ib\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 31 registers, used 1 barriers, 16400 bytes smem\nptxas info    : Compiling entry function '_ZN3cub16_V_300500_SM_9006detail4topk26DeviceTopKLastFilterKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_24identify_candidates_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEEEEvT0_T1_T2_T3_PT6_PT4_PNS2_7CounterIN4cuda3std3__415iterator_traitsISF_vE10value_typeESL_T5_EESL_SU_SL_T7_i' for 'sm_90'\nptxas info    : Function properties for _ZN3cub16_V_300500_SM_9006detail4topk26DeviceTopKLastFilterKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_24identify_candidates_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEEEEvT0_T1_T2_T3_PT6_PT4_PNS2_7CounterIN4cuda3std3__415iterator_traitsISF_vE10value_typeESL_T5_EESL_SU_SL_T7_i\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 32 registers, used 1 barriers\nptxas info    : Compiling entry function '_ZN3cub16_V_300500_SM_9006detail4topk25DeviceTopKHistogramKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_16extract_bin_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEEEEvT0_T1_T2_T3_PNS2_7CounterIN4cuda3std3__415iterator_traitsISF_vE10value_typeET4_T5_EEPSQ_SQ_SR_SQ_T7_ib' for 'sm_90'\nptxas info    : Function properties for _ZN3cub16_V_300500_SM_9006detail4topk25DeviceTopKHistogramKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_16extract_bin_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEEEEvT0_T1_T2_T3_PNS2_7CounterIN4cuda3std3__415iterator_traitsISF_vE10value_typeET4_T5_EEPSQ_SQ_SR_SQ_T7_ib\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 31 registers, used 1 barriers, 16400 bytes smem\nptxas info    : Compiling entry function '_ZN3cub16_V_300500_SM_9006detail4topk16DeviceTopKKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_16extract_bin_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEENS2_24identify_candidates_op_tImLSC_1ELi11ESD_Lb1EEEEEvT0_T1_T2_T3_PT6_PT4_SM_SO_PNS2_7CounterIN4cuda3std3__415iterator_traitsISH_vE10value_typeESN_T5_EESO_SN_SW_SN_T7_T8_ib' for 'sm_90'\nptxas info    : Function properties for _ZN3cub16_V_300500_SM_9006detail4topk16DeviceTopKKernelINS2_26policy_selector_from_typesImEEPKmPmPNS0_8NullTypeESA_jjmNS2_16extract_bin_op_tImLNS2_6selectE1ELi11ENS1_21identity_decomposer_tELb1EEENS2_24identify_candidates_op_tImLSC_1ELi11ESD_Lb1EEEEEvT0_T1_T2_T3_PT6_PT4_SM_SO_PNS2_7CounterIN4cuda3std3__415iterator_traitsISH_vE10value_typeESN_T5_EESO_SN_SW_SN_T7_T8_ib\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 31 registers, used 1 barriers, 16400 bytes smem\nptxas info    : Compiling entry function '_ZN3cub16_V_300500_SM_9006detail11EmptyKernelIvEEvv' for 'sm_90'\nptxas info    : Function properties for _ZN3cub16_V_300500_SM_9006detail11EmptyKernelIvEEvv\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 4 registers, used 0 barriers\n"
+}

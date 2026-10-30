@@ -1,0 +1,71 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+  "harness_source_digest": "93f2d3eee01aaf64850b87402628cd2a0813c4e0",
+  "tests": [
+    {
+      "test": "coverage_wave::kimi_program_code_search_registered_template_returns_real_match",
+      "exit_code": 101,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_code_search_registered_template_returns_real_match.log"
+    },
+    {
+      "test": "coverage_wave::kimi_program_repo_map_registered_template_runs_all_seven_steps",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_repo_map_registered_template_runs_all_seven_steps.log"
+    },
+    {
+      "test": "coverage_wave::kimi_program_template_rejects_numeric_search_query_with_owned_error",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_template_rejects_numeric_search_query_with_owned_error.log"
+    },
+    {
+      "test": "coverage_wave::kimi_program_max_tool_calls_stops_before_second_dispatch",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_max_tool_calls_stops_before_second_dispatch.log"
+    },
+    {
+      "test": "coverage_wave::kimi_program_timeout_terminates_vm_and_next_turn_still_runs",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_timeout_terminates_vm_and_next_turn_still_runs.log"
+    },
+    {
+      "test": "coverage_wave::kimi_program_output_limit_preserves_utf8_and_marks_truncation",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_program_output_limit_preserves_utf8_and_marks_truncation.log"
+    },
+    {
+      "test": "coverage_wave::kimi_batch_staged_reference_uses_real_first_result",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_staged_reference_uses_real_first_result.log"
+    },
+    {
+      "test": "coverage_wave::kimi_batch_missing_reference_fails_only_dependent_item",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_batch_missing_reference_fails_only_dependent_item.log"
+    },
+    {
+      "test": "coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable",
+      "exit_code": 101,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_settings_hidden_backend_rows_are_not_actionable.log"
+    },
+    {
+      "test": "coverage_wave::kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette",
+      "exit_code": 101,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette.log"
+    },
+    {
+      "test": "coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes.log"
+    },
+    {
+      "test": "coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection",
+      "exit_code": 101,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection.log"
+    },
+    {
+      "test": "coverage_wave::kimi_web_search_explicit_wiki_returns_structured_real_sources",
+      "exit_code": 0,
+      "log": "windows/coverage-20261030-portable/coverage_wave__kimi_web_search_explicit_wiki_returns_structured_real_sources.log"
+    }
+  ]
+}

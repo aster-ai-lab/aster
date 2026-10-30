@@ -7,7 +7,9 @@ impl acp::Agent for A3sCodeAgent {
         args: acp::InitializeRequest,
     ) -> acp::Result<acp::InitializeResponse> {
         let rules = initialize_rules_from_meta(args.meta.as_ref())?;
+        let permissions = ClientPermissionRules::from_meta(args.meta.as_ref())?;
         *self.client_rules.borrow_mut() = rules;
+        *self.client_permissions.borrow_mut() = permissions;
         self.client_reads_files
             .set(args.client_capabilities.fs.read_text_file);
         let cwd = self.launch.workspace.to_string_lossy().to_string();
@@ -81,8 +83,27 @@ impl acp::Agent for A3sCodeAgent {
                     acp::Error::invalid_params().data("native plugin workspace is not admitted")
                 })?;
         }
-        a3s_code_core::session_folder::prepare_session_home(&workspace, &session_id)
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        let session_kind = match args.meta.as_ref().and_then(|meta| meta.get("sessionKind")) {
+            None => None,
+            Some(serde_json::Value::String(kind)) if kind == "interactive" => {
+                Some(a3s_code_core::session_folder::SessionKind::Interactive)
+            }
+            Some(serde_json::Value::String(kind)) if kind == "headless" => {
+                Some(a3s_code_core::session_folder::SessionKind::Headless)
+            }
+            Some(_) => {
+                return Err(acp::Error::invalid_params().data("unsupported session kind"));
+            }
+        };
+        match session_kind {
+            Some(kind) => a3s_code_core::session_folder::prepare_session_home_with_kind(
+                &workspace,
+                &session_id,
+                kind,
+            ),
+            None => a3s_code_core::session_folder::prepare_session_home(&workspace, &session_id),
+        }
+        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         let session_mcp = session_mcp_configs(&args.mcp_servers);
         self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
             .await?;

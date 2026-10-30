@@ -1,0 +1,49 @@
+{
+  "unix": 1792879796.2406363,
+  "result": {
+    "schema": "aster-xolotl-engram-local-copy-v63",
+    "unix": 1792878881.953593,
+    "phase": "passed",
+    "gpu_executed": false,
+    "live_service_changed": false,
+    "files": [
+      {
+        "file": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5.safetensors",
+        "expected_bytes": 101535150936,
+        "copied_bytes": 101535150936,
+        "verified_bytes": 101535150936,
+        "phase": "passed",
+        "source_sha256": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5",
+        "copy_seconds": 378.28226137300953,
+        "local_sha256": "76a05106ece259be83d1bfea0dcb54f23377864ee60fd321690f35e6698a2af5",
+        "verify_seconds": 189.12432722002268
+      },
+      {
+        "file": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd.safetensors",
+        "expected_bytes": 101537926640,
+        "copied_bytes": 101537926640,
+        "verified_bytes": 101537926640,
+        "phase": "passed",
+        "source_sha256": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd",
+        "copy_seconds": 378.278405202087,
+        "local_sha256": "9dc51433e195bc78b5ad846b68643cc0351d3b174e5e4309222d3b7402c83afd",
+        "verify_seconds": 189.1294647171162
+      }
+    ],
+    "local_root": "/var/tmp/aster-h200-engram-v63-08538623",
+    "filesystem": [
+      1,
+      "/",
+      "overlay"
+    ],
+    "nice": 19,
+    "source_index_sha256": "16c856ddce6fe191f299939e4b0104414816754414f0834f5b89601e3a8a0290",
+    "copy_bytes_per_second_per_file": 268435456,
+    "verify_bytes_per_second_per_file": 536870912,
+    "total_bytes": 203073077576,
+    "all_full_sha256_readbacks_passed": true,
+    "exact_original_weight_bytes": true,
+    "finished_unix": 1792879449.3713129
+  },
+  "exact_copy_process_alive": false
+}

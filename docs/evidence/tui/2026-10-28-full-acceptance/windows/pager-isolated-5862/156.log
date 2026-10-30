@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::settings_modal::tests::chevron_column_is_at_constant_right_offset' (42540) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\settings_modal\tests.rs:5637:5:
+assertion `left == right` failed: Enum row's chevron column must contain the `›` glyph at area.right - 2 (constant right offset across rows), got: ">"
+  left: ">"
+ right: "›"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::settings_modal::tests::chevron_column_is_at_constant_right_offset ... FAILED
+
+failures:
+
+failures:
+    views::settings_modal::tests::chevron_column_is_at_constant_right_offset
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

@@ -1,0 +1,294 @@
+{
+  "core_confirmation": {
+    "passed": 84,
+    "failed": 0,
+    "log": "core-confirmation.log",
+    "scope": "same Core source and 9.1.5 manifests in primary workspace; exact release-worktree linked regression follows"
+  },
+  "locked_paired_check": {
+    "passed": true,
+    "log": "paired-check.log",
+    "scope": "isolated release source, both CLI and ACP"
+  },
+  "dependencies": {
+    "passed": 6
+  },
+  "cli_pair_delivery": {
+    "passed": 10
+  },
+  "musl_linker_flags": {
+    "passed": 2
+  },
+  "format": {
+    "whole_workspace_passed": false,
+    "scoped_passed": true,
+    "baseline_format_only_files": [
+      "apps/gateway/src/entrypoint/protocol/grpc_handler.rs",
+      "apps/gateway/src/entrypoint/protocol/http_handler.rs",
+      "apps/gateway/src/entrypoint/protocol/streaming_handler.rs"
+    ],
+    "foreign_primary_worktree_changes_untouched": true,
+    "workspace_blocker": "same pinned Studio references absent os_feed_tests.rs; local SOLO reproduced and both CI platforms fail",
+    "earlier_global_pass_claim": "corrected by workspace-limits.json"
+  },
+  "versions": {
+    "aster": "0.1.3",
+    "a3s-code-core": "9.1.5",
+    "a3s-code-acp": "9.1.5"
+  },
+  "actual_acp_current_release": {
+    "qualified": true,
+    "reference": "../2026-10-24-acp-long-horizon/release915three-qualification.json",
+    "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+    "acp": 20,
+    "protocol": 10,
+    "h1_independent_checks": 19,
+    "native_mac_smoke": 5,
+    "public_channel_updater": true,
+    "core_source_unchanged": true,
+    "core_regression_passed": 741,
+    "core_existing_ignored": 2,
+    "scope": "Selected local release Mac bytes; original successful Linux/Windows CI archives separately checked; no real-model performance or full130-case claim"
+  },
+  "public_release": {
+    "state": "published",
+    "url": "https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.3",
+    "source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+    "published_at": "2026-10-24T18:44:10Z",
+    "assets": 4,
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ]
+  },
+  "remaining_goal": "incomplete; goal-tool status blocked",
+  "public_log_normalization": [
+    {
+      "public_copy": "docs/evidence/code/2026-10-24-v9.1.5/core-confirmation.log",
+      "original_sha256": "5c418930104354c5800c9ddb5157b2f28b127e9f9f8dfc4dc67c10ea0161418b",
+      "normalized_sha256": "e43dbd842eb61cb70af270b561af652a440945316b2c779d18b339f5c7ef9c5b",
+      "normalization": "line-end whitespace and excess final blank lines removed; original primary-worktree logs retained unchanged"
+    },
+    {
+      "public_copy": "docs/evidence/code/2026-10-24-acp-long-horizon/confirmation-abandoned-receiver-red.log",
+      "original_sha256": "7ddce85f0846cb8dc4f088e59ef54db435f373c0ec943c734b99c9044576da5b",
+      "normalized_sha256": "cbd473c8fb7f4f834255ca06b6a068c5abd08d2c68040a61010e11332ac74e6a",
+      "normalization": "line-end whitespace and excess final blank lines removed; original primary-worktree logs retained unchanged"
+    }
+  ],
+  "isolated_core_regression": {
+    "passed": 741,
+    "failed": 0,
+    "ignored": 2,
+    "scope": "union of relevant ownership, admission, goals, facts, tasks, direct-tools and confirmation groups; unique names within this invocation, groups not added to old counts",
+    "log": "isolated-core.log"
+  },
+  "scripted_opaque_id_controls": {
+    "passed": 2,
+    "log": "opaque-scripted-checks.log",
+    "scope": "bind the exact original command to its adjacent native tool-result ID; reject foreign/masked/reversed/missing-status frames"
+  },
+  "previous_candidate_actual": {
+    "build_id": "aster-cli-pair-v1:32dc56bfb580af06082eaab82ecdf29c2c75dc3d:aarch64-apple-darwin",
+    "unattended_passed": 20,
+    "protocol_passed": 10,
+    "h1": "failed fixture initialization, then failed scripted literal-ID assumption; both retained; final requalification pending"
+  },
+  "ci_initial_run": {
+    "id": 40092859072,
+    "source_commit": "e0d48c8e6b84d536a3ad57d77491af0ef59d9fb8",
+    "status": "failed before compile: STUDIO_READ_TOKEN absent; single macOS rerun confirmed the same external prerequisite"
+  },
+  "ci_access_setup": {
+    "deploy_keys": "repository policy disables them; no deploy key created and no policy weakened",
+    "method": "dedicated fine-grained PAT being configured through authenticated GitHub UI",
+    "expiry": "one year, explicitly selected by user",
+    "secret_value_in_repository": false,
+    "secret": "STUDIO_READ_TOKEN saved and API metadata verified; secret value absent from files and logs",
+    "scope": "generated token is organization-wide code/metadata read-only; narrowing to Studio and rotation after chat exposure remain required"
+  },
+  "normalized_operational_logs": [
+    {
+      "public_copy": "isolated-core.log",
+      "raw_sha256": "035d39db20797056fbdc01fa93ba2a0c80ed593bff39bf7f4de16e0106caf783",
+      "normalized_sha256": "4f70cf23464b6ce0bef32f7456040ce1b8f2c9b397eb2d418b5f7bee697e2426",
+      "scope": "line-end and excess final blank whitespace removed; raw source retained in primary worktree"
+    },
+    {
+      "public_copy": "opaque-scripted-checks.log",
+      "raw_sha256": "2e45f59c2d33f554e98763529f9e1781ce5e3789ab77ac19e3ce80e45ca2ec98",
+      "normalized_sha256": "4025628f123f5337e2154a8738bca97cd9d0209d47c1e4aecf9d43e408c2b2e1",
+      "scope": "line-end and excess final blank whitespace removed; raw source retained in primary worktree"
+    },
+    {
+      "public_copy": "final-acp.log",
+      "raw_sha256": "96baa226065282f35010690e408592daca451666c5bddcdde595dcf71efdb6c3",
+      "normalized_sha256": "5ebb6a4f9d6ec6d2775af55c863740dbff898f1d474dbe5859ba3239fa2be1be",
+      "scope": "line-end and excess final blank whitespace removed; original logs retained"
+    },
+    {
+      "public_copy": "final-protocol.log",
+      "raw_sha256": "af0fa806c4dc6f6f632da6e4ce28cd92775f6e41c782101a14c7510e190c1e68",
+      "normalized_sha256": "b0b6485fc3c9533aedeac4ca9ac44f061d1ecebe8b0964c0e464c9dd83da360b",
+      "scope": "line-end and excess final blank whitespace removed; original logs retained"
+    },
+    {
+      "public_copy": "studio-checkout-red.log",
+      "raw_sha256": "cfaabd063fdc797e60a68ee43e59c4a865eb88cd6399c873e8851457613b2de8",
+      "normalized_sha256": "cfaabd063fdc797e60a68ee43e59c4a865eb88cd6399c873e8851457613b2de8",
+      "scope": "line-end and excess final blank whitespace removed; original logs retained"
+    },
+    {
+      "public_copy": "studio-checkout-green.log",
+      "raw_sha256": "70e93564d0764ef0a87cb81eef0920beaaace971b28365ee0acd06f66cbe72d7",
+      "normalized_sha256": "70e93564d0764ef0a87cb81eef0920beaaace971b28365ee0acd06f66cbe72d7",
+      "scope": "line-end and excess final blank whitespace removed; original logs retained"
+    },
+    {
+      "public_copy": "studio-checkout-compatible-green.log",
+      "raw_sha256": "cbf0054a7b922908843a620138ba48fe142dd241b598b0008dfc782e82a5958c",
+      "normalized_sha256": "cbf0054a7b922908843a620138ba48fe142dd241b598b0008dfc782e82a5958c",
+      "scope": "line-end and excess final blank whitespace removed; original log retained"
+    },
+    {
+      "public_copy": "kylin-protoc-red.log",
+      "raw_sha256": "e6c0275406ad1ed52c1584b350640ddc67c08387dec142c324e8866570d63e69",
+      "normalized_sha256": "8f300c25b27bfe55c6f06eeb26ad5871c1784e9cf02f13e20ba156a74aa18923",
+      "scope": "line-end and excess final blank whitespace removed from the bounded failure excerpt; full original CI log and raw fragment retained"
+    },
+    {
+      "public_copy": "workspace-fmt-red.log",
+      "raw_sha256": "28d70703d868bf6387e44d23db3cf281b2fd1d0fcb20c8ab9c08526aebf2cc53",
+      "normalized_sha256": "28d70703d868bf6387e44d23db3cf281b2fd1d0fcb20c8ab9c08526aebf2cc53",
+      "scope": "line-end/excess final blank whitespace normalized; complete raw command log retained in primary ignored build outputs"
+    },
+    {
+      "public_copy": "scoped-fmt.log",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "scope": "line-end/excess final blank whitespace normalized; complete raw command log retained in primary ignored build outputs"
+    },
+    {
+      "public_copy": "optional-features.log",
+      "raw_sha256": "6124ca657d822cdcda22393ef64ad08570d4cc167df5b7fe145cf04ee95330ba",
+      "normalized_sha256": "6124ca657d822cdcda22393ef64ad08570d4cc167df5b7fe145cf04ee95330ba",
+      "scope": "line-end/excess final blank whitespace normalized; complete raw command log retained in primary ignored build outputs"
+    }
+  ],
+  "ci_current_run": {
+    "id": 40110868267,
+    "source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+    "status": "cancelled intentionally for prolonged Mac compilation; Linux and Windows succeeded",
+    "macos_origin": "local pinned locked release fallback; not CI-built",
+    "macos_build_seconds": 951.835
+  },
+  "studio_checkout_ownership": {
+    "passed": 1,
+    "baseline_red": true,
+    "wrong_and_missing_workspace_refused": true,
+    "unrelated_current_directory_supported": true,
+    "downstream_build_git_supported": true,
+    "trust_scope": "only the exact runner checkout is added to the ephemeral CI global Git config; existing entries preserved, no wildcard, user global Git config untouched",
+    "log": "studio-checkout-compatible-green.log"
+  },
+  "release_workflow_preflight": {
+    "yaml_parsed": true,
+    "shell_scripts_bash_syntax_checked": 11,
+    "kylin_glibc_probe": "explicit Bash, because the container default is sh"
+  },
+  "ci_checkout_counterexample": {
+    "run_id": 40102189209,
+    "git_version": "2.25.1",
+    "result": "command-line safe.directory still rejected in the Ubuntu20 container; later source-identity build scripts also need trusted Git reads",
+    "log": "studio-checkout-old-git-ci.log",
+    "raw_log_sha256": "fcf8809db2aba340c620111873155a9ae0f5436ea9d8ca9b86955eb6418aff56"
+  },
+  "workflow_validation": {
+    "tool": "actionlint1.7.12",
+    "upstream_binary_sha256": "aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f",
+    "old_rust_workflow_red": true,
+    "current_ci_and_release_passed": true,
+    "shellcheck_and_pyflakes": "not run"
+  },
+  "kylin_protoc": {
+    "old_run": 40103045893,
+    "old_failure": "Ubuntu20 protoc refuses existing proto3 optional fields",
+    "pinned_version": "29.3",
+    "archive_sha256": "3e866620c5be27664f3d2fa2d656b5f3e09b5152b42f1bedbf427b333e90021a",
+    "prebuilt_elf_glibc_ceiling": "2.31 passed with repository checker and LLVM readelf; actual container run pending",
+    "raw_old_ci_log_sha256": "eda87b2e9dca23009c9c13360bd8d2d1658109891c3fe15963e8cd453a8c6ef4"
+  },
+  "optional_feature_compile": {
+    "passed": true,
+    "features": [
+      "advanced-harness",
+      "deep-live"
+    ],
+    "log": "optional-features.log"
+  },
+  "workspace_ci": {
+    "run": 40104203537,
+    "status": "failure",
+    "reasons": [
+      "pinned Studio missing os_feed_tests.rs at format",
+      "baseline jsonRender.ts dependency mismatch in both desktop renderer builds"
+    ],
+    "limitations": "workspace checks after format did not run; these are not passing checks"
+  },
+  "historical_registered_pair_qualification": {
+    "qualified": true,
+    "unattended": {
+      "passed": 20,
+      "product_workflows": 13,
+      "auxiliary_tests": 7
+    },
+    "protocol": {
+      "passed": 10
+    },
+    "h1": {
+      "passed": true,
+      "independent_checks": 19,
+      "workflow_ms": 34453
+    },
+    "report": "final-qualification.json"
+  },
+  "standard_platform_release": {
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ],
+    "independent_kylin_archive": false,
+    "updater_tests": 2,
+    "linux_contract_tests": 13,
+    "pair_delivery_tests": 10,
+    "release_assembly_tests": 4,
+    "linter": "actionlint1.7.12 passed; shellcheck and pyflakes not run",
+    "linux_build_jobs": 2,
+    "preflight_before_compile": true,
+    "reuse_complete_artifacts_without_compile": true,
+    "report": "unified-linux-plan-and-checks.json",
+    "archive_and_server_digest_checks": "all three archives plus latest.json verified"
+  },
+  "historical_ci_current_run": {
+    "id": 40101228548,
+    "source_commit": "65ab9bb908ccc84663873c99e0d0425bad0cf874",
+    "status": "macOS/Linux/Windows private checkout passed and builds started; Kylin hit Git dubious-ownership before compilation; exact-workspace-only resolver fix passes the retained red/green control"
+  },
+  "draft_lookup": {
+    "red": "draft-source-red.log",
+    "green": "draft-source-green.log",
+    "passed": 4,
+    "issue": "unpublished draft tag REST lookup returned404 even though draft existed; use gh release view targetCommitish, preserving draft/source refusal"
+  },
+  "integrated_main_ci": {
+    "id": 40113626695,
+    "status": "failure",
+    "reasons": [
+      "pinned Studio missing app_updater/os_feed_tests.rs",
+      "pinned Studio renderer imports absent knowledge modules"
+    ],
+    "checks_after_format": "not run"
+  }
+}

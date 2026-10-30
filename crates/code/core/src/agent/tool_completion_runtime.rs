@@ -568,9 +568,11 @@ impl crate::agent::TurnEngine {
         &self,
         path: &str,
     ) -> crate::harness_loop::MutationObservationV1 {
-        use crate::harness_loop::MutationObservationV1;
         let Some(provider) = self.tool_context.workspace_services.code_intelligence() else {
-            return MutationObservationV1::unavailable(path);
+            return self.persisted_mutation_observation(
+                path,
+                "code intelligence provider is not configured".to_owned(),
+            );
         };
         let workspace_path = crate::workspace::WorkspacePath::from_normalized(path);
         let query = provider.diagnostics(
@@ -580,7 +582,18 @@ impl crate::agent::TurnEngine {
         let result = match tokio::time::timeout(std::time::Duration::from_millis(1500), query).await
         {
             Ok(Ok(result)) => result,
-            _ => return MutationObservationV1::unavailable(path),
+            Ok(Err(error)) => {
+                return self.persisted_mutation_observation(
+                    path,
+                    format!("diagnostics query failed: {error}"),
+                );
+            }
+            Err(_) => {
+                return self.persisted_mutation_observation(
+                    path,
+                    "diagnostics query timed out after 1500 ms".to_owned(),
+                );
+            }
         };
         if result
             .document
@@ -613,6 +626,32 @@ impl crate::agent::TurnEngine {
             false,
             items,
         )
+    }
+
+    fn persisted_mutation_observation(
+        &self,
+        path: &str,
+        diagnostic_reason: String,
+    ) -> crate::harness_loop::MutationObservationV1 {
+        use crate::harness_loop::MutationObservationV1;
+        let observed = self.tool_context.workspace.join(path);
+        match std::fs::metadata(&observed) {
+            Ok(metadata) if metadata.is_file() => MutationObservationV1::persisted(path),
+            Ok(_) => MutationObservationV1::unavailable_with_reason(
+                path,
+                format!(
+                    "observed path {} is not a regular file; {diagnostic_reason}",
+                    observed.display()
+                ),
+            ),
+            Err(error) => MutationObservationV1::unavailable_with_reason(
+                path,
+                format!(
+                    "failed to observe persisted file {}: {error}; {diagnostic_reason}",
+                    observed.display()
+                ),
+            ),
+        }
     }
 }
 
@@ -901,12 +940,25 @@ mod tests {
             output.contains("[mutation observation]"),
             "tool result missing mutation observation: {output}"
         );
+        assert!(output.contains("status=persisted"), "{output}");
+        assert!(!output.contains("status=unavailable"), "{output}");
         let schema = metadata
             .as_ref()
             .and_then(|value| value.get("mutation_observation"))
             .and_then(|observation| observation.get("schema"))
             .and_then(|schema| schema.as_str());
         assert!(schema.is_some(), "metadata missing mutation observation");
+        let missing = agent.mutation_observation_for("missing.txt").await;
+        assert_eq!(missing.status, "unavailable");
+        let rendered = missing.render();
+        assert!(
+            rendered.contains("failed to observe persisted file"),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("provider is not configured"),
+            "{rendered}"
+        );
 
         let mut bash_output = String::new();
         let mut bash_metadata = Some(serde_json::json!({ "command": "test -f hello.txt" }));

@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths' (52072) panicked at crates\code\core\src\harness_loop\receipt_tests.rs:286:66:
+called `Result::unwrap()` on an `Err` value: Os { code: 123, kind: InvalidFilename, message: "文件名、目录名或卷标语法不正确。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths ... FAILED
+
+failures:
+
+failures:
+    harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5301 filtered out; finished in 0.01s
+

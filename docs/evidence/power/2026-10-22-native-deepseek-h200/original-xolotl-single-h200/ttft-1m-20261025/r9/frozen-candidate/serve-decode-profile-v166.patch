@@ -1,0 +1,41 @@
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -42,6 +42,7 @@
+ #include "aster_prefill_policy.hpp"
+ #include "aster_draft_cumulative.hpp"
+ #include "aster_dspark_seed.hpp"
++#include "aster_serve_profile.hpp"
+ #include "ds41_cuda_policy.hpp"
+ #include "ds41_dense.hpp"
+ #include "ds41_exec.hpp"
+@@ -409,6 +410,11 @@
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_POOL_DRAFT_SEED"), pool_draft_seed)) {
+         std::fprintf(stderr, "ASTER_XQ_POOL_DRAFT_SEED must be 0 or 1\n"); return 2;
+     }
++    bool serve_profile = false;
++    if (!aster_profile::flag(std::getenv("ASTER_XQ_SERVE_PROFILE"), serve_profile)) {
++        std::fprintf(stderr, "ASTER_XQ_SERVE_PROFILE must be 0 or 1\n"); return 2;
++    }
++    aster_profile::FourthGen profile_counter(serve_profile);
+     bool prefill_phase_trace = false;
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_PHASE_TRACE"), prefill_phase_trace)) {
+         std::fprintf(stderr, "ASTER_XQ_PREFILL_PHASE_TRACE must be 0 or 1\n"); return 2;
+@@ -2899,6 +2905,9 @@
+             }
+             tier.reset_stats();
+             dense.route_meter(true);
++            const bool profiling_gen = profile_counter.next();
++            aster_profile::DecodeWindow profiling(profiling_gen, &Ds41MoeTier::profiler);
++            if (profiling_gen) std::fprintf(stderr, "aster serve profile: fourth_GEN_decode_begin\n");
+             const double td0 = now_ms();
+             int gen = 0, pos = total;
+             const char * finish = "length";
+@@ -3050,6 +3059,8 @@
+                 tier.rebalance_tick();
+             }
+             const double dec_ms = now_ms() - td0;
++            profiling.finish();
++            if (profiling_gen) std::fprintf(stderr, "aster serve profile: fourth_GEN_decode_end\n");
+             const Ds41MoeStats st = tier.stats();
+             if (std::strcmp(finish, "error") == 0) {
+                 std::fprintf(stderr, "serve: decode failed: %s\n", ferr.c_str());

@@ -1,0 +1,87 @@
+{
+  "unix": 1792913098.3157778,
+  "formal": {
+    "uid": "e808d0b3-65c6-4a48-b121-220ff6fc5eb2",
+    "phase": "Running"
+  },
+  "optimization": {
+    "uid": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+    "phase": "Running",
+    "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+    "lease_ends_unix": 1792932297.8810108
+  },
+  "inference_sent": false,
+  "service_changed": false,
+  "Windows_health": {
+    "status": 200,
+    "loaded": true,
+    "context": 1048576,
+    "seconds": 0.04600000008940697
+  },
+  "pipeline": {
+    "phase": "actual1m_fullwindow",
+    "profile": "control_a",
+    "client_phase": "passed",
+    "client_tests": 12,
+    "suite_phase": "running",
+    "suite_stage": "fullwindow",
+    "suite_children": {
+      "remainder/request-result.json": {
+        "phase": "passed",
+        "tests": 0,
+        "current_test": null,
+        "error": null
+      },
+      "fullwindow/request-result.json": {
+        "phase": "cold_fullwindow_long",
+        "tests": 1,
+        "current_test": null,
+        "error": null
+      }
+    },
+    "completed_profiles": [],
+    "error": null,
+    "observed_unix": 1792913097.041453
+  },
+  "runtime": {
+    "unix": 1792913108.495193,
+    "service": {
+      "phase": "serving",
+      "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+      "binary_sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195",
+      "context_tokens": 1048576,
+      "error": null,
+      "lease_ends_unix": 1792932297.8810108
+    },
+    "prefill_progress": [
+      "aster prefill phase: phase=progress total=1047544 offset=345088 width=1047544 monotonic_ms=7142353876.332",
+      "aster prefill phase: phase=progress total=1047544 offset=353280 width=1047544 monotonic_ms=7142366720.745",
+      "aster prefill phase: phase=progress total=1047544 offset=361472 width=1047544 monotonic_ms=7142379076.377"
+    ],
+    "prompt_phases": [
+      "serve: prompt phases: 132097 new = 132097 batch (134.27 s: dense 56.62, experts 73.77, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+      "serve: prompt phases: 151 new = 151 batch (1.26 s: dense 0.15, experts 0.85, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)"
+    ],
+    "decode_phases": [
+      "serve: pass split 40.39 ms/pass = verify 36.25 (dense 21.83, tier 13.72, taps 0.25, logits 0.46) + sample 0.15 + draft 3.82 + other 0.17",
+      "serve: DSpark 1 passes, 2.00 tokens/pass (all requests 2.73)",
+      "serve: pass split 57.01 ms/pass = verify 53.75 (dense 38.97, tier 13.69, taps 0.27, logits 0.82) + sample 0.16 + draft 2.71 + other 0.39",
+      "serve: 1024 tokens in 27.05 s = 37.82 tok/s (length); experts: 326559 hit, 0 cpu, 1521 pcie, 0 file",
+      "serve: DSpark 480 passes, 2.13 tokens/pass (all requests 2.67)",
+      "serve: pass split 56.36 ms/pass = verify 48.84 (dense 37.28, tier 10.84, taps 0.24, logits 0.49) + sample 0.21 + draft 7.30 + other 0.01"
+    ]
+  },
+  "native_flag_observation": {
+    "native": [
+      {
+        "pid": 317,
+        "start_ticks": 714026993,
+        "mode": "0",
+        "namespace": "optimization pod",
+        "flag_verified": true
+      }
+    ],
+    "expected_mode": "0",
+    "all_environment_values_published": false
+  }
+}

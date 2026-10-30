@@ -1,0 +1,14 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/functional.rs:538:
+     let fresh = tui.physical_screen();
+     assert!(!fresh.contains("FIRST-SESSION-OK"));
+     assert!(!fresh.contains("[stop]") && !fresh.contains("Ctrl+c:cancel"));
+[31m-    assert!(!tui.facts().iter().any(|fact| {
+(B[m[31m-        matches!(fact["type"].as_str(), Some("user.message" | "model.turn"))
+(B[m[31m-    }));
+(B[m[32m+    assert!(!tui
+(B[m[32m+        .facts()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|fact| { matches!(fact["type"].as_str(), Some("user.message" | "model.turn")) }));
+(B[m     assert_eq!(std::fs::read(&first_path).unwrap(), original_bytes);
+     tui.record(
+         "fresh-session-isolated",

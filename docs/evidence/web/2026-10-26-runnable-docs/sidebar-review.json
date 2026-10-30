@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-sidebar-retention/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "browser_containment": "hostname_v1",
+    "event_count": 18,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-sidebar-retention/events.jsonl",
+    "finished_at_ms": 1793016462859,
+    "goal": "复现并验证章节跳转后菜单滚动位置保持",
+    "schema_version": 1,
+    "session": "aster-sidebar-retention",
+    "started_at_ms": 1793015989713,
+    "status": "passed",
+    "success_criteria": [
+      "左侧菜单向下滚动后点击章节，新页面仍显示同一段菜单；手机目录正常"
+    ],
+    "summary": "Verified long sidebar focused to the bottom, then clicking the final chapter preserves the same lower navigation segment. Before/after screenshots retained. DOM tests cover exact offsets, product/version isolation, hidden mobile menu and blocked storage.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-sidebar-retention/report.json",
+  "session": "aster-sidebar-retention",
+  "status": "passed"
+}

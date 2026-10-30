@@ -1,0 +1,16 @@
+{
+  "unix": 1792921200.5291536,
+  "phase": "error_roundtrip_passed",
+  "client": "installed WorkBuddy CLI",
+  "gui_test_passed": false,
+  "search_calls": 1,
+  "tool_results": 1,
+  "model_returned_final_answer": true,
+  "tool_error": "Authentication required for web search",
+  "repeated_searches_observed": false,
+  "full_successful_search_gate_passed": false,
+  "original_strict_failed_receipt": "workbuddy-search-e2e-v273-result.json",
+  "duration_ms": 21032,
+  "raw_transcript_published": false,
+  "model_error_handling_proven": true
+}

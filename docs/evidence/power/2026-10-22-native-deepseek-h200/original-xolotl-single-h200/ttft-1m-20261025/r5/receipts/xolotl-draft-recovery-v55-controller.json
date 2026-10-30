@@ -1,0 +1,168 @@
+{
+  "unix": 1792876538.14881,
+  "phase": "passed",
+  "profiles": [
+    {
+      "profile": "off_repeat",
+      "basic": {
+        "profile": "off_repeat",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.1303855529986322,
+          "ttft_p95_seconds": 0.16357549303211272,
+          "api_wall_completion_tok_s": 83.41437111647492,
+          "stream_interval_tok_s_estimate": 92.9530271112452
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 37.71923430310562,
+            "seconds": 37.78869649907574,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.2108410899527371,
+            "seconds": 0.2566974228248,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.03553237393498421,
+            "seconds": 0.10753843514248729,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.505177560262382,
+            "seconds": 1.5359196150675416,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 37.24454544996843,
+            "seconds": 37.27967486390844,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 36.39455113466829,
+            "seconds": 36.70436271466315,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.4741138303652406,
+            "seconds": 1.5090701659210026,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 37.02876527188346,
+            "seconds": 37.386067090090364,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "off_repeat",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 108.1342193428427,
+          "api_wall_completion_tok_s": 75.75770232387794,
+          "stream_interval_tok_s_estimate": 75.79031164151306,
+          "ttft_p50_seconds": 0.010834215907379985,
+          "ttft_min_seconds": 0.01017575478181243,
+          "ttft_max_seconds": 0.021995315793901682
+        },
+        "reference_matched": true,
+        "failure_log": null
+      }
+    }
+  ],
+  "formal_service_unchanged": true,
+  "ctx1M_configured": true,
+  "actual1M_input_tested": false,
+  "retained_failed_comparison": "xolotl-draft-comparison-v53-controller.json",
+  "reason": "cum010 long-output hash changed; do not adopt it; repeat original off control before full1M",
+  "current_profile": "off_repeat",
+  "service_phase": "serving",
+  "client_phase": "passed",
+  "client_tests": 12,
+  "finished_unix": 1792876978.769095,
+  "last_off_control_kept": true
+}

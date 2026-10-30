@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::settings::set_compact_mode_toast_format' (47192) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\settings.rs:1860:5:
+assertion failed: toast.contains('\u{2713}')
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::settings::set_compact_mode_toast_format ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::settings::set_compact_mode_toast_format
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

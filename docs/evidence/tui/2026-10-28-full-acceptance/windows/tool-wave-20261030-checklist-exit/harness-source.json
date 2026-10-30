@@ -1,0 +1,8 @@
+{
+  "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+  "runtime_pair_rebuilt": false,
+  "harness_source_digest": "76fb76a8fb44ff42da5fc6adb5e47643acb0e36e",
+  "harness_snapshot": "source/tool-wave-20261030-checklist-exit-source.json",
+  "original_pair_manifest_sha256": "e05e36fee20a19f0ddd34e1c739b69d701d01b57a35326f1faed5ac28f4a9a6f",
+  "test_binary_sha256": "94c91b8872ca249b887fa19ae9199c070895c0d4e051ffcdeb33c0a8e848e2b0"
+}

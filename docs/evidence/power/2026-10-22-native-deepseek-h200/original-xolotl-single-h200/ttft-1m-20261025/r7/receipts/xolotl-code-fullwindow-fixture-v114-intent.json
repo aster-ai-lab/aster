@@ -1,0 +1,48 @@
+{
+  "unix": 1792891516.2085752,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+  "source_public_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52",
+  "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "gpu_executed": false,
+  "credentials_copied": false,
+  "actual_credential_negative_control_passed": true,
+  "source_files": 262,
+  "source_bytes": 4588929,
+  "corpus_repeated": false,
+  "files": [
+    {
+      "file": "prepare-plan.json",
+      "bytes": 388,
+      "sha256": "8a1b76e2b8ef72552a3d3e79f20720ed52d3daee1f25f6a56596c37b9305a234"
+    },
+    {
+      "file": "public-code-corpus.json.gz",
+      "bytes": 1183765,
+      "sha256": "153e13328081d133edc584e62e7b94f5c62097258d9069daa5b74ed1bc0ab150"
+    },
+    {
+      "file": "xolotl_code_fullwindow_prepare_v114.frozen.py",
+      "bytes": 8389,
+      "sha256": "95e7e699c0d0240c15006e9eac19d25f5946574cd1dd1dcf1efd3fdc1d6ab1cb"
+    },
+    {
+      "file": "xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 5715,
+      "sha256": "921561a3cbfffba14bc67242f2703726e692b8bcd4d427feb8b0975cce594af7"
+    },
+    {
+      "file": "test_xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 4854,
+      "sha256": "c80ae32183362a09d406cc494a3ae9a00a8b390bc7b882128ab6b25992dcac13"
+    }
+  ],
+  "process": {
+    "pid": 1145630,
+    "start_ticks": 281831022,
+    "uid": 10250,
+    "unix": 1792891525.2949524,
+    "budget_seconds": 240,
+    "namespace": "jump host"
+  }
+}

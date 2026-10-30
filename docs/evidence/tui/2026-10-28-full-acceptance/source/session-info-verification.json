@@ -1,0 +1,146 @@
+{
+  "complete_for_F04_03": true,
+  "model": "kimi/k3.1-pro",
+  "platforms": [
+    {
+      "platform": "windows",
+      "report": "windows/session-info/session-info-contract.json",
+      "report_sha256": "8f90cbe0b054b9671226e5cfabd9b2d45729fd8ab42ac785264fa2a9f7d326d2",
+      "source_pair": "aster-cli-pair-v1:a878a396eca1ee4dac118fe65ecc40d4487ed669:x86_64-pc-windows-msvc",
+      "oracle_names": [
+        "source-pair",
+        "session-info-empty",
+        "settled-turn",
+        "session-info-first-turn",
+        "session-info-yolo",
+        "settled-turn",
+        "session-info-second-turn",
+        "quit"
+      ],
+      "pair": {
+        "source_pair": "aster-cli-pair-v1:a878a396eca1ee4dac118fe65ecc40d4487ed669:x86_64-pc-windows-msvc",
+        "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\session-info-20261029211629271405",
+        "files": [
+          {
+            "name": "aster.exe",
+            "sha256": "4bccab43cdfd541afec99fa192940c803471a4bceb214e1a6e507ecfa680d7cb",
+            "bytes": 324005376
+          },
+          {
+            "name": "a3s-code-acp.exe",
+            "sha256": "0e1fc41b0b0b7025fcb2a2abf79bfd1a7271539697534cdec711bf6e42e1b580",
+            "bytes": 181146112
+          }
+        ],
+        "test_binary": {
+          "name": "aster_tui_session_info.exe",
+          "sha256": "95f800d574fd552f1cfe797e7ae16a44f9df11ba72f308e465975e39b271dc07",
+          "bytes": 6361088
+        },
+        "build_json": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\docs\\evidence\\tui\\2026-10-28-full-acceptance\\windows\\session-info-final-pair\\build.jsonl",
+        "test_build_json": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\docs\\evidence\\tui\\2026-10-28-full-acceptance\\windows\\session-info-final-pair\\test-build.jsonl",
+        "created_at": "2026-10-29T21:16:29.271405+00:00"
+      },
+      "first_used": 13338,
+      "second_used": 26758,
+      "context_total": 128000
+    },
+    {
+      "platform": "linux",
+      "report": "linux/session-info/session-info-contract.json",
+      "report_sha256": "5a7a85eff4f1ee3dc37d48d4fa7f4b81563e6c0687631be932c352543c482894",
+      "source_pair": "aster-cli-pair-v1:a878a396eca1ee4dac118fe65ecc40d4487ed669:x86_64-unknown-linux-gnu",
+      "oracle_names": [
+        "source-pair",
+        "session-info-empty",
+        "settled-turn",
+        "session-info-first-turn",
+        "session-info-yolo",
+        "settled-turn",
+        "session-info-second-turn",
+        "quit"
+      ],
+      "pair": {
+        "source_pair": "aster-cli-pair-v1:a878a396eca1ee4dac118fe65ecc40d4487ed669:x86_64-unknown-linux-gnu",
+        "folder": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/session-info-20261029211722145431",
+        "files": [
+          {
+            "name": "aster",
+            "sha256": "1b6df584a6d15ae35f7b948f9d5c5cbac9dd5b97cfdc135ffd9c54d4ddcc00e7",
+            "bytes": 1115623584
+          },
+          {
+            "name": "a3s-code-acp",
+            "sha256": "880511ebc726f16fa344d9d7def2456f3fc9443d228fdc751c6a3e335dd941b2",
+            "bytes": 413690552
+          }
+        ],
+        "test_binary": {
+          "name": "aster_tui_session_info",
+          "sha256": "eb263020a0d71253d6a84f2d0f5fb905b11489909437fcb54767d3b4d5504a8c",
+          "bytes": 95553584
+        },
+        "build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/session-info-final-pair/build.jsonl",
+        "test_build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/session-info-final-pair/test-build.jsonl",
+        "created_at": "2026-10-29T21:17:22.145431+00:00"
+      },
+      "first_used": 13235,
+      "second_used": 26524,
+      "context_total": 128000
+    }
+  ],
+  "functional_source_sha256": "787c76d26955bc18a1aaaa6d4d717e1a6d54f895028f2b9c3f8dcf07f4783e08",
+  "driver_source_sha256": "dbbb6160363da7cb91ceb93dd3d19d833fdbe6380babf8ac7f06ee58be514ec4",
+  "source": {
+    "source_pair_digest": "a878a396eca1ee4dac118fe65ecc40d4487ed669",
+    "base": "a21925eef70d1ee80ced350bb851926b7f64e2c5",
+    "bytes": 113107,
+    "sha256": "d57a37d5e709b04e794cbf2bd391e6bf927796bf84a890e3f950da99bb1bed84",
+    "tracked_paths": [
+      "crates/code/acp/src/agent.rs",
+      "crates/code/acp/src/agent/session_catalog.rs",
+      "crates/code/acp/src/agent/session_catalog_tests.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "crates/code/core/prompts/common/runtime_contract.md",
+      "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "crates/code/core/src/fact_control/tool_history_tests.rs",
+      "crates/code/core/src/fact_control/tool_results.rs",
+      "crates/code/core/src/session_folder.rs",
+      "crates/code/core/src/session_folder/catalog.rs",
+      "crates/code/core/src/tools/builtin/bash.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/foreign.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/optimistic_home.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/status.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs",
+      "crates/terminal/crates/codegen/a3s-code-shell/src/agent/handlers/session.rs",
+      "crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_types.rs"
+    ],
+    "new_paths": [
+      "crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs"
+    ],
+    "reverse_check": "passed",
+    "created_utc": "2026-10-29T21:20:52.819667+00:00"
+  }
+}

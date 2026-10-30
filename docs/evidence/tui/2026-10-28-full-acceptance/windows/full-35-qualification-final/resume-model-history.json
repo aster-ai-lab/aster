@@ -1,0 +1,504 @@
+{
+  "case": "resume-model-history",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:32b8c01e8224e33564c3f38d03c84dffcd465d95:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27047",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0gChqc\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read session-proof.txt and reply with its exact contents. Do not call       1:34 PM           other tools or modify any file.                                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                                                                                                                                                   RESTORED-577bd2c0-46af-45af-9873-19a21fc05c37                                                           1:34 PM                                                                                                                                 Worked for 10s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "original",
+      "session": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13449,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:2845592223459205fc6ccbba54379d100d1d41c9067d44c58a4dde118ecbf16b",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-577bd2c0-46af-45af-9873-19a21fc05c37\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":86},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"projected_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"repeat_key\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"content_ref\":\"inline:sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:18398a2074490fe627260ae9f82f22dba99e2ecdf54f43cdf4f27149dbd3eb53\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13598,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:66998a71e86a7be219e5f200fbdc954c27880109bb54d69c6aefd627834a1f40"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "632c76a1cbff423efa369917884646f90c10d77f5d87327329ae09f07697cd10"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13681",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0gChqc\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     1:34 PM           not call any tools.                                                                                                                                                                                                                                                                                                                                                   ♦ Thought for 0.8s                                                                                                                                                                                                                              RESTORED-577bd2c0-46af-45af-9873-19a21fc05c37                                                           1:34 PM                                                                                                                                 Worked for 3.5s                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "--resume",
+      "detail": "same parent identity; Kimi recalls unseen token from restored conversation without tools",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0gChqc\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     1:34 PM           not call any tools.                                                                                                                                                                                                                                                                                                                                                   ♦ Thought for 0.8s                                                                                                                                                                                                                              RESTORED-577bd2c0-46af-45af-9873-19a21fc05c37                                                           1:34 PM                                                                                                                                 Worked for 3.5s                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "--resume",
+      "session": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13449,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:2845592223459205fc6ccbba54379d100d1d41c9067d44c58a4dde118ecbf16b",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-577bd2c0-46af-45af-9873-19a21fc05c37\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":86},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"projected_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"repeat_key\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"content_ref\":\"inline:sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:18398a2074490fe627260ae9f82f22dba99e2ecdf54f43cdf4f27149dbd3eb53\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13598,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:66998a71e86a7be219e5f200fbdc954c27880109bb54d69c6aefd627834a1f40"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "632c76a1cbff423efa369917884646f90c10d77f5d87327329ae09f07697cd10"
+            }
+          }
+        },
+        {
+          "seq": 13,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13681,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 14,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 13,
+              "digest": "29fa1f472656bd764d05438163e13f23ab5c5db3920f6ab10eb6d2c7563ac474"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=4 model_turns=1 prompt_tokens=13764",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0gChqc\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     1:34 PM           not call any tools.                                                                                                                                                                                                                                                                                                                                                   ♦ Thought for 0.5s                                                                                                                                                                                                                              RESTORED-577bd2c0-46af-45af-9873-19a21fc05c37                                                           1:34 PM                                                                                                                                 Worked for 3.8s                                                                                                                                                                                                                                                                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "--continue",
+      "detail": "same parent identity; Kimi recalls unseen token from restored conversation without tools",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-0gChqc\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply with the exact contents of session-proof.txt that you read earlier in this conversation. Do     1:34 PM           not call any tools.                                                                                                                                                                                                                                                                                                                                                   ♦ Thought for 0.5s                                                                                                                                                                                                                              RESTORED-577bd2c0-46af-45af-9873-19a21fc05c37                                                           1:34 PM                                                                                                                                 Worked for 3.8s                                                                                                                                                                                                                                                                                                                                                                                                                                                                           █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "--continue",
+      "session": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+      "facts": [
+        {
+          "seq": 6,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13449,
+            "has_text": false,
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 7,
+          "type": "tool.prepared",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "tool": "read"
+          }
+        },
+        {
+          "seq": 8,
+          "type": "tool.result",
+          "payload": {
+            "identity": {
+              "turn": 1,
+              "cycle": 0,
+              "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+              "batch_index": 0,
+              "admission": {
+                "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+                "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+              }
+            },
+            "prepared_digest": "sha256:2845592223459205fc6ccbba54379d100d1d41c9067d44c58a4dde118ecbf16b",
+            "outcome": "succeeded",
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-577bd2c0-46af-45af-9873-19a21fc05c37\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":86},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"projected_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"repeat_key\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"content_ref\":\"inline:sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:18398a2074490fe627260ae9f82f22dba99e2ecdf54f43cdf4f27149dbd3eb53\"}"
+          }
+        },
+        {
+          "seq": 9,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13598,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 10,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [
+              "sha256:66998a71e86a7be219e5f200fbdc954c27880109bb54d69c6aefd627834a1f40"
+            ],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 9,
+              "digest": "632c76a1cbff423efa369917884646f90c10d77f5d87327329ae09f07697cd10"
+            }
+          }
+        },
+        {
+          "seq": 13,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13681,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 14,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 13,
+              "digest": "29fa1f472656bd764d05438163e13f23ab5c5db3920f6ab10eb6d2c7563ac474"
+            }
+          }
+        },
+        {
+          "seq": 17,
+          "type": "model.turn",
+          "payload": {
+            "prompt_tokens": 13764,
+            "has_text": true,
+            "tool": null
+          }
+        },
+        {
+          "seq": 18,
+          "type": "turn.complete",
+          "payload": {
+            "terminal": "narrative",
+            "effect_digest": null,
+            "forced_stop": null,
+            "receipt_keys": [],
+            "background_receipt_keys": [],
+            "log_cut": {
+              "seq": 17,
+              "digest": "8ea50508a377b59be9442c96764d0758c7ffba0dc493840747005bf92d6ad2ce"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13449,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+            "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_2460a1df3da94c8b9df0053d489734c6",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-41718e0a-6d16-4658-88a0-a982d16dc56e",
+            "thread_id": "5ae4da89-25d7-41c4-8ca9-fffb9ae1148c",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:2845592223459205fc6ccbba54379d100d1d41c9067d44c58a4dde118ecbf16b",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tRESTORED-577bd2c0-46af-45af-9873-19a21fc05c37\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"session-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":86},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":86,\"projected_bytes\":86,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"projected_digest\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"repeat_key\":\"sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"content_ref\":\"inline:sha256:87d60f01fb49c90b52e4ff6daaf7e4db7cce0af74a6cce811a1ab4c556c7ea00\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:18398a2074490fe627260ae9f82f22dba99e2ecdf54f43cdf4f27149dbd3eb53\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13598,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:66998a71e86a7be219e5f200fbdc954c27880109bb54d69c6aefd627834a1f40"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "632c76a1cbff423efa369917884646f90c10d77f5d87327329ae09f07697cd10"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13681,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 14,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 13,
+          "digest": "29fa1f472656bd764d05438163e13f23ab5c5db3920f6ab10eb6d2c7563ac474"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13764,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 18,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 17,
+          "digest": "8ea50508a377b59be9442c96764d0758c7ffba0dc493840747005bf92d6ad2ce"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

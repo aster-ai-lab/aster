@@ -1,0 +1,16 @@
+{
+  "unix": 1792882820.621128,
+  "phase": "compiled",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/cpu-engram-fp8-v73",
+  "source_sha256": "860a1df32ace16a898b2f7680b24b5ba7184c40076e21cf2947cf75763405170",
+  "source_bytes": 43941,
+  "gpu_executed": false,
+  "original_source_sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b",
+  "process": {
+    "pid": 998130,
+    "start_ticks": 280961352,
+    "uid": 10250,
+    "unix": 1792882829.6217968,
+    "namespace": "jump host"
+  }
+}

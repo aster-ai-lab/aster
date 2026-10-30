@@ -1,0 +1,107 @@
+{
+  "complete_for_F04_06": true,
+  "complete_for_full_acceptance": false,
+  "model": "kimi/k3.1-pro",
+  "product_pair_reused": false,
+  "platforms": [
+    {
+      "platform": "windows",
+      "pair_manifest": ".tmp/paired-cli-windows/picker-release-final-20261030005245532916300/pair.json",
+      "source_pair": "aster-cli-pair-v1:f44293dfe21600e0f6002752e69f7a90f534be87:x86_64-pc-windows-msvc",
+      "selected_id": "6b05d8f3-a5b4-4a80-9747-9d8388bbae2b",
+      "native_query": "ea814dc7-8cc7-48b5-b6f2-38d7569ebc64",
+      "reports": {
+        "session-picker-duplicate-title": {
+          "file": "windows/picker-release-final/session-picker-duplicate-title.json",
+          "sha256": "0928743258bae5fd215b8165fce86d7bf8ce80fa2a7e183af28963cc035a8955"
+        },
+        "session-picker-native-paste": {
+          "file": "windows/picker-release-final/session-picker-native-paste.json",
+          "sha256": "556261183f3c4af44a2f3f360a9f27a0223e7b01529a7a8684fa6f896e71b18c"
+        }
+      }
+    },
+    {
+      "platform": "linux",
+      "pair_manifest": ".tmp/paired-cli-linux/picker-release-final-20261030005459368973/pair.json",
+      "source_pair": "aster-cli-pair-v1:f44293dfe21600e0f6002752e69f7a90f534be87:x86_64-unknown-linux-gnu",
+      "selected_id": "dd7cc62d-c6b2-4ea4-8d95-5ea80a044e7a",
+      "native_query": "ec8bf409-5b9b-473b-9757-3baae9d746fc",
+      "reports": {
+        "session-picker-duplicate-title": {
+          "file": "linux/picker-release-final/session-picker-duplicate-title.json",
+          "sha256": "4e4c391363556396dcf2edc32657f32b5c7ecf66d8d833e79ced882f751dfb46"
+        },
+        "session-picker-native-paste": {
+          "file": "linux/picker-release-final/session-picker-native-paste.json",
+          "sha256": "c1d5c9918361b66ebb8d42907466e39a6105ec39e76d21644e9dec536be92369"
+        }
+      }
+    }
+  ],
+  "focused_regressions": {
+    "windows": {
+      "native_paste_tests": 11
+    },
+    "linux": {
+      "native_paste_tests": 11
+    }
+  },
+  "lifecycle_source_sha256": "311cf104cc161ea127dd5ddd8ea47baf059086545696c64aa6249268d0b1f25e",
+  "checkpoint_sha256": "703c6e1d14f830e4048550e44913578eed3e48c3a9e3beb62916ac346641ee11",
+  "source": {
+    "source_pair_digest": "f44293dfe21600e0f6002752e69f7a90f534be87",
+    "product_pair_reused": false,
+    "base": "a21925eef70d1ee80ced350bb851926b7f64e2c5",
+    "bytes": 131170,
+    "sha256": "3580596e3e79689ef9bf912ad74fa24486dcf8009c1eb178046f062cf8f05750",
+    "tracked_paths": [
+      "crates/code/acp/src/agent.rs",
+      "crates/code/acp/src/agent/session_catalog.rs",
+      "crates/code/acp/src/agent/session_catalog_tests.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs",
+      "crates/code/core/prompts/common/runtime_contract.md",
+      "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "crates/code/core/src/fact_control/tool_history_tests.rs",
+      "crates/code/core/src/fact_control/tool_results.rs",
+      "crates/code/core/src/session_folder.rs",
+      "crates/code/core/src/session_folder/catalog.rs",
+      "crates/code/core/src/tools/builtin/bash.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/foreign.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/lifecycle.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/optimistic_home.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/status.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop/native_paste_tests.rs",
+      "crates/terminal/crates/codegen/a3s-code-shell/src/agent/handlers/session.rs",
+      "crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_types.rs"
+    ],
+    "new_paths": [
+      "crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+      "crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs"
+    ],
+    "reverse_check": "passed",
+    "created_utc": "2026-10-30T01:09:02.233952+00:00"
+  }
+}

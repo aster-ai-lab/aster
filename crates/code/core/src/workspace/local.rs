@@ -520,6 +520,34 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
         offset: usize,
         limit: usize,
     ) -> WorkspaceResult<WorkspaceTextRange> {
+        let mut range = self.read_terminated_range(path, offset, limit).await?;
+        for line in &mut range.lines {
+            if let Some(text) = line.strip_suffix('\n') {
+                line.truncate(text.strip_suffix('\r').unwrap_or(text).len());
+            }
+        }
+        Ok(range)
+    }
+
+    async fn read_text_range_with_terminators(
+        &self,
+        path: &WorkspacePath,
+        offset: usize,
+        limit: usize,
+    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
+        self.read_terminated_range(path, offset, limit)
+            .await
+            .map(Some)
+    }
+}
+
+impl LocalWorkspaceBackend {
+    async fn read_terminated_range(
+        &self,
+        path: &WorkspacePath,
+        offset: usize,
+        limit: usize,
+    ) -> WorkspaceResult<WorkspaceTextRange> {
         let resolved = self.local_path_for_read(path)?;
         // FIFO/device liveness gate: opening a writer-less FIFO blocks, so
         // the regular-file check must run before the open (metadata follows
@@ -585,18 +613,12 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
             });
         }
         let mut consumed = 0usize;
-        let mut lines = BufReader::new(file.take(MAX_TEXT_FILE_BYTES + 1)).lines();
+        let mut lines = BufReader::new(file.take(MAX_TEXT_FILE_BYTES + 1));
         let mut line_index = 0usize;
         while line_index < offset {
-            match lines.next_line().await.map_err(|error| {
-                WorkspaceError::Backend(anyhow!(
-                    "Failed to read file {}: {}",
-                    resolved.display(),
-                    error
-                ))
-            })? {
+            match next_terminated_line(&mut lines, &resolved).await? {
                 Some(line) => {
-                    consumed += line.len() + 1;
+                    consumed += line.len();
                     line_index += 1;
                 }
                 None => {
@@ -613,15 +635,9 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
 
         let mut selected = Vec::with_capacity(limit);
         while selected.len() < limit {
-            match lines.next_line().await.map_err(|error| {
-                WorkspaceError::Backend(anyhow!(
-                    "Failed to read file {}: {}",
-                    resolved.display(),
-                    error
-                ))
-            })? {
+            match next_terminated_line(&mut lines, &resolved).await? {
                 Some(line) => {
-                    consumed += line.len() + 1;
+                    consumed += line.len();
                     selected.push(line);
                 }
                 None => {
@@ -637,17 +653,9 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
             }
         }
 
-        let has_more = lines
-            .next_line()
-            .await
-            .map_err(|error| {
-                WorkspaceError::Backend(anyhow!(
-                    "Failed to read file {}: {}",
-                    resolved.display(),
-                    error
-                ))
-            })?
-            .is_some();
+        let next_line = next_terminated_line(&mut lines, &resolved).await?;
+        consumed += next_line.as_ref().map_or(0, String::len);
+        let has_more = next_line.is_some();
         ensure_range_within_bound(path, consumed)?;
         Ok(WorkspaceTextRange {
             lines: selected,
@@ -656,6 +664,17 @@ impl WorkspaceTextReader for LocalWorkspaceBackend {
             total_lines: (!has_more).then_some(offset.saturating_add(limit)),
         })
     }
+}
+
+async fn next_terminated_line(
+    reader: &mut (impl tokio::io::AsyncBufRead + Unpin),
+    path: &Path,
+) -> WorkspaceResult<Option<String>> {
+    let mut line = String::new();
+    let size = reader.read_line(&mut line).await.map_err(|error| {
+        WorkspaceError::Backend(anyhow!("Failed to read file {}: {}", path.display(), error))
+    })?;
+    Ok((size > 0).then_some(line))
 }
 
 #[async_trait]

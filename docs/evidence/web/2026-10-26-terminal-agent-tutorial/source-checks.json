@@ -1,0 +1,7 @@
+{
+  "rust_snippets": 39,
+  "syntax_failures": [],
+  "repository_references": 68,
+  "reference_failures": 0,
+  "scope": "rustfmt syntax and local file existence only; no Rust type check or execution"
+}

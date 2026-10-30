@@ -1,0 +1,16 @@
+
+running 1 test
+test forms_catalog::kimi_catalog_native_viewport_and_typed_values_match_source ... ORACLE case=form-catalog-native-profile name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu
+ORACLE case=form-catalog-native-profile name=catalog-text-values result=pass detail=all 13 shared component types are represented; native metric/chart text retains the numeric values and units using the shared parser's floating-point display
+ORACLE case=form-catalog-native-profile name=catalog-field-Name result=pass detail=the actual focused native field accepts its host-only edit
+ORACLE case=form-catalog-native-profile name=catalog-field-Count result=pass detail=the actual focused native field accepts its host-only edit
+ORACLE case=form-catalog-native-profile name=catalog-field-Email result=pass detail=the actual focused native field accepts its host-only edit
+ORACLE case=form-catalog-native-profile name=catalog-field-Phone result=pass detail=the actual focused native field accepts its host-only edit
+ORACLE case=form-catalog-native-profile name=catalog-field-Notes result=pass detail=the actual focused native field accepts its host-only edit
+ORACLE case=form-catalog-native-profile name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=41554
+ORACLE case=form-catalog-native-profile name=catalog-eight-typed-values result=pass detail=the actual tool receipt contains exactly the eight edited fields with correct Unicode strings, enum, numbers and boolean; the source document is unchanged
+ORACLE case=form-catalog-native-profile name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 41.48s
+

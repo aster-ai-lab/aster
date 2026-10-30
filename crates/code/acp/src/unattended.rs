@@ -234,9 +234,13 @@ pub(crate) fn first_prompt(task: &str) -> String {
     format!("{task}\n\n{TASK_PROOF_NOTE}")
 }
 
-pub(crate) fn bind_continuation(digest: &str) -> String {
+pub(crate) fn bind_continuation(digest: &str, gate_message: Option<&str>) -> String {
+    let guidance = gate_message
+        .filter(|message| message.starts_with("completion gate:"))
+        .map(|message| format!("Previous completion gate guidance:\n{message}\n\n"))
+        .unwrap_or_default();
     format!(
-        "Continue the task. The host bound admission digest {digest} only so \
+        "{guidance}Continue the task. The host bound admission digest {digest} only so \
          the completion gate can reopen. That bind is not the task grader. \
          Paths named by the gate are files the edit already touched, not a \
          list of missing deliverables. Re-read the original requirements and \

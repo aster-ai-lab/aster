@@ -8,7 +8,12 @@ pub mod leader_bridge;
 pub mod meta;
 pub mod model_state;
 pub(crate) mod prefix_fork;
+
+#[cfg(test)]
+mod permission_rules_tests;
 pub mod spawn;
+#[cfg(test)]
+mod startup_deadline_tests;
 pub(crate) mod subagent_label_registry;
 mod subagent_message;
 pub mod tracker;
@@ -20,8 +25,9 @@ pub(crate) use version_mismatch::{is_version_mismatch_banner, version_mismatch_b
 pub(crate) fn is_session_update_ext_method(method: &str) -> bool {
     matches!(method, "a3s/session_notification" | "a3s/session/update")
 }
+use crate::app::effects::{SessionRpcError, acp_send_bounded};
 use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
-use a3s_acp_lib::{AcpAgentTx, AcpClientRx, acp_send};
+use a3s_acp_lib::{AcpAgentTx, AcpClientRx};
 use a3s_code_shell::agent::auth_method::AuthMethodKind;
 use a3s_code_shell::agent::config::Config as AgentConfig;
 use a3s_code_shell::sampling::types::ReasoningEffort;
@@ -172,6 +178,9 @@ pub struct ConnectFlags {
     /// CLI permission rules from the --allow and --deny flags.
     /// Not supported in leader mode (agent config is set at leader startup).
     pub permission_rules: Vec<a3s_code_workspace::permission::types::PermissionRule>,
+    /// Original compact rules for the Code sidecar's permission engine.
+    pub permission_allow_rules: Vec<String>,
+    pub permission_deny_rules: Vec<String>,
     /// Seed agent sessions with yolo (YOLO) permission mode.
     pub default_yolo_mode: bool,
     /// Seed agent sessions with auto (classifier) permission mode.
@@ -251,6 +260,7 @@ pub(in crate::acp) async fn initialize_connection(
         cancel,
         location,
     } = endpoint;
+    let startup_cancel = cancel.clone().drop_guard();
     let (agent_thread, leader_status_rx) = match location {
         AgentLocation::Thread(thread) => (Some(thread), None),
         AgentLocation::Leader(status_rx) => (None, Some(status_rx)),
@@ -272,6 +282,7 @@ pub(in crate::acp) async fn initialize_connection(
             auth_start_mode,
         )
         .await;
+    startup_cancel.disarm();
     Ok(AcpConnection {
         tx,
         rx,
@@ -368,7 +379,7 @@ pub(super) fn apply_config_writes(flags: &ConnectFlags) {
     }
 }
 /// Build the per-session `_meta` for `InitializeRequest` (TUI and leader).
-fn build_initialize_meta(flags: &ConnectFlags) -> serde_json::Value {
+fn build_initialize_meta(flags: &ConnectFlags, target: CapabilityTarget) -> serde_json::Value {
     let client_type = flags
         .client_identifier
         .as_deref()
@@ -387,8 +398,27 @@ fn build_initialize_meta(flags: &ConnectFlags) -> serde_json::Value {
         if let Some(rules) = &flags.rules {
             obj.insert("rules".into(), serde_json::Value::String(rules.clone()));
         }
+        if target == CapabilityTarget::Sidecar {
+            if let Some(rules) = cli_permission_rules_meta(
+                &flags.permission_allow_rules,
+                &flags.permission_deny_rules,
+            ) {
+                obj.insert("permissionRules".into(), rules);
+            }
+        }
     }
     meta
+}
+
+pub(crate) fn cli_permission_rules_meta(
+    allow: &[String],
+    deny: &[String],
+) -> Option<serde_json::Value> {
+    if allow.is_empty() && deny.is_empty() {
+        None
+    } else {
+        Some(serde_json::json!({"allow": allow, "deny": deny}))
+    }
 }
 /// Which agent receives this initialize. The leader still reads the shell extensions.
 /// The ACP sidecar does not implement them, so those keys stay off its initialize.
@@ -451,7 +481,7 @@ async fn initialize(
     flags: &ConnectFlags,
     target: CapabilityTarget,
 ) -> Result<InitializedAgent> {
-    let mut meta = build_initialize_meta(flags).as_object().cloned();
+    let mut meta = build_initialize_meta(flags, target).as_object().cloned();
     crate::app::session_startup::stamp_phase_traceparent(&mut meta);
     let req = acp::InitializeRequest::new(acp::ProtocolVersion::V1)
         .client_capabilities(
@@ -465,8 +495,9 @@ async fn initialize(
         .meta(meta);
     let resp: acp::InitializeResponse = {
         let _timer = a3s_code_telemetry::instrumentation::timer("acp_init.initialize_roundtrip");
-        acp_send(req, tx).await.map_err(|error| {
-            let closed = a3s_acp_lib::acp_channel_failure(&error).is_some();
+        acp_send_bounded(req, tx, "ACP initialize").await.map_err(|error| {
+            let closed = matches!(&error, SessionRpcError::Rpc(error)
+                if a3s_acp_lib::acp_channel_failure(error).is_some());
             let error = anyhow::Error::from(error);
             if closed {
                 error.context("The agent connection closed before initialization. Check the agent's startup logs and executable. To select a trusted ACL configuration, use `A3S_CONFIG=/path/to/config.acl just code`.")
@@ -772,8 +803,12 @@ async fn authenticate(
             "first_method": auth_methods.first().map(|m| m.id().0.as_ref()),
         })),
     );
-    let resp: acp::AuthenticateResponse =
-        acp_send(acp::AuthenticateRequest::new(method_id), tx).await?;
+    let resp: acp::AuthenticateResponse = acp_send_bounded(
+        acp::AuthenticateRequest::new(method_id),
+        tx,
+        "ACP authenticate",
+    )
+    .await?;
     Ok(resp.meta.map(serde_json::Value::Object))
 }
 /// Pick the method id for eager authenticate.
@@ -1032,7 +1067,7 @@ mod tests {
             rules: Some("Always reply in French.".into()),
             ..Default::default()
         };
-        let meta = build_initialize_meta(&flags);
+        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
         assert_eq!(
             meta.get("rules").and_then(|v| v.as_str()),
             Some("Always reply in French.")
@@ -1041,7 +1076,7 @@ mod tests {
     #[test]
     fn build_initialize_meta_omits_rules_when_unset() {
         let flags = ConnectFlags::default();
-        let meta = build_initialize_meta(&flags);
+        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
         assert!(
             meta.get("rules").is_none(),
             "rules key must be absent when --rules is not set; meta={meta:?}"
@@ -1053,7 +1088,7 @@ mod tests {
             system_prompt_override: Some("YOU ARE A PIRATE.".into()),
             ..Default::default()
         };
-        let meta = build_initialize_meta(&flags);
+        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
         assert_eq!(
             meta.get("systemPromptOverride").and_then(|v| v.as_str()),
             Some("YOU ARE A PIRATE.")
@@ -1065,7 +1100,7 @@ mod tests {
             client_identifier: Some("zed".into()),
             ..Default::default()
         };
-        let meta = build_initialize_meta(&flags);
+        let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
         assert_eq!(meta.get("clientType").and_then(|v| v.as_str()), Some("zed"));
     }
     #[test]

@@ -1,0 +1,44 @@
+{
+  "schema": "aster-workbuddy-native-read-e2e-v60",
+  "unix": 1792878173.4477534,
+  "phase": "passed",
+  "client": "installed WorkBuddy lite-wb, headless, Read-only tool profile",
+  "base_url": "http://10.102.93.68/v1",
+  "model": "deepseek-v4.1-flash-1017-xq",
+  "gui_test_passed": false,
+  "no_session_persistence": true,
+  "native_tool_roundtrip_passed": true,
+  "client_pid": 192212,
+  "events": 20,
+  "tool_calls": [
+    {
+      "name": "Read",
+      "public_fixture_path_preserved": true,
+      "argument_keys": [
+        "file_path"
+      ]
+    }
+  ],
+  "elapsed_seconds": 56.42199999978766,
+  "client_exit_code": 0,
+  "reply": "442",
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 52239,
+    "duration_api_ms": 52238,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 16590,
+      "output_tokens": 63,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 8304,
+      "cache_creation": null,
+      "server_tool_use": null,
+      "service_tier": null
+    }
+  },
+  "seconds": 56.625,
+  "time_to_first_output_seconds": 56.15599999995902,
+  "finished_unix": 1792878230.0824094
+}

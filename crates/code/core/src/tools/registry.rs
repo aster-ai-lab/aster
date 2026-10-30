@@ -5,14 +5,14 @@
 
 use crate::error::{read_or_recover, write_or_recover};
 
+use super::ToolResult;
 use super::artifacts::{ArtifactStore, ArtifactStoreLimits, ToolArtifact};
 use super::types::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use super::ToolResult;
 use super::{
-    merge_tool_output_artifact_metadata, tool_output_artifact, transform_tool_output_with_artifact,
     ImmutableContentAdapterSession, ImmutableContentError, ImmutableContentKindV1,
-    ToolOutputArtifact, ToolResultTransformBindingV1, ToolResultTransformPolicyV1,
-    TOOL_RESULT_CONTENT_MEDIA_TYPE,
+    TOOL_RESULT_CONTENT_MEDIA_TYPE, ToolOutputArtifact, ToolResultTransformBindingV1,
+    ToolResultTransformPolicyV1, merge_tool_output_artifact_metadata, tool_output_artifact,
+    transform_tool_output_with_artifact,
 };
 use crate::llm::ToolDefinition;
 use crate::trace::{InMemoryTraceSink, TraceEvent, TraceSink};
@@ -66,6 +66,7 @@ pub struct ToolRegistry {
     trace_sink: RwLock<Arc<dyn TraceSink>>,
     argument_validators: RwLock<HashMap<String, ArgumentValidatorCacheEntry>>,
     transform_policy: RwLock<ToolResultTransformPolicyV1>,
+    background_tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
 }
 
 /// Output prepared by the registry's single observation pipeline.
@@ -124,7 +125,16 @@ impl ToolRegistry {
             trace_sink: RwLock::new(Arc::new(InMemoryTraceSink::default())),
             argument_validators: RwLock::new(HashMap::new()),
             transform_policy: RwLock::new(ToolResultTransformPolicyV1::default()),
+            background_tracker: None,
         }
+    }
+
+    pub(crate) fn with_background_tracker(
+        mut self,
+        tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
+    ) -> Self {
+        self.background_tracker = tracker;
+        self
     }
 
     /// Freeze the current compatibility registry and add one conflict-free
@@ -155,6 +165,7 @@ impl ToolRegistry {
             trace_sink: RwLock::new(Arc::clone(&read_or_recover(&self.trace_sink))),
             argument_validators: RwLock::new(read_or_recover(&self.argument_validators).clone()),
             transform_policy: RwLock::new(read_or_recover(&self.transform_policy).clone()),
+            background_tracker: self.background_tracker.clone(),
         })
     }
 
@@ -478,8 +489,40 @@ impl ToolRegistry {
     /// Set a sandbox executor so that `bash` tool calls use the sandbox even
     /// when executed without an explicit `ToolContext` (i.e., via `execute()`).
     pub fn set_sandbox(&self, sandbox: std::sync::Arc<dyn crate::sandbox::BashSandbox>) {
-        let mut ctx = write_or_recover(&self.context);
-        *ctx = ctx.clone().with_sandbox(sandbox);
+        {
+            let mut ctx = write_or_recover(&self.context);
+            *ctx = ctx.clone().with_sandbox(sandbox);
+        }
+        self.sync_background_registration();
+    }
+
+    fn sync_background_registration(&self) {
+        let context = self.context();
+        let available = context.workspace_services.capabilities().exec
+            && context
+                .sandbox
+                .as_ref()
+                .is_some_and(|sandbox| sandbox.supports_background_execution());
+        if available {
+            if !self.contains("background") {
+                let tool = match &self.background_tracker {
+                    Some(tracker) => {
+                        super::builtin::background::BackgroundTool::with_subagent_tracker(
+                            Arc::clone(tracker),
+                        )
+                    }
+                    None => super::builtin::background::BackgroundTool::default(),
+                };
+                self.register_builtin(Arc::new(tool));
+            }
+            return;
+        }
+
+        // Backend replacement can revoke a capability that was visible before.
+        let mut tools = write_or_recover(&self.tools);
+        let mut builtins = write_or_recover(&self.builtins);
+        tools.remove("background");
+        builtins.remove("background");
     }
 
     /// Set environment overrides used by subprocess-backed tools when executed
@@ -513,15 +556,18 @@ impl ToolRegistry {
         let prepared = self.prepare_output_with_context(name, args, ctx).await?;
         let transform_binding = prepared.transform_binding;
         let mut result = match prepared.output {
-            Some(output) => Ok(ToolResult {
-                name: name.to_string(),
-                output: output.content,
-                exit_code: if output.success { 0 } else { 1 },
-                metadata: output.metadata,
-                images: output.images,
-                error_kind: output.error_kind,
-                trust: crate::tools::ToolResultTrustV1::WorkspaceData,
-            }),
+            Some(output) => {
+                let exit_code = super::tool_output_exit_code(&output);
+                Ok(ToolResult {
+                    name: name.to_string(),
+                    output: output.content,
+                    exit_code,
+                    metadata: output.metadata,
+                    images: output.images,
+                    error_kind: output.error_kind,
+                    trust: crate::tools::ToolResultTrustV1::WorkspaceData,
+                })
+            }
             None => Ok(ToolResult::error(name, format!("Unknown tool: {name}"))),
         };
 

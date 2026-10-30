@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes ... ORACLE case=coverage-markdown-raw name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=coverage-markdown-raw name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13348
+ORACLE case=coverage-markdown-raw name=markdown-raw-visible result=pass detail=the selected real assistant Markdown viewer switches from rendered emphasis to literal Markdown source
+ORACLE case=coverage-markdown-raw name=raw-toggle-canonical-copy result=pass detail=toggling back and closing restores navigation; assistant export retains exact canonical UTF-8 bytes and generates no backend facts
+ORACLE case=coverage-markdown-raw name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 14.06s
+

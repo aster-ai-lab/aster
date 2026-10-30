@@ -1,0 +1,27 @@
+{
+  "assertions_finished": true,
+  "case": "history-help-capability",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "name": "capability-help",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-PsSQa8/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [✗] ─┐                    \n                    │                                                                              │                    \n                    │   search: history                                                            │                    \n                    │──────────────────────────────────────────────────────────────────────────────│                    \n                    │  ◆ Input                                                                     │                    \n                    │    ◆ Prompt history                                                      ↑   │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │  ↑/↓ nav  |  f filter  |  e/Space/→ expand  |  ← collapse  |  Enter details  │                    \n  ╭─────────────────│                            / search  |  Esc close                            │─────────────────╮  \n  │ ❯               └──────────────────────────────────────────────────────────────────────────────┘                 │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

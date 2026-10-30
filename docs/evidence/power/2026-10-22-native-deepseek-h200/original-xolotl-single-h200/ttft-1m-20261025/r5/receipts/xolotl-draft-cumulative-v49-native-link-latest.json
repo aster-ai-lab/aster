@@ -1,0 +1,22 @@
+{
+  "unix": 1792873386.9454095,
+  "result": {
+    "unix": 1792873244.5254617,
+    "phase": "linked",
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "step": "cumulative-candidate-link",
+    "control_binary_byte_equal": true,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-draft-cumulative-v49/ds41_generate",
+      "bytes": 253077760,
+      "sha256": "34f3c963304445e50c4ae398194f4b4745a0b1868a6b4a1d6668068aebcf96e6"
+    },
+    "invalid_startup_modes_rejected": 8,
+    "target_acceptance_changed": false,
+    "routing_changed": false,
+    "gpu_math_executed": false,
+    "finished_unix": 1792873248.246179
+  },
+  "exact_link_process_alive": false
+}

@@ -1,0 +1,5 @@
+
+> build
+> node scripts/build_docs.mjs
+
+Built 79 MDX documents (130 routes) and generated CSS.

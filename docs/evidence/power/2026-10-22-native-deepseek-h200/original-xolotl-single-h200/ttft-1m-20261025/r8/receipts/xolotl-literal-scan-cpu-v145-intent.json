@@ -1,0 +1,39 @@
+{
+  "unix": 1792898961.9515831,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-literal-scan-v145",
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "live_service_changed": false,
+  "actual_credential_negative_control_passed": true,
+  "files": [
+    {
+      "file": "aster_literal_scan.py",
+      "bytes": 8920,
+      "sha256": "25587cae9ea90b3155b80d1a02691e4debe7da4f6a95e0f6bd8e44a9dffb86d8"
+    },
+    {
+      "file": "test_literal_scan.py",
+      "bytes": 7517,
+      "sha256": "69836fd63e93996f200dc0d1362111ff158a7747599b778e8d41da57d6ea7606"
+    },
+    {
+      "file": "worker.py",
+      "bytes": 9583,
+      "sha256": "bef6a3c2c0c1197171f4146258225a01a191f4d51c80e3c48376cfc1fb7f58ec"
+    },
+    {
+      "file": "plan.json",
+      "bytes": 469,
+      "sha256": "59e5cbe050777f58ae4476b389e57274fa0fbd1fe30b6b1f73f5bfe175c365ad"
+    }
+  ],
+  "process": {
+    "pid": 1236511,
+    "start_ticks": 282575748,
+    "uid": 10250,
+    "unix": 1792898972.5524125,
+    "budget_seconds": 180,
+    "namespace": "jump host"
+  }
+}

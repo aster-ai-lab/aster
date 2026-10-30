@@ -1,0 +1,38 @@
+{
+  "unix": 1792891068.3160746,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-pool-v108-pool_off/qualification-pool-long-v111",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "request-worker.py",
+      "bytes": 6848,
+      "sha256": "53220d668c7a11ad439c94afe26dbb957e74ecbc36e2a61f0cd28a88bbe1998c"
+    },
+    {
+      "file": "request-plan.json",
+      "bytes": 3687,
+      "sha256": "a4096bd7f8e554229f01178cc8b829197105afb112b35cc37afe06d43fba0394"
+    },
+    {
+      "file": "request-only-source.py",
+      "bytes": 9591,
+      "sha256": "cdf8c65f0f2d79039b5e4a2bfd041622b99c9113ba8602144cf072aa5e33fb8d"
+    },
+    {
+      "file": "xolotl_fullwindow_long_fixture_v54.py",
+      "bytes": 5715,
+      "sha256": "921561a3cbfffba14bc67242f2703726e692b8bcd4d427feb8b0975cce594af7"
+    }
+  ],
+  "process": {
+    "pid": 1136207,
+    "start_ticks": 281786242,
+    "uid": 10250,
+    "unix": 1792891077.4903235,
+    "budget_seconds": 900,
+    "namespace": "jump host"
+  }
+}

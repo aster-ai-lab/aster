@@ -1,0 +1,26 @@
+{
+  "source": "/data/deepseek-v41-xq-1017/Xolotl/tools/v41/engine/ds41_generate.cpp",
+  "source_sha256": "cc8a236f86a6f01d55e501194d85b414fb44d38a3e3ac63e8fb33d6ecc11ae5d",
+  "extracted_functions": [
+    "sample_p",
+    "sample_dist",
+    "spec_accept"
+  ],
+  "extracted_sha256": "b6dc68c7d4c4ef9e6236543a0192ed24d0e96dc2d84d54fa2452f5113ef5362e",
+  "test_kind": "CPU-only stochastic preservation, no model inference or GPU allocation",
+  "exit_code": 0,
+  "passed": true,
+  "distribution_cases": 36,
+  "draws_per_distribution_case": 400000,
+  "total_speculative_draws": 14400000,
+  "reference_draws": 2400000,
+  "temperature_and_filters": [
+    "greedy",
+    "temperature",
+    "top-k",
+    "top-p",
+    "min-p",
+    "out-of-support draft"
+  ],
+  "criterion": "Each token count and acceptance count within six standard deviations plus 8 counts of trunk distribution"
+}

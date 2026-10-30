@@ -1,0 +1,7 @@
+error: let chains are only allowed in Rust 2024 or later
+   --> \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp\tests\aster_tui_live_e2e\functional.rs:608:26
+    |
+608 |             if is_log && let Ok(text) = std::fs::read_to_string(&path) {
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `functional`: cannot parse \\?\D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp\tests\aster_tui_live_e2e\functional.rs

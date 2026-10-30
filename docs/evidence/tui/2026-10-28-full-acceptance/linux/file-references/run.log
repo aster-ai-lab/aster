@@ -1,0 +1,20 @@
+
+running 3 tests
+test file_references::kimi_file_completion_selects_real_file_and_line_range ... ORACLE case=file-ref-selection name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-selection name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-selection name=file-ref-selection result=pass detail=the real completion opens the selected file and confirms exact lines 1-2
+ORACLE case=file-ref-selection name=quit result=pass detail=exit 0
+ok
+test file_references::kimi_missing_file_reference_is_refused_without_model_work ... ORACLE case=file-ref-missing name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-missing name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-missing name=file-ref-missing result=pass detail=a selected reference whose file disappeared is explicitly refused without model work
+ORACLE case=file-ref-missing name=quit result=pass detail=exit 0
+ok
+test file_references::kimi_outside_file_reference_is_refused_without_model_work ... ORACLE case=file-ref-outside name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-outside name=file-ref-completion result=pass detail=the actual fuzzy result is visible
+ORACLE case=file-ref-outside name=file-ref-outside result=pass detail=a selected reference redirected outside the workspace is explicitly refused without exposing bytes
+ORACLE case=file-ref-outside name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 40 filtered out; finished in 24.97s
+

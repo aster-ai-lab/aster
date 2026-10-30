@@ -1,0 +1,798 @@
+{
+  "schema": "aster-h200-topk-r10-manifest",
+  "unix": 1792913140.789994,
+  "files": [
+    {
+      "file": "receipts/xolotl-actual-topk-build-v187.json",
+      "bytes": 44200,
+      "sha256": "bb2b20b49aa7f09d92147b2d67d4816a027b530eac468c5219a64222b211c752",
+      "source": "xolotl-actual-topk-build-v187.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-fallback-references-v189.json",
+      "bytes": 1899,
+      "sha256": "7412ba1d36df1d3bb50b9ce582d7ac6236011192b2f3d301f1663d148e6f3ed3",
+      "source": "xolotl-topk-fallback-references-v189.json"
+    },
+    {
+      "file": "receipts/xolotl-cccl-release-v190.json",
+      "bytes": 1186,
+      "sha256": "be074a9dbcc5b9e6954d163880b7f849836e18a3cfbd1ddb6ac3a23625f82ad1",
+      "source": "xolotl-cccl-release-v190.json"
+    },
+    {
+      "file": "receipts/xolotl-cccl-headers-v191-intent.json",
+      "bytes": 1351,
+      "sha256": "4f474b76ff793d505d85bd1e724b849496685a3d86036a22f56b7ba3b4404497",
+      "source": "xolotl-cccl-headers-v191-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-cccl-headers-v191-latest.json",
+      "bytes": 614,
+      "sha256": "5b3932544e9819b3f2050638330a3520d09b766fbee2efd185bbe778186c5894",
+      "source": "xolotl-cccl-headers-v191-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-compile-v193-intent.json",
+      "bytes": 1377,
+      "sha256": "7453664c58e1f402dbc376c5377bc1c8ac4b1712233697dcb538eb9f80288399",
+      "source": "xolotl-topk-compile-v193-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-compile-v193-latest.json",
+      "bytes": 5662,
+      "sha256": "32d7ce22f753d9aba140431e2ea88cdf4be9652116fba5217181e1bb201a2ee0",
+      "source": "xolotl-topk-compile-v193-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v195-intent.json",
+      "bytes": 1675,
+      "sha256": "31ca8a2390499b40a8df18a4c0cc18269245b54da3f124f465bbe3b035520fd0",
+      "source": "xolotl-topk-harness-v195-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v195-compile-latest.json",
+      "bytes": 2916,
+      "sha256": "718d4be52e92e9e463f032fb514869e5c2df80cae433b314daf32a41551eb9cf",
+      "source": "xolotl-topk-harness-v195-compile-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v195r1-intent.json",
+      "bytes": 1677,
+      "sha256": "bef533de55bebdf39fceb8f81ba43c7e3c06dcd914d25262f3f6bfe7dbda1e95",
+      "source": "xolotl-topk-harness-v195r1-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v195r1-compile-latest.json",
+      "bytes": 2497,
+      "sha256": "fce6b8a1e28b6290072dc3ecea076dd50deee74438a92005f24ab8ea74c6886a",
+      "source": "xolotl-topk-harness-v195r1-compile-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-profiler-prefix-failure-v196.json",
+      "bytes": 21907,
+      "sha256": "86508e7467a703db854b0c743bb8c14147f21f8aa4c3c765c16b91c9d243976c",
+      "source": "xolotl-profiler-prefix-failure-v196.json"
+    },
+    {
+      "file": "receipts/xolotl-protocol-r2-v198-prepared.json",
+      "bytes": 1128,
+      "sha256": "23cad6f9d77ef95b11e14579ce54e4d1c5947649a4e8510e36efa5df7edadd6c",
+      "source": "xolotl-protocol-r2-v198-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r2-plan.json",
+      "bytes": 27131,
+      "sha256": "38dc6912e22af6540ad5d689301de600860f5d55cb2c8c3d765e3413220325f3",
+      "source": "xolotl-ncu-actual1m-v172r2-plan.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r2-intent.json",
+      "bytes": 2228,
+      "sha256": "6281247563e2e6d5dc89e28bf9a9dc1bf17d0c5f1504fc036b948088f1d5bc20",
+      "source": "xolotl-ncu-actual1m-v172r2-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-fullwindow-hardware-v173r2-controller.json",
+      "bytes": 1050,
+      "sha256": "dedd51c84228bcad51afabb54ec47b1364df6d675f93a9fb688e7fcf752002ef",
+      "source": "xolotl-fullwindow-hardware-v173r2-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-bridge-v202-intent.json",
+      "bytes": 10947,
+      "sha256": "7345a4be6db7b43f0f380cc457359a0bf1457bd25c53a344ba88d9ef43ae458b",
+      "source": "xolotl-topk-native-bridge-v202-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-bridge-v202-latest.json",
+      "bytes": 6284,
+      "sha256": "097ee6bd332511262fb72204f0628b8a74b3f6b9cf642db1a124f4d535eed89b",
+      "source": "xolotl-topk-native-bridge-v202-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-prerequisite-v203-prepared.json",
+      "bytes": 679,
+      "sha256": "8101ef6b6a62a826446d55b931d3fb0f10e9db70bb7c85cb32ba52b2e483a197",
+      "source": "xolotl-topk-harness-prerequisite-v203-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v203-intent.json",
+      "bytes": 1675,
+      "sha256": "93ca27d9ffcd75a6287fb52e02706c6b69c38d8b370dcb80c44cf4daa404ff5d",
+      "source": "xolotl-topk-harness-v203-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v203-compile-latest.json",
+      "bytes": 2492,
+      "sha256": "31dcdf8c39ff1a2fa8cbbcea36feea2e52d37071192968f2eb540faa4d961f9f",
+      "source": "xolotl-topk-harness-v203-compile-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v203-gpu-intent.json",
+      "bytes": 788,
+      "sha256": "a3ae126940597e4231504b94cae7e0458fe54cacb967b1adbebc335067a76977",
+      "source": "xolotl-topk-harness-v203-gpu-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-harness-v203-gpu-latest.json",
+      "bytes": 25785,
+      "sha256": "34c209db460747b9ac3796e9e857a408db35d3ecf228685573e762edaeebdcfc",
+      "source": "xolotl-topk-harness-v203-gpu-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-smoke-v205-intent.json",
+      "bytes": 1058,
+      "sha256": "3f120a0c571ae87af5772974cf4a8da845bf5e95ab2e7748b9a588b660019606",
+      "source": "xolotl-ncu-smoke-v205-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-smoke-recovery-v207.json",
+      "bytes": 3730,
+      "sha256": "b8295d5b579ecb5f369e6aaa332c44e5b1a85e1af370f82fa5d4e802afdf0f13",
+      "source": "xolotl-ncu-smoke-recovery-v207.json"
+    },
+    {
+      "file": "receipts/xolotl-next-optimization-lease-v208-prepared.json",
+      "bytes": 1121,
+      "sha256": "ec6b2884a6aec20dc8c3cd57ca1f032ba9bccfc539a8cd3c0ce2ab11fe7fe139",
+      "source": "xolotl-next-optimization-lease-v208-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-optimization-c10-retirement-v209.json",
+      "bytes": 877,
+      "sha256": "ee76649a103b74720257afaa85774f8f446df8ecf7115e6f01f7f8086863068b",
+      "source": "xolotl-optimization-c10-retirement-v209.json"
+    },
+    {
+      "file": "receipts/xolotl-c12-observer-v210-activation.json",
+      "bytes": 457,
+      "sha256": "0d671b5346cd12694889908df91611fbaa6490e80a0f940aa062be16e5fec74e",
+      "source": "xolotl-c12-observer-v210-activation.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-v212-source-manifest.json",
+      "bytes": 1106,
+      "sha256": "ef51836d002a7163d328f3e8865a2bb7fd6eb756d44510fde4bd6f109f55934b",
+      "source": "xolotl-topk-native-v212-source-manifest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-v212-control_a-intent.json",
+      "bytes": 10536,
+      "sha256": "a05e1790023ef08ebfe88e946c09778fdfb532755c3abb87bc6de11e0a1ee1cc",
+      "source": "xolotl-topk-native-v212-control_a-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-v212-control_a-qualification-latest.json",
+      "bytes": 26168,
+      "sha256": "7633a799a46623ca888daed6760cd0770551ab439a53e6adc428cd24e52f6ea6",
+      "source": "xolotl-topk-native-v212-control_a-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-extended-v212-control_a-latest.json",
+      "bytes": 54991,
+      "sha256": "b7b3e206cf3dd782f18e3a4a1a81e6096e3f54bab249b00484e9ce4e394078db",
+      "source": "xolotl-topk-native-extended-v212-control_a-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-model-v213-controller.json",
+      "bytes": 1151,
+      "sha256": "ef31a93e7c47a8524aca2b636aed6efa644b3462f1c39cb26e8b0a1d1bd920af",
+      "source": "xolotl-topk-native-model-v213-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-native-model-v213r1-controller.json",
+      "bytes": 1632,
+      "sha256": "8750ca7cb6174f6c9e888ebedaadda53ed4f1283c56da3370b7863951241698c",
+      "source": "xolotl-topk-native-model-v213r1-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-fullwindow-v214-prepared.json",
+      "bytes": 618,
+      "sha256": "9cb292f5f1e1af4c9d097091ffc19ffefc82913d5b9137ddc5ece258735e8b2f",
+      "source": "xolotl-topk-fullwindow-v214-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-post-recovery-v219-prepared.json",
+      "bytes": 502,
+      "sha256": "1f206f6f4c4ecc42f9e31d0e56954806ca9ae87b0db4c264d9bf0cf99d917540",
+      "source": "xolotl-post-recovery-v219-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-formal-c13-v216-prepared.json",
+      "bytes": 497,
+      "sha256": "cf6db81c10ee15b956c4b8aaaaa34a4a43bafd681ece5a43ee0b358fc9b92512",
+      "source": "xolotl-formal-c13-v216-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v217-prepared.json",
+      "bytes": 2110,
+      "sha256": "fc21bda0e17335aed0013bfa69134540ff8441507ef2182dde456084e1e985dd",
+      "source": "xolotl-stable-recovery-v217-prepared.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v217-controller.json",
+      "bytes": 5560,
+      "sha256": "703f01656cb1d4bd37b4f6e5943f06397a72b8ecf8891e238fa9fce1dfa4d5d8",
+      "source": "xolotl-stable-recovery-v217-controller.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v217-stable-intent.json",
+      "bytes": 7672,
+      "sha256": "e8e5a8654beabd91a95a8b1d9ab803ee92da7f15533ea260df13f29d822300c1",
+      "source": "xolotl-stable-recovery-v217-stable-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v217-stable-qualification-latest.json",
+      "bytes": 26164,
+      "sha256": "4c04ef08ae78f1266e6b2289aed141c4af6b2d388a9691bcd65c5c1369a15096",
+      "source": "xolotl-stable-recovery-v217-stable-qualification-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-extended-v217-stable-latest.json",
+      "bytes": 54984,
+      "sha256": "09cbf21c1e42111bef182a63ca204e3ad87a561e79cdc7362c6265f917da4f09",
+      "source": "xolotl-stable-extended-v217-stable-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-edge-suite-v217-latest.json",
+      "bytes": 2180,
+      "sha256": "9102aeae751d4adca77771ca96667db83d22b510a71b6087e338ce100dba2b8f",
+      "source": "xolotl-stable-edge-suite-v217-latest.json"
+    },
+    {
+      "file": "receipts/xolotl-stable-recovery-v217-promotion.json",
+      "bytes": 9430,
+      "sha256": "fe19b4de5cafaebb8f2034ed6914b6b471a38881042b3ac6c2fdc3da036fa2f4",
+      "source": "xolotl-stable-recovery-v217-promotion.json"
+    },
+    {
+      "file": "receipts/xolotl-readiness-watch-v220-intent.json",
+      "bytes": 1282,
+      "sha256": "7bdfdb5568ce507a9c762f5b2f5b24aecc839deac2a30028edef073de428c88d",
+      "source": "xolotl-readiness-watch-v220-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-topk-geometry-v223-failure.json",
+      "bytes": 15357,
+      "sha256": "02efc85dc4ed8683e3d43a323ec2f05393e9e73fc2686fdf745465006b3bd1f8",
+      "source": "xolotl-topk-geometry-v223-failure.json"
+    },
+    {
+      "file": "receipts/xolotl-exact-topk-geometry-v223r1.json",
+      "bytes": 1115,
+      "sha256": "b60715c2231086ae2c22b7c43973a12d93f1ab1130375dc95689bcfaa299981e",
+      "source": "xolotl-exact-topk-geometry-v223r1.json"
+    },
+    {
+      "file": "receipts/fresh-current-role-observation.json",
+      "bytes": 3336,
+      "sha256": "f72fb83ad3c407e4b5a2411cdaeced40da4b50c78abd8b858490e74e9bbc3766",
+      "source": "xolotl-current-role-progress-v219-1792913103287575300.json"
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r1-latest.json",
+      "bytes": 8929,
+      "sha256": "8d651b923e527682f2627a83e51f914671c4860f036e10d4a317730d0d488d96",
+      "source": null
+    },
+    {
+      "file": "receipts/xolotl-ncu-actual1m-v172r2-latest.json",
+      "bytes": 50911,
+      "sha256": "73db13caddeaa83d1a180172506b0e41afe13e4b0297f137aaedd10757c7866c",
+      "source": null
+    },
+    {
+      "file": "receipts/xolotl-ncu-smoke-v205-latest-sanitized.json",
+      "bytes": 2122,
+      "sha256": "fc96be5b832ce897c3b6115a6cedd0e5c6d4a2ebada20adb8aaa2e771e5f6f4c",
+      "source": null
+    },
+    {
+      "file": "receipts/installed-nsys-metrics-support.json",
+      "bytes": 368,
+      "sha256": "9d0a4b680f72941be885e0e2c73759d2b77eca327fb9ed0a2f593b88017a2802",
+      "source": null
+    },
+    {
+      "file": "receipts/formal-C11-stop-and-declared-policy.json",
+      "bytes": 7295,
+      "sha256": "dbec8fe704cee221c61fcd0555992865c12f8f9397fc3241b615a290849c33db",
+      "source": null
+    },
+    {
+      "file": "operators/inspect_actual_topk_build_v187.py",
+      "bytes": 3091,
+      "sha256": "7a009096273d34b04d4415e3b5f199c550aeb668f70dbc2c21259c7d8b56585f",
+      "source": "inspect_actual_topk_build_v187.py"
+    },
+    {
+      "file": "operators/fetch_cccl_topk_source_v188.py",
+      "bytes": 5490,
+      "sha256": "af94a3bfea47bda8781f94ef53b62834681387130c84c0bd7dee19574d2fcb70",
+      "source": "fetch_cccl_topk_source_v188.py"
+    },
+    {
+      "file": "operators/fetch_cccl_local_v189.py",
+      "bytes": 2281,
+      "sha256": "0f0f05de325b48d3278ce32f49951b45f3aeac84b2173f7ce393c7df508e175a",
+      "source": "fetch_cccl_local_v189.py"
+    },
+    {
+      "file": "operators/fetch_cccl_local_v189r1.py",
+      "bytes": 2432,
+      "sha256": "f6d64f0b127b28c92968b2ebc73187055e065c4fa7e76a7dfdce6444172aa531",
+      "source": "fetch_cccl_local_v189r1.py"
+    },
+    {
+      "file": "operators/stage_cccl_headers_v191.py",
+      "bytes": 6112,
+      "sha256": "1fc1f350d78c885c0addffa72461f69502778a759e80b7d4e6bbb4517a043903",
+      "source": "stage_cccl_headers_v191.py"
+    },
+    {
+      "file": "operators/aster_topk_order_v192.hpp",
+      "bytes": 747,
+      "sha256": "d9b192ccf8a21ba7931365d96983b445f6be617d34f7e00d3fdc5d5bbfc8ac57",
+      "source": "aster_topk_order_v192.hpp"
+    },
+    {
+      "file": "operators/aster_topk35_api_v192.hpp",
+      "bytes": 385,
+      "sha256": "e91db284b98a94db766415d5f439f6211c994e75b4aa6d31d7217cc2ecb85b8e",
+      "source": "aster_topk35_api_v192.hpp"
+    },
+    {
+      "file": "operators/aster_topk_cccl35_v192.cu",
+      "bytes": 3272,
+      "sha256": "6e18ac89d94faf1ded9558bd06f70b5d9cc52673e18dd749fb42368ef6ef3d7e",
+      "source": "aster_topk_cccl35_v192.cu"
+    },
+    {
+      "file": "operators/test_topk_order_v192.cpp",
+      "bytes": 1227,
+      "sha256": "a06285f5a3ae179a933facbb9725cf8c83e0bab3b088a3a1620b8e6a60dc14e7",
+      "source": "test_topk_order_v192.cpp"
+    },
+    {
+      "file": "operators/compile_topk_cccl35_v193.py",
+      "bytes": 6670,
+      "sha256": "e182e1e59a48a023ed316a37e6d19a404c9e3cc58dff42f645bf494801e53b97",
+      "source": "compile_topk_cccl35_v193.py"
+    },
+    {
+      "file": "operators/bench_topk_cccl35_v194.cpp",
+      "bytes": 7405,
+      "sha256": "8a16880614ef5da0d7c5c0cca1bfa8332ae95dac73a7ac07bdf671720c047b73",
+      "source": "bench_topk_cccl35_v194.cpp"
+    },
+    {
+      "file": "operators/manage_topk_harness_v195.py",
+      "bytes": 14479,
+      "sha256": "421c585ce1db3c7d55be3efbf0b0de357cd2e7dc1d7416ea6f6c037e8f9f51bb",
+      "source": "manage_topk_harness_v195.py"
+    },
+    {
+      "file": "operators/manage_topk_harness_v195r1.py",
+      "bytes": 14478,
+      "sha256": "e9c6e01d6261e5f9c3f754262f8ab7b87c097d245b2364650bb934abd93e579f",
+      "source": "manage_topk_harness_v195r1.py"
+    },
+    {
+      "file": "operators/aster_native_resume_v197.py",
+      "bytes": 814,
+      "sha256": "95c5089a0e2b78d8c2083c4818dfbf0858e1dfaba98bf503c70979021a96a0ab",
+      "source": "aster_native_resume_v197.py"
+    },
+    {
+      "file": "operators/test_native_resume_v197.py",
+      "bytes": 1445,
+      "sha256": "9ab98a984f5b0b00ceee5456866311ca32386a321e285ad30dcd46966a9b7dff",
+      "source": "test_native_resume_v197.py"
+    },
+    {
+      "file": "operators/prepare_native_resume_and_topk_r2_v198.py",
+      "bytes": 4452,
+      "sha256": "222048ae5a252c035268eee711b3fc5eaccf59b3f8875e578ae6415d62392c2c",
+      "source": "prepare_native_resume_and_topk_r2_v198.py"
+    },
+    {
+      "file": "operators/xolotl_ncu_actual1m_worker_v171r2.frozen.py",
+      "bytes": 16331,
+      "sha256": "8ee413409531fa35b46931d9e572a4a121fcf96d5967fe9bfb8a2acd14809e85",
+      "source": "xolotl_ncu_actual1m_worker_v171r2.frozen.py"
+    },
+    {
+      "file": "operators/manage_ncu_actual1m_v172r2.py",
+      "bytes": 12296,
+      "sha256": "7b3aee5a395b1e3305111afdb86fee038f51e201983b0d853ea751ada59540e1",
+      "source": "manage_ncu_actual1m_v172r2.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v172r2.py",
+      "bytes": 2875,
+      "sha256": "c7a7a2557ec950e3f361c23b95248f3d074b11291de2a3c4287ef0d5f03da90e",
+      "source": "xolotl_sealed_bootstrap_v172r2.py"
+    },
+    {
+      "file": "operators/run_fullwindow_then_hardware_profile_v173r2.frozen.py",
+      "bytes": 7070,
+      "sha256": "62b599c547a68a721ed9896246c14cc3430108aa8f4da708f83dd3c81b1c4030",
+      "source": "run_fullwindow_then_hardware_profile_v173r2.frozen.py"
+    },
+    {
+      "file": "operators/observe_h200_prefill_telemetry_v200.py",
+      "bytes": 2097,
+      "sha256": "a3edcabfade053eaf647e5c130da5b2fc85d3cb4e754c64b5b1d97e4cd388c42",
+      "source": "observe_h200_prefill_telemetry_v200.py"
+    },
+    {
+      "file": "operators/aster_topk_native_bridge_v201.cu",
+      "bytes": 2998,
+      "sha256": "bfdfb56639f3face8ba96e593aca64ce8decdde599f1d386869ac1f76a67790b",
+      "source": "aster_topk_native_bridge_v201.cu"
+    },
+    {
+      "file": "operators/compile_topk_native_bridge_v202.py",
+      "bytes": 9065,
+      "sha256": "2f4a0e3008687545e9b3934d6417c4181cc645b2174e6bb9c35a4153de2e970a",
+      "source": "compile_topk_native_bridge_v202.py"
+    },
+    {
+      "file": "operators/prepare_operator_after_failed_profile_v203.py",
+      "bytes": 2636,
+      "sha256": "406b3f8a46779e364b9087e29a58849e1a16272bf1633bb6f4920fc6916f5fda",
+      "source": "prepare_operator_after_failed_profile_v203.py"
+    },
+    {
+      "file": "operators/manage_topk_harness_v203.py",
+      "bytes": 14722,
+      "sha256": "f4d1aa6574382808f89ee910fe84559a60750283f505d6bf3e1952e5e6b0697b",
+      "source": "manage_topk_harness_v203.py"
+    },
+    {
+      "file": "operators/h200_ncu_smoke_v204.cu",
+      "bytes": 1594,
+      "sha256": "0d7afb3e5ed714f6aed6766c85eba86e0f4a92781542ceec96fad42094d6ed45",
+      "source": "h200_ncu_smoke_v204.cu"
+    },
+    {
+      "file": "operators/manage_h200_ncu_smoke_v205.py",
+      "bytes": 9160,
+      "sha256": "c70bef3b46653957faf1f78fb2bd5e2f349cc760ac9cdd928b802a3a1cbacf78",
+      "source": "manage_h200_ncu_smoke_v205.py"
+    },
+    {
+      "file": "operators/aster_ncu_wide_metrics_v206.py",
+      "bytes": 2246,
+      "sha256": "44fe6abf91e9cdef43bba4a0e77815ebf3feeb1c08d572207214de2d166cb005",
+      "source": "aster_ncu_wide_metrics_v206.py"
+    },
+    {
+      "file": "operators/test_ncu_wide_metrics_v206.py",
+      "bytes": 2120,
+      "sha256": "075ea8389e694c4eee9f2467a67d8851c6de79c4bae7db880aa92db2aa707076",
+      "source": "test_ncu_wide_metrics_v206.py"
+    },
+    {
+      "file": "operators/recover_ncu_smoke_and_memory_v207.py",
+      "bytes": 4743,
+      "sha256": "9e8568f9687da22eb3eae27052f0df23a4284a702ccde9c3fe3a325d4e0e3079",
+      "source": "recover_ncu_smoke_and_memory_v207.py"
+    },
+    {
+      "file": "operators/prepare_next_optimization_lease_v208.py",
+      "bytes": 4077,
+      "sha256": "bc6c6d26a5c40135386d67a68ce75c25794b82b6a4e48ed0f6caa4055939cedf",
+      "source": "prepare_next_optimization_lease_v208.py"
+    },
+    {
+      "file": "operators/submit_xolotl_single1m_cont12_lease_v208.frozen.py",
+      "bytes": 11115,
+      "sha256": "1f9732d7a7daf55f1bf038bdad80dd8414d32ed56e3272694f136cb3e3d0dbc2",
+      "source": "submit_xolotl_single1m_cont12_lease_v208.frozen.py"
+    },
+    {
+      "file": "operators/retire_idle_optimization_c10_v209.py",
+      "bytes": 3844,
+      "sha256": "f8d612b71fccd1997d7d3607fb50e3c83f2b94ba4bbd4ab96c233f33c0c9c7e3",
+      "source": "retire_idle_optimization_c10_v209.py"
+    },
+    {
+      "file": "operators/activate_c12_observation_v210.py",
+      "bytes": 2375,
+      "sha256": "fd129925edc74f442acc32489bd16389ec4df2d5cf48d89382827f0b30b7e43f",
+      "source": "activate_c12_observation_v210.py"
+    },
+    {
+      "file": "operators/observe_current_h200_roles_v211.py",
+      "bytes": 5245,
+      "sha256": "7e679050a6a56a1188912f5a1527d94103e4b7c819693ea42aac2c309e3d3bb6",
+      "source": "observe_current_h200_roles_v211.py"
+    },
+    {
+      "file": "operators/prepare_topk_native_services_v212.py",
+      "bytes": 4604,
+      "sha256": "9843ddd512dbc5946a5699975302cb14cd128c4baa656540027ddc3d80f42992",
+      "source": "prepare_topk_native_services_v212.py"
+    },
+    {
+      "file": "operators/launch_topk_native_service_v212.frozen.py",
+      "bytes": 9396,
+      "sha256": "e2936b06cc02d81fd13d6e770dedb9b9e04d26b9b373729de6f4cc596346e23a",
+      "source": "launch_topk_native_service_v212.frozen.py"
+    },
+    {
+      "file": "operators/manage_topk_native_basic_v212.frozen.py",
+      "bytes": 7144,
+      "sha256": "8cf81c2231d593ae6702fab9a6f48bd5b7a8beade0bd2c5cc6193c45f096d3cf",
+      "source": "manage_topk_native_basic_v212.frozen.py"
+    },
+    {
+      "file": "operators/manage_topk_native_extended_v212.frozen.py",
+      "bytes": 7406,
+      "sha256": "ca659078c3e5b3dca4095e159c7703f8a7cc351fca5f50bbf50b195e1743c909",
+      "source": "manage_topk_native_extended_v212.frozen.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v212.py",
+      "bytes": 2935,
+      "sha256": "47e0e06522ed21b53523a79c34ee3d0c013d81cdbf983128116e16df99b2a060",
+      "source": "xolotl_sealed_bootstrap_v212.py"
+    },
+    {
+      "file": "operators/run_topk_native_model_aba_v213.frozen.py",
+      "bytes": 8848,
+      "sha256": "d007b5789749ba721115baed098f66f567c84211cd62320d310f3215f8627957",
+      "source": "run_topk_native_model_aba_v213.frozen.py"
+    },
+    {
+      "file": "operators/run_topk_native_model_aba_v213r1.frozen.py",
+      "bytes": 9145,
+      "sha256": "f15538b02c4c7248944244f1959f208c754e6a44ef25905bbae49b4e50de96ec",
+      "source": "run_topk_native_model_aba_v213r1.frozen.py"
+    },
+    {
+      "file": "operators/prepare_topk_fullwindow_suite_v214.py",
+      "bytes": 2023,
+      "sha256": "ade5feabea58dbc88d67f45be1315d569f08e93bdc7b94e52357b5f0c3c2cb34",
+      "source": "prepare_topk_fullwindow_suite_v214.py"
+    },
+    {
+      "file": "operators/manage_topk_fullwindow_suite_v214.py",
+      "bytes": 9354,
+      "sha256": "734d46d2653236d1fb75263c20a294919cc5f8465475d16d3af6405aaeb7eae5",
+      "source": "manage_topk_fullwindow_suite_v214.py"
+    },
+    {
+      "file": "operators/inspect_formal_c11_stop_v215.py",
+      "bytes": 2876,
+      "sha256": "69c135bff27d0f812f4346d0f1b59feae91b8498e824e26860163ed194c4fecc",
+      "source": "inspect_formal_c11_stop_v215.py"
+    },
+    {
+      "file": "operators/prepare_formal_c13_v216.py",
+      "bytes": 2176,
+      "sha256": "07557b0f3c48deb51aecd1dc7403e060af69a4fb7afd2a10415baf0c721368a2",
+      "source": "prepare_formal_c13_v216.py"
+    },
+    {
+      "file": "operators/submit_xolotl_single1m_cont13_lease_v216.frozen.py",
+      "bytes": 9659,
+      "sha256": "adfbd24d0a68afe6a62b237b88c5d141e8f51e955187d3a2328c038a88f076fa",
+      "source": "submit_xolotl_single1m_cont13_lease_v216.frozen.py"
+    },
+    {
+      "file": "operators/prepare_stable_c13_recovery_v217.py",
+      "bytes": 3031,
+      "sha256": "dd17615f81a02c380f8a59ca691e3698f9fdb41b691b5f0bf934d11bab69384a",
+      "source": "prepare_stable_c13_recovery_v217.py"
+    },
+    {
+      "file": "operators/xolotl_recovery_common_v217.py",
+      "bytes": 4772,
+      "sha256": "5e04707544d9ccda6480e31a0784f2606bd42f10d225d84a67a8557a5cf40b78",
+      "source": "xolotl_recovery_common_v217.py"
+    },
+    {
+      "file": "operators/xolotl_sealed_bootstrap_v217.py",
+      "bytes": 2884,
+      "sha256": "b7cc5b69bcb075030e0050f53243975bd9eed9bccd88dec7520f97c8b1a0b120",
+      "source": "xolotl_sealed_bootstrap_v217.py"
+    },
+    {
+      "file": "operators/launch_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6320,
+      "sha256": "5c6be81b52ca7b6d0833cac95eb03f49ee67de7945cb8a17936f8774e8338ebc",
+      "source": "launch_xolotl_stable_recovery_v217.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 7150,
+      "sha256": "8a4acd9e5819987eb9724cbe9985a085d1ec26e53f15dc51c0228c358915f86a",
+      "source": "manage_xolotl_stable_recovery_v217.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_extended_v217.frozen.py",
+      "bytes": 7390,
+      "sha256": "341511edacf4a2fdf915a5534960a9477b9d68ca4a9f19cd50363a4c6f803970",
+      "source": "manage_xolotl_stable_extended_v217.frozen.py"
+    },
+    {
+      "file": "operators/manage_xolotl_stable_edge_suite_v217.frozen.py",
+      "bytes": 9033,
+      "sha256": "ae943d0f148830d52149ad20da4330e07810009adcc01b847ab0fe4c6fb8b049",
+      "source": "manage_xolotl_stable_edge_suite_v217.frozen.py"
+    },
+    {
+      "file": "operators/run_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6097,
+      "sha256": "80a1bbb5b07c8dfcbd42c75d1bec58b23cb3bba8672a3e575f53286512f68d26",
+      "source": "run_xolotl_stable_recovery_v217.frozen.py"
+    },
+    {
+      "file": "operators/promote_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 8669,
+      "sha256": "1d6138a58a8e4e4cba2702a7f4e5ea04d286cef33de2908a007202c055070097",
+      "source": "promote_xolotl_stable_recovery_v217.frozen.py"
+    },
+    {
+      "file": "operators/finalize_xolotl_stable_recovery_v217.frozen.py",
+      "bytes": 6082,
+      "sha256": "3db6aca06737876ec64fc481d0e74cf52b216978829a1b1bcac5732df4b6ee55",
+      "source": "finalize_xolotl_stable_recovery_v217.frozen.py"
+    },
+    {
+      "file": "operators/inspect_rjob_policy_v218.py",
+      "bytes": 2546,
+      "sha256": "2728a742650e4918eb4e788e91597aba58d9ca88dbdbb9a18f3f75a57e610f1e",
+      "source": "inspect_rjob_policy_v218.py"
+    },
+    {
+      "file": "operators/prepare_post_recovery_observers_v219.py",
+      "bytes": 2247,
+      "sha256": "c69deae84c0eb41e43ef3d08eec319ed872dbca620006150ba2080137d275a66",
+      "source": "prepare_post_recovery_observers_v219.py"
+    },
+    {
+      "file": "operators/observe_current_h200_roles_v219.py",
+      "bytes": 5401,
+      "sha256": "06b913a89980983ca93b9fdb71bd4c7542543fc71d3a457971346d4b073fe5fa",
+      "source": "observe_current_h200_roles_v219.py"
+    },
+    {
+      "file": "operators/prepare_readiness_watch_v220.py",
+      "bytes": 795,
+      "sha256": "6f73dfe0f11bde79e383d8e3c9f14d221dd02103ffe1dfeb5bc84bbb2013be05",
+      "source": "prepare_readiness_watch_v220.py"
+    },
+    {
+      "file": "operators/launch_xolotl_readiness_watch_v220.frozen.py",
+      "bytes": 3575,
+      "sha256": "41ce6a03312792d3c750e6d977b8ec4a999870033bd9cbbb5d7243687466913f",
+      "source": "launch_xolotl_readiness_watch_v220.frozen.py"
+    },
+    {
+      "file": "operators/inspect_exact_model_geometry_v223.py",
+      "bytes": 3260,
+      "sha256": "76a644b2ff188bce4c265d89771788bdf15785f4429b93b9222608a7c2529bf2",
+      "source": "inspect_exact_model_geometry_v223.py"
+    },
+    {
+      "file": "operators/inspect_exact_model_geometry_v223r1.py",
+      "bytes": 3312,
+      "sha256": "6c5f1be6049b79fe00e91d82191fb13c4a8e11970700f808a1cfe838f1e9afe7",
+      "source": "inspect_exact_model_geometry_v223r1.py"
+    },
+    {
+      "file": "operators/prepare_metadata_geometry_release_v224.py",
+      "bytes": 1256,
+      "sha256": "92f8e2368f2ffa34eae7908fed8bdb415e3c0a8b1c51b4c3294790504b10ae74",
+      "source": "prepare_metadata_geometry_release_v224.py"
+    },
+    {
+      "file": "operators/inspect_nsys_metrics_cli_v226.py",
+      "bytes": 1326,
+      "sha256": "167b60278212f47423f141f6509eeffce250681b23f884fc8d383cbcce0759f6",
+      "source": "inspect_nsys_metrics_cli_v226.py"
+    },
+    {
+      "file": "operators/retain_topk_gpu_and_c13_r10_v227.py",
+      "bytes": 22911,
+      "sha256": "13b60cfe63d4ee55c7fa3577a736d8af70346912a9a982eb072600c40ca5d2b7",
+      "source": "retain_topk_gpu_and_c13_r10_v227.py"
+    },
+    {
+      "file": "frozen-candidate/top-k.original.cu",
+      "bytes": 10447,
+      "sha256": "e8fd64d90d021e5d0549e6c529619a782a050df3e309ac088151d6b5490a5c89",
+      "source": "exact upstream source from audit187"
+    },
+    {
+      "file": "frozen-candidate/llama-LICENSE",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+      "source": "xolotl-trial-source-e9d0826d71c5/llama-source/LICENSE"
+    },
+    {
+      "file": "receipts/xolotl-h200-prefill-telemetry-v200-1792909311160673600.json",
+      "bytes": 1992,
+      "sha256": "02bf707945b5a634b31caf773ea69926e9f6784e82b616d491cd63859e54bdc1",
+      "source": "xolotl-h200-prefill-telemetry-v200-1792909311160673600.json"
+    },
+    {
+      "file": "round-summary.json",
+      "bytes": 4224,
+      "sha256": "94082d99e513639847d6bc45f2cfba4032cc153b8b57284b864762b1e13ba0ca",
+      "source": null
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 5252,
+      "sha256": "c521bce9b61d2f32abdc049499a23dc78132c042d3d2a2889f0e1370daa2b82f",
+      "source": null
+    },
+    {
+      "file": "operators/aster_ncu_metrics_v171.py",
+      "bytes": 3047,
+      "sha256": "01d6074e2b039050cf5c04a989d245326e569e6be3ff86646485d42353f4d2aa",
+      "source": "exact R9 dependency aster_ncu_metrics_v171.py"
+    },
+    {
+      "file": "operators/test_ncu_metrics_v171.py",
+      "bytes": 2127,
+      "sha256": "ca8bb771ae79f9ee95785459a8d900fb0fda1e53c019d53b6c4378ebb2a5ce5b",
+      "source": "exact R9 dependency test_ncu_metrics_v171.py"
+    },
+    {
+      "file": "operators/aster_ncu_query_v178.py",
+      "bytes": 1281,
+      "sha256": "6939a3be6799e50142aa05b5b917976b65115c7d6161d8b366ef89fecedd1733",
+      "source": "exact R9 dependency aster_ncu_query_v178.py"
+    },
+    {
+      "file": "operators/test_ncu_query_v178.py",
+      "bytes": 2012,
+      "sha256": "8aaeceff9016c31e66f6d7469779c941ae5feeab9880b363dd836fbc7c5816d0",
+      "source": "exact R9 dependency test_ncu_query_v178.py"
+    },
+    {
+      "file": "operators/augment_and_verify_r10_v228.py",
+      "bytes": 5583,
+      "sha256": "cc8d0d11495058d33c6af82df05a5043051708938473d196a760c13f4ec9d269",
+      "source": "augment_and_verify_r10_v228.py"
+    },
+    {
+      "file": "operators/augment_and_verify_r10_v228r1.py",
+      "bytes": 5989,
+      "sha256": "14110793159d2ab8dd05814c975a07221f03c6ad7fe66d1379cdfcf7db10a620",
+      "source": "corrected parent-directory/resumption operator"
+    },
+    {
+      "file": "public-diagnostics/parser-tests25.json",
+      "bytes": 3315,
+      "sha256": "31ae60ac55ecbe88821c17a680a5c28df16d373eb12cffe38b53c76d80fea37f",
+      "source": "published R10 operators test run"
+    }
+  ]
+}

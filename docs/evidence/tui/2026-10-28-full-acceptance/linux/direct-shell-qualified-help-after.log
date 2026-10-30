@@ -1,0 +1,185 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 46.66s
+     Running unittests src/lib.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/a3s_code_pager-987099fbdd05f605)
+
+running 74 tests
+test views::shortcuts_help::backend_tests::code_help_does_not_offer_the_unavailable_direct_shell_entry ... ok
+test views::shortcuts_help::backend_tests::code_history_help_points_to_working_inline_recall ... ok
+test views::shortcuts_help::backend_tests::code_paste_help_matches_text_capability ... ok
+test views::shortcuts_help::backend_tests::code_sessions_help_does_not_offer_hidden_commands_or_dashboard ... ok
+test views::shortcuts_help::backend_tests::other_backends_keep_their_existing_shortcut_help ... ok
+test views::shortcuts_help::tests::build_entries_dedupes_identically_rendered_alt_keys ... ok
+test views::shortcuts_help::tests::build_entries_deduplicates_within_category ... ok
+test views::shortcuts_help::tests::build_entries_dims_both_pane_contexts_from_side_pane ... ok
+test views::shortcuts_help::tests::build_entries_dims_dashboard_list_vs_overlay ... ok
+test views::shortcuts_help::tests::build_entries_dims_editor_pseudo_rows_outside_prompt_and_dashboard ... ok
+test views::shortcuts_help::tests::build_entries_dims_out_of_context_actions ... ok
+test views::shortcuts_help::tests::build_entries_groups_by_category ... ok
+test views::shortcuts_help::tests::build_entries_includes_find_search_in_simple_mode ... ok
+test views::shortcuts_help::tests::build_entries_includes_history_row_in_both_modes ... ok
+test views::shortcuts_help::tests::build_entries_includes_new_pane_actions ... ok
+test views::shortcuts_help::tests::build_entries_includes_paste ... ok
+test views::shortcuts_help::tests::build_entries_includes_scrollback_search_in_vim_mode ... ok
+test views::shortcuts_help::tests::build_entries_lists_prompt_stash_with_ctrl_s_and_alt_s ... ok
+test views::shortcuts_help::tests::build_entries_lists_undo_and_redo ... ok
+test views::shortcuts_help::tests::build_entries_overlay_stop_wins_dedup_and_shadows_cheatsheet_ctrl_x ... ok
+test views::shortcuts_help::tests::build_entries_sets_action_id_on_registry_hints ... ok
+test views::shortcuts_help::tests::build_entries_show_mode_correct_ctrl_g_and_shared_ctrl_b ... ok
+test views::shortcuts_help::tests::build_entries_surfaces_interject_ctrl_i_fallback ... ok
+test views::shortcuts_help::tests::build_entries_surfaces_queue_ctrl_apostrophe_fallback ... ok
+test views::shortcuts_help::tests::build_entries_vim_off_drops_empty_section_headers ... ok
+test views::shortcuts_help::tests::build_entries_vim_off_hides_vim_only_rows ... ok
+test views::shortcuts_help::tests::build_entries_vim_off_keeps_arrow_alt_without_vim_key ... ok
+test views::shortcuts_help::tests::build_entries_vim_on_shows_both_vim_and_arrow_keys ... ok
+test views::shortcuts_help::tests::cheatsheet_rows_inline_help_joins_newlines_with_spaces ... ok
+test views::shortcuts_help::tests::click_from_search_opens_detail_and_clears_query ... ok
+test views::shortcuts_help::tests::collapsed_section_shows_header_only ... ok
+test views::shortcuts_help::tests::ctrl_dot_closes_from_detail_mode ... ok
+test views::shortcuts_help::tests::ctrl_x_closes_from_browse_mode ... ok
+test views::shortcuts_help::tests::detail_from_entry_uses_long_help_for_body ... ok
+test views::shortcuts_help::tests::detail_mode_ignores_vim_keys ... ok
+test views::shortcuts_help::tests::enter_from_search_opens_detail_and_clears_query ... ok
+test views::shortcuts_help::tests::enter_on_hint_without_action_id_is_unchanged ... ok
+test views::shortcuts_help::tests::enter_on_paste_pseudo_row_opens_detail ... ok
+test views::shortcuts_help::tests::enter_on_registry_hint_opens_detail ... ok
+test views::shortcuts_help::tests::enter_on_search_pseudo_row_opens_detail ... ok
+test views::shortcuts_help::tests::enter_on_section_header_toggles ... ok
+test views::shortcuts_help::tests::esc_in_browse_closes_via_picker ... ok
+test views::shortcuts_help::tests::esc_in_detail_returns_to_browse ... ok
+test views::shortcuts_help::tests::filter_drops_header_when_section_empty ... ok
+test views::shortcuts_help::tests::filter_empty_query_returns_all_indices ... ok
+test views::shortcuts_help::tests::filter_keeps_both_headers_when_both_sections_match ... ok
+test views::shortcuts_help::tests::filter_keeps_header_when_section_has_match ... ok
+test views::shortcuts_help::tests::filter_matches_against_key_display ... ok
+test views::shortcuts_help::tests::handle_modal_key_enter_on_hint_enters_detail ... ok
+test views::shortcuts_help::tests::handle_modal_key_esc_in_detail_is_back_not_close ... ok
+test views::shortcuts_help::tests::handle_modal_key_left_collapses_expanded_hint ... ok
+test views::shortcuts_help::tests::handle_modal_key_maps_toggle_expand ... ok
+test views::shortcuts_help::tests::history_row_lit_only_by_prompt_focus ... ok
+test views::shortcuts_help::tests::initial_state_selects_first_hint_not_header ... ok
+test views::shortcuts_help::tests::inline_expand_with_no_help_renders_no_description_line ... ok
+test views::shortcuts_help::tests::modal_footer_advertises_detail ... ok
+test views::shortcuts_help::tests::modal_footer_advertises_i_search_under_vim ... ok
+test views::shortcuts_help::tests::mouse_reporting_shortcut_absent_by_default ... ok
+test views::shortcuts_help::tests::mouse_reporting_shortcut_is_under_panels_when_enabled ... ok
+test views::shortcuts_help::tests::non_vim_hjkl_start_search ... ok
+test views::shortcuts_help::tests::populated_long_help_is_distinct_and_man_style ... ok
+test views::shortcuts_help::tests::render_detail_body_clamps_overscroll ... ok
+test views::shortcuts_help::tests::render_detail_body_omits_body_equal_to_title ... ok
+test views::shortcuts_help::tests::render_detail_body_scroll_is_wrap_aware ... ok
+test views::shortcuts_help::tests::render_detail_body_spaces_paragraphs_with_blank_line ... ok
+test views::shortcuts_help::tests::render_modal_shows_long_help_only_when_expanded ... ok
+test views::shortcuts_help::tests::search_forces_collapsed_sections_open ... ok
+test views::shortcuts_help::tests::search_pseudo_row_expands ... ok
+test views::shortcuts_help::tests::space_on_section_header_toggles ... ok
+test views::shortcuts_help::tests::toggle_expand_outcome_for_hint_right_key ... ok
+test views::shortcuts_help::tests::vim_h_collapses_only_expanded_action_hints ... ok
+test views::shortcuts_help::tests::vim_i_enters_search_and_printables_type_afterward ... ok
+test views::shortcuts_help::tests::vim_l_expands_and_h_collapses_paste ... ok
+test views::shortcuts_help::tests::vim_mode_jk_navigate_without_starting_search ... ok
+
+test result: ok. 74 passed; 0 failed; 0 ignored; 0 measured; 10158 filtered out; finished in 0.44s
+

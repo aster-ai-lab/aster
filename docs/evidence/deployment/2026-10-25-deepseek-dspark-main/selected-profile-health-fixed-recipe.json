@@ -1,0 +1,25 @@
+{
+  "receipt": "selected-profile-health-fixed-deployment.json",
+  "profile": "Merged main DSpark exact 1M with bounded concurrent readiness",
+  "old_pid": 3174438,
+  "old_cfg_sha": "0baf088a10191560bf050cc7e272a86aa0705386aa2128df091d30bab773a4d4",
+  "old_unit_sha": "551d1ac40ffeb34e1bf4017e3640a1c8969c2568999cd8b445b33051f4258899",
+  "old_power": "/opt/a3s/releases/deepseek-dspark-main-de631f93da083114/a3s-power",
+  "old_power_sha": "de631f93da0831144ada8855e0ee1d2020ef9a2e8271376ff9204e9b928fd0b3",
+  "power": "/opt/a3s/releases/deepseek-dspark-health-899084c8e07d7da2/a3s-power",
+  "power_sha": "899084c8e07d7da2a902169dd21d6dc4e294352caf7b110c4eded34a78e59d28",
+  "bridge": "/opt/a3s/releases/deepseek-dspark-health-899084c8e07d7da2/power_xolotl_bridge.py",
+  "bridge_sha": "ca4b0f9319df0875e10970b17215e09298be203dc669a8eb3ebce2fb60a57b6e",
+  "staged": "/etc/a3s/power/.deepseek-gpu6-exact-resource-3221194.acl",
+  "staged_sha": "06d27c97fff350612ebd7b223f81dd2acc8afd549bad23bee18a6416e23ce9cd",
+  "tier_batch_pcie_bp": 2500,
+  "prefill_chunk": 256,
+  "prompt_batch": 8192,
+  "dspark_env": {
+    "STRATA_SERVE_DSPARK": "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/V41-MTP-Vision-1017.Q2_K.gguf",
+    "STRATA_DSPARK_DEPTH": "4",
+    "STRATA_DSPARK_CONF": "0.6000",
+    "STRATA_SERVE_DSPARK_EVICT": "4096"
+  },
+  "indexer_tile_elements": 67108864
+}

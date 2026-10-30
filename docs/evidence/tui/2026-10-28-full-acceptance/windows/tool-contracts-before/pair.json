@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\8f6a422022891e74e19e139f5508fec5768a98f1-20261029023800527",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "96ebd84a9d5327d52c015238680eca791a1c76d1e763527d804911d38c93cf0d",
+      "bytes": 323993600
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "f313cbed05617ca06807227ef4cde1a4287d3a7b1e6c3bd3e60991afabacc125",
+      "bytes": 185447424
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-tool-contracts-windows-build.jsonl",
+  "created_at": "2026-10-29T02:38:09.2902966Z"
+}

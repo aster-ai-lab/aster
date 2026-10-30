@@ -1,0 +1,79 @@
+[
+  {
+    "name": "workspace-dependencies",
+    "command": [
+      "python3",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 0,
+    "seconds": 1.2918340470059775
+  },
+  {
+    "name": "governance-regime",
+    "command": [
+      "python3",
+      "tests/governance_regime.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.055744434997905046
+  },
+  {
+    "name": "crate-drift",
+    "command": [
+      "python3",
+      "tests/crate_drift_report.py",
+      "--baseline",
+      "tests/crate_drift_baseline.json"
+    ],
+    "exit_code": 1,
+    "seconds": 3.66462298395345
+  },
+  {
+    "name": "workspace-format",
+    "command": [
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 44.64486314903479
+  },
+  {
+    "name": "gateway-changed-format",
+    "command": [
+      "/home/user/.cargo/bin/rustfmt",
+      "+1.97.1",
+      "--edition",
+      "2021",
+      "--config",
+      "skip_children=true",
+      "--check",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/config/acl/inference.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/config/config_tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/config/inference.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/config/mod.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/inference_dispatch.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/inference_tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/neural_routing_tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/platform_model_tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/gateway.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/gateway/tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/authorization.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/decision_flights.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/decision_plane.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/decision_transport.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/decision_transport_tests.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/mod.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/principal.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/routing.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/supplier_keys.rs",
+      "/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/inference/supplier_keys_activation_tests.rs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.25977555598365143
+  }
+]

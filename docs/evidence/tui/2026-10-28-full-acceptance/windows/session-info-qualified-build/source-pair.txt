@@ -1,0 +1,1 @@
+aster-cli-pair-v1:7f282ad7c4cc5580d1811b0d4a2dd4c12de32865:x86_64-pc-windows-msvc

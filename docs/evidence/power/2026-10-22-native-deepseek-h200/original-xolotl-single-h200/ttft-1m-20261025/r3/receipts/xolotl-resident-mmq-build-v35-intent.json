@@ -1,0 +1,77 @@
+{
+  "unix": 1792864091.6856234,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "gpu_free": true,
+  "formal_service_unchanged": true,
+  "files": [
+    {
+      "file": "aster_cache_restore_policy.hpp",
+      "bytes": 2391,
+      "sha256": "31b4720bcef27d9fc0eb9596ddff6b76a6ec7800e11d4aadf8e06f2d812b31e8"
+    },
+    {
+      "file": "aster_resident_stage_policy.hpp",
+      "bytes": 754,
+      "sha256": "3a7f73176bab85fd096bb17bc2ed748ee25592b08e73aeac3714bd6e41d20ba3"
+    },
+    {
+      "file": "build_worker.py",
+      "bytes": 5319,
+      "sha256": "f229317c061d0323b0a9b94258afbb381cc2b070135e078e84192e8a34f065e2"
+    },
+    {
+      "file": "cache_policy_test.cpp",
+      "bytes": 2675,
+      "sha256": "05e38decfc2bd92589cbb5c1d7ac44d8dea7fa0c1801b86a832c710908ae4dca"
+    },
+    {
+      "file": "ds41_moe.cpp",
+      "bytes": 375596,
+      "sha256": "8e3fe090b73b90ac3012cc423b65642b1077e2c15451edb677bc5ec4cfb0f0b2"
+    },
+    {
+      "file": "resident-mmq-v35.patch",
+      "bytes": 5471,
+      "sha256": "a4ba5b688b60e0f13be4e607b316905e0eb8bc1f7c53ed0f00350d7b21b31266"
+    },
+    {
+      "file": "resident_stage_policy_test.cpp",
+      "bytes": 1258,
+      "sha256": "087c1e0a35477777c3c6a3d6c12ea06b78971f42938175a63a992c98d4ef2a81"
+    },
+    {
+      "file": "test_resident_mmq.cpp",
+      "bytes": 13940,
+      "sha256": "bd8590072882408be71cfe6d90670fa6a4216a51302510c4d05b86fa34a88599"
+    },
+    {
+      "file": "upstream-test_ds41_moe.cpp",
+      "bytes": 13905,
+      "sha256": "9560676b2447563a1bd3b158eeccb07dc505ff1b92ff6c07ba635c04c8a2f6df"
+    },
+    {
+      "file": "source-manifest.json",
+      "bytes": 1904,
+      "sha256": "4ec99bbd91db1828a07f9b1451cfcfe29b1cbaf1e0d7842dbd07107cb4e75ae6"
+    },
+    {
+      "file": "plan.json",
+      "bytes": 4568,
+      "sha256": "f9a35b926e74f30169de52761a17da6e80feca90a8edd7190fcedab4f000d904"
+    }
+  ],
+  "stage": {
+    "staged": true,
+    "files": 11
+  },
+  "process": {
+    "pid": 178,
+    "start_ticks": 314357922,
+    "uid": 10250,
+    "unix": 1792864103.3343334,
+    "budget_seconds": 300
+  }
+}

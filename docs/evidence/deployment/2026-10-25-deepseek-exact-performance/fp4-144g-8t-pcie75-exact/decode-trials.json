@@ -1,0 +1,324 @@
+[
+  {
+    "wall_seconds": 11.135158873978071,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-fa2580dabc8e4298bf80bd30",
+      "object": "chat.completion",
+      "created": 1792918494,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM and CUDA kernels cooperate to run MoE LLM. At least 600 words, concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather, combine. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 86,
+        "prompt_ms": 3995.2,
+        "prompt_per_token_ms": 46.456,
+        "prompt_per_second": 21.5,
+        "predicted_n": 128,
+        "predicted_ms": 7135.0,
+        "predicted_per_token_ms": 55.742,
+        "predicted_per_second": 17.9,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 0,
+    "warmup": true
+  },
+  {
+    "wall_seconds": 6.8352574380114675,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-d5d74a70ec694d2c91dbbda3",
+      "object": "chat.completion",
+      "created": 1792918505,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words, concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, token gather/scatter, expert GEMMs, combine. Bottlenecks:"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6829.9,
+        "predicted_per_token_ms": 53.359,
+        "predicted_per_second": 18.7,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 1,
+    "warmup": false
+  },
+  {
+    "wall_seconds": 6.807259804045316,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-61317794cb5f430fb69e7aa2",
+      "object": "chat.completion",
+      "created": 1792918512,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM and CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, token gather/scatter, expert GEMMs, combine. Bottlenecks:"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6801.8,
+        "predicted_per_token_ms": 53.139,
+        "predicted_per_second": 18.8,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 2,
+    "warmup": false
+  },
+  {
+    "wall_seconds": 6.869937855983153,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-0b312d09849b4a0096f357dc",
+      "object": "chat.completion",
+      "created": 1792918519,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM and CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. Need likely discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute. Need cover bottlenecks: PCIe bandwidth, NVMe latency/bandwidth, VRAM"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6864.1,
+        "predicted_per_token_ms": 53.626,
+        "predicted_per_second": 18.6,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 3,
+    "warmup": false
+  },
+  {
+    "wall_seconds": 6.884007667016704,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-9151688bb2b64f239b549dbe",
+      "object": "chat.completion",
+      "created": 1792918526,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover components and bottlenecks. Need numbered explanation. Need likely discuss inference pipeline, MoE routing, expert weights storage, offloading, prefetch, PCIe transfers, CUDA kernels, CPU orchestration, RAM cache, NVMe, VRAM, GPU compute, synchronization, bottlenecks. Need detailed numbered. Could be 600+ words. Need maybe mention mixture-of-experts: token routing to top-k experts, expert FFN weights,"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6878.0,
+        "predicted_per_token_ms": 53.734,
+        "predicted_per_second": 18.6,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 4,
+    "warmup": false
+  },
+  {
+    "wall_seconds": 6.8471851230133325,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-7e8a74e4139142bcb1e679e4",
+      "object": "chat.completion",
+      "created": 1792918533,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover components and bottlenecks. Need numbered explanation. We can structure numbered steps maybe 1-12. Need discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, memory hierarchy. CPU orchestrates, RAM holds weights/metadata, NVMe stores model shards, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute routing, GEMM, scatter/gather,"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6841.6,
+        "predicted_per_token_ms": 53.45,
+        "predicted_per_second": 18.7,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 5,
+    "warmup": false
+  },
+  {
+    "wall_seconds": 6.8973168839584105,
+    "request_sha256": "afa38dffff3960a4e41432fe00c2c3428bf69b6ac690da632be162e8e723a2e1",
+    "request_utf8_bytes": 410,
+    "route": "default",
+    "response": {
+      "id": "chatcmpl-30d94b0dc42f42fa980b5a77",
+      "object": "chat.completion",
+      "created": 1792918539,
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": "We need answer detailed numbered explanation how CPU, RAM, NVMe storage, PCIe, GPU VRAM, CUDA kernels cooperate to run MoE LLM. At least 600 words. Concrete, cover all components and bottlenecks. Need numbered explanation. We can structure numbered steps maybe 1-12. Need discuss MoE architecture: router/gating, experts, sparse activation, token dispatch, expert weights huge, offloading. CPU orchestrates, RAM holds weights/metadata, NVMe stores cold experts, PCIe transfers, GPU VRAM holds active experts/cache, CUDA kernels compute. Bottlenecks: PCIe bandwidth"
+          },
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 86,
+        "completion_tokens": 128,
+        "total_tokens": 214,
+        "prompt_tokens_details": {
+          "cached_tokens": 86
+        }
+      },
+      "timings": {
+        "cache_n": 86,
+        "prompt_n": 0,
+        "prompt_ms": 0.0,
+        "prompt_per_token_ms": null,
+        "prompt_per_second": null,
+        "predicted_n": 128,
+        "predicted_ms": 6892.2,
+        "predicted_per_token_ms": 53.845,
+        "predicted_per_second": 18.6,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      }
+    },
+    "trial": 6,
+    "warmup": false
+  }
+]

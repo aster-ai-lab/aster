@@ -1,0 +1,107 @@
+{
+  "assertions_finished": true,
+  "case": "interrupt",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "sleep 6; printf LATE > late.txt"
+          },
+          "id": "call_b59334bdc3ea4511a8ecbfcd113e0373",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13200,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-4f6248a5-2479-4996-b727-822e5e1e6357",
+            "thread_id": "8907fe70-1036-4f37-bc47-75d74a55c8ca"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b59334bdc3ea4511a8ecbfcd113e0373",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "incomplete",
+          "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+          "unresolved_external_operations": [
+            "sha256:3a4a205fed24bf113562d6a66098d74f9c8eb00125046cef8e048445dcb021c9"
+          ]
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-4f6248a5-2479-4996-b727-822e5e1e6357",
+            "thread_id": "8907fe70-1036-4f37-bc47-75d74a55c8ca"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_b59334bdc3ea4511a8ecbfcd113e0373",
+          "turn": 1
+        },
+        "outcome": "cancelled",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"cancelled\",\"is_error\":true,\"images\":[],\"exit_code\":null,\"outcome\":\"cancelled\",\"observation_incomplete\":true}",
+        "prepared_digest": "sha256:bd6c84535d469b5f19a61f2f2d25c957c587e6fd581c28880fe641071bb444cb",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": null,
+        "text": "(Response interrupted by the user.)",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "Ctrl+C settles an admitted bash call; no delayed write after eight seconds",
+      "name": "interrupt",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-AyZlZe/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the bash tool to run sleep 6; printf LATE > late.txt. Do not run another command. This test       9:56 AM    \n       will interrupt that operation.                                                                                   \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run sleep 6; printf LATE > late.txt                                                                              \n                                                                                                                        \n     Turn cancelled in 8.7s.                                                                                            \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

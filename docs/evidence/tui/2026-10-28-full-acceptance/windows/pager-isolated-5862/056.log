@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::prompt::tab_fetch_landing_opens_dropdown_for_ambiguous_set_always_on' (41036) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\prompt.rs:5421:5:
+the armed Tab opens the dropdown when its candidates land
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::prompt::tab_fetch_landing_opens_dropdown_for_ambiguous_set_always_on ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::prompt::tab_fetch_landing_opens_dropdown_for_ambiguous_set_always_on
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

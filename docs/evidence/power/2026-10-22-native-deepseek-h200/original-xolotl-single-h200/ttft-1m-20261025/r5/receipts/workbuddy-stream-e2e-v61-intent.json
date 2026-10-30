@@ -1,0 +1,10 @@
+{
+  "unix": 1792878319.063357,
+  "phase": "launched",
+  "worker_sha256": "855074869405d9e675e87beb80d75dc360b7d16018bbe357a94a59f5ddf6833c",
+  "same_process_two_turns": true,
+  "no_session_persistence": true,
+  "gui_test": false,
+  "pid": 189064,
+  "created_filetime": 134373519190738785
+}

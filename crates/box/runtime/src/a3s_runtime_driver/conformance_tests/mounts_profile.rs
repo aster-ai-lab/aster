@@ -87,7 +87,7 @@ async fn private_read_only_artifact(
             !alias_root.exists()
                 && !std::fs::read_to_string("/proc/self/mountinfo")
                     .map_err(|error| super::external("re-read private Artifact mountinfo", error))?
-                    .contains(alias.to_string_lossy().as_ref()),
+                    .contains(&*alias.to_string_lossy()),
             "private Artifact removal retained a Box attachment alias",
         )?;
     }

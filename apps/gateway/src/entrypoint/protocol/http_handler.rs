@@ -15,9 +15,59 @@ use crate::usage::{track_usage_response, UsageRequestLifecycle, UsageTerminalOut
 use arc_swap::ArcSwap;
 use bytes::Bytes;
 use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
-use http::Response;
+use http::{HeaderValue, Response};
 use http_body_util::BodyExt;
+use hyper::body::Body as _;
 use std::sync::Arc;
+
+pub(super) async fn with_inference_metrics(
+    mut response: Response<ResponseBody>,
+    request_start: std::time::Instant,
+) -> Response<ResponseBody> {
+    let latency_ms = request_start.elapsed().as_millis() as u64;
+    let is_json = response
+        .headers()
+        .get("content-type")
+        .and_then(|value| value.to_str().ok())
+        .map(|value| value.contains("application/json"))
+        .unwrap_or(false);
+    if is_json {
+        if let Ok(value) = HeaderValue::from_str(&latency_ms.to_string()) {
+            response.headers_mut().insert("x-a3s-latency-ms", value);
+        }
+        let (parts, body) = response.into_parts();
+        match body.collect().await {
+            Ok(collected) => {
+                let bytes = collected.to_bytes();
+                if let Ok(json) = serde_json::from_slice::<serde_json::Value>(&bytes) {
+                    if let Some(tokens) = json
+                        .get("usage")
+                        .and_then(|usage| usage.get("completion_tokens"))
+                        .and_then(|tokens| tokens.as_u64())
+                    {
+                        let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+                        let rate = tokens as f64 / seconds;
+                        if let Ok(value) = HeaderValue::from_str(&format!("{rate:.2}")) {
+                            let mut response =
+                                Response::from_parts(parts, ResponseBody::full(bytes));
+                            response
+                                .headers_mut()
+                                .insert("x-a3s-tokens-per-second", value);
+                            return response;
+                        }
+                    }
+                }
+                Response::from_parts(parts, ResponseBody::full(bytes))
+            }
+            Err(_) => Response::from_parts(parts, ResponseBody::full(Bytes::new())),
+        }
+    } else {
+        if let Ok(value) = HeaderValue::from_str(&latency_ms.to_string()) {
+            response.headers_mut().insert("x-a3s-ttft-ms", value);
+        }
+        response
+    }
+}
 
 pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody> {
     let inference_admission = ctx.inference_admission;
@@ -762,12 +812,13 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
                 let attribution = inference_dispatch
                     .as_ref()
                     .and_then(|dispatch| dispatch.usage_attribution());
-                let response = track_attributed_token_budget_response(
+                let mut response = track_attributed_token_budget_response(
                     response,
                     inference_admission,
                     observed_tokens,
                     attribution,
                 );
+                let response = with_inference_metrics(response, request_start).await;
                 return track_usage_response(response, usage_lifecycle);
             }
             Err(error) => {

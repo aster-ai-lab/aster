@@ -1,0 +1,787 @@
+{
+  "reviewed_package_warnings": 122,
+  "by_lint": {
+    "allow_attributes_without_reason": 83,
+    "unused import: `ProgressBasis`": 1,
+    "unused variable: `tie`": 1,
+    "associated function `observed_mutations` is never used": 1,
+    "method `recorded_uncertainties` is never used": 1,
+    "function `lines` is never used": 1,
+    "too_many_arguments": 3,
+    "unnecessary_cast": 1,
+    "type_complexity": 1,
+    "needless_return": 3,
+    "needless_lifetimes": 1,
+    "undocumented_unsafe_blocks": 18,
+    "manual_strip": 1,
+    "variable does not need to be mutable": 1,
+    "function `register_embedding_provider` is never used": 1,
+    "method `as_str` is never used": 1,
+    "bool_comparison": 2,
+    "needless_borrows_for_generic_args": 1
+  },
+  "all_warnings": [
+    {
+      "warning": "unused import: `AsRawHandle`",
+      "path": "crates/terminal/crates/codegen/a3s-tty-utils/src/lib.rs",
+      "line": 1131,
+      "lint": null
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/completion_runtime.rs",
+      "line": 97,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/execution_entry.rs",
+      "line": 28,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/invocation_context.rs",
+      "line": 225,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/llm_invoker.rs",
+      "line": 417,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_builder.rs",
+      "line": 169,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_builder.rs",
+      "line": 212,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_runtime.rs",
+      "line": 55,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/prompt_runtime.rs",
+      "line": 11,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "line": 211,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/turn_context.rs",
+      "line": 391,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/agent_loop_runtime.rs",
+      "line": 48,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/execution_coordinator.rs",
+      "line": 33,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/execution_coordinator.rs",
+      "line": 123,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/project_instructions.rs",
+      "line": 146,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/run_lifecycle.rs",
+      "line": 1,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/runtime.rs",
+      "line": 1,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/runtime_events.rs",
+      "line": 1,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/session_clock.rs",
+      "line": 3,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/session_persistence.rs",
+      "line": 62,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/session_persistence.rs",
+      "line": 168,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api.rs",
+      "line": 185,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api.rs",
+      "line": 193,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/bounded_io.rs",
+      "line": 6,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/capability/source.rs",
+      "line": 24,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/capability/source.rs",
+      "line": 56,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/code_intelligence/lsp/initialize.rs",
+      "line": 116,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/cognitive_context.rs",
+      "line": 199,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/cognitive_context.rs",
+      "line": 349,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/core_identity.rs",
+      "line": 337,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/execution_identity.rs",
+      "line": 218,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/execution_identity.rs",
+      "line": 226,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "unused import: `ProgressBasis`",
+      "path": "crates/code/core/src/goal_control/facts.rs",
+      "line": 45,
+      "lint": null
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/llm/admission.rs",
+      "line": 338,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/llm/anthropic.rs",
+      "line": 872,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/llm/anthropic.rs",
+      "line": 936,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/llm/types.rs",
+      "line": 342,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/llm/types.rs",
+      "line": 687,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/oauth.rs",
+      "line": 13,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/oauth.rs",
+      "line": 15,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/oauth.rs",
+      "line": 17,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/protocol.rs",
+      "line": 543,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/protocol.rs",
+      "line": 548,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/mcp/transport/http_sse.rs",
+      "line": 42,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/porcelain.rs",
+      "line": 746,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/rl_trajectory.rs",
+      "line": 323,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/run.rs",
+      "line": 38,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/sandbox/guest.rs",
+      "line": 127,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/session_lane_queue.rs",
+      "line": 79,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/session_review/finding.rs",
+      "line": 166,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/session_review/finding.rs",
+      "line": 204,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/standing_context.rs",
+      "line": 69,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/store/file_store.rs",
+      "line": 648,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 966,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/read.rs",
+      "line": 681,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/web_search.rs",
+      "line": 705,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/write.rs",
+      "line": 279,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/mod.rs",
+      "line": 251,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/mod.rs",
+      "line": 278,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/builtin/mod.rs",
+      "line": 305,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/invocation.rs",
+      "line": 180,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/task.rs",
+      "line": 668,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/task.rs",
+      "line": 711,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/types.rs",
+      "line": 29,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/types.rs",
+      "line": 35,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/types.rs",
+      "line": 51,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/types.rs",
+      "line": 313,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/tools/types.rs",
+      "line": 805,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/grep_candidates/trigram_index.rs",
+      "line": 62,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/retrieval/runtime.rs",
+      "line": 21,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/retrieval/vector_contract.rs",
+      "line": 20,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/retrieval/wiki.rs",
+      "line": 134,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/services.rs",
+      "line": 3,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/workspace/source_snapshot.rs",
+      "line": 70,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "unused variable: `tie`",
+      "path": "crates/code/core/src/durable_memory_vec.rs",
+      "line": 967,
+      "lint": null
+    },
+    {
+      "warning": "associated function `observed_mutations` is never used",
+      "path": "crates/code/core/src/goal_control/facts/run/continuation.rs",
+      "line": 26,
+      "lint": null
+    },
+    {
+      "warning": "method `recorded_uncertainties` is never used",
+      "path": "crates/code/core/src/harness_loop.rs",
+      "line": 690,
+      "lint": null
+    },
+    {
+      "warning": "function `lines` is never used",
+      "path": "crates/code/core/src/porcelain.rs",
+      "line": 493,
+      "lint": null
+    },
+    {
+      "warning": "this function has too many arguments (8/7)",
+      "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "line": 316,
+      "lint": "too_many_arguments"
+    },
+    {
+      "warning": "casting to the same type is unnecessary (`u64` -> `u64`)",
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "line": 95,
+      "lint": "unnecessary_cast"
+    },
+    {
+      "warning": "very complex type used. Consider factoring parts into `type` definitions",
+      "path": "crates/code/core/src/porcelain/windows.rs",
+      "line": 81,
+      "lint": "type_complexity"
+    },
+    {
+      "warning": "unneeded `return` statement",
+      "path": "crates/code/core/src/sandbox/guest.rs",
+      "line": 535,
+      "lint": "needless_return"
+    },
+    {
+      "warning": "the following explicit lifetimes could be elided: 'a",
+      "path": "crates/code/core/src/tools/builtin/bash/windows_shell.rs",
+      "line": 54,
+      "lint": "needless_lifetimes"
+    },
+    {
+      "warning": "unneeded `return` statement",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 194,
+      "lint": "needless_return"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 437,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 441,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 442,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 446,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 457,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 460,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 464,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 468,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "line": 469,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 394,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 398,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 428,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 469,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 473,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 476,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 479,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/tools/process.rs",
+      "line": 490,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "unsafe block missing a safety comment",
+      "path": "crates/code/core/src/workspace/local_access.rs",
+      "line": 315,
+      "lint": "undocumented_unsafe_blocks"
+    },
+    {
+      "warning": "stripping a prefix manually",
+      "path": "crates/code/core/src/workspace/retrieval/rerank.rs",
+      "line": 632,
+      "lint": "manual_strip"
+    },
+    {
+      "warning": "unused import: `super::linear::LinearBackend`",
+      "path": "crates/embedding/src/vector/hnsw.rs",
+      "line": 11,
+      "lint": null
+    },
+    {
+      "warning": "unused import: `sha2::Digest`",
+      "path": "crates/embedding/src/hygiene.rs",
+      "line": 10,
+      "lint": null
+    },
+    {
+      "warning": "variable does not need to be mutable",
+      "path": "crates/embedding/src/vector/hnsw.rs",
+      "line": 42,
+      "lint": null
+    },
+    {
+      "warning": "field `dimension` is never read",
+      "path": "crates/embedding/src/vector/hnsw.rs",
+      "line": 22,
+      "lint": null
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/emit.rs",
+      "line": 316,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/emit.rs",
+      "line": 356,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/models.rs",
+      "line": 255,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/tool_render.rs",
+      "line": 90,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/turn.rs",
+      "line": 462,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/unattended_turn.rs",
+      "line": 101,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent/unattended_turn.rs",
+      "line": 312,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/agent.rs",
+      "line": 805,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/cc_switch.rs",
+      "line": 338,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/connector_notes.rs",
+      "line": 4,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/acp/src/local_assets.rs",
+      "line": 22,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "variable does not need to be mutable",
+      "path": "crates/code/acp/src/unattended.rs",
+      "line": 223,
+      "lint": null
+    },
+    {
+      "warning": "function `register_embedding_provider` is never used",
+      "path": "crates/code/acp/src/agent/local_embedding.rs",
+      "line": 35,
+      "lint": null
+    },
+    {
+      "warning": "method `as_str` is never used",
+      "path": "crates/code/acp/src/host_context.rs",
+      "line": 51,
+      "lint": null
+    },
+    {
+      "warning": "this function has too many arguments (8/7)",
+      "path": "crates/code/acp/src/agent/emit.rs",
+      "line": 133,
+      "lint": "too_many_arguments"
+    },
+    {
+      "warning": "inequality checks against true can be replaced by a negation",
+      "path": "crates/code/acp/src/agent/tool_render.rs",
+      "line": 179,
+      "lint": "bool_comparison"
+    },
+    {
+      "warning": "this function has too many arguments (9/7)",
+      "path": "crates/code/acp/src/agent/turn.rs",
+      "line": 411,
+      "lint": "too_many_arguments"
+    },
+    {
+      "warning": "unneeded `return` statement",
+      "path": "crates/code/acp/src/office_file.rs",
+      "line": 26,
+      "lint": "needless_return"
+    },
+    {
+      "warning": "inequality checks against true can be replaced by a negation",
+      "path": "crates/code/acp/src/office_file.rs",
+      "line": 193,
+      "lint": "bool_comparison"
+    },
+    {
+      "warning": "the borrowed expression implements the required traits",
+      "path": "crates/code/acp/src/unattended.rs",
+      "line": 410,
+      "lint": "needless_borrows_for_generic_args"
+    }
+  ]
+}

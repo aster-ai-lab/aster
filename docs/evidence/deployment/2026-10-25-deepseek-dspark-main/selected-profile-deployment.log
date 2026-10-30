@@ -1,0 +1,4 @@
+{"phase": "waiting_for_foreground_idle", "profile": "Merged main DSpark depth4 tier0.25 chunk256 indexer2^26 exact FP4 1M"}
+{"phase": "loading_gpu6_candidate", "profile": "Merged main DSpark depth4 tier0.25 chunk256 indexer2^26 exact FP4 1M"}
+{"phase": "validating_exact_arithmetic", "profile": "Merged main DSpark depth4 tier0.25 chunk256 indexer2^26 exact FP4 1M"}
+{"phase": "ready_for_controlled_measurement", "profile": "Merged main DSpark depth4 tier0.25 chunk256 indexer2^26 exact FP4 1M"}

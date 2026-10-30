@@ -1,0 +1,26 @@
+data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"proof"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"-"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"23"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"abe"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"690"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"7"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"e"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"894"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"231"},"finish_reason":null,"index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk"}
+
+data: {"attestation_receipt":{"decoding":{"parameters":{"frequency_penalty":null,"max_completion_tokens":null,"max_tokens":512,"min_p":null,"mirostat":null,"mirostat_eta":null,"mirostat_tau":null,"modalities":null,"n":null,"num_ctx":null,"parallel_tool_calls":false,"penalize_newline":null,"presence_penalty":null,"repeat_last_n":null,"repeat_penalty":null,"seed":null,"stream":true,"temperature":0.0,"tfs_z":null,"top_k":null,"top_p":null,"typical_p":null},"stream_options_sha256":"32a3a72925fa09a1e0f4d3f525264edb5e3c19b6c99cc09518ea7d5409b90aad","tool_choice_sha256":"30a0924a3360be687d1df9fcbbfdff62c01bc0fd14036ab9076cf7f451568666","tools_sha256":"f13ef582d2f83d313b508c1846590eb153d14715033061539bc18354ab2d2cb8"},"input":{"kind":"chat.messages","sha256":"7dd07f299830381e6c06b0216658373d604ded14b4c7ef6db28326910f52a4c0"},"model":"deepseek-v41-flash-1017-xq-1m","request_type":"chat-completion","runtime_policy":{"execution":{"gpu_sha256":"8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49","inference_sha256":"b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"}},"schema":"a3s.power.inference-receipt.v2"},"attestation_receipt_sha256":"2aa0143dd25e023685474bd96ed63914a742a2a80c5ba0e8a887e3551ca9ebb8","choices":[],"created":1792918218,"id":"chatcmpl-75321806-c615-4e23-bad5-ab47c42d3f8e","model":"deepseek-v41-flash-1017-xq-1m","object":"chat.completion.chunk","prism_upstream":{"source":"upstream-reported","usage":{"completion_tokens":10,"prompt_tokens":280,"total_tokens":290}},"usage":{"completion_tokens":10,"prompt_tokens":280,"total_tokens":290}}
+
+data: [DONE]
+

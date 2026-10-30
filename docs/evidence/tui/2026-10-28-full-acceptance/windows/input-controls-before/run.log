@@ -1,0 +1,46 @@
+
+running 5 tests
+ORACLE case=draft-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text' (53776) panicked at crates\code\acp\tests\aster_tui_live_e2e\driver.rs:335:9:
+timeout waiting for "Reply with INPUT-EDIT-OK. Do not call tools. 数据 中文 e\u{301} WRONG"
+                                                                                                                          C:\W\T\aster-kimi-J9azz6\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ > Reply with INPUT-EDIT-OK. Do not call tools. 数据 中文 éWRONG                                                  │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                      
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text ... FAILED
+ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-save name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13442
+ORACLE case=editor-save name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-save name=quit result=pass detail=exit 0
+ORACLE case=editor-nonzero name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-nonzero name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13442
+ORACLE case=editor-nonzero name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-nonzero name=quit result=pass detail=exit 0
+ORACLE case=editor-invalid-utf8 name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-invalid-utf8 name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13441
+ORACLE case=editor-invalid-utf8 name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-invalid-utf8 name=quit result=pass detail=exit 0
+ORACLE case=editor-missing-program name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=editor-missing-program name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13442
+ORACLE case=editor-missing-program name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-missing-program name=quit result=pass detail=exit 0
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ok
+ORACLE case=history-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=history-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=history-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_history_help_uses_reachable_entry ... ok
+ORACLE case=paste-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=paste-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=paste-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_paste_help_matches_text_only_backend ... ok
+ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc
+ORACLE case=sessions-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=sessions-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_sessions_help_uses_reachable_entry ... ok
+
+failures:
+
+failures:
+    input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 23 filtered out; finished in 65.09s
+

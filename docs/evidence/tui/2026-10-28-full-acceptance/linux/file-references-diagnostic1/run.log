@@ -1,0 +1,103 @@
+
+running 2 tests
+test file_references::kimi_file_completion_selects_real_file_and_line_range ... ORACLE case=file-ref-selection name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+
+thread 'file_references::kimi_file_completion_selects_real_file_and_line_range' (3490) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:363:9:
+timeout waiting for "@ref-target.txt:1-2"
+                                                                                                                        
+  /t/aster-kimi-reVJZ3/workspace                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ @ref-target.txt:2                                                                                              │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work ... ORACLE case=file-ref-missing name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=file-ref-missing name=file-ref-missing result=pass detail=missing/outside reference produces no viewer, no secret and no model work
+
+thread 'file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work' (4980) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:363:9:
+timeout waiting for "TUI_INPUT_BARRIER"
+                                                                                                                        
+  /t/aster-kimi-L17hec/workspace                                                                                        
+                                                                                                                        
+                     ┌────────────────────────────────────────────────────────────────────── [✗] ─┐                     
+                     │  Hooks  Plugins  Marketplace  Skills  Workflows  MCP Servers               │                     
+                     │────────────────────────────────────────────────────────────────────────────│                     
+                     │   / to search                                                     All f    │                     
+                     │────────────────────────────────────────────────────────────────────────────│                     
+                     │  ◆ Error: couldn't load plugins: Method not found: "x.ai/plugins/list"     │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │              Tab tabs  |  r reload  |  u update  |  a install              │                     
+                     │             space enable/disable  |  x uninstall  |  Esc close             │                     
+                     └────────────────────────────────────────────────────────────────────────────┘                     
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ @definitely-not-a-real-file                                                                                    │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Enter:send  │  Alt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                              
+                                                                                                                        
+FAILED
+
+failures:
+
+failures:
+    file_references::kimi_file_completion_selects_real_file_and_line_range
+    file_references::kimi_missing_and_outside_file_references_are_refused_without_model_work
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 40 filtered out; finished in 32.53s
+

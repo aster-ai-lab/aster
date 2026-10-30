@@ -1,0 +1,630 @@
+{
+  "schema": "aster.tui.native-final-runs.v1",
+  "model": "kimi/k3.1-pro",
+  "source_pair_digest": "a891556b0cee8096b81768f051ce80918e460099",
+  "phase": "full-35-batchfix-continuation",
+  "all_entrypoints_passed": true,
+  "checkpoint_count": 153,
+  "complete_153": false,
+  "whole_pager_qualified": false,
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "binaries": [
+        {
+          "name": "aster.exe",
+          "sha256": "32d6d6d76924a6f9f9bf6d9b5b1b3910cd7815d1e99b3e3c58ebf80f31eb882e",
+          "bytes": 323998720
+        },
+        {
+          "name": "a3s-code-acp.exe",
+          "sha256": "003a16e04e5c9e7fd0a4d248db1bff0d5dae3f16df18c1c7e17e81a837c57e24",
+          "bytes": 185458176
+        }
+      ],
+      "entrypoints_passed": 35,
+      "entrypoints_failed": 0,
+      "seconds": 1492.9,
+      "run_log_sha256": "ef7e5e29853b0c82c37b770170c807ace26af9573571c9eefe738a697c485efe",
+      "case_reports": [
+        {
+          "case": "allow-once",
+          "file": "windows/full-35-batchfix-continuation/allow-once.json",
+          "sha256": "e3805a67bb3b23a3920b13059fcafff25ee29a95a0f74fd15a05f2403fd8d59c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "backend-refusal",
+          "file": "windows/full-35-batchfix-continuation/backend-refusal.json",
+          "sha256": "3bdb1b6825c999a331daf68e0133653cf2d045b34ee69ae4d5b8b440c9098ebe",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "coding",
+          "file": "windows/full-35-batchfix-continuation/coding.json",
+          "sha256": "d4106023ac2207f321028af6b79c852d92488cdef416591277ba596910d410ae",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "compact-model-history",
+          "file": "windows/full-35-batchfix-continuation/compact-model-history.json",
+          "sha256": "e0c30fd4afe890b229b6316b03f5410542c4b89fe5bd6b6a6ed90299c798d843",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "config-crud-restart",
+          "file": "windows/full-35-batchfix-continuation/config-crud-restart.json",
+          "sha256": "41f56cd78bcc57182c0b8c7e3c3243f13ff8a297d24051dda76661777d24456b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "copy-export-contract",
+          "file": "windows/full-35-batchfix-continuation/copy-export-contract.json",
+          "sha256": "9de252d246e7e683d1db44cf325c7b0b20d14fe0ba555ec95736b44281698b34",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "direct-shell-capability",
+          "file": "windows/full-35-batchfix-continuation/direct-shell-capability.json",
+          "sha256": "a59012a976fe1821918dc820dec2ccc509c81bc8cd5d9b2382cd3a80131fa141",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "draft-edit-controls",
+          "file": "windows/full-35-batchfix-continuation/draft-edit-controls.json",
+          "sha256": "ecbaba0e130135645024e870e09f2b961e43e0999b8c10ee496eff97ca6ede5b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-invalid-utf8",
+          "file": "windows/full-35-batchfix-continuation/editor-invalid-utf8.json",
+          "sha256": "809af669eb45b1617d5db9bb0d5171fb8dac6236a216ccd6225830161cc000a0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-missing-program",
+          "file": "windows/full-35-batchfix-continuation/editor-missing-program.json",
+          "sha256": "c77c4ef8a6a02be9a599e8bc8b4d7fa8a3981738ccc57aee31ff9277c71cb375",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-nonzero",
+          "file": "windows/full-35-batchfix-continuation/editor-nonzero.json",
+          "sha256": "f5e7e05c626cf525b75049c0339c24c5108e6ddac64cf2bc4b2d6b18c3cd0d82",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-save",
+          "file": "windows/full-35-batchfix-continuation/editor-save.json",
+          "sha256": "06cb47f6d71853af17733d15ff62e8b202a194bc361af82eb40d58946db1f22e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "expand",
+          "file": "windows/full-35-batchfix-continuation/expand.json",
+          "sha256": "05ab6ae8f13d679ebb1c0bdf6be9fa24f086aa1a9127b23b44d03d3107b30f0b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-cancel",
+          "file": "windows/full-35-batchfix-continuation/form-cancel.json",
+          "sha256": "085d0daf4454afe63c26fb342c31cc4de3321f0ac309fdcf3cb04e0d83959713",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-submit",
+          "file": "windows/full-35-batchfix-continuation/form-submit.json",
+          "sha256": "3fca358a6b44dce8bb8a7d95e5b1cc1b8b367a6f7c9d3a807187e65ae26d1816",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "goal",
+          "file": "windows/full-35-batchfix-continuation/goal.json",
+          "sha256": "9087b4dfd9c99198afbe1eb385c01039e6a1f383b9ee07602ee41c5fdcbbab31",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "history-help-capability",
+          "file": "windows/full-35-batchfix-continuation/history-help-capability.json",
+          "sha256": "42818ec3ac83b0d385deb0ee4f6da817b28f22eb31a851bf4745626f2498702e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "interrupt",
+          "file": "windows/full-35-batchfix-continuation/interrupt.json",
+          "sha256": "d43c2af77c00199a837137342454510c4e8292790a95a4e6c094082939ca4362",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "learned-approval",
+          "file": "windows/full-35-batchfix-continuation/learned-approval.json",
+          "sha256": "189516d75b0cac8f2dfdf695bfb02b1aa9b68ca1b4570096b3a3c7d71732e456",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "long-unicode-paste",
+          "file": "windows/full-35-batchfix-continuation/long-unicode-paste.json",
+          "sha256": "d2be4b1e598151b94793636704cb470adb6025ccf8b27e9569e2142cf509b299",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "ls-search-contracts",
+          "file": "windows/full-35-batchfix-continuation/ls-search-contracts.json",
+          "sha256": "cdbf5c8ef9769ee924c81bf1fce80516f4c727c8a62541ab27691b2e468e5b9a",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "missing-file",
+          "file": "windows/full-35-batchfix-continuation/missing-file.json",
+          "sha256": "d8dc69c6eec374e4f7d002eff4cf09760b51a9a63768129c586eb427e7c637f9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "multiline-unicode",
+          "file": "windows/full-35-batchfix-continuation/multiline-unicode.json",
+          "sha256": "4ea92e305b6e9368d96f08f781cdb907d218f7f23380d5ac5c8e1b4e4063b0b2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "paste-help-capability",
+          "file": "windows/full-35-batchfix-continuation/paste-help-capability.json",
+          "sha256": "644a4c45d132de33f4fd65965ecbd49838726ba543abb2f0b8939cdf3232e793",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-cancel",
+          "file": "windows/full-35-batchfix-continuation/permission-cancel.json",
+          "sha256": "d0010cf6232c2f1b92b1051043359ee8946ffac7ce1e264923058f7821a2cc8d",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-reject",
+          "file": "windows/full-35-batchfix-continuation/permission-reject.json",
+          "sha256": "7d83bad1a6cf4da8ae0ce9ed8c3ca956504ed2dc25b0c4e1888dfb8150cd9b7d",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-read-write",
+          "file": "windows/full-35-batchfix-continuation/plan-read-write.json",
+          "sha256": "1f7cf3abb6c3d212b936fbe255eb1693c7c10befd28c7017284672039229f128",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-yolo-ceiling",
+          "file": "windows/full-35-batchfix-continuation/plan-yolo-ceiling.json",
+          "sha256": "6678f3c44248b62f4d8403c9581eec6ef53f10d01f0d47147dee6c873c93921c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "preferences-restart",
+          "file": "windows/full-35-batchfix-continuation/preferences-restart.json",
+          "sha256": "99c899bcb6a1d1d42b742b229a7f8591699807b23e6dcf85292f0cf11619760e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "queue-edit-delete-drain",
+          "file": "windows/full-35-batchfix-continuation/queue-edit-delete-drain.json",
+          "sha256": "978809199e798121ff5ca69c772b7ffec9d4e536828553fc3e3587a4b8e183f8",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "read",
+          "file": "windows/full-35-batchfix-continuation/read.json",
+          "sha256": "ecd8e87b473ae3fe9013d529336f26312358d8b724b217c628533ea0566c54cf",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "reading-navigation",
+          "file": "windows/full-35-batchfix-continuation/reading-navigation.json",
+          "sha256": "de088cd548f30d7cbf3e570ae1970bbf680e099e680f2e7b8f219028027075e3",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "resume-model-history",
+          "file": "windows/full-35-batchfix-continuation/resume-model-history.json",
+          "sha256": "e2a7cdedbe25ee83b1bf13a359698cf5386ac52b0d962b00babcca017390a6eb",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-cancel-ownership",
+          "file": "windows/full-35-batchfix-continuation/send-now-cancel-ownership.json",
+          "sha256": "0a23aefc3194381bcd77f56007e9f6fbc10abdda9b85792c407ad988b8886031",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-help-capability",
+          "file": "windows/full-35-batchfix-continuation/send-now-help-capability.json",
+          "sha256": "25c4bcb53d3c121f98678255a8aaa5efc6d7d505106a50aed6f22ccfca5399fd",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-model-stream",
+          "file": "windows/full-35-batchfix-continuation/send-now-model-stream.json",
+          "sha256": "542ea6ec917bb47c339b3a2bd2de6ec089446a78cc03b8c3b540522bb98944c9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "sessions-help-capability",
+          "file": "windows/full-35-batchfix-continuation/sessions-help-capability.json",
+          "sha256": "5298f289da3f03fa2af724299f7c6a288af7a15922ef25457b7eb3df5ca989dc",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "shell-nonzero-contract",
+          "file": "windows/full-35-batchfix-continuation/shell-nonzero-contract.json",
+          "sha256": "3db945e3e5f3989b97fade0ab4d47f4cec957d2e2bea199427fe144280ed6ce5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "surface",
+          "file": "windows/full-35-batchfix-continuation/surface.json",
+          "sha256": "cc32256dd5599ec8bf9bef69c2d23938895f08c2b0bbbf1071f2f821efd7e285",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "write-verify",
+          "file": "windows/full-35-batchfix-continuation/write-verify.json",
+          "sha256": "bcdc5028a5a767622de09d4a99e8e23763c2a97bb9f3b8225a6bfb6588822891",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "yolo-explicit-deny",
+          "file": "windows/full-35-batchfix-continuation/yolo-explicit-deny.json",
+          "sha256": "ed1ef16380790a3239fa0c1d8ce4b2ab78aa29408c55d4c7769dede62f1d18f2",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu",
+      "binaries": [
+        {
+          "name": "aster",
+          "sha256": "6df9ca2b0e337539fd149041c0ff12f079d7999622c374ba39060ce86a02def2",
+          "bytes": 1115597344
+        },
+        {
+          "name": "a3s-code-acp",
+          "sha256": "e782cba1b4b5f952cda8a757eb68977f0adcb1fab08bc31642554698285ff2b8",
+          "bytes": 415399248
+        }
+      ],
+      "entrypoints_passed": 35,
+      "entrypoints_failed": 0,
+      "seconds": 1760.44,
+      "run_log_sha256": "958b25eef0f02b61487001f46326a2aac771c1e3282fd7e6b093734893298d21",
+      "case_reports": [
+        {
+          "case": "allow-once",
+          "file": "linux/full-35-batchfix-continuation/allow-once.json",
+          "sha256": "40c3bd7ad55e03af0071145e9a55e440e1f7cb7cc5e4e93d30453eb5eebcecd5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "backend-refusal",
+          "file": "linux/full-35-batchfix-continuation/backend-refusal.json",
+          "sha256": "cbf0b223f4f3f02b363903901a0410a4438fecd7137c028d294b53874a99e5d0",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "coding",
+          "file": "linux/full-35-batchfix-continuation/coding.json",
+          "sha256": "9761a93d6a5559998efc8a776bb5f310233e7d0097a93e9b8a72a8f25693da8a",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "compact-model-history",
+          "file": "linux/full-35-batchfix-continuation/compact-model-history.json",
+          "sha256": "307e03aeaf4442e065dfc8832ed4450c826cdb916ab3434693c2c9b933d022e7",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "config-crud-restart",
+          "file": "linux/full-35-batchfix-continuation/config-crud-restart.json",
+          "sha256": "d0f661fefefaed479b83cf623b14f4b832f6a852d8203aaf4770721a41fc8de3",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "copy-export-contract",
+          "file": "linux/full-35-batchfix-continuation/copy-export-contract.json",
+          "sha256": "a7373419ed2db62f1f8af8e8e1f6a2f4319b68a1a9872827b5837411045eacb6",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "direct-shell-capability",
+          "file": "linux/full-35-batchfix-continuation/direct-shell-capability.json",
+          "sha256": "4521a970bb0a56a131e78dbed2043489376d579ae407ed531e46ff8964090c3c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "draft-edit-controls",
+          "file": "linux/full-35-batchfix-continuation/draft-edit-controls.json",
+          "sha256": "8cc8191bf98735260cdf625b5a550a928836d62215dbab492da6af2b8c14ca29",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-invalid-utf8",
+          "file": "linux/full-35-batchfix-continuation/editor-invalid-utf8.json",
+          "sha256": "b456adc090b662fec407524b43e753e9ab21111b539ad205d25fa7fc9927766a",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-missing-program",
+          "file": "linux/full-35-batchfix-continuation/editor-missing-program.json",
+          "sha256": "62df5b273a607f8bb18a94032960dd1c223786d86327235ad10971c31cdd8964",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-nonzero",
+          "file": "linux/full-35-batchfix-continuation/editor-nonzero.json",
+          "sha256": "50b506fd3efe3d2bc7005f95df085cd8ab5e5e0f7cc0315e6b75a62692bd6d04",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "editor-save",
+          "file": "linux/full-35-batchfix-continuation/editor-save.json",
+          "sha256": "dec8e257e4872d8844ff6beae1acef4f175dda7e70300b053ee911cec7e352b5",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "expand",
+          "file": "linux/full-35-batchfix-continuation/expand.json",
+          "sha256": "e5ba6dc3e633253e17fa408d05fea1d92995999229a5cc923943dabf776ddec3",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-cancel",
+          "file": "linux/full-35-batchfix-continuation/form-cancel.json",
+          "sha256": "b5adadb3e50b61c6f84ad2b4459f71dd0d45ad4c0d3216add84502123069aa14",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "form-submit",
+          "file": "linux/full-35-batchfix-continuation/form-submit.json",
+          "sha256": "45c89b5f61f23edc411ddb8fddb99d887c81a185f0ba2c946db5f1f356c80caa",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "goal",
+          "file": "linux/full-35-batchfix-continuation/goal.json",
+          "sha256": "8cc392a56c3c791464cf9a37b5e55879853f66b2377279db25af00ce5b6b8d01",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "history-help-capability",
+          "file": "linux/full-35-batchfix-continuation/history-help-capability.json",
+          "sha256": "84927f1fcc7bba996ce23c90c68944a12d7cee25e1a9101bccf786af41f90ca3",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "interrupt",
+          "file": "linux/full-35-batchfix-continuation/interrupt.json",
+          "sha256": "ef4e16024956b7318d930fce2e436c5f4bda292f71ee71f43b915dd1abe45bd3",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "learned-approval",
+          "file": "linux/full-35-batchfix-continuation/learned-approval.json",
+          "sha256": "fc814ead5da7d3043ca06cc81ec462bef7c7b5354cea4a1fab7eaa6bcb5e19cf",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "long-unicode-paste",
+          "file": "linux/full-35-batchfix-continuation/long-unicode-paste.json",
+          "sha256": "a8ad478641ced08c99824c250de531fc059a8b293842961b5252034037d7644c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "ls-search-contracts",
+          "file": "linux/full-35-batchfix-continuation/ls-search-contracts.json",
+          "sha256": "85acdac965258e4e1358a2f93454f45abd198135b7005aab354b652654ed852e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "missing-file",
+          "file": "linux/full-35-batchfix-continuation/missing-file.json",
+          "sha256": "4c17956392ac9cc86a07481b359c530fa4958c3918a93998a7219d30d4a2264e",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "multiline-unicode",
+          "file": "linux/full-35-batchfix-continuation/multiline-unicode.json",
+          "sha256": "50b51305c32b3dbb5fda4d17c75e5bac8792529e59ffddcdd9bfb8938ae84b35",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "paste-help-capability",
+          "file": "linux/full-35-batchfix-continuation/paste-help-capability.json",
+          "sha256": "a7b5cbd269c740c7a060dd3b111260543666fe5695fe0b29c65db5a0d3c9ba5b",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-cancel",
+          "file": "linux/full-35-batchfix-continuation/permission-cancel.json",
+          "sha256": "fa7d711c9e2255a55766717a7bc1939399bad4e91fc97eae16172712d2d2d4e9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "permission-reject",
+          "file": "linux/full-35-batchfix-continuation/permission-reject.json",
+          "sha256": "63fe241f6800c67f5782a2afa88e5db188572039d954d25e666b7110a7d8b3e9",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-read-write",
+          "file": "linux/full-35-batchfix-continuation/plan-read-write.json",
+          "sha256": "b1705d4ed1f2b13d4efdd777bb1a1850be6d7ad4e7e633b49db8243994c4c41a",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "plan-yolo-ceiling",
+          "file": "linux/full-35-batchfix-continuation/plan-yolo-ceiling.json",
+          "sha256": "ee40064103a04de1fb1f311548ee3c8c8a7cebaf102b48f9cee129089b0c9d82",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "preferences-restart",
+          "file": "linux/full-35-batchfix-continuation/preferences-restart.json",
+          "sha256": "44caf60e95ca8223d430e271b98b90ef0facc0de119886a15f0dba5a2ab3a8c4",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "queue-edit-delete-drain",
+          "file": "linux/full-35-batchfix-continuation/queue-edit-delete-drain.json",
+          "sha256": "3925fa5bbf3c2c5f09648ba97e388ba73d1d6f01bb39271bef93c3fea0541a8c",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "read",
+          "file": "linux/full-35-batchfix-continuation/read.json",
+          "sha256": "871644464f27c71ffefb88631236e6b4f94d9829d8a8339a828bb4dc971e26f2",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "reading-navigation",
+          "file": "linux/full-35-batchfix-continuation/reading-navigation.json",
+          "sha256": "f4316aaad5004c0e934b2d65da96c23aba05c9488332723c755627d085365e34",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "resume-model-history",
+          "file": "linux/full-35-batchfix-continuation/resume-model-history.json",
+          "sha256": "fc92b0a9caa32ab74540895246c7ea405cbb6e011ae515b37e985f229bc84c63",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-cancel-ownership",
+          "file": "linux/full-35-batchfix-continuation/send-now-cancel-ownership.json",
+          "sha256": "c142a43b85058c15c62371b4f632aaa53a69434a6d68d3da519a89aec0f14dfa",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-help-capability",
+          "file": "linux/full-35-batchfix-continuation/send-now-help-capability.json",
+          "sha256": "696112abcd3400277c463473b719a824758476e58f36da06adfdbbea72babdef",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "send-now-model-stream",
+          "file": "linux/full-35-batchfix-continuation/send-now-model-stream.json",
+          "sha256": "7e8bb76fceaf8b4044131b3abb2583aa1b11f580b0d86bee4f3a60660cbea321",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "sessions-help-capability",
+          "file": "linux/full-35-batchfix-continuation/sessions-help-capability.json",
+          "sha256": "fb9bad5ae7b208037e9e471496ae63e997f1c22a36d97a8ec3c75bd609682e47",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "shell-nonzero-contract",
+          "file": "linux/full-35-batchfix-continuation/shell-nonzero-contract.json",
+          "sha256": "05cf2ae8bbee7dcbe26d7ce43ce0d78084ec289d17ef1cbcf2682def57255518",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "surface",
+          "file": "linux/full-35-batchfix-continuation/surface.json",
+          "sha256": "c524152dd7366b189f2c7a7ea20eb67e4d8cb15acc4c4145ea5bf3adbd445031",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "write-verify",
+          "file": "linux/full-35-batchfix-continuation/write-verify.json",
+          "sha256": "62438bc6417db9c4c6b59c883a2b643c7f896cb5b70c15b48ef7080dea9dd815",
+          "assertions_finished": true,
+          "panicked": false
+        },
+        {
+          "case": "yolo-explicit-deny",
+          "file": "linux/full-35-batchfix-continuation/yolo-explicit-deny.json",
+          "sha256": "a289a0afb6caac4bf78d9308f9ea479567e986958c3e120dcf71559d1022c3e3",
+          "assertions_finished": true,
+          "panicked": false
+        }
+      ]
+    }
+  ]
+}

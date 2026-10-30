@@ -1,0 +1,11 @@
+{
+  "unix": 1792891344.3950672,
+  "parent": "run_pool_seed_comparison_v112.frozen.py",
+  "parent_sha256": "837a7d0bdcd201b5a3fd76b9f69aee6053a005da4000554e2f57a657f321388c",
+  "resumed": "run_pool_seed_comparison_v112r1.frozen.py",
+  "resumed_sha256": "2582cc695efa6546db23f3cd48c98323e5b8b619bbe91156ff2960062b8eeda0",
+  "model_restarted": false,
+  "existing_client_relaunched": false,
+  "acceptance_gates_unchanged": true,
+  "previous_observer_error": "PermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002: 'D:\\\\code\\\\aster\\\\target\\\\h200-native\\\\xolotl-pool-seed-v112-controller.tmp' -> 'D:\\\\code\\\\aster\\\\target\\\\h200-native\\\\xolotl-pool-seed-v112-controller.json'"
+}

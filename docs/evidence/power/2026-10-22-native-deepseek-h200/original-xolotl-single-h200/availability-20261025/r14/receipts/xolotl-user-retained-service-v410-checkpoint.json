@@ -1,0 +1,48 @@
+{
+  "unix": 1792938692.1165433,
+  "phase": "deployed_optimization_cancelled_by_user",
+  "authoritative": true,
+  "reason": "User explicitly retained current deployment and stopped optimization",
+  "formal": {
+    "intent": "xolotl-stable-service-v368-intent.json",
+    "verification": "xolotl-user-retain-deployment-v405-verification.json",
+    "allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+    "base_url": "http://10.102.93.68/v1",
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "context_tokens": 1048576,
+    "same_existing_key": true,
+    "Windows_API_verified": true,
+    "Windows_forwarding": false,
+    "lease_ends_unix": 1792952301.9907353
+  },
+  "optimization": {
+    "allocation_uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+    "resource_phase": "Stopped",
+    "replica_phase": "Stopped",
+    "controllers_stopped": true,
+    "queued_profiler_cancelled": true,
+    "no_more_tests_or_optimizations_authorized": true,
+    "result": "guard short API 74.348 vs control 75.294, no gain; actual1M guard interrupted by user; not promoted"
+  },
+  "active_H200_roles": 1,
+  "goal_complete": false,
+  "performance_goal_cancelled_by_user": true,
+  "speed300_met": false,
+  "speed1000_met": false,
+  "short_1024_tok_s": 74.9083893,
+  "short_speed_scope": "Single H200, one request, short input, warmed benchmark; excludes general long-context TTFT guarantees",
+  "reported_WorkBuddy_wait": {
+    "diagnosis": "Large prompt prefill progressing, not GPU decode",
+    "observed_prompt_tokens": 672888,
+    "observed_read_tokens": 258560,
+    "observed_prefill_tok_s": 520.0,
+    "observed_elapsed_s": 500.5,
+    "observed_generated": 0,
+    "client_request_cancelled": false,
+    "raw_prompt_or_user_session_copied": false,
+    "proof_prefix": "xolotl-wait-metrics-v409-"
+  },
+  "latest_published_main": "57cc7f7be6d10e1b7b884718f0c118eddbc81430",
+  "next_action": "Maintain existing deployment only. Do not resume optimization. Long WorkBuddy request remains active; advise a fresh conversation for short latency tests.",
+  "supersedes": "current_state_v403 and all earlier optimization-running metadata"
+}

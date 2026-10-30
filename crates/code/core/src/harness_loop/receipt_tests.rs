@@ -273,13 +273,24 @@ fn typed_projection_preserves_real_space_unicode_control_and_backslash_paths() {
         " padded ",
         "padded",
         "数据.txt",
+        #[cfg(unix)]
         "line\nbreak",
+        #[cfg(unix)]
         "tab\tname",
         #[cfg(unix)]
         r"literal\name",
         #[cfg(unix)]
         r".a3s\legal-file",
     ];
+    #[cfg(windows)]
+    for unsupported in ["line\nbreak", "tab\tname"] {
+        assert_eq!(
+            std::fs::write(root.path().join(unsupported), b"must not exist")
+                .unwrap_err()
+                .raw_os_error(),
+            Some(123),
+        );
+    }
     let mut ledger = MutationLedger::default();
     for (index, path) in names.iter().enumerate() {
         let bytes = format!("distinct actual bytes {index}");

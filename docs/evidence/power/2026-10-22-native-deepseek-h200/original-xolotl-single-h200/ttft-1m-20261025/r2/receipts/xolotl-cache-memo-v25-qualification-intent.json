@@ -1,0 +1,31 @@
+{
+  "unix": 1792860070.224864,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc6-43da44c9b0a4/serve-cache-memo-v23/qualification-cache-memo-v25",
+  "allocation_uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+  "public_fixture_only": true,
+  "files": [
+    {
+      "file": "request-worker.py",
+      "bytes": 7482,
+      "sha256": "b76e46ab371f23bdc2805f82263f2ef4a78dbd629e98918b81e928ad6d35cccf"
+    },
+    {
+      "file": "request-plan.json",
+      "bytes": 471,
+      "sha256": "297a7a28b2781ced9e577d57a0da698c644c308fcd35c15ebf16f4ba7fbc0a8b"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    }
+  ],
+  "process": {
+    "pid": 814483,
+    "start_ticks": 278686404,
+    "uid": 10250,
+    "unix": 1792860079.1172109,
+    "budget_seconds": 1100
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "C:\\Users\\admin\\AppData\\Roaming\\uv\\python\\cpython-3.12.14-windows-x86_64-none\\python.exe",
+    "-B",
+    "-X",
+    "utf8",
+    "-m",
+    "unittest",
+    "-v",
+    "test_ncu_metrics_v171",
+    "test_ncu_query_v178",
+    "test_native_resume_v197",
+    "test_ncu_wide_metrics_v206"
+  ],
+  "returncode": 0,
+  "tests": 25,
+  "stderr": "test_bounded_text_and_symbols (test_ncu_metrics_v171.NumericMetricsTests.test_bounded_text_and_symbols) ... ok\ntest_duplicate_or_malformed_row_refused (test_ncu_metrics_v171.NumericMetricsTests.test_duplicate_or_malformed_row_refused) ... ok\ntest_exact_csv_and_declared_symbol (test_ncu_metrics_v171.NumericMetricsTests.test_exact_csv_and_declared_symbol) ... ok\ntest_missing_header_or_counter_refused (test_ncu_metrics_v171.NumericMetricsTests.test_missing_header_or_counter_refused) ... ok\ntest_nonfinite_negative_and_invalid_numbers_refused (test_ncu_metrics_v171.NumericMetricsTests.test_nonfinite_negative_and_invalid_numbers_refused) ... ok\ntest_numeric_scaling_prelude_and_literal_names (test_ncu_metrics_v171.NumericMetricsTests.test_numeric_scaling_prelude_and_literal_names) ... ok\ntest_bounds (test_ncu_query_v178.Query.test_bounds) ... ok\ntest_duplicate_and_malformed (test_ncu_query_v178.Query.test_duplicate_and_malformed) ... ok\ntest_exact_actual_columns (test_ncu_query_v178.Query.test_exact_actual_columns) ... ok\ntest_missing_and_unavailable (test_ncu_query_v178.Query.test_missing_and_unavailable) ... ok\ntest_other_model_and_column_contract (test_ncu_query_v178.Query.test_other_model_and_column_contract) ... ok\ntest_unrequested_metrics_do_not_substitute (test_ncu_query_v178.Query.test_unrequested_metrics_do_not_substitute) ... ok\ntest_DONE_reuse_independent (test_native_resume_v197.Resume.test_DONE_reuse_independent) ... ok\ntest_cold_native_omits_zero_marker (test_native_resume_v197.Resume.test_cold_native_omits_zero_marker) ... ok\ntest_duplicate_or_noncanonical_marker (test_native_resume_v197.Resume.test_duplicate_or_noncanonical_marker) ... ok\ntest_each_exact_restored_generation (test_native_resume_v197.Resume.test_each_exact_restored_generation) ... ok\ntest_missing_positive_and_spurious_zero (test_native_resume_v197.Resume.test_missing_positive_and_spurious_zero) ... ok\ntest_wrong_completion_or_ordinal (test_native_resume_v197.Resume.test_wrong_completion_or_ordinal) ... ok\ntest_bounded_and_ragged_input (test_ncu_wide_metrics_v206.WideCSV.test_bounded_and_ragged_input) ... ok\ntest_duplicate_column_is_refused (test_ncu_wide_metrics_v206.WideCSV.test_duplicate_column_is_refused) ... ok\ntest_duplicate_kernel_id_is_refused (test_ncu_wide_metrics_v206.WideCSV.test_duplicate_kernel_id_is_refused) ... ok\ntest_missing_metric_is_refused (test_ncu_wide_metrics_v206.WideCSV.test_missing_metric_is_refused) ... ok\ntest_nonfinite_and_negative_are_refused (test_ncu_wide_metrics_v206.WideCSV.test_nonfinite_and_negative_are_refused) ... ok\ntest_observed_schema_and_units (test_ncu_wide_metrics_v206.WideCSV.test_observed_schema_and_units) ... ok\ntest_units_required_before_data (test_ncu_wide_metrics_v206.WideCSV.test_units_required_before_data) ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.007s\n\nOK\n",
+  "model_or_GPU_executed": false
+}

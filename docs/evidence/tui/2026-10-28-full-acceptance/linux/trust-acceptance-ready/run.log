@@ -1,0 +1,57 @@
+
+running 1 test
+test workspace_trust::kimi_workspace_trust_accept_restart_and_second_workspace_are_scoped ... ORACLE case=trust-accept name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-unknown-linux-gnu
+ORACLE case=trust-accept name=trust-prompt result=pass detail=release-stamped trust gate blocks the declared process and all session/model work
+
+thread 'workspace_trust::kimi_workspace_trust_accept_restart_and_second_workspace_are_scoped' (7063) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:347:9:
+timeout waiting for "TUI_INPUT_BARRIER"
+                                                                                                                        
+  /t/aster-kimi-Z8wjYa/workspace                                                                              0 / 128K  
+                                                                                                                        
+     No active session                                                                                                  
+                                                                                                                        
+                     ┌────────────────────────────────────────────────────────────────────── [✗] ─┐                     
+                     │  Context usage  Usage limit  Session info                                  │                     
+                     │────────────────────────────────────────────────────────────────────────────│                     
+                     │  Session info   click or drag to copy                                      │                     
+                     │                                                                            │                     
+                     │  Title:                                                                    │                     
+                     │  kimi/k3.1-pro                                                             │                     
+                     │                                                                            │                     
+                     │  Shell version:                                                            │                     
+                     │  9.1.4                                                                     │                     
+                     │                                                                            │                     
+                     │  Session ID:                                                               │                     
+                     │  165c7ff8-8ada-4b8a-a7d9-77690933cb98                                      │                    █
+                     │                                                                            │                    █
+                     │  Working directory:                                                        │                    █
+                     │  /tmp/aster-kimi-Z8wjYa/workspace                                          │                    █
+                     │                                                                            │                    █
+                     │  Model: kimi/k3.1-pro                                                      │                    █
+                     │  Turn: 0                                                                   │                    █
+                     │  Context: 0 / 128000 tokens (0%)                                           │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │                                                                            │                    █
+                     │       Tab switch  |  ↑/↓ scroll  |  c copy session ID  |  y copy all       │                    █
+                     │                                 Esc close                                  │                     
+  ╭──────────────────└────────────────────────────────────────────────────────────────────────────┘──────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    workspace_trust::kimi_workspace_trust_accept_restart_and_second_workspace_are_scoped
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 36 filtered out; finished in 22.44s
+

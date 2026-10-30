@@ -25,7 +25,7 @@ pub mod skill;
 pub mod task;
 mod types;
 
-pub use process::{execute_owned_process, OwnedProcessOutput, OwnedProcessTermination};
+pub use process::{OwnedProcessOutput, OwnedProcessTermination, execute_owned_process};
 
 #[cfg(feature = "dynamic-workflow")]
 pub use crate::dynamic_workflow::{
@@ -35,9 +35,9 @@ pub use crate::dynamic_workflow::{
 pub use artifacts::{ArtifactStore, ArtifactStoreError, ArtifactStoreLimits, ToolArtifact};
 #[cfg(test)]
 pub(crate) use builtin::{
-    bridge_search_config, get_with_redirects_observed, read_image_file, set_resolution_script,
-    BatchTool, RedirectQueryPolicy, ResolutionScript, SafeHttpError, WebFetchTool, WriteTool,
-    MAX_BATCH_INVOCATIONS,
+    BatchTool, MAX_BATCH_INVOCATIONS, RedirectQueryPolicy, ResolutionScript, SafeHttpError,
+    WebFetchTool, WriteTool, bridge_search_config, get_with_redirects_observed, read_image_file,
+    set_resolution_script,
 };
 pub use builtin::{
     register_generate_object, register_program, register_program_with_catalog, register_task,
@@ -48,39 +48,39 @@ pub(crate) use builtin::{
     register_task_with_mcp_sources_and_scheduler,
 };
 pub use immutable_content::{
-    ImmutableContentAdapter, ImmutableContentAdapterBindingV1, ImmutableContentAdapterSession,
-    ImmutableContentDescriptorV1, ImmutableContentError, ImmutableContentKindV1,
-    ImmutableContentReferenceV1, ImmutableContentResult, ImmutableContentWriteRequestV1,
-    SdkImmutableContentWriteRequestV1, IMMUTABLE_CONTENT_ADAPTER_BINDING_SCHEMA_V1,
-    IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1, IMMUTABLE_CONTENT_REFERENCE_SCHEMA_V1,
+    IMMUTABLE_CONTENT_ADAPTER_BINDING_SCHEMA_V1, IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1,
+    IMMUTABLE_CONTENT_REFERENCE_SCHEMA_V1, ImmutableContentAdapter,
+    ImmutableContentAdapterBindingV1, ImmutableContentAdapterSession, ImmutableContentDescriptorV1,
+    ImmutableContentError, ImmutableContentKindV1, ImmutableContentReferenceV1,
+    ImmutableContentResult, ImmutableContentWriteRequestV1, SdkImmutableContentWriteRequestV1,
     TOOL_RESULT_CONTENT_MEDIA_TYPE,
 };
 pub(crate) use invocation::{
-    registry_bound_tool_invoker, registry_tool_invoker, HostDirectPolicy, InvocationOrigin,
-    ToolInvocation, ToolInvocationLifecycle, ToolInvocationState, ToolInvocationTerminal,
-    ToolInvoker,
+    HostDirectPolicy, InvocationOrigin, ToolInvocation, ToolInvocationLifecycle,
+    ToolInvocationState, ToolInvocationTerminal, ToolInvoker, registry_bound_tool_invoker,
+    registry_tool_invoker,
+};
+pub use presentation::{
+    TOOL_PRESENTATION_PROFILE_V1_SCHEMA, ToolPresentationError, ToolPresentationModeV1,
+    ToolPresentationProfileV1,
 };
 pub(crate) use presentation::{
     canonical_source as canonical_presentation_source, estimated_definition_tokens,
     is_definition_subset,
 };
-pub use presentation::{
-    ToolPresentationError, ToolPresentationModeV1, ToolPresentationProfileV1,
-    TOOL_PRESENTATION_PROFILE_V1_SCHEMA,
-};
 #[cfg(test)]
 pub(crate) use program_tool::execute_script_program;
-pub use program_tool::{ProgramTool, MAX_PROGRAM_SCRIPT_SOURCE_BYTES};
+pub use program_tool::{MAX_PROGRAM_SCRIPT_SOURCE_BYTES, ProgramTool};
 pub use registry::ToolRegistry;
 pub(crate) use registry::ToolRegistrySnapshotError;
 pub use result_transform::{
-    ToolResultTransformBindingV1, ToolResultTransformPolicyV1, TOOL_RESULT_TRANSFORM_ALGORITHM_V1,
-    TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY, TOOL_RESULT_TRANSFORM_BINDING_SCHEMA_V1,
-    TOOL_RESULT_TRANSFORM_POLICY_DIGEST_DOMAIN_V1, TOOL_RESULT_TRANSFORM_SCHEMA_V1,
+    TOOL_RESULT_TRANSFORM_ALGORITHM_V1, TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY,
+    TOOL_RESULT_TRANSFORM_BINDING_SCHEMA_V1, TOOL_RESULT_TRANSFORM_POLICY_DIGEST_DOMAIN_V1,
+    TOOL_RESULT_TRANSFORM_SCHEMA_V1, ToolResultTransformBindingV1, ToolResultTransformPolicyV1,
 };
 pub(crate) use selector::is_standalone_conversation;
 pub use selector::{select_tools_for_messages, select_tools_for_prompt};
-pub use task::{task_params_schema, TaskExecutor, TaskParams, TaskResult, TaskTool};
+pub use task::{TaskExecutor, TaskParams, TaskResult, TaskTool, task_params_schema};
 pub(crate) use types::{AgentEventBarrier, AgentEventBarrierReceiver};
 pub use types::{
     InvocationRuntime, Tool, ToolArtifactVerification, ToolCapabilities, ToolContext,
@@ -498,16 +498,28 @@ impl ToolResult {
 
 impl From<ToolOutput> for ToolResult {
     fn from(output: ToolOutput) -> Self {
+        let exit_code = tool_output_exit_code(&output);
         Self {
             name: String::new(),
             output: output.content,
-            exit_code: if output.success { 0 } else { 1 },
+            exit_code,
             metadata: output.metadata,
             images: output.images,
             error_kind: output.error_kind,
             trust: output.trust,
         }
     }
+}
+
+fn tool_output_exit_code(output: &ToolOutput) -> i32 {
+    output
+        .metadata
+        .as_ref()
+        .and_then(|metadata| metadata.get("exit_code"))
+        .and_then(serde_json::Value::as_i64)
+        .and_then(|code| i32::try_from(code).ok())
+        .filter(|code| (*code == 0) == output.success)
+        .unwrap_or(if output.success { 0 } else { 1 })
 }
 
 /// Tool executor with workspace sandboxing
@@ -678,7 +690,8 @@ impl ToolExecutor {
                 artifact_limits,
                 Arc::clone(&workspace_services),
                 immutable_content_adapter,
-            ),
+            )
+            .with_background_tracker(background_tracker),
         );
         if let Some(env) = command_env.clone() {
             registry.set_command_env(env);
@@ -687,7 +700,7 @@ impl ToolExecutor {
         // Register native Rust built-in tools — only those whose required
         // workspace capability is available, so the model never sees a tool
         // the backend cannot service.
-        builtin::register_builtins_with_tracker(&registry, &workspace_services, background_tracker);
+        builtin::register_builtins(&registry, &workspace_services);
         // Batch tool requires Arc<ToolRegistry>, registered separately
         builtin::register_batch(&registry);
         builtin::register_program(&registry);
@@ -907,3 +920,6 @@ impl ToolExecutor {
 #[cfg(test)]
 #[path = "tests.rs"]
 mod tests;
+
+#[cfg(test)]
+mod exit_code_tests;

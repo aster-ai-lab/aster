@@ -1,0 +1,38 @@
+{
+  "unix": 1792893473.8095279,
+  "phase": "requires_inspection",
+  "formal_service_unchanged": true,
+  "actual1m_input_executed": false,
+  "performance_300_qualified": false,
+  "goal_complete": false,
+  "trace_phase": "complete",
+  "trace_requests": 4,
+  "trace_worker_alive": false,
+  "observed_unix": 1792896811.5558636,
+  "statistics_phase": "passed",
+  "statistics_alive": false,
+  "matched_trace_summary_passed": true,
+  "service_phase": "serving",
+  "client_phase": "passed",
+  "client_tests": 12,
+  "exact_client_alive": false,
+  "suite_phase": "failed",
+  "suite_stage": "fullwindow",
+  "suite_client_alive": false,
+  "suite_children": {
+    "remainder/request-result.json": {
+      "phase": "passed",
+      "tests": 0,
+      "current_test": null,
+      "error": null
+    },
+    "fullwindow/request-result.json": {
+      "phase": "failed",
+      "tests": 20,
+      "current_test": null,
+      "error": "ValueError: full-window long-output identity differs"
+    }
+  },
+  "error": "RuntimeError: unchanged actual1M code suite gate failed: RuntimeError: fullwindow qualification failed",
+  "finished_unix": 1792896811.5558636
+}

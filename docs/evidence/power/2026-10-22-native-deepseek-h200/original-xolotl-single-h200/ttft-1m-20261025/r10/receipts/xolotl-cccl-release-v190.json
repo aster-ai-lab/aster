@@ -1,0 +1,36 @@
+{
+  "unix": 1792906573.4040954,
+  "gpu_executed": false,
+  "queries": [
+    {
+      "url": "https://api.github.com/repos/NVIDIA/cccl/git/ref/tags/v3.5.0",
+      "object": {
+        "sha": "fdd478c37a86771755cdbb34e67085f9871a1de7",
+        "type": "tag",
+        "url": "https://api.github.com/repos/NVIDIA/cccl/git/tags/fdd478c37a86771755cdbb34e67085f9871a1de7"
+      },
+      "tag_name": null,
+      "target_commitish": null,
+      "published_at": null,
+      "immutable": null
+    },
+    {
+      "url": "https://api.github.com/repos/NVIDIA/cccl/releases/tags/v3.5.0",
+      "object": null,
+      "tag_name": "v3.5.0",
+      "target_commitish": "main",
+      "published_at": "2026-10-07T16:11:10Z",
+      "immutable": true
+    }
+  ],
+  "annotated_tag": {
+    "url": "https://api.github.com/repos/NVIDIA/cccl/git/tags/fdd478c37a86771755cdbb34e67085f9871a1de7",
+    "sha": "fdd478c37a86771755cdbb34e67085f9871a1de7",
+    "object": {
+      "sha": "223ae958cdb3c28c5830bc6a1860e2a092efda93",
+      "type": "tag",
+      "url": "https://api.github.com/repos/NVIDIA/cccl/git/tags/223ae958cdb3c28c5830bc6a1860e2a092efda93"
+    },
+    "tag": "v3.5.0"
+  }
+}

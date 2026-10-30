@@ -1,0 +1,38 @@
+{
+  "unix": 1792897502.0019433,
+  "phase": "failed",
+  "process": {
+    "pid": 1220272,
+    "start_ticks": 282428591,
+    "uid": 10250,
+    "namespace": "jump host"
+  },
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "live_service_changed": false,
+  "runs": [
+    {
+      "index": 0,
+      "seconds": 9.335930533707142,
+      "prompt_tokens": 1047544,
+      "prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "memo": {
+        "entries": 0,
+        "accounted_bytes": 0,
+        "hits": 0,
+        "misses": 0,
+        "admissions": 0
+      }
+    }
+  ],
+  "literal_marking_changed": true,
+  "literal_spans_type": "list",
+  "literal_spans_count": 2,
+  "mark_render_seconds": 7.727779737208039,
+  "tokenizer_source_sha256": "b135c0fdbd7ad8ec2319013a669eed070a04be5639d88f530eafbcef88a4e43c",
+  "server_source_sha256": "04abb76be1608b0c718891fb1486f8a05faada618948f963b222b8f60d62417b",
+  "expected_prompt_tokens": 1047544,
+  "expected_prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+  "error": "RuntimeError: actual API encoder IDs differ from direct fixture preparation",
+  "finished_unix": 1792897519.9370875
+}

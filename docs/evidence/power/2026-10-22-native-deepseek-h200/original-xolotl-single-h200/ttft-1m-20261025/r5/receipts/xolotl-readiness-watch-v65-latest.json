@@ -1,0 +1,16 @@
+{
+  "unix": 1792880760.0365176,
+  "result": {
+    "schema": "aster-xolotl-readiness-watch-v65",
+    "unix": 1792880753.3889618,
+    "phase": "ready",
+    "allocation_uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+    "observation_only": true,
+    "failures": [],
+    "job_phase": "Running",
+    "last_ready_unix": 1792880753.6632078,
+    "health_status": 200,
+    "scope": "jump host direct to the owned VIP; no inference request"
+  },
+  "exact_watch_process_alive": true
+}

@@ -1,0 +1,8 @@
+{
+  "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "runtime_pair_rebuilt": false,
+  "harness_source_digest": "162e08c9a623f3fd5406cc0541f36b01222303d1",
+  "harness_snapshot": "source/network-20261030-source.json",
+  "original_pair_manifest_sha256": "cd4d2faef410c25c703dd8f7fb61a290c54c5b6108e6d478cd9468dd52450bec",
+  "test_binary_sha256": "3d26654d888d13394d4a4d0e4093722ab5d074ada05b57eea2f1a127e391a43b"
+}

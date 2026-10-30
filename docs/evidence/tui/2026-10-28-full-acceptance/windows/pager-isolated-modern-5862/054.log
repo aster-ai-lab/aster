@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::prompt::doctor_fix_promoted_target_allows_confirm_and_apply' (15008) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix.rs:1615:6:
+called `Result::unwrap()` on an `Err` value: PlatformUnsupported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::prompt::doctor_fix_promoted_target_allows_confirm_and_apply ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::prompt::doctor_fix_promoted_target_allows_confirm_and_apply
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

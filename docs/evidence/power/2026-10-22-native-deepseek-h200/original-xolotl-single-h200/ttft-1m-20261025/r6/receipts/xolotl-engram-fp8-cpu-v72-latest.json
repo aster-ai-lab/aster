@@ -1,0 +1,104 @@
+{
+  "phase": "passed",
+  "unix": 1792882594.6412725,
+  "process": {
+    "pid": 990886,
+    "start_ticks": 280937854,
+    "uid": 10250,
+    "unix": 1792882594.6404421,
+    "namespace": "jump host"
+  },
+  "runs": [
+    {
+      "name": "control0",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-frounding-math",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O3",
+        "-DASTER_XQ_ENGRAM_FP8_LUT=0",
+        "fp8_exact_test.cpp",
+        "-o",
+        "control0"
+      ],
+      "result": {
+        "phase": "passed",
+        "conversion_cases": 1024,
+        "scaled_cases": 262144,
+        "rounding_modes": 4,
+        "bitwise_equal": true
+      },
+      "stderr_empty": true
+    },
+    {
+      "name": "enabled1",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-frounding-math",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O3",
+        "-DASTER_XQ_ENGRAM_FP8_LUT=1",
+        "fp8_exact_test.cpp",
+        "-o",
+        "enabled1"
+      ],
+      "result": {
+        "phase": "passed",
+        "conversion_cases": 1024,
+        "scaled_cases": 262144,
+        "rounding_modes": 4,
+        "bitwise_equal": true
+      },
+      "stderr_empty": true
+    },
+    {
+      "name": "enabled1-sanitized",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-frounding-math",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-DASTER_XQ_ENGRAM_FP8_LUT=1",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "fp8_exact_test.cpp",
+        "-o",
+        "enabled1-sanitized"
+      ],
+      "result": {
+        "phase": "passed",
+        "conversion_cases": 1024,
+        "scaled_cases": 262144,
+        "rounding_modes": 4,
+        "bitwise_equal": true
+      },
+      "stderr_empty": true
+    }
+  ],
+  "gpu_code_executed": false,
+  "performance_claimed": false,
+  "current": "enabled1-sanitized",
+  "invalid_mode_refused": true,
+  "exact_fp8_all_encodings_and_scales_passed": true,
+  "source_weight_bytes_changed": false,
+  "finished_unix": 1792882595.5309823
+}

@@ -1,0 +1,19 @@
+{
+  "unix": 1792874212.600393,
+  "result": {
+    "schema": "aster-xolotl-draft-long-output-v50",
+    "unix": 1792874057.1422997,
+    "phase": "failed",
+    "profile": "off",
+    "client": "yangchao-dev",
+    "tests": [],
+    "scope": "Single active API request; ctx1M configured, short public prompts,1024 generated tokens; not actual1M input or cold concurrency.",
+    "full1m_input_qualified": false,
+    "speed_300_qualified": false,
+    "current_request": "forced-native-tool-stream",
+    "error": "RuntimeError: forced-native-tool-stream SSE error: {\"type\": \"server_error\", \"message\": \"Extra data: line 1 column 19 (char 18)\"}",
+    "finished_unix": 1792874060.4448738
+  },
+  "exact_client_alive": false,
+  "failure_log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-draft-v50-off/qualification-extended-v50/request-worker.py\", line 116, in <module>\n    tool = ask('forced-native-tool-stream', dict(messages=[dict(role='user', content=instruction)], max_tokens=128,\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-draft-v50-off/qualification-extended-v50/request-worker.py\", line 68, in ask\n    raise RuntimeError(name + ' SSE error: ' + json.dumps(item['error']).replace(key, '[REDACTED]'))\nRuntimeError: forced-native-tool-stream SSE error: {\"type\": \"server_error\", \"message\": \"Extra data: line 1 column 19 (char 18)\"}\n"
+}

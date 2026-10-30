@@ -1,0 +1,213 @@
+name: Release a3s-code
+
+# Core/ACP only. Aster CLI and Desktop use separate product namespaces.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "a3s-code-v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3s-code-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Core/ACP tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned workspace sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install protobuf just
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Shorten Windows Cargo home
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Check Core/ACP formatting and dependency boundary
+        shell: bash
+        run: |
+          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
+          python3 tests/workspace_dependencies.py
+      - name: Test Core goal feedback
+        shell: bash
+        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test ACP unit and wire contracts
+        shell: bash
+        run: |
+          cargo test --locked -p a3s-code-acp --lib -- --test-threads=1
+          cargo test --locked -p a3s-code-acp --test acp_conformance_stdio -- --test-threads=1
+
+  test-windows:
+    name: Core/ACP portable tests (windows-latest)
+    runs-on: windows-latest
+    timeout-minutes: 180
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned workspace sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install Windows protoc
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = "29.3"
+          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
+          $dest = Join-Path $env:RUNNER_TEMP "protoc"
+          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath $dest
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Shorten Windows Cargo home
+        shell: bash
+        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Check Core/ACP formatting and dependency boundary
+        shell: bash
+        run: |
+          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
+          python3 tests/workspace_dependencies.py
+      - name: Test Core goal feedback
+        shell: bash
+        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test unsupported prompt refusal
+        shell: bash
+        run: cargo test --locked -p a3s-code-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1
+
+  build:
+    name: ACP release (${{ matrix.platform }})
+    needs: [test, test-windows]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: macos
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: windows
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned workspace sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install protobuf just
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev
+      - name: Install Windows protoc
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = "29.3"
+          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
+          $dest = Join-Path $env:RUNNER_TEMP "protoc"
+          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath $dest
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Shorten Windows Cargo home
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Build locked ACP release
+        shell: bash
+        run: cargo build --locked --release -p a3s-code-acp --bin a3s-code-acp
+      - name: Package ACP binary
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
+          tar -czf "a3s-code-acp-v${version}-${{ matrix.platform }}.tar.gz" -C target/release a3s-code-acp
+      - name: Package ACP binary for Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $manifest = Get-Content "crates/code/acp/Cargo.toml" -Raw
+          if ($manifest -notmatch '(?m)^version = "([^"]+)"') { throw "ACP version missing" }
+          Compress-Archive -Path "target/release/a3s-code-acp.exe" -DestinationPath "a3s-code-acp-v$($Matches[1])-windows.zip"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: a3s-code-acp-${{ matrix.platform }}
+          path: a3s-code-acp-v*
+          if-no-files-found: error
+
+  publish:
+    name: Publish Core/ACP source release
+    needs: [test, test-windows, build]
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'a3s-code-v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: a3s-code-acp-*
+          merge-multiple: true
+          path: dist
+      - name: Publish versioned release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#a3s-code-v}"
+          acp_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
+          core_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/core/Cargo.toml", "rb"))["package"]["version"])')"
+          test "$version" = "$acp_version"
+          test "$version" = "$core_version"
+          notes="crates/code/manual/RELEASE_${version}.md"
+          test -f "$notes"
+          shopt -s nullglob
+          files=(dist/*)
+          if [[ ${#files[@]} -ne 3 ]]; then
+            echo "expected 3 ACP release archives, found ${#files[@]}" >&2
+            exit 1
+          fi
+          (cd dist && sha256sum ./* > SHA256SUMS)
+          gh release create "${GITHUB_REF_NAME}" \
+            --verify-tag \
+            --latest=false \
+            --title "A3S Code / ACP v${version}" \
+            --notes-file "$notes" \
+            "${files[@]}" dist/SHA256SUMS
+          gh release view "${GITHUB_REF_NAME}"

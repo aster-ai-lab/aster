@@ -1,0 +1,55 @@
+{
+  "unix": 1792860325.2155023,
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc6-43da44c9b0a4/serve-cache-memo-v23",
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "serving",
+    "unix": 1792859803.1560006,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+    "lease_ends_unix": 1792880432.7702465,
+    "binary_sha256": "bfda174bcfd11cfc5bb2f4b815a871dc4f62c094bd14fef404de9ac4d67a645e",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 395,
+      "start_ticks": 728394321,
+      "uid": 10250
+    },
+    "startup_unix": 1792859815.410576,
+    "last_health_status": 200,
+    "last_health_unix": 1792860321.0684397
+  },
+  "service-process.json": {
+    "pid": 260,
+    "start_ticks": 728393091,
+    "uid": 10250,
+    "unix": 1792859803.10657,
+    "deadline_seconds": 20619
+  },
+  "exact_supervisor_alive": true,
+  "numeric_diagnostics": [
+    "serve: prompt 30 tokens (0 reused, batch) in 0.15 s = 194.2 tok/s (experts 7010 hit / 0 cpu / 190 pcie / 0 file)",
+    "serve: cache kept for a 35700-token batch (1151 tail slots out, 11334 experts stay)",
+    "[keep-chk] 1151 refilled slots checked, 0 bad",
+    "serve: cache regrown: 1151 experts back (0 from the file) in 54901 ms",
+    "dense prof turn: 6160 attn spans: build 149 ms, alloc 100, gpu compute 13854, engram wait 169, readback 1265, upload 424, finish build 12",
+    "serve: prompt phases: 35700 new = 35700 batch (109.81 s: dense 16.04, experts 37.68, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 35700 tokens (0 reused, batch) in 109.82 s = 325.1 tok/s (experts 4056922 hit / 0 cpu / 671078 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.13 s)",
+    "serve: prompt 18 tokens (0 reused, batch) in 0.13 s = 141.8 tok/s (experts 4208 hit / 0 cpu / 112 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 35700 tokens (35700 reused, batch) in 0.01 s = 0.0 tok/s (experts 0 hit / 0 cpu / 0 pcie / 0 file)",
+    "serve: cache kept for a 35700-token batch (1171 tail slots out, 11314 experts stay)",
+    "[keep-chk] 1171 refilled slots checked, 0 bad",
+    "serve: cache regrown: 1171 experts back (0 from the file) in 28828 ms",
+    "dense prof turn: 320 attn spans: build 9 ms, alloc 12, gpu compute 551, engram wait 4, readback 66, upload 21, finish build 1",
+    "serve: prompt phases: 18 new = 18 passes (0.19 s: dense 0.09, experts 0.10, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 18 tokens (0 reused, passes) in 0.19 s = 92.4 tok/s (experts 4245 hit / 0 cpu / 75 pcie / 0 file)",
+    "serve: cache kept for a 34676-token batch (1171 tail slots out, 11314 experts stay)"
+  ]
+}

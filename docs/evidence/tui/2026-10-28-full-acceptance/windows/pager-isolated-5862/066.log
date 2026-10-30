@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::task_result::doctor_planning_opens_refuses_remote_and_rejects_stale_identity' (47280) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix.rs:1615:6:
+called `Result::unwrap()` on an `Err` value: PlatformUnsupported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::task_result::doctor_planning_opens_refuses_remote_and_rejects_stale_identity ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::task_result::doctor_planning_opens_refuses_remote_and_rejects_stale_identity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

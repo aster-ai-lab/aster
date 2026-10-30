@@ -1,0 +1,11 @@
+
+running 6 tests
+test inference::routing::tests::branches_choose_by_category_and_degree ... ok
+test inference::routing::tests::effective_targets_level_the_window_into_a_relay_tail ... ok
+test inference::routing::tests::free_first_keeps_the_declared_order_under_per_model_pricing ... ok
+test inference::routing::tests::no_plan_is_todays_behavior ... ok
+test inference::routing::tests::smart_saving_routes_by_probability_and_fails_closed ... ok
+test inference::routing::tests::turn_identity_binds_to_the_last_user_message_and_history ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 2118 filtered out; finished in 0.00s
+

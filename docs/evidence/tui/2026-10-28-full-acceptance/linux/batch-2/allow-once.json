@@ -1,0 +1,401 @@
+{
+  "case": "allow-once",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1b5b3e3bd374c23f0325bd2e631c24becc0b9214:x86_64-unknown-linux-gnu",
+      "screen": null
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()… 0.0s   31s ⇣13.6k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run od -An -tx1 -c source.txt                                                                                    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run od -An -tx1 -c source.txt 0.0s                                                          42s ⇣13.9k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run od -An -tx1 -c source.txt                                                                                    \n     ◆ Thought for 4.2s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run write 0.0s                                                                                 54s ⇣14.3k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow write?                                                                                                       \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "permission-answer",
+      "detail": "answered a real permission card",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run od -An -tx1 -c source.txt                                                                                    \n     ◆ Thought for 4.2s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757                                                               \n                                                                                                                        \n     ◆ Thought for 7.0s                                                                                                 \n     ◆ Run test -f result.txt && cmp -s source.txt result.txt                                                           \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run test -f result.txt && cmp -s source.txt result.txt 0.0s                                1m4s ⇣14.7k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=27 model_turns=7 prompt_tokens=99728",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run od -An -tx1 -c source.txt                                                                                    \n     ◆ Thought for 4.2s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757                                                               \n                                                                                                                        \n     ◆ Thought for 7.0s                                                                                                 \n     ◆ Run test -f result.txt && cmp -s source.txt result.txt                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757                                                         9:40 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 1m18s                                                                                                   \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "live-write-verify",
+      "detail": "real read/write/shell receipts, exact output bytes and verified terminal",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-B3VF5O/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read source.txt. Use the write tool to create result.txt with exactly the same bytes. Then run test   9:39 PM    \n       -f result.txt using the bash tool to verify the output exists. Read result.txt back and reply with               \n       its exact contents. Do not modify source.txt or any other file.                                                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run python -c 'from pathlib import Path; print(repr(Path(\"source.txt\").read_bytes()))'                           \n     ◆ Thought for 2.5s                                                                                                 \n     ◆ Run od -An -tx1 -c source.txt                                                                                    \n     ◆ Thought for 4.2s                                                                                                 \n                                                                                                                        \n     ◆ Creating result.txt                                                                                              \n                                                                                                                        \n       1  KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757                                                               \n                                                                                                                        \n     ◆ Thought for 7.0s                                                                                                 \n     ◆ Run test -f result.txt && cmp -s source.txt result.txt                                                           \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757                                                         9:40 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 1m18s                                                                                                   \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13357,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_1619c82d8dc14508bd7e0fdf04dcb3e6",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_1619c82d8dc14508bd7e0fdf04dcb3e6",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:a7ea736017ec8a24e2fa59b92e565df29e0dbcdfc3b1a4ca226ed67afb3e827a",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"source.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":55},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":55,\"projected_bytes\":55,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"projected_digest\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"repeat_key\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"content_ref\":\"inline:sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f1ceb8af0210d4349943dad5c2bf221172f04cf5e01b0a0f0c515b45e5fe927d\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13566,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 11,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_84ded5c8091340f0aaed42de979532dd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 1,
+          "tool_call_id": "call_84ded5c8091340f0aaed42de979532dd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:283ef8bfbf1a37d799154202d7f060ce521be97a26ea316f05e6360ba92089fb",
+        "outcome": "failed",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"/usr/bin/bash: line 1: python: command not found\\n\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":127,\"sandboxed\":true,\"output\":{\"total_bytes\":49,\"captured_bytes\":49,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"python -c 'from pathlib import Path; print(repr(Path(\\\"source.txt\\\").read_bytes()))'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":49,\"projected_bytes\":49,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4\",\"projected_digest\":\"sha256:8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4\",\"repeat_key\":\"sha256:8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4\",\"content_ref\":\"inline:sha256:8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:00a5f7fb0df361880b75f3bf63ec633299032838a26157e1e88f50f48cd03de7\"}"
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13945,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_e639d1aadefd4484ba69603a83d224e2",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_e639d1aadefd4484ba69603a83d224e2",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:0af46495efbfa8fde393e84054478dec93b2f6df8b27e360071bc1b95da7c1fd",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"  4b  49  4d  49  2d  57  52  49  54  45  2d  37  38  32  66  64\\n   K   I   M   I   -   W   R   I   T   E   -   7   8   2   f   d\\n  36  37  33  2d  34  64  66  61  2d  34  39  33  36  2d  61  36\\n   6   7   3   -   4   d   f   a   -   4   9   3   6   -   a   6\\n  62  30  2d  37  31  61  35  30  66  65  34  31  37  35  37\\n   b   0   -   7   1   a   5   0   f   e   4   1   7   5   7\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":382,\"captured_bytes\":382,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"od -An -tx1 -c source.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":382,\"projected_bytes\":382,\"original_estimated_tokens\":96,\"projected_estimated_tokens\":96,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:bd487c927fe6ed84499e82d025a6a52cff89e3d1d3444c6a401784b2522f86b3\",\"projected_digest\":\"sha256:bd487c927fe6ed84499e82d025a6a52cff89e3d1d3444c6a401784b2522f86b3\",\"repeat_key\":\"sha256:bd487c927fe6ed84499e82d025a6a52cff89e3d1d3444c6a401784b2522f86b3\",\"content_ref\":\"inline:sha256:bd487c927fe6ed84499e82d025a6a52cff89e3d1d3444c6a401784b2522f86b3\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f3b9090ac250ded3f9bd5226f08bbc44f8a084df5adf1c0803cf31c62a5e9a0b\"}"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14338,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 19,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_a54a611b1c63478b86577e697b143051",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 20,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 3,
+          "tool_call_id": "call_a54a611b1c63478b86577e697b143051",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:49a122bbc9e8cce68c6b5cabc2b07f6127462c31f39505167565f4a903b26243",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "result.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:751f53e44de0417ce9001966af8efa2308d261bc1d123b730f660386ce6bff10",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 47 bytes (1 lines) to /tmp/aster-kimi-B3VF5O/workspace/result.txt\\n[mutation observation] path=result.txt status=unavailable\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"result.txt\",\"created\":true,\"after\":\"KIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757\",\"change\":{\"compacted\":false,\"before\":null,\"after\":{\"bytes\":47,\"sha256\":\"751f53e44de0417ce9001966af8efa2308d261bc1d123b730f660386ce6bff10\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":71,\"projected_bytes\":71,\"original_estimated_tokens\":18,\"projected_estimated_tokens\":18,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4949affd5d437eb9b321b1868ea0f07dbf85d09985bd2a73a9dfaad822ace80c\",\"projected_digest\":\"sha256:4949affd5d437eb9b321b1868ea0f07dbf85d09985bd2a73a9dfaad822ace80c\",\"repeat_key\":\"sha256:4949affd5d437eb9b321b1868ea0f07dbf85d09985bd2a73a9dfaad822ace80c\",\"content_ref\":\"inline:sha256:4949affd5d437eb9b321b1868ea0f07dbf85d09985bd2a73a9dfaad822ace80c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"result.txt\",\"status\":\"unavailable\"}},\"observation_digest\":\"sha256:c0839d539422f3843420d98896f1bf47e7d0465d26d7e93b6a836d55c9e75e88\"}"
+      }
+    },
+    {
+      "seq": 21,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14742,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 23,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 4,
+          "tool_call_id": "call_518bcd1a59d24e45a209123b62f0bbbd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 24,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 4,
+          "tool_call_id": "call_518bcd1a59d24e45a209123b62f0bbbd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:3ca85ea53678a9924a9d8d16e66e20a9041e128c50fb51ae89439cc2411149a1",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"verification_shell_command\":\"test -f result.txt && cmp -s source.txt result.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:result.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:result.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: result.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"b90fc42ff75b7a22f855fb6adadac7152c9f2889151fa9874a68118f56659d29\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}"
+      }
+    },
+    {
+      "seq": 25,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14832,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 26,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 5,
+          "tool_call_id": "call_dced5c1703ca4236b0d990193c050bf8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 27,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 5,
+          "tool_call_id": "call_dced5c1703ca4236b0d990193c050bf8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-452ec334-7505-48d2-9805-13e677bc6ce6",
+            "thread_id": "08fd26af-ebd4-4595-b70b-a813fe070321",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:39d4cf578456788d0840ac6c1a667115bde7d0ba47b28f73cf512722c546bf01",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tKIMI-WRITE-782fd673-4dfa-4936-a6b0-71a50fe41757\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"result.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":55},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":55,\"projected_bytes\":55,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"projected_digest\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"repeat_key\":\"sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"content_ref\":\"inline:sha256:299cda95aebcbcb995ea33682b35c9a54317eff2ce02d22189e8cbfef08b5cd9\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:f1ceb8af0210d4349943dad5c2bf221172f04cf5e01b0a0f0c515b45e5fe927d\"}"
+      }
+    },
+    {
+      "seq": 28,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14948,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 29,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "verified",
+        "effect_digest": "b90fc42ff75b7a22f855fb6adadac7152c9f2889151fa9874a68118f56659d29",
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:67eef518a8993f69c2b8caa494d3387ba4008487756f404b3801e566e0602a29",
+          "sha256:020c4c12e58acc11970f636c58b16fbe7b531b313b530a87158f132a482df565",
+          "sha256:0cbb07258fe070d742dbd51f061edfee83f18fd9e515f1979fd66000ef2cd459",
+          "sha256:c1093a9cf637a21a593e4749b70312bca22f374d17bf99824ce4c41e924a6b84",
+          "sha256:c22611d737a4ee4d07a074e1c71465b65deed9b96ab55107da79f241e030c073",
+          "sha256:884d36f9d384977f8cf5f7bc216345c02a9fd63d9617d2c19bc46ea4c053f8c2"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 28,
+          "digest": "226da94a88007e7c00bfc17b95284add635ff0024b9f88e066ba7072d1e3a0d8"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

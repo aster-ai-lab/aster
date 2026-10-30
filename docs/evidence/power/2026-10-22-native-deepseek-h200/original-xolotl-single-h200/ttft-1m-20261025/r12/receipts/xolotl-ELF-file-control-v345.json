@@ -1,0 +1,27 @@
+{
+  "unix": 1792929758.748523,
+  "phase": "passed",
+  "proof": {
+    "original_raw_sha256": "a8fd0ca15571a34d73b397626b6585955e58049e7b0757d64cf420381c025b40",
+    "control_raw_sha256": "33916b257521f7b57be613688b7fac88bc33ee6e9dd153c5076f13e9af6e8671",
+    "normalized_sha256": "a8fd0ca15571a34d73b397626b6585955e58049e7b0757d64cf420381c025b40",
+    "all_other_object_bytes_equal": true,
+    "differing_STT_FILE_symbols": 1,
+    "original_file_symbol": "tmpxft_000118cd_00000000-6_ggml-cuda.cudafe1.cpp",
+    "control_file_symbol": "tmpxft_0000182b_00000000-6_ggml-cuda.cudafe1.cpp"
+  },
+  "negative_controls": [
+    {
+      "negative_control": "code",
+      "refused": true
+    },
+    {
+      "negative_control": "symbol-table",
+      "refused": true
+    }
+  ],
+  "original_raw_object_preserved": true,
+  "normalized_copy_byte_equal_to_original": true,
+  "normalization_is_not_applied_to_candidate": true,
+  "GPU_executed": false
+}

@@ -1,0 +1,32 @@
+{
+  "unix": 1792905291.2064137,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-serve-profile-v168",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "idle": {
+    "prior_model_drained": true,
+    "gpu_idle": true
+  },
+  "gpu_qualified": false,
+  "files": [
+    {
+      "file": "native-link-plan.json",
+      "bytes": 6114,
+      "sha256": "a29770be8714a5f37302b43f2c132bf09b92935c4239d10fe459cc43e6357a8d"
+    },
+    {
+      "file": "worker.py",
+      "bytes": 4254,
+      "sha256": "ee407bdabb5b442d8f9b3d1a50222645d127ee0ca8c33e4e14fac943894d3505"
+    }
+  ],
+  "process": {
+    "pid": 7974,
+    "start_ticks": 713457607,
+    "uid": 10250,
+    "unix": 1792905305.0852535,
+    "budget_seconds": 200,
+    "namespace": "optimization pod"
+  }
+}

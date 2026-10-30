@@ -1,0 +1,1760 @@
+{
+  "assertions_finished": true,
+  "case": "tool-wave-patch-verified",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-single.json"
+          },
+          "id": "call_4948875d7caf4e8f9665a0d6e680f784",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13261,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4948875d7caf4e8f9665a0d6e680f784",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_4948875d7caf4e8f9665a0d6e680f784",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-single.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":179},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":179,\"projected_bytes\":179,\"original_estimated_tokens\":45,\"projected_estimated_tokens\":45,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"projected_digest\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"repeat_key\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"content_ref\":\"inline:sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7f9127df923b4fc50c80f81fdeaff2193ceac7b9fc00178612299ef31e4a8e48\"}",
+        "prepared_digest": "sha256:871431876b1f1f0e6a1e9e7c66fdb3bb532edcf947af7911035ad2ab5a84d23b",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "diff": "@@ -1 +1 @@\n-ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+            "file_path": "alpha.txt"
+          },
+          "id": "call_ef23bf11f5064d23ae31d5295031aadf",
+          "name": "patch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13483,
+        "text": null,
+        "tool": "patch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_ef23bf11f5064d23ae31d5295031aadf",
+          "turn": 1
+        },
+        "tool": "patch"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7",
+                "kind": "file",
+                "mode": 33188
+              },
+              "before": {
+                "content_digest": "sha256:d4a7757a06871951961b84fdd273ecb14f0e95c2710b16a79a966ef78f266da3",
+                "kind": "file",
+                "mode": 33188
+              },
+              "path": "alpha.txt"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_ef23bf11f5064d23ae31d5295031aadf",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Applied 1 hunk(s) to /tmp/aster-kimi-O3wlBC/workspace/alpha.txt\\n[mutation observation] path=alpha.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"alpha.txt\",\"before\":\"ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"change\":{\"compacted\":false,\"before\":{\"bytes\":43,\"sha256\":\"d4a7757a06871951961b84fdd273ecb14f0e95c2710b16a79a966ef78f266da3\",\"artifact\":null},\"after\":{\"bytes\":43,\"sha256\":\"032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"projected_digest\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"repeat_key\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"content_ref\":\"inline:sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"alpha.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:2da22bb362537035a6179f482f7ffeb492fab6b7e0c83e8e803fedfc667a1701\"}",
+        "prepared_digest": "sha256:be5a2dde40f83c621aab3e1f6770159727628a334703aa4090f13068cdb048a8",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "alpha.txt"
+          },
+          "id": "call_89986111746e4b99baa98154acace119",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13872,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_89986111746e4b99baa98154acace119",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 14,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_89986111746e4b99baa98154acace119",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tFIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"LF\",\"output_bytes\":90},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":90,\"projected_bytes\":90,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"projected_digest\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"repeat_key\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"content_ref\":\"inline:sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d5adbb2d02b38a746e7ded6d252ac67505b688fd1729b1b3597cf5af83404017\"}",
+        "prepared_digest": "sha256:497b540a6b0bbd2e4bf960c3134812273b8221785cff86b226f8fd238dca8c80",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 15,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'"
+          },
+          "id": "call_805e07c5497e46ea87701cce9eda0b83",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 14008,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 16,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_805e07c5497e46ea87701cce9eda0b83",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 18,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_805e07c5497e46ea87701cce9eda0b83",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'alpha.txt' && test \\\"$(cat 'alpha.txt')\\\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:alpha.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:alpha.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: alpha.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"2ad8e62851f91b137f550d7315349bc7d1c4e0518dec7f87a4ae61d6e9332060\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+        "prepared_digest": "sha256:4eacf604ffe8cae1b0938b649a969e8c77d6508047b9caabc4510eca38d8ce91",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 19,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13971,
+        "text": "Patched `alpha.txt` successfully. Independent verification passed with exit code 0.",
+        "tool": null
+      },
+      "seq": 20,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": "2ad8e62851f91b137f550d7315349bc7d1c4e0518dec7f87a4ae61d6e9332060",
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "b471adc0e838bc343ec140052154f0f3eaccc4a77b5ba233f299daf896d738f8",
+          "seq": 20
+        },
+        "receipt_keys": [
+          "sha256:c6cc655ede329bcf82a6d8fc0b8f58cfedd6cb9021cab23ca99b857f74856d5f",
+          "sha256:cf778c5cfe52baf105fdcbf3a166daf7e7927c39fd97a2684db27c23a5ec56d5",
+          "sha256:b1767996f2633b76a44031ff84ca41d7308f34d031bdacf7d9c41b43c5c3e779",
+          "sha256:46b07382ed6084800784a37a03461628141fbd2c3a469300b635b052c0fcc369"
+        ],
+        "terminal": "verified"
+      },
+      "seq": 21,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-multi.json"
+          },
+          "id": "call_0f3f001179dc44379dd4754aab872400",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 14167,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 24,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0f3f001179dc44379dd4754aab872400",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 25,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0f3f001179dc44379dd4754aab872400",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"patches\\\":[{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"},{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"beta.txt\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-multi.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":334},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":334,\"projected_bytes\":334,\"original_estimated_tokens\":84,\"projected_estimated_tokens\":84,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"projected_digest\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"repeat_key\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"content_ref\":\"inline:sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6b5648cd762388b095444061ce6837d79752d97f035ae363a59332e5cbf3a4f1\"}",
+        "prepared_digest": "sha256:0af624920c553441801fb9a9e1008516ef42f20645b60a41b1fbf4b61b2782c3",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 26,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "patches": [
+              {
+                "diff": "@@ -1 +1 @@\n-FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+                "file_path": "alpha.txt"
+              },
+              {
+                "diff": "@@ -1 +1 @@\n-BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+                "file_path": "beta.txt"
+              }
+            ]
+          },
+          "id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+          "name": "patch"
+        },
+        "has_text": false,
+        "prompt_tokens": 14433,
+        "text": null,
+        "tool": "patch"
+      },
+      "seq": 27,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+          "turn": 2
+        },
+        "tool": "patch"
+      },
+      "seq": 29,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:f8705dae0aa43b0053d1a0e2853ca7c2035e9f372ac614e03abd242d01b4cb11",
+                "kind": "file",
+                "mode": 33188
+              },
+              "before": {
+                "content_digest": "sha256:032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7",
+                "kind": "file",
+                "mode": 33188
+              },
+              "path": "alpha.txt"
+            },
+            {
+              "after": {
+                "content_digest": "sha256:fc9c24f582d6ae06c5b8dcc55affbf95768faaed7d571d6f772939025a79f75b",
+                "kind": "file",
+                "mode": 33188
+              },
+              "before": {
+                "content_digest": "sha256:6218a74dfcf98996278974ea032fe0c90af422d2e9d74ac44438c2a68b0b5afa",
+                "kind": "file",
+                "mode": 33188
+              },
+              "path": "beta.txt"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Applied multi-file patch: 2 file(s)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"files\":[{\"file_path\":\"alpha.txt\",\"before\":\"FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\"},{\"file_path\":\"beta.txt\",\"before\":\"BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\"}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":35,\"projected_bytes\":35,\"original_estimated_tokens\":9,\"projected_estimated_tokens\":9,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"projected_digest\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"repeat_key\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"content_ref\":\"inline:sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ebb8c046c41af80616e814e8b2fea207f98691338e17a265f953e0972dd57055\"}",
+        "prepared_digest": "sha256:1b09ba1ad140387bf51b06a51810dde6e90412a8e7a1d30b4fb61d4bc4c5ee41",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 30,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "files": [
+              {
+                "path": "alpha.txt"
+              },
+              {
+                "path": "beta.txt"
+              }
+            ]
+          },
+          "id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 14872,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 31,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+          "turn": 2
+        },
+        "tool": "read"
+      },
+      "seq": 32,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"=== alpha.txt ===\\n     1\\tFINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n=== beta.txt ===\\n     1\\tFINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n(Complete: all 2 file(s) processed.)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\",\"beta.txt\"],\"batch\":{\"status\":\"complete\",\"requested_files\":2,\"successful_files\":2,\"failed_files\":0,\"completed_files\":2,\"returned_lines\":2,\"max_output_bytes\":16384,\"output_bytes\":257,\"truncated\":false,\"continuation\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":257,\"projected_bytes\":257,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"projected_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"repeat_key\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"content_ref\":\"inline:sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:833e2a6778e62536b32ee97568e5aaa153d3b2bd6dc2a31fe1c017a0da4c2248\"}",
+        "prepared_digest": "sha256:d02eb96473ecb6adb49719f43c763010592d5483b563a9b96bed61b7e2003cc3",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 33,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && test -f 'beta.txt' && test \"$(cat 'beta.txt')\" = 'FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'"
+          },
+          "id": "call_674a0bf47291448aa327ba2b57051509",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 15101,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 34,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_674a0bf47291448aa327ba2b57051509",
+          "turn": 2
+        },
+        "tool": "bash"
+      },
+      "seq": 36,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 3,
+          "tool_call_id": "call_674a0bf47291448aa327ba2b57051509",
+          "turn": 2
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'alpha.txt' && test \\\"$(cat 'alpha.txt')\\\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && test -f 'beta.txt' && test \\\"$(cat 'beta.txt')\\\" = 'FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:alpha.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:alpha.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: alpha.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"042fdcc3cae07c4c88b852c2f6cdc1b8e6f36c97827b47f7d9f999aa16c31fbc\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+        "prepared_digest": "sha256:ee32b97da5a4a3b3be2854fc8b6a8cbc8827f8421cf7523396f9802f95f70996",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 37,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 15114,
+        "text": "Patched `alpha.txt` and `beta.txt` successfully. Independent verification of both files passed with exit code 0.",
+        "tool": null
+      },
+      "seq": 38,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": "042fdcc3cae07c4c88b852c2f6cdc1b8e6f36c97827b47f7d9f999aa16c31fbc",
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "703333d60e20e630cb453f364c70de6335836cdff994390b68b769d4d08f2259",
+          "seq": 38
+        },
+        "receipt_keys": [
+          "sha256:0603124ea6b5761e261b8e700c14506013a73c91bef703d20aed4f7a8136c181",
+          "sha256:50d8eb66e9ac4029e0dcebec8053c0842e500857d6f45d5b1f3e3989d52ad52a",
+          "sha256:4290dae36c5b099dd905f3215662f60d853e9517fd7a4e1639d2f3c4a9bef517",
+          "sha256:c8776aa158db552bf929be951edbb3db64334ebf9c9fbcbba9defc67e409fb82"
+        ],
+        "terminal": "verified"
+      },
+      "seq": 39,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-conflict.json"
+          },
+          "id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 15222,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 42,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+          "turn": 3
+        },
+        "tool": "read"
+      },
+      "seq": 43,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+          "turn": 3
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"patches\\\":[{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+SHOULD-NOT-COMMIT\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"},{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-NONEXISTENT-CONTEXT\\\\n+SHOULD-NOT-COMMIT\\\\n\\\",\\\"file_path\\\":\\\"beta.txt\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-conflict.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":260},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":260,\"projected_bytes\":260,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"projected_digest\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"repeat_key\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"content_ref\":\"inline:sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c31d6a83ed0186112b6453fa081ab8fb27c4f2d5c46727d07558d070db953c42\"}",
+        "prepared_digest": "sha256:ef85e632b1075b932738d4ff51aeb59626aa320351fd19e5a9432e5ae9c3cc3b",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 44,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "patches": [
+              {
+                "diff": "@@ -1 +1 @@\n-FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+SHOULD-NOT-COMMIT\n",
+                "file_path": "alpha.txt"
+              },
+              {
+                "diff": "@@ -1 +1 @@\n-NONEXISTENT-CONTEXT\n+SHOULD-NOT-COMMIT\n",
+                "file_path": "beta.txt"
+              }
+            ]
+          },
+          "id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+          "name": "patch"
+        },
+        "has_text": false,
+        "prompt_tokens": 15482,
+        "text": null,
+        "tool": "patch"
+      },
+      "seq": 45,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+          "turn": 3
+        },
+        "tool": "patch"
+      },
+      "seq": 47,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+          "turn": 3
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Failed to apply patch to /tmp/aster-kimi-O3wlBC/workspace/beta.txt: Hunk removal mismatch at line 1: expected \\\"NONEXISTENT-CONTEXT\\\", found \\\"FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\" (nothing written)\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":203,\"projected_bytes\":203,\"original_estimated_tokens\":51,\"projected_estimated_tokens\":51,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"projected_digest\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"repeat_key\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"content_ref\":\"inline:sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9bc6cc98026799b33e051f715a0d7769ee983f7a552619d3f92c7be834a9b0f0\"}",
+        "prepared_digest": "sha256:32c5a2d9cb22317a075fcdf6ff5dbb02612ba94d0bdda92537c4e0338389803d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 48,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "files": [
+              {
+                "path": "alpha.txt"
+              },
+              {
+                "path": "beta.txt"
+              }
+            ]
+          },
+          "id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 15732,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 49,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+          "turn": 3
+        },
+        "tool": "read"
+      },
+      "seq": 50,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+            "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+          },
+          "batch_index": 0,
+          "cycle": 2,
+          "tool_call_id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+          "turn": 3
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"=== alpha.txt ===\\n     1\\tFINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n=== beta.txt ===\\n     1\\tFINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n(Complete: all 2 file(s) processed.)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\",\"beta.txt\"],\"batch\":{\"status\":\"complete\",\"requested_files\":2,\"successful_files\":2,\"failed_files\":0,\"completed_files\":2,\"returned_lines\":2,\"max_output_bytes\":16384,\"output_bytes\":257,\"truncated\":false,\"continuation\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":257,\"projected_bytes\":257,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"projected_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"repeat_key\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"content_ref\":\"inline:sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:833e2a6778e62536b32ee97568e5aaa153d3b2bd6dc2a31fe1c017a0da4c2248\"}",
+        "prepared_digest": "sha256:1d71eab1fc9534f5cc6e809f1bc9cba9ec61f759b3d727bad16917c20cf9fe0d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 51,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 15948,
+        "text": "Patch failed: `beta.txt` line 1 expected `NONEXISTENT-CONTEXT`, but found `FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`. The tool reported **nothing written**.\n\nVerification confirmed both files remain unchanged:\n- `alpha.txt`: `FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`\n- `beta.txt`: `FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`",
+        "tool": null
+      },
+      "seq": 52,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "883b57ad70f51cf91f4ce9e416c043be9c4458c97ad04f63a0b0f7f6b6c53ae5",
+          "seq": 52
+        },
+        "receipt_keys": [
+          "sha256:3d91da0724c51498341e5dd9d864bc3ed81c06ec032fed9b8e3543d911c6e6a6",
+          "sha256:fff7c4c4a4931a4c75d01e745ad77bdef87e00f80c81032b5204249a6c08a201",
+          "sha256:8d03439c60227fa9a463fb0be820b02927469d38133b36f7386ebd3587b34137"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 53,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-single.json once. Call patch exactly once with its exact JSON object as arguments.      12:51 PM    \n       After a successful patch, read alpha.txt, then use bash exactly once to independently verify with                \n       this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2- …              \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit alpha.txt                                                                                                   \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run patch 0.0s                                                                                 13s ⇣13.5k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow patch?                                                                                                       \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-single.json once. Call patch exactly once with its exact JSON object as arguments.      12:51 PM    \n       After a successful patch, read alpha.txt, then use bash exactly once to independently verify with                \n       this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2- …              \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit alpha.txt                                                                                                   \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'              \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa… 0.0s   23s ⇣14.0k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=19 model_turns=5 prompt_tokens=68595",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-single.json once. Call patch exactly once with its exact JSON object as arguments.      12:51 PM    \n       After a successful patch, read alpha.txt, then use bash exactly once to independently verify with                \n       this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2- …              \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit alpha.txt                                                                                                   \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'              \n     ◆ Thought for 0.4s                                                                                                 \n                                                                                                                        \n     Patched alpha.txt successfully. Independent verification passed with exit code 0.                      12:51 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 28s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "one native patch changes only alpha; an independent real read verifies the exact host-generated bytes",
+      "name": "single-patch-bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-single.json once. Call patch exactly once with its exact JSON object as arguments.      12:51 PM    \n       After a successful patch, read alpha.txt, then use bash exactly once to independently verify with                \n       this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2- …              \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit alpha.txt                                                                                                   \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'              \n     ◆ Thought for 0.4s                                                                                                 \n                                                                                                                        \n     Patched alpha.txt successfully. Independent verification passed with exit code 0.                      12:51 PM    \n                                                                                                                        \n     verified ✓ (1 check)                                                                                               \n                                                                                                                        \n     Worked for 28s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            14K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-multi.json once. Call patch exactly once with its exact JSON object as arguments.       12:51 PM    \n       After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently               \n       verify both files with this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = …                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit patch                                                                                                       \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n    ◆ Run patch 0.0s                                                                                 14s ⇣14.4k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow patch?                                                                                                       \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-multi.json once. Call patch exactly once with its exact JSON object as arguments.       12:51 PM    \n       After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently               \n       verify both files with this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = …                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit patch                                                                                                       \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && tes…   █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n    ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-… 0.0s   25s ⇣15.1k [↓][stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow Execute?                                                                                                     \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=18 model_turns=5 prompt_tokens=73687",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-multi.json once. Call patch exactly once with its exact JSON object as arguments.       12:51 PM    \n       After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently               \n       verify both files with this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = …                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit patch                                                                                                       \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && tes…    \n     ◆ Thought for 0.1s                                                                                                █\n                                                                                                                       █\n     Patched alpha.txt and beta.txt successfully. Independent verification of both files passed with exit   12:52 PM   █\n     code 0.                                                                                                           █\n                                                                                                                       █\n     verified ✓ (1 check)                                                                                              █\n                                                                                                                       █\n     Worked for 31s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "one patches call changes both files to their exact expected contents",
+      "name": "multi-patch-bytes",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-multi.json once. Call patch exactly once with its exact JSON object as arguments.       12:51 PM    \n       After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently               \n       verify both files with this exact command: test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = …                  \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit patch                                                                                                       \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Run test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && tes…    \n     ◆ Thought for 0.1s                                                                                                █\n                                                                                                                       █\n     Patched alpha.txt and beta.txt successfully. Independent verification of both files passed with exit   12:52 PM   █\n     code 0.                                                                                                           █\n                                                                                                                       █\n     verified ✓ (1 check)                                                                                              █\n                                                                                                                       █\n     Worked for 31s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-conflict.json once. Call patch exactly once with its exact JSON object as arguments.    12:52 PM    \n       If the patch fails, report the actual failure and read both files once to verify the failure scope.              \n       Do not retry, repair or call other tools.                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     ◆ Edit patch                                                                                                       \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n    ◆ Run patch 0.0s                                                                                 20s ⇣15.5k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow patch?                                                                                                       \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=14 model_turns=4 prompt_tokens=62384",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-conflict.json once. Call patch exactly once with its exact JSON object as arguments.    12:52 PM    \n       If the patch fails, report the actual failure and read both files once to verify the failure scope.              \n       Do not retry, repair or call other tools.                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Edit patch                                                                                                       \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     Patch failed: beta.txt line 1 expected NONEXISTENT-CONTEXT, but found FINAL-B-575e1b6f-da5b-4fc2-      12:52 PM    \n     aa96-6cb8c77fe564. The tool reported nothing written.                                                              \n                                                                                                                        \n     Verification confirmed both files remain unchanged:                                                                \n     • alpha.txt: FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564                                                          \n     • beta.txt: FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564                                                           \n                                                                                                                        \n     Worked for 32s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "a valid alpha hunk followed by conflicting beta changes neither file; the real failure receipt is retained",
+      "name": "multi-patch-conflict-atomic",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-O3wlBC/workspace                                                                            15K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-conflict.json once. Call patch exactly once with its exact JSON object as arguments.    12:52 PM    \n       If the patch fails, report the actual failure and read both files once to verify the failure scope.              \n       Do not retry, repair or call other tools.                                                                        \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Edit patch                                                                                                       \n     ◈ Read 1 file                                                                                                      \n                                                                                                                        \n     Patch failed: beta.txt line 1 expected NONEXISTENT-CONTEXT, but found FINAL-B-575e1b6f-da5b-4fc2-      12:52 PM    \n     aa96-6cb8c77fe564. The tool reported nothing written.                                                              \n                                                                                                                        \n     Verification confirmed both files remain unchanged:                                                                \n     • alpha.txt: FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564                                                          \n     • beta.txt: FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564                                                           \n                                                                                                                        \n     Worked for 32s                                                                                                    █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                       █\n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "tool-wave-patch",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-single.json"
+              },
+              "id": "call_4948875d7caf4e8f9665a0d6e680f784",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13261,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4948875d7caf4e8f9665a0d6e680f784",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_4948875d7caf4e8f9665a0d6e680f784",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-single.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":179},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":179,\"projected_bytes\":179,\"original_estimated_tokens\":45,\"projected_estimated_tokens\":45,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"projected_digest\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"repeat_key\":\"sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"content_ref\":\"inline:sha256:46139ff9aa52a43dac2227d76c2d620bd40a4272e451b8de1abf07babb1ee64f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:7f9127df923b4fc50c80f81fdeaff2193ceac7b9fc00178612299ef31e4a8e48\"}",
+            "prepared_digest": "sha256:871431876b1f1f0e6a1e9e7c66fdb3bb532edcf947af7911035ad2ab5a84d23b",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "diff": "@@ -1 +1 @@\n-ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+                "file_path": "alpha.txt"
+              },
+              "id": "call_ef23bf11f5064d23ae31d5295031aadf",
+              "name": "patch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13483,
+            "text": null,
+            "tool": "patch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_ef23bf11f5064d23ae31d5295031aadf",
+              "turn": 1
+            },
+            "tool": "patch"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [
+                {
+                  "after": {
+                    "content_digest": "sha256:032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "before": {
+                    "content_digest": "sha256:d4a7757a06871951961b84fdd273ecb14f0e95c2710b16a79a966ef78f266da3",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "path": "alpha.txt"
+                }
+              ],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_ef23bf11f5064d23ae31d5295031aadf",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Applied 1 hunk(s) to /tmp/aster-kimi-O3wlBC/workspace/alpha.txt\\n[mutation observation] path=alpha.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"alpha.txt\",\"before\":\"ALPHA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"change\":{\"compacted\":false,\"before\":{\"bytes\":43,\"sha256\":\"d4a7757a06871951961b84fdd273ecb14f0e95c2710b16a79a966ef78f266da3\",\"artifact\":null},\"after\":{\"bytes\":43,\"sha256\":\"032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"projected_digest\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"repeat_key\":\"sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"content_ref\":\"inline:sha256:45acdfef7c7dbb32da14728421160ed10f88df926df27d850429cbf006d98494\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"alpha.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:2da22bb362537035a6179f482f7ffeb492fab6b7e0c83e8e803fedfc667a1701\"}",
+            "prepared_digest": "sha256:be5a2dde40f83c621aab3e1f6770159727628a334703aa4090f13068cdb048a8",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "alpha.txt"
+              },
+              "id": "call_89986111746e4b99baa98154acace119",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13872,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_89986111746e4b99baa98154acace119",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 14,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_89986111746e4b99baa98154acace119",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tFIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"LF\",\"output_bytes\":90},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":90,\"projected_bytes\":90,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"projected_digest\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"repeat_key\":\"sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"content_ref\":\"inline:sha256:84f3df3e7e268424664032a633271449342e63bdcab9568838a4266a5fe1c15f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:d5adbb2d02b38a746e7ded6d252ac67505b688fd1729b1b3597cf5af83404017\"}",
+            "prepared_digest": "sha256:497b540a6b0bbd2e4bf960c3134812273b8221785cff86b226f8fd238dca8c80",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 15,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'"
+              },
+              "id": "call_805e07c5497e46ea87701cce9eda0b83",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 14008,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 16,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 3,
+              "tool_call_id": "call_805e07c5497e46ea87701cce9eda0b83",
+              "turn": 1
+            },
+            "tool": "bash"
+          },
+          "seq": 18,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-36daedce-df5f-4a5c-8692-59e003f59c04",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 3,
+              "tool_call_id": "call_805e07c5497e46ea87701cce9eda0b83",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'alpha.txt' && test \\\"$(cat 'alpha.txt')\\\" = 'FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:alpha.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:alpha.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: alpha.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"2ad8e62851f91b137f550d7315349bc7d1c4e0518dec7f87a4ae61d6e9332060\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+            "prepared_digest": "sha256:4eacf604ffe8cae1b0938b649a969e8c77d6508047b9caabc4510eca38d8ce91",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 19,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13971,
+            "text": "Patched `alpha.txt` successfully. Independent verification passed with exit code 0.",
+            "tool": null
+          },
+          "seq": 20,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": "2ad8e62851f91b137f550d7315349bc7d1c4e0518dec7f87a4ae61d6e9332060",
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "b471adc0e838bc343ec140052154f0f3eaccc4a77b5ba233f299daf896d738f8",
+              "seq": 20
+            },
+            "receipt_keys": [
+              "sha256:c6cc655ede329bcf82a6d8fc0b8f58cfedd6cb9021cab23ca99b857f74856d5f",
+              "sha256:cf778c5cfe52baf105fdcbf3a166daf7e7927c39fd97a2684db27c23a5ec56d5",
+              "sha256:b1767996f2633b76a44031ff84ca41d7308f34d031bdacf7d9c41b43c5c3e779",
+              "sha256:46b07382ed6084800784a37a03461628141fbd2c3a469300b635b052c0fcc369"
+            ],
+            "terminal": "verified"
+          },
+          "seq": 21,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-multi.json"
+              },
+              "id": "call_0f3f001179dc44379dd4754aab872400",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 14167,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 24,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0f3f001179dc44379dd4754aab872400",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 25,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0f3f001179dc44379dd4754aab872400",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"patches\\\":[{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"},{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n\\\",\\\"file_path\\\":\\\"beta.txt\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-multi.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":334},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":334,\"projected_bytes\":334,\"original_estimated_tokens\":84,\"projected_estimated_tokens\":84,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"projected_digest\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"repeat_key\":\"sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"content_ref\":\"inline:sha256:36532dc4a44f0be5ba48f066ce8e5fefba9835bc806fc88db40f3099f9a3d95e\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:6b5648cd762388b095444061ce6837d79752d97f035ae363a59332e5cbf3a4f1\"}",
+            "prepared_digest": "sha256:0af624920c553441801fb9a9e1008516ef42f20645b60a41b1fbf4b61b2782c3",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 26,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "patches": [
+                  {
+                    "diff": "@@ -1 +1 @@\n-FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+                    "file_path": "alpha.txt"
+                  },
+                  {
+                    "diff": "@@ -1 +1 @@\n-BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n",
+                    "file_path": "beta.txt"
+                  }
+                ]
+              },
+              "id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+              "name": "patch"
+            },
+            "has_text": false,
+            "prompt_tokens": 14433,
+            "text": null,
+            "tool": "patch"
+          },
+          "seq": 27,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+              "turn": 2
+            },
+            "tool": "patch"
+          },
+          "seq": 29,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [
+                {
+                  "after": {
+                    "content_digest": "sha256:f8705dae0aa43b0053d1a0e2853ca7c2035e9f372ac614e03abd242d01b4cb11",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "before": {
+                    "content_digest": "sha256:032457639be6910918612f53904dce978223fdc4ea7919dca694de0fc52c4cb7",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "path": "alpha.txt"
+                },
+                {
+                  "after": {
+                    "content_digest": "sha256:fc9c24f582d6ae06c5b8dcc55affbf95768faaed7d571d6f772939025a79f75b",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "before": {
+                    "content_digest": "sha256:6218a74dfcf98996278974ea032fe0c90af422d2e9d74ac44438c2a68b0b5afa",
+                    "kind": "file",
+                    "mode": 33188
+                  },
+                  "path": "beta.txt"
+                }
+              ],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_6a46bd1e49e94abe9d826fba79a6527e",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Applied multi-file patch: 2 file(s)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"files\":[{\"file_path\":\"alpha.txt\",\"before\":\"FIRST-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\"},{\"file_path\":\"beta.txt\",\"before\":\"BETA-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\",\"after\":\"FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n\"}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":35,\"projected_bytes\":35,\"original_estimated_tokens\":9,\"projected_estimated_tokens\":9,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"projected_digest\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"repeat_key\":\"sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"content_ref\":\"inline:sha256:63c0a668782c23682bbfbb2f3ec24f395a50e3383b9a083e5706bf91471c1651\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:ebb8c046c41af80616e814e8b2fea207f98691338e17a265f953e0972dd57055\"}",
+            "prepared_digest": "sha256:1b09ba1ad140387bf51b06a51810dde6e90412a8e7a1d30b4fb61d4bc4c5ee41",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 30,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "files": [
+                  {
+                    "path": "alpha.txt"
+                  },
+                  {
+                    "path": "beta.txt"
+                  }
+                ]
+              },
+              "id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 14872,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 31,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+              "turn": 2
+            },
+            "tool": "read"
+          },
+          "seq": 32,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_adb3a1a019254e57b7b0aa7df8369e81",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"=== alpha.txt ===\\n     1\\tFINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n=== beta.txt ===\\n     1\\tFINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n(Complete: all 2 file(s) processed.)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\",\"beta.txt\"],\"batch\":{\"status\":\"complete\",\"requested_files\":2,\"successful_files\":2,\"failed_files\":0,\"completed_files\":2,\"returned_lines\":2,\"max_output_bytes\":16384,\"output_bytes\":257,\"truncated\":false,\"continuation\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":257,\"projected_bytes\":257,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"projected_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"repeat_key\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"content_ref\":\"inline:sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:833e2a6778e62536b32ee97568e5aaa153d3b2bd6dc2a31fe1c017a0da4c2248\"}",
+            "prepared_digest": "sha256:d02eb96473ecb6adb49719f43c763010592d5483b563a9b96bed61b7e2003cc3",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 33,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "test -f 'alpha.txt' && test \"$(cat 'alpha.txt')\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && test -f 'beta.txt' && test \"$(cat 'beta.txt')\" = 'FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'"
+              },
+              "id": "call_674a0bf47291448aa327ba2b57051509",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 15101,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 34,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 3,
+              "tool_call_id": "call_674a0bf47291448aa327ba2b57051509",
+              "turn": 2
+            },
+            "tool": "bash"
+          },
+          "seq": 36,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-8ca7f116-a957-4430-aee4-beabbcf57eeb",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 3,
+              "tool_call_id": "call_674a0bf47291448aa327ba2b57051509",
+              "turn": 2
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"verification_shell_command\":\"test -f 'alpha.txt' && test \\\"$(cat 'alpha.txt')\\\" = 'FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564' && test -f 'beta.txt' && test \\\"$(cat 'beta.txt')\\\" = 'FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564'\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:alpha.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:alpha.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: alpha.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"042fdcc3cae07c4c88b852c2f6cdc1b8e6f36c97827b47f7d9f999aa16c31fbc\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}",
+            "prepared_digest": "sha256:ee32b97da5a4a3b3be2854fc8b6a8cbc8827f8421cf7523396f9802f95f70996",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 37,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 15114,
+            "text": "Patched `alpha.txt` and `beta.txt` successfully. Independent verification of both files passed with exit code 0.",
+            "tool": null
+          },
+          "seq": 38,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": "042fdcc3cae07c4c88b852c2f6cdc1b8e6f36c97827b47f7d9f999aa16c31fbc",
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "703333d60e20e630cb453f364c70de6335836cdff994390b68b769d4d08f2259",
+              "seq": 38
+            },
+            "receipt_keys": [
+              "sha256:0603124ea6b5761e261b8e700c14506013a73c91bef703d20aed4f7a8136c181",
+              "sha256:50d8eb66e9ac4029e0dcebec8053c0842e500857d6f45d5b1f3e3989d52ad52a",
+              "sha256:4290dae36c5b099dd905f3215662f60d853e9517fd7a4e1639d2f3c4a9bef517",
+              "sha256:c8776aa158db552bf929be951edbb3db64334ebf9c9fbcbba9defc67e409fb82"
+            ],
+            "terminal": "verified"
+          },
+          "seq": 39,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-conflict.json"
+              },
+              "id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 15222,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 42,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+              "turn": 3
+            },
+            "tool": "read"
+          },
+          "seq": 43,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_c36e45c2e0db4c14b3d02cbfa4574c9e",
+              "turn": 3
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"patches\\\":[{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\\n+SHOULD-NOT-COMMIT\\\\n\\\",\\\"file_path\\\":\\\"alpha.txt\\\"},{\\\"diff\\\":\\\"@@ -1 +1 @@\\\\n-NONEXISTENT-CONTEXT\\\\n+SHOULD-NOT-COMMIT\\\\n\\\",\\\"file_path\\\":\\\"beta.txt\\\"}]}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-conflict.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":260},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":260,\"projected_bytes\":260,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"projected_digest\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"repeat_key\":\"sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"content_ref\":\"inline:sha256:b744fd80e5c287ebbf0d8b65ba21f98ed20591fa4fe667af28d40e367420aa0a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c31d6a83ed0186112b6453fa081ab8fb27c4f2d5c46727d07558d070db953c42\"}",
+            "prepared_digest": "sha256:ef85e632b1075b932738d4ff51aeb59626aa320351fd19e5a9432e5ae9c3cc3b",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 44,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "patches": [
+                  {
+                    "diff": "@@ -1 +1 @@\n-FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\n+SHOULD-NOT-COMMIT\n",
+                    "file_path": "alpha.txt"
+                  },
+                  {
+                    "diff": "@@ -1 +1 @@\n-NONEXISTENT-CONTEXT\n+SHOULD-NOT-COMMIT\n",
+                    "file_path": "beta.txt"
+                  }
+                ]
+              },
+              "id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+              "name": "patch"
+            },
+            "has_text": false,
+            "prompt_tokens": 15482,
+            "text": null,
+            "tool": "patch"
+          },
+          "seq": 45,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+              "turn": 3
+            },
+            "tool": "patch"
+          },
+          "seq": 47,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_ca8e97c49bd640bb9284c1bdf137c203",
+              "turn": 3
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Failed to apply patch to /tmp/aster-kimi-O3wlBC/workspace/beta.txt: Hunk removal mismatch at line 1: expected \\\"NONEXISTENT-CONTEXT\\\", found \\\"FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\\" (nothing written)\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":203,\"projected_bytes\":203,\"original_estimated_tokens\":51,\"projected_estimated_tokens\":51,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"projected_digest\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"repeat_key\":\"sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"content_ref\":\"inline:sha256:1b7351eb40bd0656826620cce3b2d7ea062f665a0d510e1cec39b538ad5f4df4\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:9bc6cc98026799b33e051f715a0d7769ee983f7a552619d3f92c7be834a9b0f0\"}",
+            "prepared_digest": "sha256:32c5a2d9cb22317a075fcdf6ff5dbb02612ba94d0bdda92537c4e0338389803d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 48,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "files": [
+                  {
+                    "path": "alpha.txt"
+                  },
+                  {
+                    "path": "beta.txt"
+                  }
+                ]
+              },
+              "id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 15732,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 49,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+              "turn": 3
+            },
+            "tool": "read"
+          },
+          "seq": 50,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-2899c3db-c584-4ccc-9795-3c30d789a14f",
+                "thread_id": "dc22d457-d01b-4469-8433-84df7b451dd1"
+              },
+              "batch_index": 0,
+              "cycle": 2,
+              "tool_call_id": "call_b950c7d3f5ad46aa93bce47c00e47d28",
+              "turn": 3
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"=== alpha.txt ===\\n     1\\tFINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n=== beta.txt ===\\n     1\\tFINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564\\n[End of file: final line ending is LF.]\\n\\n(Complete: all 2 file(s) processed.)\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"alpha.txt\",\"beta.txt\"],\"batch\":{\"status\":\"complete\",\"requested_files\":2,\"successful_files\":2,\"failed_files\":0,\"completed_files\":2,\"returned_lines\":2,\"max_output_bytes\":16384,\"output_bytes\":257,\"truncated\":false,\"continuation\":[]},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":257,\"projected_bytes\":257,\"original_estimated_tokens\":65,\"projected_estimated_tokens\":65,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"projected_digest\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"repeat_key\":\"sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"content_ref\":\"inline:sha256:a8617b0d0e615370717c1117380dfb75146434c2fb4a92de041cc349b392ea7d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:833e2a6778e62536b32ee97568e5aaa153d3b2bd6dc2a31fe1c017a0da4c2248\"}",
+            "prepared_digest": "sha256:1d71eab1fc9534f5cc6e809f1bc9cba9ec61f759b3d727bad16917c20cf9fe0d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 51,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 15948,
+            "text": "Patch failed: `beta.txt` line 1 expected `NONEXISTENT-CONTEXT`, but found `FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`. The tool reported **nothing written**.\n\nVerification confirmed both files remain unchanged:\n- `alpha.txt`: `FINAL-A-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`\n- `beta.txt`: `FINAL-B-575e1b6f-da5b-4fc2-aa96-6cb8c77fe564`",
+            "tool": null
+          },
+          "seq": 52,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "883b57ad70f51cf91f4ce9e416c043be9c4458c97ad04f63a0b0f7f6b6c53ae5",
+              "seq": 52
+            },
+            "receipt_keys": [
+              "sha256:3d91da0724c51498341e5dd9d864bc3ed81c06ec032fed9b8e3543d911c6e6a6",
+              "sha256:fff7c4c4a4931a4c75d01e745ad77bdef87e00f80c81032b5204249a6c08a201",
+              "sha256:8d03439c60227fa9a463fb0be820b02927469d38133b36f7386ebd3587b34137"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 53,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "dc22d457-d01b-4469-8433-84df7b451dd1"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

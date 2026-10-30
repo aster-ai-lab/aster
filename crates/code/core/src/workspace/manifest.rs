@@ -959,6 +959,20 @@ impl WorkspaceTextReader for ManifestWorkspaceBackend {
         self.manifest.touch_file(path.as_str());
         Ok(range)
     }
+
+    async fn read_text_range_with_terminators(
+        &self,
+        path: &WorkspacePath,
+        offset: usize,
+        limit: usize,
+    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
+        let range = self
+            .local
+            .read_text_range_with_terminators(path, offset, limit)
+            .await?;
+        self.manifest.touch_file(path.as_str());
+        Ok(range)
+    }
 }
 
 #[async_trait]

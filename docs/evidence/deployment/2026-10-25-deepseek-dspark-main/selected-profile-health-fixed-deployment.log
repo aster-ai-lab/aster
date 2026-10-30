@@ -1,0 +1,4 @@
+{"phase": "waiting_for_foreground_idle", "profile": "Merged main DSpark exact 1M with bounded concurrent readiness"}
+{"phase": "loading_gpu6_candidate", "profile": "Merged main DSpark exact 1M with bounded concurrent readiness"}
+{"phase": "validating_exact_arithmetic", "profile": "Merged main DSpark exact 1M with bounded concurrent readiness"}
+{"phase": "ready_for_controlled_measurement", "profile": "Merged main DSpark exact 1M with bounded concurrent readiness"}

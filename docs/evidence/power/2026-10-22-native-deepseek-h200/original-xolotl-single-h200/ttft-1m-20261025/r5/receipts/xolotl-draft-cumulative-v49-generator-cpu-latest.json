@@ -1,0 +1,95 @@
+{
+  "unix": 1792872748.895662,
+  "result": {
+    "unix": 1792872632.0275836,
+    "phase": "compiled",
+    "gpu_executed": false,
+    "runs": [
+      {
+        "name": "original",
+        "returncode": 0,
+        "command": [
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-original.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-original.o",
+          "bytes": 527888,
+          "sha256": "5b0ec921f27513053f5b5ab38d7aa056bd5cfebebf1fe4198182191a4e8dc771"
+        }
+      },
+      {
+        "name": "candidate",
+        "returncode": 0,
+        "command": [
+          "/usr/bin/c++",
+          "-DDS41_HAVE_DSPARK",
+          "-DDS41_POOL_CUDA=1",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_CUDA",
+          "-DSTRATA_DSV41_FQ_OP",
+          "-DSTRATA_ENABLE_CUDA=1",
+          "-DSTRATA_NATIVE_EXPERTS=1",
+          "-DSTRATA_Q6K_EXPERTS=1",
+          "-DSTRATA_VERSION=\"0.1.44.1\"",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine",
+          "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include",
+          "-isystem",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++20",
+          "-Wall",
+          "-Wextra",
+          "-fmacro-prefix-map=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/cuda-include=/usr/local/cuda/targets/x86_64-linux/include",
+          "-o",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+          "-c",
+          "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/ds41_generate.cpp"
+        ],
+        "object": {
+          "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+          "bytes": 529632,
+          "sha256": "aac14c316ecaccbb3294de23927bcbc713264fa1263c99e037b82db6b5bc1a3b"
+        }
+      }
+    ],
+    "step": "candidate",
+    "original_generator_object_byte_equal": true,
+    "generator_compiled": true,
+    "candidate_object": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49/generator-candidate.o",
+      "bytes": 529632,
+      "sha256": "aac14c316ecaccbb3294de23927bcbc713264fa1263c99e037b82db6b5bc1a3b"
+    },
+    "native_binary_linked": false,
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "finished_unix": 1792872662.2346132
+  },
+  "exact_cpu_process_alive": false
+}

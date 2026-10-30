@@ -1,0 +1,13 @@
+F.
+======================================================================
+FAIL: test_generated_static_elf_retains_relro_and_a_non_executable_stack (__main__.MuslLinkerFlags.test_generated_static_elf_retains_relro_and_a_non_executable_stack) (target='aarch64-unknown-linux-musl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/tests/musl_linker_flags.py", line 32, in test_generated_static_elf_retains_relro_and_a_non_executable_stack
+    self.assertTrue((sysroot / "lib/rustlib" / target / "lib").is_dir(), f"install the explicit qualification target {target}")
+AssertionError: False is not true : install the explicit qualification target aarch64-unknown-linux-musl
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.201s
+
+FAILED (failures=1)

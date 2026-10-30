@@ -1,0 +1,46 @@
+{
+  "AGENTS.md": {
+    "sha256": "83f836c1d0a7ae343e0c0b1581a1a76c73c1f64f9e204690d17261901c89adca",
+    "bytes": 6502
+  },
+  "docs/development-standards.md": {
+    "sha256": "975fe5c4a960d10da89a25789ad8306fd56a7c97b6a0c23209f93afc3f7e2438",
+    "bytes": 21824
+  },
+  ".specify/memory/constitution.md": {
+    "sha256": "71685e6a5cbf63ba41d8859841d846987f7ba7e083fba78172460296122bbb34",
+    "bytes": 10488
+  },
+  "crates/code/core/src/config/provider.rs": {
+    "sha256": "8f29957adb76f07c16dac541403498bd321d5b3210c11702dde460bfbafef89c",
+    "bytes": 6177
+  },
+  "crates/code/core/src/config/search.rs": {
+    "sha256": "b6cd43cbd4adfebda05f3f6e1111d3eba97ae405116684ed25c832803bbde786",
+    "bytes": 10401
+  },
+  "crates/code/acp/src/codex_account.rs": {
+    "sha256": "c5fe50b5bd7ec74b4b60cd4488bf7690dcc120ccfde013e5b7cb21d4560b3f2a",
+    "bytes": 22180
+  },
+  "crates/code/acp/src/grok_account.rs": {
+    "sha256": "67b16f8bbbf86b3607ec4beca3e7a505519f1fee745e615e102782aabbf64c2a",
+    "bytes": 17634
+  },
+  "crates/code/core/src/llm/factory.rs": {
+    "sha256": "9fa3bbcfcbb36886134131b5e7978d56030abc17ee1f8a224f62ceb3cbb98775",
+    "bytes": 18156
+  },
+  "crates/code/core/src/llm/tests.rs": {
+    "sha256": "d90c4a0e8dbe3ef9414f22e6f63b00a0251a9bc11df4147eb9b87740cc8469d2",
+    "bytes": 165584
+  },
+  "apps/aster/src/main.rs": {
+    "sha256": "3748ed81647d7bbcd6a57d616af932d5e5badc5d737305a2d94f309932286e4c",
+    "bytes": 157114
+  },
+  "tests/governance_regime.py": {
+    "sha256": "a71825bc89f263c460272350a4df86c09603797422c85230bb6b0ae9ab2b7fea",
+    "bytes": 6740
+  }
+}

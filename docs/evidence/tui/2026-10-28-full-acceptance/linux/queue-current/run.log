@@ -1,0 +1,22 @@
+
+running 1 test
+test stream_controls::kimi_queued_prompts_edit_delete_and_drain_once_in_order ... ORACLE case=queue-edit-delete-drain name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=queue-edit-delete-drain name=queue-effects result=pass detail=three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order
+ORACLE case=queue-edit-delete-drain name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 48 filtered out; finished in 61.04s
+
+
+running 2 tests
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=send-now-cancel-ownership name=send-now-owner result=pass detail=the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal
+ORACLE case=send-now-cancel-ownership name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=send-now-model-stream name=send-now-model-owner result=pass detail=an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools
+ORACLE case=send-now-model-stream name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 47 filtered out; finished in 52.65s
+

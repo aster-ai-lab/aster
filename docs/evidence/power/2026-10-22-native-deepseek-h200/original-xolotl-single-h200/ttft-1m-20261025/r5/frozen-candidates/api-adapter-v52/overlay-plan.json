@@ -1,0 +1,13 @@
+{
+  "upstream_sha256": "f333c6929562009bab3096dd5bd22ddb08d764d1626593237a62fddf2315abee",
+  "patched_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+  "helper_sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+  "accepted_outer_suffixes": [
+    "empty",
+    "exactly one DSML parameter terminator"
+  ],
+  "arbitrary_suffixes_accepted": false,
+  "json_values_repaired": false,
+  "gpu_qualified": false,
+  "production_changed": false
+}

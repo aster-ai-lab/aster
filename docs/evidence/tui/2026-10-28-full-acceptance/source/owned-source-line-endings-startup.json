@@ -1,0 +1,55 @@
+{
+  "files": 6,
+  "failures": [],
+  "entries": [
+    {
+      "path": "crates/code/acp/src/config/tests/diagnostics.rs",
+      "bytes": 1490,
+      "binary": false,
+      "sha256": "91be06471f0bd3be76894db03cc3c54b04386c61b5f41bff218b55bee891b522",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/src/config.rs",
+      "bytes": 51274,
+      "binary": false,
+      "sha256": "e93be1d302a0b47920a98684d0c3dff6291ee91f3c14995b14f370deb0c7c61f",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "bytes": 8583,
+      "binary": false,
+      "sha256": "90a0c12406a3846a0ed6598c0528ccb88fe1e2b4d16324f4304c252a836fd28a",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs",
+      "bytes": 20948,
+      "binary": false,
+      "sha256": "fbf3be472cc7fabf5ad6ddf910da1c3070c5a12fb0135d17b44bf492152ca08d",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli.rs",
+      "bytes": 61681,
+      "binary": false,
+      "sha256": "b5b6c35e5b85052fc299ddb133c8c833e1c6889edef1a9904f087ec6c9ebbf14",
+      "cr_bytes": 0,
+      "bom": false
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/cli_cwd_tests.rs",
+      "bytes": 2814,
+      "binary": false,
+      "sha256": "91b9b2dd1d0e91a4e62bfbc163c75b03f38b07e0cf650426e39c9ecc2c9db9ce",
+      "cr_bytes": 0,
+      "bom": false
+    }
+  ],
+  "note": "Source-only audit; retained evidence and fixtures are not normalized."
+}

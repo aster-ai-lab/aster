@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::agent_view::paste::paste_key_tests::agent_completion_inserts_unreadable_file_url_as_path_text' (49956) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\paste.rs:2685:9:
+assertion `left == right` failed
+  left: FullMiss
+ right: Handled
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::paste::paste_key_tests::agent_completion_inserts_unreadable_file_url_as_path_text ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::paste::paste_key_tests::agent_completion_inserts_unreadable_file_url_as_path_text
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

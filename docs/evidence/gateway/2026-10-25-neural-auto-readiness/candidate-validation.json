@@ -1,0 +1,19 @@
+{
+  "new_gateway_sha256": "7958f940cfc82e83c75578c7a0ae0b0278dc15c67aeb7b02768e4004de7181dc",
+  "public_gateway_config_validation": [
+    {
+      "label": "live-before",
+      "exit_code": 0,
+      "result": "snapshot configuration valid; auto targets=6, routing=None"
+    },
+    {
+      "label": "candidate",
+      "exit_code": 0,
+      "result": "snapshot configuration valid; auto targets=2, routing=Some(OpenaiChat)"
+    }
+  ],
+  "trusted_object_authority_source": "existing bootstrap ACL",
+  "official_compiler": "/opt/a3s/web/a3s_web/snapshot.py",
+  "candidate_sha256": "774daa3e5ee05875e4d2bd71b0a1a1594cd72c7622d2894e40115b8ae06d4665",
+  "private_acl_retained_in_git": false
+}

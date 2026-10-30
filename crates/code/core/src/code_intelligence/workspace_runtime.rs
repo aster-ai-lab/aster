@@ -221,20 +221,39 @@ impl WorkspaceRuntime {
                 LanguageSlot::new(profile, relevant, document_capacity)
             })
             .collect();
-        let languages = slots
+        let languages: Vec<_> = slots
             .iter()
             .filter(|slot| slot.relevant.load(Ordering::Acquire))
-            .map(|slot| CodeIntelligenceLanguageStatus {
-                language: profile_language(slot.profile.id()),
-                state: CodeIntelligenceState::Starting,
-                capabilities: CodeIntelligenceCapabilities::default(),
-                message: Some("starts on first semantic query".to_owned()),
+            .map(|slot| {
+                let unavailable = slot.profile.unavailable_reason(&canonical_root, &layout);
+                CodeIntelligenceLanguageStatus {
+                    language: profile_language(slot.profile.id()),
+                    state: if unavailable.is_some() {
+                        CodeIntelligenceState::Unavailable
+                    } else {
+                        CodeIntelligenceState::Starting
+                    },
+                    capabilities: CodeIntelligenceCapabilities::default(),
+                    message: unavailable
+                        .or_else(|| Some("starts on first semantic query".to_owned())),
+                }
             })
             .collect();
+        let starting = languages
+            .iter()
+            .any(|language| language.state == CodeIntelligenceState::Starting);
         let (status, _) = watch::channel(CodeIntelligenceStatus {
-            state: CodeIntelligenceState::Starting,
+            state: if starting {
+                CodeIntelligenceState::Starting
+            } else {
+                CodeIntelligenceState::Unavailable
+            },
             languages,
-            message: Some("Code Intelligence starts language runtimes on demand".to_owned()),
+            message: Some(if starting {
+                "Code Intelligence starts language runtimes on demand".to_owned()
+            } else {
+                "one or more language runtimes are unavailable".to_owned()
+            }),
             ..CodeIntelligenceStatus::default()
         });
         Self {

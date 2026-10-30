@@ -1,0 +1,153 @@
+{
+  "unix": 1792874498.0043554,
+  "phase": "launched",
+  "profile": "diagnostic",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic",
+  "source_public_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-preflight-v46",
+  "credential_source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-dense-subbatch-v47-dense512",
+  "allocation_job": "aster-xolotl-1mc7-79269eb61f30-62523144",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "replica": "aster-xolotl-1mc7-79269eb61f30-62523144-h4rkr",
+  "replica_uid": "7bbf9c96-01c8-4f71-8eae-62bd9b967f97",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "pod_ip": "100.97.210.241",
+  "host_ip": "10.102.217.46",
+  "plan": {
+    "schema": "aster-xolotl-cumulative-draft-v50",
+    "binary": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-draft-cumulative-v49/ds41_generate",
+    "binary_sha256": "34f3c963304445e50c4ae398194f4b4745a0b1868a6b4a1d6668068aebcf96e6",
+    "model_name": "deepseek-v4.1-flash-1017-xq",
+    "lease_ends_unix": 1792884595.778009,
+    "optimization_gpu_uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+    "credential_file_sha256": "1759b9dc5277bfc43590a2ebc4943cd164c2d087235f58d9a7cec3d6b0606644",
+    "selected_qualified_baseline": "V44 actual1M and V47 subbatch512 basic28; current combined candidate not yet GPU-qualified",
+    "inputs": [
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+        "bytes": 162954903552,
+        "sha256": "73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389",
+        "verify_small_sha256": false
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin",
+        "bytes": 122880,
+        "verify_small_sha256": false
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+        "bytes": 5661492320,
+        "verify_small_sha256": false
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic/test_exact_token_cache.py",
+        "bytes": 4741,
+        "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd",
+        "verify_small_sha256": true
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic/test_strict_native_json.py",
+        "bytes": 1411,
+        "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865",
+        "verify_small_sha256": true
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic/test_combined_adapter.py",
+        "bytes": 4093,
+        "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5",
+        "verify_small_sha256": true
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic/source/tools/v41/serve/serve_ds41.py",
+        "bytes": 28970,
+        "sha256": "f333c6929562009bab3096dd5bd22ddb08d764d1626593237a62fddf2315abee",
+        "verify_small_sha256": true
+      },
+      {
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-tool-diagnostic-v51-diagnostic/source/tools/v41/serve/aster_token_cache.py",
+        "bytes": 3765,
+        "sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+        "verify_small_sha256": true
+      }
+    ],
+    "engine_env": {
+      "STRATA_NO_LARGEPAGES": "1",
+      "STRATA_SERVE_DSPARK": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+      "STRATA_DSPARK_DEPTH": "5",
+      "STRATA_DSPARK_CONF": "0.45",
+      "STRATA_D3_PF": "0",
+      "STRATA_EXP_MODE_T143": "4",
+      "STRATA_EXP_MODE_T11": "0",
+      "ASTER_XQ_SPLIT_MMVQ": "11",
+      "ASTER_XQ_PASS_GRAPH_MIB": "1024",
+      "ASTER_XQ_DENSE_ASYNC_CHAIN": "0",
+      "DS41_GRAPH_REUSE": "1",
+      "STRATA_TEXT_LOG": "0",
+      "STRATA_SERVE_BATCH_TAIL": "1",
+      "STRATA_SERVE_KEEP_CACHE": "1",
+      "STRATA_SERVE_KEEP_MAX": "1048576",
+      "STRATA_SERVE_KEEP_LRU": "1",
+      "ASTER_XQ_PREFILL_QOS": "1",
+      "MIMO_CHUNK_PROF": "1",
+      "STRATA_DENSE_PROF": "1",
+      "ASTER_XQ_KEEP_MIXED": "1",
+      "ASTER_XQ_RESIDENT_MMQ": "1",
+      "ASTER_XQ_INDEXER_MASK_SKIP": "1",
+      "ASTER_XQ_DSPARK_CUM": "0",
+      "ASTER_XQ_EXACT_TOKEN_CACHE": "1",
+      "STRATA_DEBUG": "1"
+    },
+    "context_tokens": 1048576,
+    "prefill_batch_tokens": 8192,
+    "conversation_cache_mib": 8192,
+    "conversation_cache_slots": 8,
+    "prefill_chunk_tokens": 512
+  },
+  "credential_file": "D:\\code\\aster\\target\\h200-native\\access-private-xolotl-9c996c5a434b\\api-key.txt",
+  "formal_service_unchanged": true,
+  "full1m_qualified": false,
+  "changed_comparison_control": "cumulative cutoff only; common subbatch512/native binary/API f333/exact memo1",
+  "files": [
+    {
+      "file": "service-worker.py",
+      "bytes": 8448,
+      "sha256": "35d41c1c7c2ed8a323f0cd6631b66fb0c42d506803e3be3cd7bf06f8a87e3fb3"
+    },
+    {
+      "file": "server-config.json",
+      "bytes": 1851,
+      "sha256": "85f0f058999d146e5e4386df70e185f61cd79f6085572e89cd206fd24efb7787"
+    },
+    {
+      "file": "prompt-id-controls.json",
+      "bytes": 3753,
+      "sha256": "4ed53c7b27a75bc81a61c6b1790d3bf16fbd82591e6eaf44fe99b6b6ab760575"
+    },
+    {
+      "file": "test_exact_token_cache.py",
+      "bytes": 4741,
+      "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd"
+    },
+    {
+      "file": "test_strict_native_json.py",
+      "bytes": 1411,
+      "sha256": "0f7b4e8eccf2c8e99b2794fcf3b156edb38dc82da5651a0cc9ac7b4275fee865"
+    },
+    {
+      "file": "test_combined_adapter.py",
+      "bytes": 4093,
+      "sha256": "fb16715fefb52053d6699a6567f68b70c535273fca066b6aeaad9e0c92844bf5"
+    },
+    {
+      "file": "service-plan.json",
+      "bytes": 4063,
+      "sha256": "a484617eae252890bd2572c34262b155d3241314b5ba0cb0243d8eae54c3cfc7"
+    }
+  ],
+  "process": {
+    "pid": 5561,
+    "start_ticks": 315398355,
+    "uid": 10250,
+    "unix": 1792874507.668383,
+    "deadline_seconds": 10078
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "unix": 1792889114.7950757,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-admission-seed-v98",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "gpu_qualified": false,
+  "files": [
+    {
+      "file": "native_link_worker.py",
+      "bytes": 4337,
+      "sha256": "da2492e2d0bb3587702d089b97891fe9a354f798380a62b79d01152e1561df29"
+    },
+    {
+      "file": "native-link-plan.json",
+      "bytes": 4746,
+      "sha256": "34168989197442d9a8e135368a15a2a8acadf92dc0ef5017fa30cee1b7ba5c55"
+    }
+  ],
+  "process": {
+    "pid": 178,
+    "start_ticks": 711839549,
+    "uid": 10250,
+    "unix": 1792889124.501917,
+    "budget_seconds": 200
+  }
+}

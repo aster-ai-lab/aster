@@ -1,0 +1,13 @@
+{
+  "unix": 1792856540.9295776,
+  "compile-result.json": {
+    "unix": 1792856445.9514642,
+    "phase": "built",
+    "gpu_executed": false,
+    "binary_sha256": "60df409c1b710ab0d49b4716efa81ac3d9242634c4f6ea7214ab7788d7e6dc7a",
+    "binary_bytes": 104952,
+    "finished_unix": 1792856446.7333302
+  },
+  "compile.log": "",
+  "worker.log": ""
+}

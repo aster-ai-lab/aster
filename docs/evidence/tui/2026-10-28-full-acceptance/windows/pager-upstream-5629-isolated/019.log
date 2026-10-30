@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_token_candidate_accepts_without_dropdown_flash' (46968) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\agent_view\shell_completion.rs:412:9:
+assertion failed: matches!(outcome, InputOutcome::Changed)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_token_candidate_accepts_without_dropdown_flash ... FAILED
+
+failures:
+
+failures:
+    app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_token_candidate_accepts_without_dropdown_flash
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

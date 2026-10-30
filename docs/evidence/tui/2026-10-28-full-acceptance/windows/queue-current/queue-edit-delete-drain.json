@@ -1,0 +1,195 @@
+{
+  "assertions_finished": true,
+  "case": "queue-edit-delete-drain",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "Start-Sleep -Seconds 20; Get-Content -LiteralPath queue-proof.txt -Raw",
+            "timeout": 120000
+          },
+          "id": "call_1848911323c743d3bea702ee28068e7f",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13337,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9c00be99-bd21-4889-aa53-61096de803cf",
+            "thread_id": "12101f14-55c6-4938-87bd-9c6bde5c1289"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1848911323c743d3bea702ee28068e7f",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:6a939506b69b0358a567b55ceb75276c3a2922f3910df2882c20972e88542d8e",
+                "kind": "file",
+                "mode": 32
+              },
+              "before": {
+                "content_digest": "sha256:6a939506b69b0358a567b55ceb75276c3a2922f3910df2882c20972e88542d8e",
+                "kind": "file",
+                "mode": 32
+              },
+              "path": "queue-proof.txt"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-9c00be99-bd21-4889-aa53-61096de803cf",
+            "thread_id": "12101f14-55c6-4938-87bd-9c6bde5c1289"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_1848911323c743d3bea702ee28068e7f",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"QUEUE-PROOF-7b815c91-ab15-4230-acfd-0d73765af123\\r\\n\\n[mutation observation] path=queue-proof.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":50,\"captured_bytes\":50,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":50,\"sha256\":\"cdbb4fdafb4d7519797c934ad7d25c0bf69d1e41161c19daa562cb85419d664f\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"changed_paths\":[\"queue-proof.txt\"],\"verification_shell_command\":\"Start-Sleep -Seconds 20; Get-Content -LiteralPath queue-proof.txt -Raw\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":50,\"projected_bytes\":50,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:cdbb4fdafb4d7519797c934ad7d25c0bf69d1e41161c19daa562cb85419d664f\",\"projected_digest\":\"sha256:cdbb4fdafb4d7519797c934ad7d25c0bf69d1e41161c19daa562cb85419d664f\",\"repeat_key\":\"sha256:cdbb4fdafb4d7519797c934ad7d25c0bf69d1e41161c19daa562cb85419d664f\",\"content_ref\":\"inline:sha256:cdbb4fdafb4d7519797c934ad7d25c0bf69d1e41161c19daa562cb85419d664f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"queue-proof.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:152a00bf2de468652ef2bfbe1db046bbe084bb5f97bd6d68c2df0698bf7f4eaa\"}",
+        "prepared_digest": "sha256:d2968ac50a988af54c3799b48bc9eb11f9cd37098114933a6cfc9d982365891d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13579,
+        "text": "QUEUE-PROOF-7b815c91-ab15-4230-acfd-0d73765af123",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "548880ef9957009bf9f9b2a1692f3959a8f0e340faf34caa1f2305decc7eeb94",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:c782502ea287f5477c73bf6fdf7b01b624ea29f99f008010f52fc6c1dd138bcb"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13651,
+        "text": "QUEUED-FIRST-OK",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4582d0247f689282b0d0fa12f7c576ffaf343f748fb1dd013595ab063027e93f",
+          "seq": 13
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13707,
+        "text": "QUEUED-SECOND-EDITED",
+        "tool": null
+      },
+      "seq": 17,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "4bd1777b28231889ee3705338ce8fc1b7b9178ae6a75ce31648d36af29733042",
+          "seq": 17
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 18,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "three queued rows: delete the last, edit the second, then exact user messages and settled replies drain once in the intended order",
+      "name": "queue-effects",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-tzsGKG\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Reply only QUEUED-SECOND-EDITED. Do not call any tools.                                              12:23 AM                                                                                                                                                                                                                                                         ♦ Thought for 0.5s                                                                                                                                                                                                                              QUEUED-SECOND-EDITED                                                                                   12:24 AM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                            | Responding… 0.0s                                                                              8.2s ↓13.7k [stop]                                                                                                                            ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                                                                                                                                         "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

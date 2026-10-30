@@ -439,6 +439,38 @@ pub struct InferenceRoutingBranch {
     pub primary_targets: Option<Vec<uuid::Uuid>>,
 }
 
+/// Explicit wire contract of the configured decision-model target.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InferenceDecisionProtocol {
+    #[default]
+    Decisions,
+    OpenaiChat,
+    Apofasi,
+}
+impl InferenceDecisionProtocol {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        match value {
+            "decisions" => Ok(Self::Decisions),
+            "openai_chat" => Ok(Self::OpenaiChat),
+            "apofasi" => Ok(Self::Apofasi),
+            _ => Err(format!(
+                "unknown decision protocol '{value}'; expected decisions, openai_chat, or apofasi"
+            )),
+        }
+    }
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Decisions => "decisions",
+            Self::OpenaiChat => "openai_chat",
+            Self::Apofasi => "apofasi",
+        }
+    }
+    pub const fn is_default(&self) -> bool {
+        matches!(self, Self::Decisions)
+    }
+}
+
 /// HR1: the task-aware routing plan over the model's declared targets.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -448,6 +480,8 @@ pub struct InferenceRoutingPlan {
     /// for `smart_saving` and `branches`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub decision_model: Option<String>,
+    #[serde(default, skip_serializing_if = "InferenceDecisionProtocol::is_default")]
+    pub decision_protocol: InferenceDecisionProtocol,
     /// Economy candidate target ids (smart saving), ordered.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub economy_targets: Option<Vec<uuid::Uuid>>,

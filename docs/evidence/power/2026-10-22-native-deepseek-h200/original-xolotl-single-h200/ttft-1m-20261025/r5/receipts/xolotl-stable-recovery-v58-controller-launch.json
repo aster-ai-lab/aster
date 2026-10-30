@@ -1,0 +1,7 @@
+{
+  "unix": 1792877437.463755,
+  "pid": 190920,
+  "script": "run_xolotl_stable_recovery_v58.frozen.py",
+  "allocation_intent": "xolotl-single1m-cont8-lease-pending.json",
+  "new_resource_submission_allowed": false
+}

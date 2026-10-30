@@ -1,0 +1,102 @@
+--- qualified/lightning-indexer.cu
++++ v40/lightning-indexer.cu
+@@ -2,6 +2,7 @@
+ #include "lightning-indexer.cuh"
+ #include "fattn-common.cuh"
+ #include "convert.cuh"
++#include "aster_indexer_mask_skip.cuh"
+ 
+ #if !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+ #if defined(TURING_MMA_AVAILABLE)
+@@ -15,7 +16,7 @@
+ #include <mma.h>
+ namespace wmma = nvcuda::wmma;
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
+ static __global__ void lightning_indexer_kernel_wmma(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -40,6 +41,12 @@
+ 
+     // each block processes K_VECS_PER_BLOCK K vectors
+     const int start_kv = blockIdx.x * K_VECS_PER_BLOCK;
++    if constexpr (MASK_SKIP) {
++        if (aster_indexer_masked_block<true, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K>(
++            Q, K, W, M, dst, start_kv, n_kv, i_batch, i_stream, static_cast<int>(nem3),
++            nb1, nb3, nbq1, nbq2, nbq3, nbk2, nbk3, nbw1, nbw3, nbm1, nbm3)) return;
++    }
++
+ 
+     const char  * q_base = (const char  *)                 Q + i_batch*nbq2 + i_stream*nbq3;
+     const float * w_base = (const float *) ((const char *) W + i_batch*nbw1 + i_stream*nbw3);
+@@ -212,7 +219,7 @@
+ 
+ #else // defined(TURING_MMA_AVAILABLE)
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
+ static __global__ void lightning_indexer_kernel_wmma(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -240,7 +247,7 @@
+ // thanks to that one warp operating on float4 processes whole indexer K/Q vectors
+ // 32 * 4 = 128 (N_EMBD)
+ 
+-template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K>
++template <int WARPS_PER_BLOCK, int K_VECS_PER_BLOCK, int64_t N_EMBD, int64_t N_HEAD, ggml_type TYPE_K, bool MASK_SKIP>
+ static __global__ void lightning_indexer_kernel_vec(
+         const float * Q, const char * K, const float * W, const half * M, float * dst,
+         int64_t n_stream, int64_t n_batch, int64_t n_kv,
+@@ -264,6 +271,13 @@
+     // each warp processes K_VECS_PER_WARP K vectors
+     const int start_kv_block = blockIdx.x * K_VECS_PER_BLOCK;
+     const int start_kv = start_kv_block + i_warp * K_VECS_PER_WARP;
++    if constexpr (MASK_SKIP) {
++        // Eligibility is block-wide even though the unchanged vector work is per warp.
++        if (aster_indexer_masked_block<false, K_VECS_PER_BLOCK, N_EMBD, N_HEAD, TYPE_K>(
++            Q, K, W, M, dst, start_kv_block, n_kv, i_batch, i_stream, static_cast<int>(nem3),
++            nb1, nb3, nbq1, nbq2, nbq3, nbk2, nbk3, nbw1, nbw3, nbm1, nbm3)) return;
++    }
++
+ 
+     const char  * q_base = (const char  *)                 Q + i_batch*nbq2 + i_stream*nbq3;
+     const float * w_base = (const float *) ((const char *) W + i_batch*nbw1 + i_stream*nbw3);
+@@ -382,22 +396,24 @@
+     }
+ }
+ 
+-#define LIGHTNING_INDEXER_CASE(lightning_indexer_kernel, n_embd, n_head, K, type_K)         \
+-    if (K->type == (type_K)) {                                                              \
+-        lightning_indexer_kernel<WARPS_PER_BLOCK, K_VECS_PER_BLOCK, n_embd, n_head, type_K> \
+-            <<<grid, block, 0, ctx.stream()>>>(                                             \
+-            q_d, k_d, w_d, m_d, dst_d,                                                      \
+-            n_stream, n_batch, n_kv,                                                        \
+-            nb1, nb2, nb3,                                                                  \
+-            nbq1, nbq2, nbq3,                                                               \
+-            nbk1, nbk2, nbk3,                                                               \
+-            nbw1, nbw2, nbw3,                                                               \
+-            nbm1, nbm2, nbm3,                                                               \
+-            nem3                                                                            \
+-        );                                                                                  \
++#define ASTER_INDEXER_LAUNCH(kernel, n_embd, n_head, type_K, mask_skip)                 \
++    kernel<WARPS_PER_BLOCK, K_VECS_PER_BLOCK, n_embd, n_head, type_K, mask_skip>            \
++        <<<grid, block, 0, ctx.stream()>>>(                                              \
++        q_d, k_d, w_d, m_d, dst_d, n_stream, n_batch, n_kv,                               \
++        nb1, nb2, nb3, nbq1, nbq2, nbq3, nbk1, nbk2, nbk3,                               \
++        nbw1, nbw2, nbw3, nbm1, nbm2, nbm3, nem3)
++
++#define LIGHTNING_INDEXER_CASE(kernel, n_embd, n_head, K, type_K)                         \
++    if (K->type == (type_K)) {                                                           \
++        if (mask_skip) { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,true); }          \
++        else { ASTER_INDEXER_LAUNCH(kernel,n_embd,n_head,type_K,false); }                  \
+     } else
+ 
+ void ggml_cuda_lightning_indexer(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
++    static const auto mode = aster_indexer::parse(std::getenv("ASTER_XQ_INDEXER_MASK_SKIP"));
++    if (mode == aster_indexer::Mode::invalid) GGML_ABORT("ASTER_XQ_INDEXER_MASK_SKIP must be 0 or 1");
++    const bool mask_skip = mode == aster_indexer::Mode::on;
++
+     const ggml_tensor * q = dst->src[0];
+     const ggml_tensor * k = dst->src[1];
+     const ggml_tensor * w = dst->src[2]; // weights

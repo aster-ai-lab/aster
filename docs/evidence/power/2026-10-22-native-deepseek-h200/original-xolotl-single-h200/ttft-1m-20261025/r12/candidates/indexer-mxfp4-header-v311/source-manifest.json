@@ -1,0 +1,75 @@
+{
+  "unix": 1792924680.343172,
+  "phase": "source_prepared_only",
+  "experimental_flag": "ASTER_XQ_INDEXER_MXFP4_HEADER",
+  "default_mode": 0,
+  "requires_existing_mask_skip_mode": true,
+  "only_key_type": "GGML_TYPE_MXFP4",
+  "safe_max_exponent": 134,
+  "safe_max_abs": 768,
+  "original_Q_W_mask_bounds_preserved": true,
+  "outside_domain_original_math": true,
+  "other_key_types_original_path": true,
+  "CUDA_compiled": false,
+  "GPU_executed": false,
+  "model_executed": false,
+  "formal_service_changed": false,
+  "performance_claimed": false,
+  "sources": [
+    {
+      "file": "lightning-indexer.cu",
+      "bytes": 26349,
+      "sha256": "be14bc5b6cf409ffe7aaf64f615d07bb5f027066c8b93343a7abe32de4d4e726"
+    },
+    {
+      "file": "aster_indexer_mask_skip.cuh",
+      "bytes": 4134,
+      "sha256": "3890a3b6bba54a420e0e13a941e84fdbc539da563e439fe9731d040b160b1d4b"
+    },
+    {
+      "file": "ds41_dense.cpp",
+      "bytes": 194998,
+      "sha256": "4e15a42b00db8c2dcb457793a3af536462ed03424f6d98785a5c10ad2415760f"
+    },
+    {
+      "file": "aster_indexer_mask_policy.hpp",
+      "bytes": 721,
+      "sha256": "182aa5a064629f3439151e35d69c76cc2accb109edde94a57675bcf9fd3ed1fe"
+    },
+    {
+      "file": "aster_mxfp4_scale_bound_v306.hpp",
+      "bytes": 470,
+      "sha256": "4154f74f08e52df316ae658d708362a69eb84685bf26ad3db326662232ae5e46"
+    },
+    {
+      "file": "aster_mxfp4_header_mode.cpp",
+      "bytes": 730,
+      "sha256": "62a142b43f5aed2d9107a024e38a08f1bfb54f2fe7ecfbcf31af3f8b442e9bfd"
+    }
+  ],
+  "original_sources": [
+    {
+      "file": "indexer-v40r2/lightning-indexer.cu",
+      "sha256": "8c97fc28df2c073bcb24321584f56cd571b7b0b356f6b969a5e6960c1ad33af2"
+    },
+    {
+      "file": "indexer-v40r2/aster_indexer_mask_skip.cuh",
+      "sha256": "c722c721193fd40a26a35b904d9d4dba752630405829849407a3561af41a3e10"
+    },
+    {
+      "file": "indexer-v40r2/aster_indexer_mask_policy.hpp",
+      "sha256": "182aa5a064629f3439151e35d69c76cc2accb109edde94a57675bcf9fd3ed1fe"
+    },
+    {
+      "file": "indexer-v40/ds41_dense.cpp",
+      "sha256": "bd67c02e7f0c096471b057915e73d54955df8cb45a9ffe245406a835d7ebc51f"
+    }
+  ],
+  "required_before_GPU_compile": "Finish or positively verify terminal/reaped actual1M diagnostic246r4; inspect its timeline before selecting this candidate.",
+  "required_before_adoption": [
+    "Closed-mode pre-main CPU proof",
+    "Actual CUDA float/half MXFP4 exhaustive bounds and unsafe/fallback/odd-tail guards",
+    "Original archive full-score equality across all9key types,32/64heads,mask patterns,graph replay and changed input",
+    "Single-GPU real-model same-input full1024 output and unchanged1M/concurrency acceptance; no gate substitution"
+  ]
+}

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/validate-session-info.py", line 48, in <module>
+    assert "Mode: yolo" in oracles["session-info-second-turn"]["screen"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

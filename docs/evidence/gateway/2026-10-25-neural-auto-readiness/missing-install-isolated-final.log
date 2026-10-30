@@ -1,0 +1,230 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml
+workspace: /code/aster/.wt-deepseek-dspark-main-20261025/Cargo.toml
+   Compiling a3s-gateway v1.1.1 (/code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway)
+warning: unused import: `HashMap`
+  --> apps/gateway/src/entrypoint/inference_dispatch.rs:16:24
+   |
+16 | use std::collections::{HashMap, HashSet};
+   |                        ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::collections::BTreeMap`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4490:17
+     |
+4490 |             use std::collections::BTreeMap;
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `hyper::body::Body as _`
+  --> apps/gateway/src/entrypoint/protocol/http_handler.rs:19:5
+   |
+19 | use hyper::body::Body as _;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufferedBody` and `buffer_body_up_to`
+ --> apps/gateway/src/entrypoint/protocol/streaming_handler.rs:9:26
+  |
+9 | use super::body_buffer::{buffer_body_up_to, BufferedBody};
+  |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DECISION_REQUEST_LIMIT_BYTES`, `DecisionContentPart`, `DecisionDefinition`, `DecisionStepPart`, and `DecisionVisibleTurn`
+  --> apps/gateway/src/inference/mod.rs:38:25
+   |
+38 |     DecisionAssessment, DecisionContentPart, DecisionDefinition, DecisionError, DecisionRequest,
+   |                         ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+39 |     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
+   |                                                        ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^
+40 |     DECISION_REQUEST_LIMIT_BYTES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `DecisionReason`, `FrozenDecision`, and `TurnDecisionCache`
+  --> apps/gateway/src/inference/mod.rs:43:18
+   |
+43 |     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
+   |                  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `DecisionInputs`, `RouteDecision`, `decision_inputs`, `evaluate_routing`, and `plan_decision_definition`
+  --> apps/gateway/src/inference/mod.rs:68:29
+   |
+68 |     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
+   |                             ^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^
+69 |     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^                               ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/entrypoint/protocol/http_handler.rs:812:21
+    |
+812 |                 let mut response = track_attributed_token_budget_response(
+    |                     ----^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> apps/gateway/src/config/acl/inference.rs:37:9
+   |
+37 |     let mut guardrails = HashMap::new();
+   |         ----^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+
+warning: unused variable: `content_length`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4273:25
+     |
+4273 |                     let content_length = loop {
+     |                         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_content_length`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `decider`
+    --> apps/gateway/src/entrypoint/inference_tests.rs:4328:9
+     |
+4328 |     let decider = server.clone();
+     |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_decider`
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/inference/authorization.rs:863:9
+    |
+863 |         mut service_is_available: F,
+    |         ----^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:354:5
+    |
+354 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:383:5
+    |
+383 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: associated function `new` is never used
+   --> apps/gateway/src/entrypoint.rs:103:19
+    |
+101 | impl HttpConnectionContext {
+    | -------------------------- associated function in this implementation
+102 |     #[cfg(test)]
+103 |     pub(super) fn new(
+    |                   ^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `spawn_sse_chat_backend` is never used
+    --> apps/gateway/src/entrypoint/inference_tests.rs:2938:10
+     |
+2938 | async fn spawn_sse_chat_backend(
+     |          ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `GuardrailBlocked` is never constructed
+  --> apps/gateway/src/inference/access_error.rs:41:5
+   |
+12 | pub(crate) enum InferenceAccessError {
+   |                 -------------------- variant in this enum
+...
+41 |     GuardrailBlocked { reason: String },
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = note: `InferenceAccessError` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: methods `grant_guardrails` and `select_from_effective_targets` are never used
+   --> apps/gateway/src/inference/authorization.rs:214:19
+    |
+211 | impl InferenceAuthorizer {
+    | ------------------------ methods in this implementation
+...
+214 |     pub(crate) fn grant_guardrails(
+    |                   ^^^^^^^^^^^^^^^^
+...
+855 |     pub(crate) fn select_from_effective_targets<F>(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `BranchPrimary` is never constructed
+  --> apps/gateway/src/inference/decision_cache.rs:66:5
+   |
+57 | pub(crate) enum ChosenGroup {
+   |                 ----------- variant in this enum
+...
+66 |     BranchPrimary { category: String },
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `ChosenGroup` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `is_empty` is never used
+   --> apps/gateway/src/inference/decision_cache.rs:169:19
+    |
+125 | impl TurnDecisionCache {
+    | ---------------------- method in this implementation
+...
+169 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: variants `Messages` and `CountTokens` are never constructed
+  --> apps/gateway/src/inference/openai_request.rs:35:5
+   |
+25 | pub(crate) enum OpenAiRequestProfile {
+   |                 -------------------- variants in this enum
+...
+35 |     Messages,
+   |     ^^^^^^^^
+36 |     /// Count Anthropic message input tokens.
+37 |     CountTokens,
+   |     ^^^^^^^^^^^
+   |
+   = note: `OpenAiRequestProfile` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: enum `ProxyJsonField` is never used
+   --> apps/gateway/src/inference/openai_request.rs:476:6
+    |
+476 | enum ProxyJsonField {
+    |      ^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonFieldVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:481:8
+    |
+481 | struct ProxyJsonFieldVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadata` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:525:8
+    |
+525 | struct ProxyJsonMetadata {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadataVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:529:8
+    |
+529 | struct ProxyJsonMetadataVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decision_inputs` is never used
+  --> apps/gateway/src/inference/routing.rs:53:15
+   |
+53 | pub(crate) fn decision_inputs(
+   |               ^^^^^^^^^^^^^^^
+
+warning: variable `baseUrl` should have a snake case name
+   --> apps/gateway/src/inference/console_catalog.rs:393:14
+    |
+393 | fn origin_of(baseUrl: &str) -> String {
+    |              ^^^^^^^ help: convert the identifier to snake case: `base_url`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `a3s-gateway` (lib test) generated 27 warnings (run `cargo fix --lib -p a3s-gateway --tests` to apply 14 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.63s
+     Running unittests src/lib.rs (/code/aster/target/debug/deps/a3s_gateway-1bf5f64fc82051e1)
+
+running 1 test
+test entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2123 filtered out; finished in 0.14s
+

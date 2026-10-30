@@ -1,0 +1,436 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+    Checking a3s-tool-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-types)
+   Compiling a3s-code-version v9.1.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-version)
+    Checking a3s-dirs v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-dirs)
+   Compiling a3s-proto-build v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/build/a3s-proto-build)
+    Checking a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+    Checking prod-mc-cli-chat-proxy-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/prod/mc/cli-chat-proxy-types)
+   Compiling rustix v0.38.44
+    Checking a3s-code-env v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-env)
+   Compiling async-openai-macros v0.1.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai-macros)
+    Checking a3s-circuit-breaker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-circuit-breaker)
+    Checking a3s-code-extra-ca v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-extra-ca)
+    Checking a3s-code-auth v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-auth)
+    Checking a3s-code-secrets v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-secrets)
+    Checking a3s-tracing v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tracing)
+    Checking a3s-code-compaction v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-code-compaction)
+    Checking a3s-token-estimation v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-token-estimation)
+    Checking a3s-code-image v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-image)
+    Checking a3s-tool-protocol v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools)
+    Checking a3s-code-workspace-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-types)
+    Checking a3s-code-feedback v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-feedback)
+    Checking a3s-interjection-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-interjection-core)
+    Checking a3s-message-delivery-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-message-delivery-core)
+    Checking procfs v0.17.0
+    Checking a3s-mixpanel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-mixpanel)
+    Checking a3s-code-session-events v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-events)
+    Checking agent-client-protocol v0.10.4
+    Checking a3s-code-otel v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-otel)
+    Checking gix v0.83.0
+    Checking a3s-sqlite-journal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-sqlite-journal)
+    Checking prometheus v0.14.0
+    Checking a3s-code-config v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config)
+    Checking petgraph v0.6.5
+    Checking tree-sitter v0.26.13
+    Checking mimalloc v0.1.48
+    Checking a3s-code-paths v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-paths)
+    Checking tree-sitter-typescript v0.23.2
+    Checking tree-sitter-go v0.25.0
+    Checking quote v1.0.45
+    Checking tree-sitter-python v0.25.0
+    Checking tree-sitter-rust v0.24.2
+    Checking tree-sitter-javascript v0.25.0
+    Checking rapidhash v4.2.0
+    Checking fixedbitset v0.5.7
+    Checking humantime v2.4.0
+    Checking nohash-hasher v0.2.0
+    Checking syn v2.0.117
+    Checking tree-sitter-bash v0.25.0
+    Checking wayland-protocols v0.32.10
+    Checking a3s-fuzzy-file-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+    Checking a3s-acp-lib v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-acp-lib)
+    Checking petgraph v0.8.3
+    Checking a3s-fsnotify v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fsnotify)
+    Checking a3s-code-diag-server v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-diag-server)
+    Checking humantime-serde v1.1.1
+    Checking polling v3.11.0
+    Checking a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-codebase-graph)
+    Checking async-task v4.7.1
+    Checking async-lock v3.4.1
+    Checking async-channel v2.5.0
+    Checking async-io v2.6.0
+    Checking gethostname v1.1.0
+    Checking os_pipe v1.2.3
+    Checking endi v1.1.1
+    Checking a3s-file-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-file-utils)
+    Checking x11rb-protocol v0.13.2
+    Checking tree_magic_mini v3.2.2
+    Checking equator v0.4.2
+    Checking cpp_demangle v0.4.5
+    Checking async-signal v0.2.13
+    Checking async-openai v0.33.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/third-party/async-openai)
+    Checking symbolic-common v12.16.3
+    Checking piper v0.2.4
+    Checking async-executor v1.13.3
+    Checking zvariant_utils v3.3.0
+    Checking nix v0.26.4
+    Checking aligned-vec v0.6.4
+    Checking num-rational v0.4.2
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-tools-api)
+    Checking async-process v2.5.0
+    Checking blocking v1.6.2
+    Checking a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sandbox)
+    Checking wayland-protocols-wlr v0.3.10
+    Checking a3s-code-status-line v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-status-line)
+    Checking a3s-code-models v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-models)
+    Checking symbolic-demangle v12.16.3
+    Checking num-complex v0.4.6
+    Checking zvariant v5.10.0
+    Checking ordered-stream v0.2.0
+    Checking borrow-or-share v0.2.4
+    Checking bit-set v0.8.0
+    Checking sqlite-vec v0.1.7-alpha.10
+    Checking smartstring v1.0.1
+    Checking num v0.4.3
+    Checking fluent-uri v0.3.2
+    Checking a3s-gix-status v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-gix-status)
+    Checking x11rb v0.13.2
+    Checking thin-vec v0.2.18
+    Checking cached_proc_macro_types v0.1.1
+    Checking portable-pty v0.9.0
+    Checking fancy-regex v0.14.0
+    Checking stop-words v0.9.0
+    Checking cached v0.56.0
+    Checking pprof v0.15.0
+    Checking wl-clipboard-rs v0.9.3
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell)
+    Checking process-wrap v9.0.0
+    Checking fraction v0.15.3
+    Checking uuid-simd v0.8.0
+    Checking rhai v1.25.1
+    Checking backon v1.6.0
+    Checking email_address v0.2.9
+    Checking referencing v0.30.0
+    Checking rust-stemmers v1.2.0
+    Checking zbus_names v4.3.1
+    Checking a3s-hooks-plugins-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-hooks-plugins-types)
+    Checking deunicode v1.6.2
+    Checking shlex v1.3.0
+    Checking tagptr v0.2.0
+    Checking toml_datetime v0.6.11
+    Checking obfstr v0.4.4
+    Checking a3s-code-bundle v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-bundle)
+    Checking moka v0.12.11
+    Checking jsonschema v0.30.0
+    Checking bm25 v2.3.2
+    Checking a3s-code-foreign-sessions v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+    Checking toml_edit v0.22.27
+    Checking arboard v3.6.1
+    Checking notify-debouncer-mini v0.6.0
+    Checking infer v0.15.0
+    Checking zbus v5.14.0
+    Checking tokio-retry v0.3.0
+    Checking a3s-agent-lifecycle v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-agent-lifecycle)
+    Checking a3s-code-file-lock v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-file-lock)
+    Checking a3s-prompt-queue v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-prompt-queue)
+    Checking serde_ignored v0.1.14
+    Checking kanal v0.1.1
+    Checking tdigests v1.0.1
+    Checking a3s-tracing-macros v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tracing-macros)
+    Checking a3s-hunk-tracker v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-hunk-tracker)
+    Checking a3s-fast-worktree v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-fast-worktree)
+    Checking a3s-code-shared v0.0.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shared)
+    Checking a3s-code-shell-base v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-base)
+    Checking a3s-workflow v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-workflow)
+    Checking a3s-system-power v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-system-power)
+    Checking a3s-tool-runtime v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-tool-runtime)
+    Checking a3s-code-sampling-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampling-types)
+    Checking a3s-computer-hub-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-core)
+    Checking a3s-computer-hub-sdk v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-sdk)
+    Checking a3s-code-sampler v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-sampler)
+    Checking a3s-compaction-transcript v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-compaction-transcript)
+    Checking a3s-chat-state v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-chat-state)
+    Checking a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-telemetry)
+    Checking a3s-computer-hub-mcp-adapter v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+    Checking a3s-code-workspace-client v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-client)
+    Checking a3s-code-workspace-daemon v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+    Checking a3s-code-session-search v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo clippy --fix --lib -p a3s-code-tools -- --no-deps -D warnings` to apply 2 suggestions)
+    Checking a3s-code-hooks v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-hooks)
+    Checking a3s-code-mcp v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mcp)
+    Checking a3s-code-announcements v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-announcements)
+    Checking a3s-code-agent v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-agent)
+    Checking a3s-code-config-types v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-config-types)
+    Checking a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-workspace)
+    Checking a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+    Checking a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+    Checking a3s-code-http v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-http)
+    Checking a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+    Checking a3s-code-memory v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-memory)
+    Checking a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+    Checking a3s-code-login v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-login)
+error: consider using `sort_by_key`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/agent/roster.rs:153:5
+    |
+153 |     entries.sort_by(|a, b| b.last_change_unix_ms.cmp(&a.last_change_unix_ms));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+    = note: `-D clippy::unnecessary-sort-by` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_sort_by)]`
+help: try
+    |
+153 -     entries.sort_by(|a, b| b.last_change_unix_ms.cmp(&a.last_change_unix_ms));
+153 +     entries.sort_by_key(|b| std::cmp::Reverse(b.last_change_unix_ms));
+    |
+
+error: this block may be rewritten with the `?` operator
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/agent/update_chunk_merge.rs:115:13
+    |
+115 | /             if let Some(prev) = prev {
+116 | |                 return Some((prev, None));
+117 | |             } else {
+118 | |                 return None;
+119 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#question_mark
+    = note: `-D clippy::question-mark` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::question_mark)]`
+help: replace it with
+    |
+115 ~             {
+116 +                 let prev = prev?;
+117 +                 return Some((prev, None));
+118 +             }
+    |
+
+error: redundant reference in `format!` argument
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/extensions/billing.rs:196:55
+    |
+196 |         .header("Authorization", format!("Bearer {}", &auth.key))
+    |                                                       ^^^^^^^^^ help: remove the redundant `&`: `auth.key`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+    = note: `-D clippy::useless-borrows-in-formatting` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::useless_borrows_in_formatting)]`
+
+error: redundant reference in `format!` argument
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/extensions/billing.rs:286:55
+    |
+286 |         .header("Authorization", format!("Bearer {}", &auth.key))
+    |                                                       ^^^^^^^^^ help: remove the redundant `&`: `auth.key`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: consider using `sort_by_key`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/extensions/prompt_history.rs:114:5
+    |
+114 |     summaries.sort_by(|a, b| a.updated_at.cmp(&b.updated_at));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+114 -     summaries.sort_by(|a, b| a.updated_at.cmp(&b.updated_at));
+114 +     summaries.sort_by_key(|a| a.updated_at);
+    |
+
+error: consider using `sort_by_key`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/extensions/suggest/history_provider.rs:153:5
+    |
+153 |     dirs.sort_by(|a, b| b.1.cmp(&a.1));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+153 -     dirs.sort_by(|a, b| b.1.cmp(&a.1));
+153 +     dirs.sort_by_key(|b| std::cmp::Reverse(b.1));
+    |
+
+error: consider using `sort_by_key`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/extensions/suggest/mod.rs:321:5
+    |
+321 |     all.sort_by(|a, b| b.priority.cmp(&a.priority));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+321 -     all.sort_by(|a, b| b.priority.cmp(&a.priority));
+321 +     all.sort_by_key(|b| std::cmp::Reverse(b.priority));
+    |
+
+error: redundant reference in `format!` argument
+  --> crates/terminal/crates/codegen/a3s-code-shell/src/remote/agent.rs:58:59
+   |
+58 |             .header("Authorization", format!("Bearer {}", &auth.key))
+   |                                                           ^^^^^^^^^ help: remove the redundant `&`: `auth.key`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: redundant reference in `format!` argument
+  --> crates/terminal/crates/codegen/a3s-code-shell/src/remote/client.rs:23:55
+   |
+23 |         .header("Authorization", format!("Bearer {}", &auth.key))
+   |                                                       ^^^^^^^^^ help: remove the redundant `&`: `auth.key`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: redundant reference in `format!` argument
+  --> crates/terminal/crates/codegen/a3s-code-shell/src/remote/model_source/oai.rs:55:67
+   |
+55 |                     .header("Authorization", format!("Bearer {}", &auth.key))
+   |                                                                   ^^^^^^^^^ help: remove the redundant `&`: `auth.key`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_borrows_in_formatting
+
+error: this loop could be written as a `while let` loop
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/session/compaction.rs:758:9
+    |
+758 | /         loop {
+759 | |             let Some(prefix) = INTERNAL_PREFIXES.iter().find(|p| {
+760 | |                 rest.as_bytes()
+761 | |                     .get(..p.len())
+...   |
+769 | |             rest = stripped.trim_start();
+770 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#while_let_loop
+    = note: `-D clippy::while-let-loop` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::while_let_loop)]`
+help: try
+    |
+758 ~         while let Some(prefix) = INTERNAL_PREFIXES.iter().find(|p| {
+759 +                 rest.as_bytes()
+760 +                     .get(..p.len())
+761 +                     .is_some_and(|head| head.eq_ignore_ascii_case(p.as_bytes()))
+762 +             }) { .. }
+    |
+
+error: this `if` can be collapsed into the outer `match`
+    --> crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_session_impl/tool_calls.rs:1292:21
+     |
+1292 | /                     if final_result.is_none() {
+1293 | |                         *final_result = Some(tool_loop);
+1294 | |                     }
+     | |_____________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_match
+     = note: `-D clippy::collapsible-match` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::collapsible_match)]`
+help: collapse nested if block
+     |
+1291 ~                 | ToolLoop::FollowupMessage(_)
+1292 ~                     if final_result.is_none() => {
+1293 |                         *final_result = Some(tool_loop);
+1294 ~                     }
+     |
+
+error: this loop could be written as a `while let` loop
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_session_impl/prompt_queue.rs:691:9
+    |
+691 | / ...   loop {
+692 | | ...       // Hidden runtime wakes may be skipped, but a visible protected row stops the prefix rather than be...
+693 | | ...       let Some(pos) = state.pending_inputs.iter().position(|item| {
+694 | | ...           Some(item.prompt_id.as_str()) != running_front_id.as_deref()
+...   |
+718 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#while_let_loop
+help: try
+    |
+691 ~         while let Some(pos) = state.pending_inputs.iter().position(|item| {
+692 +                 Some(item.prompt_id.as_str()) != running_front_id.as_deref()
+693 +                     && (item.is_queue_visible() || !item.input_origin.is_synthetic())
+694 +             }) { .. }
+    |
+
+error: this `match` expression can be replaced with `?`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/session/interrupted_turn.rs:118:9
+    |
+118 | /         match text.find('\n') {
+119 | |             Some(idx) => text.drain(..=idx),
+120 | |             None => return None,
+121 | |         };
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#question_mark
+help: try instead
+    |
+118 ~         {
+119 +             let idx = text.find('\n')?;
+120 +             text.drain(..=idx)
+121 ~         };
+    |
+
+error: consider using `sort_unstable_by_key`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/session/storage/jsonl/mod.rs:334:9
+    |
+334 |         candidates.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+help: try
+    |
+334 -         candidates.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+334 +         candidates.sort_unstable_by_key(|b| std::cmp::Reverse(b.1));
+    |
+
+error: manual implementation of `Option::zip`
+   --> crates/terminal/crates/codegen/a3s-code-shell/src/session/workflow/manager.rs:196:41
+    |
+196 |                   let mut journal = match existing
+    |  _________________________________________^
+197 | |                     .journal_path
+198 | |                     .as_ref()
+199 | |                     .and_then(|p| self.session_dir.as_ref().map(|d| (d, p)))
+    | |____________________________________________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_option_zip
+    = note: `-D clippy::manual-option-zip` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::manual_option_zip)]`
+help: use
+    |
+196 ~                 let mut journal = match self.session_dir.as_ref().zip(existing
+197 +                     .journal_path
+198 +                     .as_ref())
+    |
+
+error: could not compile `a3s-code-shell` (lib) due to 16 previous errors

@@ -1,0 +1,33 @@
+{
+  "product_pair_digest": "e1a37d311f896ceebb6a7a228a0f6a889f15313b",
+  "product_pair_rebuilt": false,
+  "product_source_changes_since_freeze": [],
+  "evaluation_source_changes_since_freeze": [
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "bytes": 31970,
+      "sha256": "cb80062bbb3fa7dcebb548706b687422e3c693a3b9408ede7702898e169e7500"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs",
+      "bytes": 18028,
+      "sha256": "c2fe66623862f9962c3c8b9ceeb3938841514bfd95e8cedf0e31a46c4462640c"
+    }
+  ],
+  "prompts_timeouts_graders_changed": false,
+  "new_scenario": "tool_contracts::kimi_plan_search_exec_deny_preserves_workspace_bytes",
+  "test_binaries": [
+    {
+      "platform": "windows",
+      "file": ".tmp/continuation-live-plan.exe",
+      "bytes": 6442496,
+      "sha256": "0057f90a8643be545f7597af72de0fa2aaf80d5b3a95c4a7a3d71c99bf392774"
+    },
+    {
+      "platform": "linux",
+      "file": ".tmp/continuation-live-plan-linux",
+      "bytes": 95715368,
+      "sha256": "1861ff25c0e6212272a452ba64a83bdfa48f718ca90de0455cdcab360eb02728"
+    }
+  ]
+}

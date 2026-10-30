@@ -1,0 +1,17 @@
+
+running 1 test
+test scrollback::blocks::user::tests::invalid_token_ranges_are_dropped ... 
+thread 'scrollback::blocks::user::tests::invalid_token_ranges_are_dropped' (36742) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/scrollback/blocks/user.rs:805:9:
+assertion `left == right` failed
+  left: ["❯ ", "/model"]
+ right: ["/model"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::user::tests::invalid_token_ranges_are_dropped
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.14s
+

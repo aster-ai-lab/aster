@@ -1,0 +1,146 @@
+{
+  "schema": "aster-h200-topk-GPU-and-formal-recovery-r10",
+  "unix": 1792913140.7879977,
+  "operator_GPU_cases": 38,
+  "operator_all_ordered_IDs_and_graph_replays_equal": true,
+  "random_finite_operator_cases": [
+    {
+      "cols": 4097,
+      "rows": 1,
+      "pattern": 0,
+      "reference_host_sync_us": 24.89082,
+      "candidate_host_sync_us": 45.404688,
+      "candidate_graph_host_sync_us": 34.601172
+    },
+    {
+      "cols": 4097,
+      "rows": 6,
+      "pattern": 0,
+      "reference_host_sync_us": 62.12793,
+      "candidate_host_sync_us": 235.055469,
+      "candidate_graph_host_sync_us": 183.535547
+    },
+    {
+      "cols": 65537,
+      "rows": 1,
+      "pattern": 0,
+      "reference_host_sync_us": 68.987891,
+      "candidate_host_sync_us": 49.117383,
+      "candidate_graph_host_sync_us": 39.027148
+    },
+    {
+      "cols": 65537,
+      "rows": 6,
+      "pattern": 0,
+      "reference_host_sync_us": 419.14375,
+      "candidate_host_sync_us": 254.39043,
+      "candidate_graph_host_sync_us": 199.55332
+    },
+    {
+      "cols": 1048576,
+      "rows": 1,
+      "pattern": 0,
+      "reference_host_sync_us": 100.484766,
+      "candidate_host_sync_us": 71.513477,
+      "candidate_graph_host_sync_us": 61.133203
+    },
+    {
+      "cols": 1048576,
+      "rows": 6,
+      "pattern": 0,
+      "reference_host_sync_us": 7255.71543,
+      "candidate_host_sync_us": 357.878516,
+      "candidate_graph_host_sync_us": 301.214648
+    },
+    {
+      "cols": 1048576,
+      "rows": 17,
+      "pattern": 0,
+      "reference_host_sync_us": 7700.772266,
+      "candidate_host_sync_us": 964.490039,
+      "candidate_graph_host_sync_us": 811.849219
+    }
+  ],
+  "small4097_operator_regression_retained": true,
+  "native_bridge_min_cols": 65536,
+  "native_bridge_k": 512,
+  "native_bridge_default_mode": 0,
+  "model_geometry": {
+    "phase": "passed",
+    "index_topk": 512,
+    "index_heads": 32,
+    "index_dim": 128,
+    "candidate_blocks": 2048,
+    "candidate_block_size": 8,
+    "context_length": 1048576,
+    "model_layers": 40,
+    "index_source_layers": [
+      2,
+      8,
+      14,
+      20,
+      24,
+      28,
+      32,
+      36
+    ]
+  },
+  "official_CCCL_commit": "28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+  "official_CCCL_release": "3.5.0",
+  "model_profiler_phase": "failed",
+  "completed_actual1m_diagnostic_controls": 3,
+  "diagnostic_output_tokens": 128,
+  "model_hardware_counters_collected": false,
+  "tiny_kernel_hardware_counters_collected": true,
+  "tiny_counter_metrics": 8,
+  "own_C10_memory_peak_bytes": 236223201280,
+  "own_C10_oom_kill_count": 1,
+  "profiler_failure_cause_proven": false,
+  "formal_C11_early_stop_retained": true,
+  "formal_stop_actor_or_cause_proven": false,
+  "formal_C13_restored": true,
+  "formal_native_SHA": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+  "formal_prefill_chunk_tokens": 128,
+  "formal_basic28_and_extended12_passed": true,
+  "formal_actual_prompt_tokens": 132097,
+  "formal_new_instance_actual1m_tested": false,
+  "fresh_WorkBuddy_GUI_tested": false,
+  "formal_8x1024": {
+    "requests": 8,
+    "completion_tokens": 8192,
+    "wall_seconds": 112.30905067967251,
+    "api_wall_completion_tok_s": 72.9415835181903,
+    "stream_interval_tok_s_estimate": 73.43507190183551,
+    "ttft_p50_seconds": 0.010714507894590497,
+    "ttft_min_seconds": 0.009703941643238068,
+    "ttft_max_seconds": 0.6685514133423567
+  },
+  "Windows_nonce_and_cache_reuse": {
+    "content": "42",
+    "done": true,
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 355,
+      "completion_tokens": 2,
+      "total_tokens": 357,
+      "prompt_tokens_details": {
+        "cached_tokens": 355
+      }
+    },
+    "ttft_seconds": 0.04699999978765845,
+    "seconds": 0.06300000008195639
+  },
+  "same_VIP_and_key": true,
+  "current_model_comparison": {
+    "controller": "213r1",
+    "phase": "actual1m_fullwindow",
+    "profile": "control_a",
+    "basic28_and_extended12_passed": true,
+    "actual1m_1024_output_comparison_completed": false,
+    "model_performance_gain_qualified": false,
+    "formal_promoted": false
+  },
+  "prior_C2_full_output_identity_failure_preserved": true,
+  "goal_complete": false,
+  "single_request300_met": false
+}

@@ -1,0 +1,358 @@
+{
+  "assertions_finished": true,
+  "case": "network-download-private",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-download-error.json"
+          },
+          "id": "call_0fedc616c6db468e9ab616cf9e345005",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13208,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+            "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0fedc616c6db468e9ab616cf9e345005",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+            "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_0fedc616c6db468e9ab616cf9e345005",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":5,\\\"url\\\":\\\"http://127.0.0.1/private.bin\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":152},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":152,\"projected_bytes\":152,\"original_estimated_tokens\":38,\"projected_estimated_tokens\":38,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"projected_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"repeat_key\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"content_ref\":\"inline:sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:259fd9e5a630aba1940a33f92176224f0a669b8a6ce794f547cef178d94db2ba\"}",
+        "prepared_digest": "sha256:a96bd7e595f1c52c083b68cca168784d03302e913970b082b758ad9db79e2f3d",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "connections": 1,
+            "file_path": "payload.bin",
+            "max_bytes": 131072,
+            "timeout": 5,
+            "url": "http://127.0.0.1/private.bin"
+          },
+          "id": "call_a585178495f6471f8b8661b16cb8012e",
+          "name": "download"
+        },
+        "has_text": false,
+        "prompt_tokens": 13431,
+        "text": null,
+        "tool": "download"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+            "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a585178495f6471f8b8661b16cb8012e",
+          "turn": 1
+        },
+        "tool": "download"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+            "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_a585178495f6471f8b8661b16cb8012e",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"URL resolves to a non-public address and was blocked: 127.0.0.1\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"projected_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"repeat_key\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"content_ref\":\"inline:sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0d537c694910e1365cf94da38d26050eb5bcd9c439d414c74137ebce42975bda\"}",
+        "prepared_digest": "sha256:da42134b7c554d83a0a6c3eef6ed5732b619a5f3bf3accd053c0509723d7a6bb",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13618,
+        "text": "URL resolves to a non-public address and was blocked: 127.0.0.1",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "e84d798e38b2f15c4712f159f1c0b362526dfd2b83aab4c939191f8cac480ade",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:7b77446cdf1ecf53b9e440b52bdead6251f54a8223b7988caef34fd1b845720d",
+          "sha256:3e3e414df8e37243eeb857ce609f0fe5706e20eb81f785e565a8d276787df915"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-NN75E7/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:14 PM    \n       arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file                                                                                                      \n     ◆ Fetch http://127.0.0.1/private.bin                                                                               \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n    ◆ Run download 0.0s                                                                              12s ⇣13.4k [stop]  \n                                                                                                                        \n  ┃                                                                                                                     \n  ┃  Allow download?                                                                                                    \n  ┃                                                                                                                     \n  ┃  1 (●) Yes, proceed                                                                                                 \n  ┃  2 (○) No, reject (type to add feedback)                                                                            \n  ┃                                                                                                                     \n                                                                                                                        \n  1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40257",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-NN75E7/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:14 PM    \n       arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website · 1 failed                                                                        \n                                                                                                                        \n     URL resolves to a non-public address and was blocked: 127.0.0.1                                         2:14 PM    \n                                                                                                                        \n     Worked for 20s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the actual failed download keeps the original destination bytes or leaves no destination, leaks no adjacent download temporary, and its HTTP dispatch boundary matches the requested refusal",
+      "name": "download-refusal-exact-scope",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-NN75E7/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Read request-download-error.json once. Call download exactly once with its exact JSON object as       2:14 PM    \n       arguments. Report the exact failure. Do not retry, repair, change arguments or call other tools.                 \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file, Fetched 1 website · 1 failed                                                                        \n                                                                                                                        \n     URL resolves to a non-public address and was blocked: 127.0.0.1                                         2:14 PM    \n                                                                                                                        \n     Worked for 20s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "checkpoint": "network-download-private",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-download-error.json"
+              },
+              "id": "call_0fedc616c6db468e9ab616cf9e345005",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13208,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+                "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0fedc616c6db468e9ab616cf9e345005",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+                "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_0fedc616c6db468e9ab616cf9e345005",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"connections\\\":1,\\\"file_path\\\":\\\"payload.bin\\\",\\\"max_bytes\\\":131072,\\\"timeout\\\":5,\\\"url\\\":\\\"http://127.0.0.1/private.bin\\\"}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-download-error.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":152},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":152,\"projected_bytes\":152,\"original_estimated_tokens\":38,\"projected_estimated_tokens\":38,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"projected_digest\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"repeat_key\":\"sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"content_ref\":\"inline:sha256:8ac62a8d5bf50c2bed9d7892d9a69c9ba756996fb932a997910f9994f6a539ad\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:259fd9e5a630aba1940a33f92176224f0a669b8a6ce794f547cef178d94db2ba\"}",
+            "prepared_digest": "sha256:a96bd7e595f1c52c083b68cca168784d03302e913970b082b758ad9db79e2f3d",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "connections": 1,
+                "file_path": "payload.bin",
+                "max_bytes": 131072,
+                "timeout": 5,
+                "url": "http://127.0.0.1/private.bin"
+              },
+              "id": "call_a585178495f6471f8b8661b16cb8012e",
+              "name": "download"
+            },
+            "has_text": false,
+            "prompt_tokens": 13431,
+            "text": null,
+            "tool": "download"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+                "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a585178495f6471f8b8661b16cb8012e",
+              "turn": 1
+            },
+            "tool": "download"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-afcbd76f-87f0-4f58-a359-f04f803e7773",
+                "thread_id": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_a585178495f6471f8b8661b16cb8012e",
+              "turn": 1
+            },
+            "outcome": "failed",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"URL resolves to a non-public address and was blocked: 127.0.0.1\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":63,\"projected_bytes\":63,\"original_estimated_tokens\":16,\"projected_estimated_tokens\":16,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"projected_digest\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"repeat_key\":\"sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"content_ref\":\"inline:sha256:19dfe1075b944656e6a3730e4b34825cda22a6f0a3f74fefcf823d5531042948\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:0d537c694910e1365cf94da38d26050eb5bcd9c439d414c74137ebce42975bda\"}",
+            "prepared_digest": "sha256:da42134b7c554d83a0a6c3eef6ed5732b619a5f3bf3accd053c0509723d7a6bb",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13618,
+            "text": "URL resolves to a non-public address and was blocked: 127.0.0.1",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "e84d798e38b2f15c4712f159f1c0b362526dfd2b83aab4c939191f8cac480ade",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:7b77446cdf1ecf53b9e440b52bdead6251f54a8223b7988caef34fd1b845720d",
+              "sha256:3e3e414df8e37243eeb857ce609f0fe5706e20eb81f785e565a8d276787df915"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "15f074b1-2d1e-4801-b7e7-2ff6180da3c2"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

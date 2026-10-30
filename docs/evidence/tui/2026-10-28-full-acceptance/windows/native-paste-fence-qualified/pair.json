@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:503af41b9d9f58b0f61096c38251e757a10bdcc6:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\503af41b9d9f58b0f61096c38251e757a10bdcc6-20261028235942737",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "2d315e34e84c90a5cc482ecf2c71e95f7ddd8b36ddeeac640e9d824b8d29e187",
+      "bytes": 323996160
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "a9f8715c6f155040e846ef1a22487681336f6b4e68cc44a6d52b2108f7db5af8",
+      "bytes": 185446912
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-native-paste-fence-windows-build.jsonl",
+  "created_at": "2026-10-28T23:59:50.7111971Z"
+}

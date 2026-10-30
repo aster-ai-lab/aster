@@ -1,0 +1,46 @@
+[
+  {
+    "port": 18300,
+    "http_status": 200,
+    "response": {
+      "status": "ok",
+      "model": "qwen3-asr-1.7b",
+      "models_available": [
+        "qwen3-asr-1.7b",
+        "qwen3-asr-0.6b"
+      ],
+      "models_loaded": [],
+      "timestamps": false,
+      "aligner": "Qwen3-ForcedAligner-0.6B",
+      "speaker": true,
+      "vad": true,
+      "vad_engines": {
+        "ten": true,
+        "fsmn": true
+      },
+      "uptime_sec": 120734
+    }
+  },
+  {
+    "port": 18301,
+    "http_status": 200,
+    "response": {
+      "status": "ok",
+      "model": "qwen3-asr-1.7b",
+      "models_available": [
+        "qwen3-asr-1.7b",
+        "qwen3-asr-0.6b"
+      ],
+      "models_loaded": [],
+      "timestamps": false,
+      "aligner": "Qwen3-ForcedAligner-0.6B",
+      "speaker": true,
+      "vad": true,
+      "vad_engines": {
+        "ten": true,
+        "fsmn": true
+      },
+      "uptime_sec": 120734
+    }
+  }
+]

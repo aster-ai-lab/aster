@@ -1,0 +1,16 @@
+
+running 1 test
+
+thread 'tools::builtin::read::line_endings_tests::overlay_ending_is_authoritative_over_saved_disk_bytes' (37628) panicked at crates\code\core\src\tools\builtin\read\line_endings_tests.rs:61:5:
+     1	unsaved
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tools::builtin::read::line_endings_tests::overlay_ending_is_authoritative_over_saved_disk_bytes ... FAILED
+
+failures:
+
+failures:
+    tools::builtin::read::line_endings_tests::overlay_ending_is_authoritative_over_saved_disk_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5307 filtered out; finished in 0.00s
+

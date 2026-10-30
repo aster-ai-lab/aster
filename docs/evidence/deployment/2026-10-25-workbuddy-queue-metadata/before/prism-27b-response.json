@@ -1,0 +1,1 @@
+{"error":{"code":"unsupported_message_fields","message":"messages[25]: unsupported message field(s): queuePosition, queueTotal; supported fields are role, content, name, tool_calls, tool_call_id, images, thinking, and reasoning_content","type":"invalid_request_error"}}

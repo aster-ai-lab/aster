@@ -1,0 +1,18 @@
+{
+  "unix": 1792893223.2831926,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-critical-path-v117",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_executed": false,
+  "bytes": 6450,
+  "sha256": "3a708d84eec786aec4a2f6008edc3452b90f24326de13bf47b41b38bc89b4009",
+  "raw_profiler_artifacts_published": false,
+  "process": {
+    "pid": 3244,
+    "start_ticks": 712250435,
+    "uid": 10250,
+    "unix": 1792893233.3658354,
+    "budget_seconds": 360,
+    "namespace": "optimization pod"
+  }
+}

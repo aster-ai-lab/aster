@@ -1,0 +1,12 @@
+
+running 1 test
+test questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question ... ORACLE case=question-choice-free-text name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc
+ORACLE case=question-choice-free-text name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=26784
+ORACLE case=question-choice-free-text name=question-selected-answer result=pass detail=the second real choice is persisted under its exact pending question id and reaches the next model response without granting permission
+ORACLE case=question-choice-free-text name=settled-turn result=pass detail=facts=6 model_turns=2 prompt_tokens=27182
+ORACLE case=question-choice-free-text name=question-unseen-free-text result=pass detail=the host-only Unicode answer is persisted for a distinct question id and returned by the real model; the selected choice row is not substituted for the text
+ORACLE case=question-choice-free-text name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 42.97s
+

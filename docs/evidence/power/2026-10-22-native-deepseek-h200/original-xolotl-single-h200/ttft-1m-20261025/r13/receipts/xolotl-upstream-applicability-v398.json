@@ -1,0 +1,92 @@
+{
+  "unix": 1792935350.7860658,
+  "phase": "reviewed",
+  "base": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "head": "0b9a0fc86dc55388c8c737bdc5fbccccf7273927",
+  "ahead_commits": 36,
+  "archive_sha256": "0af4e10b98f555289b9ef1f3b00b1a0aeb1154feca8c43ecc6586a48197414ac",
+  "reviewed_sources": [
+    {
+      "file": "tools/v41/engine/ds41_generate.cpp",
+      "bytes": 224797,
+      "sha256": "ff16f1cc3ff995169666a3c4440aed682acceeb56adbe7b271ad8a7e24de2fd6"
+    },
+    {
+      "file": "tools/v41/engine/ds41_moe.cpp",
+      "bytes": 386839,
+      "sha256": "21d72a149add60f5cc53daf55c2fa7b5e6e0d630e14fc847dbcf1f5e870c2633"
+    },
+    {
+      "file": "tools/v41/engine/ds41_dense.cpp",
+      "bytes": 193421,
+      "sha256": "4ee67b8e39df194ee3853741d4008942a03e381bb34735a24acc4ddfb42f2b4c"
+    },
+    {
+      "file": "docs/ds4/V41_DECODE_PROFILE.md",
+      "bytes": 5078,
+      "sha256": "eda22ed42b92dfddc84a15db04c5cd0b661f747b01547bda7da89c9e3c9be311"
+    }
+  ],
+  "changes": [
+    {
+      "name": "Short turn layer-major batches",
+      "upstream_commit": "f9155bac0d8a496e9f8cf4eb722abf53d71b6e97",
+      "old_default": 128,
+      "new_default": 16,
+      "flag": "STRATA_SERVE_BATCH_MIN",
+      "old_native_already_supports_explicit_flag": true,
+      "H200_GPU_tested": false,
+      "next_test": "Same native and GPU128/16/128; 32/50/85 new-token multi-turn fixtures plus native tools, exact output, cache isolation, and unchanged full acceptance. Report TTFT separately from completion throughput."
+    },
+    {
+      "name": "Conversation-seeded VRAM",
+      "upstream_commit": "35f0f36a90d019cc6f912d5187c507c323945223",
+      "flag": "STRATA_VRAM_CONV",
+      "requires_mixed_expert_blob_sizes": true,
+      "current_V3_applicability_proven": false,
+      "H200_gain_claimed": false
+    },
+    {
+      "name": "Periodic route-bias refresh",
+      "flags": [
+        "STRATA_BIAS_REFRESH"
+      ],
+      "changes_routing_when_enabled_with_nonzero_bias": true,
+      "current_route_bias": 0,
+      "current_route_bias_file": 0,
+      "H200_gain_claimed": false
+    },
+    {
+      "name": "CPU PTQ1/Q2 rows SIMD",
+      "requires_CPU_expert_work": true,
+      "current_ordinary_numeric_diagnostics_CPU_expert_calls": 0,
+      "H200_decode_gain_proven": false
+    },
+    {
+      "name": "Layer read-ahead and direct aligned reads",
+      "flags": [
+        "STRATA_LAYER_RA",
+        "STRATA_READ_BOUNCE"
+      ],
+      "requires_expert_file_tier_IO": true,
+      "Engram_IO_is_separate": true,
+      "actual1M_applicability_pending_trace": true,
+      "H200_gain_claimed": false
+    },
+    {
+      "name": "Conditional DSpark eviction",
+      "flag": "STRATA_SERVE_DSPARK_EVICT_FIT",
+      "purpose": "Avoid unneeded eviction/reload on turns fitting one sweep",
+      "current_H200_applicability_pending": true
+    }
+  ],
+  "source_diagnostic_scope": "Upstream document measures RTX5090, Windows, V2/Q6_K, route bias0.5/0.3. It is not an H200 measurement.",
+  "source_diagnostic_followups": [
+    "Fuse dense small kernels",
+    "Remove per-layer host round trips"
+  ],
+  "active_ABA375_runtime_changed": false,
+  "formal_service_changed": false,
+  "new_H200_speed_gain_proven": false,
+  "goal_complete": false
+}

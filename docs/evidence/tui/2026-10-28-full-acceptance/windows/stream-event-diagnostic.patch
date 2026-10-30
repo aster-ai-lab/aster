@@ -1,0 +1,20 @@
+diff --git a/crates/code/core/src/agent_api/tests/stream.rs b/crates/code/core/src/agent_api/tests/stream.rs
+index 538fd3016..d309329cf 100644
+--- a/crates/code/core/src/agent_api/tests/stream.rs
++++ b/crates/code/core/src/agent_api/tests/stream.rs
+@@ -114,6 +114,7 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
+         .unwrap();
+     let mut flushed_before_end = false;
+     while let Some(event) = rx.recv().await {
++        eprintln!("CHECKPOINT_DIAGNOSTIC {event:?}");
+         match &event {
+             AgentEvent::ToolEnd { id, .. } if id == "call-write" => {
+                 // Checkpoint commit acks after the event sink drains.
+@@ -193,6 +194,7 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
+     let mut last_subagent_end = None;
+     let mut parent_tool_end = None;
+     while let Some(event) = rx.recv().await {
++        eprintln!("FANOUT_DIAGNOSTIC {event:?}");
+         match event {
+             AgentEvent::SubagentStart { .. } => subagent_starts += 1,
+             AgentEvent::SubagentEnd { .. } => {

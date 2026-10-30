@@ -1,0 +1,53 @@
+{
+  "base_revision": "57cc7f7be6d10e1b7b884718f0c118eddbc81430",
+  "base_crate_drift_exit": 1,
+  "landing_crate_drift_exit": 1,
+  "crate_drift_unchanged": true,
+  "drift_set": {
+    "a3s-auth": "CONTENT-DRIFT",
+    "a3s-box-runtime": "CONTENT-DRIFT",
+    "a3s-code-core": "VERSION-DRIFT",
+    "a3s-effect": "CONTENT-DRIFT",
+    "a3s-flow": "CONTENT-DRIFT",
+    "a3s-form-core": "CONTENT-DRIFT",
+    "a3s-libkrun-sys": "DUPLICATE-cloud",
+    "a3s-oci-sdk": "DUPLICATE-aster",
+    "a3s-okf": "CONTENT-DRIFT",
+    "a3s-orm": "CONTENT-DRIFT",
+    "a3s-runtime": "CONTENT-DRIFT",
+    "a3s-sandbox": "CONTENT-DRIFT",
+    "a3s-use": "CONTENT-DRIFT",
+    "a3s-use-ocr": "CONTENT-DRIFT",
+    "libkrunfw-windows": "DUPLICATE-cloud",
+    "vm-memory": "CONTENT-DRIFT"
+  },
+  "base_format_exit": 1,
+  "landing_format_exit": 1,
+  "base_format_files": [
+    "apps/gateway/src/entrypoint/inference_dispatch.rs",
+    "apps/gateway/src/entrypoint/native_response.rs",
+    "apps/gateway/src/entrypoint/protocol/http_handler.rs",
+    "apps/gateway/src/entrypoint/protocol/streaming_handler.rs",
+    "apps/gateway/src/inference/authorization.rs",
+    "apps/gateway/src/inference/principal.rs",
+    "apps/gateway/src/inference/usage_report.rs"
+  ],
+  "landing_format_files": [
+    "apps/gateway/src/entrypoint/inference_dispatch.rs",
+    "apps/gateway/src/entrypoint/native_response.rs",
+    "apps/gateway/src/entrypoint/protocol/http_handler.rs",
+    "apps/gateway/src/entrypoint/protocol/streaming_handler.rs",
+    "apps/gateway/src/inference/authorization.rs",
+    "apps/gateway/src/inference/principal.rs"
+  ],
+  "new_format_failure_files": [],
+  "modified_format_failure_files": [],
+  "scoped_format_results": {
+    "power-scope": 0,
+    "gateway-scope": 0
+  },
+  "gateway_edition": "2021",
+  "power_edition": "2021",
+  "ratchet_baseline_edited": false,
+  "all_no_growth_proofs_passed": true
+}

@@ -1,0 +1,83 @@
+{
+  "unix": 1792867109.8653421,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/indexer-cpu-preflight-v40",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+  "execution_location": "jump host CPU only",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "aster_indexer_mask_policy.hpp",
+      "bytes": 721,
+      "sha256": "182aa5a064629f3439151e35d69c76cc2accb109edde94a57675bcf9fd3ed1fe"
+    },
+    {
+      "file": "aster_indexer_mask_skip.cuh",
+      "bytes": 3238,
+      "sha256": "c722c721193fd40a26a35b904d9d4dba752630405829849407a3561af41a3e10"
+    },
+    {
+      "file": "dense-mask-first-v40.patch",
+      "bytes": 5752,
+      "sha256": "f9b92a71f2d6bd9c816bd618b60d74eb9a035e480761f7dfec5e05045b11828e"
+    },
+    {
+      "file": "ds41_dense.cpp",
+      "bytes": 194566,
+      "sha256": "bd67c02e7f0c096471b057915e73d54955df8cb45a9ffe245406a835d7ebc51f"
+    },
+    {
+      "file": "ds41_dense.original.cpp",
+      "bytes": 193588,
+      "sha256": "8fcccf32e5162be88862469eb69421da6d988d9ffc37a542a4982887bfad0c19"
+    },
+    {
+      "file": "indexer-mask-skip-v40.patch",
+      "bytes": 5928,
+      "sha256": "9acb6f44127677099c2c7864031f9193f0530883b8ba2b0dfc8ff3129516fe55"
+    },
+    {
+      "file": "indexer_mask_policy_test.cpp",
+      "bytes": 1536,
+      "sha256": "a8895052ddca06537037e1846b3b4e9cf3214c006f3e5237808271d70e3e2c1e"
+    },
+    {
+      "file": "lightning-indexer.cu",
+      "bytes": 25445,
+      "sha256": "0aa1b8d40beb39ccfe1cb199a6bd9a682973ffc4fd903baf09831f3a255160ad"
+    },
+    {
+      "file": "lightning-indexer.original.cu",
+      "bytes": 24750,
+      "sha256": "957dea8b4e66a1c9c63058a546f0eeb716a64c388f81e8aca7cf2bcf1b661aac"
+    },
+    {
+      "file": "source-manifest-initial.json",
+      "bytes": 1818,
+      "sha256": "cbe258c1c2df4a9c690fad8d74697f2eb14ff630a79eef1530d743ad134f086f"
+    },
+    {
+      "file": "source-manifest.json",
+      "bytes": 2098,
+      "sha256": "7f40327d32d0128ef975a264296f6995c122ca1ef1a17a10ee51650081c2f4d9"
+    },
+    {
+      "file": "cpu_preflight_worker.py",
+      "bytes": 3787,
+      "sha256": "0b19f3250fd1ecc63f110f55cf98ffa52fafa7ab71bb12cafc3ea75f4b591c89"
+    },
+    {
+      "file": "cpu-plan.json",
+      "bytes": 3385,
+      "sha256": "b2b12282f49d708f53b958004802049187b16f957be70892f90e799abbf4f38f"
+    }
+  ],
+  "process": {
+    "pid": 857973,
+    "start_ticks": 279390448,
+    "uid": 10250,
+    "unix": 1792867119.5504663,
+    "budget_seconds": 180
+  }
+}

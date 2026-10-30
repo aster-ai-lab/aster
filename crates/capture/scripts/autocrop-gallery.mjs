@@ -17,7 +17,7 @@ const [outArg, ...inputs] = args;
 const OUT = resolve(outArg);
 mkdirSync(OUT, { recursive: true });
 
-const manifestPath = (dir) => join(dir, 'capture.json');
+const manifestPath = (dir) => existsSync(join(dir, 'capture.json')) ? join(dir, 'capture.json') : join(dir, 'scrawl.json');
 
 const bundles = inputs.flatMap((p) => {
   p = resolve(p);
@@ -52,7 +52,7 @@ h2 { margin: 0 0 2px; font-size: 20px; } .desc { color: #9aa0ab; margin-bottom: 
 function section(dir) {
   const b = JSON.parse(readFileSync(manifestPath(dir), 'utf8'));
   const truth = existsSync(join(dir, 'truth.json')) ? JSON.parse(readFileSync(join(dir, 'truth.json'), 'utf8')) : null;
-  const name = truth?.scenario || basename(dir).replace(/\.capture$/, '');
+  const name = truth?.scenario || basename(dir).replace(/\.(capture|scrawl)$/, '');
   const sc = scores.find((s) => s.name === name);
   const [W, H] = [b.target.frame.width, b.target.frame.height];
   const crops = b.autocrop?.crops || [];

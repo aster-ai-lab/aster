@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::workspace_sync::tests::metadata_is_canonicalized_to_store_limits' (28728) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\workspace_sync.rs:328:50:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::workspace_sync::tests::metadata_is_canonicalized_to_store_limits ... FAILED
+
+failures:
+
+failures:
+    app::workspace_sync::tests::metadata_is_canonicalized_to_store_limits
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

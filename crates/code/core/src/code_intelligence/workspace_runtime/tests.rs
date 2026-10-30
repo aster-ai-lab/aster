@@ -137,6 +137,43 @@ fn workspace_diagnostic_selection_round_robins_languages() {
 }
 
 #[tokio::test]
+async fn missing_language_program_is_unavailable_before_the_first_query() {
+    let workspace = tempfile::tempdir().unwrap();
+    let root = std::fs::canonicalize(workspace.path()).unwrap();
+    std::fs::create_dir_all(root.join("src")).unwrap();
+    std::fs::write(root.join("src/lib.rs"), "fn main() {}\n").unwrap();
+    let initial = snapshot(&root, 1, &["src/lib.rs"]);
+    let file_system: Arc<dyn WorkspaceFileSystem> =
+        Arc::new(LocalWorkspaceBackend::new(root.clone()));
+    let runtime = WorkspaceRuntime::new_with_profiles(
+        root.clone(),
+        ProjectLayoutResolver::resolve(&initial),
+        &initial,
+        file_system,
+        Duration::from_secs(1),
+        vec![LanguageServerProfile::rust("a3s-missing-language-server")],
+    );
+
+    let status = runtime.subscribe_status().borrow().clone();
+    assert_eq!(status.state, CodeIntelligenceState::Unavailable);
+    assert!(status.languages[0]
+        .message
+        .as_deref()
+        .is_some_and(|message| message.contains("a3s-missing-language-server")));
+    let error = runtime
+        .document_symbols(
+            &WorkspacePath::from_normalized("src/lib.rs"),
+            CancellationToken::new(),
+        )
+        .await
+        .unwrap_err();
+    assert!(
+        error.to_string().contains("a3s-missing-language-server"),
+        "{error}"
+    );
+}
+
+#[tokio::test]
 async fn removing_the_last_supported_source_resets_failed_runtime_state() {
     let workspace = tempfile::tempdir().unwrap();
     let root = std::fs::canonicalize(workspace.path()).unwrap();

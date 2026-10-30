@@ -16,6 +16,7 @@ members = [
     "crates/power",
     "crates/third-party/serde-saphyr",
     "crates/third-party/saphyr-parser-bw",
+    "crates/third-party/crossterm",
     "crates/sentry",
     "crates/updater",
     "crates/box/core",
@@ -401,6 +402,7 @@ uninlined_format_args = "allow"
 useless_format = "allow"
 
 [patch.crates-io]
+crossterm = { path = "crates/third-party/crossterm" }
 oci-spec = { path = "crates/oci-runtime/vendor/oci-spec-0.10.0" }
 serde-saphyr = { path = "crates/third-party/serde-saphyr" }
 saphyr-parser-bw = { path = "crates/third-party/saphyr-parser-bw" }

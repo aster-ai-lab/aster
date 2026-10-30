@@ -1,0 +1,21 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::official_vscode_remote_delegates_scanned_absolute_path' (48064) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:2728:5:
+assertion failed: `(left == right)`
+
+Diff < left / right > :
+<Opaque
+>SelfResolvingPath
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::official_vscode_remote_delegates_scanned_absolute_path ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::official_vscode_remote_delegates_scanned_absolute_path
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.06s
+

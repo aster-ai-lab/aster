@@ -1,0 +1,9 @@
+{
+  "at_epoch": 1792926791.959363,
+  "stage": "complete",
+  "profile": "FP4 exact 8t 60GiB PCIe0.75 SSE TTFT supplement",
+  "quality_passed": 0,
+  "decode_medians": {},
+  "prefill_median": 429.0,
+  "full_one_million_completed": false
+}

@@ -1,0 +1,9 @@
+{
+  "binary": "/usr/local/cuda/bin/nsys",
+  "version": "NVIDIA Nsight Systems version 2025.3.1.90-253135822126v0",
+  "profiling_started": false,
+  "profile_help_bytes": 29982,
+  "profile_help_sha256": "1edab34c91f907774aa789a440c728240d9f2c02467211afe39d5dc601304439",
+  "cuda_visible_metric_selector_declared": true,
+  "plural_metric_devices_option_declared": true
+}

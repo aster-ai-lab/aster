@@ -1,0 +1,700 @@
+{
+  "goal_status": "blocked",
+  "planning": "130 cases / 12 journeys / 17 tasks; consistency analysis passed",
+  "implementation": {
+    "T001": "partial: explicit closed candidate selects exact paired bytes, five boundary controls and real frozen tester/CLI input pass; current paired artifacts/default features and actual PID/cwd proved. Full transitive/native/environment reproducibility remains unqualified.",
+    "T002": "partial: typed records and raw JSON/SSE usage observations bound to dispatch; missing/invalid/partial stay unknown; full registry and failure-result retention pending",
+    "T003": "partial: independent Rust guest snapshot oracle has positive/negative controls; causal barriers still pending",
+    "T011": "partial: single-hop explicit transport and closed rejection counters, JSON/SSE redirect control and 66 HTTP/MCP regressions pass; old rejection attribution unavailable; full provider faults and product egress matrix pending",
+    "T005": "partial: controlled H1 a940b208 passes registered15360782 pair and all19 independent actual PID/cwd, original verification, VM oracle, usage and cleanup checks. Historical real-model failures retained; no new paid comparison.",
+    "T014": "partial: historical foundation 57 unique names per feature; not rerun against current runtime changes; zero original-case coverage qualification and remote CI pending.",
+    "T016": "partial: repeated refusal and successful-state cycles stop in parent and owned child; a one-off original observation gap now resets the allowance and later coherent observations re-anchor, proven SDK and actual ACP9 model/9 successful receipts. V3 and productive/external controls pass. Changing arguments/model-derived outputs, child-background and observer recovery remain open.",
+    "T007": "partial: trusted-deadline diagnostics retain real owner/committer while opaque store/export is pending; callback release then actual join settles. Four reopened policy fields on Memory/File preserve cumulative counters, original admission history and recorded usage, with0model calls when refused. Opaque persistence cancellation/return contracts, late/reused confirmation IDs and full recovery fault matrix remain open."
+  },
+  "hermetic_results": {
+    "preflight": {
+      "passed": 2,
+      "ignored": 2
+    },
+    "report_and_isolated_config": {
+      "superseded": true,
+      "passed_at_that_stage": 10
+    },
+    "foundation_current": {
+      "unique_passed": 57,
+      "target_passed": [
+        49,
+        2,
+        38,
+        40
+      ],
+      "target_ignored": [
+        3,
+        2,
+        5,
+        5
+      ],
+      "failed": 0,
+      "log": "ignored-relay-default-targets.json",
+      "deduplicated_checks": "ignored-relay-default-unique.json",
+      "headless_with_discovery_unique_passed": 57,
+      "headless_log": "ignored-relay-headless-targets.json",
+      "scope": "four foundation targets including two discovery checks, shared test names deduplicated separately per feature; not 130-case execution coverage",
+      "headless_scope": "current implementation, explicit headless-search compiler artifacts; independent run, not added to default count",
+      "current_source_qualified": false,
+      "source_stage": "Historical pre-deadline/pre-novelty runtime evidence, retained unchanged; 57 per feature is not current-source ACP qualification."
+    },
+    "host_attestor_regression": {
+      "acp_passed": 1,
+      "core_passed": 5
+    },
+    "guest_oracle_controls": {
+      "passed": 3,
+      "log": "rust-guest-oracle-strengthened-green.log",
+      "includes": "baseline/repair/stale/protected controls, valid extra tests, unchanged retained real delivery regrade"
+    },
+    "raw_stdio_conformance": {
+      "rust_tests_passed": 3,
+      "logical_cases_passed": 10,
+      "logical_cases_total": 10,
+      "log": "exit-status-default-acp_conformance_stdio.log",
+      "report": "exit-status-acp-conformance.md",
+      "superseded_by_current_frozen_candidate": "timeout-conformance-conformance.md (10 logical cases; 10 Rust tests including helpers)"
+    },
+    "progress_v2": {
+      "focused_passed": 12,
+      "core_final_passed": 186,
+      "unattended_passed": 8,
+      "protocol_logical_passed": 10,
+      "source_version_observed_sessions": 6,
+      "validation": "progress-v2-validation.json",
+      "scope": "overlapping Core groups, actual binary scripted-model regression; not added to original case denominator"
+    },
+    "model_visible_exit_code": {
+      "core_related_passed": 488,
+      "log": "model-exit-status-all-related.log",
+      "corrected_fixture_passed": 37,
+      "corrected_fixture_log": "scripted-exit-code-assumption-green.log",
+      "h1": {
+        "campaign": "rust-scripted-66d114c8-85eb-4b75-a0f4-6b770e10b5cf",
+        "declared_workflow_pass": true,
+        "initial_model_and_wire_exit_code": 1,
+        "workflow_ms": 26035,
+        "whole_test_s": 216.74,
+        "admitted_dispatches": 9,
+        "local_rejections": 1,
+        "limitation": "rejection reason/caller unclassified; not strict relay admission or real-model qualification",
+        "audit": "rust-scripted-66d114c8-85eb-4b75-a0f4-6b770e10b5cf/exit-status-usage-audit.json"
+      }
+    },
+    "raw_usage_h1": {
+      "campaign": "rust-scripted-6f0a2122-4ec9-4f1c-96e8-0a79dbabadcf",
+      "status": "pass",
+      "generations": 9,
+      "raw_present": 9,
+      "synthetic_total_tokens": 18,
+      "workflow_ms": 21838,
+      "whole_test_s": 196.82,
+      "scope": "synthetic controlled usage and VM recovery; no real billing/performance qualification"
+    },
+    "ignored_workspace_and_relay": {
+      "observer_passed": 169,
+      "fact_goal_passed": 389,
+      "http_mcp_passed": 66,
+      "groups_overlap": true,
+      "validation": "ignored-relay-core-validation.json",
+      "red_solo_logs": [
+        "ignored-workspace-red-solo-1.log",
+        "ignored-workspace-red-solo-2.log",
+        "relay-redirect-red.log",
+        "relay-rejection-reasons-red.log"
+      ],
+      "unattended_ignored_root_passed": 8,
+      "unattended_ignored_root_log": "ignored-root-unattended.log",
+      "foundation_default_unique_passed": 57,
+      "foundation_headless_unique_passed": 57,
+      "dependency_passed": 6,
+      "pair_delivery_passed": 10
+    },
+    "ignored_root_h1": {
+      "campaign": "rust-scripted-c558ae9b-2bb8-422d-a244-674bbb318750",
+      "declared_workflow_pass": true,
+      "outer_witness_pass": false,
+      "adjudication": "rust-scripted-c558ae9b-2bb8-422d-a244-674bbb318750/witness-adjudication.json",
+      "workflow_ms": 31707,
+      "whole_test_s": 227.01,
+      "raw_projection_total_synthetic": 18,
+      "local_rejections": 0,
+      "canonical_acp_changed": true,
+      "scope": "outer attempt failed, original inner workflow pass retained; not counted as complete original case",
+      "registered_before_artifact_matched": false,
+      "outer_failure_reasons": [
+        "cwd observer matched build-id probe",
+        "frozen ACP did not match registered pre-run artifact SHA"
+      ],
+      "second_attempt_started": false
+    },
+    "automatic_goal_deadline": {
+      "behavioral_red": {
+        "log": "goal-deadline-red-behavior.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 2,
+        "ignored": 0
+      },
+      "red_solo_main": {
+        "log": "goal-deadline-red-solo-1.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "red_solo_assessment": {
+        "log": "goal-deadline-red-solo-2.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "focused": {
+        "log": "goal-deadline-final-focused.log",
+        "status": "ok",
+        "passed": 6,
+        "failed": 0,
+        "ignored": 0
+      },
+      "goal_final": {
+        "log": "goal-deadline-final-goal.log",
+        "status": "ok",
+        "passed": 66,
+        "failed": 0,
+        "ignored": 0
+      },
+      "owned_parallel": {
+        "log": "goal-deadline-owned-regressions.log",
+        "status": "FAILED",
+        "passed": 84,
+        "failed": 1,
+        "ignored": 0
+      },
+      "owned_solo": {
+        "log": "goal-deadline-owned-solo.log",
+        "status": "ok",
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      "owned_serial": {
+        "log": "goal-deadline-owned-serial.log",
+        "status": "ok",
+        "passed": 85,
+        "failed": 0,
+        "ignored": 0
+      },
+      "admission": {
+        "log": "goal-deadline-admission-regressions.log",
+        "status": "ok",
+        "passed": 65,
+        "failed": 0,
+        "ignored": 1
+      },
+      "validation": "goal-deadline-validation.json",
+      "scope": "Core hermetic tests; six new behavioral cases, groups overlap, no original-case coverage or binary deployment claim"
+    },
+    "information_novelty_and_measurement": {
+      "measurement_red": {
+        "log": "slice-measurement-red.log",
+        "status": "FAILED",
+        "passed": 6,
+        "failed": 2,
+        "ignored": 0
+      },
+      "last_turn_solo": {
+        "log": "slice-measurement-red-solo-last-turn.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "uncertainty_solo": {
+        "log": "slice-measurement-red-solo-uncertainty.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "replay_red": {
+        "log": "receipt-progress-replay-red.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "sdk_original_measurement_red": {
+        "log": "information-novelty-red-two-turns.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "sdk_after_partial_measurement_fix": {
+        "log": "information-novelty-after-measurement.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "sdk_after_identity_projection": {
+        "log": "information-novelty-green.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "sdk_raw_observation_green": {
+        "log": "information-novelty-raw-observation-rerun.log",
+        "status": "ok",
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      "legacy_fixture_batch": {
+        "log": "information-novelty-goal-regressions.log",
+        "status": "FAILED",
+        "passed": 68,
+        "failed": 1,
+        "ignored": 0
+      },
+      "legacy_fixture_solo": {
+        "log": "information-novelty-legacy-solo.log",
+        "status": "FAILED",
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0
+      },
+      "goal_final": {
+        "log": "information-novelty-context-final-goal.log",
+        "status": "ok",
+        "passed": 69,
+        "failed": 0,
+        "ignored": 0
+      },
+      "facts_final": {
+        "log": "information-novelty-final-fact-rerun.log",
+        "status": "ok",
+        "passed": 188,
+        "failed": 0,
+        "ignored": 0
+      },
+      "harness": {
+        "log": "information-novelty-harness-regressions.log",
+        "status": "ok",
+        "passed": 78,
+        "failed": 0,
+        "ignored": 0
+      },
+      "goal_control": {
+        "log": "information-novelty-control-regressions.log",
+        "status": "ok",
+        "passed": 51,
+        "failed": 0,
+        "ignored": 0
+      },
+      "owned": {
+        "log": "information-novelty-owned-regressions.log",
+        "status": "ok",
+        "passed": 85,
+        "failed": 0,
+        "ignored": 0
+      },
+      "loop_checkpoints": {
+        "log": "information-novelty-loop-checkpoints.log",
+        "status": "ok",
+        "passed": 13,
+        "failed": 0,
+        "ignored": 0
+      },
+      "session_checkpoints": {
+        "log": "information-novelty-session-checkpoints.log",
+        "status": "ok",
+        "passed": 20,
+        "failed": 0,
+        "ignored": 0
+      },
+      "validation": "information-novelty-validation.json",
+      "scope": "nine new named Core tests, overlapping groups; no original E2E-case completion or performance claim"
+    },
+    "net_workspace_progress": {
+      "validation": "net-and-timeout-validation.json",
+      "new_named_core_tests": 10,
+      "control_passed": 59,
+      "goal_before_typed_deadline_passed": 71,
+      "facts_passed": 188,
+      "harness_passed": 78,
+      "scope": "overlapping Core groups at V3 stage; current Goal72 also includes these Goal cases"
+    },
+    "typed_deadline_acp": {
+      "new_named_tests": 3,
+      "result_tests_passed": 20,
+      "unattended_unit_passed": 31,
+      "core_deadline_passed": 7,
+      "core_goal_passed": 72,
+      "owned_serial_passed": 85,
+      "scope": "overlapping groups, not total coverage"
+    },
+    "actual_frozen_acp_current": {
+      "build_id": "aster-cli-pair-v1:15360782401578f163ae82cbf8e652d651c3d5da:aarch64-apple-darwin",
+      "unattended_rust_tests_passed": 19,
+      "unattended_product_workflows": 12,
+      "protocol_rust_tests_passed": 10,
+      "protocol_logical_cases_passed": 10,
+      "protocol_logical_cases_total": 10,
+      "actual_goal_sessions_v3": 6,
+      "actual_goal_slices_v3_settled": 10,
+      "independent_h1_audit": "reanchor-h1-independent-audit.json",
+      "qualified_controlled_h1": true,
+      "current_source_qualified": false,
+      "scope": "registered15360782 in declared local source/input scope; no original130-case, real-model, deployment or TUI qualification"
+    },
+    "confirmation_callbacks": {
+      "validation": "confirmation-validation.json",
+      "new_named_tests": 8,
+      "goal_passed": 78,
+      "facts_passed": 190,
+      "shared_protocol_passed": 6,
+      "owned_serial_passed": 85,
+      "scope": "overlapping groups; includes pending callback/drop, unknown cleanup, targeted cancellation, backpressure and active async deadline; no synchronous preemption claim"
+    },
+    "parent_refusal_cycles": {
+      "validation": "refusal-validation.json",
+      "new_named_core_tests": 8,
+      "new_named_acp_tests": 1,
+      "goal_passed": 81,
+      "facts_passed": 195,
+      "owned_serial_passed": 85,
+      "scope": "parent governed Run repeated typed refusal containment; child Runs and denial-free cycles remain pending"
+    },
+    "child_refusal_and_policy_callbacks": {
+      "validation": "child-policy-validation.json",
+      "new_named_core_tests": 9,
+      "new_named_actual_acp_tests": 1,
+      "regressions": {
+        "goal": {
+          "log": "child-policy-current-goal-all.log",
+          "passed": 88,
+          "failed": 0,
+          "ignored": 0
+        },
+        "facts": {
+          "log": "child-policy-current-facts.log",
+          "passed": 197,
+          "failed": 0,
+          "ignored": 0
+        },
+        "conversation_ownership": {
+          "log": "child-policy-current-conversation.log",
+          "passed": 85,
+          "failed": 0,
+          "ignored": 0
+        },
+        "tasks": {
+          "log": "child-policy-current-tasks.log",
+          "passed": 158,
+          "failed": 0,
+          "ignored": 1
+        },
+        "child_policy_boundaries": {
+          "log": "child-policy-current-child-boundaries.log",
+          "passed": 29,
+          "failed": 0,
+          "ignored": 0
+        },
+        "shared_confirmation": {
+          "log": "child-policy-current-shared-confirmation.log",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        }
+      },
+      "scope": "groups overlap; task group has one existing ignored case; not total coverage"
+    },
+    "observed_state_cycles_and_persistence_deadline": {
+      "validation": "state-cycle-validation.json",
+      "new_named_core_tests": 15,
+      "new_named_actual_acp_tests": 1,
+      "core_regressions": {
+        "goal": {
+          "log": "state-coherent-current-goal.log",
+          "passed": 96,
+          "failed": 0,
+          "ignored": 0
+        },
+        "facts": {
+          "log": "state-coherent-current-facts.log",
+          "passed": 204,
+          "failed": 0,
+          "ignored": 0
+        },
+        "goal-control": {
+          "log": "state-coherent-current-goal-control.log",
+          "passed": 56,
+          "failed": 0,
+          "ignored": 0
+        },
+        "ownership": {
+          "log": "state-coherent-current-ownership.log",
+          "passed": 85,
+          "failed": 0,
+          "ignored": 0
+        },
+        "admission": {
+          "log": "state-coherent-current-admission.log",
+          "passed": 65,
+          "failed": 0,
+          "ignored": 1
+        },
+        "checkpoint-preparation": {
+          "log": "state-coherent-current-checkpoint-preparation.log",
+          "passed": 13,
+          "failed": 0,
+          "ignored": 0
+        }
+      },
+      "scope": "groups overlap, admission has one pre-existing ignored test; exact final Core inputs, no original130-case coverage claim"
+    },
+    "observation_reanchor_and_reopened_policies": {
+      "validation": "reanchor-validation.json",
+      "new_named_core_tests": 10,
+      "new_named_actual_acp_tests": 1,
+      "core_regressions": {
+        "goal": {
+          "log": "reanchor-current-goal.log",
+          "passed": 102,
+          "failed": 0,
+          "ignored": 0
+        },
+        "facts": {
+          "log": "reanchor-current-facts.log",
+          "passed": 206,
+          "failed": 0,
+          "ignored": 0
+        },
+        "goal-control": {
+          "log": "reanchor-current-goal-control.log",
+          "passed": 58,
+          "failed": 0,
+          "ignored": 0
+        },
+        "ownership": {
+          "log": "reanchor-current-ownership.log",
+          "passed": 85,
+          "failed": 0,
+          "ignored": 0
+        },
+        "admission": {
+          "log": "reanchor-current-admission.log",
+          "passed": 65,
+          "failed": 0,
+          "ignored": 1
+        },
+        "tasks": {
+          "log": "reanchor-current-tasks.log",
+          "passed": 158,
+          "failed": 0,
+          "ignored": 1
+        }
+      },
+      "reopened_policy_fields": 4,
+      "stores": 2,
+      "reopen_observations": 24,
+      "scope": "overlapping Core groups; healthy reopen contract and controlled original ACP facts; no crash/billing atomicity claim"
+    }
+  },
+  "provider_health_only": {
+    "gateway/prism-27b": "HTTP 403; no capability conclusion",
+    "deepseek/deepseek-flash": "valid response; tiny probe passed",
+    "glm/glm-5.3": "HTTP 429; no capability conclusion"
+  },
+  "acp_long_horizon_e2e_cases_completed": 0,
+  "credential_handling": "trusted ACL parsed without account import; child config strips upstream keys/headers/accounts/user roots",
+  "next": "Continue late/reused confirmation identity boundaries and truthful bounded caller observation/cancellation contracts for opaque durable callbacks; then changed-argument/model-derived-output loops and recovery fault boundaries. Do not reset trusted cumulative budgets or release unreturned original owners.",
+  "runtime_gate": {
+    "owned_oci_assets": "explicit qualified macOS ARM64 assets available; not global deployment",
+    "sdk_and_core_smokes": "authenticated SDK plus 4 real Core VM smokes pass",
+    "compiler": "Rust 1.97.1 aarch64 Linux GNU, static guest agent ARM64/x86_64 fresh root builds",
+    "oracle_negative_controls": "passed in real VM",
+    "rust_long_workflow": "Controlled H1 a940b208, current15360782, all19 independent checks,31423ms workflow/234.572s whole tester;9scripted generations,18synthetic tokens only.",
+    "process_host_fallback": "not enabled",
+    "macos_native_commands": "original refusal preserved"
+  },
+  "acp_real_diagnostics": {
+    "default_profile": {
+      "attempts": 2,
+      "full_workflow_passes": 0,
+      "actual_upstream_requests": 17,
+      "http_200": 17,
+      "adjudication": "completion gate correctly refused missing bound verification; harness profile not equipped for native-only completion; units spec also ambiguous",
+      "campaigns": [
+        "d8518462",
+        "6b73d84a"
+      ]
+    },
+    "disk_attested_profile": {
+      "status": "pass",
+      "requirements_revision": 2,
+      "byte_attestation": "explicit existing ACP host capability",
+      "semantic_oracle": "independent parent fixed numeric golden",
+      "campaign": "6aa93ca4-e4d1-401f-88cd-bed4423a6c6b",
+      "completed_user_turns": 6,
+      "actual_upstream_requests": 39,
+      "tool_calls": 23,
+      "permission_requests": 6,
+      "workflow_ms": 119259,
+      "full_test_s": 146.21,
+      "before_after_source_and_binaries_match": true,
+      "root_dirty_files_changed_during_sample": 0
+    },
+    "rust_host_contract_profile": {
+      "campaign": "rust-multifile-real-diagnostic-0190ed21-934c-4689-917d-21ff955ebd23",
+      "status": "fail",
+      "actual_upstream_requests": 11,
+      "http_200": 11,
+      "functional_artifact_oracle": "pass, including strengthened quantity-value checks",
+      "completion_gate": "correct refusal; model never ran exact admitted command and masked initial failed command status",
+      "tool_calls": 13,
+      "workflow_ms": 68584,
+      "full_test_s": 255.49,
+      "adapter_reported_tokens": {
+        "prompt": 235470,
+        "completion": 6108,
+        "total": 241578,
+        "cache_read": 102656,
+        "uncached_prompt": 132814
+      },
+      "raw_usage_presence": "not independently captured",
+      "paired_source_and_binary_before_after_match": true,
+      "runtime_before_after_match": true,
+      "original_status_preserved": true
+    },
+    "rust_host_contract_guidance_profile": {
+      "campaign": "rust-multifile-real-diagnostic-7283d1df-f1e0-4845-890b-0d674b26e5aa",
+      "status": "fail",
+      "functional_artifact_oracle": "pass",
+      "final_host_binding": "verified/passed",
+      "remaining_failure": "initial failed baseline was a compound command with masked exit status",
+      "actual_upstream_requests": 12,
+      "http_200": 12,
+      "tool_calls": 14,
+      "workflow_ms": 70734,
+      "full_test_s": 261.41,
+      "adapter_reported_tokens": {
+        "prompt_tokens": 217377,
+        "completion_tokens": 4866,
+        "total_tokens": 222243,
+        "cache_read_tokens": 133248,
+        "uncached_prompt_tokens": 84129
+      },
+      "raw_usage_presence": "not independently captured",
+      "paired_source_and_binary_before_after_match": true,
+      "runtime_before_after_match": true,
+      "request_metrics": "retained in result.json and request-audit.json",
+      "performance_improvement_claimed": false
+    }
+  },
+  "previous_goal_turn": "progress: historical0cc82113 successful state-cycle and pending durable ownership qualification retained in state-cycle-validation.json and OUTCOME.md.",
+  "qualification_scope": "zero fully qualified original cases; current frozen-pair actual ACP regressions and controlled H1 qualified in their stated scope; historical real R1 diagnostics retained separately",
+  "current_default_pair": {
+    "source_manifest": "ignored_root_h1_after.json",
+    "build_id": "aster-cli-pair-v1:626c36317b6a593ed2f152a46b53523bf198dee5:aarch64-apple-darwin",
+    "pair_matches_current_source": false,
+    "qualification": "Historical registration only; canonical root binaries were not the current tested input. Current paired/frozen subject is recorded separately under current_frozen_candidate."
+  },
+  "goal_objective": "继续深度完成a3s-code架构优化，特别是长程任务不可死循环",
+  "scope_note": "The broader architecture objective remains unfinished; goal-tool status is blocked. This scoped CLI/ACP publication does not close arbitrary persistence/export ownership, crash-recovery, or changing-argument/model-derived-output loop gaps.",
+  "workflow_architecture_review": {
+    "core_orchestration": "thin programmable AgentExecutor facade compiled into Core",
+    "flow_engine": "optional dynamic-workflow / advanced-harness",
+    "observed_default_and_headless_core_features_enable_flow": false,
+    "default_acp_direct_flow_invocations_found": false,
+    "scope": "dependency/features and default ACP call-site inspection, not a full audit of all external Rust hosts"
+  },
+  "current_frozen_candidate": {
+    "reference": "release915three-pair-candidate-reference.json",
+    "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+    "manifest": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/candidate.json",
+    "manifest_sha256": "bb9a7d8be303251c872c71f9dbeedb76554de921da3c6a893a26031cebf14ed3",
+    "pair_matches_recorded_release_source": true,
+    "pair_matches_primary_worktree": false,
+    "recorded_local_source_files": 5681,
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/aster",
+      "sha256": "32f66f4441aae9334d947de4cb9a9bdd4622a897fe2d0ac769d486cca57cbe93",
+      "bytes": 130259424
+    },
+    "acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/a3s-code-acp",
+      "sha256": "bded198cf581bd7b29dd7083f3872823756979c750167341b0dcfb2943b9b15c",
+      "bytes": 77233936
+    },
+    "qualification": "Actual selected macOS release archive: ACP20 (13 product+7 auxiliary), protocol10, controlled compiler-VM H1 with19 independent audits, local installer/update5 and real public-channel updater check. Linux/Windows archives checked separately; no full130-case or real-model performance claim.",
+    "build_origin": "local locked release fallback from220562fe9; Linux/Windows remain the original successful CI archives"
+  },
+  "historical_candidate_references": [
+    "net-pair-candidate-reference.json",
+    "timeout-pair-candidate-reference.json",
+    "confirmation-pair-candidate-reference.json",
+    "refusal-pair-candidate-reference.json",
+    "child-policy-pair-candidate-reference.json",
+    "child-policy-auth-pair-candidate-reference.json",
+    "state-cycle-pair-candidate-reference.json",
+    "state-coherent-pair-candidate-reference.json",
+    "reanchor-pair-candidate-reference.json",
+    "release915final-pair-candidate-reference.json"
+  ],
+  "last_goal_progress": "Published paired Aster CLI0.1.3 / Core+ACP9.1.5 from frozen source220562fe9. Exactly macOS/Linux/Windows; one Linux glibc2.31 archive, no Kylin variant. Selected release bytes passed ACP20/protocol10/controlled H1 audit19, actual Mac installer+update5 and public updater check; Windows native install/rollback2 and all archive/server digests pass. Mac is an explicitly recorded local release fallback after CI exceeded2h, not a CI artifact. The broader architecture objective remains unfinished and its goal-tool state remains blocked.",
+  "release_request": {
+    "authorized_channel": "Aster paired CLI/ACP release",
+    "aster_version": "0.1.3",
+    "core_acp_version": "9.1.5",
+    "branch": "release/aster-cli-v0.1.3",
+    "source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+    "isolated_worktree": "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3",
+    "workflow_run_id": 40110868267,
+    "workflow_url": "https://github.com/aster-ai-lab/aster/actions/runs/40110868267",
+    "last_workflow_status": "run40110868267 cancelled intentionally after successful Linux/Windows jobs; macOS exceeded2h and was replaced with a source-identical local locked release build",
+    "public_release": "published",
+    "root_core_confirmation_checks": 84,
+    "new_security_named_core_tests": 6,
+    "new_actual_acp_case": "reused_model_ids_keep_distinct_actual_acp_authorizations_and_rows",
+    "source_scope": "Code changes plus original guest mount/linker fixes and paired release; unrelated primary-worktree changes preserved",
+    "isolated_core_regression_passed": 741,
+    "actual_acp_passed": 20,
+    "protocol_passed": 10,
+    "h1_independent_checks": 19,
+    "ci_secret": "saved and API metadata verified; actual checkout succeeded on three native platforms",
+    "credential_followup": "supplied token is organization-wide read-only and appeared in chat; user handoff requested for Studio-only scope and regeneration; do not paste replacement in chat",
+    "workspace_ci_run_id": 40113626695,
+    "workspace_ci_status": "failure: integrated pinned Studio lacks updater test module and renderer knowledge modules; whole-workspace CI is not green",
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ],
+    "independent_kylin_version": false,
+    "new_platform_tests": {
+      "rust_updater": 2,
+      "linux_contracts": 13,
+      "pair_delivery": 10,
+      "release_assembly": 2
+    },
+    "old_run": "40104259230 superseded and cancellation requested; old Linux runners ended143/137, old Mac/Windows binaries have retired routing and are not promoted",
+    "release_url": "https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.3",
+    "published_at": "2026-10-24T18:44:10Z",
+    "macos_build_seconds": 951.835,
+    "qualification": "release915three-qualification.json",
+    "native_windows_install_rollback": 2,
+    "native_mac_install_update_checks": 5,
+    "public_channel_check": true,
+    "all_four_server_asset_digests_match": true
+  }
+}

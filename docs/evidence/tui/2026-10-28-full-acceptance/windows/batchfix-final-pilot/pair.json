@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:cb4a4958569c8de75d8114a543c902eab70737f3:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\cb4a4958569c8de75d8114a543c902eab70737f3-20261029075840825",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "fa20999067339ba1ea0dbf23c1196815fab7f04e206df148d16033a06c8e86b0",
+      "bytes": 323998720
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "a171e6eff56dfbf22533b065644ec1d998a588e507d7393cf8ca1a5b6a5885e9",
+      "bytes": 185447936
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-batchfix-final-windows-build.jsonl",
+  "created_at": "2026-10-29T07:58:49.2161154Z"
+}

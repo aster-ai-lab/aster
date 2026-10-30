@@ -1,0 +1,11 @@
+{
+  "profile": "release",
+  "origin": "local fallback at frozen source220562fe9 after prolonged macOS CI build; Linux/Windows reuse original CI archives",
+  "source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+  "exit_code": 0,
+  "build_seconds": 951.835,
+  "local_rust_source_unchanged": true,
+  "target_directory": "/Users/roylin/code/aster/target/qualification/net-progress-build/target",
+  "diagnostic_events": 19,
+  "scope": "local Rust/manifests/build controls plus exact compiler artifact features; not complete transitive/native/environment reproducibility"
+}

@@ -1,0 +1,379 @@
+{
+  "base": "a21925eef70d1ee80ced350bb851926b7f64e2c5",
+  "source_digest": "93f2d3eee01aaf64850b87402628cd2a0813c4e0",
+  "runtime_product_pair_digest": "c860e66c1e42149f47a9bfadff219fd6fae2f8fa",
+  "runtime_product_pair_rebuilt": false,
+  "model": "kimi/k3.1-pro",
+  "only_test_sources_changed": [
+    "crates/code/acp/tests/aster_tui_live_e2e.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/tool_wave.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/coverage_wave.rs"
+  ],
+  "new_qualified_cases": [
+    "coverage_wave::kimi_program_code_search_registered_template_returns_real_match",
+    "coverage_wave::kimi_program_repo_map_registered_template_runs_all_seven_steps",
+    "coverage_wave::kimi_program_template_rejects_numeric_search_query_with_owned_error",
+    "coverage_wave::kimi_program_max_tool_calls_stops_before_second_dispatch",
+    "coverage_wave::kimi_program_timeout_terminates_vm_and_next_turn_still_runs",
+    "coverage_wave::kimi_program_output_limit_preserves_utf8_and_marks_truncation",
+    "coverage_wave::kimi_batch_staged_reference_uses_real_first_result",
+    "coverage_wave::kimi_batch_missing_reference_fails_only_dependent_item",
+    "coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable",
+    "coverage_wave::kimi_theme_enum_preview_cancel_commit_and_reset_affect_real_palette",
+    "coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes",
+    "coverage_wave::kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection",
+    "coverage_wave::kimi_web_search_explicit_wiki_returns_structured_real_sources"
+  ],
+  "expected_inventory": 96,
+  "files": [
+    {
+      "path": "Cargo.lock",
+      "archive": "source/coverage-20261030-source/Cargo.lock",
+      "bytes": 584668,
+      "sha256": "9d1c9e3c51d3bd5e4c05cb02d6885aae9737215daa8e6c425780bc88012319e1"
+    },
+    {
+      "path": "crates/code/acp/Cargo.toml",
+      "archive": "source/coverage-20261030-source/crates/code/acp/Cargo.toml",
+      "bytes": 1852,
+      "sha256": "84d28e056ff7ec3712b9f895f295b32a32c25f7c885263d8cccdf641aebcaf36"
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/src/agent.rs",
+      "bytes": 63139,
+      "sha256": "c406787f82a31f24109f0627118f6ae1163ed77e21af14d90ee69c1343f61bae"
+    },
+    {
+      "path": "crates/code/acp/src/agent/question_cancel_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/src/agent/question_cancel_tests.rs",
+      "bytes": 3318,
+      "sha256": "f05a5fd89b39d6725cf8d83f93e203884b01597e7c695d6868da41e07ea10410"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_catalog.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/src/agent/session_catalog.rs",
+      "bytes": 7624,
+      "sha256": "896f983689344caf820cf1d6adea00065c033209e18c459046d634791ef9a6e0"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_catalog_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/src/agent/session_catalog_tests.rs",
+      "bytes": 15536,
+      "sha256": "6586a94ac46fd9628bea277de47d7ab8cd93cbc644b4998a46fd0d1c29c7d3e1"
+    },
+    {
+      "path": "crates/code/acp/src/agent/turn.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/src/agent/turn.rs",
+      "bytes": 37714,
+      "sha256": "7921a37cca05a93c734526b710e4c89188737b09680327cf962d6bdc697a9592"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "bytes": 4338,
+      "sha256": "b511f58aa10aa39297dd55c476aa6ddb238d20bdeb58a6e1fdf33a68be35db7a"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/context_and_input.rs",
+      "bytes": 7268,
+      "sha256": "0223a343894c97c91f95d0a3246052d3a92c77477739a0c756757758dc458f0d"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/coverage_wave.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/coverage_wave.rs",
+      "bytes": 22336,
+      "sha256": "207332ffe44061779c2bcccf96017c28ae4bfe0ad43ae7971926f448acd79219"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "bytes": 33522,
+      "sha256": "27b94b3be9e961dacaf756627700ea5d6f13d639da892e4c1150c72d8e481f28"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/file_references.rs",
+      "bytes": 4170,
+      "sha256": "9bdf4a8036f06ac6e6a2a93cce359b3c64082b3885f4d653da0869ebb5cb236f"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs",
+      "bytes": 28080,
+      "sha256": "6e5a686745abf02c3b3e9b49cf646e236732ba733ccc0918393bfe2f57295048"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/functional.rs",
+      "bytes": 31125,
+      "sha256": "787c76d26955bc18a1aaaa6d4d717e1a6d54f895028f2b9c3f8dcf07f4783e08"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs",
+      "bytes": 15075,
+      "sha256": "723c38cc9cd43c7e9727c52f8e06950a7f0bb4c97351202c72a0665e9c9610c6"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs",
+      "bytes": 26807,
+      "sha256": "0b488670e2a00fb6dbe9454bc8d45e1165dcd1cb4fe5480ef3e1b130f96cc786"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/questions_and_forms.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/questions_and_forms.rs",
+      "bytes": 10970,
+      "sha256": "066950702096ef8e2d9ab57b0ebec771d3632e0ac36d510b2d99fdfcd09c4f10"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs",
+      "bytes": 18028,
+      "sha256": "c2fe66623862f9962c3c8b9ceeb3938841514bfd95e8cedf0e31a46c4462640c"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/tool_wave.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/tool_wave.rs",
+      "bytes": 31923,
+      "sha256": "b4e7b716ee53998017555683ba70f8c109cc5cc03109f2af8f284f3f5f5acd3c"
+    },
+    {
+      "path": "crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs",
+      "archive": "source/coverage-20261030-source/crates/code/acp/tests/aster_tui_live_e2e/workspace_trust.rs",
+      "bytes": 16463,
+      "sha256": "83faebfec08c2854e7a7228d024f40b596c05a6cef102cca90482ac8936e0c00"
+    },
+    {
+      "path": "crates/code/core/prompts/common/runtime_contract.md",
+      "archive": "source/coverage-20261030-source/crates/code/core/prompts/common/runtime_contract.md",
+      "bytes": 2037,
+      "sha256": "207a37eab514210b93024adba74c71673ac2a08b42dc83e562a677e028de071c"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/agent_api/tests/fact_log.rs",
+      "bytes": 61507,
+      "sha256": "cf758361502f6e9c42c1d2a8cb0b9e14dc0323ae898ac3df2a33e5fc14400463"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs",
+      "bytes": 4178,
+      "sha256": "d38bac54e7ad2f84fcd89ee7243ebd8b385d178720bb57639a2b9eb6e734964c"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_history_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/fact_control/tool_history_tests.rs",
+      "bytes": 27137,
+      "sha256": "4bba850d890ab8a256ff769e5c6b7cc4a37307241cce11f345149969efb6c553"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_results.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/fact_control/tool_results.rs",
+      "bytes": 17463,
+      "sha256": "6d663d448553d68af2810b9c4908b5e8a43d973c20d18daa5957a7262e63e6d3"
+    },
+    {
+      "path": "crates/code/core/src/session_folder.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/session_folder.rs",
+      "bytes": 16551,
+      "sha256": "26ae77e81e0127923a81665a9563ec4ad45c7f928d93f842312b022855df60a6"
+    },
+    {
+      "path": "crates/code/core/src/session_folder/catalog.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/session_folder/catalog.rs",
+      "bytes": 17437,
+      "sha256": "2eae1e543c84eb77245d9bcb525006edfe115357819753bcd825836be8f7630b"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/tools/builtin/bash.rs",
+      "bytes": 46406,
+      "sha256": "45fe23dd822a834a60b22e7e4dc06458b16766d71b6e8db52f3b236aaa5c7468"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/tools/builtin/bash/output_streams.rs",
+      "bytes": 1160,
+      "sha256": "9a457361da8ee5305738aa9ecaa81f6b876921e04d59a75bdae824f4dc5d3f41"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/code/core/src/tools/builtin/bash/output_streams_tests.rs",
+      "bytes": 1359,
+      "sha256": "b143d5f3e01f6e8c3cede9378b24afc089ce9b5d98c029944ed5a0c35c46ecc0"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/form/tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/acp_handler/form/tests.rs",
+      "bytes": 11333,
+      "sha256": "42ac93e00e29faf395f7c4c91724e9f32f66c48e2a068b6f0db0a7d1eabdf7b2"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/key_owner_tests.rs",
+      "bytes": 47667,
+      "sha256": "a4a82439ddc7b7c52b1f8bf0aeb5821776b9655258d4e1a954c73b7da010dc29"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/render.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/render.rs",
+      "bytes": 221095,
+      "sha256": "576d5026f461c845f47c3209ca8f7a3ab17bf451749ff2fdaa20ffade2d03805"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer.rs",
+      "bytes": 52343,
+      "sha256": "c62b1c27d18c6def6022d9c7022ed31182892084680f839210228805e37d88c8"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/agent_view/viewer_tests.rs",
+      "bytes": 34524,
+      "sha256": "53b4f0a440ab190fc56b92d437eb930973124371fde886403a0cd80225a22e04"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs",
+      "bytes": 302727,
+      "sha256": "8c9380076fe1341632265dd3e9ad655d37d70a6fa74087567ce6b3a73e3685ef"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/app_view_tests.rs",
+      "bytes": 317375,
+      "sha256": "4cb8e5f8e5a10b5774a348510a1813b4db41c16b8d84088ad86fcb635de1ae82"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/foreign.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/foreign.rs",
+      "bytes": 13382,
+      "sha256": "1110e8df1623f59dd5b3c5ba45e67d78e1c06d8ecbd3498d3089355dda346f74"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs",
+      "bytes": 81142,
+      "sha256": "448fb14eb7f602cb0c7ee08b08ad0e887e460fb8f7eed4e5b32492b8b2aa9aaf"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/mod.rs",
+      "bytes": 44113,
+      "sha256": "e5d7f6d0ad2137ce74a1fc87e58c49ca8f40dc060724a129847cb721c44b7b66"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/notes.rs",
+      "bytes": 94794,
+      "sha256": "3b038ed21edcfbd2734cb5c41bf54675c0598b0bd6247b380073582e2d7c16b9"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/lifecycle.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/lifecycle.rs",
+      "bytes": 154830,
+      "sha256": "9527d56f01e86764b006cf5a459d69f000ab02e3726d1385a33bce19e03ae008"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/optimistic_home.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/session/optimistic_home.rs",
+      "bytes": 61377,
+      "sha256": "5067d34ac22c595dbdb9a361fe26f9aeb4d8dfff7f9a5f1580eba8a193885ad1"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/status.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/status.rs",
+      "bytes": 78951,
+      "sha256": "54643d71c0f85073b926e179b5d7f4c5e689cef5dd60dcbc748fe2ee5adf4077"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/helpers.rs",
+      "bytes": 72905,
+      "sha256": "918dddbda826dcb7a64c2075732b2a08602498359f9bbb5fb8b0bbf771878258"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/mod.rs",
+      "bytes": 257910,
+      "sha256": "bf7e5aa498758889598215f5cf801016897d7c542efa1c554a8e9d5aee969579"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list.rs",
+      "bytes": 13713,
+      "sha256": "122150e88564bd2f53a8fe63e08e3dcba5fd6faad7c1a7f3b2ff92280e6736c8"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/session_list_tests.rs",
+      "bytes": 15600,
+      "sha256": "4fbb20e44e28f0426f87000597462c6480f335d87f6ac75d040499629fca7898"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/effects/tests.rs",
+      "bytes": 131017,
+      "sha256": "0a69aed740217dae0920105faacd5e75b48b79ad55855e9c255ce75d166ea4b2"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs",
+      "bytes": 269112,
+      "sha256": "5ddcf07a01794ac4bc77408ab901af6ae6f7b05dfc5dd2c8eb83d7ecd72c9bfa"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop/native_paste_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop/native_paste_tests.rs",
+      "bytes": 7363,
+      "sha256": "f15df5fb58f093403e42fb395434b31b3d86285cae00ed23f10f6ad42f0266ab"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/agent.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/views/agent.rs",
+      "bytes": 86011,
+      "sha256": "8dce41d4adf571c62cf2aab7fae49dbd0d180836e286232216a8979358dfc703"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/elicitation_view/render.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/views/elicitation_view/render.rs",
+      "bytes": 22612,
+      "sha256": "db80fba4308d514cc6cb9c7a1c54c40ffb5546417165b2fad0560739358e97c4"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/elicitation_view/tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-pager/src/views/elicitation_view/tests.rs",
+      "bytes": 22164,
+      "sha256": "8ec7542e80dc23f623bd61bab68367b6da4c68abcdab490c229dc02b8d24b738"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-shell/src/agent/handlers/session.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-shell/src/agent/handlers/session.rs",
+      "bytes": 12293,
+      "sha256": "1cb00ac5ae36317393b11607d48d6f1e8f8f2675d92e8ab53e02d79954e5ea42"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_types.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_types.rs",
+      "bytes": 38856,
+      "sha256": "c7a0298e65c7a8ce24ce9f00eaa6682d995191a4045f27f924463e3259285a8e"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-tty-utils/src/lib.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-tty-utils/src/lib.rs",
+      "bytes": 80669,
+      "sha256": "e340ba6182caee4cd6568b53c33b128f95c199173a2102180cebee45cef8e36f"
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-tty-utils/src/runtime_tests.rs",
+      "archive": "source/coverage-20261030-source/crates/terminal/crates/codegen/a3s-tty-utils/src/runtime_tests.rs",
+      "bytes": 5978,
+      "sha256": "ac52905f9db18cefdf42de3663acc251161f76de3969614738a0af11dcbc507b"
+    }
+  ]
+}

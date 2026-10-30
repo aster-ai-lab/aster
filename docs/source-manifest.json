@@ -228,9 +228,20 @@
       "version": "0.10.0",
       "path": "crates/power",
       "source": "git@github.com:A3S-Lab/Power.git",
-      "revision": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
+      "revision": "24b364c6935c1b62a689d91839ec394bfc74c059",
       "source_manifest_sha256": "ee7e386eeeb226d81a21fe846e91c203dd8d5b86f985d1f0feaa32288d97b865",
-      "note": "Published existing Power submodule branch codex/aster-h200-native-20261024. Root workspace owns the lockfile; ACL and Runtime resolve locally. Native storage, peer transfer, injectable model/auth hooks and strict streamed usage accounting are included."
+      "note": "Published Power main merges the existing H200/native-storage branch and upstream WorkBuddy metadata compatibility; adds managed native Xolotl lifecycle, bounded readiness, DSpark/FP4 KV configuration, and shared OpenAI tool compatibility. Root workspace retains the lockfile and local dependencies."
+    },
+    {
+      "package": "crossterm",
+      "version": "0.28.1",
+      "path": "crates/third-party/crossterm",
+      "source": "https://crates.io/api/v1/crates/crossterm/0.28.1/download",
+      "revision": "492b764f9f132d302903ff6f2f55e96c1b8cd0ec",
+      "source_archive_sha256": "829d955a0bb380ef178a640b91779e3987da38c9aea133b20614cfed8cdea9c6",
+      "license": "MIT",
+      "license_text": "crates/third-party/crossterm/LICENSE",
+      "note": "Retains upstream package name, version, public API, source, examples and notices. A narrow Windows parser patch emits committed Alt-code characters as text presses; ordinary key releases remain releases. The local package is unpublished and uses the root workspace and lockfile. Sources are formatted with the pinned root toolchain."
     },
     {
       "package": "serde-saphyr",
@@ -2946,112 +2957,108 @@
       "implementation": "Original Xolotl; not a3s-power Rust native",
       "lease_ends_unix": 1792859870.529365,
       "target300_met": false,
-      "target500_met": false
+      "target500_met": false,
+      "historical_snapshot": true,
+      "superseded_by": "server_access_1m"
     },
     "current_serving_optimization_roles": {
-      "unix": 1792849999.9257133,
-      "goal_turn_classification": "PROGRESS",
-      "goal_objective": "深度优化单卡 1M 上下文 部署的正确性和速度",
+      "unix": 1792913141.6488562,
+      "goal_objective": "深度完成单卡H200 DeepSeek v4.1 Flash 1M上下文 三值量化版本模型推理速度优化",
       "goal_met": false,
-      "previous_500_tok_s_goal_superseded": true,
       "active_service": {
         "base_url": "http://10.102.93.68/v1",
-        "intent": "xolotl-stable-service-v8-intent.json",
-        "allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
-        "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+        "model": "deepseek-v4.1-flash-1017-xq",
+        "allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+        "gpu_uuid": "GPU-ddd0cb62-2b13-caf7-7336-159994b18f02",
         "context_tokens": 1048576,
+        "lease_ends_unix": 1792933033.9163594,
+        "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+        "api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
         "prefill_batch_tokens": 8192,
+        "prefill_chunk_tokens": 128,
+        "parallel": 2,
         "conversation_cache_mib": 8192,
         "conversation_cache_slots": 8,
-        "STRATA_SERVE_BATCH_TAIL": "0",
-        "lease_ends_unix": 1792859870.529365,
         "windows_forwarding": false,
-        "actual_prompt_tokens_qualified": 131073,
+        "actual_prompt_tokens_qualified": 132097,
         "full_1m_length_qualified": false,
-        "tool_call_end_to_end_passed": false,
+        "instance_full_1m_execution_tested": false,
+        "engine_profile_full_1m_length_qualified": true,
+        "same_existing_key": true,
+        "native_tool_arguments_repaired": true,
         "workbuddy_gui_end_to_end_passed": false,
-        "cleanup": "xolotl-server-vip-cleanup-v8-intent.json"
+        "allocation_job": "aster-xolotl-1mc13-2eae3fd237dd-5760761",
+        "replica_uid": "81b3fe4f-fe48-4624-97cb-6432c000b175",
+        "credentials_retained": false,
+        "backend_verified_by_unique_nonce_and_kv_reuse": true,
+        "workbuddy_bundled_cli_e2e_passed": false,
+        "workbuddy_first_turn_latency_accepted": false,
+        "availability_evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r12/receipts/xolotl-C14-serving-v368-verification.json",
+        "fresh_windows_backend_verified": true,
+        "service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354",
+        "native_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373"
       },
       "optimization": {
-        "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
-        "gpu_uuid": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
-        "no_active_model_worker": true,
-        "lease_ends_unix": 1792862381.5974355
+        "allocation_uid": "b37b7201-2c9c-45a2-ae1f-e522319324ca",
+        "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+        "lease_ends_unix": 1792932297.8810108,
+        "binary_sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195",
+        "latest_evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r10",
+        "current_profile": "Native Top-K flag0/1/0 actual1M model A/B/A pending; exact38 GPU operator gates passed",
+        "production_promoted": false,
+        "full1m_candidate_qualified": false,
+        "actual1m_input_completed_this_round": false,
+        "ordinary_decode_gain_proven": false,
+        "concurrent_identity_fixed": false,
+        "allocation_job": "aster-xolotl-1mc12-00686222ad57-74805472"
       },
       "maximum_allocated_h200": 2,
-      "workbuddy": {
-        "actual_models_json_metadata_verified": true,
-        "bundled_client_two_new_sessions_received_hi": true,
-        "new_session_first_output_seconds": [
-          60.7737557888031,
-          41.960718631744385
-        ],
-        "gui_test_passed": false,
-        "gui_automation_error": "node_repl initialization twice failed to write kernel assets: Windows path not found (os error3)",
-        "latency_acceptance_passed": false,
-        "tool_call_acceptance_passed": false,
-        "known_tool_defect": "Production V4 still returns empty tool arguments for JSON-inside-DSML. V6b strict overlay is deployed only on validation GPU: cold/cache controls pass, but forced native tool stream has no finish/usage. Do not promote; exact failure remains unresolved.",
-        "bundled_same_process_two_turns_passed": true,
-        "same_process_first_output_seconds": [
-          42.4554,
-          6.77186
-        ],
-        "same_process_result": "workbuddy-stream-e2e-v2-result.json",
-        "strict_json_overlay_cpu_tests_passed": true,
-        "strict_json_overlay_gpu_qualification_passed": false
-      },
-      "prior_131k_short_load": {
-        "file": "xolotl-server-v4-131k-windows-loadtest.json",
-        "passed": true,
-        "measured_requests": 64,
-        "warmup_requests": 4,
-        "completion_tokens": 6656,
-        "context_tokens": 131072,
-        "concurrency_levels": [
-          {
-            "concurrency": 1,
-            "successes": 16,
-            "failures": 0,
-            "aggregate_end_to_end_completion_tok_s": 68.22188512073808,
-            "ttft_p95_seconds": 0.2820000001229346,
-            "request_p95_seconds": 2.2224999997997656
-          },
-          {
-            "concurrency": 2,
-            "successes": 16,
-            "failures": 0,
-            "aggregate_end_to_end_completion_tok_s": 69.87779784127464,
-            "ttft_p95_seconds": 2.4137499999487773,
-            "request_p95_seconds": 3.995750000118278
-          },
-          {
-            "concurrency": 4,
-            "successes": 16,
-            "failures": 0,
-            "aggregate_end_to_end_completion_tok_s": 71.52067394533896,
-            "ttft_p95_seconds": 5.55475000012666,
-            "request_p95_seconds": 5.909999999916181
-          },
-          {
-            "concurrency": 8,
-            "successes": 16,
-            "failures": 0,
-            "aggregate_end_to_end_completion_tok_s": 70.57426414390594,
-            "ttft_p95_seconds": 17.691250000032596,
-            "request_p95_seconds": 19.035250000073574
-          }
-        ],
-        "scope": "Direct Windows -> server VIP; four short public prompts,32/128 output tokens,16 requests per level. Not long-context concurrency or soak. API wall throughput, not isolated decode.",
-        "improved_over_historical_4k": false,
-        "regression_cause_proven": false
-      },
       "publication": {
-        "integration_worktree": "D:\\code\\aster\\.wt-h200-native-integration",
-        "branch": "codex/h200-native-ready-20261024",
-        "power_revision": "c891f930bcbc06b52175ad4fe0247cc2c1f9b412",
-        "parent_commit_pending": true
+        "parent_head_before_r3": "691564b0bbce7d5dfc3bf51bb0ec6585700a1e7e",
+        "evidence_revision": "ttft-1m-20261025/r10"
       },
-      "next_action": "Finish explicit commit/merge/push in integration worktree; Power dependency is already published. Keep public1M service onGPU0349 with guarded reservation; optimization is idleGPU117a, use current-optimization-lease. Qualify full1M-length public input with an adequate bounded client timeout, plus long-context correctness, cache and tool/client roundtrips. V7 fails batch DSpark seed; V8 explicit upstream batch-tail0 passes exact same131073-token input and WindowsVIP actual generation. Do not report a full1M/quality/latency acceptance from this smoke test. Keep two GPUs maximum. Prior500tok/s goal was replaced by user; current goal is1M correctness/speed."
+      "next_action": "Observe exact graph-source-type full-model comparison375 on C15; retain original40+20 and concurrent full-output gates. Formal C14 uses unchanged fa019 with repaired tool protocol. Actual1M decode hardware collection and 300/1000 token/s remain pending.",
+      "serving": {
+        "base_url": "http://10.102.93.68/v1",
+        "model": "deepseek-v4.1-flash-1017-xq",
+        "allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+        "gpu_uuid": "GPU-ddd0cb62-2b13-caf7-7336-159994b18f02",
+        "context_tokens": 1048576,
+        "lease_ends_unix": 1792933033.9163594,
+        "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+        "api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+        "prefill_batch_tokens": 8192,
+        "prefill_chunk_tokens": 128,
+        "parallel": 2,
+        "conversation_cache_mib": 8192,
+        "conversation_cache_slots": 8,
+        "windows_forwarding": false,
+        "actual_prompt_tokens_qualified": 132097,
+        "full_1m_length_qualified": false,
+        "instance_full_1m_execution_tested": false,
+        "engine_profile_full_1m_length_qualified": true,
+        "same_existing_key": true,
+        "native_tool_arguments_repaired": true,
+        "workbuddy_gui_end_to_end_passed": false,
+        "allocation_job": "aster-xolotl-1mc13-2eae3fd237dd-5760761",
+        "replica_uid": "81b3fe4f-fe48-4624-97cb-6432c000b175",
+        "credentials_retained": false,
+        "backend_verified_by_unique_nonce_and_kv_reuse": true,
+        "workbuddy_bundled_cli_e2e_passed": false,
+        "workbuddy_first_turn_latency_accepted": false,
+        "availability_evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r12/receipts/xolotl-C14-serving-v368-verification.json",
+        "fresh_windows_backend_verified": true,
+        "service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc14-3458a0d96e5c/serve-stable-recovery-v354",
+        "native_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373"
+      },
+      "latest_verified_optimization_role": {
+        "job": "aster-xolotl-1mc15-4cde736558c0-49555809",
+        "allocation_uid": "5bc306b2-e9e1-4e25-bd05-d78eca2b4833",
+        "gpu_uuid": "GPU-da0c6213-da08-a516-298a-002a7a2899b7",
+        "native_sha256": "b7124c78d711d3f48b928a292bd6423af4137816533e0acfbeb5114644508185",
+        "comparison_in_progress": true,
+        "formal_changed": false
+      }
     },
     "server_access_131k": {
       "base_url": "http://10.102.93.68/v1",
@@ -3145,31 +3152,781 @@
         "cpu_tests_passed": true,
         "gpu_tool_qualification_passed": false,
         "promoted": false
-      }
+      },
+      "historical_snapshot": true,
+      "superseded_by": "server_access_1m"
     },
     "server_access_1m": {
       "active_service": {
+        "allocation_job": "aster-xolotl-1mc8-d1480eb0e2fd-90999078",
+        "allocation_uid": "c016efa8-6e71-4501-8aff-08f7335d0b27",
+        "replica": "aster-xolotl-1mc8-d1480eb0e2fd-90999078-n742l",
+        "replica_uid": "5bc10e6a-63e4-4f52-bdeb-8b1fd22dd67c",
+        "gpu_uuid": "GPU-5539f8f3-5b45-f092-dd75-39fcb99c10cf",
+        "pod_ip": "100.100.176.103",
         "base_url": "http://10.102.93.68/v1",
-        "intent": "xolotl-stable-service-v8-intent.json",
-        "allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
-        "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+        "model": "deepseek-v4.1-flash-1017-xq",
         "context_tokens": 1048576,
+        "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+        "api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
         "prefill_batch_tokens": 8192,
+        "prefill_chunk_tokens": 128,
+        "parallel": 2,
         "conversation_cache_mib": 8192,
         "conversation_cache_slots": 8,
-        "STRATA_SERVE_BATCH_TAIL": "0",
-        "lease_ends_unix": 1792859870.529365,
+        "same_existing_key": true,
+        "credentials_retained": false,
         "windows_forwarding": false,
-        "actual_prompt_tokens_qualified": 131073,
+        "lease_ends_unix": 1792898988.8316312,
+        "instance_actual_prompt_tokens_qualified": 132097,
+        "actual_prompt_tokens_qualified": 132097,
         "full_1m_length_qualified": false,
-        "tool_call_end_to_end_passed": false,
-        "workbuddy_gui_end_to_end_passed": false,
-        "cleanup": "xolotl-server-vip-cleanup-v8-intent.json"
+        "instance_full_1m_execution_tested": false,
+        "engine_profile_full_1m_length_qualified": true,
+        "native_tool_roundtrip_passed": true,
+        "workbuddy_bundled_cli_e2e_passed": true,
+        "workbuddy_gui_e2e_passed": false,
+        "workbuddy_first_turn_latency_accepted": false
       },
-      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/server-access-1m",
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5",
       "full_1m_length_qualified": false,
-      "current_short_load_file": "xolotl-server-v8-1m-windows-single-loadtest.json",
-      "ttft_optimization_required": true
+      "current_short_load_file": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5/receipts/xolotl-stable-recovery-v58-stable-qualification-latest.json",
+      "ttft_optimization_required": true,
+      "current_fullwindow_cache_hit_load_file": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5/receipts/xolotl-indexer-fullwindow-suite-v45-latest.json",
+      "engine_profile_full_1m_length_qualified": true,
+      "instance_full_1m_execution_tested": false,
+      "historical_service_snapshots": [
+        {
+          "unix": 1792865871.9952364,
+          "base_url": "http://10.102.93.68/v1",
+          "model": "deepseek-v4.1-flash-1017-xq",
+          "allocation_uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+          "replica_uid": "8d111540-5afb-4422-b464-b4bb48635182",
+          "gpu_uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+          "binary_sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988",
+          "context_tokens": 1048576,
+          "actual_prompt_tokens_qualified": 132097,
+          "full_1m_length_qualified": false,
+          "instance_full_1m_execution_tested": false,
+          "engine_profile_full_1m_length_qualified": true,
+          "engine_profile_full1m_evidence_gpu": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
+          "engine_profile_full1m_evidence": "../r2/receipts/xolotl-full-1m-qualification-v17-latest.json",
+          "lease_ends_unix": 1792880432.7702465,
+          "parallel": 2,
+          "prefill_batch_tokens": 8192,
+          "prefill_chunk_tokens": 128,
+          "conversation_cache_mib": 8192,
+          "conversation_cache_slots": 8,
+          "windows_forwarding": false,
+          "same_existing_key": true,
+          "credential_retained": false,
+          "native_tool_arguments_repaired": false,
+          "workbuddy_gui_end_to_end_passed": false,
+          "resident_mmq_promoted": false,
+          "exact_tokenizer_memo_enabled": false,
+          "backend_verified_by_unique_nonce_and_kv_reuse": true,
+          "endpoint_object_read_permitted": false,
+          "terminal_phase": "Stopped",
+          "terminal_time_cst": "2026-10-25T03:48:49+08:00",
+          "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5"
+        }
+      ],
+      "current_short_load_scope": "Fresh instance basic28 including16 short measurements from jump host; not Windows concurrent load.",
+      "fullwindow_load_scope": "Actual1M nativefa/S128 profile evidence onGPU355; not newGPU5539 formal-instance full-window execution."
+    },
+    "latest_exact_tokenizer_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r2/receipts/xolotl-exact-tokenizer-v21-latest.json",
+      "production_promoted": false,
+      "fullwindow_id_sha256": "b9b006a173dc68f8da156b6bd01e0d90c3abdef62f24561475e8b4fa17e5374c",
+      "cpu_only": true
+    },
+    "latest_resident_mmq_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r3",
+      "binary_sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd",
+      "production_promoted": false,
+      "real_weight_f32_gate_passed": true,
+      "api_same_gpu_28_request_profiles": [
+        {
+          "profile": "v15_control",
+          "requests": 28,
+          "short": {
+            "measured_requests": 16,
+            "ttft_p50_seconds": 0.12853529048152268,
+            "ttft_p95_seconds": 0.15864893491379917,
+            "api_wall_completion_tok_s": 85.36114673384668,
+            "stream_interval_tok_s_estimate": 95.12929328293978
+          },
+          "long": {
+            "cold35700": {
+              "ttft_seconds": 48.91329057328403,
+              "seconds": 49.060049834195524,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "restored35700": {
+              "ttft_seconds": 0.06207377603277564,
+              "seconds": 0.12020795093849301,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 35700
+                }
+              }
+            },
+            "mixed-short": {
+              "ttft_seconds": 5.394570586737245,
+              "seconds": 5.424297377001494,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "mixed-cold-long": {
+              "ttft_seconds": 52.298553318716586,
+              "seconds": 52.33348588692024,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            },
+            "fresh-three-records": {
+              "ttft_seconds": 49.776902372948825,
+              "seconds": 50.132383178919554,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-isolation-53": {
+              "ttft_seconds": 5.438188917934895,
+              "seconds": 5.473282531835139,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-three-records": {
+              "ttft_seconds": 54.415239290799946,
+              "seconds": 54.779992945026606,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            }
+          },
+          "three_position_retrieval_passed": true
+        },
+        {
+          "profile": "v35_keep",
+          "requests": 28,
+          "short": {
+            "measured_requests": 16,
+            "ttft_p50_seconds": 0.132623276906088,
+            "ttft_p95_seconds": 0.17696014046669006,
+            "api_wall_completion_tok_s": 83.21442613369932,
+            "stream_interval_tok_s_estimate": 92.92409058827644
+          },
+          "long": {
+            "cold35700": {
+              "ttft_seconds": 56.08850952424109,
+              "seconds": 56.15404818626121,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "restored35700": {
+              "ttft_seconds": 0.06093242205679417,
+              "seconds": 0.158033006824553,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 35700
+                }
+              }
+            },
+            "mixed-short": {
+              "ttft_seconds": 2.521160049829632,
+              "seconds": 2.5524804880842566,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "mixed-cold-long": {
+              "ttft_seconds": 55.343991060275584,
+              "seconds": 55.380941409152,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            },
+            "fresh-three-records": {
+              "ttft_seconds": 55.54971243813634,
+              "seconds": 55.85169955715537,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-isolation-53": {
+              "ttft_seconds": 2.534239675849676,
+              "seconds": 2.5665766317397356,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-three-records": {
+              "ttft_seconds": 56.36916075088084,
+              "seconds": 56.72405976289883,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            }
+          },
+          "three_position_retrieval_passed": true
+        },
+        {
+          "profile": "v35_packed",
+          "requests": 28,
+          "short": {
+            "measured_requests": 16,
+            "ttft_p50_seconds": 0.13089959346689284,
+            "ttft_p95_seconds": 0.16317557671573013,
+            "api_wall_completion_tok_s": 83.26495140230219,
+            "stream_interval_tok_s_estimate": 92.7660248723741
+          },
+          "long": {
+            "cold35700": {
+              "ttft_seconds": 40.03045743284747,
+              "seconds": 40.133735860232264,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "restored35700": {
+              "ttft_seconds": 0.060690400656312704,
+              "seconds": 0.1308897379785776,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 35700
+                }
+              }
+            },
+            "mixed-short": {
+              "ttft_seconds": 1.5854328158311546,
+              "seconds": 1.616921631153673,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "mixed-cold-long": {
+              "ttft_seconds": 39.66371749760583,
+              "seconds": 39.699461144860834,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 2,
+                "total_tokens": 35702,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            },
+            "fresh-three-records": {
+              "ttft_seconds": 38.51503474870697,
+              "seconds": 38.8969100266695,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-isolation-53": {
+              "ttft_seconds": 1.5926160519011319,
+              "seconds": 1.6260792198590934,
+              "usage": {
+                "prompt_tokens": 18,
+                "completion_tokens": 2,
+                "total_tokens": 20,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "yielded-three-records": {
+              "ttft_seconds": 39.523466067854315,
+              "seconds": 39.874941980000585,
+              "usage": {
+                "prompt_tokens": 35700,
+                "completion_tokens": 17,
+                "total_tokens": 35717,
+                "prompt_tokens_details": {
+                  "cached_tokens": 1024
+                }
+              }
+            }
+          },
+          "three_position_retrieval_passed": true
+        }
+      ],
+      "full1m_candidate_qualified": true,
+      "actual_full1m_prompt_tokens": 1048504,
+      "full1m_cache_restore_passed": true,
+      "full1m_evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r4",
+      "same_gpu_full1m_cold_ttft_seconds": 2078.5043493108824,
+      "fullwindow_fixed_cache_load": [
+        {
+          "concurrency": 1,
+          "requests": 16,
+          "completion_tokens": 272,
+          "wall_seconds": 31.697999191004783,
+          "aggregate_end_to_end_completion_tok_s": 8.580983246323882,
+          "ttft_p50_seconds": 1.5445452337153256,
+          "ttft_p95_seconds": 1.573262416291982,
+          "request_p95_seconds": 2.0183987960917875,
+          "per_stream_interval_tok_s_estimate": 38.963203417281086
+        },
+        {
+          "concurrency": 2,
+          "requests": 16,
+          "completion_tokens": 272,
+          "wall_seconds": 25.926741359755397,
+          "aggregate_end_to_end_completion_tok_s": 10.491098600698432,
+          "ttft_p50_seconds": 2.3153983128722757,
+          "ttft_p95_seconds": 5.158946580020711,
+          "request_p95_seconds": 6.126490488997661,
+          "per_stream_interval_tok_s_estimate": 33.2319316143357
+        }
+      ]
+    },
+    "latest_masked_indexer_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5",
+      "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+      "basic28_passed": true,
+      "full1m_qualified": true,
+      "numerical_cases": 144,
+      "actual_graphs": 360,
+      "full_scores_byte_identical": true,
+      "memcheck_errors": 0,
+      "speed_gain_proven": true,
+      "production_promoted": true,
+      "current_suite_phase": "passed",
+      "speed_gain_scope": "one same-GPU cold1048504 block,7.411152% less TTFT",
+      "fullwindow_fixed_cache_hit_load": [
+        {
+          "concurrency": 1,
+          "requests": 16,
+          "completion_tokens": 272,
+          "wall_seconds": 30.872020170092583,
+          "aggregate_end_to_end_completion_tok_s": 8.81056693087747,
+          "ttft_p50_seconds": 1.5269450903870165,
+          "ttft_p95_seconds": 1.5682833495084196,
+          "request_p95_seconds": 1.96678283798974,
+          "per_stream_interval_tok_s_estimate": 42.974848144269025
+        },
+        {
+          "concurrency": 2,
+          "requests": 16,
+          "completion_tokens": 272,
+          "wall_seconds": 26.382286979351193,
+          "aggregate_end_to_end_completion_tok_s": 10.309947739287656,
+          "ttft_p50_seconds": 2.540757813025266,
+          "ttft_p95_seconds": 5.026529630762525,
+          "request_p95_seconds": 5.992129161488265,
+          "per_stream_interval_tok_s_estimate": 35.94949879326208
+        }
+      ]
+    },
+    "latest_combined_api_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5",
+      "cpu_preflight_passed": true,
+      "exact_memo_mode_default": "0",
+      "complete_stream_cases": 64,
+      "actual_full1m_token_ids_identical": true,
+      "cpu_only_encode_baseline_median_seconds": 1.1792060369625688,
+      "cpu_only_encode_memo_hit_median_seconds": 0.026364211924374104,
+      "gpu_qualified": true,
+      "production_promoted": true,
+      "api_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+      "cpu_suites": 8,
+      "strict_single_native_parameter_close_suffix": true,
+      "installed_workbuddy_read_tool_passed": true
+    },
+    "latest_cumulative_draft_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5",
+      "native_sha256": "34f3c963304445e50c4ae398194f4b4745a0b1868a6b4a1d6668068aebcf96e6",
+      "positive_cutoff_010_qualified": false,
+      "failed_greedy_identity": true,
+      "cutoff025_gpu_tested": false,
+      "cutoff050_gpu_tested": false,
+      "original_native_control_reproduced": true,
+      "cpu_policy_cases": 240,
+      "production_promoted": false
+    },
+    "latest_actual1m_long_output": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r5",
+      "original_suite_phase": "failed",
+      "actual_input_tokens": 1047544,
+      "actual_output_tokens": 1024,
+      "single_active_cache_hit": {
+        "concurrency": 1,
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 285.351937268395,
+        "aggregate_end_to_end_completion_tok_s": 28.70840856529671,
+        "ttft_p50_seconds": 0.7383813925553113,
+        "ttft_p95_seconds": 0.7837540036067366,
+        "request_p95_seconds": 35.727931831358,
+        "per_stream_interval_tok_s_estimate": 29.313314617569493
+      },
+      "full_restored_output_identical": true,
+      "concurrency2_exact_identity_passed": false,
+      "post_concurrency_single_identical": true,
+      "speed300_met": false
+    },
+    "latest_engram_storage_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r6",
+      "full_original_and_local_sha256_passed": true,
+      "bytes": 203073077576,
+      "sampled_blocks": 12,
+      "sampled_raw_bytes_identical": true,
+      "storage_component": [
+        {
+          "rows_per_table": 512,
+          "source_seconds": [
+            0.05984804918989539,
+            0.030791563913226128,
+            0.0315141249448061
+          ],
+          "local_seconds": [
+            0.03400247963145375,
+            0.02433272311463952,
+            0.021351535338908434
+          ],
+          "source_median_seconds": 0.0315141249448061,
+          "local_median_seconds": 0.02433272311463952,
+          "all_sampled_raw_bytes_identical": true,
+          "sha256": "eb95c3d0db0087314dcc80f9e4c8fee5e014bfd65de2384502bbe72c8037bd2a"
+        },
+        {
+          "rows_per_table": 4096,
+          "source_seconds": [
+            0.3779510520398617,
+            0.2392417648807168,
+            0.28858111007139087
+          ],
+          "local_seconds": [
+            0.30244271410629153,
+            0.2252603960223496,
+            0.16415961319580674
+          ],
+          "source_median_seconds": 0.28858111007139087,
+          "local_median_seconds": 0.2252603960223496,
+          "all_sampled_raw_bytes_identical": true,
+          "sha256": "4348ae77716edf28744ad81434156b3a9ecccadc3c02277409033ca3572dd393"
+        }
+      ],
+      "model_api_gain_proven": true,
+      "production_promoted": false,
+      "model_api_gain_scope": "One finite same-GPU fresh-process GPFS/local/GPFS block; actual8244/25671 natural technical tokens; no shared OS-cache eviction",
+      "actual1m_input_tested": false,
+      "natural_and_tool_long_requests": 57,
+      "observed_gains": [
+        {
+          "case": "technical8244",
+          "local_ttft": 11.10151925496757,
+          "gpfs_controls": [
+            17.470967046916485,
+            15.061001709662378
+          ],
+          "observed_ttft_reduction_percent": [
+            36.457328176765586,
+            26.28963551710245
+          ]
+        },
+        {
+          "case": "technical25671",
+          "local_ttft": 21.91649690736085,
+          "gpfs_controls": [
+            29.255494167096913,
+            26.934768266044557
+          ],
+          "observed_ttft_reduction_percent": [
+            25.08587692218882,
+            18.63120302026141
+          ]
+        }
+      ]
+    },
+    "latest_engram_fp8_candidate": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r6",
+      "native_sha256": "1a1b3b902381770b108cb5177ad3e2880e1289be339d4587631c23158e680137",
+      "exact_cpu_scaled_cases": 262144,
+      "original_and_default_object_reproduced": true,
+      "native_control_reproduced": true,
+      "real_model_requests": 19,
+      "gpu_correctness_qualified": true,
+      "model_api_gain_proven": false,
+      "repeat_control_rejected_speed_claim": true,
+      "production_promoted": false
+    },
+    "latest_short_concurrency_probe": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r6",
+      "phase": "failed",
+      "requests": 8,
+      "concurrent_reference_matched": false,
+      "serial_post_matched": false,
+      "full1m_qualified": false,
+      "cause_proven": false
+    },
+    "latest_dspark_seed_recovery": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r7",
+      "admission_requests": 30,
+      "pool_requests": 159,
+      "standard_requests_passed": 120,
+      "restored_latency_observed": [
+        {
+          "case": "technical-long8244",
+          "on_restored_seconds": 17.743096912279725,
+          "control_restored_seconds": [
+            25.522302580066025,
+            25.673686061054468
+          ],
+          "reduction_percent": [
+            30.4800307236471,
+            30.889951407503567
+          ]
+        },
+        {
+          "case": "technical-long25671",
+          "on_restored_seconds": 17.348084321711212,
+          "control_restored_seconds": [
+            26.073732452001423,
+            25.20791796501726
+          ],
+          "reduction_percent": [
+            33.46528214306513,
+            31.180019128171043
+          ]
+        }
+      ],
+      "full_output_identity_gate_passed": false,
+      "production_promoted": false,
+      "ordinary_decode_gain_proven": false
+    },
+    "latest_current_1m_native_trace": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r7",
+      "context_tokens": 1048576,
+      "prefill_chunk_tokens": 512,
+      "parallel_slots": 2,
+      "actual_prompt_tokens": 21,
+      "actual1m_input_executed": false,
+      "raw_trace_published": false,
+      "kernel_count": 188945,
+      "stream_synchronize_calls": 9610,
+      "diagnostic_only": true
+    },
+    "latest_unique_code_actual1m_fixture": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r8",
+      "actual_input_tokens": 1047544,
+      "max_output_tokens": 1024,
+      "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+      "corpus_repeated": false,
+      "canonical_api_cpu_qualified": true,
+      "canonical_api_prompt_id_sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4",
+      "gpu_actual_count_verified": true,
+      "native_runtime_id_digest_captured": false,
+      "full_cold_restore_and_c1_passed": true,
+      "complete_c2_output_identity_passed": false
+    },
+    "latest_engram_simd": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r8",
+      "model_requests": 120,
+      "all_standard_requests_passed": true,
+      "observed_long_output_api_tok_s": [
+        75.74289371644436,
+        76.31130960042509,
+        75.50382248049063
+      ],
+      "real1m_gpu_input_tested": false,
+      "production_promoted": false
+    },
+    "latest_exact_literal_frontend": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r9",
+      "real_api_cpu_A_B_A_seconds": [
+        9.153777753934264,
+        1.6471612737514079,
+        9.126679551787674
+      ],
+      "all_token_ids_exact": true,
+      "new_helper_unit_methods": 15,
+      "upstream_frontend_methods": 25,
+      "overlay_cpu_suites": 14,
+      "gpu_api_improvement_qualified": false,
+      "production_promoted": false,
+      "GPU_ordinary_requests": 40,
+      "actual1m_comparison_completed": true,
+      "real1m_calls_per_profile": 18,
+      "full_cold_restore_and_c1_output_text_passed": true,
+      "complete_C2_output_identity_passed": false
+    },
+    "latest_exact_hardware_profiler": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r10",
+      "actual_model_phase": "failed",
+      "actual_model_hardware_counters_collected": false,
+      "completed_actual1m_controls": 3,
+      "output_tokens": 128,
+      "tiny_kernel_metric_preflight_passed": true,
+      "tiny_kernel_metrics": 8,
+      "raw_reports_published": false,
+      "failure_cause_proven": false
+    },
+    "latest_canonical_engram_footprint": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r9",
+      "prompt_tokens": 1047544,
+      "unique_rows": 12953683,
+      "raw_row_bytes": 3419772312,
+      "hash_only": true,
+      "cache_capacity_changed": false,
+      "speed_improvement_claimed": false
+    },
+    "latest_exact_topk_GPU": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r10",
+      "operator_cases": 38,
+      "all_ordered_IDs_equal": true,
+      "CUDA_graph_changed_inputs_passed": true,
+      "CCCL_commit": "28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+      "native_candidate_sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195",
+      "default_mode": 0,
+      "min_columns": 65536,
+      "k": 512,
+      "operator_1M_rows6_reference_us": 7255.71543,
+      "operator_1M_rows6_candidate_graph_us": 301.214648,
+      "model_gain_qualified": false,
+      "production_promoted": false
+    },
+    "latest_tool_loop_repair": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r11",
+      "formal_service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc13-2eae3fd237dd/serve-tool-repair-v284",
+      "native_binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+      "tool_call_and_result_IDs_preserved": true,
+      "identical_completed_rounds_limit": 3,
+      "installed_client_Read_passed": true,
+      "installed_client_repeated_search_stopped_at_three_and_reported_three": true,
+      "successful_authenticated_search_E2E_passed": false,
+      "WorkBuddy_GUI_E2E_passed": false
+    },
+    "latest_GPU_graph_and_recovery": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r12",
+      "source_type_cache_defect_reproduced": true,
+      "graph_guard_GPU_replay_cases": 1350,
+      "graph_guard_model_qualified": false,
+      "graph_guard_native_sha256": "b7124c78d711d3f48b928a292bd6423af4137816533e0acfbeb5114644508185",
+      "MXFP4_header_global_enable_rejected": true,
+      "C1_actual1M_topk_gain_percent": [
+        51.98,
+        51.72
+      ],
+      "complete_C2_output_identity_passed": false,
+      "actual_model_1M_decode_hardware_trace_collected": false,
+      "production_experimental_native_promoted": false
+    },
+    "latest_manual_decode_trace_preparation": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/ttft-1m-20261025/r13",
+      "helper_unit_methods": 36,
+      "actual_smoke_parser_metrics": 30,
+      "actual_smoke_parser_rows": 18000,
+      "physical_counter_values_qualified": false,
+      "actual_model_decode_trace_collected": false,
+      "upstream_reviewed_commit": "0b9a0fc86dc55388c8c737bdc5fbccccf7273927",
+      "upstream_ahead_commits": 36,
+      "formal_changed": false,
+      "graph_full_model_comparison_in_progress": true
+    },
+    "latest_user_retained_availability": {
+      "evidence": "docs/evidence/power/2026-10-22-native-deepseek-h200/original-xolotl-single-h200/availability-20261025/r14",
+      "optimization_cancelled": true,
+      "optimization_GPU_released": true,
+      "active_GPU_roles": 1,
+      "guard_unit_methods": 10,
+      "guard_actual_recoveries": 0,
+      "WorkBuddy_CLI_fresh_HI_passed": true,
+      "GUI_verified": false,
+      "cold_first_output_seconds": 47.85900000017136,
+      "warm_first_output_seconds": 4.530999999959022,
+      "model_configuration_changed": false
     }
   },
   "opensidian_graph_port_20261025": {
@@ -3207,6 +3964,108 @@
       "Mark every vendored package publish=false to preserve the host workspace contract."
     ]
   },
+  "deepseek_single_gpu_dspark_20261025": {
+    "power_revision": "24b364c6935c1b62a689d91839ec394bfc74c059",
+    "power_binary_sha256": "899084c8e07d7da2a902169dd21d6dc4e294352caf7b110c4eded34a78e59d28",
+    "evidence": "docs/evidence/deployment/2026-10-25-deepseek-dspark-main",
+    "profile_evidence": "docs/evidence/deployment/2026-10-25-deepseek-dspark-prefill",
+    "source": "tools/model-runtime/deepseek-v41-xq",
+    "native_engine_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12"
+  },
+  "gateway_neural_auto_availability_20261025": {
+    "binary_sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+    "decision_model": "prism-27b",
+    "routing_mode": "smart_saving",
+    "evidence": "docs/evidence/gateway/2026-10-25-neural-auto-readiness",
+    "managed_policy": "docs/evidence/gateway/2026-10-25-neural-auto-readiness/selected-auto-policy.acl",
+    "source_base_revision": "d97ab61b430115253949ec7dac59f9603646b6a1",
+    "private_acl_or_credentials_imported": false
+  },
+  "aster_tui_windows_integration_20261028": {
+    "aster_version": "0.1.4",
+    "core_version": "9.1.6",
+    "acp_version": "9.1.6",
+    "public_code_main_revision": "cfaa22e8f1fca7ad1bfe132ac97ce7be930071f2",
+    "public_code_main_version": "9.1.4",
+    "source": "Aster-authored Windows observation and verification integration over the maintained local Code sources",
+    "model": "kimi/k3.1-pro",
+    "evidence": "docs/evidence/tui/2026-10-28-kimi-k31-source-integration/OUTCOME.md",
+    "private_acl_or_credentials_imported": false
+  },
+  "aster_tui_linux_qualification_20261028": {
+    "aster_version": "0.1.4",
+    "core_version": "9.1.6",
+    "acp_version": "9.1.6",
+    "target": "x86_64-unknown-linux-gnu",
+    "host": "Ubuntu 24.04.3 LTS on WSL2",
+    "source": "Maintained local Aster/Code sources with Aster-authored Unix PTY test adapters",
+    "source_pair_build_id": "aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu",
+    "model": "kimi/k3.1-pro",
+    "evidence": "docs/evidence/tui/2026-10-28-wsl-linux-k31-source-integration/OUTCOME.md",
+    "private_acl_or_credentials_imported": false
+  },
+  "web_documentation_atlas_20261028": {
+    "path": "apps/web/vendor/seecode",
+    "source": "https://github.com/Aryanutkarsh/SeeCode",
+    "revision": "bf91328450796dcb87f49fb2f37a8acd85d87c52",
+    "version": "0.6.2",
+    "license": "MIT",
+    "archive_sha256": "40b0d7b9839e58281e59507ba3b816ddb7dcf206a23a175b15c1634c7c8def8f",
+    "source_modified": false,
+    "integration": "apps/web/scripts/docs_atlas.mjs",
+    "codehike": {
+      "version": "1.1.0",
+      "source": "https://github.com/code-hike/codehike",
+      "integrity": "sha512-hOxqmTHjiOxhlcVEuDTCoAQ8TW358HVrNKlOwuKcnbwkuTpbGtwj5TnQ7AZjnZiQvJ3LeXohrd1E7qfYYN0Rdg=="
+    },
+    "runtime_source_ref": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+    "evidence": "docs/evidence/web/2026-10-28-code-documentation-atlas/OUTCOME.md",
+    "retired_at": "2026-10-29",
+    "replacement": "web_documentation_pele_20261029"
+  },
+  "web_documentation_pele_20261029": {
+    "source": "https://github.com/obsidianmd/pele",
+    "documentation": "https://pele.run/",
+    "version": "1.10.0",
+    "license": "MIT",
+    "integrity": "sha512-hDMEM+GQ01pZin8tst3PRXGeB/xFATvXBreHHtjx2glSNAQ7nHFq7EbMuNJGTbqkYgueWPboLjyUBsAudsb1qQ==",
+    "integration": "apps/web/scripts/docs_diagrams.mjs",
+    "diagram_catalog": "apps/web/content/docs/atlas.json",
+    "replaces": "web_documentation_atlas_20261028",
+    "diagrams": 23,
+    "readme_exports": 6,
+    "evidence": "docs/evidence/web/2026-10-29-pele-diagram-migration/OUTCOME.md"
+  },
+  "web_documentation_spotlight_20261029": {
+    "reference": "https://codehike.org/docs/layouts/spotlight",
+    "codehike": {
+      "version": "1.1.0",
+      "source": "https://github.com/code-hike/codehike",
+      "integrity": "sha512-hOxqmTHjiOxhlcVEuDTCoAQ8TW358HVrNKlOwuKcnbwkuTpbGtwj5TnQ7AZjnZiQvJ3LeXohrd1E7qfYYN0Rdg==",
+      "uses": [
+        "Pre",
+        "focus annotations",
+        "utils/token-transitions"
+      ],
+      "license": "MIT",
+      "license_text": "apps/web/licenses/codehike-MIT.txt"
+    },
+    "diff": {
+      "version": "5.2.2",
+      "license": "BSD-3-Clause",
+      "license_text": "apps/web/licenses/diff-BSD-3-Clause.txt"
+    },
+    "esbuild": {
+      "version": "0.25.12",
+      "existing_repository_use": "packages/intelligent-ui/package.json"
+    },
+    "source": [
+      "apps/web/scripts/docs_atlas.mjs",
+      "apps/web/scripts/docs_navigation.mjs",
+      "apps/web/scripts/docs_diagrams.mjs"
+    ],
+    "evidence": "docs/evidence/web/2026-10-29-spotlight-reading-experience/OUTCOME.md"
+  },
   "scrawl_evidence_20261030": {
     "repository": "https://github.com/kitlangton/scrawl",
     "commit": "7b184c67767a1aee6c1d44640d94d8446cd5fed1",
@@ -3232,7 +4091,11 @@
       "Join the existing root Cargo workspace with publish = false and one root lockfile.",
       "Add swift-testing at 48d727cc1cf4eda667c858c501495f1018f69d21 to run CaptureKit tests under Command Line Tools.",
       "Align a3s-code-voice with cpal 0.18.2 and its device-description, sample-rate and stream-config APIs.",
-      "Rename first-party Scrawl and ScrawlKit identifiers to Capture and CaptureKit, accept only .capture bundles and capture.json manifests, and preserve upstream provenance."
+      "Rename first-party Scrawl and ScrawlKit identifiers to Capture and CaptureKit while preserving legacy bundles and upstream provenance.",
+      "Default to the embedded macOS evidence library; retain the standalone GPUI application as an explicit ui feature.",
+      "Disable the standalone JSON configuration reader and writer in Studio through the aster feature.",
+      "Remove the upstream demo manifest workspace declaration; preserve one product Cargo workspace.",
+      "Wire scoped native recording, hidden-window controls, helper packaging and shared composer controls in the private Studio host."
     ]
   }
 }

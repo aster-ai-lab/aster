@@ -1,0 +1,34 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu",
+  "phase": "launched",
+  "source": {
+    "unix": 1792906597.141035,
+    "phase": "downloaded",
+    "GPU_executed": false,
+    "system_installed": false,
+    "retained_remote_failure": "xolotl-cccl-topk-v188-latest.json",
+    "tag": "v3.5.0",
+    "commit": "28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+    "tag_metadata_url": "https://api.github.com/repos/NVIDIA/cccl/git/ref/tags/v3.5.0",
+    "archive_url": "https://codeload.github.com/NVIDIA/cccl/tar.gz/28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+    "archive_bytes": 11715754,
+    "archive_sha256": "55fd549829445d37338fcb5d9c90b48edd891a02330316b85570c4ae87a98f78",
+    "archive_path": "D:\\code\\aster\\target\\h200-native\\cccl-topk-local-v189r1\\source.tar.gz",
+    "finished_unix": 1792906608.7431152
+  },
+  "GPU_executed": false,
+  "system_installed": false,
+  "stage": {
+    "created": true
+  },
+  "transfer_returncode": 0,
+  "transfer_stderr": "client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\n",
+  "process": {
+    "pid": 1338148,
+    "start_ticks": 283355192,
+    "uid": 10250,
+    "unix": 1792906766.9922726,
+    "namespace": "jump host",
+    "budget_seconds": 180
+  }
+}

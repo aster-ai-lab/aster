@@ -1,0 +1,16 @@
+{
+  "unix": 1792890894.9888966,
+  "phase": "requires_inspection",
+  "profiles": [],
+  "formal_service_unchanged": true,
+  "actual1m_input_tested": false,
+  "goal_complete": false,
+  "performance_300_qualified": false,
+  "profile": "pool_off",
+  "observed_unix": 1792891210.597308,
+  "service_phase": "serving",
+  "client_phase": "restoring_from_pool",
+  "client_tests": 11,
+  "error": "PermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002: 'D:\\\\code\\\\aster\\\\target\\\\h200-native\\\\xolotl-pool-seed-v112-controller.tmp' -> 'D:\\\\code\\\\aster\\\\target\\\\h200-native\\\\xolotl-pool-seed-v112-controller.json'",
+  "finished_unix": 1792891210.597308
+}

@@ -1,5 +1,41 @@
 use super::*;
 
+#[derive(Clone, Default, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct ClientPermissionRules {
+    #[serde(default)]
+    allow: Vec<String>,
+    #[serde(default)]
+    deny: Vec<String>,
+}
+
+impl ClientPermissionRules {
+    pub(super) fn from_meta(meta: Option<&acp::Meta>) -> acp::Result<Self> {
+        let Some(value) = meta.and_then(|meta| meta.get("permissionRules")) else {
+            return Ok(Self::default());
+        };
+        if !value.is_object() {
+            return Err(acp::Error::invalid_params().data("permissionRules must be an object"));
+        }
+        let mut rules: Self = serde_json::from_value(value.clone()).map_err(|error| {
+            acp::Error::invalid_params().data(format!("permissionRules: {error}"))
+        })?;
+        for rule in rules.allow.iter_mut().chain(&mut rules.deny) {
+            let trimmed = rule.trim();
+            if trimmed.is_empty() {
+                return Err(acp::Error::invalid_params()
+                    .data("permissionRules must contain non-empty rules"));
+            }
+            *rule = trimmed.to_string();
+        }
+        Ok(rules)
+    }
+
+    pub(super) fn is_empty(&self) -> bool {
+        self.allow.is_empty() && self.deny.is_empty()
+    }
+}
+
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub(super) enum PermissionPosture {
     #[default]
@@ -80,16 +116,33 @@ impl PermissionPosture {
 pub(super) struct SessionPermissions {
     pub(super) posture: PermissionPosture,
     pub(super) denies: Vec<String>,
+    pub(super) client_rules: ClientPermissionRules,
     research_admission: bool,
 }
 
 impl SessionPermissions {
-    fn policy(&self) -> a3s_code_core::permissions::PermissionPolicy {
-        if self.research_admission {
+    pub(super) fn with_client_rules(client_rules: ClientPermissionRules) -> Self {
+        Self {
+            client_rules,
+            ..Self::default()
+        }
+    }
+
+    pub(super) fn policy(&self) -> a3s_code_core::permissions::PermissionPolicy {
+        let mut policy = if self.research_admission {
             crate::host_context::research_policy(self.posture.as_str(), &self.denies)
         } else {
             posture_policy(self.posture.as_str(), &self.denies)
+        };
+        for rule in &self.client_rules.deny {
+            policy = policy.deny(rule);
         }
+        if self.posture != PermissionPosture::Plan && !self.research_admission {
+            for rule in &self.client_rules.allow {
+                policy = policy.allow(rule);
+            }
+        }
+        policy
     }
 }
 
@@ -106,6 +159,7 @@ impl LiveSession {
         let mut next = SessionPermissions {
             posture,
             denies: state.denies.clone(),
+            client_rules: state.client_rules.clone(),
             research_admission: state.research_admission,
         };
         next.denies.extend(extra_denies);
@@ -146,13 +200,11 @@ impl ResearchGate {
             .permissions
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        live.session
-            .set_permission_policy(crate::host_context::research_policy(
-                state.posture.as_str(),
-                &state.denies,
-            ))
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         state.research_admission = true;
+        if let Err(error) = live.session.set_permission_policy(state.policy()) {
+            state.research_admission = false;
+            return Err(acp::Error::internal_error().data(error.to_string()));
+        }
         Ok(Self {
             session: Arc::clone(&live.session),
             permissions: Arc::clone(&live.permissions),
@@ -168,10 +220,11 @@ impl ResearchGate {
             .permissions
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        self.session
-            .set_permission_policy(posture_policy(state.posture.as_str(), &state.denies))
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         state.research_admission = false;
+        if let Err(error) = self.session.set_permission_policy(state.policy()) {
+            state.research_admission = true;
+            return Err(acp::Error::internal_error().data(error.to_string()));
+        }
         self.armed = false;
         Ok(())
     }

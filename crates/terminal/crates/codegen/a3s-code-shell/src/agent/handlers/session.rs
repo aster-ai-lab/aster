@@ -123,6 +123,7 @@ async fn handle_session_info(
     let response = SessionInfoResponse {
         session_id,
         cwd: session.info.cwd.clone(),
+        permission_posture: None,
         data,
     };
 

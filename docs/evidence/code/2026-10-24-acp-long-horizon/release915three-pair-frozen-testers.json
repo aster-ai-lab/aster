@@ -1,0 +1,17 @@
+{
+  "acp_conformance_stdio": {
+    "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/testers-release915three/acp_conformance_stdio",
+    "sha256": "70b46d43f3c0255667b43f34a3cb11e275f949ea08a83eab9e54fd7be3d1d244",
+    "source": "/Users/roylin/code/aster/target/qualification/net-progress-build/target/debug/deps/acp_conformance_stdio-d11d554a87602cd6"
+  },
+  "unattended_e2e": {
+    "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/testers-release915three/unattended_e2e",
+    "sha256": "20df13524c29bf046c806272347825e7f48f10f35d231a7e55649614c48e64b5",
+    "source": "/Users/roylin/code/aster/target/qualification/net-progress-build/target/debug/deps/unattended_e2e-cc3c5560ea0fd4a0"
+  },
+  "long_horizon_rust_stdio": {
+    "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/testers-release915three/long_horizon_rust_stdio",
+    "sha256": "96548f43d0c81b46bae0dabd82f0890b657d8e4026cc8b547978e5686019cfa5",
+    "source": "/Users/roylin/code/aster/target/qualification/net-progress-build/target/debug/deps/long_horizon_rust_stdio-6dd2746f825b59d5"
+  }
+}

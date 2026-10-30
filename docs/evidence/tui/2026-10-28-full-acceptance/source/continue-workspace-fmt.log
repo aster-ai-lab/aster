@@ -1,0 +1,14 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs:114:
+     tui.workspace = original.clone();
+     continue_and_recall(&mut tui, &latest_id, &latest, "continue-latest-workspace-a");
+     tui.workspace = other;
+[31m-    continue_and_recall(&mut tui, &other_id, &other_token, "continue-latest-workspace-b");
+(B[m[32m+    continue_and_recall(
+(B[m[32m+        &mut tui,
+(B[m[32m+        &other_id,
+(B[m[32m+        &other_token,
+(B[m[32m+        "continue-latest-workspace-b",
+(B[m[32m+    );
+(B[m     let older_log = tui
+         .files(&original.join(".a3s"), "jsonl")
+         .into_iter()

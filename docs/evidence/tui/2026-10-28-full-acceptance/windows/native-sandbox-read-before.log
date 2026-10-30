@@ -1,0 +1,66 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\apps\gateway\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\crates\power\Cargo.toml
+workspace: D:\code\aster\Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-core v9.1.6 (D:\code\aster\crates\code\core)
+error[E0433]: cannot find `NativeBashSandbox` in `sandbox`
+  --> crates\code\core\src\porcelain\windows_tests.rs:17:35
+   |
+17 |     let sandbox = crate::sandbox::NativeBashSandbox::new(&workspace).unwrap();
+   |                                   ^^^^^^^^^^^^^^^^^ could not find `NativeBashSandbox` in `sandbox`
+   |
+help: consider importing this struct
+   |
+ 3 + use crate::sandbox::native::NativeBashSandbox;
+   |
+help: if you import `NativeBashSandbox`, refer to it directly
+   |
+17 -     let sandbox = crate::sandbox::NativeBashSandbox::new(&workspace).unwrap();
+17 +     let sandbox = NativeBashSandbox::new(&workspace).unwrap();
+   |
+
+error[E0425]: cannot find value `BashTool` in module `crate::tools::builtin`
+  --> crates\code\core\src\porcelain\windows_tests.rs:21:41
+   |
+21 |     let result = crate::tools::builtin::BashTool
+   |                                         ^^^^^^^^ not found in `crate::tools::builtin`
+   |
+help: consider importing this unit struct
+   |
+ 3 + use crate::tools::builtin::bash::BashTool;
+   |
+help: if you import `BashTool`, refer to it directly
+   |
+21 -     let result = crate::tools::builtin::BashTool
+21 +     let result = BashTool
+   |
+
+warning: unused import: `super::*`
+  --> crates\code\core\src\secure_state.rs:62:9
+   |
+62 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `home`
+    --> crates\code\core\src\hooks\command.rs:1060:13
+     |
+1060 |         let home = Path::new("/Users/example");
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_home`
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.
+warning: `a3s-code-core` (lib test) generated 3 warnings
+error: could not compile `a3s-code-core` (lib test) due to 2 previous errors; 3 warnings emitted

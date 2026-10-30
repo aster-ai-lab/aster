@@ -1,0 +1,12 @@
+
+running 1 test
+ORACLE case=plan-read-write name=source-pair result=pass detail=aster-cli-pair-v1:fb465994a5277337843bd4580b6d153eccd61f8a:x86_64-pc-windows-msvc
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27078
+ORACLE case=plan-read-write name=plan-read result=pass detail=explicit plan launch, actual read receipt and unchanged source bytes
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=56520
+ORACLE case=plan-read-write name=plan-exit-write result=pass detail=same session switches from plan to execution and finishes a real byte-verified mutation
+ORACLE case=plan-read-write name=quit result=pass detail=exit 0
+test functional::kimi_plan_read_then_yolo_verified_write ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 22 filtered out; finished in 73.91s
+

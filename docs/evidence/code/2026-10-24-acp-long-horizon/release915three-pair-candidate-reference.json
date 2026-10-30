@@ -1,0 +1,24 @@
+{
+  "manifest": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/candidate.json",
+  "sha256": "bb9a7d8be303251c872c71f9dbeedb76554de921da3c6a893a26031cebf14ed3",
+  "candidate": {
+    "schema": "a3s.code.lh.candidate.v1",
+    "build_id": "aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin",
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/aster",
+      "sha256": "32f66f4441aae9334d947de4cb9a9bdd4622a897fe2d0ac769d486cca57cbe93",
+      "bytes": 130259424
+    },
+    "acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/net-progress-build/unpacked-release915three-local/macos/a3s-code-acp",
+      "sha256": "bded198cf581bd7b29dd7083f3872823756979c750167341b0dcfb2943b9b15c",
+      "bytes": 77233936
+    }
+  },
+  "build_result": {
+    "source_commit": "220562fe9912d72d7dedafb8b36b5655e1394d8f",
+    "run": null,
+    "profile": "release",
+    "origin": "actual local locked release archive"
+  }
+}

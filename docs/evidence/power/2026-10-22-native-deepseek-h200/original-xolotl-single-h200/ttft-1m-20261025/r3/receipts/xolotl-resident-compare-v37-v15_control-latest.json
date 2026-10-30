@@ -1,0 +1,61 @@
+{
+  "unix": 1792864824.1833115,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "stopped",
+    "unix": 1792864415.0713136,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+    "lease_ends_unix": 1792884595.778009,
+    "binary_sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 566,
+      "start_ticks": 314390356,
+      "uid": 10250
+    },
+    "startup_unix": 1792864427.674945,
+    "last_health_status": 200,
+    "last_health_unix": 1792864803.3041372,
+    "api_reaped": true,
+    "api_exit": 0,
+    "finished_unix": 1792864815.6482234
+  },
+  "service-process.json": {
+    "pid": 440,
+    "start_ticks": 314389090,
+    "uid": 10250,
+    "unix": 1792864415.0215752,
+    "deadline_seconds": 20170
+  },
+  "exact_supervisor_alive": false,
+  "numeric_diagnostics": [
+    "serve: prompt 18 tokens (0 reused, passes) in 0.20 s = 89.8 tok/s (experts 4155 hit / 0 cpu / 165 pcie / 0 file)",
+    "chunk prof: 180 calls, 279 launches: wall 18676 ms = waits on reads 0 + wave/copy waits 0 + final sync 17234 + other host 1443; reader wall 0 ms; GPU grouped kernels 6317 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 685 sub-runs; PTQ1_0 -> Q2_0 transcode 2 ms GPU (inside the grouped kernels) over 23 sub-runs, 3.6 GB of ternary read = 1939 GB/s",
+    "dense prof turn: 6000 attn spans: build 143 ms, alloc 219, gpu compute 13464, engram wait 399, readback 1202, upload 458, finish build 13",
+    "serve: prompt phases: 34676 new = 34676 batch (43.84 s: dense 15.96, experts 27.04, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 35700 tokens (1024 reused, batch) in 43.86 s = 790.6 tok/s (experts 0 hit / 0 cpu / 4605120 pcie / 0 file)",
+    "chunk prof: 180 calls, 286 launches: wall 17629 ms = waits on reads 0 + wave/copy waits 0 + final sync 15708 + other host 1921; reader wall 0 ms; GPU grouped kernels 7680 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 782 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 19 sub-runs, 6.3 GB of ternary read = 4538 GB/s",
+    "dense prof turn: 6160 attn spans: build 148 ms, alloc 230, gpu compute 13779, engram wait 420, readback 1254, upload 478, finish build 13",
+    "serve: prompt phases: 35700 new = 35700 batch (47.15 s: dense 16.39, experts 29.77, logits 0.00) + DSpark tail 128 from the batch (cache open 2.44 s, seed 0.01 s)",
+    "serve: prompt 35700 tokens (0 reused, batch) in 49.62 s = 719.5 tok/s (experts 0 hit / 0 cpu / 4728000 pcie / 0 file)",
+    "chunk prof: 40 calls, 65 launches: wall 886 ms = waits on reads 0 + wave/copy waits 0 + final sync 882 + other host 4; reader wall 0 ms; GPU grouped kernels 260 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 165 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 7 sub-runs, 1.9 GB of ternary read = 3714 GB/s",
+    "dense prof turn: 320 attn spans: build 9 ms, alloc 37, gpu compute 548, engram wait 27, readback 64, upload 21, finish build 1",
+    "serve: prompt phases: 18 new = 18 passes (0.18 s: dense 0.06, experts 0.12, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 18 tokens (0 reused, passes) in 0.18 s = 98.7 tok/s (experts 4145 hit / 0 cpu / 175 pcie / 0 file)",
+    "chunk prof: 180 calls, 285 launches: wall 18083 ms = waits on reads 0 + wave/copy waits 0 + final sync 16438 + other host 1644; reader wall 0 ms; GPU grouped kernels 6128 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 712 sub-runs; PTQ1_0 -> Q2_0 transcode 2 ms GPU (inside the grouped kernels) over 23 sub-runs, 5.0 GB of ternary read = 2608 GB/s",
+    "dense prof turn: 6000 attn spans: build 152 ms, alloc 214, gpu compute 13668, engram wait 398, readback 1341, upload 460, finish build 13",
+    "serve: prompt phases: 34676 new = 34676 batch (45.90 s: dense 16.31, experts 28.55, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 35700 tokens (1024 reused, batch) in 45.90 s = 755.4 tok/s (experts 0 hit / 0 cpu / 4605120 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 1 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 1 as passes (cache open 0.00 s, seed 0.03 s)",
+    "serve: prompt 35703 tokens (35702 reused, batch) in 0.03 s = 38.6 tok/s (experts 235 hit / 0 cpu / 5 pcie / 0 file)"
+  ]
+}

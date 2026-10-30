@@ -1,0 +1,42 @@
+{
+  "power_pid": 2477768,
+  "acl_sha256": "622336d46f8c20b3829671e97b1e4d2ccc8626465b73b04db6eeafc7ad556942",
+  "engine": {
+    "pid": 2482344,
+    "argv": [
+      "/opt/a3s/releases/deepseek-xolotl-dd68536bbd4f15c2/bin/ds41_generate",
+      "--serve",
+      "-m",
+      "/data/power/deepseek-v41-gpu6/V41-XQ-1017-v3.gguf",
+      "--engram",
+      "/data/models/DeepSeek-V4.1-Flash-1017-Engram/runtime-1bae0e1088993b9b82de08f59de5be5a34e42170",
+      "--rank",
+      "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/v3/rank-1017-v3.bin",
+      "--backend",
+      "cuda",
+      "--experts",
+      "gpu",
+      "--ctx",
+      "1048576",
+      "--threads",
+      "24",
+      "--arena-gib",
+      "144",
+      "--prompt-batch",
+      "8192",
+      "--prefill-chunk",
+      "512",
+      "--pcie",
+      "0.0000",
+      "--tier-batch-pcie",
+      "1.0000",
+      "--route-bias",
+      "0",
+      "--route-bias-file",
+      "0",
+      "--route-bias-remote",
+      "0",
+      "--kv-fp4"
+    ]
+  }
+}

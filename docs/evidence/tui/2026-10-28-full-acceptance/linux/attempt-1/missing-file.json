@@ -1,0 +1,109 @@
+{
+  "assertions_finished": true,
+  "case": "missing-file",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "has_text": false,
+        "prompt_tokens": 13331,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-7040ebd2-d93b-4ee5-a10b-b369bb8ec4d8",
+            "thread_id": "e4440f45-c188-42e1-ba38-8203f248372b"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_812a70f297244d168b7a82cc6c7bb7ee",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-7040ebd2-d93b-4ee5-a10b-b369bb8ec4d8",
+            "thread_id": "e4440f45-c188-42e1-ba38-8203f248372b"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_812a70f297244d168b7a82cc6c7bb7ee",
+          "turn": 1
+        },
+        "outcome": "failed",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Failed to read file /tmp/aster-kimi-d31omd/workspace/nonexistent-proof.txt: Failed to resolve path: No such file or directory (os error 2)\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"byte_delta\":0,\"content_digest\":\"sha256:8ed4372081e7ea2fed7eb09e9360cca7458b53dc166f626f2aaa9d8afa65a99a\",\"content_ref\":\"inline:sha256:8ed4372081e7ea2fed7eb09e9360cca7458b53dc166f626f2aaa9d8afa65a99a\",\"estimated_token_delta\":0,\"loss_mode\":\"none\",\"original_bytes\":138,\"original_estimated_tokens\":35,\"projected_bytes\":138,\"projected_digest\":\"sha256:8ed4372081e7ea2fed7eb09e9360cca7458b53dc166f626f2aaa9d8afa65a99a\",\"projected_estimated_tokens\":35,\"repeat_key\":\"sha256:8ed4372081e7ea2fed7eb09e9360cca7458b53dc166f626f2aaa9d8afa65a99a\",\"schema\":\"a3s.code.tool-result-evidence.v1\",\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"},\"a3s_tool_result_transform_binding\":{\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\"}},\"observation_digest\":\"sha256:03fc48e7a1b2ea9ad4beff74173c20def8a2f77c5de3f26b4622900196ca09df\"}",
+        "prepared_digest": "sha256:de4a847886890cc8663587e63a8f2bb774e841ba97d240af708ae7e6c9dad16f"
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "has_text": true,
+        "prompt_tokens": 13481,
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "cb3bd3381fa95f7074cb1ed24c9b4d0c777f55ae2b9b09ba4fe1899789dfaf6d",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:a4a7b1850effc2dcbd7dcd164b47bf1eb48cf6ce10038992a5b875e8bfebb946"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:589a2967872c9e61354aa648add5d0e9aa5d5d0d:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=26812",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-d31omd/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool exactly once to read nonexistent-proof.txt. Report its actual error without         8:29 PM    \n       retrying and without calling other tools. Do not create or modify any file.                                      \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file · 1 failed                                                                                           \n                                                                                                                        \n     The read tool failed with exit code 1:                                                                  8:29 PM    \n                                                                                                                        \n     Failed to read file /tmp/aster-kimi-d31omd/workspace/nonexistent-proof.txt: Failed to resolve path:                \n     No such file or directory (os error 2)                                                                             \n                                                                                                                        \n     Worked for 10s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "one actual failed read invocation, completed reply and no created file",
+      "name": "missing-read",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-d31omd/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Use the read tool exactly once to read nonexistent-proof.txt. Report its actual error without         8:29 PM    \n       retrying and without calling other tools. Do not create or modify any file.                                      \n                                                                                                                        \n                                                                                                                        \n     ◈ Read 1 file · 1 failed                                                                                           \n                                                                                                                        \n     The read tool failed with exit code 1:                                                                  8:29 PM    \n                                                                                                                        \n     Failed to read file /tmp/aster-kimi-d31omd/workspace/nonexistent-proof.txt: Failed to resolve path:                \n     No such file or directory (os error 2)                                                                             \n                                                                                                                        \n     Worked for 10s                                                                                                     \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false
+}

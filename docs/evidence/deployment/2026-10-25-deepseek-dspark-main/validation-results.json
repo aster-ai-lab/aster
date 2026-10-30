@@ -1,0 +1,130 @@
+[
+  {
+    "name": "power-server-library",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-power",
+      "--no-default-features",
+      "--features",
+      "server",
+      "--lib",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 84.00395917892456
+  },
+  {
+    "name": "gateway-request",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-gateway",
+      "--lib",
+      "inference::openai_request",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 66.00239729881287
+  },
+  {
+    "name": "gateway-prefix",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-gateway",
+      "--lib",
+      "inference::prefix_affinity",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.4952514171600342
+  },
+  {
+    "name": "gateway-usage",
+    "command": [
+      "taskset",
+      "-c",
+      "0-23",
+      "/home/user/.cargo/bin/cargo",
+      "+1.97.1",
+      "test",
+      "--locked",
+      "-p",
+      "a3s-gateway",
+      "--lib",
+      "inference::usage_report",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.8874075412750244
+  },
+  {
+    "name": "bridge",
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/model-runtime/deepseek-v41-xq",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.20293521881103516
+  },
+  {
+    "name": "workspace-dependencies",
+    "command": [
+      "python3",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.155247688293457
+  },
+  {
+    "name": "governance-regime",
+    "command": [
+      "python3",
+      "tests/governance_regime.py"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.06915974617004395
+  },
+  {
+    "name": "crate-drift",
+    "command": [
+      "python3",
+      "tests/crate_drift_report.py",
+      "--baseline",
+      "tests/crate_drift_baseline.json"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 3.967353105545044
+  }
+]

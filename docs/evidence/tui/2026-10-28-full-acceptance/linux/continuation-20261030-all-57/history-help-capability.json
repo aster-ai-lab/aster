@@ -1,0 +1,27 @@
+{
+  "assertions_finished": true,
+  "case": "history-help-capability",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "actual shortcut detail does not promise backend-refused commands or content types",
+      "name": "capability-help",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-fG0cxB/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [✗] ─┐                    \n                    │                                                                              │                    \n                    │  Prompt history                                                              │                    \n                    │  ↑                                                                           │                    \n                    │                                                                              │                    \n                    │  Recalls previously sent prompts.                                            │                    \n                    │                                                                              │                    \n                    │  Press Up on an empty prompt to browse earlier prompts, newest first; each   │                    \n                    │  move live-populates the composer so you can edit and resend.                │                    \n                    │                                                                              │                    \n                    │  With prompts queued, Up moves focus into the queue pane on the last row     │                    \n                    │  instead.                                                                    │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n                    │                                                                              │                    \n  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  \n  │ ❯               └──────────────────────────────────────────────────────────────────────────────┘                 │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

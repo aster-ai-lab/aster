@@ -100,6 +100,10 @@ pub(crate) fn apply_line_ending_edit(
         return Err(LineEndingEditError::NotFound);
     }
 
+    if classify_newlines(content) == NewlineClass::Unsafe {
+        return Err(LineEndingEditError::Unsafe);
+    }
+
     let exact = exact_spans(content, old_string);
     let splitting = exact
         .iter()
@@ -350,6 +354,19 @@ mod tests {
     #[test]
     fn mixed_line_endings_are_refused_when_the_text_matches() {
         let error = apply_line_ending_edit("a\r\nb\n", "a\nb", "a\nc", false).unwrap_err();
+        assert_eq!(error, LineEndingEditError::Unsafe);
+    }
+
+    #[test]
+    fn cr_only_is_refused_even_for_an_exact_match() {
+        let error = apply_line_ending_edit("alpha\rbeta\r", "alpha", "gamma", false).unwrap_err();
+        assert_eq!(error, LineEndingEditError::Unsafe);
+    }
+
+    #[test]
+    fn cr_only_is_refused_instead_of_reporting_a_multiline_miss() {
+        let error = apply_line_ending_edit("alpha\rbeta\r", "alpha\nbeta", "alpha\ngamma", false)
+            .unwrap_err();
         assert_eq!(error, LineEndingEditError::Unsafe);
     }
 

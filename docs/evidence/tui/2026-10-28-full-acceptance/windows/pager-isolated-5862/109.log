@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::blocks::context_info::tests::narrow_bar_total_cells_still_100' (56372) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\context_info.rs:1129:9:
+assertion `left == right` failed: narrow bar must still render exactly 100 cells
+  left: 0
+ right: 100
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::context_info::tests::narrow_bar_total_cells_still_100 ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::context_info::tests::narrow_bar_total_cells_still_100
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

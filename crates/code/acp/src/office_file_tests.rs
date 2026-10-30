@@ -77,6 +77,25 @@ fn context(root: &Path) -> ToolContext {
     ToolContext::new(root.to_path_buf()).with_session_id(uuid::Uuid::new_v4().to_string())
 }
 
+#[test]
+fn missing_parent_directory_reports_its_full_path() {
+    let root = tempfile::tempdir().unwrap();
+    let error = parent_dir(root.path(), "missing/nested/report.xlsx").unwrap_err();
+    let expected = root.path().join("missing/nested");
+    assert!(
+        error
+            .to_string()
+            .contains("parent directory does not exist"),
+        "{error}"
+    );
+    assert!(
+        error
+            .to_string()
+            .contains(&expected.to_string_lossy().to_string()),
+        "{error}"
+    );
+}
+
 #[tokio::test]
 async fn tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates() {
     let root = tempfile::tempdir().unwrap();
@@ -233,7 +252,12 @@ async fn an_admitted_tool_refuses_a_recreated_workspace_directory() {
         .await
         .unwrap();
     assert!(
-        !output.success && output.content.contains("not admitted"),
+        !output.success
+            && output.content.contains(if cfg!(windows) {
+                "Workspace operation not found in active capability scope"
+            } else {
+                "not admitted"
+            }),
         "{}",
         output.content
     );
@@ -284,7 +308,14 @@ async fn artifact_verification_is_bound_to_the_created_path_and_saved_bytes() {
     let args = workbook("verified.xlsx");
     let output = execute(&args, &context(root.path())).await.unwrap();
     let tool = OfficeFileTool::new(root.path()).unwrap();
-    let proof = tool.artifact_verification(&args, &output).unwrap();
+    let proof = tool
+        .artifact_verification(&args, &output)
+        .unwrap_or_else(|| {
+            panic!(
+                "native proof missing: root={:?}, args={args}, output={output:?}",
+                tool.workspace.root()
+            )
+        });
     assert_eq!(proof.file_path, "verified.xlsx");
     assert_eq!(
         proof.content_digest,

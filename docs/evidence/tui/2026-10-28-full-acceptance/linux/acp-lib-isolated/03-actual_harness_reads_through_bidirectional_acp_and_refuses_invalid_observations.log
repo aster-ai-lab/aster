@@ -1,0 +1,15 @@
+
+running 1 test
+test document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations ... 
+thread 'document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations' (4482) panicked at crates/code/acp/src/document_read_tests.rs:277:54:
+called `Result::unwrap()` on an `Err` value: Error("expected value", line: 1, column: 1)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 396 filtered out; finished in 0.78s
+

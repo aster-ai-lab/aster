@@ -20,6 +20,14 @@ const MAX_MARKER_BYTES: u64 = 16 * 1024;
 const MAX_FACTS: u64 = 100_000;
 const MAX_PROMPT_BYTES: usize = 4096;
 
+/// The authoritative launch surface, never inferred from a title or history.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SessionKind {
+    Interactive,
+    Headless,
+}
+
 /// A projection of stored facts, never a second source of session state.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -35,6 +43,8 @@ pub struct SessionCatalogEntry {
     /// User messages and model turns, excluding tools and control facts.
     pub num_messages: u64,
     pub fact_count: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session_kind: Option<SessionKind>,
 }
 
 /// `truncated` is a page limit; `incomplete` reports unscanned or rejected
@@ -58,6 +68,8 @@ struct Marker {
     // must not grant access to the path named by its old marker.
     workspace: PathBuf,
     effect_log: String,
+    #[serde(default, rename = "sessionKind")]
+    session_kind: Option<SessionKind>,
 }
 
 struct Scan {
@@ -361,14 +373,17 @@ fn read_folder(
     {
         return Err(invalid_data("invalid session marker"));
     }
-    read_log(
+    let session_kind = marker.session_kind;
+    let mut entry = read_log(
         dir,
         &marker.effect_log,
         &marker.id,
         workspace,
         Some(marker.created_at),
         scan,
-    )
+    )?;
+    entry.session_kind = session_kind;
+    Ok(entry)
 }
 
 fn read_log(
@@ -437,6 +452,7 @@ fn read_log(
         summary,
         num_messages,
         fact_count,
+        session_kind: None,
     })
 }
 

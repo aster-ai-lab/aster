@@ -1,0 +1,73 @@
+{
+  "schema": "aster-historical-short-decode-reconciliation-v130",
+  "unix": 1792894786.5924037,
+  "source_files": [
+    {
+      "path": "D:\\code\\aster\\.wt-h200-native-integration\\docs\\evidence\\power\\2026-10-22-native-deepseek-h200\\original-xolotl-single-h200\\xolotl-single-current-warm-cache1024-r2-summary.json",
+      "sha256": "b74a7ecb7ca469c1776d12bf6b0bb4901fe3ed850f636e87acfecf183cfe0fcd"
+    },
+    {
+      "path": "D:\\code\\aster\\target\\h200-native\\xolotl-stable-recovery-v97-stable-qualification-latest.json",
+      "sha256": "0754660012c45fdd3c65265e4292aa2ab6b4f113821624f2903c98f4169fdbd8"
+    }
+  ],
+  "historical": {
+    "native_context_capacity": 4096,
+    "case": "matched-count-32",
+    "measured_samples": 3,
+    "output_tokens": 32,
+    "warm_prefix": true,
+    "metric": "actual native token intervals; first-token wait excluded",
+    "decode_tok_s": 120.99581955874035,
+    "per_case": {
+      "matched-count-32": {
+        "samples": 3,
+        "weighted_decode_tok_s": 120.99581955874035,
+        "min_decode_tok_s": 117.77568694244006,
+        "max_decode_tok_s": 123.02724199901955,
+        "measured_ids_identical": true
+      },
+      "code-128": {
+        "samples": 3,
+        "weighted_decode_tok_s": 102.83689435314412,
+        "min_decode_tok_s": 95.98011922002455,
+        "max_decode_tok_s": 109.62120581791945,
+        "measured_ids_identical": true
+      },
+      "prose-128": {
+        "samples": 3,
+        "weighted_decode_tok_s": 75.89136587321354,
+        "min_decode_tok_s": 72.63703746218299,
+        "max_decode_tok_s": 77.7283960602587,
+        "measured_ids_identical": true
+      },
+      "chinese-128": {
+        "samples": 3,
+        "weighted_decode_tok_s": 88.41471538899916,
+        "min_decode_tok_s": 86.40320680557932,
+        "max_decode_tok_s": 89.72066725899826,
+        "measured_ids_identical": true
+      }
+    },
+    "mixed_decode_tok_s": 89.54517372715428
+  },
+  "current_formal_last_completed_basic": {
+    "context_capacity": 1048576,
+    "actual_input_tokens": 22,
+    "output_tokens": 32,
+    "measured_samples": 4,
+    "stream_text_interval_estimate_tok_s": 128.2911331344417,
+    "whole_api_wall_tok_s": 84.84488782107366
+  },
+  "output_text_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+  "current_formal_count_output_text_same": true,
+  "limits": [
+    "historical native token intervals and current SSE text intervals are not identical instrumentation",
+    "different binaries, physical GPUs, context capacities and API paths: not a controlled speedup or regression comparison",
+    "1M configured capacity does not mean these short prompts contain 1M tokens",
+    "75.7 token/s uses different 1024-output prompts and whole-request wall time",
+    "actual unique-source 1M qualification remains pending; 300 token/s unmet"
+  ],
+  "live_native_observation": "xolotl-actual1m-native-readonly-progress-v130.json",
+  "live_native_observation_limit": "At 1792894749 native podPID3737 was in D/cxiWaitEventWait; one prior GPU sample was 0%; distinguish filesystem wait from GPU prefill with repeated bounded observations before diagnosis or action"
+}

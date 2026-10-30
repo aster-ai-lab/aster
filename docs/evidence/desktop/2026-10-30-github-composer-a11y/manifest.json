@@ -1,0 +1,35 @@
+{
+  "aster_base": "d6b8e4a884df0dc3db2036fccac75c7fa3270c67",
+  "studio_base": "f6d648642fc5f4f3999ec2fd537e4e2e42cb45bc",
+  "studio_revision": "26d3915a3b681eaecd30a3fb520ea3e8836ee3cd",
+  "issues": [
+    213,
+    214
+  ],
+  "capture_code_included": false,
+  "browser_fixture_sha256": {
+    "preview.tsx": "4e0262082af35ded5430f9199a9c3b85cce7cd83d083465739755b3d6af35c04",
+    "vite.config.mts": "af316b69e8286298c502a1b0fec8a032106a4f4cf69227e75a9aa0f9450800fe",
+    "browser.cjs": "664f08f850102be3bd3679af6c9847623f710a223b682be0bfbc88d00da99cfc"
+  },
+  "artifacts": {
+    "cargo-fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "webkit.aria.txt": "f0d41badf884977c6a292cea9f31159d9eca77846c506f9e265b700b4681149b",
+    "studio-checkout.log": "5d2f96b5fd27b6ad508b262b5bd940ff992e53868991bbdaf64b4062fcd75e86",
+    "a11y-eslint-final.log": "60231b8d60374f5af7bb85a95dd00896b6990b4ccf109ad4fe850f556e6fb3bd",
+    "webkit.png": "d3f7a526e6b17cb8a8a4274d693b21551aa9ac5de0a6ff7d0251b3d472ebe334",
+    "a11y-format.log": "53b957b7f568a81d57f3cf4f2d08f1008b4a0b3b9264d180e4291fb08a66bb07",
+    "chromium.png": "819bb86ce932235ee2d61933cc4115f59b80eef0856256351598575c607f05bb",
+    "verification.json": "fed03f1dec8a6b8ba069d63ae1d5f5a8bf4c48a1eaa3b43c86752e2f001e72d3",
+    "workspace-dependencies.log": "e379d5ba38dca628813b5224bdd7d4a5338b0b7d161e6600beb88b1724eb76df",
+    "browser.json": "cd8a9ffdfd16e3ca8ec97f977408952064971888bdf8d21c0c32b06dcedbd7d8",
+    "chromium.aria.txt": "f0d41badf884977c6a292cea9f31159d9eca77846c506f9e265b700b4681149b",
+    "a11y-focused-final.log": "5d6a1fa4db14d2e983173b1cb46e53778996fa32dd208dcf0fe51325972dc6b3"
+  },
+  "aster_landing_base": "515f0850ee1948e0b08bf7d9bee3f930c11a3a51",
+  "stdout_copy_policy": "Evidence stdout copies trim trailing empty lines only; raw output hashes are preserved below.",
+  "raw_stdout_sha256": {
+    "a11y-eslint-final.log": "857233c44580335793c010f23988fd472d160f089f3c2ce6980b284021c64ca8",
+    "a11y-focused-final.log": "aaaeb767e0b1b1c33711e90013c44465ad8827ec705c124bff00404d833587c9"
+  }
+}

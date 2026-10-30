@@ -1,0 +1,11 @@
+
+/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/pages/agents/AgentComposer.tsx
+   205:60  warning  Unexpected path "@renderer/pages/settings/GeneralSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+  1571:5   warning  React Hook useCallback has missing dependencies: 'sessionHasMessages' and 't'. Either include them or remove the dependency array                                               react-hooks/exhaustive-deps
+  1789:5   warning  React Hook useMemo has a missing dependency: 'i18n.language'. Either include it or remove the dependency array                                                                  react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/work/github-issues-20261030/apps/studio/src/renderer/pages/agents/homeSlashCatalog.tsx
+    9:60  warning  Unexpected path "@renderer/pages/capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+  162:22  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable                                                                                                         i18n/no-template-in-t
+
+✖ 5 problems (0 errors, 5 warnings)

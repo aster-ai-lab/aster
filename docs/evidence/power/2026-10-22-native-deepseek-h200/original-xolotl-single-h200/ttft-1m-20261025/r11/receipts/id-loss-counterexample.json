@@ -1,0 +1,19 @@
+{
+  "unix": 1792920271.6468875,
+  "fixture": "public alpha25 beta17, reverse result arrival",
+  "lost_call_ids": [
+    null,
+    null
+  ],
+  "lost_result_ids": [
+    null,
+    null
+  ],
+  "old_result_order_beta_before_alpha": true,
+  "correct_result_order_alpha_before_beta": true,
+  "exact_prompt_differs": true,
+  "source_conversion_verbatim": true,
+  "jinja_template_classes_omitted": true,
+  "inference_sent": false,
+  "service_changed": false
+}

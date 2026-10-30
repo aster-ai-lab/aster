@@ -1,0 +1,50 @@
+{
+  "schema": "aster-indexer-v40r2-shared-alignment",
+  "parent_cuda_source_sha256": "0aa1b8d40beb39ccfe1cb199a6bd9a682973ffc4fd903baf09831f3a255160ad",
+  "change": "Explicit32-byte alignment on all three WMMA shared matrix arrays; helper eligible int no longer shifts their alignment",
+  "basis": "Compute Sanitizer confirmed invalid shared16-byte reads at addresses ending8 in enabled WMMA kernel; original gate and failed diagnostic retained",
+  "math_changed_from_v40": false,
+  "gpu_qualified": false,
+  "files": [
+    {
+      "file": "aster_indexer_mask_policy.hpp",
+      "bytes": 721,
+      "sha256": "182aa5a064629f3439151e35d69c76cc2accb109edde94a57675bcf9fd3ed1fe"
+    },
+    {
+      "file": "aster_indexer_mask_skip.cuh",
+      "bytes": 3238,
+      "sha256": "c722c721193fd40a26a35b904d9d4dba752630405829849407a3561af41a3e10"
+    },
+    {
+      "file": "gpu_build_worker.py",
+      "bytes": 4446,
+      "sha256": "6e2f01e05eaa7592103de04f3de1c6ff8b7f11a511abfdc5d16e45341de4561a"
+    },
+    {
+      "file": "gpu_numerical_worker.py",
+      "bytes": 4777,
+      "sha256": "1a121da0274dfd91993b65078537f3259dbfedb5a7af999be4028658bc3d2742"
+    },
+    {
+      "file": "indexer_graph_gate.cpp",
+      "bytes": 4416,
+      "sha256": "3267195bb27658f71f4859a01f24f33cd977b5edbc683e70356dc88b5afd784d"
+    },
+    {
+      "file": "indexer_mask_probe.cu",
+      "bytes": 4750,
+      "sha256": "291b4c6a53f3ce7fece20f645f5188d0b51174c8e7dc64cf737ce50aa9b0257d"
+    },
+    {
+      "file": "lightning-indexer.cu",
+      "bytes": 25486,
+      "sha256": "8c97fc28df2c073bcb24321584f56cd571b7b0b356f6b969a5e6960c1ad33af2"
+    },
+    {
+      "file": "wmma-shared-alignment-v40r2.patch",
+      "bytes": 1152,
+      "sha256": "d1cc7c413494ef6ee4cedf002980a6b4a2c007229b5000ab303358c287362d3a"
+    }
+  ]
+}

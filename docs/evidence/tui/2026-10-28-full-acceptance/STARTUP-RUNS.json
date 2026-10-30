@@ -1,0 +1,402 @@
+{
+  "schema": "aster.tui.startup-qualification.v1",
+  "source_pair_digest": "189982670423c6c055335d5e701b491d295583e5",
+  "model": "kimi/k3.1-pro",
+  "configuration_faults_use_explicit_synthetic_fixtures": true,
+  "native_cli_cases_per_platform": 9,
+  "platforms": [
+    {
+      "platform": "windows",
+      "source_pair": "aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-pc-windows-msvc",
+      "binaries": [
+        {
+          "name": "aster.exe",
+          "sha256": "c213f0e349a3feb06cec636c16c51f62fce885c4d6685c37e5b164eef614dbf4",
+          "bytes": 323998720
+        },
+        {
+          "name": "a3s-code-acp.exe",
+          "sha256": "6f166a90a0bebc13b8b67ae931c6cb2da78906095a5e0f6bd2cd742758b5f37e",
+          "bytes": 185447936
+        }
+      ],
+      "native_cli_cases": 9,
+      "references": [
+        {
+          "file": "windows/native-cli-startup-errors/report.json",
+          "sha256": "5c8930b90c040030a9ce12f998da8953112879ac9549c9fcea76116fed76ab52",
+          "grader": "source/native_cli_boundary_probe-tool-receipt-expectation.py",
+          "cases": [
+            "headless-json",
+            "headless-relative-cwd",
+            "missing-companion",
+            "mismatched-companion",
+            "unexecutable-companion",
+            "missing-acl",
+            "invalid-acl",
+            "unknown-model"
+          ],
+          "results": [
+            {
+              "case": "headless-json",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 6.266,
+              "stdout_sha256": "17759cf81a8224e4ee51639ab08125011bb76ae1af0e1fecc7bf598303839829",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "checks": {
+                "exit_zero": true,
+                "exact_text": true,
+                "end_turn": true,
+                "session_id_nonempty": true,
+                "request_id_is_string": true
+              },
+              "exact_user_message": true,
+              "exact_json_response": true,
+              "result": "pass"
+            },
+            {
+              "case": "headless-relative-cwd",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 8.609,
+              "stdout_sha256": "957fd23583a3ac150bdbf2dfa27a3eb3b297357706c1881656b5afc647823f7a",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "checks": {
+                "exit_zero": true,
+                "exact_text": true,
+                "end_turn": true,
+                "session_id_nonempty": true,
+                "request_id_is_string": true
+              },
+              "exact_user_message": true,
+              "exact_json_response": true,
+              "result": "pass"
+            },
+            {
+              "case": "missing-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 1.625,
+              "stdout_sha256": "0325a342f019d745fa445b0e76e10194205e5f3fb5177815c967084b80882c69",
+              "stderr_sha256": "d8c464e14ddd6e3573dcfa06474f1657de536adbde79e90be17597a406322ef5",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "mismatched-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 6.047,
+              "stdout_sha256": "4fa500c7723ebd4bfb29416a994b1b0b33b9fde66cac84bbd3f46c3827b6ea01",
+              "stderr_sha256": "9c5dca3e1c7222d415a81c59c05a3575e76f045d2e2027b6904b1ef655ca12be",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "unexecutable-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 3.656,
+              "stdout_sha256": "540e7bdbaead75d4a01de3e24f5e56e967762da2c695e966a8e69ea2557823c3",
+              "stderr_sha256": "9f4d10dc08e0af27f6605f28f5291ee1fe6f5f75d245b9b0e4408d23704b1d28",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "missing-acl",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "missing-acl",
+              "seconds": 0.469,
+              "stdout_sha256": "adb3e5052ee078ba7b62e45bd4c572ad0bcc3fb2458188f5573e1be82ae92bb5",
+              "stderr_sha256": "cc3b8a55ca1069566c93d1a516bf758f6a807d23eb7fcdff44b162038be7c543",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "invalid-acl",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "invalid-acl",
+              "seconds": 0.422,
+              "stdout_sha256": "4201ba6e67cf37105103c43e603008606ea4a55bb6930063f85bd05242407fb9",
+              "stderr_sha256": "d6aae149b3d2d61521da59f88b359dbff9bf4310b1433beb0e944e6f7b25918e",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "unknown-model",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "missing-provider/missing-model",
+              "configuration_source": "original_acl",
+              "seconds": 0.453,
+              "stdout_sha256": "2db09d5f7e1cf8b16bb60fff728971cb8cfbceb274728c290464dc57b0914277",
+              "stderr_sha256": "f83b09f95cd0ffb1f5447abf94a25a7c072c103e142de3475f351d003b2fc268",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            }
+          ]
+        },
+        {
+          "file": "windows/native-cli-confirmation-cancel/report.json",
+          "sha256": "0d8d98de99a0e32b5b73343d37b64c8986963d04e9e188db7a3dd50c5a029324",
+          "grader": "source/native_cli_boundary_probe-882cb4fc4ab2.py",
+          "cases": [
+            "scheduler-confirmation-cancel"
+          ],
+          "results": [
+            {
+              "case": "scheduler-confirmation-cancel",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 10.39,
+              "stdout_sha256": "d739fb7702d31d97211deb758b6a8395b3361f630f72774f17d4a6b853457800",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "model_requested_tools": [
+                "write"
+              ],
+              "confirmation_answers": [
+                false
+              ],
+              "confirmation_cancelled_before_execution": true,
+              "no_file_effect": true,
+              "result": "pass"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "source_pair": "aster-cli-pair-v1:189982670423c6c055335d5e701b491d295583e5:x86_64-unknown-linux-gnu",
+      "binaries": [
+        {
+          "name": "aster",
+          "sha256": "d0447ae53d26ec04dd7922d109bf5539aad4da70ec36fa598458252c33b39856",
+          "bytes": 1115597344
+        },
+        {
+          "name": "a3s-code-acp",
+          "sha256": "6e8f77c29a4c30c35b97854eb7c8ea658a9d426c07f82fc2537ea554e3684dd0",
+          "bytes": 415381760
+        }
+      ],
+      "native_cli_cases": 9,
+      "references": [
+        {
+          "file": "linux/native-cli-startup-errors/report.json",
+          "sha256": "d6b60a6012dc0625fc74c25ba233343d6777d46eb3bc6529559edecc5aa49e33",
+          "grader": "source/native_cli_boundary_probe-tool-receipt-expectation.py",
+          "cases": [
+            "headless-json",
+            "headless-relative-cwd",
+            "missing-companion",
+            "mismatched-companion",
+            "unexecutable-companion",
+            "missing-acl",
+            "invalid-acl",
+            "unknown-model"
+          ],
+          "results": [
+            {
+              "case": "headless-json",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 8.638,
+              "stdout_sha256": "e5bb1634ecccfb246511247845671cd32eaaffb02d01ad0b907e5e01544b1d5a",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "checks": {
+                "exit_zero": true,
+                "exact_text": true,
+                "end_turn": true,
+                "session_id_nonempty": true,
+                "request_id_is_string": true
+              },
+              "exact_user_message": true,
+              "exact_json_response": true,
+              "result": "pass"
+            },
+            {
+              "case": "headless-relative-cwd",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 24.613,
+              "stdout_sha256": "fb214e297a840987e0d7b2c0d736bab0f073fe97c489582103e90aae228fe717",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "checks": {
+                "exit_zero": true,
+                "exact_text": true,
+                "end_turn": true,
+                "session_id_nonempty": true,
+                "request_id_is_string": true
+              },
+              "exact_user_message": true,
+              "exact_json_response": true,
+              "result": "pass"
+            },
+            {
+              "case": "missing-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 1.402,
+              "stdout_sha256": "0325a342f019d745fa445b0e76e10194205e5f3fb5177815c967084b80882c69",
+              "stderr_sha256": "d8c464e14ddd6e3573dcfa06474f1657de536adbde79e90be17597a406322ef5",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "mismatched-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 1.531,
+              "stdout_sha256": "4fa500c7723ebd4bfb29416a994b1b0b33b9fde66cac84bbd3f46c3827b6ea01",
+              "stderr_sha256": "9c5dca3e1c7222d415a81c59c05a3575e76f045d2e2027b6904b1ef655ca12be",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "unexecutable-companion",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 1.479,
+              "stdout_sha256": "b47495de58d8cfbaf9f00e1bb2768321493dba2afe80397cbd3dee39237ae52e",
+              "stderr_sha256": "6a0b543cbe837ed4779d81b83e2cf5047d01628fa00d7d80d8d298ae5a21843d",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "missing-acl",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "missing-acl",
+              "seconds": 1.91,
+              "stdout_sha256": "f52bcc9255c20098db995a8a662a12710de3984cc3e8b52d00a9959dca35646b",
+              "stderr_sha256": "50881607822ad79875b6156bfa74ea57fe2ca843acadddf74c2bcb5a75348773",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "invalid-acl",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "invalid-acl",
+              "seconds": 1.755,
+              "stdout_sha256": "e6f2e6e4f3223df1ebcede408c8c0c6f0065fd413235f5f25d5603f8fbd2f7e5",
+              "stderr_sha256": "35fc8eb7380f77cdebc573d00ab6f1f4dc54de144f03fda4e12ed1580abe8df5",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            },
+            {
+              "case": "unknown-model",
+              "exit_code": 1,
+              "timed_out": false,
+              "requested_model": "missing-provider/missing-model",
+              "configuration_source": "original_acl",
+              "seconds": 1.821,
+              "stdout_sha256": "2db09d5f7e1cf8b16bb60fff728971cb8cfbceb274728c290464dc57b0914277",
+              "stderr_sha256": "f83b09f95cd0ffb1f5447abf94a25a7c072c103e142de3475f351d003b2fc268",
+              "tool_calls": 0,
+              "model_turns": 0,
+              "explicit_refusal": true,
+              "result": "pass"
+            }
+          ]
+        },
+        {
+          "file": "linux/native-cli-confirmation-cancel/report.json",
+          "sha256": "6c88ea60a12ff262b598bd089246d6625daa9ff21236b36e649968030d8a7dc2",
+          "grader": "source/native_cli_boundary_probe-882cb4fc4ab2.py",
+          "cases": [
+            "scheduler-confirmation-cancel"
+          ],
+          "results": [
+            {
+              "case": "scheduler-confirmation-cancel",
+              "exit_code": 0,
+              "timed_out": false,
+              "requested_model": "kimi/k3.1-pro",
+              "configuration_source": "original_acl",
+              "seconds": 8.972,
+              "stdout_sha256": "9f940c85ea5bdadc2c4493dcfc9eac2b2535dc820a66156dd07689fd5cb34b86",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tool_calls": 0,
+              "model_turns": 1,
+              "model_requested_tools": [
+                "write"
+              ],
+              "confirmation_answers": [
+                false
+              ],
+              "confirmation_cancelled_before_execution": true,
+              "no_file_effect": true,
+              "result": "pass"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "complete_153": false,
+  "whole_pager_qualified": false,
+  "latest_full_35_batch": "RUNS-43CE.json"
+}

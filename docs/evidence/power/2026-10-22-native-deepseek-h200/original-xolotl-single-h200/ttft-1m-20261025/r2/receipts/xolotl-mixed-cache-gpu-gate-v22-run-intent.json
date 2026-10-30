@@ -1,0 +1,17 @@
+{
+  "unix": 1792858257.082329,
+  "phase": "passed",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-serving-9c996c5a434b/mixed-cache-gpu-gate-v22",
+  "allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+  "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+  "result": {
+    "unix": 1792858266.9768097,
+    "phase": "passed",
+    "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
+    "binary_sha256": "60df409c1b710ab0d49b4716efa81ac3d9242634c4f6ea7214ab7788d7e6dc7a",
+    "returncode": 0,
+    "stdout": "PASS mixed cache: 3 shrink/grow cycles, 194 restored slots, 478 slot byte comparisons, exact live ownership\n",
+    "stderr": "",
+    "finished_unix": 1792858268.3600667
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "source_pair_digest": "cb4a4958569c8de75d8114a543c902eab70737f3",
+  "base": "a6dd06014e9320bcc6bb43bd23aa8ae7d22724bc",
+  "bytes": 8458,
+  "sha256": "de71b3839e439c3c470862d92c7a3e907e84115d5757cd73930b7a8720008092",
+  "tracked_paths": [
+    "crates/code/core/prompts/common/runtime_contract.md",
+    "crates/code/core/src/agent_api/tests/fact_log.rs",
+    "crates/code/acp/tests/aster_tui_live_e2e/driver.rs"
+  ],
+  "new_paths": [
+    "crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs"
+  ],
+  "reverse_check": "passed",
+  "created_utc": "2026-10-29T08:01:17.834239+00:00"
+}

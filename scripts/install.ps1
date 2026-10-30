@@ -3,7 +3,7 @@
 #   irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\install.ps1"
 #   powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\install.ps1" -Prefix "$env:LOCALAPPDATA\Aster\bin"
 # The newest release is discovered from the channel manifest:
-#   https://github.com/aster-ai-lab/aster/releases/latest/download/latest.json
+#   https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json
 # -Version X.Y.Z installs that exact release. The Windows archive contains
 # aster.exe and a3s-code-acp.exe. Does not clone and does not compile.
 param(
@@ -14,7 +14,7 @@ param(
 $ErrorActionPreference = "Stop"
 $OfficialReleases = "https://github.com/aster-ai-lab/aster/releases"
 $ManifestName = "latest.json"
-$LatestManifest = "https://github.com/aster-ai-lab/aster/releases/latest/download/latest.json"
+$LatestManifest = "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json"
 
 function Refuse-Download {
     Write-Error "this installer does not download that binary"

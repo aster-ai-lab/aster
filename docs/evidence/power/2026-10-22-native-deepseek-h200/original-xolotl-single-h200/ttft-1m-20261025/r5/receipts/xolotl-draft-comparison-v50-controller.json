@@ -1,0 +1,14 @@
+{
+  "unix": 1792874036.3856833,
+  "phase": "needs_inspection",
+  "profiles": [],
+  "formal_service_unchanged": true,
+  "ctx1M_configured": true,
+  "actual1M_input_tested": false,
+  "current_profile": "off",
+  "service_phase": "serving",
+  "client_phase": "failed",
+  "client_tests": 0,
+  "error": "RuntimeError: native tool/long-output client failed: RuntimeError: forced-native-tool-stream SSE error: {\"type\": \"server_error\", \"message\": \"Extra data: line 1 column 19 (char 18)\"}",
+  "finished_unix": 1792874063.6142313
+}

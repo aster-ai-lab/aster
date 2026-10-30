@@ -1,0 +1,21 @@
+{
+  "content": "",
+  "reasoning_content": "",
+  "ttft_seconds": null,
+  "first_content_seconds": null,
+  "success": false,
+  "full_one_million_completed": false,
+  "yielded_to_foreground": true,
+  "error_type": "InterruptedError",
+  "reason": "Yielded owned benchmark socket for foreground request",
+  "foreground": {
+    "reason": "foreground_request_arrived",
+    "power_active": 1,
+    "power_waiting": 0,
+    "native_queued": 1
+  },
+  "wall_seconds": 29.411650858004577,
+  "received_events": 1,
+  "usage": null,
+  "timings": null
+}

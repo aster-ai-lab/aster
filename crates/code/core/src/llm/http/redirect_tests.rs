@@ -3,7 +3,7 @@
 use super::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpListener;
+use tokio::net::{TcpListener, TcpStream};
 
 #[tokio::test]
 async fn single_hop_is_explicit_and_the_shared_mcp_builder_preserves_redirects() {
@@ -25,8 +25,7 @@ async fn single_hop_is_explicit_and_the_shared_mcp_builder_preserves_redirects()
         let observed = calls.clone();
         let target = tokio::spawn(async move {
             let (mut socket, _) = destination.accept().await.unwrap();
-            let mut bytes = [0; 4096];
-            socket.read(&mut bytes).await.unwrap();
+            read_request_headers(&mut socket).await;
             observed.fetch_add(1, Ordering::SeqCst);
             socket
                 .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
@@ -37,8 +36,7 @@ async fn single_hop_is_explicit_and_the_shared_mcp_builder_preserves_redirects()
         let initial = format!("http://{}/initial", source.local_addr().unwrap());
         let redirect = tokio::spawn(async move {
             let (mut socket, _) = source.accept().await.unwrap();
-            let mut bytes = [0; 4096];
-            socket.read(&mut bytes).await.unwrap();
+            read_request_headers(&mut socket).await;
             socket.write_all(format!("HTTP/1.1 307 Temporary Redirect\r\nLocation: {endpoint}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").as_bytes()).await.unwrap();
         });
         let response = tokio::time::timeout(Duration::from_secs(3), client.get(initial).send())
@@ -50,6 +48,23 @@ async fn single_hop_is_explicit_and_the_shared_mcp_builder_preserves_redirects()
         let _ = target.await;
         assert_eq!(response.status().as_u16(), if follows { 200 } else { 307 });
         assert_eq!(calls.load(Ordering::SeqCst), usize::from(follows));
+    }
+}
+
+async fn read_request_headers(socket: &mut TcpStream) {
+    let mut bytes = [0; 4096];
+    let mut length = 0;
+    loop {
+        assert!(
+            length < bytes.len(),
+            "fixture request headers exceeded 4096 bytes"
+        );
+        let read = socket.read(&mut bytes[length..]).await.unwrap();
+        assert!(read > 0, "fixture request ended before its headers");
+        length += read;
+        if bytes[..length].windows(4).any(|part| part == b"\r\n\r\n") {
+            return;
+        }
     }
 }
 

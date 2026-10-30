@@ -1,0 +1,111 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling smallvec v1.16.3
+   Compiling bitflags v2.13.0
+   Compiling mio v1.2.1
+   Compiling parking_lot_core v0.9.12
+   Compiling nix v0.30.1
+   Compiling parking_lot v0.12.5
+   Compiling tokio v1.53.3
+   Compiling a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 35.70s
+     Running unittests src/lib.rs (target/debug/deps/a3s_tty_utils-4af45d88da085571)
+
+running 75 tests
+test bundled_git::tests::absent_payload_is_none ... ok
+test bundled_git::tests::arm64_payload_helper_dir_is_clangarm64 ... ok
+test bundled_git::tests::bundled_git_at_reports_one_version_dir ... ok
+test bundled_git::tests::complete_older_payload_beats_launcher_only_newer_one ... ok
+test bundled_git::tests::dll_dir_is_the_helper_trees_bin ... ok
+test bundled_git::tests::explicit_only_never_resurrects_the_process_path ... ok
+test bundled_git::tests::helper_dir_is_where_git_upload_pack_lives ... ok
+test bundled_git::tests::hidden_entries_are_not_versions ... ok
+test bundled_git::tests::picks_the_highest_complete_version ... ok
+test bundled_git::tests::prepend_honors_explicit_path_and_removal ... ok
+test bundled_git::tests::usable_older_payload_beats_newer_one_with_helpers_but_no_dlls ... ok
+test bundled_git::tests::version_key_is_numeric_not_lexical ... ok
+test child_wait::tests::huge_timeout_is_capped_to_the_poll_quantum ... ok
+test child_wait::tests::initial_and_later_poll_errors_return_without_cleanup_work ... ok
+test child_wait::tests::status_after_waits_stops_all_further_work ... ok
+test child_wait::tests::status_at_the_final_deadline_poll_wins ... ok
+test child_wait::tests::timeout_performs_one_final_poll ... ok
+test child_wait::tests::zero_timeout_has_two_boundary_polls_and_no_wait ... ok
+test kill_on_drop::tests::drop_after_in_handle_reap_is_a_no_op ... ok
+test kill_on_drop::tests::drop_kills_and_reaps_the_child ... ok
+test kill_on_drop::tests::into_inner_disarms_without_killing ... ok
+test process_resources::tests::a_running_process_reports_its_own_gauges ... ok
+test process_resources::tests::cpu_and_start_time_readers_report_this_process ... ok
+test process_resources::tests::the_memory_only_sample_leaves_open_files_unset ... ok
+test process_resources::tests::thread_gauge_tracks_spawned_threads ... ok
+test process_scope::tests::drop_reaps_children_while_owner_alive ... ok
+test process_scope::tests::enroll_std_after_close_kills_and_leaves_reap_to_caller ... ok
+test process_scope::tests::enroll_std_owner_accepts_close_after_registration ... ok
+test process_scope::tests::kill_all_is_idempotent ... ok
+test process_scope::tests::kill_all_reaps_every_enrolled_child ... ok
+test process_scope::tests::kill_all_skips_group_whose_owner_dropped ... ok
+test process_scope::tests::only_a_terminal_enrollment_asks_for_a_hangup ... ok
+test process_scope::tests::register_after_kill_all_reaps_immediately ... ok
+test runtime::eagain_tests::child_entry_eagain_under_thread_limit ... ok
+test runtime::eagain_tests::default_runtime_dies_and_prewarmed_runtime_survives ... ok
+test runtime::tests::apply_blocking_pool_builds_and_prewarms ... ok
+test runtime::tests::cap_clamps_many_core_hosts ... ok
+test runtime::tests::cap_is_identity_at_or_below_max ... ok
+test runtime::tests::capped_worker_threads_stays_in_bounds ... ok
+test runtime::tests::child_entry_blocking_pool_behavior ... ok
+test runtime::tests::keep_alive_overflows_instant_add ... ok
+test runtime::tests::prewarm_creates_cap_and_extra_spawn_blocking_queues ... ok
+test runtime::tests::prewarm_times_out_and_releases_workers ... ok
+test tests::armed_child_dies_when_parent_exits ... ok
+test tests::armed_child_survives_while_parent_lives ... ok
+test tests::cross_thread_arming_fails_spawn_in_debug_builds ... ok
+test tests::detach_from_tty_reset_oom_resets_the_child ... ok
+test tests::detach_pre_exec_hook_defaults_to_no_reset ... ok
+test tests::detach_pre_exec_hook_selects_reset_when_env_armed ... ok
+test tests::detach_search_command_kills_child_on_drop ... ok
+test tests::dup_tui_stderr_without_redirect_returns_writable_file ... ok
+test tests::eof_pipe_fd_is_cloexec_and_reads_eof ... ok
+test tests::git_command_locking_matches_reader_except_optional_locks_flag ... ok
+test tests::has_live_members_tracks_the_group_emptying ... ok
+test tests::is_wsl_detects_wsl1_osrelease ... ok
+test tests::is_wsl_detects_wsl2_osrelease ... ok
+test tests::is_wsl_detects_wsl_distro_name ... ok
+test tests::is_wsl_detects_wsl_interop ... ok
+test tests::is_wsl_env_var_match_is_exact_key_not_substring ... ok
+test tests::is_wsl_osrelease_match_is_case_insensitive ... ok
+test tests::is_wsl_rejects_native_linux ... ok
+test tests::is_wsl_rejects_when_osrelease_missing ... ok
+test tests::null_fd_outlives_its_path ... ok
+test tests::null_stdio_accepts_child_writes ... ok
+test tests::null_stdio_reads_eof_every_time ... ok
+test tests::pager_env_has_expected_keys ... ok
+test tests::pdeathsig_intermediate_entry ... ok
+test tests::plain_detach_from_tty_leaves_child_oom_score_inherited ... ok
+test tests::process_group_id_rejects_degenerate_and_own_group ... ok
+test tests::process_group_kill_reaps_grandchild_tree ... ok
+test tests::process_group_kill_terminates_attached_child ... ok
+test tests::protect_from_oom_kill_lowers_own_score_when_privileged ... ok
+test tests::schedule_reap_reaps_grandchild_when_we_are_subreaper ... ok
+test tests::stderr_redirect_roundtrip_body ... ok
+test tests::stderr_redirect_roundtrip_subprocess ... 
+running 1 test
+test tests::stderr_redirect_roundtrip_body ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 74 filtered out; finished in 0.00s
+
+ok
+
+test result: ok. 75 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.30s
+
+   Doc-tests a3s_tty_utils
+
+running 2 tests
+test crates/terminal/crates/codegen/a3s-tty-utils/src/lib.rs - (line 15) - compile ... ok
+test crates/terminal/crates/codegen/a3s-tty-utils/src/lib.rs - (line 28) - compile ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+all doctests ran in 1.49s; merged doctests compilation took 1.47s

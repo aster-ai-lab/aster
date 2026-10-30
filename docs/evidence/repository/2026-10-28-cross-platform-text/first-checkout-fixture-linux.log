@@ -1,0 +1,53 @@
+..FF.FFFF
+======================================================================
+FAIL: test_shell_checkout_is_lf_and_runs_after_windows_style_input (__main__.LineEndings.test_shell_checkout_is_lf_and_runs_after_windows_style_input) (autocrlf='true')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 65, in test_shell_checkout_is_lf_and_runs_after_windows_style_input
+    self.assertEqual((self.root / path).read_bytes(), content)
+AssertionError: b"#!/bin/sh\r\nprintf '%s\\n' LINE-ENDINGS-OK\r\n" != b"#!/bin/sh\nprintf '%s\\n' LINE-ENDINGS-OK\n"
+
+======================================================================
+FAIL: test_shell_checkout_is_lf_and_runs_after_windows_style_input (__main__.LineEndings.test_shell_checkout_is_lf_and_runs_after_windows_style_input) (autocrlf='false')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 65, in test_shell_checkout_is_lf_and_runs_after_windows_style_input
+    self.assertEqual((self.root / path).read_bytes(), content)
+AssertionError: b"#!/bin/sh\r\nprintf '%s\\n' LINE-ENDINGS-OK\r\n" != b"#!/bin/sh\nprintf '%s\\n' LINE-ENDINGS-OK\n"
+
+======================================================================
+FAIL: test_windows_command_checkout_is_crlf_with_canonical_lf_index (__main__.LineEndings.test_windows_command_checkout_is_crlf_with_canonical_lf_index) (autocrlf='true', suffix='bat')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 82, in test_windows_command_checkout_is_crlf_with_canonical_lf_index
+    self.assertEqual(
+AssertionError: b'@echo off\necho LINE-ENDINGS-OK\n' != b'@echo off\r\necho LINE-ENDINGS-OK\r\n'
+
+======================================================================
+FAIL: test_windows_command_checkout_is_crlf_with_canonical_lf_index (__main__.LineEndings.test_windows_command_checkout_is_crlf_with_canonical_lf_index) (autocrlf='true', suffix='cmd')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 82, in test_windows_command_checkout_is_crlf_with_canonical_lf_index
+    self.assertEqual(
+AssertionError: b'@echo off\necho LINE-ENDINGS-OK\n' != b'@echo off\r\necho LINE-ENDINGS-OK\r\n'
+
+======================================================================
+FAIL: test_windows_command_checkout_is_crlf_with_canonical_lf_index (__main__.LineEndings.test_windows_command_checkout_is_crlf_with_canonical_lf_index) (autocrlf='false', suffix='bat')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 82, in test_windows_command_checkout_is_crlf_with_canonical_lf_index
+    self.assertEqual(
+AssertionError: b'@echo off\necho LINE-ENDINGS-OK\n' != b'@echo off\r\necho LINE-ENDINGS-OK\r\n'
+
+======================================================================
+FAIL: test_windows_command_checkout_is_crlf_with_canonical_lf_index (__main__.LineEndings.test_windows_command_checkout_is_crlf_with_canonical_lf_index) (autocrlf='false', suffix='cmd')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/tests/line_endings.py", line 82, in test_windows_command_checkout_is_crlf_with_canonical_lf_index
+    self.assertEqual(
+AssertionError: b'@echo off\necho LINE-ENDINGS-OK\n' != b'@echo off\r\necho LINE-ENDINGS-OK\r\n'
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.204s
+
+FAILED (failures=6)

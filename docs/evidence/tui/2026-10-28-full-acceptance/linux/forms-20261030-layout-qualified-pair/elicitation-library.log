@@ -1,0 +1,30 @@
+
+running 25 tests
+test views::elicitation_view::tests::append_char_rejects_control_and_unsafe_chars ... ok
+test views::elicitation_view::tests::failed_accept_error_is_visible_on_clipped_form ... ok
+test views::elicitation_view::tests::form_accept_requires_email ... ok
+test views::elicitation_view::tests::integer_field_submits_lossless_i64 ... ok
+test views::elicitation_view::tests::long_text_draft_is_reviewable_in_full ... ok
+test views::elicitation_view::tests::move_focus_backward_no_wrap_stops_on_first_field ... ok
+test views::elicitation_view::tests::move_focus_backward_wrap_walks_actions_then_fields ... ok
+test views::elicitation_view::tests::move_focus_forward_no_wrap_stops_on_decline ... ok
+test views::elicitation_view::tests::move_focus_forward_wrap_walks_fields_then_actions ... ok
+test views::elicitation_view::tests::move_focus_zero_field_form_toggles_actions ... ok
+test views::elicitation_view::tests::multi_select_min_items_blocks_accept ... ok
+test views::elicitation_view::tests::multi_select_options_render_when_expanded ... ok
+test views::elicitation_view::tests::multi_select_toggles_and_submits_array ... ok
+test views::elicitation_view::tests::server_escapes_never_reach_the_buffer ... ok
+test views::elicitation_view::tests::short_terminal_form_keeps_fields_and_actions_reachable ... ok
+test views::elicitation_view::tests::tall_form_keeps_actions_visible_and_follows_cursor ... ok
+test views::elicitation_view::tests::title_includes_server ... ok
+test views::elicitation_view::tests::unsafe_url_disables_accept ... ok
+test views::elicitation_view::tests::url_accept_transitions_to_waiting_and_keeps_id ... ok
+test views::elicitation_view::tests::url_check_flags_punycode_hosts ... ok
+test views::elicitation_view::tests::url_check_rejects_unsafe_and_malformed ... ok
+test views::elicitation_view::tests::url_consent_shows_host_and_full_url ... ok
+test views::elicitation_view::tests::url_tail_reachable_by_scrolling_on_short_terminal ... ok
+test views::elicitation_view::tests::value_column_caps_on_wide_content ... ok
+test views::elicitation_view::tests::value_column_caps_survive_long_titles ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 10222 filtered out; finished in 0.30s
+

@@ -1,0 +1,11 @@
+{
+  "actual_bytes": 22751,
+  "expected_bytes": 23775,
+  "actual_chars": 20187,
+  "expected_chars": 20699,
+  "first_difference_char": 184,
+  "actual_context": "-1e4e7f2fc52f\n中文 λ e payload 0123456789 <> & \" ' / \\ 中文 λ e payload 01",
+  "expected_context": "-1e4e7f2fc52f\n中文 λ é payload 0123456789 <> & \" ' / \\ 中文 λ é payload ",
+  "actual_tail": "& \" ' / \\ 中文 λ e payload 0123456789 <> & \" ' / \\ \nEND-31d87cf3-a474-44ed-997a-1e4e7f2fc52f",
+  "expected_tail": " \" ' / \\ 中文 λ é payload 0123456789 <> & \" ' / \\ \nEND-31d87cf3-a474-44ed-997a-1e4e7f2fc52f"
+}

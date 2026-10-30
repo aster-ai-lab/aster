@@ -1,0 +1,10 @@
+{
+  "unix": 1792892292.6805112,
+  "source": "launch_pool_service_retry_v112r2.frozen.py",
+  "source_sha256": "efb302aab64ccc6ac8e31cfc10b95288915f9ab279e61b1e7bfb907fff759beb",
+  "exit": 1,
+  "prior_uncertainty_preserved": true,
+  "new_gpu_allocated": false,
+  "formal_service_unchanged": true,
+  "error": "Traceback (most recent call last):\n  File \"D:\\code\\aster\\target\\h200-native\\launch_pool_service_retry_v112r2.frozen.py\", line 88, in <module>\n    try:record.update(process=owned(code),phase='launched')\n                              ^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 93, in owned\n    return jump(wrapper,timeout)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\aster\\target\\h200-native\\xolotl_trial_common.py\", line 12, in jump\n    if p.returncode:raise RuntimeError('jump failed: '+p.stderr[-3000:])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: jump failed: client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\nTraceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\n  File \"<stdin>\", line 4, in cli\nRuntimeError: owned CLI failed exit 1: error: websocket: bad handshake\n\n\n"
+}

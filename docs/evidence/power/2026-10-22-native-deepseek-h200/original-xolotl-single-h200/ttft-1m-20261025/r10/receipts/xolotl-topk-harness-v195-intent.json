@@ -1,0 +1,41 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195-cpu",
+  "phase": "launched",
+  "build": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build",
+  "object": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/topk-cccl35.o",
+    "bytes": 422816,
+    "sha256": "a72cb468cb54ca1888610d8a4a005dccc061b3c853e07d387411566cdd3078fd"
+  },
+  "original_topk_object": {
+    "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/top-k.cu.o",
+    "bytes": 214616,
+    "sha256": "dda9f0ed7cae7f05f41c1a3a34fb87550afca19ac7157fd137650e008af2c280"
+  },
+  "files": [
+    {
+      "file": "bench_topk_cccl35_v194.cpp",
+      "bytes": 7405,
+      "sha256": "8a16880614ef5da0d7c5c0cca1bfa8332ae95dac73a7ac07bdf671720c047b73"
+    },
+    {
+      "file": "aster_topk35_api_v192.hpp",
+      "bytes": 385,
+      "sha256": "e91db284b98a94db766415d5f439f6211c994e75b4aa6d31d7217cc2ecb85b8e"
+    }
+  ],
+  "GPU_executed": false,
+  "model_changed": false,
+  "stage": {
+    "worker_sha256": "da490f08f97c8721708eef13d2df69afe7b90c7099df814e98b6587964fcded9",
+    "gpu_worker_sha256": "905d6674c43b3570db85cfae8701ea8951366cebde72a8cdefc81c503e90d41e"
+  },
+  "process": {
+    "pid": 8468,
+    "start_ticks": 713672996,
+    "uid": 10250,
+    "unix": 1792907458.9715674,
+    "namespace": "optimization pod",
+    "budget_seconds": 120
+  }
+}

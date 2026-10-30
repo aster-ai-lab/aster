@@ -1,0 +1,24 @@
+{
+  "source_pair": "aster-cli-pair-v1:7f282ad7c4cc5580d1811b0d4a2dd4c12de32865:x86_64-unknown-linux-gnu",
+  "folder": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/session-info-20261029210707003957",
+  "files": [
+    {
+      "name": "aster",
+      "sha256": "eb6f4ef4283ba371fd6957b537877fecb02725c16b019d3eaa1d8d328d3825d4",
+      "bytes": 1115623584
+    },
+    {
+      "name": "a3s-code-acp",
+      "sha256": "0d2945220661b25aa11f5d85fd382f7405cab8f2bcf1a76ae7ce03aa4de149fc",
+      "bytes": 413690552
+    }
+  ],
+  "test_binary": {
+    "name": "aster_tui_session_info",
+    "sha256": "b95865474b5ec7f5a777ab3c7bb8a4872f9df7e2db7738af1e7c3e969c40b48a",
+    "bytes": 95553552
+  },
+  "build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/session-info-qualified-build/build.jsonl",
+  "test_build_json": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/linux/session-info-qualified-build/test-build.jsonl",
+  "created_at": "2026-10-29T21:07:07.003957+00:00"
+}

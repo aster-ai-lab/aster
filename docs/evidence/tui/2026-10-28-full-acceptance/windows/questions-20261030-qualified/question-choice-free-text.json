@@ -1,0 +1,229 @@
+{
+  "assertions_finished": true,
+  "case": "question-choice-free-text",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": false,
+        "prompt_tokens": 13346,
+        "text": null,
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13441,
+        "text": "BETA-ROUTE",
+        "tool": null
+      },
+      "seq": 8,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "af06505489f1b81cacc169aef467e413406fd33eb1cb387bcf9daf4c1bc44db0",
+          "seq": 8
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 9,
+      "type": "turn.complete"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": false,
+        "prompt_tokens": 13532,
+        "text": null,
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13650,
+        "text": "HOST-NOTE-bad402b5-e73c-46a3-b642-2c19c31e71f5-中文",
+        "tool": null
+      },
+      "seq": 14,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "a90d669c57747bfd28346a22b1e6c8e8f1a01dd0de4b69b77e042a10ef2a4eef",
+          "seq": 14
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 15,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:70f49387956f5bba7ade5552b9ca82291464886f:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=7 model_turns=2 prompt_tokens=26787",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iyisV2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ask_user exactly once with question 'Choose a route', options ['ALPHA-ROUTE','BETA-ROUTE'] and  10:53 AM           allow_free_text=false. After the user answers, reply with the exact selected answer. Do not call                        other tools or modify files.                                                                                                                                                                                                                                                                                                                                          ♦ Thought for 3.1s                                                                                                      ♦ ask_user                                                                                                              ♦ Thought for 1.3s                                                                                                                                                                                                                              BETA-ROUTE                                                                                             10:53 AM                                                                                                                                 Worked for 12s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the second real choice is persisted under its exact pending question id and reaches the next model response without granting permission",
+      "name": "question-selected-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iyisV2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ask_user exactly once with question 'Choose a route', options ['ALPHA-ROUTE','BETA-ROUTE'] and  10:53 AM           allow_free_text=false. After the user answers, reply with the exact selected answer. Do not call                        other tools or modify files.                                                                                                                                                                                                                                                                                                                                          ♦ Thought for 3.1s                                                                                                      ♦ ask_user                                                                                                              ♦ Thought for 1.3s                                                                                                                                                                                                                              BETA-ROUTE                                                                                             10:53 AM                                                                                                                                 Worked for 12s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=6 model_turns=2 prompt_tokens=27182",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iyisV2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ask_user exactly once with question 'Enter a route note', options ['USE-DEFAULT','USE-          10:53 AM           ALTERNATE'] and allow_free_text=true. After the user answers, reply with the exact answer text. Do                      not call other tools or modify files.                                                                                                                                                                                                                                                                                                                                 ♦ Thought for 3.8s                                                                                                      ♦ ask_user                                                                                                              ♦ Thought for 2.9s                                                                                                                                                                                                                        █     HOST-NOTE-bad402b5-e73c-46a3-b642-2c19c31e71f5-中文                                                    10:53 AM   █                                                                                                                       █     Worked for 19s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the host-only Unicode answer is persisted for a distinct question id and returned by the real model; the selected choice row is not substituted for the text",
+      "name": "question-unseen-free-text",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-iyisV2\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Call ask_user exactly once with question 'Enter a route note', options ['USE-DEFAULT','USE-          10:53 AM           ALTERNATE'] and allow_free_text=true. After the user answers, reply with the exact answer text. Do                      not call other tools or modify files.                                                                                                                                                                                                                                                                                                                                 ♦ Thought for 3.8s                                                                                                      ♦ ask_user                                                                                                              ♦ Thought for 2.9s                                                                                                                                                                                                                        █     HOST-NOTE-bad402b5-e73c-46a3-b642-2c19c31e71f5-中文                                                    10:53 AM   █                                                                                                                       █     Worked for 19s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "question-choice-free-text",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": false,
+            "prompt_tokens": 13346,
+            "text": null,
+            "tool": null
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13441,
+            "text": "BETA-ROUTE",
+            "tool": null
+          },
+          "seq": 8,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "af06505489f1b81cacc169aef467e413406fd33eb1cb387bcf9daf4c1bc44db0",
+              "seq": 8
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 9,
+          "type": "turn.complete"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": false,
+            "prompt_tokens": 13532,
+            "text": null,
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13650,
+            "text": "HOST-NOTE-bad402b5-e73c-46a3-b642-2c19c31e71f5-中文",
+            "tool": null
+          },
+          "seq": 14,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "a90d669c57747bfd28346a22b1e6c8e8f1a01dd0de4b69b77e042a10ef2a4eef",
+              "seq": 14
+            },
+            "receipt_keys": [],
+            "terminal": "narrative"
+          },
+          "seq": 15,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "316eea1d-0ba6-437f-8222-a05e48bcd9f2"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

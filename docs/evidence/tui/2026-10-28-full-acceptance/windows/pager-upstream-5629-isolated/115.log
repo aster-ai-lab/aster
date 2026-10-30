@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::memory_search::tests::shorten_memory_path' (40512) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\memory_search.rs:471:9:
+assertion `left == right` failed
+  left: "\\MEMORY.md"
+ right: "MEMORY.md"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::memory_search::tests::shorten_memory_path ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::memory_search::tests::shorten_memory_path
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

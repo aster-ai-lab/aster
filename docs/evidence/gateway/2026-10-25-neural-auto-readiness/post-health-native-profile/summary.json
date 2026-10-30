@@ -1,0 +1,9 @@
+{
+  "profile": "selected-dspark-health-fixed-899084c8",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 31.6
+  },
+  "prefill_median": null,
+  "full_one_million_completed": false
+}

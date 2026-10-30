@@ -1,0 +1,513 @@
+{
+  "unix": 1792872315.5831463,
+  "result": {
+    "schema": "aster-xolotl-ttft-qualification-v9",
+    "unix": 1792872124.391288,
+    "phase": "passed",
+    "client": "yangchao-dev",
+    "destination": "http://100.97.210.241:30003/v1",
+    "tests": [
+      {
+        "name": "warmup-0-matched-count-32",
+        "ttft_seconds": 0.4593682000413537,
+        "seconds": 1.1681769038550556,
+        "first_to_last_text_seconds": 0.7058109291829169,
+        "finish_reason": "length",
+        "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,",
+        "output_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 32,
+          "total_tokens": 54,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "warmup-1-code-128",
+        "ttft_seconds": 0.2098409221507609,
+        "seconds": 2.0557567649520934,
+        "first_to_last_text_seconds": 1.8456929200328887,
+        "finish_reason": "length",
+        "content": "# Fibonacci Function\n\n```python\ndef fibonacci(n):\n    \"\"\"Return the first n Fibonacci numbers as a list.\"\"\"\n    if n <= 0:\n        return []\n    fibs = [0, 1]\n    while len(fibs) < n:\n        fibs.append(fibs[-1] + fibs[-2])\n    return fibs[:n]\n```\n\n## Explanation\n\nThe Fibonacci sequence starts with `0` and `1`, and each subsequent number is the sum of the two previous ones: `0, 1, 1, 2, 3, 5, 8, 13, ...",
+        "output_sha256": "798e96ee1ffff565c2c64ce1c08ac6780600e111eda8719f3391b98db1a9f466",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "warmup-2-prose-128",
+        "ttft_seconds": 0.20307427132502198,
+        "seconds": 2.8571525253355503,
+        "first_to_last_text_seconds": 2.653774505946785,
+        "finish_reason": "length",
+        "content": "# LRU Cache: How It Works\n\n## Concept\n\nAn **LRU (Least Recently Used) cache** is a fixed-capacity cache that evicts the item that hasn't been accessed for the longest time when it needs to make room for a new item. The intuition: recently used items are likely to be used again soon, so keep them; stale items are likely dead, so drop them.\n\n## Core Requirements\n\nTo implement an LRU cache efficiently, you need two structures working together:\n\n1. **A hash map** \u2014 `key \u2192 node` for O(1) lookup.\n2. **A doubly linked",
+        "output_sha256": "b37e03480bc549442b67522a0c73d40e5505b380f1aa243f80616e6aa1abc183",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "warmup-3-chinese-128",
+        "ttft_seconds": 0.2587418262846768,
+        "seconds": 2.561968974303454,
+        "first_to_last_text_seconds": 2.3031352600082755,
+        "finish_reason": "length",
+        "content": "# KV Cache\uff1a\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u7684\u6838\u5fc3\u52a0\u901f\u673a\u5236\n\n## \u4e00\u3001KV Cache \u4fdd\u5b58\u7684\u662f\u4ec0\u4e48\n\nTransformer \u7684\u6bcf\u4e00\u5c42\u5728\u81ea\u6ce8\u610f\u529b\uff08self-attention\uff09\u4e2d\u90fd\u4f1a\u4e3a\u6bcf\u4e2a token \u8ba1\u7b97\u4e09\u7ec4\u5411\u91cf\uff1a\n\n- **Q\uff08Query\uff09**\uff1a\u5f53\u524d token \u7528\u6765\"\u63d0\u95ee\"\u7684\u5411\u91cf\n- **K\uff08Key\uff09**\uff1a\u6bcf\u4e2a token \u7528\u6765\"\u88ab\u68c0\u7d22\"\u7684\u5411\u91cf\n- **V\uff08Value\uff09**\uff1a\u6bcf\u4e2a token \u643a\u5e26\u7684\u5185\u5bb9\u5411\u91cf\n\n\u6ce8\u610f\u529b\u8ba1\u7b97\u662f `softmax(Q\u00b7K\u1d40/\u221ad) \u00b7 V`\u3002\u751f\u6210\u65f6\u6a21\u578b\u662f**\u81ea\u56de\u5f52**\u7684\uff1a",
+        "output_sha256": "ae62e26662a2d9d55ddf1ea27c2ab632de6b60aa1b6d0292ca69d44152249875",
+        "usage": {
+          "prompt_tokens": 30,
+          "completion_tokens": 128,
+          "total_tokens": 158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-4-matched-count-32",
+        "ttft_seconds": 0.14538287417963147,
+        "seconds": 0.38916966784745455,
+        "first_to_last_text_seconds": 0.2434854656457901,
+        "finish_reason": "length",
+        "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,",
+        "output_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 32,
+          "total_tokens": 54,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-5-code-128",
+        "ttft_seconds": 0.1255768625997007,
+        "seconds": 1.2639293395914137,
+        "first_to_last_text_seconds": 1.1379794143140316,
+        "finish_reason": "length",
+        "content": "# Fibonacci Function\n\n```python\ndef fibonacci(n):\n    \"\"\"Return the first n Fibonacci numbers as a list.\"\"\"\n    if n <= 0:\n        return []\n    fibs = [0, 1]\n    while len(fibs) < n:\n        fibs.append(fibs[-1] + fibs[-2])\n    return fibs[:n]\n```\n\n## Explanation\n\nThe Fibonacci sequence starts with `0` and `1`, and each subsequent number is the sum of the two previous ones: `0, 1, 1, 2, 3, 5, 8, 13, ...",
+        "output_sha256": "798e96ee1ffff565c2c64ce1c08ac6780600e111eda8719f3391b98db1a9f466",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-6-prose-128",
+        "ttft_seconds": 0.16066640382632613,
+        "seconds": 1.8811668530106544,
+        "first_to_last_text_seconds": 1.720278237015009,
+        "finish_reason": "length",
+        "content": "# LRU Cache: How It Works\n\n## Concept\n\nAn **LRU (Least Recently Used) cache** is a fixed-capacity cache that evicts the item that hasn't been accessed for the longest time when it needs to make room for a new item. The intuition: recently used items are likely to be used again soon, so keep them; stale items are likely dead, so drop them.\n\n## Core Requirements\n\nTo implement an LRU cache efficiently, you need two structures working together:\n\n1. **A hash map** \u2014 `key \u2192 node` for O(1) lookup.\n2. **A doubly linked",
+        "output_sha256": "b37e03480bc549442b67522a0c73d40e5505b380f1aa243f80616e6aa1abc183",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-7-chinese-128",
+        "ttft_seconds": 0.16079060640186071,
+        "seconds": 1.6924653081223369,
+        "first_to_last_text_seconds": 1.5315918358974159,
+        "finish_reason": "length",
+        "content": "# KV Cache\uff1a\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u7684\u6838\u5fc3\u52a0\u901f\u673a\u5236\n\n## \u4e00\u3001KV Cache \u4fdd\u5b58\u7684\u662f\u4ec0\u4e48\n\nTransformer \u7684\u6bcf\u4e00\u5c42\u5728\u81ea\u6ce8\u610f\u529b\uff08self-attention\uff09\u4e2d\u90fd\u4f1a\u4e3a\u6bcf\u4e2a token \u8ba1\u7b97\u4e09\u7ec4\u5411\u91cf\uff1a\n\n- **Q\uff08Query\uff09**\uff1a\u5f53\u524d token \u7528\u6765\"\u63d0\u95ee\"\u7684\u5411\u91cf\n- **K\uff08Key\uff09**\uff1a\u6bcf\u4e2a token \u7528\u6765\"\u88ab\u68c0\u7d22\"\u7684\u5411\u91cf\n- **V\uff08Value\uff09**\uff1a\u6bcf\u4e2a token \u643a\u5e26\u7684\u5185\u5bb9\u5411\u91cf\n\n\u6ce8\u610f\u529b\u8ba1\u7b97\u662f `softmax(Q\u00b7K\u1d40/\u221ad) \u00b7 V`\u3002\u751f\u6210\u65f6\u6a21\u578b\u662f**\u81ea\u56de\u5f52**\u7684\uff1a",
+        "output_sha256": "ae62e26662a2d9d55ddf1ea27c2ab632de6b60aa1b6d0292ca69d44152249875",
+        "usage": {
+          "prompt_tokens": 30,
+          "completion_tokens": 128,
+          "total_tokens": 158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-8-matched-count-32",
+        "ttft_seconds": 0.13404090190306306,
+        "seconds": 0.3766955309547484,
+        "first_to_last_text_seconds": 0.2424327451735735,
+        "finish_reason": "length",
+        "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,",
+        "output_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 32,
+          "total_tokens": 54,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-9-code-128",
+        "ttft_seconds": 0.14593585720285773,
+        "seconds": 1.266634277999401,
+        "first_to_last_text_seconds": 1.120482973754406,
+        "finish_reason": "length",
+        "content": "# Fibonacci Function\n\n```python\ndef fibonacci(n):\n    \"\"\"Return the first n Fibonacci numbers as a list.\"\"\"\n    if n <= 0:\n        return []\n    fibs = [0, 1]\n    while len(fibs) < n:\n        fibs.append(fibs[-1] + fibs[-2])\n    return fibs[:n]\n```\n\n## Explanation\n\nThe Fibonacci sequence starts with `0` and `1`, and each subsequent number is the sum of the two previous ones: `0, 1, 1, 2, 3, 5, 8, 13, ...",
+        "output_sha256": "798e96ee1ffff565c2c64ce1c08ac6780600e111eda8719f3391b98db1a9f466",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-10-prose-128",
+        "ttft_seconds": 0.1276827547699213,
+        "seconds": 1.7832868099212646,
+        "first_to_last_text_seconds": 1.655320743098855,
+        "finish_reason": "length",
+        "content": "# LRU Cache: How It Works\n\n## Concept\n\nAn **LRU (Least Recently Used) cache** is a fixed-capacity cache that evicts the item that hasn't been accessed for the longest time when it needs to make room for a new item. The intuition: recently used items are likely to be used again soon, so keep them; stale items are likely dead, so drop them.\n\n## Core Requirements\n\nTo implement an LRU cache efficiently, you need two structures working together:\n\n1. **A hash map** \u2014 `key \u2192 node` for O(1) lookup.\n2. **A doubly linked",
+        "output_sha256": "b37e03480bc549442b67522a0c73d40e5505b380f1aa243f80616e6aa1abc183",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-11-chinese-128",
+        "ttft_seconds": 0.16854005213826895,
+        "seconds": 1.601228172890842,
+        "first_to_last_text_seconds": 1.4325294410809875,
+        "finish_reason": "length",
+        "content": "# KV Cache\uff1a\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u7684\u6838\u5fc3\u52a0\u901f\u673a\u5236\n\n## \u4e00\u3001KV Cache \u4fdd\u5b58\u7684\u662f\u4ec0\u4e48\n\nTransformer \u7684\u6bcf\u4e00\u5c42\u5728\u81ea\u6ce8\u610f\u529b\uff08self-attention\uff09\u4e2d\u90fd\u4f1a\u4e3a\u6bcf\u4e2a token \u8ba1\u7b97\u4e09\u7ec4\u5411\u91cf\uff1a\n\n- **Q\uff08Query\uff09**\uff1a\u5f53\u524d token \u7528\u6765\"\u63d0\u95ee\"\u7684\u5411\u91cf\n- **K\uff08Key\uff09**\uff1a\u6bcf\u4e2a token \u7528\u6765\"\u88ab\u68c0\u7d22\"\u7684\u5411\u91cf\n- **V\uff08Value\uff09**\uff1a\u6bcf\u4e2a token \u643a\u5e26\u7684\u5185\u5bb9\u5411\u91cf\n\n\u6ce8\u610f\u529b\u8ba1\u7b97\u662f `softmax(Q\u00b7K\u1d40/\u221ad) \u00b7 V`\u3002\u751f\u6210\u65f6\u6a21\u578b\u662f**\u81ea\u56de\u5f52**\u7684\uff1a",
+        "output_sha256": "ae62e26662a2d9d55ddf1ea27c2ab632de6b60aa1b6d0292ca69d44152249875",
+        "usage": {
+          "prompt_tokens": 30,
+          "completion_tokens": 128,
+          "total_tokens": 158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-12-matched-count-32",
+        "ttft_seconds": 0.13254617201164365,
+        "seconds": 0.37769652670249343,
+        "first_to_last_text_seconds": 0.24495809292420745,
+        "finish_reason": "length",
+        "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,",
+        "output_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 32,
+          "total_tokens": 54,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-13-code-128",
+        "ttft_seconds": 0.11803887272253633,
+        "seconds": 1.1964902929030359,
+        "first_to_last_text_seconds": 1.078076545149088,
+        "finish_reason": "length",
+        "content": "# Fibonacci Function\n\n```python\ndef fibonacci(n):\n    \"\"\"Return the first n Fibonacci numbers as a list.\"\"\"\n    if n <= 0:\n        return []\n    fibs = [0, 1]\n    while len(fibs) < n:\n        fibs.append(fibs[-1] + fibs[-2])\n    return fibs[:n]\n```\n\n## Explanation\n\nThe Fibonacci sequence starts with `0` and `1`, and each subsequent number is the sum of the two previous ones: `0, 1, 1, 2, 3, 5, 8, 13, ...",
+        "output_sha256": "798e96ee1ffff565c2c64ce1c08ac6780600e111eda8719f3391b98db1a9f466",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-14-prose-128",
+        "ttft_seconds": 0.12223776616156101,
+        "seconds": 1.7502007009461522,
+        "first_to_last_text_seconds": 1.6278744176961482,
+        "finish_reason": "length",
+        "content": "# LRU Cache: How It Works\n\n## Concept\n\nAn **LRU (Least Recently Used) cache** is a fixed-capacity cache that evicts the item that hasn't been accessed for the longest time when it needs to make room for a new item. The intuition: recently used items are likely to be used again soon, so keep them; stale items are likely dead, so drop them.\n\n## Core Requirements\n\nTo implement an LRU cache efficiently, you need two structures working together:\n\n1. **A hash map** \u2014 `key \u2192 node` for O(1) lookup.\n2. **A doubly linked",
+        "output_sha256": "b37e03480bc549442b67522a0c73d40e5505b380f1aa243f80616e6aa1abc183",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-15-chinese-128",
+        "ttft_seconds": 0.1637458154000342,
+        "seconds": 1.5846615140326321,
+        "first_to_last_text_seconds": 1.4205834600143135,
+        "finish_reason": "length",
+        "content": "# KV Cache\uff1a\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u7684\u6838\u5fc3\u52a0\u901f\u673a\u5236\n\n## \u4e00\u3001KV Cache \u4fdd\u5b58\u7684\u662f\u4ec0\u4e48\n\nTransformer \u7684\u6bcf\u4e00\u5c42\u5728\u81ea\u6ce8\u610f\u529b\uff08self-attention\uff09\u4e2d\u90fd\u4f1a\u4e3a\u6bcf\u4e2a token \u8ba1\u7b97\u4e09\u7ec4\u5411\u91cf\uff1a\n\n- **Q\uff08Query\uff09**\uff1a\u5f53\u524d token \u7528\u6765\"\u63d0\u95ee\"\u7684\u5411\u91cf\n- **K\uff08Key\uff09**\uff1a\u6bcf\u4e2a token \u7528\u6765\"\u88ab\u68c0\u7d22\"\u7684\u5411\u91cf\n- **V\uff08Value\uff09**\uff1a\u6bcf\u4e2a token \u643a\u5e26\u7684\u5185\u5bb9\u5411\u91cf\n\n\u6ce8\u610f\u529b\u8ba1\u7b97\u662f `softmax(Q\u00b7K\u1d40/\u221ad) \u00b7 V`\u3002\u751f\u6210\u65f6\u6a21\u578b\u662f**\u81ea\u56de\u5f52**\u7684\uff1a",
+        "output_sha256": "ae62e26662a2d9d55ddf1ea27c2ab632de6b60aa1b6d0292ca69d44152249875",
+        "usage": {
+          "prompt_tokens": 30,
+          "completion_tokens": 128,
+          "total_tokens": 158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-16-matched-count-32",
+        "ttft_seconds": 0.13689834577962756,
+        "seconds": 0.3716780128888786,
+        "first_to_last_text_seconds": 0.23457991797477007,
+        "finish_reason": "length",
+        "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,",
+        "output_sha256": "5bc351611354785ab17898ed2a703901ff3709459159fb6d8cbf87f56812f79e",
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 32,
+          "total_tokens": 54,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-17-code-128",
+        "ttft_seconds": 0.12081925105303526,
+        "seconds": 1.188084848690778,
+        "first_to_last_text_seconds": 1.066960104741156,
+        "finish_reason": "length",
+        "content": "# Fibonacci Function\n\n```python\ndef fibonacci(n):\n    \"\"\"Return the first n Fibonacci numbers as a list.\"\"\"\n    if n <= 0:\n        return []\n    fibs = [0, 1]\n    while len(fibs) < n:\n        fibs.append(fibs[-1] + fibs[-2])\n    return fibs[:n]\n```\n\n## Explanation\n\nThe Fibonacci sequence starts with `0` and `1`, and each subsequent number is the sum of the two previous ones: `0, 1, 1, 2, 3, 5, 8, 13, ...",
+        "output_sha256": "798e96ee1ffff565c2c64ce1c08ac6780600e111eda8719f3391b98db1a9f466",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-18-prose-128",
+        "ttft_seconds": 0.12615250376984477,
+        "seconds": 1.7483183736912906,
+        "first_to_last_text_seconds": 1.621846791356802,
+        "finish_reason": "length",
+        "content": "# LRU Cache: How It Works\n\n## Concept\n\nAn **LRU (Least Recently Used) cache** is a fixed-capacity cache that evicts the item that hasn't been accessed for the longest time when it needs to make room for a new item. The intuition: recently used items are likely to be used again soon, so keep them; stale items are likely dead, so drop them.\n\n## Core Requirements\n\nTo implement an LRU cache efficiently, you need two structures working together:\n\n1. **A hash map** \u2014 `key \u2192 node` for O(1) lookup.\n2. **A doubly linked",
+        "output_sha256": "b37e03480bc549442b67522a0c73d40e5505b380f1aa243f80616e6aa1abc183",
+        "usage": {
+          "prompt_tokens": 21,
+          "completion_tokens": 128,
+          "total_tokens": 149,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "measured-19-chinese-128",
+        "ttft_seconds": 0.1582548338919878,
+        "seconds": 1.5745204398408532,
+        "first_to_last_text_seconds": 1.4159174929372966,
+        "finish_reason": "length",
+        "content": "# KV Cache\uff1a\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u7684\u6838\u5fc3\u52a0\u901f\u673a\u5236\n\n## \u4e00\u3001KV Cache \u4fdd\u5b58\u7684\u662f\u4ec0\u4e48\n\nTransformer \u7684\u6bcf\u4e00\u5c42\u5728\u81ea\u6ce8\u610f\u529b\uff08self-attention\uff09\u4e2d\u90fd\u4f1a\u4e3a\u6bcf\u4e2a token \u8ba1\u7b97\u4e09\u7ec4\u5411\u91cf\uff1a\n\n- **Q\uff08Query\uff09**\uff1a\u5f53\u524d token \u7528\u6765\"\u63d0\u95ee\"\u7684\u5411\u91cf\n- **K\uff08Key\uff09**\uff1a\u6bcf\u4e2a token \u7528\u6765\"\u88ab\u68c0\u7d22\"\u7684\u5411\u91cf\n- **V\uff08Value\uff09**\uff1a\u6bcf\u4e2a token \u643a\u5e26\u7684\u5185\u5bb9\u5411\u91cf\n\n\u6ce8\u610f\u529b\u8ba1\u7b97\u662f `softmax(Q\u00b7K\u1d40/\u221ad) \u00b7 V`\u3002\u751f\u6210\u65f6\u6a21\u578b\u662f**\u81ea\u56de\u5f52**\u7684\uff1a",
+        "output_sha256": "ae62e26662a2d9d55ddf1ea27c2ab632de6b60aa1b6d0292ca69d44152249875",
+        "usage": {
+          "prompt_tokens": 30,
+          "completion_tokens": 128,
+          "total_tokens": 158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "cold35700",
+        "ttft_seconds": 38.47966338414699,
+        "seconds": 38.5585623010993,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "usage": {
+          "prompt_tokens": 35700,
+          "completion_tokens": 2,
+          "total_tokens": 35702,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "interleaved-arithmetic",
+        "ttft_seconds": 0.18202336318790913,
+        "seconds": 0.23229713086038828,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "restored35700",
+        "ttft_seconds": 0.060303791891783476,
+        "seconds": 0.12662051524966955,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "usage": {
+          "prompt_tokens": 35700,
+          "completion_tokens": 2,
+          "total_tokens": 35702,
+          "prompt_tokens_details": {
+            "cached_tokens": 35700
+          }
+        }
+      },
+      {
+        "name": "mixed-short",
+        "ttft_seconds": 1.4880665889941156,
+        "seconds": 1.5189210590906441,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "mixed-cold-long",
+        "ttft_seconds": 37.9645195719786,
+        "seconds": 38.00508908368647,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "usage": {
+          "prompt_tokens": 35700,
+          "completion_tokens": 2,
+          "total_tokens": 35702,
+          "prompt_tokens_details": {
+            "cached_tokens": 1024
+          }
+        }
+      },
+      {
+        "name": "fresh-three-records",
+        "ttft_seconds": 36.631911689881235,
+        "seconds": 36.94099184917286,
+        "first_to_last_text_seconds": 0.3087047250010073,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+        "usage": {
+          "prompt_tokens": 35700,
+          "completion_tokens": 17,
+          "total_tokens": 35717,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "yielded-isolation-53",
+        "ttft_seconds": 1.470006724819541,
+        "seconds": 1.5025930888950825,
+        "first_to_last_text_seconds": 0.0,
+        "finish_reason": "stop",
+        "content": "53",
+        "output_sha256": "2858dcd1057d3eae7f7d5f782167e24b61153c01551450a628cee722509f6529",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "name": "yielded-three-records",
+        "ttft_seconds": 37.738912735600024,
+        "seconds": 38.087455852888525,
+        "first_to_last_text_seconds": 0.34810683922842145,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "output_sha256": "af7f4d1f769f7b2f35be2e0d51c42098ee8a8b7b4ec488404d22e957b8d7dbcb",
+        "usage": {
+          "prompt_tokens": 35700,
+          "completion_tokens": 17,
+          "total_tokens": 35717,
+          "prompt_tokens_details": {
+            "cached_tokens": 1024
+          }
+        }
+      }
+    ],
+    "health": {
+      "loaded": true,
+      "max_context": 1048576,
+      "total_slots": null
+    },
+    "short_summary": {
+      "measured_requests": 16,
+      "ttft_p50_seconds": 0.1354696238413453,
+      "ttft_p95_seconds": 0.16494437458459288,
+      "api_wall_completion_tok_s": 83.00814050393848,
+      "stream_interval_tok_s_estimate": 92.61081629965038
+    },
+    "retrieval_fixtures": {
+      "cat": {
+        "prompt_tokens": 35700,
+        "sha256": "362e4586be0c1d71c3e846782c9b2cbe616e01b78a7d5a4414eb93d69f2a9cf9"
+      },
+      "dog": {
+        "prompt_tokens": 35700,
+        "sha256": "8785f765ec5e50e8b711a6a9cb1ae94cfc8715d129fc1390386507aa2cbfd975"
+      }
+    },
+    "handoff_three_position_retrieval_passed": true,
+    "finished_unix": 1792872306.5811336
+  },
+  "exact_client_alive": false
+}

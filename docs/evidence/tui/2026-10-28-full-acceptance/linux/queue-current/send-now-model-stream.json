@@ -1,0 +1,73 @@
+{
+  "assertions_finished": true,
+  "case": "send-now-model-stream",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": null,
+        "text": "(Response interrupted by the user.)",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13261,
+        "text": "MODEL-CANCEL-NEXT",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "8bd3cd02d236b86bf9a0215737afd8fa029e6472bbaf67ef9c84310498d687bd",
+          "seq": 9
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools",
+      "name": "send-now-model-owner",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-YWHtVy/workspace                                                                              0 / 128K  \n                                                                                                                        \n                                                                                                                        \n     ❯ Produce exactly two thousand lines. Each line consists of the uppercase label ITEM, a space, and a   12:25 AM    \n       four digit decimal counter starting at one and increasing by one. Do not call any tool.                          \n                                                                                                                        \n                                                                                                                        \n     ◆ Thought for 0.7s                                                                                                 \n                                                                                                                        \n                                                                                                                        \n     ❯ Reply only MODEL-CANCEL-NEXT. Do not call any tool.                                                  12:26 AM    \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

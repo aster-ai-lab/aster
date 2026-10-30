@@ -1,0 +1,23 @@
+{
+  "schema": "aster-xolotl-fullwindow-long-suite-v56",
+  "unix": 1792893957.552835,
+  "phase": "failed",
+  "stages": [
+    {
+      "name": "remainder",
+      "phase": "passed",
+      "finished_unix": 1792894093.7203863
+    }
+  ],
+  "formal_promoted": false,
+  "current_stage": "fullwindow",
+  "stage_started_unix": 1792894093.727609,
+  "stage_process": {
+    "pid": 1189397,
+    "start_ticks": 282087866,
+    "uid": 10250,
+    "budget_seconds": 7900
+  },
+  "error": "RuntimeError: fullwindow qualification failed",
+  "finished_unix": 1792896788.7675633
+}

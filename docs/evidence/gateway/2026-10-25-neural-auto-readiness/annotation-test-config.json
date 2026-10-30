@@ -1,0 +1,15 @@
+{
+  "root": "/code/aster/.wt-deepseek-dspark-main-20261025",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "test",
+    "--locked",
+    "-p",
+    "a3s-gateway",
+    "--lib"
+  ]
+}

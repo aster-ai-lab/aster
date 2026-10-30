@@ -1,0 +1,17 @@
+
+running 1 test
+test workspace_trust::kimi_read_rejects_escapes_links_and_preserves_bounded_pages ... ORACLE case=workspace-path-boundaries name=source-pair result=pass detail=aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc
+ORACLE case=workspace-path-boundaries name=settled-turn result=pass detail=facts=10 model_turns=2 prompt_tokens=26945
+
+thread 'workspace_trust::kimi_read_rejects_escapes_links_and_preserves_bounded_pages' (40332) panicked at crates\code\acp\tests\aster_tui_live_e2e\workspace_trust.rs:276:6:
+called `Result::unwrap()` on an `Err` value: Error("expected ident", line: 1, column: 2)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    workspace_trust::kimi_read_rejects_escapes_links_and_preserves_bounded_pages
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 38 filtered out; finished in 31.09s
+

@@ -1,0 +1,61 @@
+{
+  "unix": 1792905489.4304335,
+  "inference_sent": false,
+  "gpu_policy_changed": false,
+  "formal_watch": {
+    "schema": "aster-xolotl-readiness-watch-v65",
+    "unix": 1792905428.9442828,
+    "phase": "ready",
+    "allocation_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+    "observation_only": true,
+    "failures": [],
+    "job_phase": "Running",
+    "last_ready_unix": 1792905429.1878064,
+    "health_status": 200,
+    "scope": "jump host direct to the owned VIP; no inference request"
+  },
+  "formal_watch_age_seconds": 60.49121904373169,
+  "prefill_progress": [
+    "aster prefill phase: phase=progress total=1047544 offset=82944 width=1047544 monotonic_ms=7134742427.260",
+    "aster prefill phase: phase=progress total=1047544 offset=91136 width=1047544 monotonic_ms=7134750707.090",
+    "aster prefill phase: phase=progress total=1047544 offset=99328 width=1047544 monotonic_ms=7134758556.378"
+  ],
+  "prompt_phases": [],
+  "decode_phases": [],
+  "profiler": {
+    "phase": "running",
+    "current_request": 0,
+    "current_role": "unprofiled_control",
+    "current_state": "prefilling",
+    "hardware_counters_collected": false,
+    "error": null,
+    "finished_unix": null
+  },
+  "completed_profile_requests": 0,
+  "Windows_health": {
+    "status": 200,
+    "loaded": true,
+    "context": 1048576,
+    "seconds": 0.10999999986961484
+  },
+  "formal": {
+    "uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+    "phase": "Running",
+    "observed_unix": 1792905485.9233074
+  },
+  "optimization": {
+    "uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+    "phase": "Running",
+    "observed_unix": 1792905487.839283,
+    "runtime": "hardware_profile"
+  },
+  "pipeline": {
+    "phase": "actual1m_hardware_profile",
+    "profiler_phase": "running",
+    "profiler_request": 0,
+    "profiler_state": "prefilling",
+    "profiler_requests": 0,
+    "error": null,
+    "observed_unix": 1792905463.2760606
+  }
+}

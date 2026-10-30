@@ -1,0 +1,46 @@
+{
+  "unix": 1792907969.753073,
+  "alive": false,
+  "compile-result.json": {
+    "unix": 1792907883.8024864,
+    "phase": "compiled",
+    "GPU_executed": false,
+    "model_changed": false,
+    "command": [
+      "/usr/bin/c++",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++20",
+      "-I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/include",
+      "-I/usr/local/cuda/include",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195r1-cpu/bench_topk_cccl35_v194.cpp",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-cccl35-v193-cpu/topk-cccl35.o",
+      "-o",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195r1-cpu/benchmark",
+      "-Wl,-rpath,/usr/local/cuda-12.6/targets/x86_64-linux/lib",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/libggml.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/ggml-cuda/libggml-cuda.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/libggml-cpu.a",
+      "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ggml/src/libggml-base.a",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublas.so",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so",
+      "/usr/local/cuda-12.6/targets/x86_64-linux/lib/libcudart.so",
+      "/usr/lib/x86_64-linux-gnu/libnccl.so",
+      "-L/usr/local/cuda/targets/x86_64-linux/lib/stubs",
+      "-lcuda",
+      "-fopenmp",
+      "-lpthread",
+      "-ldl",
+      "-lrt"
+    ],
+    "exact_reference_archive_member_sha256": "dda9f0ed7cae7f05f41c1a3a34fb87550afca19ac7157fd137650e008af2c280",
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/topk-harness-v195r1-cpu/benchmark",
+      "bytes": 213284024,
+      "sha256": "b39525d880674bb028d84e1dde848c1a4c85d60b6ba8a125f1b2a220f9b3cd6a"
+    },
+    "finished_unix": 1792907885.3571029
+  },
+  "worker.log": "",
+  "compile.log": ""
+}

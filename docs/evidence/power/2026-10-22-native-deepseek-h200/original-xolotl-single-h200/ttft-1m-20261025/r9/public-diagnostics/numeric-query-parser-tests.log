@@ -1,0 +1,17 @@
+test_bounded_text_and_symbols (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_duplicate_or_malformed_row_refused (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_exact_csv_and_declared_symbol (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_missing_header_or_counter_refused (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_nonfinite_negative_and_invalid_numbers_refused (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_numeric_scaling_prelude_and_literal_names (test_ncu_metrics_v171.NumericMetricsTests) ... ok
+test_bounds (test_ncu_query_v178.Query) ... ok
+test_duplicate_and_malformed (test_ncu_query_v178.Query) ... ok
+test_exact_actual_columns (test_ncu_query_v178.Query) ... ok
+test_missing_and_unavailable (test_ncu_query_v178.Query) ... ok
+test_other_model_and_column_contract (test_ncu_query_v178.Query) ... ok
+test_unrequested_metrics_do_not_substitute (test_ncu_query_v178.Query) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.004s
+
+OK

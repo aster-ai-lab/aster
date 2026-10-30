@@ -1,0 +1,11 @@
+{
+  "source": "/data/deepseek-v41-xq-1017/Xolotl/tools/v41/engine/ds41_generate.cpp",
+  "source_sha256": "cc8a236f86a6f01d55e501194d85b414fb44d38a3e3ac63e8fb33d6ecc11ae5d",
+  "extracted_functions": [
+    "sample_p",
+    "sample_dist",
+    "spec_accept"
+  ],
+  "extracted_sha256": "b6dc68c7d4c4ef9e6236543a0192ed24d0e96dc2d84d54fa2452f5113ef5362e",
+  "test_kind": "CPU-only stochastic preservation, no model inference or GPU allocation"
+}

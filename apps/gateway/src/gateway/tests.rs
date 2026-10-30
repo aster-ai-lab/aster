@@ -389,6 +389,10 @@ async fn test_gateway_keeps_serving_when_the_management_plane_cannot_start() {
     let token_env = format!("A3S_GATEWAY_ADMIN_UNSET_{}", uuid::Uuid::new_v4().simple());
     std::env::remove_var(&token_env);
     let mut config = minimal_config();
+    config
+        .entrypoints
+        .values_mut()
+        .for_each(|entrypoint| entrypoint.address = "127.0.0.1:0".into());
     config.management.enabled = true;
     config.management.auth_token_env = Some(token_env);
 

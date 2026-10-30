@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::workspace_dispatch_shows_row_before_session_created_and_keeps_its_id' (56940) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2487:5:
+assertion `left == right` failed: the dispatched agent must show before its session id binds
+  left: []
+ right: [TopLevel(AgentId(0))]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::workspace_dispatch_shows_row_before_session_created_and_keeps_its_id ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::workspace_dispatch_shows_row_before_session_created_and_keeps_its_id
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.06s
+

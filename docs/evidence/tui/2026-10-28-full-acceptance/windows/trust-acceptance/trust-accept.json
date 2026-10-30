@@ -1,0 +1,150 @@
+{
+  "assertions_finished": true,
+  "case": "trust-accept",
+  "config_unchanged": true,
+  "facts": [],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "release-stamped trust gate blocks the declared process and all session/model work",
+      "name": "trust-prompt",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-bkruWf\\workspace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        +                                                                                                                      *#       .+#.                                                                                                          *###.......  .*o                                                                                                     .+*#####+        ::                                                                                                  .+*####**####*+   :::                                                                                               ...**#####*  +######*+:                                                                                               ...      *###++###*+:                                                                                                  ..          +####*:                                                                                                     .::  ::::::::+*#+                                                                                                         ::::        *#                                                                                                                       +                                                                                                                                                                                                                                                                                                                                                 Do you trust the contents of this directory?                                                                             C:\\Windows\\Temp\\aster-kimi-bkruWf\\workspace                                                                                                                                                                                                 Aster may run or modify contents in this directory,                                                                                   posing security risks.                                                                                                                                                                                                                      Yes, proceed                 y                                                                                          No, quit                     n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Aster  0.1.4 (a21925eef70d)                                                                                                                          "
+    },
+    {
+      "detail": "facts=8 model_turns=2 prompt_tokens=26811",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-bkruWf\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other   7:05 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   TRUSTED-5947eded-c3ab-4703-afad-8110f71c27e7                                                            7:05 PM                                                                                                                                 Worked for 9.0s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the shown workspace grant starts its declared command and permits a real Kimi read",
+      "name": "trust-accept",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-bkruWf\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read trust-proof.txt and reply with its exact contents. Do not call other   7:05 PM           tools or modify any file.                                                                                                                                                                                                                                                                                                                                             ♦ Read 1 file                                                                                                                                                                                                                                   TRUSTED-5947eded-c3ab-4703-afad-8110f71c27e7                                                            7:05 PM                                                                                                                                 Worked for 9.0s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "accepted",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "trust-proof.txt"
+              },
+              "id": "call_3fc4d238e1a747b8b11f1ed941ed953f",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13321,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b81b907-efbc-4bdf-b339-e1174e59f0c8",
+                "thread_id": "dd19dda9-3613-4db9-b7a5-3eff6b780d00"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_3fc4d238e1a747b8b11f1ed941ed953f",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-0b81b907-efbc-4bdf-b339-e1174e59f0c8",
+                "thread_id": "dd19dda9-3613-4db9-b7a5-3eff6b780d00"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_3fc4d238e1a747b8b11f1ed941ed953f",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tTRUSTED-5947eded-c3ab-4703-afad-8110f71c27e7\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"trust-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":85},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":85,\"projected_bytes\":85,\"original_estimated_tokens\":22,\"projected_estimated_tokens\":22,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f27507e9337e6437b7615e5ef57e93bbd978b6029e0422966ed1e3055564e006\",\"projected_digest\":\"sha256:f27507e9337e6437b7615e5ef57e93bbd978b6029e0422966ed1e3055564e006\",\"repeat_key\":\"sha256:f27507e9337e6437b7615e5ef57e93bbd978b6029e0422966ed1e3055564e006\",\"content_ref\":\"inline:sha256:f27507e9337e6437b7615e5ef57e93bbd978b6029e0422966ed1e3055564e006\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:3f606f99ee8873298f6250a099a2bfe7fc6fc8c231920ad802ed2942e521ab1c\"}",
+            "prepared_digest": "sha256:f5b7b90930bc79cb642cb916e97857f2862a8bb6eae9ceb1129a3ca799e118a4",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13490,
+            "text": "TRUSTED-5947eded-c3ab-4703-afad-8110f71c27e7",
+            "tool": null
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "58978fd86f555003ce5ad1c27658ee8dc5d17266d9f2c21c1ba22c4ecd6528c0",
+              "seq": 9
+            },
+            "receipt_keys": [
+              "sha256:bb89e0ffd94dd8c6bb9354e4d38d2fcaad1136ffe33429664a519141cc785e73"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 10,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "dd19dda9-3613-4db9-b7a5-3eff6b780d00"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "the original workspace reuses its grant after a real process restart",
+      "name": "trust-restart",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-bkruWf\\workspace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ╭───────────────────────────────────────────────────────────────────────────────────────────────╮                       │                                                                                               │                       │                    +                  Aster  0.1.4 (a21925eef70d)                             │                       │                   *#       .+#.       Thanks for trying Aster, give feedback with /feedback!  │                       │                  *###.......  .*o                                                             │                       │               .+*#####+        ::     New worktree                                    ctrl+w  │                       │            .+*####**####*+   :::      Resume session                                  ctrl+r  │                       │        ...**#####*  +######*+:        Changelog                                               │                       │      ...      *###++###*+:            Quit                                            ctrl+q  │                       │     ..          +####*:                                                                       │                       │     .::  ::::::::+*#+                                                                         │                       │       ::::        *#                                                                          │                       │                    +                                                                          │                       │                                                                                               │                       ╰───────────────────────────────────────────────────────────────────────────────────────────────╯                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                                                                                                                                                                                                                                                                          "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "a second workspace asks again and declining it leaves the original grant byte-identical",
+      "name": "trust-workspace-scope",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

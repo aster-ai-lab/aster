@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::read::tests::header_link_target_is_absolute_file_for_collapsed_and_expanded' (49944) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\read.rs:650:18:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::read::tests::header_link_target_is_absolute_file_for_collapsed_and_expanded ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::read::tests::header_link_target_is_absolute_file_for_collapsed_and_expanded
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

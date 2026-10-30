@@ -1,0 +1,30 @@
+{
+  "schema": "aster-xolotl-engram-fp8-lut-v72",
+  "upstream_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+  "default_enabled": false,
+  "native_compiled": false,
+  "gpu_qualified": false,
+  "performance_claimed": false,
+  "files": [
+    {
+      "file": "ds41_engram.original.cpp",
+      "bytes": 37273,
+      "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b"
+    },
+    {
+      "file": "ds41_engram.cpp",
+      "bytes": 43941,
+      "sha256": "860a1df32ace16a898b2f7680b24b5ba7184c40076e21cf2947cf75763405170"
+    },
+    {
+      "file": "fp8_exact_test.cpp",
+      "bytes": 8586,
+      "sha256": "6b8f9ca2d462a44b78c29e98bcb38155a39b8b6674db3b3050d86a1c34294caf"
+    },
+    {
+      "file": "engram-fp8-lut-v72.patch",
+      "bytes": 7197,
+      "sha256": "07e33258b8f6e2b7fd99ba24205d092a617b25eb597e1c6cd0f2894f867bc79f"
+    }
+  ]
+}

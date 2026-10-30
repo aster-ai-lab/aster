@@ -1,0 +1,992 @@
+[
+  {
+    "name": "acp::a3s_spawn::tests::a3s_acp_executable_reads_the_environment_override",
+    "log": "001.log",
+    "exit_code": 101,
+    "seconds": 0.2106261
+  },
+  {
+    "name": "acp::a3s_spawn::tests::a_set_override_stops_when_the_path_cannot_be_executed",
+    "log": "002.log",
+    "exit_code": 101,
+    "seconds": 0.1392974
+  },
+  {
+    "name": "app::agent_view::links::link_click_tests::privacy_banner_owns_slot_and_clicks_dispatch",
+    "log": "003.log",
+    "exit_code": 101,
+    "seconds": 0.210915
+  },
+  {
+    "name": "app::agent_view::paste::paste_key_tests::agent_completion_inserts_unreadable_file_url_as_path_text",
+    "log": "004.log",
+    "exit_code": 101,
+    "seconds": 0.1334663
+  },
+  {
+    "name": "app::agent_view::selection::tests::active_child_copy_uses_child_scrollback_cwd",
+    "log": "005.log",
+    "exit_code": 101,
+    "seconds": 0.1725625
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::esc_closes_tab_fetched_dropdown",
+    "log": "006.log",
+    "exit_code": 101,
+    "seconds": 0.1336375
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::prompt_click_invalidates_cached_items_before_tab",
+    "log": "007.log",
+    "exit_code": 101,
+    "seconds": 0.1554423
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::repeat_tab_fires_single_fetch_while_pending",
+    "log": "008.log",
+    "exit_code": 101,
+    "seconds": 0.1943201
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fill_clipping_paste_chip_opens_dropdown_without_refetch",
+    "log": "009.log",
+    "exit_code": 101,
+    "seconds": 0.1753983
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fill_kicks_deterministic_fetch_always_on",
+    "log": "010.log",
+    "exit_code": 101,
+    "seconds": 0.1863798
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_fills_common_prefix_then_opens_dropdown_on_refresh",
+    "log": "011.log",
+    "exit_code": 101,
+    "seconds": 0.1499963
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_insta_accept_clipping_paste_chip_opens_dropdown_without_refetch",
+    "log": "012.log",
+    "exit_code": 101,
+    "seconds": 0.1327108
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_mixed_file_and_history_items_opens_dropdown",
+    "log": "013.log",
+    "exit_code": 101,
+    "seconds": 0.1338707
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_mixed_rangeless_and_ranged_rows_open_dropdown",
+    "log": "014.log",
+    "exit_code": 101,
+    "seconds": 0.1296396
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_opens_dropdown_without_ghost",
+    "log": "015.log",
+    "exit_code": 101,
+    "seconds": 0.1329139
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_candidate_accepts_and_kicks_fetch_always_on",
+    "log": "016.log",
+    "exit_code": 101,
+    "seconds": 0.1525541
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_history_item_opens_dropdown",
+    "log": "017.log",
+    "exit_code": 101,
+    "seconds": 0.1521573
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_single_token_candidate_accepts_without_dropdown_flash",
+    "log": "018.log",
+    "exit_code": 101,
+    "seconds": 0.1376514
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_sole_rangeless_path_row_opens_dropdown_never_accepts",
+    "log": "019.log",
+    "exit_code": 101,
+    "seconds": 0.1252664
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_whole_line_history_items_open_dropdown_not_fill",
+    "log": "020.log",
+    "exit_code": 101,
+    "seconds": 0.1289575
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_with_stale_items_refetches",
+    "log": "021.log",
+    "exit_code": 101,
+    "seconds": 0.1659087
+  },
+  {
+    "name": "app::agent_view::shell_completion::shell_suggestion_key_tests::tab_without_items_fires_deterministic_fetch",
+    "log": "022.log",
+    "exit_code": 101,
+    "seconds": 0.186782
+  },
+  {
+    "name": "app::agent_view::task_icon_mouse_tests::dock_icons_hover_and_click_where_painted",
+    "log": "023.log",
+    "exit_code": 0,
+    "seconds": 0.4453596
+  },
+  {
+    "name": "app::agent_view::task_icon_mouse_tests::dock_subagent_icons_hover_and_click_where_painted",
+    "log": "024.log",
+    "exit_code": 0,
+    "seconds": 0.3087377
+  },
+  {
+    "name": "app::agent_view::task_icon_mouse_tests::tasks_pane_icons_hover_and_click_where_painted",
+    "log": "025.log",
+    "exit_code": 0,
+    "seconds": 0.302259
+  },
+  {
+    "name": "app::agent_view::task_icon_mouse_tests::tasks_pane_view_click_opens_viewer_without_scrollback_entry",
+    "log": "026.log",
+    "exit_code": 0,
+    "seconds": 0.3530889
+  },
+  {
+    "name": "app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface",
+    "log": "027.log",
+    "exit_code": 101,
+    "seconds": 0.1281515
+  },
+  {
+    "name": "app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok",
+    "log": "028.log",
+    "exit_code": 101,
+    "seconds": 0.1240936
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::closing_loaded_workspace_agent_rebinds_selection_to_unloaded_row",
+    "log": "029.log",
+    "exit_code": 101,
+    "seconds": 0.1600356
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::dashboard_open_detects_standalone_grok_worktree",
+    "log": "030.log",
+    "exit_code": 101,
+    "seconds": 0.4512665
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::initial_workspace_snapshot_ignores_config_backed_pin",
+    "log": "031.log",
+    "exit_code": 101,
+    "seconds": 0.1475764
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_dispatch_shows_row_before_session_created_and_keeps_its_id",
+    "log": "032.log",
+    "exit_code": 101,
+    "seconds": 0.1634164
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_dispatch_with_attach_selects_the_provisional_row",
+    "log": "033.log",
+    "exit_code": 101,
+    "seconds": 0.1412264
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_live_row_hidden_while_archive_is_in_flight",
+    "log": "034.log",
+    "exit_code": 101,
+    "seconds": 0.1723818
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_overlay_cycle_reaches_provisional_but_not_hidden_live_agents",
+    "log": "035.log",
+    "exit_code": 101,
+    "seconds": 0.1160828
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_session_created_becomes_an_upsert_candidate",
+    "log": "036.log",
+    "exit_code": 101,
+    "seconds": 0.1628757
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_snapshot_load_requests_live_adoption",
+    "log": "037.log",
+    "exit_code": 101,
+    "seconds": 0.1719682
+  },
+  {
+    "name": "app::dispatch::tests::dashboard::workspace_worktree_dispatch_shows_row_while_worktree_is_created",
+    "log": "038.log",
+    "exit_code": 101,
+    "seconds": 0.1252195
+  },
+  {
+    "name": "app::dispatch::tests::modes::plan_mode_toast_format",
+    "log": "039.log",
+    "exit_code": 0,
+    "seconds": 0.1152611
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical",
+    "log": "040.log",
+    "exit_code": 0,
+    "seconds": 0.1138225
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_permission_mode_always_approve_under_plan_uses_plan_aware_toast",
+    "log": "041.log",
+    "exit_code": 0,
+    "seconds": 0.1201377
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_permission_mode_default_overrides_canonical_to_default",
+    "log": "042.log",
+    "exit_code": 0,
+    "seconds": 0.1649607
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_plan_mode_idempotent_off",
+    "log": "043.log",
+    "exit_code": 0,
+    "seconds": 0.1162992
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_plan_mode_idempotent_on",
+    "log": "044.log",
+    "exit_code": 0,
+    "seconds": 0.1104283
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_yolo_mode_on_under_plan_uses_plan_aware_toast",
+    "log": "045.log",
+    "exit_code": 0,
+    "seconds": 0.1215258
+  },
+  {
+    "name": "app::dispatch::tests::modes::set_yolo_mode_toast_format",
+    "log": "046.log",
+    "exit_code": 0,
+    "seconds": 0.1129474
+  },
+  {
+    "name": "app::dispatch::tests::permissions::set_permission_mode_ask_emits_brand_consistent_toast",
+    "log": "047.log",
+    "exit_code": 0,
+    "seconds": 0.1160553
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_all_cancel_keys_restore_prompt_without_effect",
+    "log": "048.log",
+    "exit_code": 101,
+    "seconds": 0.116914
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_background_confirm_keeps_original_target",
+    "log": "049.log",
+    "exit_code": 101,
+    "seconds": 0.1149808
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_cancel_routes_to_initiator_then_fallbacks",
+    "log": "050.log",
+    "exit_code": 101,
+    "seconds": 0.1217672
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_confirm_rejects_changed_session_or_cwd",
+    "log": "051.log",
+    "exit_code": 101,
+    "seconds": 0.1152027
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_modal_stashes_prompt_and_confirms_exactly_one_apply",
+    "log": "052.log",
+    "exit_code": 101,
+    "seconds": 0.1227244
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_none_target_rejects_cwd_change",
+    "log": "053.log",
+    "exit_code": 101,
+    "seconds": 0.1194389
+  },
+  {
+    "name": "app::dispatch::tests::prompt::doctor_fix_promoted_target_allows_confirm_and_apply",
+    "log": "054.log",
+    "exit_code": 101,
+    "seconds": 0.1140752
+  },
+  {
+    "name": "app::dispatch::tests::prompt::tab_fetch_landing_insta_accepts_single_candidate_always_on",
+    "log": "055.log",
+    "exit_code": 101,
+    "seconds": 0.1119645
+  },
+  {
+    "name": "app::dispatch::tests::prompt::tab_fetch_landing_opens_dropdown_for_ambiguous_set_always_on",
+    "log": "056.log",
+    "exit_code": 101,
+    "seconds": 0.1129055
+  },
+  {
+    "name": "app::dispatch::tests::settings::rollback_permission_mode_reverts_state_no_effect",
+    "log": "057.log",
+    "exit_code": 0,
+    "seconds": 0.1156714
+  },
+  {
+    "name": "app::dispatch::tests::settings::set_auto_dark_theme_toast_format_uses_display_name",
+    "log": "058.log",
+    "exit_code": 0,
+    "seconds": 0.1158929
+  },
+  {
+    "name": "app::dispatch::tests::settings::set_compact_mode_toast_format",
+    "log": "059.log",
+    "exit_code": 0,
+    "seconds": 0.1160083
+  },
+  {
+    "name": "app::dispatch::tests::settings::set_multiline_mode_toast_format",
+    "log": "060.log",
+    "exit_code": 0,
+    "seconds": 0.1103578
+  },
+  {
+    "name": "app::dispatch::tests::settings::set_theme_toast_format_uses_display_name",
+    "log": "061.log",
+    "exit_code": 0,
+    "seconds": 0.1160984
+  },
+  {
+    "name": "app::dispatch::tests::settings::subagent_model_inheritance_writes_one_at_a_time_and_issues_the_newest_intent",
+    "log": "062.log",
+    "exit_code": 0,
+    "seconds": 0.1156867
+  },
+  {
+    "name": "app::dispatch::tests::status::coding_data_sharing_failed_rolls_back_and_toasts_error",
+    "log": "063.log",
+    "exit_code": 0,
+    "seconds": 0.1126272
+  },
+  {
+    "name": "app::dispatch::tests::status::set_coding_data_sharing_blocked_by_zdr",
+    "log": "064.log",
+    "exit_code": 0,
+    "seconds": 0.1133967
+  },
+  {
+    "name": "app::dispatch::tests::task_result::doctor_planning_displaces_feedback_before_opening_question",
+    "log": "065.log",
+    "exit_code": 101,
+    "seconds": 0.1186903
+  },
+  {
+    "name": "app::dispatch::tests::task_result::doctor_planning_opens_refuses_remote_and_rejects_stale_identity",
+    "log": "066.log",
+    "exit_code": 101,
+    "seconds": 0.1169112
+  },
+  {
+    "name": "app::dispatch::tests::task_result::doctor_planning_promotes_initial_session_binding",
+    "log": "067.log",
+    "exit_code": 101,
+    "seconds": 0.1200937
+  },
+  {
+    "name": "app::dispatch::tests::task_result::doctor_planning_rejects_bind_replace_and_unbind_rebind",
+    "log": "068.log",
+    "exit_code": 101,
+    "seconds": 0.1163537
+  },
+  {
+    "name": "app::dispatch::tests::task_result::persist_failed_toast_contains_key_and_error",
+    "log": "069.log",
+    "exit_code": 0,
+    "seconds": 0.115871
+  },
+  {
+    "name": "app::effects::tests::permission_ack_failure_narrows_ui_without_writing_preference",
+    "log": "070.log",
+    "exit_code": 101,
+    "seconds": 0.1191684
+  },
+  {
+    "name": "app::foreign_sessions::tests::async_gate_supports_bundled_and_user_skill_locations",
+    "log": "071.log",
+    "exit_code": 101,
+    "seconds": 0.1050752
+  },
+  {
+    "name": "app::workspace_membership::tests::foreign_commit_refreshes_through_the_same_store_handle",
+    "log": "072.log",
+    "exit_code": 101,
+    "seconds": 0.1677144
+  },
+  {
+    "name": "app::workspace_sync::tests::maps_bound_local_build_agent_metadata",
+    "log": "073.log",
+    "exit_code": 101,
+    "seconds": 0.1091788
+  },
+  {
+    "name": "app::workspace_sync::tests::metadata_is_canonicalized_to_store_limits",
+    "log": "074.log",
+    "exit_code": 101,
+    "seconds": 0.1194952
+  },
+  {
+    "name": "app::workspace_sync::tests::provisional_ids_cover_unbound_dispatch_but_not_hidden_or_ineligible_agents",
+    "log": "075.log",
+    "exit_code": 101,
+    "seconds": 0.1239172
+  },
+  {
+    "name": "diagnostics::fix::tests::applicable_fix_listing_uses_report_metadata_and_planner_availability",
+    "log": "076.log",
+    "exit_code": 101,
+    "seconds": 0.1100061
+  },
+  {
+    "name": "diagnostics::fix::tests::bash_zsh_and_fish_plans_use_exact_paths_and_aliases",
+    "log": "077.log",
+    "exit_code": 101,
+    "seconds": 0.1113425
+  },
+  {
+    "name": "diagnostics::fix::tests::comments_and_managed_alias_do_not_create_false_conflicts",
+    "log": "078.log",
+    "exit_code": 101,
+    "seconds": 0.1070419
+  },
+  {
+    "name": "diagnostics::fix::tests::configured_report_reaches_pass_state_only_for_exact_managed_alias",
+    "log": "079.log",
+    "exit_code": 101,
+    "seconds": 0.1081947
+  },
+  {
+    "name": "diagnostics::fix::tests::conflict_scan_uses_the_exact_validated_source_snapshot",
+    "log": "080.log",
+    "exit_code": 101,
+    "seconds": 0.1044935
+  },
+  {
+    "name": "diagnostics::fix::tests::existing_alias_and_function_conflicts_are_preserved",
+    "log": "081.log",
+    "exit_code": 101,
+    "seconds": 0.1068305
+  },
+  {
+    "name": "diagnostics::fix::tests::healthy_direct_does_not_suppress_repair_of_noncanonical_managed_item",
+    "log": "082.log",
+    "exit_code": 101,
+    "seconds": 0.1169908
+  },
+  {
+    "name": "diagnostics::fix::tests::non_utf8_source_fails_closed_before_conflict_policy",
+    "log": "083.log",
+    "exit_code": 101,
+    "seconds": 0.1052197
+  },
+  {
+    "name": "diagnostics::fix::tests::remote_vscode_and_unsupported_shell_are_refused",
+    "log": "084.log",
+    "exit_code": 101,
+    "seconds": 0.1034022
+  },
+  {
+    "name": "diagnostics::fix::tests::ssh_wrap_outcome_verifies_with_planned_shell_not_process_shell",
+    "log": "085.log",
+    "exit_code": 101,
+    "seconds": 0.110179
+  },
+  {
+    "name": "diagnostics::fix::tests::stale_plan_is_rejected_and_apply_verifies_postcondition",
+    "log": "086.log",
+    "exit_code": 101,
+    "seconds": 0.1062645
+  },
+  {
+    "name": "diagnostics::fix::tests::tmux_managed_items_coexist_and_each_apply_is_one_transaction",
+    "log": "087.log",
+    "exit_code": 101,
+    "seconds": 0.1099797
+  },
+  {
+    "name": "diagnostics::fix::tests::tmux_stale_plan_and_idempotence_reuse_managed_writer_safety",
+    "log": "088.log",
+    "exit_code": 101,
+    "seconds": 0.1126182
+  },
+  {
+    "name": "diagnostics::fix::tests::tmux_truecolor_fix_appends_alongside_existing_terminal_features",
+    "log": "089.log",
+    "exit_code": 101,
+    "seconds": 0.1157763
+  },
+  {
+    "name": "disk_usage_cmd::tests::collect_report_joins_registry_and_flags_untracked",
+    "log": "090.log",
+    "exit_code": 101,
+    "seconds": 0.1905741
+  },
+  {
+    "name": "doctor_cmd::tests::decline_is_success_and_does_not_write",
+    "log": "091.log",
+    "exit_code": 101,
+    "seconds": 0.1068865
+  },
+  {
+    "name": "doctor_cmd::tests::fix_preview_contains_exact_change_and_caveats",
+    "log": "092.log",
+    "exit_code": 101,
+    "seconds": 0.1070044
+  },
+  {
+    "name": "doctor_cmd::tests::non_tty_without_yes_fails_safely_before_write",
+    "log": "093.log",
+    "exit_code": 101,
+    "seconds": 0.1046605
+  },
+  {
+    "name": "git_info::tests::compute_cwd_git_info_linked_git_worktree",
+    "log": "094.log",
+    "exit_code": 101,
+    "seconds": 0.3254535
+  },
+  {
+    "name": "git_info::tests::compute_cwd_git_info_standalone_grok_worktree",
+    "log": "095.log",
+    "exit_code": 101,
+    "seconds": 0.3745828
+  },
+  {
+    "name": "git_info::tests::compute_cwd_git_info_standalone_marker_from_nested_cwd",
+    "log": "096.log",
+    "exit_code": 101,
+    "seconds": 0.3883806
+  },
+  {
+    "name": "headless::tests::worktree_create_opens_session_at_worktree_subdirectory",
+    "log": "097.log",
+    "exit_code": 101,
+    "seconds": 0.1257985
+  },
+  {
+    "name": "notifications::hooks::tests::omits_session_id_when_none",
+    "log": "098.log",
+    "exit_code": 101,
+    "seconds": 0.1143891
+  },
+  {
+    "name": "notifications::hooks::tests::run_hook_passes_correct_env_via_thread",
+    "log": "099.log",
+    "exit_code": 101,
+    "seconds": 5.1119352
+  },
+  {
+    "name": "notifications::hooks::tests::sets_environment_variables",
+    "log": "100.log",
+    "exit_code": 101,
+    "seconds": 0.1082472
+  },
+  {
+    "name": "notifications::hooks::tests::successful_command_completes_without_error",
+    "log": "101.log",
+    "exit_code": 101,
+    "seconds": 0.107853
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_all_free_when_total_is_zero",
+    "log": "102.log",
+    "exit_code": 0,
+    "seconds": 0.1054541
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_all_used_when_completely_full",
+    "log": "103.log",
+    "exit_code": 0,
+    "seconds": 0.126473
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_and_legend_reconcile_used_with_overhead_excluding_tools",
+    "log": "104.log",
+    "exit_code": 0,
+    "seconds": 0.1106431
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_total_cells_always_sum_to_one_hundred",
+    "log": "105.log",
+    "exit_code": 0,
+    "seconds": 0.1209706
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_used_band_does_not_overshoot_when_estimates_exceed_used",
+    "log": "106.log",
+    "exit_code": 0,
+    "seconds": 0.1194011
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::bar_used_band_excludes_tools_and_never_overshoots",
+    "log": "107.log",
+    "exit_code": 0,
+    "seconds": 0.1245656
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::build_lines_renders_usage_categories_with_details",
+    "log": "108.log",
+    "exit_code": 0,
+    "seconds": 0.1229846
+  },
+  {
+    "name": "scrollback::blocks::context_info::tests::narrow_bar_total_cells_still_100",
+    "log": "109.log",
+    "exit_code": 0,
+    "seconds": 0.1238986
+  },
+  {
+    "name": "scrollback::blocks::thinking::tests::thinking_body_dim_italic_survives_the_terminal_native_palette",
+    "log": "110.log",
+    "exit_code": 0,
+    "seconds": 0.1639371
+  },
+  {
+    "name": "scrollback::blocks::tool::edit::tests::expanded_shows_relative_when_under_cwd_preamble_absolute",
+    "log": "111.log",
+    "exit_code": 101,
+    "seconds": 0.1326361
+  },
+  {
+    "name": "scrollback::blocks::tool::edit::tests::header_link_target_is_absolute_file_for_all_surfaces",
+    "log": "112.log",
+    "exit_code": 101,
+    "seconds": 0.1114896
+  },
+  {
+    "name": "scrollback::blocks::tool::edit::tests::test_edit_block_header",
+    "log": "113.log",
+    "exit_code": 101,
+    "seconds": 0.1149189
+  },
+  {
+    "name": "scrollback::blocks::tool::edit::tests::workflow_script_header_hides_rhai_path",
+    "log": "114.log",
+    "exit_code": 101,
+    "seconds": 0.114268
+  },
+  {
+    "name": "scrollback::blocks::tool::memory_search::tests::shorten_memory_path",
+    "log": "115.log",
+    "exit_code": 101,
+    "seconds": 0.1105397
+  },
+  {
+    "name": "scrollback::blocks::tool::read::tests::expanded_header_selection_matches_relative_path",
+    "log": "116.log",
+    "exit_code": 101,
+    "seconds": 0.1084665
+  },
+  {
+    "name": "scrollback::blocks::tool::read::tests::expanded_shows_relative_when_under_cwd_preamble_absolute",
+    "log": "117.log",
+    "exit_code": 101,
+    "seconds": 0.1604285
+  },
+  {
+    "name": "scrollback::blocks::tool::read::tests::header_link_target_is_absolute_file_for_collapsed_and_expanded",
+    "log": "118.log",
+    "exit_code": 101,
+    "seconds": 0.1056465
+  },
+  {
+    "name": "scrollback::blocks::tool::sent_message::tests::bullet_and_label_styles_follow_running_and_selection",
+    "log": "119.log",
+    "exit_code": 0,
+    "seconds": 0.1111258
+  },
+  {
+    "name": "scrollback::blocks::user::tests::invalid_token_ranges_are_dropped",
+    "log": "120.log",
+    "exit_code": 101,
+    "seconds": 0.1130875
+  },
+  {
+    "name": "scrollback::blocks::user::tests::mid_text_multiple_tokens_each_teal",
+    "log": "121.log",
+    "exit_code": 101,
+    "seconds": 0.1079805
+  },
+  {
+    "name": "scrollback::blocks::user::tests::mid_text_token_on_second_logical_line",
+    "log": "122.log",
+    "exit_code": 101,
+    "seconds": 0.1051103
+  },
+  {
+    "name": "scrollback::link_map::tests::file_target_provenance_survives_overlay_to_visible_map",
+    "log": "123.log",
+    "exit_code": 101,
+    "seconds": 0.1070202
+  },
+  {
+    "name": "scrollback::render::tests::basename_headers_stay_grok_owned_for_duplicate_and_outside_targets",
+    "log": "124.log",
+    "exit_code": 101,
+    "seconds": 0.1119485
+  },
+  {
+    "name": "scrollback::render::tests::collapse_header_entry_does_not_leak_links_but_visible_group_entries_do",
+    "log": "125.log",
+    "exit_code": 101,
+    "seconds": 0.1175813
+  },
+  {
+    "name": "scrollback::render::tests::collapsed_block_header_file_path_is_scanned",
+    "log": "126.log",
+    "exit_code": 101,
+    "seconds": 0.1537881
+  },
+  {
+    "name": "scrollback::render::tests::explicit_tool_link_clips_before_u16_conversion",
+    "log": "127.log",
+    "exit_code": 101,
+    "seconds": 0.1333794
+  },
+  {
+    "name": "scrollback::render::tests::long_read_header_link_is_clipped_to_offset_content_area",
+    "log": "128.log",
+    "exit_code": 101,
+    "seconds": 0.1108487
+  },
+  {
+    "name": "scrollback::render::tests::markdown_wrapped_project_media_path_fully_linkified",
+    "log": "129.log",
+    "exit_code": 101,
+    "seconds": 0.1646285
+  },
+  {
+    "name": "scrollback::render::tests::official_vscode_remote_delegates_scanned_absolute_path",
+    "log": "130.log",
+    "exit_code": 101,
+    "seconds": 0.1599427
+  },
+  {
+    "name": "scrollback::render::tests::official_vscode_remote_tool_headers_delegate_only_self_resolving_paint",
+    "log": "131.log",
+    "exit_code": 101,
+    "seconds": 0.1160916
+  },
+  {
+    "name": "scrollback::render::tests::tool_header_link_target_overlay_covers_path_after_bullet",
+    "log": "132.log",
+    "exit_code": 101,
+    "seconds": 0.1187965
+  },
+  {
+    "name": "scrollback::text_selection::tests::semantic_selection_single_row_word_and_url",
+    "log": "133.log",
+    "exit_code": 101,
+    "seconds": 0.1224729
+  },
+  {
+    "name": "scrollback::wrappers::entry_renderer::tests::non_pending_running_tool_keeps_default_bullet",
+    "log": "134.log",
+    "exit_code": 0,
+    "seconds": 0.1257594
+  },
+  {
+    "name": "scrollback::wrappers::entry_renderer::tests::pending_user_input_keeps_diamond_bullet_with_static_color",
+    "log": "135.log",
+    "exit_code": 0,
+    "seconds": 0.1323196
+  },
+  {
+    "name": "scrollback::wrappers::entry_renderer::tests::test_entry_renderer_layout",
+    "log": "136.log",
+    "exit_code": 0,
+    "seconds": 0.1301629
+  },
+  {
+    "name": "views::announcements::tests::render_promo_row_button_and_hide_affordances",
+    "log": "137.log",
+    "exit_code": 101,
+    "seconds": 0.1276545
+  },
+  {
+    "name": "views::btw_overlay::tests::done_state_scans_file_paths_like_scrollback",
+    "log": "138.log",
+    "exit_code": 101,
+    "seconds": 0.1757649
+  },
+  {
+    "name": "views::dashboard::render::tests::render_popup_overlay_registers_close_hit_rect",
+    "log": "139.log",
+    "exit_code": 0,
+    "seconds": 0.1106966
+  },
+  {
+    "name": "views::dashboard::render::tests::render_row_two_line_layout_paints_title_and_secondary",
+    "log": "140.log",
+    "exit_code": 0,
+    "seconds": 0.1285853
+  },
+  {
+    "name": "views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest",
+    "log": "141.log",
+    "exit_code": 0,
+    "seconds": 0.1200505
+  },
+  {
+    "name": "views::dock::tests::a_section_scrolls_inside_its_own_band",
+    "log": "142.log",
+    "exit_code": 0,
+    "seconds": 0.1180187
+  },
+  {
+    "name": "views::dock::tests::crowded_dock_keeps_every_header_and_never_grows_past_its_cap",
+    "log": "143.log",
+    "exit_code": 0,
+    "seconds": 0.114358
+  },
+  {
+    "name": "views::dock::tests::every_expanded_section_shows_a_row_under_its_header",
+    "log": "144.log",
+    "exit_code": 0,
+    "seconds": 0.1006847
+  },
+  {
+    "name": "views::dock::tests::narrow_headers_and_overflow_rows_keep_their_chevrons",
+    "log": "145.log",
+    "exit_code": 0,
+    "seconds": 0.1021047
+  },
+  {
+    "name": "views::extensions_modal::tests::handle_key_tab_completes_single_field_path",
+    "log": "146.log",
+    "exit_code": 101,
+    "seconds": 0.1033
+  },
+  {
+    "name": "views::goal_detail::tests::render_with_todos_shows_status_icons",
+    "log": "147.log",
+    "exit_code": 0,
+    "seconds": 0.1044436
+  },
+  {
+    "name": "views::mcps_modal::tests::managed_connectors_url_display_strips_scheme",
+    "log": "148.log",
+    "exit_code": 101,
+    "seconds": 0.1012348
+  },
+  {
+    "name": "views::mcps_modal::tests::section_description_lines_managed_includes_connectors_url",
+    "log": "149.log",
+    "exit_code": 101,
+    "seconds": 0.103611
+  },
+  {
+    "name": "views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow",
+    "log": "150.log",
+    "exit_code": 101,
+    "seconds": 0.1041369
+  },
+  {
+    "name": "views::privacy_banner::tests::each_legal_link_hits_its_own_words",
+    "log": "151.log",
+    "exit_code": 101,
+    "seconds": 0.1065917
+  },
+  {
+    "name": "views::privacy_banner::tests::height_reserves_every_row_the_banner_paints",
+    "log": "152.log",
+    "exit_code": 101,
+    "seconds": 0.1124337
+  },
+  {
+    "name": "views::progress_bar::tests::test_partial_block",
+    "log": "153.log",
+    "exit_code": 0,
+    "seconds": 0.1075429
+  },
+  {
+    "name": "views::prompt_widget::tests::accept_arg_completion_replaces_arg_range",
+    "log": "154.log",
+    "exit_code": 101,
+    "seconds": 0.1129692
+  },
+  {
+    "name": "views::settings_modal::tests::chevron_column_aligns_across_one_and_two_line_layouts",
+    "log": "155.log",
+    "exit_code": 0,
+    "seconds": 0.1095166
+  },
+  {
+    "name": "views::settings_modal::tests::chevron_column_is_at_constant_right_offset",
+    "log": "156.log",
+    "exit_code": 0,
+    "seconds": 0.1097393
+  },
+  {
+    "name": "views::settings_modal::tests::int_editing_value_renders_stepper_ui",
+    "log": "157.log",
+    "exit_code": 0,
+    "seconds": 0.1019922
+  },
+  {
+    "name": "views::settings_modal::tests::picker_separates_focus_highlight_from_committed_marker",
+    "log": "158.log",
+    "exit_code": 0,
+    "seconds": 0.1066821
+  },
+  {
+    "name": "views::settings_modal::tests::picker_string_original_value_fills_committed_marker",
+    "log": "159.log",
+    "exit_code": 0,
+    "seconds": 0.1140749
+  },
+  {
+    "name": "views::settings_modal::tests::render_editing_value_cursor_at_logical_position_when_buffer_fits",
+    "log": "160.log",
+    "exit_code": 0,
+    "seconds": 0.1044777
+  },
+  {
+    "name": "views::settings_modal::tests::render_editing_value_cursor_pans_to_left_on_overflow_at_start",
+    "log": "161.log",
+    "exit_code": 0,
+    "seconds": 0.1199732
+  },
+  {
+    "name": "views::settings_modal::tests::render_editing_value_cursor_pans_to_right_on_overflow_at_end",
+    "log": "162.log",
+    "exit_code": 0,
+    "seconds": 0.1277691
+  },
+  {
+    "name": "views::status_line::sanitize::tests::scanner_strips_escapes_and_records_link_columns",
+    "log": "163.log",
+    "exit_code": 101,
+    "seconds": 0.1135689
+  },
+  {
+    "name": "views::status_line::tests::render_ansi_emits_absolute_link_spans",
+    "log": "164.log",
+    "exit_code": 101,
+    "seconds": 0.1139519
+  },
+  {
+    "name": "views::tasks_pane::tests::render_loop_row_truncates_before_kill_button",
+    "log": "165.log",
+    "exit_code": 0,
+    "seconds": 0.1212732
+  }
+]

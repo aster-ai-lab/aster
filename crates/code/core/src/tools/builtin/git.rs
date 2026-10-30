@@ -206,7 +206,12 @@ impl Tool for GitTool {
             }
         }
 
-        let before = crate::porcelain::snapshot(ctx.workspace.as_path()).await;
+        // Each mutation snapshot scans Git status and hashes dirty files.
+        let before = if self.capabilities(args).read_only {
+            None
+        } else {
+            Some(crate::porcelain::snapshot(ctx.workspace.as_path()).await)
+        };
         let mut output = match command {
             "status" => self.status(ctx, git.as_ref()).await,
             "log" => self.log(args, git.as_ref()).await,
@@ -262,7 +267,7 @@ impl Tool for GitTool {
                 "Unknown command: {command}. Use: status, log, branch, checkout, diff, stash, remote, worktree"
             ))),
         }?;
-        if output.success {
+        if let Some(before) = before.filter(|_| output.success) {
             let paths = crate::porcelain::delta(ctx.workspace.as_path(), before)
                 .await
                 .paths;
@@ -985,7 +990,10 @@ mod tests {
     }
 
     fn repository_with_commits(count: usize) -> tempfile::TempDir {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = tempfile::Builder::new()
+            .prefix("git workspace 用户 ")
+            .tempdir()
+            .unwrap();
         run_git(temp.path(), &["init", "-q"]);
         run_git(temp.path(), &["config", "user.email", "tests@a3s.local"]);
         run_git(temp.path(), &["config", "user.name", "A3S Tests"]);
@@ -1443,6 +1451,18 @@ mod tests {
             "uncommitted work\n",
         )
         .unwrap();
+        let listed_path = provider
+            .list_worktrees()
+            .await
+            .unwrap()
+            .into_iter()
+            .find(|entry| entry.branch == "wt-dirty")
+            .expect("created worktree is listed")
+            .path;
+        assert_eq!(
+            std::fs::canonicalize(&created.path).unwrap(),
+            std::fs::canonicalize(&listed_path).unwrap()
+        );
 
         let effect = WorktreeCleanupEffect {
             provider,
@@ -1453,13 +1473,18 @@ mod tests {
             .await
             .expect_err("a dirty worktree must refuse silent cleanup");
         assert!(
-            error.message().contains(&created.path),
+            error.message().contains(&listed_path),
             "the refusal must name the worktree path: {}",
             error.message()
         );
         assert!(
             std::path::Path::new(&created.path).exists(),
             "the dirty worktree must survive for explicit disposition"
+        );
+        assert_eq!(
+            std::fs::read_to_string(std::path::Path::new(&created.path).join("uncommitted.txt"))
+                .unwrap(),
+            "uncommitted work\n"
         );
     }
 

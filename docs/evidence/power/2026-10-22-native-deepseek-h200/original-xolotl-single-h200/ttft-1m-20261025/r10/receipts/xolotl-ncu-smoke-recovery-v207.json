@@ -1,0 +1,111 @@
+{
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v207-recovery",
+  "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-smoke-v205",
+  "phase": "complete",
+  "GPU_work_started": false,
+  "model_forward_executed": false,
+  "files": [
+    {
+      "file": "aster_ncu_metrics_v171.py",
+      "bytes": 3047,
+      "sha256": "01d6074e2b039050cf5c04a989d245326e569e6be3ff86646485d42353f4d2aa"
+    },
+    {
+      "file": "aster_ncu_wide_metrics_v206.py",
+      "bytes": 2246,
+      "sha256": "44fe6abf91e9cdef43bba4a0e77815ebf3feeb1c08d572207214de2d166cb005"
+    },
+    {
+      "file": "test_ncu_wide_metrics_v206.py",
+      "bytes": 2120,
+      "sha256": "075ea8389e694c4eee9f2467a67d8851c6de79c4bae7db880aa92db2aa707076"
+    }
+  ],
+  "result": {
+    "unix": 1792910433.477873,
+    "phase": "passed",
+    "existing_CSV_reparsed": true,
+    "new_GPU_work_started": false,
+    "prior_parser_phase": "failed",
+    "prior_parser_receipt_unchanged": true,
+    "hardware_counters_collected": true,
+    "model_hardware_counters_collected": false,
+    "numeric_metrics": [
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "gpu__time_duration.sum",
+        "unit": "ns",
+        "value": 2016.0
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+        "unit": "%",
+        "value": 4.7
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+        "unit": "%",
+        "value": 0.0
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "sm__warps_active.avg.pct_of_peak_sustained_active",
+        "unit": "%",
+        "value": 21.08
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "dram__bytes_read.sum",
+        "unit": "byte",
+        "value": 0.0
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "dram__bytes_write.sum",
+        "unit": "byte",
+        "value": 0.0
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "smsp__warps_eligible.avg.per_cycle_active",
+        "unit": "warp",
+        "value": 0.25
+      },
+      {
+        "kernel_id": 0,
+        "symbol": "aster_h200_counter_smoke(unsigned int *, int)",
+        "metric": "smsp__issue_active.avg.pct_of_peak_sustained_active",
+        "unit": "%",
+        "value": 17.36
+      }
+    ],
+    "raw_CSV_bytes": 14862,
+    "raw_CSV_sha256": "6df2b694ffbd56d441d928d76db7ea1ff8c18ab094ec69926ea48150dd162378",
+    "raw_CSV_published": false,
+    "parser_tests_passed": 7,
+    "output": {
+      "phase": "passed",
+      "GPU_executed": true,
+      "checked_output_words": 65536,
+      "model_forward_executed": false
+    },
+    "own_cgroup_memory": {
+      "memory/memory.limit_in_bytes": "236223201280\n",
+      "memory/memory.usage_in_bytes": "138309632\n",
+      "memory/memory.max_usage_in_bytes": "236223201280\n",
+      "memory/memory.failcnt": "0\n",
+      "memory/memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 1\n"
+    },
+    "model_profile_failure_cause_proven": false
+  },
+  "unix": 1792910426.291734
+}

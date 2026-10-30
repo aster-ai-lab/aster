@@ -1,0 +1,18 @@
+{
+  "schema": "aster-literal-scan-v145r1-harness-isolation",
+  "files": [
+    {
+      "file": "literal_scan_cpu_worker_v145r1.frozen.py",
+      "bytes": 10255,
+      "sha256": "a17ff769d10ae4d502fb151d3c4c6feb006ad3d8414eefd0ac7257cc69d1d247"
+    },
+    {
+      "file": "manage_literal_scan_cpu_v145r1.py",
+      "bytes": 5072,
+      "sha256": "28f4780f33108d827ddb9e994cc8d29d9c79c506bce9cbdbeb8b081073709e9f"
+    }
+  ],
+  "previous_failure_retained": "xolotl-literal-scan-cpu-v145-latest.json",
+  "candidate_source_changed": false,
+  "tests_isolated_because": "DS41 API import globally replaces generic Service init/EOS/template hooks; ByteTokenizer tests require the original generic module"
+}

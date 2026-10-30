@@ -1,0 +1,10 @@
+- main:
+  - heading "输入快捷面板" [level=1]
+  - button "创建技能": 创建技能 编写一个新的技能
+  - button "创建定时任务": 创建定时任务 确认名称、时间和要做的事，然后创建定时任务
+  - button "知识理解": 知识理解 用简明技术中文说明。复杂内容打开一页 HTML。
+  - button "请你填写表单": 请你填写表单 填写任务所需的信息 技能
+  - button "custom-skill": custom-skill 自定义技能 技能
+  - button "清空对话历史"
+  - button "新建任务"
+  - status "输入内容": 使用技能 ask-form：

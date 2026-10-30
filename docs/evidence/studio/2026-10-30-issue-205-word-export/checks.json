@@ -1,0 +1,107 @@
+[
+  {
+    "check": "renderer focused tests",
+    "result": "passed",
+    "count": 134,
+    "localRawLog": "/tmp/aster-issue-205-isolated-unit-final.log",
+    "rawLogSha256": "1247744c02f20eccf64bea35fd6e993bbdba84649aeba1bcf0fa21625a18e1b3"
+  },
+  {
+    "check": "existing EX-03 save and cancel, Chromium + WebKit",
+    "result": "passed",
+    "count": 2,
+    "localRawLog": "/tmp/aster-issue-205-isolated-browser.log",
+    "rawLogSha256": "8914c8872fbe08fd520ff54661423d0ce6ce63ca3ba84eefe309b76a375284ae"
+  },
+  {
+    "check": "exact issue EX-03b, Chromium + WebKit",
+    "result": "passed",
+    "count": 2,
+    "localRawLog": "/tmp/aster-issue-205-isolated-browser-accepted.log",
+    "rawLogSha256": "d6452456f2e0a64cdae0713c9bb282d458a6d8ff6d4cf7f51066f8495221b2c5"
+  },
+  {
+    "check": "scoped ESLint",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-isolated-eslint-final.log",
+    "rawLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "check": "scoped Oxlint",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-isolated-oxlint-final.log",
+    "rawLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "check": "scoped Oxfmt",
+    "result": "passed",
+    "count": 5,
+    "localRawLog": "/tmp/aster-issue-205-isolated-format-final.log",
+    "rawLogSha256": "038252788120727d93fe8a7cf8cbc93f8fe9e769c7419aac96da5dabc9e903ca"
+  },
+  {
+    "check": "full web types",
+    "result": "failed: diagnostics outside added helper/bootstrap/new tests",
+    "count": 380,
+    "localRawLog": "/tmp/aster-issue-205-isolated-web-types.log",
+    "rawLogSha256": "7f34402cee8fa6376b250bdc06de97953fa562eee9ffb56e23a76d9838d7d360"
+  },
+  {
+    "check": "full E2E types",
+    "result": "failed: diagnostics in unchanged existing code",
+    "count": 6,
+    "localRawLog": "/tmp/aster-issue-205-isolated-e2e-types.log",
+    "rawLogSha256": "56dac86070df6560a6a1bf78cf8717bbdc63f7586a4a03ecd995227f15b5c86f"
+  },
+  {
+    "check": "Studio docs links",
+    "result": "failed: existing broken links",
+    "count": 361,
+    "localRawLog": "/tmp/aster-issue-205-docs-links.log",
+    "rawLogSha256": "0104550cfd4a3ab00a038faf4e0b412705a487609670d15e35142a6d3aa8ae3d"
+  },
+  {
+    "check": "Studio docs frontmatter",
+    "result": "failed: existing source references",
+    "count": 9,
+    "localRawLog": "/tmp/aster-issue-205-docs-frontmatter.log",
+    "rawLogSha256": "498cb26189b8fd62281e9620e566996e9733828d540d6a0d469c43c8bc69928b"
+  },
+  {
+    "check": "Studio docs structure",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-docs-structure.log",
+    "rawLogSha256": "ecdc89b320ca3d71ec8eeb80312e088b1c1682ff0ec182d5843af33dc839547e"
+  },
+  {
+    "check": "Studio docs index",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-docs-index.log",
+    "rawLogSha256": "539cbd22f4eef10bf4728709dc9b548fe9cdc2c67bcd60722db40c4f1b404b46"
+  },
+  {
+    "check": "parent locked offline Cargo metadata",
+    "result": "passed",
+    "count": 167,
+    "localRawLog": "/tmp/aster-issue-205-cargo-metadata-final.log",
+    "rawLogSha256": "66044f588d7a4b0e665835d680699cc36143b604bfe9d2d3d0b03e191ae4fddf"
+  },
+  {
+    "check": "parent cargo fmt --all -- --check",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-cargo-fmt-accepted.log",
+    "rawLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "check": "tracked parent Office Rslib build",
+    "result": "passed",
+    "count": null,
+    "localRawLog": "/tmp/aster-issue-205-office-build.log",
+    "rawLogSha256": "3a82660bc9e7ed3ad3bf38578dab4e9fa12125b82293eefbb8042089656d4433"
+  }
+]

@@ -11,7 +11,7 @@ package="${repo_root}/scripts/package-aster-cli.sh"
 workflow="${repo_root}/.github/workflows/release-aster-cli.yml"
 readme="${repo_root}/README.md"
 evidence="${1:-${ASTER_INSTALL_EVIDENCE:-}}"
-manifest_url="https://github.com/aster-ai-lab/aster/releases/latest/download/latest.json"
+manifest_url="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json"
 
 pkg_version="$(
   awk -F'"' '/^version = / { print $2; exit }' "${repo_root}/apps/aster/Cargo.toml"

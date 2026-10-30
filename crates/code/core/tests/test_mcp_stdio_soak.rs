@@ -78,13 +78,14 @@ for line in sys.stdin:
 fn process_alive(pid: u32) -> bool {
     #[cfg(windows)]
     {
-        unsafe extern "system" {
-            fn OpenProcess(access: u32, inherit: i32, pid: u32) -> *mut c_void;
-            fn GetExitCodeProcess(handle: *mut c_void, code: *mut u32) -> i32;
-            fn CloseHandle(handle: *mut c_void) -> i32;
-        }
-        const PROCESS_QUERY_LIMITED_INFORMATION: u32 = 0x1000;
+        use windows_sys::Win32::Foundation::CloseHandle;
+        use windows_sys::Win32::System::Threading::{
+            GetExitCodeProcess, OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION,
+        };
+
         const STILL_ACTIVE: u32 = 259;
+        // SAFETY: the queried handle is checked before use and closed once.
+        // GetExitCodeProcess receives valid writable storage for its exit code.
         unsafe {
             let handle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid);
             if handle.is_null() {
@@ -98,6 +99,7 @@ fn process_alive(pid: u32) -> bool {
     }
     #[cfg(unix)]
     {
+        // SAFETY: the PID comes from the fixture child; signal zero only queries it.
         unsafe { libc::kill(pid as libc::pid_t, 0) == 0 }
     }
 }

@@ -1,0 +1,339 @@
+{
+  "case": "plan-read-write",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:1b5b3e3bd374c23f0325bd2e631c24becc0b9214:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=8 model_turns=2 prompt_tokens=27054",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PHaZPq\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify    9:33 PM           any file or call any other tool.                                                                                                                                                                                                                                                                                                                                      ♦ Read 1 file                                                                                                                                                                                                                                   PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                          9:34 PM                                                                                                                                 Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "plan-read",
+      "detail": "explicit plan launch, actual read receipt and unchanged source bytes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PHaZPq\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the read tool once to read planning-proof.txt and reply with its exact contents. Do not modify    9:33 PM           any file or call any other tool.                                                                                                                                                                                                                                                                                                                                      ♦ Read 1 file                                                                                                                                                                                                                                   PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                          9:34 PM                                                                                                                                 Worked for 25s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · plan ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "settled-turn",
+      "detail": "facts=13 model_turns=4 prompt_tokens=57467",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PHaZPq\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     9:34 PM           Get-Item -LiteralPath phase-result.txt -ErrorAction Stop using the bash tool to verify the output.                      Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt.                                                                                                                                                                                                                                                                       ♦ Thought for 21.1s                                                                                                                                                                                                                             ♦ Creating phase-result.txt                                                                                       █                                                                                                                       █       1  PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                               █                                                                                                                       █     ♦ Run Get-Item -LiteralPath phase-result.txt -ErrorAction Stop                                                    █     ♦ Read 1 file                                                                                                     █                                                                                                                       █     PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                          9:34 PM   █                                                                                                                       █     verified ✓ (1 check)                                                                                              █                                                                                                                       █     Worked for 49s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "plan-exit-write",
+      "detail": "same session switches from plan to execution and finishes a real byte-verified mutation",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PHaZPq\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Use the write tool to create phase-result.txt with exactly the bytes from planning-proof.txt. Run     9:34 PM           Get-Item -LiteralPath phase-result.txt -ErrorAction Stop using the bash tool to verify the output.                      Read phase-result.txt back and reply with its exact contents. Do not change planning-proof.txt.                                                                                                                                                                                                                                                                       ♦ Thought for 21.1s                                                                                                                                                                                                                             ♦ Creating phase-result.txt                                                                                       █                                                                                                                       █       1  PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                               █                                                                                                                       █     ♦ Run Get-Item -LiteralPath phase-result.txt -ErrorAction Stop                                                    █     ♦ Read 1 file                                                                                                     █                                                                                                                       █     PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4                                                          9:34 PM   █                                                                                                                       █     verified ✓ (1 check)                                                                                              █                                                                                                                       █     Worked for 49s                                                                                                    █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                       █                                                                                                                          ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13453,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 7,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_601d0da46e5547549e9a4437140125b8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8f24a5be-45b2-4b33-818a-43b87d05f080",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 1,
+          "cycle": 0,
+          "tool_call_id": "call_601d0da46e5547549e9a4437140125b8",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-8f24a5be-45b2-4b33-818a-43b87d05f080",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:8a26ff25bcea5445b37a3e738882c92e5b74b057727f2b8fb23663fe822a8e0f",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"planning-proof.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":54},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"projected_digest\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"repeat_key\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"content_ref\":\"inline:sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b3bd400ea40296000aba8e1502911d9299b128e883110d87bb17d4674411b65a\"}"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13601,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:840fc00620b7261d856d94fdcd1d3977ecc7867daf319a95518efe67ebf19268"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "a3ce504326ff9e14bd02fd1a04246f6becb3a51f9689cce11a03773540381fff"
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13722,
+        "has_text": false,
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 14,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_a82e51f1ded441c2b5cd043e2562c4ae",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "write"
+      }
+    },
+    {
+      "seq": 15,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 0,
+          "tool_call_id": "call_a82e51f1ded441c2b5cd043e2562c4ae",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:b138e5a573edbd1469274367d11460f5a712f41dbd58b64386857018a090d263",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "phase-result.txt",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"Wrote 46 bytes (1 lines) to \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-PHaZPq\\\\workspace/phase-result.txt\\n[mutation observation] path=phase-result.txt status=unavailable\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"file_path\":\"phase-result.txt\",\"created\":true,\"after\":\"PLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4\",\"change\":{\"compacted\":false,\"before\":null,\"after\":{\"bytes\":46,\"sha256\":\"b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792\",\"artifact\":null},\"unified_diff\":null,\"diff_omitted\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":92,\"projected_bytes\":92,\"original_estimated_tokens\":23,\"projected_estimated_tokens\":23,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4cdfa87a648ada8fb85068b97c26b1be55466d1a33d8245f077cfe95d1fa729d\",\"projected_digest\":\"sha256:4cdfa87a648ada8fb85068b97c26b1be55466d1a33d8245f077cfe95d1fa729d\",\"repeat_key\":\"sha256:4cdfa87a648ada8fb85068b97c26b1be55466d1a33d8245f077cfe95d1fa729d\",\"content_ref\":\"inline:sha256:4cdfa87a648ada8fb85068b97c26b1be55466d1a33d8245f077cfe95d1fa729d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"phase-result.txt\",\"status\":\"unavailable\"}},\"observation_digest\":\"sha256:3a8ca661d6a5cf639ec9cc6edbe3a9920950aed2af6128740f536e34c48e9520\"}"
+      }
+    },
+    {
+      "seq": 16,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14593,
+        "has_text": false,
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 17,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 1,
+          "tool_call_id": "call_506ba295536e485d9f6bc4479b57778d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "bash"
+      }
+    },
+    {
+      "seq": 18,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 1,
+          "tool_call_id": "call_506ba295536e485d9f6bc4479b57778d",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:606a1a624121499c0a92f9d77d1a497c17148817f8696a7a35e46d81a7bfb5b2",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [
+            {
+              "path": "phase-result.txt",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792",
+                "mode": 32
+              }
+            },
+            {
+              "path": "planning-proof.txt",
+              "before": {
+                "kind": "file",
+                "content_digest": "sha256:b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792",
+                "mode": 32
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:b2395833680fa0cfb05038644baff76aa22ac298136eaf0e94fb6135ebfd4792",
+                "mode": 32
+              }
+            }
+          ],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"[mutation observation] path=phase-result.txt status=unavailable\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"changed_paths\":[\"phase-result.txt\",\"planning-proof.txt\"],\"verification_shell_command\":\"Get-Item -LiteralPath phase-result.txt -ErrorAction Stop\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":0,\"projected_bytes\":0,\"original_estimated_tokens\":0,\"projected_estimated_tokens\":0,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"projected_digest\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"repeat_key\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"content_ref\":\"inline:sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"planning-proof.txt\",\"status\":\"unavailable\"},\"verification_report\":{\"schema\":\"a3s.verification_report.v1\",\"subject\":\"shell:mutation_path_verify:phase-result.txt\",\"status\":\"passed\",\"checks\":[{\"id\":\"mutation_path_verify:phase-result.txt\",\"kind\":\"mutation_path_verify\",\"description\":\"Host verified mutated path exists with matching content digest: phase-result.txt\",\"status\":\"passed\",\"required\":true}],\"effect_digest\":\"9d6ca8bc37af44684bdf66ee38ab427d9a41a288e556bdcf6ab59d9fc8571160\"}},\"observation_digest\":\"sha256:3657f9137e5b3e33138bcab8c0c9204727bd2ed4c502781ccaa978d48dae4800\"}"
+      }
+    },
+    {
+      "seq": 19,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14517,
+        "has_text": false,
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 20,
+      "type": "tool.prepared",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 2,
+          "tool_call_id": "call_97d72ad008ea44d6b7a9c11b8c23b8dd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "tool": "read"
+      }
+    },
+    {
+      "seq": 21,
+      "type": "tool.result",
+      "payload": {
+        "identity": {
+          "turn": 2,
+          "cycle": 2,
+          "tool_call_id": "call_97d72ad008ea44d6b7a9c11b8c23b8dd",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-02ddfe52-ed06-4a68-bcba-69bf4f4ecf20",
+            "thread_id": "2ad52a71-557e-49da-be04-b162a6aff4f9",
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa"
+          }
+        },
+        "prepared_digest": "sha256:8b74aa6311ee31bcbee4ab36c629ef4ff37adfb0913135ad7c1a609007fc3754",
+        "outcome": "succeeded",
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tPLAN-READ-6893e73d-c3fb-4c87-9581-342120b423c4\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"phase-result.txt\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"output_bytes\":54},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":54,\"projected_bytes\":54,\"original_estimated_tokens\":14,\"projected_estimated_tokens\":14,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"projected_digest\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"repeat_key\":\"sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"content_ref\":\"inline:sha256:c63055ceccb265d077853e5a06322dba92089a0c30ec09d48a9c65d8e91f0468\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b3bd400ea40296000aba8e1502911d9299b128e883110d87bb17d4674411b65a\"}"
+      }
+    },
+    {
+      "seq": 22,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 14635,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 23,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "verified",
+        "effect_digest": "9d6ca8bc37af44684bdf66ee38ab427d9a41a288e556bdcf6ab59d9fc8571160",
+        "forced_stop": null,
+        "receipt_keys": [
+          "sha256:15742bfd821b4b6f73fc58ed5deb73d6dadfa400ed08d991f40aa4aa5f853bbb",
+          "sha256:386df25c6dfa3e144ecf20f2a9a243b0fe62dbbb16ac5ec73057575e76d7d519",
+          "sha256:5284decdca7c318dfd573b3f4939908ec837f2f60a5eb6fe368fadeda08dae31"
+        ],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 22,
+          "digest": "9ae764955238de853fe0abc5c9f0e52fcd6b1b493d767deff1b0d32cc2cb2152"
+        }
+      }
+    }
+  ],
+  "config_unchanged": true
+}

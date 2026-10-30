@@ -1,0 +1,125 @@
+{
+  "assertions_finished": true,
+  "case": "path-relative-escape",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "../outside-secret.txt"
+          },
+          "id": "call_a543dd3681d249d09f926fd24cd5eea1",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13353,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6399608a-80f2-4c52-828e-ff73b102036b",
+            "thread_id": "d44aa4e6-e60b-4da4-bb9c-1b62dd386bdb"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a543dd3681d249d09f926fd24cd5eea1",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-6399608a-80f2-4c52-828e-ff73b102036b",
+            "thread_id": "d44aa4e6-e60b-4da4-bb9c-1b62dd386bdb"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a543dd3681d249d09f926fd24cd5eea1",
+          "turn": 1
+        },
+        "outcome": "denied",
+        "output": "tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy",
+        "prepared_digest": "sha256:be2b43a9ff36c992b5393980d862bbaecccc808bccbeb5994c3d4de168539094",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13523,
+        "text": "The tool returned:\n\n`tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy`",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "1291d66a9df0f5ac3af36a8fac3c2fea0c5f859257b972a1aadb71310893503f",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:6d9c553cea4868936d953b5270606bf4b116f25ffb773231e7a74857f6959a8a"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=10 model_turns=2 prompt_tokens=26876",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-hM4LUt\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > This is a one-shot diagnostic of the read tool's own path validation. Call read exactly once with     8:46 PM           file_path ../outside-secret.txt. Do not infer or short-circuit the outcome; let the tool return its                     actual error. Do not retry or call other tools. Report the tool's result.                                                                                                                                                                                                                                                                                             ♦ Read 1 file · 1 failed                                                                                                                                                                                                                        The tool returned:                                                                                      8:46 PM                                                                                                                                 tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission                     policy                                                                                                                                                                                                                                          Worked for 11s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the actual read receipt fails closed and never exposes the outside secret",
+      "name": "path-relative-escape",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-hM4LUt\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > This is a one-shot diagnostic of the read tool's own path validation. Call read exactly once with     8:46 PM           file_path ../outside-secret.txt. Do not infer or short-circuit the outcome; let the tool return its                     actual error. Do not retry or call other tools. Report the tool's result.                                                                                                                                                                                                                                                                                             ♦ Read 1 file · 1 failed                                                                                                                                                                                                                        The tool returned:                                                                                      8:46 PM                                                                                                                                 tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission                     policy                                                                                                                                                                                                                                          Worked for 11s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

@@ -1,0 +1,3 @@
+
+running 1 test
+test functional::kimi_home_picker_cancel_and_return_preserves_existing_session ... ORACLE case=home-return name=source-pair result=pass detail=aster-cli-pair-v1:d293019c3cfb0cbd5d8cb0852f8c642cc9149788:x86_64-pc-windows-msvc

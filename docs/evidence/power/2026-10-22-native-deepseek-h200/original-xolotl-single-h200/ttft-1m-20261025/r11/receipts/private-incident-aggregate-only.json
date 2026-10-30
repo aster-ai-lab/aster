@@ -1,0 +1,11 @@
+{
+  "completed_tool_rounds": 78,
+  "guard_matched_actual_rounds": 53,
+  "first_matching_step": 26,
+  "last_matching_step": 78,
+  "guard_does_not_guess_tool_names": true,
+  "actual_http_payload_captured": false,
+  "limitation": "Reconstructed from observed WorkBuddy call IDs, arguments and returned text; not a capture of its original HTTP request.",
+  "raw_session_published": false,
+  "user_queries_or_results_published": false
+}

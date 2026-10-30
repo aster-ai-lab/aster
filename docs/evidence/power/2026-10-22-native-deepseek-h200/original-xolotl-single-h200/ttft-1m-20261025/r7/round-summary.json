@@ -1,0 +1,694 @@
+{
+  "schema": "aster-xolotl-seed-and-trace-r7",
+  "unix": 1792893764.0437152,
+  "pool_profiles": [
+    {
+      "profile": "pool_off",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 37.10260251071304,
+          "cold_ttft_seconds": 17.466755617875606,
+          "restored_seconds": 25.522302580066025,
+          "restored_ttft_seconds": 0.018420793116092682,
+          "repeated_seconds": 22.976548321079463,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 52.30066881002858,
+          "cold_ttft_seconds": 29.44372253632173,
+          "restored_seconds": 26.073732452001423,
+          "restored_ttft_seconds": 0.048779203090816736,
+          "repeated_seconds": 23.168938744347543,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1250994282308966,
+        "ttft_p95_seconds": 0.15754788427148014,
+        "api_wall_completion_tok_s": 85.24627193967657,
+        "stream_interval_tok_s_estimate": 94.86655441747784
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 107.95972601091489,
+        "api_wall_completion_tok_s": 75.88014811348981,
+        "stream_interval_tok_s_estimate": 75.90878406361936,
+        "ttft_p50_seconds": 0.010812310501933098,
+        "ttft_min_seconds": 0.01010194281116128,
+        "ttft_max_seconds": 0.011443051043897867
+      }
+    },
+    {
+      "profile": "pool_on",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 33.62289581075311,
+          "cold_ttft_seconds": 14.940016196109354,
+          "restored_seconds": 17.743096912279725,
+          "restored_ttft_seconds": 0.028363704215735197,
+          "repeated_seconds": 14.855859884992242,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 46.123465979937464,
+          "cold_ttft_seconds": 27.07826703088358,
+          "restored_seconds": 17.348084321711212,
+          "restored_ttft_seconds": 0.05694234697148204,
+          "repeated_seconds": 15.2323676222004,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": true,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.1331204674206674,
+        "ttft_p95_seconds": 0.16394843976013362,
+        "api_wall_completion_tok_s": 81.59944632673421,
+        "stream_interval_tok_s_estimate": 93.2901974790026
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.71292388765141,
+        "api_wall_completion_tok_s": 75.35442619928025,
+        "stream_interval_tok_s_estimate": 75.38407085733421,
+        "ttft_p50_seconds": 0.010500052012503147,
+        "ttft_min_seconds": 0.010207006242126226,
+        "ttft_max_seconds": 0.01165191875770688
+      }
+    },
+    {
+      "profile": "pool_off_repeat",
+      "basic28_passed": true,
+      "native_tool_long12_passed": true,
+      "pool13_phase": "failed",
+      "pool13_completed": true,
+      "cases": [
+        {
+          "case": "technical-long8244",
+          "actual_input_tokens": 8244,
+          "cold_seconds": 35.48906554793939,
+          "cold_ttft_seconds": 16.730476169846952,
+          "restored_seconds": 25.673686061054468,
+          "restored_ttft_seconds": 0.023286116309463978,
+          "repeated_seconds": 23.0047889649868,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        },
+        {
+          "case": "technical-long25671",
+          "actual_input_tokens": 25671,
+          "cold_seconds": 44.6006582248956,
+          "cold_ttft_seconds": 27.061246296856552,
+          "restored_seconds": 25.20791796501726,
+          "restored_ttft_seconds": 0.050069058779627085,
+          "repeated_seconds": 23.072757394053042,
+          "pool_restore_logged": true,
+          "pool_seed_restore_logged": false,
+          "restored_matches_control_cold": false,
+          "repeated_matches_control_cold": false
+        }
+      ],
+      "short_summary": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.13300296920351684,
+        "ttft_p95_seconds": 0.16180723498109728,
+        "api_wall_completion_tok_s": 83.31725333521163,
+        "stream_interval_tok_s_estimate": 92.89463693755049
+      },
+      "long_summary": {
+        "requests": 8,
+        "completion_tokens": 8192,
+        "wall_seconds": 108.289218546357,
+        "api_wall_completion_tok_s": 75.64926693503773,
+        "stream_interval_tok_s_estimate": 75.78335923903546,
+        "ttft_p50_seconds": 0.010882599744945765,
+        "ttft_min_seconds": 0.009576506912708282,
+        "ttft_max_seconds": 0.16826432617381215
+      }
+    }
+  ],
+  "pool_restored_latency": [
+    {
+      "case": "technical-long8244",
+      "on_restored_seconds": 17.743096912279725,
+      "control_restored_seconds": [
+        25.522302580066025,
+        25.673686061054468
+      ],
+      "reduction_percent": [
+        30.4800307236471,
+        30.889951407503567
+      ]
+    },
+    {
+      "case": "technical-long25671",
+      "on_restored_seconds": 17.348084321711212,
+      "control_restored_seconds": [
+        26.073732452001423,
+        25.20791796501726
+      ],
+      "reduction_percent": [
+        33.46528214306513,
+        31.180019128171043
+      ]
+    }
+  ],
+  "pool_model_requests": 159,
+  "pool_standard_requests_passed": 120,
+  "pool_diagnostic_requests_completed": 39,
+  "pool_identity_gate_passed": false,
+  "admission": {
+    "unix": 1792890344.8033423,
+    "scope": "Finite post-admission serial recovery; API per-request elapsed sums, not a common block wall or full-model speed qualification",
+    "profiles": {
+      "off": {
+        "tests": 10,
+        "phase": "failed",
+        "post_requests": 2,
+        "post_output_tokens": 2048,
+        "post_request_seconds_sum": 36.95725452480838,
+        "post_sum_seconds_output_tok_s": 55.41537179460218,
+        "post_all_qualified_reference_matched": false,
+        "post_requests_detail": [
+          {
+            "name": "serial-post-0",
+            "seconds": 11.27883558999747,
+            "matches_reference": true
+          },
+          {
+            "name": "serial-post-1",
+            "seconds": 25.678418934810907,
+            "matches_reference": false
+          }
+        ]
+      },
+      "on": {
+        "tests": 10,
+        "phase": "failed",
+        "post_requests": 2,
+        "post_output_tokens": 2048,
+        "post_request_seconds_sum": 27.570543223060668,
+        "post_sum_seconds_output_tok_s": 74.28217802712727,
+        "post_all_qualified_reference_matched": true,
+        "post_requests_detail": [
+          {
+            "name": "serial-post-0",
+            "seconds": 11.932663829997182,
+            "matches_reference": true
+          },
+          {
+            "name": "serial-post-1",
+            "seconds": 15.637879393063486,
+            "matches_reference": true
+          }
+        ]
+      },
+      "off_repeat": {
+        "tests": 10,
+        "phase": "failed",
+        "post_requests": 2,
+        "post_output_tokens": 2048,
+        "post_request_seconds_sum": 39.32860446488485,
+        "post_sum_seconds_output_tok_s": 52.07405723812521,
+        "post_all_qualified_reference_matched": false,
+        "post_requests_detail": [
+          {
+            "name": "serial-post-0",
+            "seconds": 23.59776618424803,
+            "matches_reference": false
+          },
+          {
+            "name": "serial-post-1",
+            "seconds": 15.730838280636817,
+            "matches_reference": true
+          }
+        ]
+      }
+    },
+    "formal_adopted": false,
+    "concurrency_identity_fixed": false,
+    "speed_300_qualified": false,
+    "post_elapsed_reduction_vs_controls": {
+      "off": 0.2539883284740936,
+      "off_repeat": 0.2989697041582685
+    }
+  },
+  "admission_requests_completed": 30,
+  "admission_concurrent_identity_gate_passed": false,
+  "cpu_contracts_per_mode": 113,
+  "cpu_modes": [
+    "release",
+    "asan_ubsan"
+  ],
+  "original_upstream_pool_tests_passed": true,
+  "native_parent_binary_reproduced": true,
+  "matched_native_trace": {
+    "schema": "aster-xolotl-native-critical-path-v123",
+    "unix": 1792893493.2884264,
+    "binary_sha256": "9a684b2442d4b648fff6a73024de5b7bab096657fe45897bf036c7e216895bbf",
+    "context_tokens": 1048576,
+    "prefill_chunk_tokens": 512,
+    "parallel_slots": 2,
+    "native_info": {
+      "ctx": "1048576",
+      "experts_vram": "12475",
+      "arena_experts": "15360",
+      "conversation_cache_mib": "8192",
+      "conversation_cache_slots": "8",
+      "batch_slots": "2",
+      "slot_cache": "1"
+    },
+    "gpu_profiled_requests": 1,
+    "prompt_tokens": 21,
+    "completion_tokens": 128,
+    "pretrace_control_requests": 3,
+    "all_output_id_sequences_equal": true,
+    "kernel_count": 188945,
+    "kernel_duration_sum_ns": 1258880697,
+    "memcpy_count": 46029,
+    "memcpy_duration_sum_ns": 106003699,
+    "memcpy_bytes": 3927823584,
+    "runtime_count": 75063,
+    "runtime_duration_sum_ns": 1866946940,
+    "recorded_gpu_event_span_ns": 1993922379,
+    "recorded_gpu_event_busy_union_ns": 1305895443,
+    "recorded_gpu_event_busy_union_fraction": 0.65493795383095,
+    "top_kernels": [
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_gu_multi_kernel<(int)11, (bool)0, (bool)0>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 1743,
+        "duration_sum_ns": 128262802,
+        "min_ns": 19488,
+        "max_ns": 300063
+      },
+      {
+        "symbol": "void strata::kernels::native_gu_amd_kernel<(int)143, (int)4>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 2810,
+        "duration_sum_ns": 102658748,
+        "min_ns": 9504,
+        "max_ns": 151520
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_down_multi_kernel<(int)11, (bool)0>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 1613,
+        "duration_sum_ns": 76208823,
+        "min_ns": 13888,
+        "max_ns": 204864
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)6, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 3543,
+        "duration_sum_ns": 66094414,
+        "min_ns": 7296,
+        "max_ns": 352352
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)3, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 4546,
+        "duration_sum_ns": 62611073,
+        "min_ns": 4320,
+        "max_ns": 248063
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)5, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 2965,
+        "duration_sum_ns": 61935782,
+        "min_ns": 5280,
+        "max_ns": 305919
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_gu_multi_kernel<(int)42, (bool)0, (bool)1>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 2545,
+        "duration_sum_ns": 61179861,
+        "min_ns": 8256,
+        "max_ns": 89760
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_down_multi_kernel<(int)42, (bool)1>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 3780,
+        "duration_sum_ns": 60569968,
+        "min_ns": 5216,
+        "max_ns": 63968
+      },
+      {
+        "symbol": "void strata::kernels::native_down_amd_kernel<(int)143, (int)4>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 1705,
+        "duration_sum_ns": 44943383,
+        "min_ns": 5600,
+        "max_ns": 81759
+      },
+      {
+        "symbol": "quantize_q8_1(const float *, void *, long, long, long, long, long, unsigned int, uint3)",
+        "count": 17295,
+        "duration_sum_ns": 42872531,
+        "min_ns": 1120,
+        "max_ns": 6656
+      },
+      {
+        "symbol": "void flash_attn_ext_f16<(int)512, (int)512, (int)1, (int)8, (bool)0, (bool)0, (bool)0>(const char *, const char *, const char *, const char *, const char *, const int *, float *, float2 *, float, float, float, float, unsigned int, float, int, uint3, int, int, int, int, int, int, int, int, int, int, int, long, int, int, long, int, int, int, int, int, long)",
+        "count": 2024,
+        "duration_sum_ns": 42393534,
+        "min_ns": 19488,
+        "max_ns": 23104
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)4, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 2588,
+        "duration_sum_ns": 40629616,
+        "min_ns": 4608,
+        "max_ns": 285791
+      },
+      {
+        "symbol": "void rms_norm_f32<(int)1024, (bool)1, (bool)0>(const float *, float *, int, long, long, long, float, const float *, long, long, long, uint3, uint3, uint3, uint3, const float *, long, long, long, uint3, uint3, uint3, uint3)",
+        "count": 6310,
+        "duration_sum_ns": 26964395,
+        "min_ns": 2720,
+        "max_ns": 6752
+      },
+      {
+        "symbol": "strata::kernels::decode_rows_sum_kernel(const float *, const float *, int, long, float *)",
+        "count": 7840,
+        "duration_sum_ns": 22819991,
+        "min_ns": 2048,
+        "max_ns": 4096
+      },
+      {
+        "symbol": "void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_64x64_32x6_tn_align4>(T1::Params)",
+        "count": 3888,
+        "duration_sum_ns": 20315223,
+        "min_ns": 4608,
+        "max_ns": 6304
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)7, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 963,
+        "duration_sum_ns": 19497828,
+        "min_ns": 7392,
+        "max_ns": 395199
+      },
+      {
+        "symbol": "void rms_norm_f32<(int)1024, (bool)0, (bool)0>(const float *, float *, int, long, long, long, float, const float *, long, long, long, uint3, uint3, uint3, uint3, const float *, long, long, long, uint3, uint3, uint3, uint3)",
+        "count": 4142,
+        "duration_sum_ns": 17986004,
+        "min_ns": 3584,
+        "max_ns": 6816
+      },
+      {
+        "symbol": "void mul_mat_vec_q_moe<(ggml_type)10, (int)2, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 432,
+        "duration_sum_ns": 17840249,
+        "min_ns": 37568,
+        "max_ns": 45600
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)2, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 1332,
+        "duration_sum_ns": 16728375,
+        "min_ns": 4288,
+        "max_ns": 218304
+      },
+      {
+        "symbol": "void concat_cont<unsigned short, (int)1>(const T1 *, const T1 *, T1 *, long, long, long, long, long, long)",
+        "count": 2998,
+        "duration_sum_ns": 15140411,
+        "min_ns": 1888,
+        "max_ns": 12480
+      },
+      {
+        "symbol": "void k_bin_bcast<&op_add, float, float, float, const float *>(const T2 *, const T3 *, T4 *, unsigned int, unsigned int, unsigned int, uint3, uint3, uint3, uint3, uint3, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, T5...)",
+        "count": 7497,
+        "duration_sum_ns": 14267779,
+        "min_ns": 1184,
+        "max_ns": 4320
+      },
+      {
+        "symbol": "void dsv4_hc_post_f32<(bool)1>(const float *, const float *, const float *, const float *, float *, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long)",
+        "count": 4048,
+        "duration_sum_ns": 14045562,
+        "min_ns": 2368,
+        "max_ns": 5088
+      },
+      {
+        "symbol": "void mul_mat_f<float, (int)32, (int)6, (int)8, (bool)0>(const T1 *, const float *, const int *, float *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "count": 440,
+        "duration_sum_ns": 13538075,
+        "min_ns": 29792,
+        "max_ns": 32096
+      },
+      {
+        "symbol": "void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)",
+        "count": 3888,
+        "duration_sum_ns": 13044483,
+        "min_ns": 2976,
+        "max_ns": 3616
+      },
+      {
+        "symbol": "strata::kernels::<unnamed>::swiglu_q8_1_entries_kernel(const float *, const float *, const int *, const int *, int, block_q8_1 *, float)",
+        "count": 7098,
+        "duration_sum_ns": 12370456,
+        "min_ns": 1376,
+        "max_ns": 2944
+      },
+      {
+        "symbol": "void convert_unary<__half, float>(const void *, T2 *, long, long, long, uint3, long, long, long)",
+        "count": 3600,
+        "duration_sum_ns": 12298503,
+        "min_ns": 3136,
+        "max_ns": 4288
+      },
+      {
+        "symbol": "dsv4_hc_comb_f32(const float *, const float *, const float *, float *, long, long, long, long, long, long, long, long, float, int)",
+        "count": 4048,
+        "duration_sum_ns": 12247101,
+        "min_ns": 2592,
+        "max_ns": 4064
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)1, (bool)1, (bool)1, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 240,
+        "duration_sum_ns": 10762636,
+        "min_ns": 43264,
+        "max_ns": 48832
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)1, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 686,
+        "duration_sum_ns": 10359976,
+        "min_ns": 2976,
+        "max_ns": 248415
+      },
+      {
+        "symbol": "void mul_mat_f<float, (int)32, (int)4, (int)8, (bool)0>(const T1 *, const float *, const int *, float *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "count": 320,
+        "duration_sum_ns": 9818888,
+        "min_ns": 29664,
+        "max_ns": 32128
+      },
+      {
+        "symbol": "void rope_norm<(bool)1, (bool)0, float, float>(const T3 *, T4 *, int, int, int, int, int, int, int, int, int, int, int, const int *, float, float, float, rope_corr_dims, float, const float *, const long *, int, bool)",
+        "count": 4947,
+        "duration_sum_ns": 7907958,
+        "min_ns": 1152,
+        "max_ns": 2688
+      },
+      {
+        "symbol": "void dsv4_hc_pre_f32<(bool)0>(const float *, const float *, float *, long, long, long, long, long, long, long, long, long, long, long, float)",
+        "count": 4143,
+        "duration_sum_ns": 7475116,
+        "min_ns": 1408,
+        "max_ns": 3872
+      }
+    ],
+    "top_runtime_calls": [
+      {
+        "symbol": "cudaStreamSynchronize_v3020",
+        "count": 9610,
+        "duration_sum_ns": 1309038858,
+        "min_ns": 1576,
+        "max_ns": 4980552
+      },
+      {
+        "symbol": "cudaGraphLaunch_v10000",
+        "count": 3792,
+        "duration_sum_ns": 295970693,
+        "min_ns": 4414,
+        "max_ns": 4897496
+      },
+      {
+        "symbol": "cudaMemcpyAsync_v3020",
+        "count": 20011,
+        "duration_sum_ns": 141047171,
+        "min_ns": 813,
+        "max_ns": 4761911
+      },
+      {
+        "symbol": "cudaLaunchKernel_v7000",
+        "count": 34140,
+        "duration_sum_ns": 92345775,
+        "min_ns": 756,
+        "max_ns": 4671897
+      },
+      {
+        "symbol": "cudaLaunchKernelExC_v11060",
+        "count": 6662,
+        "duration_sum_ns": 16257698,
+        "min_ns": 744,
+        "max_ns": 20846
+      },
+      {
+        "symbol": "cudaGraphInstantiate_v12000",
+        "count": 19,
+        "duration_sum_ns": 5830461,
+        "min_ns": 29515,
+        "max_ns": 440969
+      },
+      {
+        "symbol": "cudaGraphExecDestroy_v10000",
+        "count": 16,
+        "duration_sum_ns": 2478935,
+        "min_ns": 125416,
+        "max_ns": 201792
+      },
+      {
+        "symbol": "cudaMemcpy2DAsync_v3020",
+        "count": 356,
+        "duration_sum_ns": 1339235,
+        "min_ns": 939,
+        "max_ns": 10055
+      },
+      {
+        "symbol": "cudaGraphExecUpdate_v10020",
+        "count": 27,
+        "duration_sum_ns": 1034597,
+        "min_ns": 1735,
+        "max_ns": 734816
+      },
+      {
+        "symbol": "cudaGraphDestroy_v10000",
+        "count": 24,
+        "duration_sum_ns": 926548,
+        "min_ns": 3614,
+        "max_ns": 74139
+      },
+      {
+        "symbol": "cuLaunchKernel",
+        "count": 176,
+        "duration_sum_ns": 441653,
+        "min_ns": 733,
+        "max_ns": 4203
+      },
+      {
+        "symbol": "cuKernelGetFunction",
+        "count": 176,
+        "duration_sum_ns": 91008,
+        "min_ns": 173,
+        "max_ns": 1063
+      },
+      {
+        "symbol": "cudaStreamEndCapture_v10000",
+        "count": 27,
+        "duration_sum_ns": 90711,
+        "min_ns": 935,
+        "max_ns": 5403
+      },
+      {
+        "symbol": "cudaStreamBeginCapture_v10000",
+        "count": 27,
+        "duration_sum_ns": 53597,
+        "min_ns": 1472,
+        "max_ns": 2937
+      }
+    ],
+    "memory_by_cupti_copy_kind_code": [
+      {
+        "copy_kind_code": 1,
+        "count": 12124,
+        "duration_sum_ns": 52782190,
+        "bytes": 1859224928
+      },
+      {
+        "copy_kind_code": 8,
+        "count": 27456,
+        "duration_sum_ns": 28727487,
+        "bytes": 1758123328
+      },
+      {
+        "copy_kind_code": 2,
+        "count": 6449,
+        "duration_sum_ns": 24494022,
+        "bytes": 310475328
+      }
+    ],
+    "diagnostic_only": true,
+    "actual1m_input_executed": false,
+    "performance_300_claimed": false,
+    "limits": "Trace overhead is included. Summed kernel/memory/runtime durations overlap and cannot be added as wall time. Event union is only recorded GPU intervals, not SM utilization or a hardware speed ceiling. Pre-trace controls are not post-trace performance qualification."
+  },
+  "unique_actual1m_fixture_cpu": {
+    "context_tokens": 1048576,
+    "actual_prompt_tokens": 1047544,
+    "max_output_tokens": 1024,
+    "context_safety_tokens": 8,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "28a93e014a31c9c174077b7155d670054a083c332b28e3619317eb4fd370e0a6",
+    "prompt_bytes": 3158161,
+    "prompt_id_sha256": "ebe492e5734df0265668f474ab674a282e03f61d8d4ded8d71343f2dc9b9e6ca",
+    "record_token_positions": {
+      "begin": 36,
+      "middle": 523698,
+      "end": 1047424
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "source_revision": "e9d0826d71c59072cbff77d2a31dd51f27ab7a12",
+    "source_archive_sha256": "bfdeb3b4d178e0b4a2c29076d394083c7b6f4b50509c2de982fa886bc1d6fcad",
+    "corpus_repeated": false,
+    "unique_corpus_tokens": 1510935,
+    "selected_body_token_budget": 1047275,
+    "boundary_padding_repetitions": 62,
+    "source_file_manifest": "corpus-source-manifest.json",
+    "source_files_count": 262,
+    "excluded_files_count": 0
+  },
+  "actual1m_gpu_input_completed_this_round": false,
+  "candidates_promoted": false,
+  "formal_service_changed_by_seed_candidates": false,
+  "maximum_authorized_h200": 2,
+  "single_request300_met": false,
+  "goal_complete": false
+}

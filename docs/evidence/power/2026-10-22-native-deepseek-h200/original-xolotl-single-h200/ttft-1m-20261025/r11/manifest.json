@@ -1,0 +1,197 @@
+{
+  "schema": "aster-h200-tool-repair-r11",
+  "unix": 1792922274.721097,
+  "files": [
+    {
+      "file": "candidate/frontend.py",
+      "bytes": 75157,
+      "sha256": "11215fa883d935150d5d1eb34d40a25d823880a0b7540befd6e86cac3fc5c557",
+      "source": "tool-adapter-v267r3/frontend.py"
+    },
+    {
+      "file": "candidate/serve_ds41.py",
+      "bytes": 29569,
+      "sha256": "5834c9c5b1501eb4dcd1b757bbc493ee6326e8220a193de70c43ff8b1044b049",
+      "source": "tool-adapter-v267r3/serve_ds41.py"
+    },
+    {
+      "file": "candidate/aster_tool_roundtrip.py",
+      "bytes": 6081,
+      "sha256": "fda429021909a14df85d3752ceb226199e4ba5c016b19b4450fc1eadca7404af",
+      "source": "tool-adapter-v267r3/aster_tool_roundtrip.py"
+    },
+    {
+      "file": "fixtures/dsv41_encoding.py",
+      "bytes": 37962,
+      "sha256": "13231c592e958fb39e2af6001dae69d90e7a36b265702b9b390236fb387599e2",
+      "source": "xolotl-trial-source-e9d0826d71c5/source/tools/v41/dsv41_encoding.py"
+    },
+    {
+      "file": "LICENSE",
+      "bytes": 1093,
+      "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0",
+      "source": "xolotl-trial-source-e9d0826d71c5/source/LICENSE"
+    },
+    {
+      "file": "test_tool_roundtrip.py",
+      "bytes": 6785,
+      "sha256": "14146ac9abde7a505f427d627741cd91e55a145424cefa02b0e0f5570316784e",
+      "source": "test_tool_roundtrip_v268.py, only fixture paths relocated"
+    },
+    {
+      "file": "frontend-id-preservation.patch",
+      "bytes": 2395,
+      "sha256": "0a541c4dabb452309dfb4c5e90b96451131a5a6d8dd3f5834b4fee5a2d488f80",
+      "source": null
+    },
+    {
+      "file": "shim-guard-install.patch",
+      "bytes": 430,
+      "sha256": "55eb794a8e0cfd4ae99700b6cd284d5050b7110edab9a4918ec3c8ae18cc8686",
+      "source": null
+    },
+    {
+      "file": "receipts/formal-runtime-and-stream-verification.json",
+      "bytes": 2366,
+      "sha256": "be1a8ea6d77e2dabc0a743a686628b3e9b24e859b53e0fe56be2b9b02852b8ee",
+      "source": "xolotl-formal-tool-repair-v288-verification.json"
+    },
+    {
+      "file": "receipts/cpu-qualified-deployment.json",
+      "bytes": 6889,
+      "sha256": "c5229d2de0c14b1bb6893d39eb69515f7a5fb7a5d6000d8dbbf1242eb803e236",
+      "source": "xolotl-formal-tool-repair-v284-intent.json"
+    },
+    {
+      "file": "receipts/live-model-protocol-tests.json",
+      "bytes": 1065,
+      "sha256": "f4f917c9219aefdb306d6827c034cb8ed45aaeba21095db9b03ab8b57eb4aa09",
+      "source": "xolotl-formal-tool-repair-v286-live-probe.json"
+    },
+    {
+      "file": "receipts/installed-workbuddy-successful-tool.json",
+      "bytes": 1210,
+      "sha256": "bbea5f40bc8d1d81fa12e7f3f26d9ec99fddf472c995b7d8e1f22b6fb6897b0b",
+      "source": "workbuddy-read-repair-e2e-v287-result.json"
+    },
+    {
+      "file": "receipts/installed-workbuddy-repeat-and-count.json",
+      "bytes": 1180,
+      "sha256": "771a134cf2b5a3c8058ce6cb732a889e7778039d5ba50d55fe51ac469994506a",
+      "source": "workbuddy-repeated-search-e2e-v287-result.json"
+    },
+    {
+      "file": "receipts/installed-cli-search-auth-limit.json",
+      "bytes": 555,
+      "sha256": "c5f8735f7897066056819448e59fd9603c6a19a3f9ed173314adf4eb9cd79673",
+      "source": "workbuddy-search-error-roundtrip-v278.json"
+    },
+    {
+      "file": "receipts/retained-successful-search-gate-failure.json",
+      "bytes": 697,
+      "sha256": "0e257f5eb4310fcc4c369b521871824fdbe24392f4f9a60ce7882cbddfe9a038",
+      "source": "workbuddy-search-e2e-v273-result.json"
+    },
+    {
+      "file": "receipts/retained-termination-only-count-failure.json",
+      "bytes": 1484,
+      "sha256": "7c3f9790b9f87298c4cef174b7dd3c035198bf23a068a2699e99e71139802ac9",
+      "source": "workbuddy-repeated-search-e2e-v280-result.json"
+    },
+    {
+      "file": "receipts/retained-exact-format-failure.json",
+      "bytes": 1470,
+      "sha256": "671c681de6da3324fc1e107314623c94fed1562175814352d34945eff30a4aea",
+      "source": "xolotl-truthful-loop-recovery-v283-plan.json"
+    },
+    {
+      "file": "receipts/corrected-count-format-proof.json",
+      "bytes": 1173,
+      "sha256": "3aceafc1e0b8fc47fab373c7dd31bbfc15e15e4231e33541e3d077bbdb04393d",
+      "source": "xolotl-truthful-loop-recovery-v283r1-plan.json"
+    },
+    {
+      "file": "receipts/id-loss-counterexample.json",
+      "bytes": 469,
+      "sha256": "a991e78f2a423625203795e2237e97d98b8768390bd02e7cf05d5489dcea0af4",
+      "source": "xolotl-parallel-tool-id-reproducer-v266.json"
+    },
+    {
+      "file": "receipts/retained-first-output-limit-failure.json",
+      "bytes": 859,
+      "sha256": "8486543d942fc3892abc6e497ab356a0c2844088560b56fbe81b35d4285ff307",
+      "source": "xolotl-tool-adapter-v267r1-plan.json"
+    },
+    {
+      "file": "receipts/private-incident-aggregate-only.json",
+      "bytes": 432,
+      "sha256": "fdb7b1bf85d77d7b8c51f25affdd21ea282e655937732751f66d42fde570b6d3",
+      "source": null
+    },
+    {
+      "file": "operators/prepare_formal_tool_repair_v284.py",
+      "bytes": 8405,
+      "sha256": "9c9f04057c12e943920fd0d404573d3ec3118dacda7ad11cd9d74e2ccb66af27",
+      "source": "prepare_formal_tool_repair_v284.py"
+    },
+    {
+      "file": "operators/manage_formal_tool_repair_v285.py",
+      "bytes": 6186,
+      "sha256": "c5a19c785ef1f328813b6e0faa6837683bb7d8df27f1b0c59f5f09129b06f535",
+      "source": "manage_formal_tool_repair_v285.py"
+    },
+    {
+      "file": "operators/probe_formal_tool_repair_v286.py",
+      "bytes": 2576,
+      "sha256": "bdda88e0f2410387a901d782ea6a0b14d0f93a8794fef92920643c4eea538a42",
+      "source": "probe_formal_tool_repair_v286.py"
+    },
+    {
+      "file": "operators/workbuddy_repeated_search_e2e_v287.frozen.py",
+      "bytes": 4402,
+      "sha256": "43973ab610ff63fd77b2a72269f65f6f458ce2f395e8ea530af0bae85c14cb11",
+      "source": "workbuddy_repeated_search_e2e_v287.frozen.py"
+    },
+    {
+      "file": "operators/workbuddy_native_read_repair_e2e_v287.frozen.py",
+      "bytes": 5830,
+      "sha256": "46e7420f9cecc43ed59e46efff0b8a994f372a82339888a3de0bbea46a5772d8",
+      "source": "workbuddy_native_read_repair_e2e_v287.frozen.py"
+    },
+    {
+      "file": "operators/finalize_formal_tool_repair_v288.py",
+      "bytes": 7620,
+      "sha256": "ac8ce65d8709f6a7dede1126ec3be7a64f181277a90a79355d1d3094bc5b2ca0",
+      "source": "finalize_formal_tool_repair_v288.py"
+    },
+    {
+      "file": "provenance.json",
+      "bytes": 1303,
+      "sha256": "91ef70b4822b1b1c24c6d0cb6045be7ea8c71f8b932c14b9eae8b1d1e6bf8fed",
+      "source": null
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 3220,
+      "sha256": "bcacd36971dba5082ffdf0be2f39c8a9de8b876ec374c4f21e8387cf32303564",
+      "source": null
+    },
+    {
+      "file": ".gitattributes",
+      "bytes": 109,
+      "sha256": "bae9909087ebd8769176df0d06a4a2d526af3e223aa1e31da5bd72ad31c7716a",
+      "source": null
+    },
+    {
+      "file": "receipts/published-directory-hermetic-tests.json",
+      "bytes": 1250,
+      "sha256": "caa01a97f2e9252a4d8be3f7ecef9606fe15cb58d19fc95cfe14af9ffc208c9b",
+      "source": null
+    },
+    {
+      "file": "receipts/retained-patch-format-whitespace-gate.json",
+      "bytes": 490,
+      "sha256": "4baba80b42f4e57ef26ef0c925e769470ae955d4e36d4b1984d46c507f25dab1"
+    }
+  ]
+}

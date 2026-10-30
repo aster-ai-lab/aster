@@ -1,0 +1,17 @@
+2026-10-24T14:22:54.3681302Z ##[start-action display=Resolve pinned revision;id=__self.revision]
+2026-10-24T14:22:54.3698313Z ##[group]Run # Container checkout ownership can differ; trust only this workspace.
+2026-10-24T14:22:54.3698880Z # Container checkout ownership can differ; trust only this workspace.
+2026-10-24T14:22:54.3699474Z test "$(git -c safe.directory="$GITHUB_WORKSPACE" ls-tree HEAD apps/studio | cut -d ' ' -f 1)" = 160000
+2026-10-24T14:22:54.3700164Z echo "sha=$(git -c safe.directory="$GITHUB_WORKSPACE" rev-parse HEAD:apps/studio)" >> "$GITHUB_OUTPUT"
+2026-10-24T14:22:54.3700777Z shell: bash --noprofile --norc -e -o pipefail {0}
+2026-10-24T14:22:54.3701070Z env:
+2026-10-24T14:22:54.3701263Z   CARGO_INCREMENTAL: 0
+2026-10-24T14:22:54.3701477Z   CARGO_TERM_COLOR: always
+2026-10-24T14:22:54.3701707Z   DEBIAN_FRONTEND: noninteractive
+2026-10-24T14:22:54.3701947Z ##[endgroup]
+2026-10-24T14:22:54.4168772Z fatal: detected dubious ownership in repository at '/__w/aster/aster'
+2026-10-24T14:22:54.4169529Z To add an exception for this directory, call:
+2026-10-24T14:22:54.4169903Z
+2026-10-24T14:22:54.4170235Z 	git config --global --add safe.directory /__w/aster/aster
+2026-10-24T14:22:54.4204373Z ##[error]Process completed with exit code 1.
+2026-10-24T14:22:54.4212670Z ##[end-action id=__self.revision;outcome=failure;conclusion=failure;duration_ms=53]

@@ -1,0 +1,127 @@
+{
+  "assertions_finished": true,
+  "case": "path-bounded-read",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "bounded.txt",
+            "limit": 20,
+            "offset": 0
+          },
+          "id": "call_a2cf75dedb994af7a0682701817d1e5e",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13213,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ef031ad1-8bc4-4df0-a617-427596f8c160",
+            "thread_id": "edc79f01-d039-4df8-a378-d1246b4ad663"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a2cf75dedb994af7a0682701817d1e5e",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-ef031ad1-8bc4-4df0-a617-427596f8c160",
+            "thread_id": "edc79f01-d039-4df8-a378-d1246b4ad663"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_a2cf75dedb994af7a0682701817d1e5e",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\tLINE-001\\n     2\\tLINE-002\\n     3\\tLINE-003\\n     4\\tLINE-004\\n     5\\tLINE-005\\n     6\\tLINE-006\\n     7\\tLINE-007\\n     8\\tLINE-008\\n     9\\tLINE-009\\n    10\\tLINE-010\\n    11\\tLINE-011\\n    12\\tLINE-012\\n    13\\tLINE-013\\n    14\\tLINE-014\\n    15\\tLINE-015\\n    16\\tLINE-016\\n    17\\tLINE-017\\n    18\\tLINE-018\\n    19\\tLINE-019\\n    20\\tLINE-020\\n\\n... (more lines available; continue with offset=20)\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"bounded.txt\"],\"range\":{\"offset\":0,\"requested_limit\":20,\"applied_limit\":20,\"returned_lines\":20,\"next_offset\":20,\"eof\":false,\"total_lines\":null,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":null,\"output_bytes\":373},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":373,\"projected_bytes\":373,\"original_estimated_tokens\":94,\"projected_estimated_tokens\":94,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:b21e67817e6bfdb76486863752072a5acf5d853328e1b83ca2965fa364f9748b\",\"projected_digest\":\"sha256:b21e67817e6bfdb76486863752072a5acf5d853328e1b83ca2965fa364f9748b\",\"repeat_key\":\"sha256:b21e67817e6bfdb76486863752072a5acf5d853328e1b83ca2965fa364f9748b\",\"content_ref\":\"inline:sha256:b21e67817e6bfdb76486863752072a5acf5d853328e1b83ca2965fa364f9748b\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:b3a8c82248a520f3c95c562e04ad3ab46d917accf26b0775123c29804ad0fe4f\"}",
+        "prepared_digest": "sha256:1c6981e2b9b5fbc7669a5fe2350a2b1344df1244e70309e78108dbbdac1f1e76",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13533,
+        "text": "Visible lines:\n\n```text\nLINE-001\nLINE-002\nLINE-003\nLINE-004\nLINE-005\nLINE-006\nLINE-007\nLINE-008\nLINE-009\nLINE-010\nLINE-011\nLINE-012\nLINE-013\nLINE-014\nLINE-015\nLINE-016\nLINE-017\nLINE-018\nLINE-019\nLINE-020\n```\n\n`next_offset`: **20**",
+        "tool": null
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "6677325a5d390b66142b27775aae81b0977854166095dbf31a785d65137d5825",
+          "seq": 9
+        },
+        "receipt_keys": [
+          "sha256:d8d0a206d98a68c6cfca95de0bf678fe38e0cb7758063fb86dd4acbe957146a5"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 10,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-unknown-linux-gnu",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=10 model_turns=2 prompt_tokens=26746",
+      "name": "settled-turn",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-e8QqeQ/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                       █\n     ❯ Use the read tool exactly once to read bounded.txt with file_path bounded.txt, offset 0 and limit    10:18 AM   █\n       20. Report the visible lines and next_offset. Do not call other tools or modify any file.                       █\n                                                                                                                       █\n                                                                                                                       █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     Visible lines:                                                                                         10:19 AM   █\n                                                                                                                       █\n     LINE-001                                                                                                          █\n     LINE-002                                                                                                          █\n     LINE-003                                                                                                          █\n     LINE-004                                                                                                          █\n     LINE-005                                                                                                          █\n     LINE-006                                                                                                          █\n     LINE-007                                                                                                          █\n     LINE-008                                                                                                          █\n     LINE-009                                                                                                          █\n     LINE-010                                                                                                          █\n     LINE-011                                                                                                          █\n     LINE-012                                                                                                          █\n     LINE-013                                                                                                          █\n     LINE-014                                                                                                          █\n     LINE-015                                                                                                          █\n     LINE-016                                                                                                          █\n     LINE-017                                                                                                          █\n     LINE-018                                                                                                          █\n     LINE-019                                                                                                           \n     LINE-020                                                                                                           \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "the large file returns exactly twenty lines with next_offset=20 and no later secret",
+      "name": "bounded-read",
+      "screen": "                                                                                                                        \n  /t/aster-kimi-e8QqeQ/workspace                                                                            13K / 128K  \n                                                                                                                        \n                                                                                                                       █\n     ❯ Use the read tool exactly once to read bounded.txt with file_path bounded.txt, offset 0 and limit    10:18 AM   █\n       20. Report the visible lines and next_offset. Do not call other tools or modify any file.                       █\n                                                                                                                       █\n                                                                                                                       █\n     ◈ Read 1 file                                                                                                     █\n                                                                                                                       █\n     Visible lines:                                                                                         10:19 AM   █\n                                                                                                                       █\n     LINE-001                                                                                                          █\n     LINE-002                                                                                                          █\n     LINE-003                                                                                                          █\n     LINE-004                                                                                                          █\n     LINE-005                                                                                                          █\n     LINE-006                                                                                                          █\n     LINE-007                                                                                                          █\n     LINE-008                                                                                                          █\n     LINE-009                                                                                                          █\n     LINE-010                                                                                                          █\n     LINE-011                                                                                                          █\n     LINE-012                                                                                                          █\n     LINE-013                                                                                                          █\n     LINE-014                                                                                                          █\n     LINE-015                                                                                                          █\n     LINE-016                                                                                                          █\n     LINE-017                                                                                                          █\n     LINE-018                                                                                                          █\n     LINE-019                                                                                                           \n     LINE-020                                                                                                           \n                                                                                                                        \n                                                                                                                        \n  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  \n  │ ❯                                                                                                                │  \n  ╰────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) · yolo ─╯  \n                                                                                                                        \n  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   \n                                                                                                                        "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

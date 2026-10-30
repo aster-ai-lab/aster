@@ -1,0 +1,6 @@
+
+running 1 test
+test agent_api::tests::long_horizon_capabilities::plan_batch_and_recovery_choreography_survives_the_fact_spine ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 4.79s
+

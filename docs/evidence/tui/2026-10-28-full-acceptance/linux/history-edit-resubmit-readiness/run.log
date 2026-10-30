@@ -1,0 +1,59 @@
+
+running 1 test
+test functional::kimi_history_recall_edit_and_resubmit_uses_exact_draft ... ORACLE case=history-edit-resubmit name=source-pair result=pass detail=aster-cli-pair-v1:be1f1bc23acbd2ecb5c01205657b84d961fa0a16:x86_64-unknown-linux-gnu
+ORACLE case=history-edit-resubmit name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13189
+ORACLE case=history-edit-resubmit name=history-recall result=pass detail=the previous prompt is restored into the composer without another request
+ORACLE case=history-edit-resubmit name=history-edit result=pass detail=the recalled draft is edited locally before explicit resubmission
+
+thread 'functional::kimi_history_recall_edit_and_resubmit_uses_exact_draft' (7056) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:678:13:
+live turn did not settle
+                                                                                                                        
+  /t/aster-kimi-0Yt1zk/workspace                                                                            13K / 128K  
+                                                                                                                        
+                                                                                                                        
+     ❯ EDITED-HISTORY.                                                                                      11:46 PM    
+                                                                                                                        
+                                                                                                                        
+     ◆ Thought for 3.8s                                                                                                 
+                                                                                                                        
+     EDITED-HISTORY                                                                                         11:46 PM    
+                                                                                                                       █
+     Worked for 8.3s                                                                                                   █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯                                                                                                                │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_history_recall_edit_and_resubmit_uses_exact_draft
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 47 filtered out; finished in 431.90s
+

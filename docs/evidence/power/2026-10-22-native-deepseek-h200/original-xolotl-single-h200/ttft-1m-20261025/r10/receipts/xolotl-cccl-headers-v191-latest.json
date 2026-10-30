@@ -1,0 +1,17 @@
+{
+  "unix": 1792906809.5011394,
+  "alive": false,
+  "result.json": {
+    "unix": 1792906767.0448844,
+    "phase": "prepared",
+    "GPU_executed": false,
+    "system_installed": false,
+    "headers": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cccl-topk-headers-v191-cpu/headers",
+    "header_files": 2337,
+    "header_bytes": 19390705,
+    "commit": "28101b07413743e1dcca8ca8af1cfc63e8cff2d1",
+    "archive_sha256": "55fd549829445d37338fcb5d9c90b48edd891a02330316b85570c4ae87a98f78",
+    "finished_unix": 1792906775.8882627
+  },
+  "worker.log": ""
+}

@@ -1,0 +1,20 @@
+
+running 1 test
+test entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold ... FAILED
+
+failures:
+
+---- entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold stdout ----
+
+thread 'entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold' (3320690) panicked at apps/gateway/src/entrypoint/tests.rs:3000:5:
+assertion `left == right` failed
+  left: "broken"
+ right: "{\"error\":\"No healthy backends\"}"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    entrypoint::tests::passive_health_half_open_still_broken_reblacklists_after_threshold
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2123 filtered out; finished in 0.06s
+

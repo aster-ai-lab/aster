@@ -1,4 +1,4 @@
-# Tasks: Aster native recording and Scrawl evidence
+# Tasks: Aster native recording and Capture evidence
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [contracts/](contracts/).
 
@@ -6,9 +6,9 @@
 
 ## Phase 1: Evidence engine and native behavior
 
-- [ ] T001 [US1/US2/US3/US4] Internalize `kitlangton/scrawl@7b184c67767a1aee6c1d44640d94d8446cd5fed1` under `crates/scrawl` with MIT/provenance and root workspace membership; run the unmodified upstream Rust/Swift test baseline before Aster edits.
-- [x] T002 [US1] Add the library integration API and closed recording/target/destination/error types in `crates/scrawl/src/lib.rs` and `apps/studio/src/shared/types/`; sibling tests cover parse/as_str, unknown-value and invalid-transition refusal.
-- [x] T003 [US1] Implement the host recording controller and deterministic fake adapters in `apps/studio/src-tauri/src/scrawl/`; tests cover one device owner, start/stop/cancel/finalize, stale sessions, crash recovery and no duplicate delivery.
+- [ ] T001 [US1/US2/US3/US4] Internalize `kitlangton/scrawl@7b184c67767a1aee6c1d44640d94d8446cd5fed1` under `crates/capture` with MIT/provenance and root workspace membership; run the unmodified upstream Rust/Swift test baseline before Aster edits.
+- [x] T002 [US1] Add the library integration API and closed recording/target/destination/error types in `crates/capture/src/lib.rs` and `apps/studio/src/shared/types/`; sibling tests cover parse/as_str, unknown-value and invalid-transition refusal.
+- [x] T003 [US1] Implement the host recording controller and deterministic fake adapters in `apps/studio/src-tauri/src/capture/`; tests cover one device owner, start/stop/cancel/finalize, stale sessions, crash recovery and no duplicate delivery.
 - [ ] T004 [US1/US3] Integrate macOS capture, microphone, input timeline, ink/pin/laser and native control surface using the vendored engine/helper; hermetic protocol tests plus a real recording smoke verify media, permission and stop behavior.
 - [ ] T005 [US1/US2] Wire transcription, keyframe selection, auto-crop, contact sheet, summary and manifest into one bundle build; fixture tests verify exact filenames, record counts, timestamps, units and upstream cross-reading.
 
@@ -23,9 +23,9 @@
 - [ ] T012 [US1/US3] Add recording/microphone/transcriber/retention/shortcut preferences through existing ACL sources and regenerate schemas/locales; tests cover conflicts, missing models, permission refusal and disabled operations without another config format.
 - [ ] T013 [US4] Implement explicit Aster destination, page registration, bounded localhost matching and smart send/offer/keep with runner-up/undo; tests cover recipient precedence, ambiguous refusal, loopback/token rules and replayed decisions.
 
-## Phase 3: ScrawlKit, ingest, CLI and platforms
+## Phase 3: CaptureKit, ingest, CLI and platforms
 
-- [ ] T014 [US4] Preserve and integrate ScrawlKit appFrames/ReplayKit, gestures, touches, app events/context, pairing, USB import and delivery replies in `crates/scrawl/Sources/` and ingest; Swift/Rust tests verify ordered timelines, protocol and idempotency.
+- [ ] T014 [US4] Preserve and integrate CaptureKit appFrames/ReplayKit, gestures, touches, app events/context, pairing, USB import and delivery replies in `crates/capture/Sources/` and ingest; Swift/Rust tests verify ordered timelines, protocol and idempotency.
 - [ ] T015 [US4] Integrate the durable HTTPS outbox and authenticated headless ingest with payload/time/resource bounds; tests cover offline retry, permanent failure, 2xx deletion, auth and duplicate delivery.
 - [ ] T016 [US2/US3/US4] Wire every public and diagnostic operation in `contracts/cli-inventory.md`, including inspect, zoom, frames, export, devices, link, import, retranscribe/reprocess, recover, autocrop, clean, pin, route, helper protocols and headless ingest; hermetic tests cover each operation and refusal without new language bindings.
 - [ ] T017 [US5] Implement the Windows capture/input/transcription adapter using the same evidence engine; portable adapter tests plus Windows native evidence when hardware is available, with explicit unavailability for unsupported operations.
@@ -35,10 +35,10 @@
 ## Phase 4: Native acceptance and evidence
 
 - [ ] T020 [US1/US2/US3] Run isolated macOS CUA for area/window/screen recording, narration, marks, stop/cancel, review, redaction, attachment, agent zoom, export and recovery; reopen actual bundles/media and compare source data.
-- [ ] T021 [US4/US5] Run available iPhone/ScrawlKit/HTTPS and other-platform native acceptance; retain exact device/OS results and explicit blockers instead of inferring a pass.
+- [ ] T021 [US4/US5] Run available iPhone/CaptureKit/HTTPS and other-platform native acceptance; retain exact device/OS results and explicit blockers instead of inferring a pass.
 - [ ] T022 [All] Run focused Rust/Swift/renderer suites, applicable typecheck/lint/i18n/format and workspace guards; update `contracts/capability-matrix.md` from pending to verified only with direct evidence.
 - [ ] T023 [All] Record `docs/evidence/desktop/2026-10-30-scrawl-evidence/OUTCOME.md` with Result, What landed, commands, counts, per-capability evidence and Explicitly not claimed; reopen deliverables and record unresolved work.
-- [ ] T024 [All] Inspect final file scope and new build outputs, remove only this task's disposable files, and stage nothing. No commit or push was requested.
+- [ ] T024 [All] Inspect final file scope and new build outputs, remove only this task's disposable files, and stage nothing. The later user request explicitly authorizes committing, merging and pushing this bounded change to main; unrelated work stays untouched.
 
 ## Final Verification Gate
 

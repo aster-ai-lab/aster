@@ -1,0 +1,712 @@
+{
+  "unix": 1792930128.5162635,
+  "exact_worker_alive": false,
+  "result": {
+    "unix": 1792930038.4176424,
+    "phase": "passed",
+    "profiles": [
+      {
+        "name": "control-a",
+        "flag": "0",
+        "seconds": 13.732921866700053,
+        "score_bytes": 176160864,
+        "full_score_sha256": "ae9a0a4b205a0963fee8ad32751210c37c08fb5f44caf0e6b94ef6a8ba06ab2e",
+        "full_score_equal": true,
+        "cases": [
+          {
+            "case": 0,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              0.940988578,
+              0.941212562,
+              0.941225156,
+              0.941273453,
+              0.9412805
+            ],
+            "median_wall_ms": 0.941225156
+          },
+          {
+            "case": 1,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.613767063,
+              0.613726641,
+              0.613678203,
+              0.613758641,
+              0.613684469
+            ],
+            "median_wall_ms": 0.613726641
+          },
+          {
+            "case": 2,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.356047531,
+              0.356132953,
+              0.356068781,
+              0.3562245,
+              0.356069797
+            ],
+            "median_wall_ms": 0.356069797
+          },
+          {
+            "case": 3,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              5.541803813,
+              5.542693391,
+              5.542110109,
+              5.542193234,
+              5.54241875
+            ],
+            "median_wall_ms": 5.542193234
+          },
+          {
+            "case": 4,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              3.615405734,
+              3.615413359,
+              3.617088281,
+              3.613250156,
+              3.623302031
+            ],
+            "median_wall_ms": 3.615413359
+          },
+          {
+            "case": 5,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              2.068208781,
+              2.067916172,
+              2.067901875,
+              2.067911,
+              2.067992906
+            ],
+            "median_wall_ms": 2.067916172
+          },
+          {
+            "case": 6,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              1.701250703,
+              1.702827781,
+              1.701742625,
+              1.702164313,
+              1.702289094
+            ],
+            "median_wall_ms": 1.702164313
+          },
+          {
+            "case": 7,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.999388047,
+              0.999370891,
+              1.00051625,
+              0.999357719,
+              0.999419234
+            ],
+            "median_wall_ms": 0.999388047
+          },
+          {
+            "case": 8,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.448323531,
+              0.448818938,
+              0.449225797,
+              0.449518437,
+              0.449446609
+            ],
+            "median_wall_ms": 0.449225797
+          },
+          {
+            "case": 9,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              10.078456766,
+              10.086724406,
+              10.069220359,
+              10.069210609,
+              10.069126156
+            ],
+            "median_wall_ms": 10.069220359
+          },
+          {
+            "case": 10,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              5.932378281,
+              5.931393781,
+              5.930913375,
+              5.931038672,
+              5.930846594
+            ],
+            "median_wall_ms": 5.931038672
+          },
+          {
+            "case": 11,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              2.629194766,
+              2.629143437,
+              2.629219781,
+              2.629207859,
+              2.629112437
+            ],
+            "median_wall_ms": 2.629194766
+          }
+        ]
+      },
+      {
+        "name": "MXFP4-header",
+        "flag": "1",
+        "seconds": 13.173317893408239,
+        "score_bytes": 176160864,
+        "full_score_sha256": "ae9a0a4b205a0963fee8ad32751210c37c08fb5f44caf0e6b94ef6a8ba06ab2e",
+        "full_score_equal": true,
+        "cases": [
+          {
+            "case": 0,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              1.061823141,
+              1.061880266,
+              1.061890609,
+              1.064085609,
+              1.061888437
+            ],
+            "median_wall_ms": 1.061888437
+          },
+          {
+            "case": 1,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.584134469,
+              0.584297703,
+              0.584643219,
+              0.584695141,
+              0.584651219
+            ],
+            "median_wall_ms": 0.584643219
+          },
+          {
+            "case": 2,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.208928891,
+              0.209020422,
+              0.208981297,
+              0.208926672,
+              0.209027859
+            ],
+            "median_wall_ms": 0.208981297
+          },
+          {
+            "case": 3,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              6.257898688,
+              6.253590188,
+              6.252289844,
+              6.252346219,
+              6.252559
+            ],
+            "median_wall_ms": 6.252559
+          },
+          {
+            "case": 4,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              3.455197781,
+              3.455129562,
+              3.455107234,
+              3.455497719,
+              3.455080953
+            ],
+            "median_wall_ms": 3.455129562
+          },
+          {
+            "case": 5,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              1.201666109,
+              1.201722484,
+              1.201770125,
+              1.201775156,
+              1.201777156
+            ],
+            "median_wall_ms": 1.201770125
+          },
+          {
+            "case": 6,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              1.738380641,
+              1.738330813,
+              1.738163344,
+              1.737970766,
+              1.738049187
+            ],
+            "median_wall_ms": 1.738163344
+          },
+          {
+            "case": 7,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.927110156,
+              0.927040688,
+              0.926983953,
+              0.927043938,
+              0.927062797
+            ],
+            "median_wall_ms": 0.927043938
+          },
+          {
+            "case": 8,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.292200734,
+              0.292203953,
+              0.292514781,
+              0.292576797,
+              0.292518531
+            ],
+            "median_wall_ms": 0.292514781
+          },
+          {
+            "case": 9,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              10.280552469,
+              10.280552859,
+              10.281285203,
+              10.280745297,
+              10.280524906
+            ],
+            "median_wall_ms": 10.280552859
+          },
+          {
+            "case": 10,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              5.514037172,
+              5.511302047,
+              5.511743547,
+              5.511322109,
+              5.511330359
+            ],
+            "median_wall_ms": 5.511330359
+          },
+          {
+            "case": 11,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              1.701210375,
+              1.701698922,
+              1.701343953,
+              1.701302203,
+              1.701482719
+            ],
+            "median_wall_ms": 1.701343953
+          }
+        ]
+      },
+      {
+        "name": "control-b",
+        "flag": "0",
+        "seconds": 13.6637022504583,
+        "score_bytes": 176160864,
+        "full_score_sha256": "ae9a0a4b205a0963fee8ad32751210c37c08fb5f44caf0e6b94ef6a8ba06ab2e",
+        "full_score_equal": true,
+        "cases": [
+          {
+            "case": 0,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              0.940987672,
+              0.941217562,
+              0.942503375,
+              0.941259906,
+              0.941341094
+            ],
+            "median_wall_ms": 0.941259906
+          },
+          {
+            "case": 1,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.613693391,
+              0.613690172,
+              0.613653969,
+              0.613581438,
+              0.613666969
+            ],
+            "median_wall_ms": 0.613666969
+          },
+          {
+            "case": 2,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.356206719,
+              0.356057562,
+              0.356227766,
+              0.356480656,
+              0.356445734
+            ],
+            "median_wall_ms": 0.356227766
+          },
+          {
+            "case": 3,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              5.544238062,
+              5.544002891,
+              5.543585812,
+              5.543728406,
+              5.541458844
+            ],
+            "median_wall_ms": 5.543728406
+          },
+          {
+            "case": 4,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              3.613272281,
+              3.613356344,
+              3.613288875,
+              3.6131975,
+              3.617537797
+            ],
+            "median_wall_ms": 3.613288875
+          },
+          {
+            "case": 5,
+            "rows": 1048576,
+            "heads": 32,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              2.068037344,
+              2.068056234,
+              2.067985094,
+              2.068161813,
+              2.068082844
+            ],
+            "median_wall_ms": 2.068056234
+          },
+          {
+            "case": 6,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              1.701476969,
+              1.703423844,
+              1.701881875,
+              1.701550469,
+              1.712030453
+            ],
+            "median_wall_ms": 1.701881875
+          },
+          {
+            "case": 7,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              0.999536828,
+              0.999504734,
+              0.999696906,
+              0.999607469,
+              0.999733031
+            ],
+            "median_wall_ms": 0.999607469
+          },
+          {
+            "case": 8,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 1,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              0.449194578,
+              0.449178813,
+              0.449102156,
+              0.449206453,
+              0.449163469
+            ],
+            "median_wall_ms": 0.449178813
+          },
+          {
+            "case": 9,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 0,
+            "wall_ms_per_graph": [
+              10.072035687,
+              10.070344484,
+              10.069421547,
+              10.069388672,
+              10.069420625
+            ],
+            "median_wall_ms": 10.069421547
+          },
+          {
+            "case": 10,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 50,
+            "wall_ms_per_graph": [
+              5.932476516,
+              5.931432062,
+              5.930813875,
+              5.930935078,
+              5.930928
+            ],
+            "median_wall_ms": 5.930935078
+          },
+          {
+            "case": 11,
+            "rows": 1048576,
+            "heads": 64,
+            "queries": 6,
+            "masked_percent": 90,
+            "wall_ms_per_graph": [
+              2.629160781,
+              2.629136953,
+              2.629170922,
+              2.629085422,
+              2.629163859
+            ],
+            "median_wall_ms": 2.629160781
+          }
+        ]
+      }
+    ],
+    "model_executed": false,
+    "model_speed_claimed": false,
+    "formal_changed": false,
+    "same_binary_sha256": "1d455c5cce0e1c588b9aa322572121e4efb6b56b65fb234e6d22e585849f836f",
+    "same_GPU_ABA_completed": true,
+    "all12_full_scores_identical": true,
+    "comparisons": [
+      {
+        "heads": 32,
+        "queries": 1,
+        "masked_percent": 0,
+        "control_a_median_ms": 0.941225156,
+        "candidate_median_ms": 1.061888437,
+        "control_b_median_ms": 0.941259906,
+        "candidate_graphs_per_second_gain_vs_a_percent": -11.363084557252778,
+        "candidate_graphs_per_second_gain_vs_b_percent": -11.359812085419662
+      },
+      {
+        "heads": 32,
+        "queries": 1,
+        "masked_percent": 50,
+        "control_a_median_ms": 0.613726641,
+        "candidate_median_ms": 0.584643219,
+        "control_b_median_ms": 0.613666969,
+        "candidate_graphs_per_second_gain_vs_a_percent": 4.974559022465952,
+        "candidate_graphs_per_second_gain_vs_b_percent": 4.964352455783794
+      },
+      {
+        "heads": 32,
+        "queries": 1,
+        "masked_percent": 90,
+        "control_a_median_ms": 0.356069797,
+        "candidate_median_ms": 0.208981297,
+        "control_b_median_ms": 0.356227766,
+        "candidate_graphs_per_second_gain_vs_a_percent": 70.38357121498773,
+        "candidate_graphs_per_second_gain_vs_b_percent": 70.45916123297866
+      },
+      {
+        "heads": 32,
+        "queries": 6,
+        "masked_percent": 0,
+        "control_a_median_ms": 5.542193234,
+        "candidate_median_ms": 6.252559,
+        "control_b_median_ms": 5.543728406,
+        "candidate_graphs_per_second_gain_vs_a_percent": -11.361200526056603,
+        "candidate_graphs_per_second_gain_vs_b_percent": -11.336647826913747
+      },
+      {
+        "heads": 32,
+        "queries": 6,
+        "masked_percent": 50,
+        "control_a_median_ms": 3.615413359,
+        "candidate_median_ms": 3.455129562,
+        "control_b_median_ms": 3.613288875,
+        "candidate_graphs_per_second_gain_vs_a_percent": 4.63900974258169,
+        "candidate_graphs_per_second_gain_vs_b_percent": 4.577521918120175
+      },
+      {
+        "heads": 32,
+        "queries": 6,
+        "masked_percent": 90,
+        "control_a_median_ms": 2.067916172,
+        "candidate_median_ms": 1.201770125,
+        "control_b_median_ms": 2.068056234,
+        "candidate_graphs_per_second_gain_vs_a_percent": 72.07252277135781,
+        "candidate_graphs_per_second_gain_vs_b_percent": 72.08417741288089
+      },
+      {
+        "heads": 64,
+        "queries": 1,
+        "masked_percent": 0,
+        "control_a_median_ms": 1.702164313,
+        "candidate_median_ms": 1.738163344,
+        "control_b_median_ms": 1.701881875,
+        "candidate_graphs_per_second_gain_vs_a_percent": -2.071095971748904,
+        "candidate_graphs_per_second_gain_vs_b_percent": -2.0873451925701114
+      },
+      {
+        "heads": 64,
+        "queries": 1,
+        "masked_percent": 50,
+        "control_a_median_ms": 0.999388047,
+        "candidate_median_ms": 0.927043938,
+        "control_b_median_ms": 0.999607469,
+        "candidate_graphs_per_second_gain_vs_a_percent": 7.803741121059993,
+        "candidate_graphs_per_second_gain_vs_b_percent": 7.827410117857858
+      },
+      {
+        "heads": 64,
+        "queries": 1,
+        "masked_percent": 90,
+        "control_a_median_ms": 0.449225797,
+        "candidate_median_ms": 0.292514781,
+        "control_b_median_ms": 0.449178813,
+        "candidate_graphs_per_second_gain_vs_a_percent": 53.573708468427775,
+        "candidate_graphs_per_second_gain_vs_b_percent": 53.55764637411604
+      },
+      {
+        "heads": 64,
+        "queries": 6,
+        "masked_percent": 0,
+        "control_a_median_ms": 10.069220359,
+        "candidate_median_ms": 10.280552859,
+        "control_b_median_ms": 10.069421547,
+        "candidate_graphs_per_second_gain_vs_a_percent": -2.0556530655352123,
+        "candidate_graphs_per_second_gain_vs_b_percent": -2.0536960890694567
+      },
+      {
+        "heads": 64,
+        "queries": 6,
+        "masked_percent": 50,
+        "control_a_median_ms": 5.931038672,
+        "candidate_median_ms": 5.511330359,
+        "control_b_median_ms": 5.930935078,
+        "candidate_graphs_per_second_gain_vs_a_percent": 7.615372072817528,
+        "candidate_graphs_per_second_gain_vs_b_percent": 7.6134924177569285
+      },
+      {
+        "heads": 64,
+        "queries": 6,
+        "masked_percent": 90,
+        "control_a_median_ms": 2.629194766,
+        "candidate_median_ms": 1.701343953,
+        "control_b_median_ms": 2.629160781,
+        "candidate_graphs_per_second_gain_vs_a_percent": 54.536345303012325,
+        "candidate_graphs_per_second_gain_vs_b_percent": 54.53434776454047
+      }
+    ],
+    "scope": "Synthetic but exact deployed MXFP4 operator shapes:1048576 rows,heads32/64,queries1/6,masks0/50/90percent. CPU wall per logical CUDA graph including launch/guard overhead; no model tokens, no GPU-only kernel time and no model throughput claim.",
+    "finished_unix": 1792930080.6659863,
+    "GPU_idle_after": true
+  },
+  "error_logs": []
+}

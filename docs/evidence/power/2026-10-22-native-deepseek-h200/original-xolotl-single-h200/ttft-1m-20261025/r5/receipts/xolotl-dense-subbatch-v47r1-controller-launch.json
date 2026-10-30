@@ -1,0 +1,13 @@
+{
+  "unix": 1792871446.4472058,
+  "pid": 191744,
+  "script": "run_xolotl_dense_subbatch_v47r1.frozen.py",
+  "profiles": [
+    "dense256",
+    "dense512",
+    "dense128_repeat"
+  ],
+  "gated_on": "Exact V45 passed and process gone",
+  "formal_service_unchanged": true,
+  "remote_v45_restarted": false
+}

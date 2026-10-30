@@ -1,0 +1,60 @@
+{
+  "unix": 1792893062.5597172,
+  "files": [
+    {
+      "file": "logs/pool_off-engine.log",
+      "bytes": 61571,
+      "sha256": "adae2b633326755efe8dd6f4f0f53a2784c979d7fd31caaa38465d8532bbf5fd",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-pool-v108-pool_off",
+      "source_file": "engine.log"
+    },
+    {
+      "file": "logs/pool_on-engine.log",
+      "bytes": 62792,
+      "sha256": "1b1ad39040cebdd41edd326873b32a53937e727c0060c1a033b10c50388396ac",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-pool-v108-pool_on",
+      "source_file": "engine.log"
+    },
+    {
+      "file": "logs/pool_off_repeat-engine.log",
+      "bytes": 61578,
+      "sha256": "8a6567ea771289eb11a293f68f2a3f4d1da93616d07aca9fd3c7c0d32b06c2c5",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-pool-v108-pool_off_repeat",
+      "source_file": "engine.log"
+    },
+    {
+      "file": "code-fixture/public-fixture.txt.gz",
+      "bytes": 770778,
+      "sha256": "ad9cb7b5c7f32d0184a41fa4c087e3771fbf0c2b5947b1b1cef13a50acd5a650",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+      "source_file": "public-fixture.txt.gz"
+    },
+    {
+      "file": "code-fixture/fixture-metadata.json",
+      "bytes": 958,
+      "sha256": "97e794c0e0eee9b084c31212e39d317ffefc4030be11c3668aeb19dcd11bab1c",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+      "source_file": "fixture-metadata.json"
+    },
+    {
+      "file": "code-fixture/corpus-source-manifest.json",
+      "bytes": 45853,
+      "sha256": "822b579065e8f9b7ac1713c2b0f939b0b40fbe0fd552f686eab25ea0e534250a",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+      "source_file": "corpus-source-manifest.json"
+    },
+    {
+      "file": "code-fixture/unit-tests.log",
+      "bytes": 612,
+      "sha256": "f36cf1bbeedf021333c5b2a508111dbb00909c95d41b28b11f068246888195dd",
+      "source_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+      "source_file": "unit-tests.log"
+    }
+  ],
+  "credential_negative_controls": 2,
+  "credential_occurrences": 0,
+  "model_weights_copied": false,
+  "binaries_copied": false,
+  "raw_profiler_artifacts_copied": false,
+  "actual1m_gpu_executed": false
+}

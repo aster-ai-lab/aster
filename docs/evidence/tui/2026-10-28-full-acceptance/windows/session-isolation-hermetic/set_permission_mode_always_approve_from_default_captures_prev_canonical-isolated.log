@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical' (23816) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\modes.rs:1689:5:
+assertion `left == right` failed: AlwaysApprove arm preserves the destructive yolo_toast(true) — the warning weight is correct for the YOLO transition
+  left: "! YOLO ON: all tool actions auto-run"
+ right: "⚠ YOLO ON: all tool actions auto-run"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10187 filtered out; finished in 0.01s
+

@@ -1,0 +1,246 @@
+{
+  "checked_main": "e2beb284d3fe99a1fd8b4ad78f13a9988187c9f9",
+  "count": 30,
+  "diagnostics": [
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/modals.rs",
+      "line": 106,
+      "column": 22,
+      "unchanged_from_main": true,
+      "sha256": "a490186d8cb3598a7bedb056fb17db040b4b27359fd57533a55212a6680e250e"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/modals.rs",
+      "line": 143,
+      "column": 14,
+      "unchanged_from_main": true,
+      "sha256": "a490186d8cb3598a7bedb056fb17db040b4b27359fd57533a55212a6680e250e"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/app/modals.rs",
+      "line": 173,
+      "column": 14,
+      "unchanged_from_main": true,
+      "sha256": "a490186d8cb3598a7bedb056fb17db040b4b27359fd57533a55212a6680e250e"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/slash/mod.rs",
+      "line": 489,
+      "column": 17,
+      "unchanged_from_main": true,
+      "sha256": "213b67e393c9ab3a9d118ea48a4070fb2aa72486cdec8acc8a176b1178c635b4"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/slash/mod.rs",
+      "line": 492,
+      "column": 40,
+      "unchanged_from_main": true,
+      "sha256": "213b67e393c9ab3a9d118ea48a4070fb2aa72486cdec8acc8a176b1178c635b4"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/slash/mod.rs",
+      "line": 495,
+      "column": 24,
+      "unchanged_from_main": true,
+      "sha256": "213b67e393c9ab3a9d118ea48a4070fb2aa72486cdec8acc8a176b1178c635b4"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 414,
+      "column": 18,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 418,
+      "column": 13,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 419,
+      "column": 16,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 423,
+      "column": 38,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 433,
+      "column": 13,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 749,
+      "column": 28,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 755,
+      "column": 52,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 768,
+      "column": 24,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 877,
+      "column": 38,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 880,
+      "column": 35,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 893,
+      "column": 34,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 904,
+      "column": 17,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "slicing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/document.rs",
+      "line": 907,
+      "column": 18,
+      "unchanged_from_main": true,
+      "sha256": "5d4c60ed90e238a8ebba91c63e1397617677ffdc83dbe6b7d1b4b03c63d269a3"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/state.rs",
+      "line": 282,
+      "column": 28,
+      "unchanged_from_main": true,
+      "sha256": "d0ea393e764cec1dce5be6af77ad842cfbb7f7cb803a2338192ca8efd9c4300c"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/state.rs",
+      "line": 495,
+      "column": 20,
+      "unchanged_from_main": true,
+      "sha256": "d0ea393e764cec1dce5be6af77ad842cfbb7f7cb803a2338192ca8efd9c4300c"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/state.rs",
+      "line": 542,
+      "column": 21,
+      "unchanged_from_main": true,
+      "sha256": "d0ea393e764cec1dce5be6af77ad842cfbb7f7cb803a2338192ca8efd9c4300c"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/state.rs",
+      "line": 668,
+      "column": 32,
+      "unchanged_from_main": true,
+      "sha256": "d0ea393e764cec1dce5be6af77ad842cfbb7f7cb803a2338192ca8efd9c4300c"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/model_config/state.rs",
+      "line": 669,
+      "column": 17,
+      "unchanged_from_main": true,
+      "sha256": "d0ea393e764cec1dce5be6af77ad842cfbb7f7cb803a2338192ca8efd9c4300c"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/slash_dropdown.rs",
+      "line": 299,
+      "column": 20,
+      "unchanged_from_main": true,
+      "sha256": "20ed96c1f3097df12f5d0932eec0424bf3a54e3b56e404ef7308c8e21336b46b"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/slash_dropdown.rs",
+      "line": 306,
+      "column": 39,
+      "unchanged_from_main": true,
+      "sha256": "20ed96c1f3097df12f5d0932eec0424bf3a54e3b56e404ef7308c8e21336b46b"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/slash_dropdown.rs",
+      "line": 310,
+      "column": 14,
+      "unchanged_from_main": true,
+      "sha256": "20ed96c1f3097df12f5d0932eec0424bf3a54e3b56e404ef7308c8e21336b46b"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/slash_dropdown.rs",
+      "line": 355,
+      "column": 62,
+      "unchanged_from_main": true,
+      "sha256": "20ed96c1f3097df12f5d0932eec0424bf3a54e3b56e404ef7308c8e21336b46b"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/welcome/logo.rs",
+      "line": 183,
+      "column": 41,
+      "unchanged_from_main": true,
+      "sha256": "5d4f1f4611aaa73e92b14cdde3f17b4527d452937db49d7261a3fac488cf5298"
+    },
+    {
+      "message": "indexing may panic",
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/views/welcome/logo.rs",
+      "line": 207,
+      "column": 33,
+      "unchanged_from_main": true,
+      "sha256": "5d4f1f4611aaa73e92b14cdde3f17b4527d452937db49d7261a3fac488cf5298"
+    }
+  ]
+}

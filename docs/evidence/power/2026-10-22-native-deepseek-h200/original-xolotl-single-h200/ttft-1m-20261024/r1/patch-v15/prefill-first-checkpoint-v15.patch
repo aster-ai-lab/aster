@@ -1,0 +1,21 @@
+--- v13/ds41_generate.cpp
++++ v15/ds41_generate.cpp
+@@ -1351,6 +1351,9 @@
+                     const int64_t ta = (int64_t) pos0 + n_cut - ER - gpos;
+                     cut = ta <= 0 ? 0 : ta >= B ? B : (int) ta;
+                     cut = (cut / SB) * SB;
++                    // A complete first checkpoint can yield to a request that
++                    // arrived during this batch, without another replay batch.
++                    if (prefill_qos && c0 == 0 && n > 8192) cut = 0;
+                     if (!enc_reported) { enc_reported = true; std::fprintf(stderr, "enc-skip: first batch B=%d, cut=%d (phase A %d cols, phase B %d)\n", B, cut, cut, B - cut); }
+                 }
+                 double t0 = now_ms();
+@@ -1428,6 +1431,8 @@
+                     std::fprintf(stderr, "vram trace: batch at %d (B %d) done: free %.2f GiB; %s\n", pos0 + c0, B,
+                                  tf / 1073741824.0, dense.vram_ledger().c_str());
+                 }
++                if (prefill_qos && c0 == 0 && n > 8192 && !yield_here && feed_yield && c0 + B < n)
++                    yield_here = feed_yield(c0, B);
+                 c0 += B;
+             } else {
+                 // ---- the sequential chunk path (unchanged): one pass of up to NP tokens through every layer

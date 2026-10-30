@@ -1,0 +1,49 @@
+{
+  "http_status": 200,
+  "seconds": 0.3823994499980472,
+  "fixture_sha256": "88360e7a1c6a5f9ef195d403032c9947127aa6bc2f875aee13de2e2b51850de5",
+  "response": {
+    "provider": "pp-ocr-v6",
+    "engine": "onnx-runtime",
+    "model": "PP-OCRv6_small",
+    "source": {
+      "path": "/tmp/a3s-gateway-ocr-045b7346-7f91-4c1a-bacb-bd718344251b.png",
+      "mediaType": "image/png",
+      "size": 1530,
+      "sha256": "88360e7a1c6a5f9ef195d403032c9947127aa6bc2f875aee13de2e2b51850de5"
+    },
+    "text": "A35",
+    "blocks": [
+      {
+        "page": 1,
+        "text": "A35",
+        "confidence": 0.97255945,
+        "detectionConfidence": 0.8187307,
+        "polygon": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 359,
+            "y": 0
+          },
+          {
+            "x": 359,
+            "y": 179
+          },
+          {
+            "x": 0,
+            "y": 179
+          }
+        ],
+        "boundingBox": {
+          "x": 0,
+          "y": 0,
+          "width": 359,
+          "height": 179
+        }
+      }
+    ]
+  }
+}

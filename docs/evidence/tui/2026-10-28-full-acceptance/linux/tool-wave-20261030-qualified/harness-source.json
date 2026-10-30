@@ -1,0 +1,8 @@
+{
+  "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "runtime_pair_rebuilt": false,
+  "harness_source_digest": "b19065d586f0e577498a8a2acb082deef990d26a",
+  "harness_snapshot": "source/tool-wave-20261030-qualified-source.json",
+  "original_pair_manifest_sha256": "cd4d2faef410c25c703dd8f7fb61a290c54c5b6108e6d478cd9468dd52450bec",
+  "test_binary_sha256": "8d109861bff3ddbf66655d0503eb6084404f9fa14eb93e2eeba820e5b96c6639"
+}

@@ -1,0 +1,11 @@
+{
+  "unix": 1792934433.6082351,
+  "phase": "prepared",
+  "retained_strict_validator": "aster_nsys_decode_metrics_v378.py",
+  "retained_actual_failure": "xolotl-decode-metric-failure-v381.json",
+  "actual_anomaly": "Nsight2025.3.1.90 actual CUDA smoke SQLite exports negative Compute Warps in Flight [Avg]; cause unproved",
+  "policy": "Keep exact signed raw numeric aggregates and literal identities. Never convert, clamp, discard negative samples or claim physical counter qualification. CUDA timeline and output correctness have separate gates.",
+  "official_schema_reference": "https://docs.nvidia.com/nsight-systems/AnalysisGuide/index.html",
+  "physical_values_qualified": false,
+  "formal_changed": false
+}

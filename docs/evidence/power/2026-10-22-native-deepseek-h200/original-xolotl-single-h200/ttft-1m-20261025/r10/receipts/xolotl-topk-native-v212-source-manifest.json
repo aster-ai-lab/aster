@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "file": "launch_topk_native_service_v212.frozen.py",
+      "bytes": 9396,
+      "sha256": "e2936b06cc02d81fd13d6e770dedb9b9e04d26b9b373729de6f4cc596346e23a"
+    },
+    {
+      "file": "manage_topk_native_basic_v212.frozen.py",
+      "bytes": 7144,
+      "sha256": "8cf81c2231d593ae6702fab9a6f48bd5b7a8beade0bd2c5cc6193c45f096d3cf"
+    },
+    {
+      "file": "manage_topk_native_extended_v212.frozen.py",
+      "bytes": 7406,
+      "sha256": "ca659078c3e5b3dca4095e159c7703f8a7cc351fca5f50bbf50b195e1743c909"
+    },
+    {
+      "file": "xolotl_sealed_bootstrap_v212.py",
+      "bytes": 2935,
+      "sha256": "47e0e06522ed21b53523a79c34ee3d0c013d81cdbf983128116e16df99b2a060"
+    }
+  ],
+  "profiles": [
+    "control_a",
+    "topk",
+    "control_b"
+  ],
+  "native_binary_sha256": "2bc83dcc3d3993ae7473b4e289454672f04190f21924e672de8dd53e2aff0195",
+  "modes": [
+    "0",
+    "1",
+    "0"
+  ],
+  "basic_requests": 28,
+  "tool_and_1024_requests": 12,
+  "acceptance_changed": false,
+  "model_forward_executed": false,
+  "formal_changed": false
+}

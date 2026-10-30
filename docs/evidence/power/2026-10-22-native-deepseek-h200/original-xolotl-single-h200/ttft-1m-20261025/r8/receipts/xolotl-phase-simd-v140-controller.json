@@ -1,0 +1,190 @@
+{
+  "unix": 1792896945.42607,
+  "phase": "requires_inspection",
+  "profiles": [
+    {
+      "profile": "control_a",
+      "basic": {
+        "profile": "control_a",
+        "phase": "passed",
+        "exact_client_alive": false,
+        "tests": 28,
+        "error": null,
+        "short_summary": {
+          "measured_requests": 16,
+          "ttft_p50_seconds": 0.1305933187250048,
+          "ttft_p95_seconds": 0.16520167037378997,
+          "api_wall_completion_tok_s": 83.10265525988329,
+          "stream_interval_tok_s_estimate": 92.70616137961304
+        },
+        "long_tests": [
+          {
+            "name": "cold35700",
+            "ttft_seconds": 37.94436811283231,
+            "seconds": 38.013056627009064,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "interleaved-arithmetic",
+            "ttft_seconds": 0.20709420088678598,
+            "seconds": 0.2521276087500155,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "restored35700",
+            "ttft_seconds": 0.030833708122372627,
+            "seconds": 0.105223230086267,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 35700
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-short",
+            "ttft_seconds": 1.4457587748765945,
+            "seconds": 1.4756439817138016,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "mixed-cold-long",
+            "ttft_seconds": 37.30219106376171,
+            "seconds": 37.349350014701486,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 2,
+              "total_tokens": 35702,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "42"
+          },
+          {
+            "name": "fresh-three-records",
+            "ttft_seconds": 36.308698600158095,
+            "seconds": 36.62368994625285,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          },
+          {
+            "name": "yielded-isolation-53",
+            "ttft_seconds": 1.4370547896251082,
+            "seconds": 1.4694316969253123,
+            "usage": {
+              "prompt_tokens": 18,
+              "completion_tokens": 2,
+              "total_tokens": 20,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              }
+            },
+            "content": "53"
+          },
+          {
+            "name": "yielded-three-records",
+            "ttft_seconds": 37.19043480698019,
+            "seconds": 37.71431816602126,
+            "usage": {
+              "prompt_tokens": 35700,
+              "completion_tokens": 17,
+              "total_tokens": 35717,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              }
+            },
+            "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}"
+          }
+        ]
+      },
+      "extended": {
+        "profile": "control_a",
+        "phase": "passed",
+        "tests": 12,
+        "exact_client_alive": false,
+        "error": null,
+        "native_tool_roundtrip_passed": true,
+        "long_summary": {
+          "requests": 8,
+          "completion_tokens": 8192,
+          "wall_seconds": 108.15536082722247,
+          "api_wall_completion_tok_s": 75.74289371644436,
+          "stream_interval_tok_s_estimate": 75.90025459020148,
+          "ttft_p50_seconds": 0.01123309787362814,
+          "ttft_min_seconds": 0.010003313887864351,
+          "ttft_max_seconds": 0.02638621674850583
+        },
+        "reference_matched": true,
+        "failure_log": null
+      },
+      "model_requests": 40
+    }
+  ],
+  "formal_service_unchanged": true,
+  "maximum_h200_roles": 2,
+  "gpu_300_qualified": false,
+  "model_gain_claimed": false,
+  "goal_complete": false,
+  "prior_suite_phase": "failed",
+  "prior_suite_client_alive": false,
+  "prior_suite_children": {
+    "remainder/request-result.json": {
+      "phase": "passed",
+      "tests": 0,
+      "current_test": null,
+      "error": null
+    },
+    "fullwindow/request-result.json": {
+      "phase": "failed",
+      "tests": 20,
+      "current_test": null,
+      "error": "ValueError: full-window long-output identity differs"
+    }
+  },
+  "observed_unix": 1792897908.6665444,
+  "prior_suite_error": "RuntimeError: fullwindow qualification failed",
+  "native_link_phase": "linked",
+  "native_link_alive": false,
+  "current_profile": "simd",
+  "service_phase": "serving",
+  "client_phase": "handoff_retrieval",
+  "client_tests": 25,
+  "client_alive": true,
+  "error": "TimeoutExpired: Command '['C:\\\\Users\\\\admin\\\\AppData\\\\Roaming\\\\uv\\\\python\\\\cpython-3.12.14-windows-x86_64-none\\\\python.exe', '-X', 'utf8', 'D:\\\\code\\\\aster\\\\target\\\\h200-native\\\\manage_phase_simd_basic_v139.frozen.py', 'simd', 'observe_client']' timed out after 100 seconds",
+  "finished_unix": 1792897908.6665444
+}

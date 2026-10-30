@@ -1,0 +1,19 @@
+{
+  "schema": "aster-exact-literal-overlay-v148",
+  "upstream_sha256": "f062d9d39131959da9c981b6704e2ec27f89d8e2806730062dcabc3eb27682ba",
+  "patched_sha256": "6fd2a8b6135fc5e676933f8c729f33dc2bba5849d721cab6d28b6a68a9d43954",
+  "helper_sha256": "25587cae9ea90b3155b80d1a02691e4debe7da4f6a95e0f6bd8e44a9dffb86d8",
+  "helper_source": "literal-scan-v144",
+  "closed_startup_flag": "ASTER_XQ_LITERAL_SCAN",
+  "closed_values": [
+    "0",
+    "1"
+  ],
+  "default_enabled": false,
+  "token_protection_changed": false,
+  "model_math_changed": false,
+  "memo_plain_span_bypass_preserved": true,
+  "request_text_retained_by_scanner": false,
+  "gpu_qualified": false,
+  "production_changed": false
+}

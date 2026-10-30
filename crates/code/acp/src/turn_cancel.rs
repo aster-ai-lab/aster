@@ -10,7 +10,7 @@ use tokio::sync::OwnedMutexGuard;
 use tokio::task::JoinHandle;
 
 /// How long a cancelled turn keeps reading events so a waiting tool can
-/// append `tool.result` `cancelled` before the worker is aborted.
+/// append `tool.result` `cancelled` before the public response returns.
 pub(crate) const CANCEL_EVENT_DRAIN: Duration = Duration::from_millis(150);
 
 /// Let an owned VM finish its bounded shutdown before aborting its fact worker.

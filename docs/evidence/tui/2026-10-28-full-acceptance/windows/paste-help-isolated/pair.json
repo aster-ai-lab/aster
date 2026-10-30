@@ -1,0 +1,18 @@
+{
+  "source_pair": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\bd25365589634ad2ceecc80e0aea4ef1d8bf3a99-20261029002517402",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "eef6d9dbdd9bf585b2f36735d76a46c3f260e5fdb4d6e1f6d84608736ae31610",
+      "bytes": 323993088
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "eb1b7b27a3b9588cda66f637711eab9fbcac115a141dc8ac83f8af7da59b5b71",
+      "bytes": 185446912
+    }
+  ],
+  "build_json": "D:/code/aster/.git/tui-native-paste-unicode-windows-build.jsonl",
+  "created_at": "2026-10-29T00:25:26.2017801Z"
+}

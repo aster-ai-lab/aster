@@ -1,0 +1,31 @@
+{
+  "source": "/data/deepseek-v41-xq-1017/native-one-million-final-gpu6-20261025.log",
+  "sha256": "16c4fed9f97df3f95c95dfc46a70761af1f7bdff74bad87fe3d9352a502b6ac3",
+  "milestones": {
+    "100000": {
+      "wall_seconds": 265.16,
+      "prompt_read": 102580,
+      "native_prefill_mean": 390.8
+    },
+    "250000": {
+      "wall_seconds": 701.77,
+      "prompt_read": 251321,
+      "native_prefill_mean": 359.6
+    },
+    "500000": {
+      "wall_seconds": 1588.37,
+      "prompt_read": 502642,
+      "native_prefill_mean": 317.1
+    },
+    "750000": {
+      "wall_seconds": 2786.68,
+      "prompt_read": 753963,
+      "native_prefill_mean": 270.9
+    },
+    "950000": {
+      "wall_seconds": 3760.39,
+      "prompt_read": 953994,
+      "native_prefill_mean": 253.9
+    }
+  }
+}

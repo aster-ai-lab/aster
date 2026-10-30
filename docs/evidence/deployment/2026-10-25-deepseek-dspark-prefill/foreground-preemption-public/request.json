@@ -1,0 +1,1 @@
+{"messages":[{"agent":"owned-preemption-test","content":"Reply exactly Hi.","queueTotal":2,"queuePosition":1,"role":"user"}],"stream":false,"max_tokens":64,"temperature":0,"model":"deepseek-v4.1-flash","seed":42}

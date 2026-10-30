@@ -1,0 +1,19 @@
+
+running 1 test
+ORACLE case=shell-nonzero-contract name=source-pair result=pass detail=aster-cli-pair-v1:8f6a422022891e74e19e139f5508fec5768a98f1:x86_64-pc-windows-msvc
+ORACLE case=shell-nonzero-contract name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=27169
+
+thread 'tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers' (14976) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_contracts.rs:118:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 7
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers ... FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 27.17s
+

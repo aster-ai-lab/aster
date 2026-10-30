@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "file": "observe_current_h200_roles_v219.py",
+      "bytes": 5401,
+      "sha256": "06b913a89980983ca93b9fdb71bd4c7542543fc71d3a457971346d4b073fe5fa"
+    },
+    {
+      "file": "run_topk_native_model_aba_v213r1.frozen.py",
+      "bytes": 9145,
+      "sha256": "f15538b02c4c7248944244f1959f208c754e6a44ef25905bbae49b4e50de96ec"
+    }
+  ],
+  "model_resumed": false,
+  "formal_promotion_required_before_model_resumption": true,
+  "acceptance_unchanged": true
+}

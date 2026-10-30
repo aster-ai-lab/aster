@@ -1013,6 +1013,8 @@ pub struct AppView {
     pub cli_effort_token: Option<String>,
     /// Default YOLO for new sessions, seeded at startup from `effective_yolo_for_launch`.
     pub default_yolo: bool,
+    /// Resolved launch posture retained separately from a bound session's `/yolo` override.
+    pub launch_yolo: bool,
     /// Soft-default still owns the mode: settings/update may rewrite the UI and `default_yolo`.
     /// Cleared on user Shift+Tab / settings / CLI claim.
     /// Not inferred from the rendered permission string.
@@ -1641,6 +1643,7 @@ impl AppView {
             cli_model_override: None,
             cli_effort_token: None,
             default_yolo: false,
+            launch_yolo: false,
             permission_mode_from_soft_default: true,
             auto_mode_gate: a3s_code_shell::util::config::auto_permission_mode_enabled_from_disk(),
             yolo_policy_block: None,

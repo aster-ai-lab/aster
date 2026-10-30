@@ -230,7 +230,7 @@ fn goal_tick_preview_uses_both_original_logs_without_appending_or_recovering() {
 }
 
 #[test]
-fn run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens() {
+fn run_brief_preserves_full_goal_and_step_beyond_legacy_limits() {
     let tokens = |text: &str| crate::llm::estimate_prompt_tokens(&[], Some(text), &[]);
     let (workspace, facts) = seed(&MemoryLog::new());
     let mut view = definition_from_facts(&facts, "session", &workspace, None)
@@ -240,19 +240,27 @@ fn run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens() {
     assert!(!brief.contains("brief truncated") && tokens(&brief) <= 512);
     assert!(brief.contains(r#""accepted_steps":[],"#) && brief.contains(r#""remaining_steps":2"#));
 
-    // The largest valid goal (CJK description, 32 criteria) cuts only the goal text.
-    view.goal.description = "目".repeat(1365);
+    view.goal.description = format!(
+        "{}\nWrite the complete delivery report to /app/output/mutation.report.json",
+        "目".repeat(1365)
+    );
     view.goal.success_criteria = vec!["标准".repeat(170); 32];
     view.binding.non_goals = vec!["非目标".repeat(113); 32];
+    view.plan.as_mut().unwrap().steps[1].content =
+        "Keep this complete step instruction, including its final requirement.".repeat(40);
     view.plan.as_mut().unwrap().steps[0].status = crate::planning::TaskStatus::Completed;
+    let complete_step = view.plan.as_ref().unwrap().steps[1].content.clone();
+    let expected_goal = serde_json::to_string(&serde_json::json!({
+        "goal": &view.goal,
+        "non_goals": &view.binding.non_goals,
+    }))
+    .unwrap();
     let brief = render_run_context(&view, "run-2").unwrap();
-    assert!(
-        brief.len() <= 4096 && tokens(&brief) <= 512,
-        "{}",
-        brief.len()
-    );
-    assert!(brief.ends_with("[brief truncated; the full view is the goal definition]"));
-    let goal_at = brief.find("\ngoal: ").unwrap();
+    assert!(brief.len() > 4096 && tokens(&brief) > 512);
+    assert!(!brief.contains("brief truncated"));
+    assert!(brief.contains(&complete_step));
+    assert!(brief.ends_with(&expected_goal));
+    assert!(brief.contains("/app/output/mutation.report.json"));
     for kept in [
         r#""run_id":"run-2""#,
         r#""id":"b""#,
@@ -260,7 +268,7 @@ fn run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens() {
         r#""accepted_steps":["a"]"#,
         r#""remaining_steps":1"#,
     ] {
-        assert!(brief[..goal_at].contains(kept), "{kept}");
+        assert!(brief.contains(kept), "{kept}");
     }
 }
 

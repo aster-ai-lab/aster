@@ -1,0 +1,329 @@
+{
+  "unix": 1792857934.0791838,
+  "phase": "promoted",
+  "base_url": "http://10.102.93.68/v1",
+  "old_allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+  "new_allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+  "context_tokens": 1048576,
+  "actual_prompt_tokens_qualified": 1048504,
+  "full_1m_length_qualified": true,
+  "full1m_cache_restore_passed": true,
+  "native_tool_arguments_repaired": false,
+  "workbuddy_gui_end_to_end_passed": false,
+  "same_existing_key": true,
+  "lease_ends_unix": 1792862381.5974355,
+  "full_context_qualification": {
+    "schema": "aster-xolotl-full1m-qualification-v17",
+    "unix": 1792854863.556175,
+    "phase": "passed",
+    "tests": [
+      {
+        "name": "cold-full1m-three-records",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "usage": {
+          "prompt_tokens": 1048504,
+          "completion_tokens": 17,
+          "total_tokens": 1048521,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "ttft_seconds": 2226.691510024946,
+        "seconds": 2227.2264323290437
+      },
+      {
+        "name": "interleaved-isolation-53",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "53",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "ttft_seconds": 1.1346587310545146,
+        "seconds": 1.198149493895471
+      },
+      {
+        "name": "restored-full1m-three-records",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}",
+        "usage": {
+          "prompt_tokens": 1048504,
+          "completion_tokens": 17,
+          "total_tokens": 1048521,
+          "prompt_tokens_details": {
+            "cached_tokens": 1048504
+          }
+        },
+        "ttft_seconds": 1.3957692538388073,
+        "seconds": 1.9034643578343093
+      }
+    ],
+    "client": "yangchao-dev",
+    "destination": "http://100.97.136.42:30003/v1",
+    "full_1m_length_qualified": true,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "context_safety_tokens": 8,
+    "actual_prompt_tokens": 1048504,
+    "max_new_tokens": 64,
+    "prompt_plus_output_tokens": 1048568,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "0149634cc9fbae367f049cd432cc316a98454a0f814725e56fce2563b0b77d5f",
+    "prompt_bytes": 4193972,
+    "record_token_positions": {
+      "begin": 19,
+      "middle": 524241,
+      "end": 1048465
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "current_test": "restored-full1m-three-records",
+    "request_started_unix": 1792857096.9425066,
+    "payload_bytes": 4194199,
+    "http_status": 200,
+    "three_position_retrieval_passed": true,
+    "full1m_cache_restore_passed": true,
+    "finished_unix": 1792857098.8501778
+  },
+  "full_context_load": {
+    "schema": "aster-xolotl-fullwindow-reuse-load-v20",
+    "unix": 1792857286.6463442,
+    "phase": "passed",
+    "scope": "Same actual1048504-token public prompt, max64 output, exact three-record JSON; cache-hit load, not cold concurrency or long output.",
+    "levels": [
+      {
+        "concurrency": 1,
+        "requests": 16,
+        "completion_tokens": 272,
+        "wall_seconds": 29.14881253382191,
+        "aggregate_end_to_end_completion_tok_s": 9.331426440936259,
+        "ttft_p50_seconds": 1.3740918948315084,
+        "ttft_p95_seconds": 1.4102468847995624,
+        "request_p95_seconds": 1.850867242901586,
+        "per_stream_interval_tok_s_estimate": 38.730046160853014
+      },
+      {
+        "concurrency": 2,
+        "requests": 16,
+        "completion_tokens": 272,
+        "wall_seconds": 22.401354540139437,
+        "aggregate_end_to_end_completion_tok_s": 12.14212290210496,
+        "ttft_p50_seconds": 1.8934809395577759,
+        "ttft_p95_seconds": 4.7155463102972135,
+        "request_p95_seconds": 5.749506727675907,
+        "per_stream_interval_tok_s_estimate": 33.96677460469925
+      }
+    ],
+    "full_1m_cold_qualification_source": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v15/qualification-full-1m-v17",
+    "performance_300_claimed": false,
+    "actual_prompt_tokens": 1048504,
+    "max_output_tokens": 64,
+    "context_tokens": 1048576,
+    "context_safety_tokens": 8,
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "prompt_sha256": "0149634cc9fbae367f049cd432cc316a98454a0f814725e56fce2563b0b77d5f",
+    "payload_bytes": 4194199,
+    "current_concurrency": 2,
+    "measured_requests": 32,
+    "warmup_requests": 2,
+    "finished_unix": 1792857342.4259322
+  },
+  "switch": {
+    "unix": 1792857945.3177705,
+    "before": {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "aster.serving/allocation-uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
+          "aster.serving/lease-ends-unix": "1792859870.529365",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"ea86cb78-5efd-472c-a4f7-d97c38a95637\",\"aster.serving/lease-ends-unix\":\"1792859870.529365\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-serving-9c996c5a434b-29049516\",\"uid\":\"ea86cb78-5efd-472c-a4f7-d97c38a95637\"}],\"resourceVersion\":\"14541921500\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-serving-9c996c5a434b-29049516\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+          "metallb.universe.tf/address-pool": "bgp-pool-v3",
+          "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+        },
+        "creationTimestamp": "2026-10-24T11:45:48Z",
+        "labels": {
+          "app.kubernetes.io/managed-by": "aster-h200-deployment",
+          "aster-task": "xolotl-single-h200"
+        },
+        "name": "aster-xolotl-api-v3pool-20261024",
+        "namespace": "ailab-hrprdduanyan",
+        "ownerReferences": [
+          {
+            "apiVersion": "rjob.brainpp.cn/v1alpha1",
+            "blockOwnerDeletion": false,
+            "controller": false,
+            "kind": "RJob",
+            "name": "aster-xolotl-serving-9c996c5a434b-29049516",
+            "uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637"
+          }
+        ],
+        "resourceVersion": "14543977345",
+        "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+      },
+      "spec": {
+        "allocateLoadBalancerNodePorts": false,
+        "clusterIP": "10.68.85.120",
+        "clusterIPs": [
+          "10.68.85.120"
+        ],
+        "externalTrafficPolicy": "Cluster",
+        "internalTrafficPolicy": "Cluster",
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack",
+        "ports": [
+          {
+            "appProtocol": "http",
+            "name": "openai-http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 30003
+          }
+        ],
+        "selector": {
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-serving-9c996c5a434b-29049516"
+        },
+        "sessionAffinity": "None",
+        "type": "LoadBalancer"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "10.102.93.68"
+            }
+          ]
+        }
+      }
+    },
+    "after": {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "aster.serving/allocation-uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
+          "aster.serving/lease-ends-unix": "1792862381.5974355",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"81f6b9d4-409d-4ec2-98cf-cd402e6a380b\",\"aster.serving/lease-ends-unix\":\"1792862381.5974355\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-500c5-d4b1e973e3de-70822385\",\"uid\":\"81f6b9d4-409d-4ec2-98cf-cd402e6a380b\"}],\"resourceVersion\":\"14543977345\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-500c5-d4b1e973e3de-70822385\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+          "metallb.universe.tf/address-pool": "bgp-pool-v3",
+          "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+        },
+        "creationTimestamp": "2026-10-24T11:45:48Z",
+        "labels": {
+          "app.kubernetes.io/managed-by": "aster-h200-deployment",
+          "aster-task": "xolotl-single-h200"
+        },
+        "name": "aster-xolotl-api-v3pool-20261024",
+        "namespace": "ailab-hrprdduanyan",
+        "ownerReferences": [
+          {
+            "apiVersion": "rjob.brainpp.cn/v1alpha1",
+            "blockOwnerDeletion": false,
+            "controller": false,
+            "kind": "RJob",
+            "name": "aster-xolotl-500c5-d4b1e973e3de-70822385",
+            "uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b"
+          }
+        ],
+        "resourceVersion": "14547073890",
+        "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+      },
+      "spec": {
+        "allocateLoadBalancerNodePorts": false,
+        "clusterIP": "10.68.85.120",
+        "clusterIPs": [
+          "10.68.85.120"
+        ],
+        "externalTrafficPolicy": "Cluster",
+        "internalTrafficPolicy": "Cluster",
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack",
+        "ports": [
+          {
+            "appProtocol": "http",
+            "name": "openai-http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 30003
+          }
+        ],
+        "selector": {
+          "rjob.brainpp.cn/rjob-name": "aster-xolotl-500c5-d4b1e973e3de-70822385"
+        },
+        "sessionAffinity": "None",
+        "type": "LoadBalancer"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "10.102.93.68"
+            }
+          ]
+        }
+      }
+    },
+    "resource_version_precondition": "14543977345",
+    "pre_switch_generation": "42"
+  },
+  "post_switch_service": {
+    "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7",
+    "resource_version": "14547073890",
+    "selector": {
+      "rjob.brainpp.cn/rjob-name": "aster-xolotl-500c5-d4b1e973e3de-70822385"
+    },
+    "load_balancer": {
+      "ingress": [
+        {
+          "ip": "10.102.93.68"
+        }
+      ]
+    }
+  },
+  "finished_unix": 1792857949.9138129,
+  "windows_forwarding": false,
+  "windows_direct_health": {
+    "status": 200,
+    "loaded": true,
+    "max_context": 1048576
+  },
+  "windows_direct_generation": {
+    "content": "42",
+    "done": true,
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 18,
+      "completion_tokens": 2,
+      "total_tokens": 20,
+      "prompt_tokens_details": {
+        "cached_tokens": 18
+      }
+    },
+    "ttft_seconds": 0.04699999978765845,
+    "seconds": 0.04699999978765845
+  },
+  "old_card_pending_idle_drain": true
+}

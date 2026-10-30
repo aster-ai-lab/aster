@@ -1,0 +1,107 @@
+{
+  "crate_summaries": [
+    "warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-tty-utils -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 1 suggestion)",
+    "warning: `a3s-code-core` (lib) generated 102 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 7 suggestions)",
+    "warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p a3s-embedding -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 2 suggestions)",
+    "warning: `a3s-code-acp` (lib) generated 20 warnings (run `cargo clippy --fix --lib -p a3s-code-acp -- --no-deps -W clippy::undocumented_unsafe_blocks -W clippy::allow_attributes_without_reason -W clippy::await_holding_lock -W unsafe_op_in_unsafe_fn` to apply 5 suggestions)"
+  ],
+  "warnings_with_locations": 127,
+  "by_lint": {
+    "unused import: `AsRawHandle`": 1,
+    "allow_attributes_without_reason": 83,
+    "unused import: `ProgressBasis`": 1,
+    "unused variable: `tie`": 1,
+    "associated function `observed_mutations` is never used": 1,
+    "method `recorded_uncertainties` is never used": 1,
+    "function `lines` is never used": 1,
+    "too_many_arguments": 3,
+    "unnecessary_cast": 1,
+    "type_complexity": 1,
+    "needless_return": 3,
+    "needless_lifetimes": 1,
+    "undocumented_unsafe_blocks": 18,
+    "manual_strip": 1,
+    "unused import: `super::linear::LinearBackend`": 1,
+    "unused import: `sha2::Digest`": 1,
+    "variable does not need to be mutable": 2,
+    "field `dimension` is never read": 1,
+    "function `register_embedding_provider` is never used": 1,
+    "method `as_str` is never used": 1,
+    "bool_comparison": 2,
+    "needless_borrows_for_generic_args": 1
+  },
+  "selected": [
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/completion_runtime.rs",
+      "line": 97,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/execution_entry.rs",
+      "line": 28,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/invocation_context.rs",
+      "line": 225,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/llm_invoker.rs",
+      "line": 417,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_builder.rs",
+      "line": 169,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_builder.rs",
+      "line": 212,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/loop_runtime.rs",
+      "line": 55,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/prompt_runtime.rs",
+      "line": 11,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "line": 211,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent/turn_context.rs",
+      "line": 391,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/agent_loop_runtime.rs",
+      "line": 48,
+      "lint": "allow_attributes_without_reason"
+    },
+    {
+      "warning": "`allow` attribute without specifying a reason",
+      "path": "crates/code/core/src/agent_api/execution_coordinator.rs",
+      "line": 33,
+      "lint": "allow_attributes_without_reason"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+
+running 1 test
+test tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier ... ORACLE case=tool-wave-task-children name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=tool-wave-task-children name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=tool-wave-task-children name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=41422
+
+thread 'tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier' (57584) panicked at crates\code\acp\tests\aster_tui_live_e2e\tool_wave.rs:557:10:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "系统找不到指定的文件。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_wave::kimi_task_two_real_children_have_distinct_identity_outputs_and_parent_barrier
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 76 filtered out; finished in 45.96s
+

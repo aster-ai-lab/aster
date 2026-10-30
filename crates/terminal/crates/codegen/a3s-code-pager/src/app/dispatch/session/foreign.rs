@@ -79,6 +79,14 @@ pub(in crate::app::dispatch) fn dispatch_fetch_session_list(app: &mut AppView) -
         Some(generation) => (SessionPickerHost::AgentModal, generation),
         None => (SessionPickerHost::Welcome, app.session_picker_generation),
     };
+    let headless_policy = active_picker_headless_policy(app);
+    tracing::debug!(
+        ?host,
+        generation,
+        seq,
+        ?headless_policy,
+        "dispatch session list"
+    );
     let mut effects = vec![Effect::FetchSessionList {
         host,
         cwd_override: None,
@@ -86,7 +94,7 @@ pub(in crate::app::dispatch) fn dispatch_fetch_session_list(app: &mut AppView) -
         query: None,
         seq,
         kind_filter,
-        headless_policy: active_picker_headless_policy(app),
+        headless_policy,
     }];
     let foreign_effect = if app.chat_mode {
         app.foreign_scan_coordinator.begin_request(foreign_seq);
@@ -168,6 +176,7 @@ pub(in crate::app::dispatch) fn handle_session_list_loaded(
     let chat_mode = app.chat_mode && !dashboard_request;
     let is_browse = query.is_none();
     let notice;
+    tracing::debug!(count = sessions.len(), "session list response");
     {
         let Some(mut target) =
             accept_picker_result(app, request, PickerSeqKind::List, "session list")

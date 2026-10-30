@@ -1,0 +1,133 @@
+{
+  "schema": "aster-H200-availability-r14",
+  "files": [
+    {
+      "file": "helpers/aster_stall_window_v415.py",
+      "bytes": 1499,
+      "sha256": "485a34e06d31f3cbecd68462bdd5a2d3435713961c75aeee7c00c5d2d653eb54",
+      "source": "aster_stall_window_v415.py"
+    },
+    {
+      "file": "helpers/test_stall_window_v415.py",
+      "bytes": 2112,
+      "sha256": "4379ad8aeb8e579f980240abdd63284d46484b80fadf14447c6a48a291731a48",
+      "source": "test_stall_window_v415.py"
+    },
+    {
+      "file": "operators/h200_availability_guard_v415.py",
+      "bytes": 5440,
+      "sha256": "3994c3670058fd3501c3d7af6f791bf4b437d1dd06f16087a19fe9d768b94c96",
+      "source": "h200_availability_guard_v415.py"
+    },
+    {
+      "file": "operators/install_availability_guard_v415.py",
+      "bytes": 3740,
+      "sha256": "eb3b93062eebfabca41ab36126d3529e350320236436014870eb2ca42f826b66",
+      "source": "install_availability_guard_v415.py"
+    },
+    {
+      "file": "operators/workbuddy_fresh_hi_v413.py",
+      "bytes": 3198,
+      "sha256": "ec7037eddb65a1655b3dba35b643f57c9d46143a7e3584eb188ae8332af0d639",
+      "source": "workbuddy_fresh_hi_v413.py"
+    },
+    {
+      "file": "operators/workbuddy_fresh_hi_v416.py",
+      "bytes": 3255,
+      "sha256": "3c967951d21b4d47395913d8b03e3ae7655492d1a9cdb08e1c365c5663f65fa5",
+      "source": "workbuddy_fresh_hi_v416.py"
+    },
+    {
+      "file": "operators/stop_c15_optimization_v404.py",
+      "bytes": 3730,
+      "sha256": "c16ffd2b6741a2fdc35aaee52d0b2ea2df2925ba15b79caed7abcd0847ffb924",
+      "source": "stop_c15_optimization_v404.py"
+    },
+    {
+      "file": "operators/verify_user_stop_and_service_v405.py",
+      "bytes": 5253,
+      "sha256": "c1c4db9de627e689ca80e1bfb8c51bd9e7e7234ba1167269e388fde35e3cdc3c",
+      "source": "verify_user_stop_and_service_v405.py"
+    },
+    {
+      "file": "operators/recover_frozen_native_v412.py",
+      "bytes": 3593,
+      "sha256": "e4a62fad29c67b39f60aa8945d2ddc23a0b01dcb29b09c85fe8400600cca985c",
+      "source": "recover_frozen_native_v412.py"
+    },
+    {
+      "file": "receipts/xolotl-user-stop-optimization-v404-local.json",
+      "bytes": 668,
+      "sha256": "b170440ef4cb582e03a89ef984c8e7b0469ac1103b18cf2b67207fd879bec66e",
+      "source": "xolotl-user-stop-optimization-v404-local.json"
+    },
+    {
+      "file": "receipts/xolotl-user-stop-optimization-v404-resource.json",
+      "bytes": 1498,
+      "sha256": "d608e036eb69b36709d2c8c7fab152248ffd89b477b481a2f462943f0a33dd19",
+      "source": "xolotl-user-stop-optimization-v404-resource.json"
+    },
+    {
+      "file": "receipts/xolotl-user-retain-deployment-v405-verification.json",
+      "bytes": 2077,
+      "sha256": "63f2c955562408916e844a6b9789cd306a7752f0f3998afa819d3cce60ddac74",
+      "source": "xolotl-user-retain-deployment-v405-verification.json"
+    },
+    {
+      "file": "receipts/xolotl-user-retained-service-v410-checkpoint.json",
+      "bytes": 2164,
+      "sha256": "1cf05056e1a635680e93f7edbd5bb9f25d2886b15a4b3810bea72ed390aa4ca3",
+      "source": "xolotl-user-retained-service-v410-checkpoint.json"
+    },
+    {
+      "file": "receipts/xolotl-stall-configuration-v411.json",
+      "bytes": 1096,
+      "sha256": "9d676db1139bffefad3c1f4cac80ed8ac2566c758cecd0f5f668dbf0e6bb8413",
+      "source": "xolotl-stall-configuration-v411.json"
+    },
+    {
+      "file": "receipts/xolotl-frozen-native-recovery-v412.json",
+      "bytes": 867,
+      "sha256": "5bfa539275f14646ed37d4ad6f593b252acdc1ee7767853bfc4feaa55b85a2b8",
+      "source": "xolotl-frozen-native-recovery-v412.json"
+    },
+    {
+      "file": "receipts/workbuddy-fresh-hi-v413-result.json",
+      "bytes": 1051,
+      "sha256": "9af582bbf4e8ee4f31ac997ab21a24e59fa47660303e275e123018e85e472ed8",
+      "source": "workbuddy-fresh-hi-v413-result.json"
+    },
+    {
+      "file": "receipts/workbuddy-fresh-hi-v416-result.json",
+      "bytes": 1064,
+      "sha256": "e9233fbf17f3d0714f21f7edea4d668d37195883a44c956cb3c42f4f3f987c9f",
+      "source": "workbuddy-fresh-hi-v416-result.json"
+    },
+    {
+      "file": "receipts/xolotl-availability-guard-v415-intent.json",
+      "bytes": 1380,
+      "sha256": "1d1a498dd66d76ec3bb3afd4171c571c9c081f0cf2a45c4d4019bcfff45e3536",
+      "source": "xolotl-availability-guard-v415-intent.json"
+    },
+    {
+      "file": "receipts/xolotl-availability-guard-v417-verification.json",
+      "bytes": 1070,
+      "sha256": "69b7cbb7e4ff2aa14f06a83105c8d0649905fe6874e2888cd848c31b4d6a24a4",
+      "source": "xolotl-availability-guard-v417-verification.json"
+    },
+    {
+      "file": "OUTCOME.md",
+      "bytes": 3250,
+      "sha256": "82a34320f7a4544c51833d97b429bf1fe5a89d7e45b04446f670bdc5feeea75c",
+      "source": null
+    },
+    {
+      "file": "receipts/published-helper-tests.json",
+      "bytes": 179,
+      "sha256": "ad5eb55abc9b93ab05b31a607bc13eb8ffb10a55b853239ce7d3d3d9f0dc184e",
+      "source": null
+    }
+  ],
+  "optimization_cancelled": true,
+  "GUI_verified": false
+}

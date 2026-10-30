@@ -1,0 +1,11 @@
+test_complete_cold_and_exact_warm_answer (__main__.FullWindowAcceptanceTests) ... ok
+test_incomplete_http_sse_and_output_budget_refused (__main__.FullWindowAcceptanceTests) ... ok
+test_missing_or_inline_continuation_refused (__main__.FullWindowAcceptanceTests) ... ok
+test_reservation_and_cache_refusals (__main__.FullWindowAcceptanceTests) ... ok
+test_timing_and_identity_refusals (__main__.FullWindowAcceptanceTests) ... ok
+test_wrong_or_partial_record_values_refused (__main__.FullWindowAcceptanceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK

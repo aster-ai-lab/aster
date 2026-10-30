@@ -1,0 +1,2100 @@
+{
+  "run_id": "a3s-test-29891-1",
+  "suite": "aster-documentation",
+  "status": "passed",
+  "scenarios": [
+    {
+      "id": "desktop-project-chapters",
+      "name": "Documentation portal, project navigation, diagrams and four chapters",
+      "surface": "web",
+      "status": "passed",
+      "duration_ms": 5178,
+      "steps": [
+        {
+          "id": "desktop",
+          "status": "passed",
+          "duration_ms": 600,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 1000,
+                "mobile": false,
+                "width": 1440
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "portal",
+          "status": "passed",
+          "duration_ms": 239,
+          "attempts": 1,
+          "output": {
+            "summary": "page opened",
+            "data": {
+              "data": {
+                "title": "Aster 技术文档 · Aster 文档",
+                "url": "http://127.0.0.1:4192/docs/"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "portal-heading",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "Aster 技术文档",
+              "expected": "Aster 技术文档",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "open-project",
+          "status": "passed",
+          "duration_ms": 392,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".project-cards a"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "project-heading",
+          "status": "passed",
+          "duration_ms": 191,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "理解 Aster 的 Harness",
+              "expected": "理解 Aster 的 Harness",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "architecture-diagram",
+          "status": "passed",
+          "duration_ms": 186,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow",
+          "status": "passed",
+          "duration_ms": 392,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../code/workflow/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-heading",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "一个任务如何运行",
+              "expected": "一个任务如何运行",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "pele-sequence",
+          "status": "passed",
+          "duration_ms": 189,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "selected-workflow",
+          "status": "passed",
+          "duration_ms": 198,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-desktop",
+          "status": "passed",
+          "duration_ms": 234,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/desktop-project-chapters/screenshots/workflow-desktop.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/workflow-desktop.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/desktop-project-chapters/screenshots/workflow-desktop.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "comparison",
+          "status": "passed",
+          "duration_ms": 387,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../code/comparison/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "comparison-heading",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "与其他 Harness 的区别",
+              "expected": "与其他 Harness 的区别",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "comparison-table",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/comparison/",
+                "result": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "integration",
+          "status": "passed",
+          "duration_ms": 394,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../code/integration/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "integration-heading",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "把 Harness 接入宿主",
+              "expected": "把 Harness 接入宿主",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "previous-comparison",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/integration/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "desktop-errors",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "page errors captured",
+            "data": {
+              "data": {
+                "errors": []
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "evidence/desktop-errors.json",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/desktop-project-chapters/evidence/desktop-errors.json",
+                "media_type": "application/json"
+              }
+            ]
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    },
+    {
+      "id": "mobile-directory-and-diagram",
+      "name": "Mobile project directory, SVG scrolling and adjacent-page navigation",
+      "surface": "web",
+      "status": "passed",
+      "duration_ms": 12011,
+      "steps": [
+        {
+          "id": "mobile",
+          "status": "passed",
+          "duration_ms": 486,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 844,
+                "mobile": false,
+                "width": 390
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "project",
+          "status": "passed",
+          "duration_ms": 233,
+          "attempts": 1,
+          "output": {
+            "summary": "page opened",
+            "data": {
+              "data": {
+                "title": "理解 Aster 的 Harness · Aster 文档",
+                "url": "http://127.0.0.1:4192/docs/code/"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-closed",
+          "status": "passed",
+          "duration_ms": 184,
+          "attempts": 1,
+          "output": {
+            "summary": "target collapsed state matched",
+            "data": {
+              "actual": false,
+              "expected": false,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "open-directory",
+          "status": "passed",
+          "duration_ms": 386,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation > summary"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-open",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target expanded state matched",
+            "data": {
+              "actual": true,
+              "expected": true,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow",
+          "status": "passed",
+          "duration_ms": 838,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation a[href='../code/workflow/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-heading",
+          "status": "passed",
+          "duration_ms": 196,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "一个任务如何运行",
+              "expected": "一个任务如何运行",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "new-page-directory-closed",
+          "status": "passed",
+          "duration_ms": 197,
+          "attempts": 1,
+          "output": {
+            "summary": "target collapsed state matched",
+            "data": {
+              "actual": false,
+              "expected": false,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "scrollable-diagram",
+          "status": "passed",
+          "duration_ms": 196,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "read-diagram",
+          "status": "passed",
+          "duration_ms": 589,
+          "attempts": 1,
+          "output": {
+            "summary": "mouse wheel dispatched",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/workflow/",
+                "result": {
+                  "accepted": true,
+                  "tagName": "svg"
+                }
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "workflow-mobile",
+          "status": "passed",
+          "duration_ms": 6957,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/mobile-directory-and-diagram/screenshots/workflow-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/workflow-mobile.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/mobile-directory-and-diagram/screenshots/workflow-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "next-comparison",
+          "status": "passed",
+          "duration_ms": 392,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../code/comparison/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "comparison-heading",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "与其他 Harness 的区别",
+              "expected": "与其他 Harness 的区别",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "table-region",
+          "status": "passed",
+          "duration_ms": 193,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/comparison/",
+                "result": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "comparison-mobile",
+          "status": "passed",
+          "duration_ms": 206,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/mobile-directory-and-diagram/screenshots/comparison-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/comparison-mobile.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/mobile-directory-and-diagram/screenshots/comparison-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "mobile-errors",
+          "status": "passed",
+          "duration_ms": 193,
+          "attempts": 1,
+          "output": {
+            "summary": "page errors captured",
+            "data": {
+              "data": {
+                "errors": []
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "evidence/mobile-errors.json",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/mobile-directory-and-diagram/evidence/mobile-errors.json",
+                "media_type": "application/json"
+              }
+            ]
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    },
+    {
+      "id": "meta-harness-guides",
+      "name": "Meta Harness capability index, seven topics and grouped mobile navigation",
+      "surface": "web",
+      "status": "passed",
+      "duration_ms": 17854,
+      "steps": [
+        {
+          "id": "desktop",
+          "status": "passed",
+          "duration_ms": 504,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 1000,
+                "mobile": false,
+                "width": 1440
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "meta-index",
+          "status": "passed",
+          "duration_ms": 238,
+          "attempts": 1,
+          "output": {
+            "summary": "page opened",
+            "data": {
+              "data": {
+                "title": "Meta Harness 使用指南 · Aster 文档",
+                "url": "http://127.0.0.1:4192/docs/code/meta-harness/"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "index-heading",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "Meta Harness 使用指南",
+              "expected": "Meta Harness 使用指南",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "section-label",
+          "status": "passed",
+          "duration_ms": 191,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "Meta Harness",
+              "expected": "Meta Harness",
+              "target": {
+                "selector": ".chapter-nav .nav-section:last-of-type",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "overview-diagram",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/meta-harness/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "meta-desktop",
+          "status": "passed",
+          "duration_ms": 9160,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/meta-harness-guides/screenshots/meta-harness-desktop.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/meta-harness-desktop.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/meta-harness-guides/screenshots/meta-harness-desktop.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "composition",
+          "status": "passed",
+          "duration_ms": 383,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".table-scroll a[href='./composition/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "composition-heading",
+          "status": "passed",
+          "duration_ms": 196,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "组合默认执行组件",
+              "expected": "组合默认执行组件",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "extensions",
+          "status": "passed",
+          "duration_ms": 383,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/extensions/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "extensions-heading",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "扩展组件和调度方式",
+              "expected": "扩展组件和调度方式",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "context-tools",
+          "status": "passed",
+          "duration_ms": 384,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/context-tools/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "context-heading",
+          "status": "passed",
+          "duration_ms": 192,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "接入上下文和工具",
+              "expected": "接入上下文和工具",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "agent-directory",
+          "status": "passed",
+          "duration_ms": 389,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/agent-directory/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-heading",
+          "status": "passed",
+          "duration_ms": 193,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "从目录加载 Agent",
+              "expected": "从目录加载 Agent",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "script-toc",
+          "status": "passed",
+          "duration_ms": 392,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".docs-toc a[href='#调用目录中的脚本']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "script-section",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/meta-harness/agent-directory/#%E8%B0%83%E7%94%A8%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E8%84%9A%E6%9C%AC",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "recovery",
+          "status": "passed",
+          "duration_ms": 380,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/recovery/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "recovery-heading",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "保存会话并恢复执行",
+              "expected": "保存会话并恢复执行",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "verification-resources",
+          "status": "passed",
+          "duration_ms": 394,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/verification-resources/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "verification-heading",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "提交验证结果并清理资源",
+              "expected": "提交验证结果并清理资源",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "durable-work",
+          "status": "passed",
+          "duration_ms": 391,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-nav a[href='../../../code/meta-harness/durable-work/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "goal-heading",
+          "status": "passed",
+          "duration_ms": 189,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "让任务分轮执行",
+              "expected": "让任务分轮执行",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "active-goal-page",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/meta-harness/durable-work/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "mobile",
+          "status": "passed",
+          "duration_ms": 202,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 844,
+                "mobile": false,
+                "width": 390
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "open-mobile-directory",
+          "status": "passed",
+          "duration_ms": 386,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation > summary"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "mobile-directory-open",
+          "status": "passed",
+          "duration_ms": 188,
+          "attempts": 1,
+          "output": {
+            "summary": "target expanded state matched",
+            "data": {
+              "actual": true,
+              "expected": true,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "mobile-extension-guide",
+          "status": "passed",
+          "duration_ms": 386,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation a[href='../../../code/meta-harness/extensions/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "mobile-heading",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "扩展组件和调度方式",
+              "expected": "扩展组件和调度方式",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "code-example",
+          "status": "passed",
+          "duration_ms": 197,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/meta-harness/extensions/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "highlighted-token",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/meta-harness/extensions/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "meta-mobile",
+          "status": "passed",
+          "duration_ms": 218,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/meta-harness-guides/screenshots/meta-harness-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/meta-harness-mobile.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/meta-harness-guides/screenshots/meta-harness-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "meta-errors",
+          "status": "passed",
+          "duration_ms": 189,
+          "attempts": 1,
+          "output": {
+            "summary": "page errors captured",
+            "data": {
+              "data": {
+                "errors": []
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "evidence/meta-errors.json",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/meta-harness-guides/evidence/meta-errors.json",
+                "media_type": "application/json"
+              }
+            ]
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    },
+    {
+      "id": "terminal-agent-tutorial",
+      "name": "Twelve tutorial chapters, code highlighting, Pele diagrams and mobile reading",
+      "surface": "web",
+      "status": "passed",
+      "duration_ms": 11282,
+      "steps": [
+        {
+          "id": "desktop",
+          "status": "passed",
+          "duration_ms": 575,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 1000,
+                "mobile": false,
+                "width": 1440
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tutorial",
+          "status": "passed",
+          "duration_ms": 248,
+          "attempts": 1,
+          "output": {
+            "summary": "page opened",
+            "data": {
+              "data": {
+                "title": "动手做一个终端编码智能体 · Aster 文档",
+                "url": "http://127.0.0.1:4192/docs/code/tutorial/"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tutorial-heading",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "动手做一个终端编码智能体",
+              "expected": "动手做一个终端编码智能体",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tutorial-architecture",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/tutorial/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tutorial-desktop",
+          "status": "passed",
+          "duration_ms": 237,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-desktop.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/tutorial-desktop.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-desktop.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "setup",
+          "status": "passed",
+          "duration_ms": 397,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".chapter-cards a[href='../../code/tutorial/setup/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "setup-heading",
+          "status": "passed",
+          "duration_ms": 200,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "01 · 跑通第一个工作区会话",
+              "expected": "01 · 跑通第一个工作区会话",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "toml-highlighting",
+          "status": "passed",
+          "duration_ms": 193,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/tutorial/setup/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "streaming",
+          "status": "passed",
+          "duration_ms": 394,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/streaming/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "streaming-heading",
+          "status": "passed",
+          "duration_ms": 197,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "02 · 接收回复、工具进度和运行终态",
+              "expected": "02 · 接收回复、工具进度和运行终态",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tui",
+          "status": "passed",
+          "duration_ms": 408,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/tui/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tui-heading",
+          "status": "passed",
+          "duration_ms": 199,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "03 · 做出可以交互的终端界面",
+              "expected": "03 · 做出可以交互的终端界面",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "ui-source",
+          "status": "passed",
+          "duration_ms": 394,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".docs-toc a[href='#写界面状态和绘制函数']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tui-code",
+          "status": "passed",
+          "duration_ms": 223,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-tui-code-desktop.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/tutorial-tui-code-desktop.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-tui-code-desktop.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "mobile",
+          "status": "passed",
+          "duration_ms": 204,
+          "attempts": 1,
+          "output": {
+            "summary": "viewport updated",
+            "data": {
+              "data": {
+                "deviceScaleFactor": 1.0,
+                "height": 844,
+                "mobile": false,
+                "width": 390
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "open-directory",
+          "status": "passed",
+          "duration_ms": 383,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation > summary"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "permissions",
+          "status": "passed",
+          "duration_ms": 390,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".mobile-navigation a[href='../../../code/tutorial/permissions/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "permissions-heading",
+          "status": "passed",
+          "duration_ms": 192,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "04 · 让修改操作先经过确认",
+              "expected": "04 · 让修改操作先经过确认",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "directory-closed",
+          "status": "passed",
+          "duration_ms": 191,
+          "attempts": 1,
+          "output": {
+            "summary": "target collapsed state matched",
+            "data": {
+              "actual": false,
+              "expected": false,
+              "state": "expanded",
+              "target": {
+                "selector": ".mobile-navigation",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "permission-diagram",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target is visible",
+            "data": {
+              "data": {
+                "origin": "http://127.0.0.1:4192/docs/code/tutorial/permissions/",
+                "visible": true
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "permissions-mobile",
+          "status": "passed",
+          "duration_ms": 215,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-permissions-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/tutorial-permissions-mobile.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-permissions-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "verification",
+          "status": "passed",
+          "duration_ms": 390,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/verification/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "verification-heading",
+          "status": "passed",
+          "duration_ms": 192,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "05 · 让“修好了”对应一次有效验证",
+              "expected": "05 · 让“修好了”对应一次有效验证",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "persistence",
+          "status": "passed",
+          "duration_ms": 387,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/persistence/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "persistence-heading",
+          "status": "passed",
+          "duration_ms": 195,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "06 · 保存、取消和恢复同一个会话",
+              "expected": "06 · 保存、取消和恢复同一个会话",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "harness",
+          "status": "passed",
+          "duration_ms": 391,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/harness/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "harness-heading",
+          "status": "passed",
+          "duration_ms": 194,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "07 · 给编码助手配置自己的 Harness",
+              "expected": "07 · 给编码助手配置自己的 Harness",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "context",
+          "status": "passed",
+          "duration_ms": 397,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/context/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "context-heading",
+          "status": "passed",
+          "duration_ms": 191,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "08 · 接入项目资料、Skills 和 MCP",
+              "expected": "08 · 接入项目资料、Skills 和 MCP",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tools",
+          "status": "passed",
+          "duration_ms": 395,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/tools/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "tools-heading",
+          "status": "passed",
+          "duration_ms": 196,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "09 · 注册自己的工具和目录脚本",
+              "expected": "09 · 注册自己的工具和目录脚本",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "memory",
+          "status": "passed",
+          "duration_ms": 389,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/memory/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "memory-heading",
+          "status": "passed",
+          "duration_ms": 196,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "10 · 让记忆跟随正确的项目和用户",
+              "expected": "10 · 让记忆跟随正确的项目和用户",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "goals",
+          "status": "passed",
+          "duration_ms": 388,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/goals/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "goals-heading",
+          "status": "passed",
+          "duration_ms": 190,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "11 · 把长任务拆成可推进的目标",
+              "expected": "11 · 把长任务拆成可推进的目标",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "delivery",
+          "status": "passed",
+          "duration_ms": 387,
+          "attempts": 1,
+          "output": {
+            "summary": "target clicked",
+            "data": {
+              "data": {
+                "clicked": ".page-navigation a[href='../../../code/tutorial/delivery/']"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "delivery-heading",
+          "status": "passed",
+          "duration_ms": 192,
+          "attempts": 1,
+          "output": {
+            "summary": "target rendered text matched",
+            "data": {
+              "actual": "12 · 收尾资源，并把教程工程验收到位",
+              "expected": "12 · 收尾资源，并把教程工程验收到位",
+              "target": {
+                "selector": "main h1",
+                "type": "css"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "delivery-mobile",
+          "status": "passed",
+          "duration_ms": 209,
+          "attempts": 1,
+          "output": {
+            "summary": "screenshot captured",
+            "data": {
+              "data": {
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-delivery-mobile.png"
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "screenshots/tutorial-delivery-mobile.png",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/screenshots/tutorial-delivery-mobile.png",
+                "media_type": "image/png"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "tutorial-errors",
+          "status": "passed",
+          "duration_ms": 193,
+          "attempts": 1,
+          "output": {
+            "summary": "page errors captured",
+            "data": {
+              "data": {
+                "errors": []
+              },
+              "error": null,
+              "success": true
+            },
+            "evidence": [
+              {
+                "name": "evidence/tutorial-errors.json",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-29891-1/terminal-agent-tutorial/evidence/tutorial-errors.json",
+                "media_type": "application/json"
+              }
+            ]
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    }
+  ]
+}

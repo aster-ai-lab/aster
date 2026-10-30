@@ -1,0 +1,27 @@
+--- a/tools/v41/engine/ds41_generate.cpp
++++ b/tools/v41/engine/ds41_generate.cpp
+@@ -2815,6 +2815,7 @@
+             int gen = 0, pos = total;
+             const char * finish = "length";
+             std::vector<float> lg = last_logits;
++            long reported_drafts = 0, reported_accepted = 0;
+ #if defined(DS41_HAVE_DSPARK)
+             // ---- DSpark speculative sampling (as the one-shot loop: P = last fed position, t = the token for P+1,
+             // sp_ids = drafts for P+2..; each verify row's distribution is sample_p's, spec_accept keeps it exact)
+@@ -2914,6 +2915,7 @@
+                     if (acc == k) tn = sample_p(vlog.data() + (size_t) (r0 + k) * nv, nv, temp, tk, top_p, min_p, rng);
+                     const double tq2 = now_ms();
+                     ++rq_pass; rq_acc += acc;
++                    reported_drafts += k; reported_accepted += acc;
+                     if (is_lk) {
+                         ++lk_pass; lk_dr += k; lk_acc += acc;
+                         if (2 * acc < k) { lk_cool = lk_back; lk_back = std::min(64, lk_back * 2); }
+@@ -3010,7 +3012,7 @@
+             }
+ #endif
+             tier.rebalance_tick(true);   // the gap until the next request: retire a large batch for the reader
+-            std::printf("DONE %d %d %.1f %.1f %s 0 0 %d %lld %lld 0 %lld 0 %d\n", gen, total, prompt_ms, dec_ms, finish, reused,
++            std::printf("DONE %d %d %.1f %.1f %s %ld %ld %d %lld %lld 0 %lld 0 %d\n", gen, total, prompt_ms, dec_ms, finish, reported_accepted, reported_drafts, reused,
+                         (long long) st.hits, (long long) st.lookups(), (long long) st.file_tier, total - reused);
+             std::fflush(stdout);
+             if (admit >= 0) {   // BADM: the request decodes on in its slot (the windows), or it is done

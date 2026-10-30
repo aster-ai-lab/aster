@@ -1,0 +1,1180 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling libc v0.2.186
+    Checking cfg-if v1.0.4
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+    Checking smallvec v1.16.3
+    Checking memchr v2.8.2
+    Checking log v0.4.32
+    Checking itoa v1.0.17
+   Compiling version_check v0.9.5
+   Compiling parking_lot_core v0.9.12
+    Checking scopeguard v1.2.0
+    Checking bitflags v2.13.0
+    Checking once_cell v1.21.4
+    Checking pin-project-lite v0.2.16
+   Compiling siphasher v1.0.3
+    Checking equivalent v1.0.2
+    Checking allocator-api2 v0.2.21
+    Checking foldhash v0.2.0
+    Checking lock_api v0.4.14
+    Checking bytes v1.12.1
+    Checking stable_deref_trait v1.2.1
+   Compiling typenum v1.19.0
+   Compiling find-msvc-tools v0.1.15
+   Compiling shlex v2.0.1
+   Compiling zmij v1.0.19
+   Compiling serde_json v1.0.154
+   Compiling autocfg v1.5.0
+   Compiling crossbeam-utils v0.8.21
+    Checking hashbrown v0.17.1
+    Checking futures-core v0.3.34
+   Compiling phf_shared v0.13.1
+   Compiling generic-array v0.14.7
+   Compiling cc v1.9.0
+   Compiling crc32fast v1.5.0
+   Compiling fastrand v2.3.0
+    Checking simd-adler32 v0.3.7
+    Checking new_debug_unreachable v1.0.6
+    Checking percent-encoding v2.3.2
+   Compiling thiserror v2.0.20
+   Compiling phf_generator v0.13.1
+    Checking writeable v0.6.1
+    Checking regex-syntax v0.8.11
+    Checking futures-sink v0.3.34
+    Checking litemap v0.8.0
+    Checking aho-corasick v1.1.3
+   Compiling num-traits v0.2.19
+    Checking zlib-rs v0.5.5
+   Compiling icu_properties_data v2.0.1
+   Compiling icu_normalizer_data v2.0.0
+    Checking indexmap v2.14.0
+    Checking adler2 v2.0.1
+    Checking futures-channel v0.3.34
+    Checking futures-task v0.3.34
+    Checking miniz_oxide v0.8.9
+    Checking slab v0.4.11
+    Checking precomputed-hash v0.1.1
+    Checking futures-io v0.3.34
+    Checking cpufeatures v0.2.17
+   Compiling rand_core v0.6.4
+   Compiling phf_codegen v0.13.1
+   Compiling phf_shared v0.11.3
+   Compiling zerocopy v0.8.48
+    Checking utf-8 v0.7.6
+   Compiling rand v0.8.8
+    Checking utf8_iter v1.0.4
+    Checking libz-rs-sys v0.5.2
+    Checking tracing-core v0.1.36
+   Compiling crossbeam-epoch v0.9.20
+    Checking byteorder v1.5.0
+    Checking tinyvec_macros v0.1.1
+   Compiling getrandom v0.3.4
+    Checking form_urlencoded v1.2.2
+    Checking ryu v1.0.20
+   Compiling syn v2.0.117
+   Compiling syn v3.0.4
+    Checking regex-automata v0.4.18
+    Checking flate2 v1.1.5
+   Compiling phf_generator v0.11.3
+    Checking tinyvec v1.10.0
+   Compiling string_cache_codegen v0.6.1
+    Checking zeroize v1.8.2
+    Checking utf8parse v0.2.2
+    Checking base64 v0.22.1
+    Checking http v1.4.0
+    Checking getrandom v0.2.16
+    Checking mio v1.2.1
+    Checking errno v0.3.14
+    Checking socket2 v0.6.4
+    Checking block-buffer v0.10.4
+    Checking signal-hook-registry v1.4.8
+   Compiling ring v0.17.14
+    Checking parking_lot v0.12.5
+    Checking rustls-pki-types v1.14.0
+   Compiling rustix v1.1.5
+   Compiling thiserror v1.0.69
+    Checking subtle v2.6.1
+   Compiling libm v0.2.15
+    Checking untrusted v0.9.0
+    Checking linux-raw-sys v0.12.1
+   Compiling num-conv v0.2.0
+   Compiling time-core v0.1.8
+   Compiling rayon-core v1.13.0
+    Checking crypto-common v0.1.6
+   Compiling web_atoms v0.2.3
+    Checking powerfmt v0.2.0
+    Checking tendril v0.5.0
+    Checking rand_core v0.10.0
+   Compiling getrandom v0.4.1
+    Checking crossbeam-deque v0.8.6
+   Compiling heck v0.5.0
+   Compiling anyhow v1.0.104
+   Compiling time-macros v0.2.27
+    Checking deranged v0.5.5
+    Checking digest v0.10.7
+    Checking unicode-width v0.2.0
+    Checking either v1.15.0
+    Checking block-padding v0.3.3
+    Checking anstyle-query v1.1.4
+    Checking ipnet v2.11.0
+    Checking is_terminal_polyfill v1.70.2
+    Checking anstyle v1.0.14
+   Compiling rustls v0.23.46
+    Checking colorchoice v1.0.4
+    Checking inout v0.1.4
+    Checking http-body v1.0.1
+    Checking sha2 v0.10.9
+    Checking unicode-normalization v0.1.24
+   Compiling phf_codegen v0.11.3
+    Checking concurrent-queue v2.5.0
+   Compiling httparse v1.10.1
+    Checking bytemuck v1.25.2
+    Checking dtoa v1.0.10
+   Compiling unicode-segmentation v1.12.0
+    Checking lazy_static v1.5.0
+    Checking parking v2.2.1
+    Checking dtoa-short v0.3.5
+    Checking rayon v1.12.0
+    Checking cipher v0.4.4
+    Checking webpki-roots v1.0.9
+    Checking num-integer v0.1.46
+    Checking unsafe-libyaml v0.2.11
+    Checking regex v1.12.4
+    Checking try-lock v0.2.5
+    Checking core_maths v0.1.1
+    Checking event-listener v5.4.1
+    Checking tower-service v0.3.3
+    Checking iana-time-zone v0.1.64
+   Compiling convert_case v0.10.0
+    Checking fnv v1.0.7
+    Checking ttf-parser v0.25.1
+    Checking atomic-waker v1.1.2
+    Checking option-ext v0.2.0
+   Compiling ref-cast v1.0.25
+   Compiling unicode-xid v0.2.6
+    Checking unicode-properties v0.1.4
+    Checking want v0.3.1
+   Compiling io-lifetimes v3.0.1
+    Checking httpdate v1.0.3
+   Compiling io-lifetimes v2.0.4
+    Checking event-listener-strategy v0.5.4
+   Compiling paste v1.0.15
+    Checking alloc-no-stdlib v2.0.4
+    Checking pin-utils v0.1.0
+   Compiling synstructure v0.13.2
+    Checking unicode-bidi v0.3.18
+   Compiling string_cache_codegen v0.5.4
+    Checking time v0.3.47
+    Checking fs2 v0.4.3
+    Checking socket2 v0.5.10
+   Compiling cookie v0.18.2
+    Checking alloc-stdlib v0.2.2
+   Compiling ahash v0.8.12
+    Checking nom v8.0.0
+    Checking servo_arc v0.4.3
+    Checking jiff v0.2.28
+    Checking mac v0.1.1
+    Checking same-file v1.0.6
+   Compiling io-extras v0.19.0
+    Checking bit-vec v0.8.0
+    Checking cpufeatures v0.3.0
+    Checking futf v0.1.5
+   Compiling markup5ever v0.14.1
+    Checking walkdir v2.5.0
+    Checking chacha20 v0.10.2
+    Checking brotli-decompressor v4.0.3
+    Checking bit-set v0.8.0
+    Checking num-complex v0.4.6
+    Checking memmap2 v0.9.11
+    Checking num_cpus v1.17.0
+   Compiling selectors v0.38.0
+    Checking sync_wrapper v1.0.2
+   Compiling cap-primitives v4.0.3
+    Checking tower-layer v0.3.3
+   Compiling litrs v1.0.0
+    Checking psl-types v2.0.11
+    Checking rand v0.10.3
+    Checking fs-set-times v0.20.3
+    Checking tendril v0.4.3
+    Checking rustix-linux-procfs v0.1.1
+    Checking async-lock v3.4.1
+    Checking dirs-sys v0.5.0
+    Checking brotli v7.0.0
+    Checking aes v0.8.4
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.20
+   Compiling futures-macro v0.3.34
+   Compiling async-trait v0.1.92
+   Compiling cssparser-macros v0.7.1
+    Checking num-bigint v0.4.6
+   Compiling document-features v0.2.12
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.2
+   Compiling tokio-macros v2.7.0
+   Compiling zerovec-derive v0.11.1
+   Compiling displaydoc v0.2.5
+   Compiling zerocopy-derive v0.8.48
+   Compiling phf_macros v0.13.1
+   Compiling tracing-attributes v0.1.31
+   Compiling thiserror-impl v1.0.69
+   Compiling phf_macros v0.11.3
+   Compiling ref-cast-impl v1.0.25
+   Compiling derive_more-impl v2.1.1
+    Checking futures-util v0.3.34
+    Checking tokio v1.53.3
+   Compiling cssparser-macros v0.6.1
+   Compiling selectors v0.26.0
+    Checking http-body-util v0.1.3
+    Checking anstyle-parse v1.0.0
+    Checking phf v0.13.1
+   Compiling rquickjs-sys v0.11.0
+    Checking hashbrown v0.16.1
+    Checking tracing v0.1.44
+    Checking iri-string v0.7.9
+    Checking zerofrom v0.1.6
+    Checking cssparser v0.37.0
+   Compiling cap-std v4.0.2
+    Checking winnow v0.7.14
+    Checking yoke v0.8.3
+    Checking rustc-hash v2.1.1
+    Checking phf v0.11.3
+    Checking hashbrown v0.14.5
+    Checking urlencoding v2.1.3
+    Checking maybe-owned v0.3.4
+    Checking ambient-authority v0.0.2
+    Checking ryu-js v1.0.3
+   Compiling unicode-general-category v1.1.0
+    Checking cssparser v0.34.0
+    Checking zerovec v0.11.4
+    Checking zerotrie v0.2.2
+    Checking anstream v1.0.0
+    Checking num-rational v0.4.2
+    Checking dashmap v6.2.1
+   Compiling match_token v0.1.0
+   Compiling derive_more v0.99.20
+    Checking dirs v6.0.0
+    Checking tempfile v3.27.0
+    Checking stringprep v0.1.5
+    Checking ecb v0.1.2
+    Checking cbc v0.1.2
+    Checking num-iter v0.1.45
+    Checking uuid v1.26.1
+    Checking futures-executor v0.3.34
+    Checking md-5 v0.10.6
+    Checking string_cache v0.9.0
+    Checking chrono v0.4.45
+    Checking string_cache v0.8.9
+    Checking serde_urlencoded v0.7.1
+    Checking universal-hash v0.5.1
+    Checking tinystr v0.8.1
+    Checking potential_utf v0.1.3
+    Checking fxhash v0.2.1
+    Checking derive_more v2.1.1
+    Checking futures v0.3.34
+    Checking encoding_rs v0.8.35
+   Compiling cap-fs-ext v4.0.2
+    Checking clap_lex v1.0.0
+    Checking borrow-or-share v0.2.4
+    Checking strsim v0.11.1
+    Checking bitmaps v3.1.0
+    Checking icu_collections v2.0.0
+    Checking icu_locale_core v2.0.0
+    Checking utf8-width v0.1.7
+    Checking opaque-debug v0.3.1
+    Checking weezl v0.1.10
+    Checking rangemap v1.8.0
+    Checking html-escape v0.2.13
+    Checking polyval v0.6.2
+    Checking clap_builder v4.6.7
+    Checking imbl-sized-chunks v0.1.3
+    Checking fluent-uri v0.4.1
+    Checking num v0.4.3
+    Checking quick-xml v0.38.4
+    Checking lopdf v0.42.0
+    Checking toml_datetime v0.6.11
+    Checking tracing-serde v0.2.0
+    Checking serde_yaml v0.9.34+deprecated
+    Checking serde_spanned v0.6.9
+    Checking icu_provider v2.0.0
+    Checking tokio-util v0.7.19
+    Checking tower v0.5.2
+    Checking async-compression v0.4.19
+    Checking a3s-acl v0.3.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/acl)
+    Checking opentelemetry v0.21.0
+    Checking rmp v0.8.14
+   Compiling clap_derive v4.6.7
+    Checking ppv-lite86 v0.2.21
+    Checking dirs-sys v0.4.1
+    Checking icu_properties v2.0.1
+    Checking icu_normalizer v2.0.0
+    Checking sharded-slab v0.1.7
+    Checking matchers v0.2.0
+    Checking getopts v0.2.24
+    Checking tower-http v0.6.8
+    Checking rustls-webpki v0.103.15
+    Checking rand_xoshiro v0.6.0
+    Checking ordered-float v4.6.0
+    Checking inotify-sys v0.1.5
+    Checking tracing-log v0.2.0
+    Checking rand_chacha v0.3.1
+    Checking h2 v0.4.19
+    Checking tokio-stream v0.1.17
+    Checking crossbeam-channel v0.5.15
+    Checking bstr v1.12.1
+    Checking thread_local v1.1.9
+    Checking gjson v0.8.1
+    Checking flagset v0.4.7
+    Checking bitflags v1.3.2
+    Checking micromap v0.3.0
+    Checking glob v0.3.3
+    Checking nu-ansi-term v0.50.3
+    Checking toml_write v0.1.2
+    Checking vsimd v0.8.0
+    Checking outref v0.5.2
+    Checking ego-tree v0.10.0
+    Checking globset v0.4.18
+    Checking referencing v0.47.0
+    Checking fluent-uri v0.1.4
+    Checking toml_edit v0.22.27
+    Checking imbl v3.0.0
+    Checking tracing-subscriber v0.3.23
+    Checking inotify v0.11.0
+    Checking dirs v5.0.1
+    Checking rmp-serde v1.3.0
+    Checking uuid-simd v0.8.0
+    Checking idna_adapter v1.2.1
+    Checking fraction v0.15.3
+    Checking ghash v0.5.1
+    Checking cron v0.17.0
+    Checking opentelemetry_sdk v0.21.2
+    Checking roaring v0.11.1
+    Checking rust-stemmers v1.2.0
+    Checking bincode v1.3.3
+    Checking email_address v0.2.9
+    Checking regress v0.10.5
+   Compiling serde_repr v0.1.20
+    Checking idna v1.1.0
+   Compiling async-stream-impl v0.3.6
+    Checking fancy-regex v0.18.0
+    Checking ctr v0.9.2
+    Checking aead v0.5.2
+    Checking jsonschema-regex v0.47.0
+    Checking shell-words v1.1.0
+    Checking data-encoding v2.9.0
+    Checking num-cmp v0.1.0
+    Checking bytecount v0.6.9
+    Checking notify-types v2.0.0
+    Checking clap v4.6.7
+    Checking hex v0.4.3
+    Checking toml v0.8.23
+    Checking aes-gcm v0.10.3
+    Checking notify v8.2.0
+    Checking url v2.5.8
+    Checking publicsuffix v2.3.0
+    Checking a3s-effect v0.2.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/effect)
+    Checking ignore v0.4.24
+    Checking hyper v1.8.1
+    Checking sha256 v1.6.0
+    Checking a3s-sandbox v0.2.3 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/sandbox)
+    Checking a3s-common v0.1.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/common)
+    Checking a3s-memory v0.1.5 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/memory)
+    Checking a3s-lane v0.5.1 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/lane)
+    Checking base64 v0.21.7
+    Checking similar v2.7.0
+    Checking lsp-types v0.97.0
+    Checking async-stream v0.3.6
+    Checking tokio-rustls v0.26.6
+    Checking deadpool-runtime v0.1.4
+    Checking assert-json-diff v2.0.2
+    Checking cookie_store v0.21.1
+    Checking a3s-form-core v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/form-core)
+    Checking yasna v0.5.2
+    Checking deadpool v0.12.3
+    Checking pem v3.0.6
+   Compiling pkg-config v0.3.32
+   Compiling rustversion v1.0.22
+    Checking arrayvec v0.7.6
+    Checking rcgen v0.13.2
+   Compiling ident_case v1.0.1
+   Compiling darling_core v0.20.11
+   Compiling cfg_aliases v0.2.1
+    Checking hyper-util v0.1.20
+    Checking anstyle-parse v0.2.7
+   Compiling portable-atomic v1.15.0
+   Compiling onig_sys v69.9.3
+   Compiling nix v0.30.1
+    Checking anstream v0.6.21
+    Checking env_filter v0.1.4
+    Checking rand_core v0.9.3
+   Compiling slotmap v1.0.7
+    Checking bumpalo v3.19.0
+    Checking float-cmp v0.9.0
+   Compiling pulldown-cmark v0.13.0
+    Checking zopfli v0.8.3
+    Checking strict-num v0.1.1
+    Checking rand_chacha v0.9.0
+    Checking env_logger v0.11.8
+    Checking polycool v0.4.0
+    Checking hyper-rustls v0.27.7
+    Checking wiremock v0.6.5
+    Checking console v0.15.11
+   Compiling esaxx-rs v0.1.10
+   Compiling matrixmultiply v0.3.11
+    Checking foldhash v0.1.5
+    Checking number_prefix v0.4.0
+    Checking arrayref v0.3.9
+    Checking roxmltree v0.20.0
+    Checking unicase v2.8.1
+    Checking minimal-lexical v0.2.1
+    Checking tiny-skia-path v0.12.0
+    Checking indicatif v0.17.11
+    Checking nom v7.1.3
+    Checking fontconfig-parser v0.5.8
+    Checking reqwest v0.12.24
+    Checking hashbrown v0.15.5
+    Checking kurbo v0.13.1
+    Checking rand v0.9.5
+    Checking castaway v0.2.4
+   Compiling darling_macro v0.20.11
+    Checking olpc-cjson v0.1.4
+    Checking serde_yaml_ng v0.10.0
+   Compiling monostate-impl v0.1.18
+   Compiling enum-as-inner v0.6.1
+   Compiling serde_derive_internals v0.30.0
+    Checking webpki-roots v0.26.11
+    Checking itertools v0.14.0
+    Checking socks v0.3.4
+    Checking fdeflate v0.3.7
+    Checking ordered_hashmap v0.0.3 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/third_party/ordered_hashmap)
+    Checking unicode-ccc v0.4.0
+    Checking rawpointer v0.2.1
+    Checking base64 v0.13.1
+    Checking unicode-bidi-mirroring v0.4.0
+   Compiling zip v2.4.2
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+   Compiling vcpkg v0.2.15
+    Checking static_assertions v1.1.0
+    Checking semver v1.0.28
+   Compiling pastey v0.2.3
+    Checking unicode-script v0.5.8
+    Checking compact_str v0.9.0
+    Checking monostate v0.1.18
+    Checking a3s-use-core v0.2.4 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/use/core)
+   Compiling darling v0.20.11
+    Checking sysctl v0.6.0
+    Checking rustybuzz v0.20.1
+    Checking spm_precompiled v0.1.4
+   Compiling derive_builder_core v0.20.2
+   Compiling schemars_derive v1.2.3
+    Checking rayon-cond v0.4.0
+    Checking graphlib_rust v0.0.2 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/third_party/graphlib_rust)
+    Checking png v0.18.0
+   Compiling libsqlite3-sys v0.35.0
+    Checking ureq v2.12.1
+    Checking svgtypes v0.16.1
+    Checking fontdb v0.23.0
+    Checking dary_heap v0.3.9
+   Compiling strum_macros v0.28.0
+    Checking macro_rules_attribute v0.2.3
+    Checking cpu-time v1.0.0
+    Checking combine v4.6.9
+    Checking roxmltree v0.21.1
+    Checking simplecss v0.2.2
+    Checking unicode-normalization-alignments v0.1.12
+    Checking data-url v0.3.2
+    Checking unicode_categories v0.1.1
+    Checking imagesize v0.14.0
+    Checking dyn-clone v1.0.20
+    Checking unicode-vo v0.1.0
+    Checking xmlwriter v0.1.0
+    Checking pico-args v0.5.0
+    Checking anndists v0.1.5
+    Checking tiny-skia v0.12.0
+   Compiling derive_builder_macro v0.20.2
+    Checking dagre_rust v0.0.5 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/third_party/dagre_rust)
+    Checking ndarray v0.15.6
+    Checking arc-swap v1.9.2
+    Checking usvg v0.47.0
+    Checking hf-hub v0.4.3
+    Checking rquickjs-core v0.11.0
+    Checking half v2.7.1
+    Checking safetensors v0.5.3
+    Checking rgb v0.8.52
+    Checking smallstr v0.3.1
+    Checking env_home v0.1.0
+   Compiling cfg_aliases v0.1.1
+    Checking typed-path v0.12.3
+    Checking schemars v1.2.3
+    Checking yrs v0.27.3
+    Checking which v8.0.0
+    Checking a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+   Compiling nix v0.28.0
+    Checking derive_builder v0.20.2
+    Checking hashlink v0.10.0
+    Checking pdf-inspector v1.17.0
+    Checking rquickjs v0.11.0
+    Checking resvg v0.47.0
+    Checking a3s-office-formula-parser v0.45.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/office/crates/formula-parser)
+    Checking strum v0.28.0
+    Checking zip v7.2.0
+    Checking async-broadcast v0.7.2
+    Checking wait-timeout v0.2.1
+    Checking agent-client-protocol-schema v0.11.4
+    Checking fallible-streaming-iterator v0.1.9
+    Checking mermaid-to-svg v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/third_party/mermaid-to-svg)
+    Checking fallible-iterator v0.3.0
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp)
+    Checking mmap-rs v0.7.0
+   Compiling vte_generate_state_changes v0.1.2
+    Checking filedescriptor v0.8.3
+    Checking serial2 v0.2.34
+    Checking downcast-rs v1.2.1
+    Checking unicode-width v0.1.14
+    Checking hnsw_rs v0.3.5
+    Checking vte v0.11.1
+    Checking portable-pty v0.9.0
+    Checking vt100 v0.15.2
+    Checking a3s-code-mermaid v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-code-mermaid)
+    Checking a3s-okf v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/okf)
+    Checking a3s-office v0.45.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/office/crates/core)
+    Checking a3s-use-reconcile v0.2.10 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/use/reconcile)
+    Checking rusqlite v0.37.0
+    Checking onig v6.5.2
+    Checking tokenizers v0.21.4
+    Checking agent-client-protocol v0.10.4
+    Checking model2vec-rs v0.3.0
+    Checking markup5ever v0.38.0
+    Checking markup5ever v0.39.0
+    Checking html5ever v0.39.0
+    Checking html5ever v0.38.0
+    Checking xml5ever v0.38.0
+    Checking markup5ever_rcdom v0.38.0+unofficial
+    Checking html2text v0.16.7
+    Checking dom_query v0.28.0
+    Checking htmd v0.5.4
+    Checking dom_smoothie v0.18.2
+    Checking html5ever v0.29.1
+    Checking scraper v0.22.0
+    Checking a3s-search v3.4.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/search)
+    Checking jsonschema v0.47.0
+    Checking a3s-vec v0.1.8 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/vec)
+    Checking a3s-code-core v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/core)
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/core/src/agent/tool_completion_runtime.rs:316:5
+    |
+316 | /     pub(crate) fn record_native_artifact_verification(
+317 | |         &self,
+318 | |         call: &ToolCall,
+319 | |         result: &a3s_effect::ToolExecutionResultV1,
+...   |
+324 | |         nested: Option<&crate::harness_loop::MutationLedger>,
+325 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: casting to the same type is unnecessary (`u64` -> `u64`)
+  --> crates/code/core/src/fact_control/receipts.rs:95:51
+   |
+95 |             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `request.identity.turn`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_cast
+   = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+    --> crates/code/core/src/porcelain.rs:1587:6
+     |
+1587 | ) -> Option<(Vec<(std::ffi::OsString, libc::stat)>, bool, bool)> {
+     |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#type_complexity
+     = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: stripping a prefix manually
+   --> crates/code/core/src/workspace/retrieval/rerank.rs:632:33
+    |
+632 |                     let after = &rest[identifier.len()..];
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: the prefix was tested here
+   --> crates/code/core/src/workspace/retrieval/rerank.rs:631:17
+    |
+631 |                 if rest.starts_with(identifier) {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_strip
+    = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+    |
+631 ~                 if let Some(after) = rest.strip_prefix(identifier) {
+632 ~                     if after.is_empty()
+    |
+
+warning: `a3s-code-core` (lib) generated 9 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps` to apply 4 suggestions)
+    Checking a3s-embedding v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/embedding)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p a3s-embedding -- --no-deps` to apply 2 suggestions)
+warning: useless conversion to the same type: `std::pin::Pin<std::boxed::Box<futures::stream::Iter<std::vec::IntoIter<std::result::Result<bytes::Bytes, anyhow::Error>>>>>`
+  --> crates/code/core/tests/codex_login_roundtrip.rs:65:26
+   |
+65 |               byte_stream: Pin::from(Box::pin(futures::stream::iter(vec![Ok(
+   |  __________________________^
+66 | |                 bytes::Bytes::from(self.reply.clone()),
+67 | |             )]))),
+   | |_________________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_conversion
+   = note: `#[warn(clippy::useless_conversion)]` on by default
+help: consider removing `Pin::from()`
+   |
+65 ~             byte_stream: Box::pin(futures::stream::iter(vec![Ok(
+66 +                 bytes::Bytes::from(self.reply.clone()),
+67 ~             )])),
+   |
+
+warning: `a3s-code-core` (test "codex_login_roundtrip") generated 1 warning (run `cargo clippy --fix --test "codex_login_roundtrip" -p a3s-code-core -- --no-deps` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/src/agent/emit.rs:133:5
+    |
+133 | /     pub(super) async fn emit_tool_call_completed(
+134 | |         &self,
+135 | |         session_id: &acp::SessionId,
+136 | |         id: &str,
+...   |
+141 | |         metadata: Option<&serde_json::Value>,
+142 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/agent/tool_render.rs:179:8
+    |
+179 |     if metadata.get("validated")?.as_bool()? != true
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+    = note: `#[warn(clippy::bool_comparison)]` on by default
+
+warning: this function has too many arguments (9/7)
+   --> crates/code/acp/src/agent/turn.rs:395:5
+    |
+395 | /     pub(super) async fn stream_turn(
+396 | |         &self,
+397 | |         session_id: &acp::SessionId,
+398 | |         session: &AgentSession,
+...   |
+404 | |         requested_posture: Option<PermissionPosture>,
+405 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: unneeded `return` statement
+  --> crates/code/acp/src/office_file.rs:26:9
+   |
+26 |         return crate::artifact_image::render_png(svg);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+   = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+   |
+26 -         return crate::artifact_image::render_png(svg);
+26 +         crate::artifact_image::render_png(svg)
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/office_file.rs:193:12
+    |
+193 |         if metadata.get("validated")?.as_bool()? != true
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+
+warning: the borrowed expression implements the required traits
+   --> crates/code/acp/src/unattended.rs:414:37
+    |
+414 |             progress.remember_error(&error.to_string());
+    |                                     ^^^^^^^^^^^^^^^^^^ help: change this to: `error.to_string()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_borrows_for_generic_args
+    = note: `#[warn(clippy::needless_borrows_for_generic_args)]` on by default
+
+warning: `a3s-code-acp` (lib) generated 8 warnings (run `cargo clippy --fix --lib -p a3s-code-acp -- --no-deps` to apply 4 suggestions)
+warning: large size difference between variants
+  --> crates/code/acp/examples/interactive_client.rs:21:1
+   |
+21 | /  enum Pending {
+22 | |/     Permission(
+23 | ||         acp::RequestPermissionRequest,
+24 | ||         oneshot::Sender<acp::RequestPermissionResponse>,
+25 | ||     ),
+   | ||_____- the largest variant contains at least 272 bytes
+26 | |      Form(oneshot::Sender<acp::ExtResponse>),
+   | |      --------------------------------------- the second-largest variant contains at least 8 bytes
+27 | |  }
+   | |__^ the entire enum is at least 272 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#large_enum_variant
+   = note: `#[warn(clippy::large_enum_variant)]` on by default
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+23 -         acp::RequestPermissionRequest,
+23 +         Box<acp::RequestPermissionRequest>,
+   |
+
+warning: `a3s-code-acp` (example "interactive_client") generated 1 warning
+warning: variant `Bash` is never constructed
+  --> crates/code/acp/tests/boundary_e2e.rs:35:5
+   |
+22 | enum Arm {
+   |      --- variant in this enum
+...
+35 |     Bash {
+   |     ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/agent/native_send_now_tests.rs:187:9
+    |
+187 |     let seen = client.seen.lock().unwrap();
+    |         ^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/agent/native_send_now_tests.rs:215:21
+    |
+215 |     session.close().await;
+    |                     ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+    = note: `#[warn(clippy::await_holding_lock)]` on by default
+
+warning: field assignment outside of initializer for an instance created with Default::default()
+  --> crates/code/acp/tests/long_horizon_preflight.rs:56:5
+   |
+56 |     config.memory_dir = Some(PathBuf::from("private-memory-sentinel"));
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: consider initializing the variable with `a3s_code_core::CodeConfig { memory_dir: Some(PathBuf::from("private-memory-sentinel")), sessions_dir: Some(PathBuf::from("private-session-sentinel")), storage_backend: StorageBackend::Custom, storage_url: Some("private-connection-sentinel".into()), ..Default::default() }` and removing relevant reassignments
+  --> crates/code/acp/tests/long_horizon_preflight.rs:55:5
+   |
+55 |     let mut config = CodeConfig::default();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#field_reassign_with_default
+   = note: `#[warn(clippy::field_reassign_with_default)]` on by default
+
+warning: `a3s-code-acp` (test "boundary_e2e") generated 1 warning
+warning: `a3s-code-acp` (test "long_horizon_preflight") generated 1 warning
+warning: field assignment outside of initializer for an instance created with Default::default()
+   --> crates/code/acp/src/codex_account.rs:568:9
+    |
+568 |         config.default_model = Some("mock/m".to_string());
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: consider initializing the variable with `a3s_code_core::CodeConfig { default_model: Some("mock/m".to_string()), ..Default::default() }` and removing relevant reassignments
+   --> crates/code/acp/src/codex_account.rs:567:9
+    |
+567 |         let mut config = a3s_code_core::CodeConfig::default();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#field_reassign_with_default
+    = note: `#[warn(clippy::field_reassign_with_default)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/document_run_tests.rs:452:21
+    |
+452 |                 let texts = f.model.results.lock().unwrap();
+    |                     ^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/document_run_tests.rs:470:26
+    |
+470 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/document_run_tests.rs:453:21
+    |
+453 |                 let errors = f.model.result_errors.lock().unwrap();
+    |                     ^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/document_run_tests.rs:470:26
+    |
+470 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: function `open_live` is never used
+   --> crates/code/acp/tests/tui_913_real_llm.rs:571:4
+    |
+571 | fn open_live() -> Option<LiveSession> {
+    |    ^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `settled_turns` is never used
+  --> crates/code/acp/tests/tui_913_real_llm/fact_evidence.rs:14:15
+   |
+14 | pub(super) fn settled_turns(facts: &[Value]) -> usize {
+   |               ^^^^^^^^^^^^^
+
+warning: function `receipt_for` is never used
+  --> crates/code/acp/tests/tui_913_real_llm/fact_evidence.rs:21:15
+   |
+21 | pub(super) fn receipt_for<'a>(facts: &'a [Value], tool: &str) -> Vec<&'a Value> {
+   |               ^^^^^^^^^^^
+
+warning: unused variable: `screen`
+   --> crates/code/acp/tests/aster_tui_live_e2e/driver.rs:619:21
+    |
+619 |                 let screen = loop {
+    |                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_screen`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated functions `from_environment` and `acp_binary` are never used
+   --> crates/code/acp/tests/long_horizon/candidate.rs:120:12
+    |
+ 98 | impl Candidate {
+    | -------------- associated functions in this implementation
+...
+120 |     pub fn from_environment(expected: &str) -> Result<Option<Self>, &'static str> {
+    |            ^^^^^^^^^^^^^^^^
+...
+126 |     pub fn acp_binary(default: &str, expected: &str) -> PathBuf {
+    |            ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `rpc_errors` is never read
+  --> crates/code/acp/tests/long_horizon/driver.rs:23:9
+   |
+17 | pub struct Capture {
+   |            ------- field in this struct
+...
+23 |     pub rpc_errors: Vec<Value>,
+   |         ^^^^^^^^^^
+
+warning: struct `Driver` is never constructed
+   --> crates/code/acp/tests/long_horizon/driver.rs:197:12
+    |
+197 | pub struct Driver {
+    |            ^^^^^^
+
+warning: associated items `process_id`, `spawn`, `open`, `prompt`, and `close` are never used
+   --> crates/code/acp/tests/long_horizon/driver.rs:206:12
+    |
+205 | impl Driver {
+    | ----------- associated items in this implementation
+206 |     pub fn process_id(&self) -> Option<u32> {
+    |            ^^^^^^^^^^
+...
+210 |     pub fn spawn(
+    |            ^^^^^
+...
+289 |     pub async fn open(
+    |                  ^^^^
+...
+316 |     pub async fn prompt(
+    |                  ^^^^^^
+...
+356 |     pub async fn close(self) -> Result<(), &'static str> {
+    |                  ^^^^^
+
+warning: constant `ARTIFACTS` is never used
+  --> crates/code/acp/tests/long_horizon/fixture.rs:34:11
+   |
+34 | pub const ARTIFACTS: [&str; 7] = [
+   |           ^^^^^^^^^
+
+warning: method `request` is never used
+   --> crates/code/acp/tests/long_horizon/fixture.rs:148:12
+    |
+108 | impl Fixture {
+    | ------------ method in this implementation
+...
+148 |     pub fn request(&self) -> &'static str {
+    |            ^^^^^^^
+
+warning: called `Iterator::last` on a `DoubleEndedIterator`; this will needlessly iterate the entire iterator
+   --> crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs:167:22
+    |
+167 | ... = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).last().un...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#double_ended_iterator_last
+    = note: `#[warn(clippy::double_ended_iterator_last)]` on by default
+help: try
+    |
+167 -         let answer = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).last().unwrap().to_owned();
+167 +         let answer = facts.iter().filter(|f| f["type"] == "model.turn").filter_map(|f| f["payload"]["text"].as_str()).filter(|s| !s.is_empty()).next_back().unwrap().to_owned();
+    |
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/tests/long_horizon/relay.rs:292:1
+    |
+292 | / async fn serve(
+293 | |     mut socket: TcpStream,
+294 | |     route: Arc<Route>,
+295 | |     authorization: String,
+...   |
+300 | |     http: Arc<dyn HttpClient>,
+301 | | ) {
+    | |_^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: unnecessary use of `clone` to create a slice from a reference
+  --> crates/code/acp/tests/long_horizon_contracts.rs:68:53
+   |
+68 |         report::summarize(CAMPAIGN, &definitions(), &[valid.clone()])
+   |                                                     ^^^^^^^^^^^^^^^^ help: try: `std::slice::from_ref(&valid)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#cloned_ref_to_slice_refs
+   = note: `#[warn(clippy::cloned_ref_to_slice_refs)]` on by default
+
+warning: `a3s-code-acp` (test "tui_913_real_llm") generated 3 warnings
+warning: `a3s-code-acp` (test "aster_tui_live_e2e") generated 2 warnings (run `cargo clippy --fix --test "aster_tui_live_e2e" -p a3s-code-acp -- --no-deps` to apply 2 suggestions)
+warning: `a3s-code-acp` (lib test) generated 10 warnings (6 duplicates)
+warning: `a3s-code-acp` (test "long_horizon_contracts") generated 8 warnings (run `cargo clippy --fix --test "long_horizon_contracts" -p a3s-code-acp -- --no-deps` to apply 1 suggestion)
+warning: associated function `acp_binary` is never used
+   --> crates/code/acp/tests/long_horizon/candidate.rs:126:12
+    |
+ 98 | impl Candidate {
+    | -------------- associated function in this implementation
+...
+126 |     pub fn acp_binary(default: &str, expected: &str) -> PathBuf {
+    |            ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `parse` and `as_str` are never used
+  --> crates/code/acp/tests/long_horizon/report.rs:18:12
+   |
+17 | impl Status {
+   | ----------- associated items in this implementation
+18 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+...
+32 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> crates/code/acp/tests/long_horizon/report.rs:57:12
+   |
+56 | impl FailureLayer {
+   | ----------------- associated items in this implementation
+57 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+...
+70 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: associated function `parse` is never used
+  --> crates/code/acp/tests/long_horizon/report.rs:96:12
+   |
+95 | impl Check {
+   | ---------- associated function in this implementation
+96 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+
+warning: `a3s-code-acp` (test "long_horizon_real_llm") generated 7 warnings (3 duplicates)
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/core/src/agent_api/tests/fact_log/execution_target.rs:252:13
+    |
+252 |         let requests = client.requests.lock().unwrap();
+    |             ^^^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/core/src/agent_api/tests/fact_log/execution_target.rs:293:25
+    |
+293 |         session.close().await;
+    |                         ^^^^^
+294 |         agent.close().await;
+    |                       ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+    = note: `#[warn(clippy::await_holding_lock)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs:46:13
+    |
+ 46 |         let requests = seen.lock().unwrap();
+    |             ^^^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/core/src/agent_api/tests/fact_log/tool_call_fidelity.rs:104:25
+    |
+104 |         session.close().await;
+    |                         ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: items after a test module
+   --> crates/code/core/src/durable_memory_vec.rs:892:1
+    |
+892 |   mod multi_session_lock_tests {
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+950 | / fn rrf_merge(
+951 | |     fts: Vec<(String, f32)>,
+952 | |     semantic: Vec<(String, f32)>,
+953 | |     limit: usize,
+954 | | ) -> Vec<(String, f32)> {
+    | |_______________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#items_after_test_module
+    = note: `#[warn(clippy::items_after_test_module)]` on by default
+    = help: move the items to before the test module was defined
+
+error: read amount is not handled
+  --> crates/code/core/src/llm/http/redirect_tests.rs:29:13
+   |
+29 |             socket.read(&mut bytes).await.unwrap();
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: use `AsyncReadExt::read_exact` instead, or handle partial reads
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unused_io_amount
+   = note: `#[deny(clippy::unused_io_amount)]` on by default
+
+error: read amount is not handled
+  --> crates/code/core/src/llm/http/redirect_tests.rs:41:13
+   |
+41 |             socket.read(&mut bytes).await.unwrap();
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: use `AsyncReadExt::read_exact` instead, or handle partial reads
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unused_io_amount
+
+warning: the following explicit lifetimes could be elided: 'a
+  --> crates/code/core/src/tools/builtin/bash/windows_shell.rs:54:44
+   |
+54 | pub(crate) fn first_usable_host_powershell<'a>(
+   |                                            ^^
+55 |     candidates: &'a [std::path::PathBuf],
+   |                  ^^
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 | ) -> Option<&'a std::path::PathBuf> {
+   |              ^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_lifetimes
+   = note: `#[warn(clippy::needless_lifetimes)]` on by default
+help: elide the lifetimes
+   |
+54 ~ pub(crate) fn first_usable_host_powershell(
+55 ~     candidates: &[std::path::PathBuf],
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 ~ ) -> Option<&std::path::PathBuf> {
+   |
+
+warning: `a3s-code-core` (lib test) generated 9 warnings (5 duplicates)
+error: could not compile `a3s-code-core` (lib test) due to 2 previous errors; 9 warnings emitted

@@ -1,0 +1,57 @@
+{
+  "scope": "loopback shadow only; live API and gateway unchanged",
+  "apply_status": 200,
+  "apply_result": {
+    "schema": "a3s.gateway.managed-snapshot-status.v1",
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "requested": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 3,
+      "snapshot_digest": "sha256:861a002153c09111e522405ea8f95cf5371e801b642d3803199409c2a287c62a"
+    },
+    "state": "applied",
+    "ready": true,
+    "replayed": false,
+    "applied": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 3,
+      "expected_revision": 2,
+      "snapshot_digest": "sha256:861a002153c09111e522405ea8f95cf5371e801b642d3803199409c2a287c62a",
+      "issued_at": "2026-10-25T15:25:12Z",
+      "expires_at": "2026-10-26T03:25:12Z",
+      "applied_at": "2026-10-25T15:44:55.484063586Z"
+    }
+  },
+  "inference_status": 503,
+  "inference_response": {
+    "error": {
+      "message": "Inference route or snapshot is not ready.",
+      "type": "api_error",
+      "param": null,
+      "code": "service_unavailable",
+      "a3s_error_code": "route.not_ready"
+    }
+  },
+  "restore_status": 200,
+  "restore_result": {
+    "schema": "a3s.gateway.managed-snapshot-status.v1",
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "requested": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 4,
+      "snapshot_digest": "sha256:47cec567a31bc16363390e83d76a18db5d6f6bf0afb95cd26c2d657f7aa485ae"
+    },
+    "state": "applied",
+    "ready": true,
+    "replayed": false,
+    "applied": {
+      "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+      "revision": 4,
+      "expected_revision": 3,
+      "snapshot_digest": "sha256:47cec567a31bc16363390e83d76a18db5d6f6bf0afb95cd26c2d657f7aa485ae",
+      "issued_at": "2026-10-25T15:25:12Z",
+      "expires_at": "2026-10-26T03:25:12Z",
+      "applied_at": "2026-10-25T15:44:55.753495294Z"
+    }
+  }
+}

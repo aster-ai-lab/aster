@@ -1,0 +1,566 @@
+[
+  {
+    "gpu": 0,
+    "http_status": 200,
+    "seconds": 0.4914593169814907,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944519,
+      "id": "chatcmpl-2364c0e9-8560-471a-bd8d-d82341cd338d",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 17.788,
+          "predicted_n": 2,
+          "predicted_per_second": 56.21767483696874,
+          "predicted_per_token_ms": 17.788,
+          "prompt_ms": 131.43,
+          "prompt_n": 15,
+          "prompt_per_second": 114.1291942478886,
+          "prompt_per_token_ms": 8.762
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  },
+  {
+    "gpu": 1,
+    "http_status": 200,
+    "seconds": 0.7513407050282694,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944519,
+      "id": "chatcmpl-cc50b4b3-ea5d-4156-973a-0720d39633aa",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 23.721,
+          "predicted_n": 2,
+          "predicted_per_second": 42.15673875468994,
+          "predicted_per_token_ms": 23.721,
+          "prompt_ms": 163.743,
+          "prompt_n": 15,
+          "prompt_per_second": 91.6069694582364,
+          "prompt_per_token_ms": 10.9162
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  },
+  {
+    "gpu": 2,
+    "http_status": 200,
+    "seconds": 0.7136231990298256,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944519,
+      "id": "chatcmpl-9ed8754a-6785-4d24-ba4b-d5734aaedc61",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 17.852,
+          "predicted_n": 2,
+          "predicted_per_second": 56.0161326462021,
+          "predicted_per_token_ms": 17.852,
+          "prompt_ms": 137.631,
+          "prompt_n": 15,
+          "prompt_per_second": 108.98707413300782,
+          "prompt_per_token_ms": 9.1754
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  },
+  {
+    "gpu": 3,
+    "http_status": 200,
+    "seconds": 0.58722086698981,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944520,
+      "id": "chatcmpl-08554614-a932-47e0-b406-83259fe3e959",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 17.692,
+          "predicted_n": 2,
+          "predicted_per_second": 56.522722134297986,
+          "predicted_per_token_ms": 17.692,
+          "prompt_ms": 151.292,
+          "prompt_n": 15,
+          "prompt_per_second": 99.14602226158686,
+          "prompt_per_token_ms": 10.086133333333333
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  },
+  {
+    "gpu": 4,
+    "http_status": 200,
+    "seconds": 0.9383502689888701,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944520,
+      "id": "chatcmpl-a544be28-d731-4d5f-9db4-4efb2a5fd700",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 17.287,
+          "predicted_n": 2,
+          "predicted_per_second": 57.84693700468561,
+          "predicted_per_token_ms": 17.287,
+          "prompt_ms": 143.402,
+          "prompt_n": 15,
+          "prompt_per_second": 104.60105158923864,
+          "prompt_per_token_ms": 9.560133333333331
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  },
+  {
+    "gpu": 5,
+    "http_status": 200,
+    "seconds": 0.8029157790006138,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 16,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "76f2756e1bfea6f0b768abe1305f76c6e0be5ee8e0330f1a552f2844f2fdad4c"
+        },
+        "model": "prism-27b",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "203460d59c5d6ef2910d32cc8159c97d685abd9351ea754487d41c0c6172906d"
+          },
+          "prompt": {
+            "chat_template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+            "chat_template_source": "gguf.tokenizer.chat_template"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "4284259c32cc56890ff7edb030195c1a2183318be2fbe3e14bca06093db0fcca",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "OK",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792944520,
+      "id": "chatcmpl-3e59d61c-c309-4cc4-b1a0-ae9d21af69f1",
+      "model": "prism-27b",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "timings": {
+          "cache_n": 0,
+          "draft_n": 0,
+          "draft_n_accepted": 0,
+          "predicted_ms": 17.693,
+          "predicted_n": 2,
+          "predicted_per_second": 56.51952749675012,
+          "predicted_per_token_ms": 17.693,
+          "prompt_ms": 142.836,
+          "prompt_n": 15,
+          "prompt_per_second": 105.01554230026042,
+          "prompt_per_token_ms": 9.5224
+        },
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 15,
+          "total_tokens": 17
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 15,
+        "total_tokens": 17
+      }
+    }
+  }
+]

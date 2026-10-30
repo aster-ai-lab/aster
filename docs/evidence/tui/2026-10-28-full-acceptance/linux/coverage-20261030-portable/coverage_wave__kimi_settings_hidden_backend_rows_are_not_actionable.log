@@ -1,0 +1,74 @@
+
+running 1 test
+test coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable ... ORACLE case=coverage-unavailable-settings name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-unavailable-settings name=hidden-coding_data_sharing result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-dashboard_preview result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-combine_queued_prompts result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-follow_up_behavior result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-plan_mode result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-contextual_hints.plan_mode result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-toolset.ask_user_question.timeout_enabled result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-fork_secondary_model result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-prompt_suggestions result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-auto_update result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-remember_tool_approvals result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-default_selected_permission result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-default_model result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-subagent_model_inheritance result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-hunk_tracker_mode result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-show_tips result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-confirm_before_rewind result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+ORACLE case=coverage-unavailable-settings name=hidden-contextual_hints.image_input result=pass detail=the exact key has no rendered actionable setting under the current backend and voice-disabled configuration
+
+thread 'coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable' (10384) panicked at crates/code/acp/tests/aster_tui_live_e2e/coverage_wave.rs:517:9:
+expected "No matches for \"voice_keybind_enabled\""
+                                                                                                                        
+  /t/aster-kimi-hfDqH6/workspace                                                                              0 / 128K  
+                                                                                                                        
+                  ┌─ Settings ───────────────────────────────────────────────────────────────── [✗] ─┐                  
+                  │                                                                                  │                  
+                  │   search: voice_keybind_enabled                                                  │                  
+                  │  ──────────────────────────────────────────────────────────────────────────────  │                  
+                  │   Editor & Input ──────────────────────────────────────────────────────────────  │                  
+                  │  ▸ Voice shortcut                                                        on      │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │                                                                                  │                  
+                  │  Tip · Ask A3S Code: "change theme to grokday" or "what does compact mode do?"   │                  
+  ╭───────────────│                                                                                  │───────────────╮  
+  │ ❯             │   type to filter  |  ↑/↓ nav  |  Backspace edit  |  Enter commit  |  Esc clear   │               │  
+  ╰───────────────└──────────────────────────────────────────────────────────────────────────────────┘ Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    coverage_wave::kimi_settings_hidden_backend_rows_are_not_actionable
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 95 filtered out; finished in 25.34s
+

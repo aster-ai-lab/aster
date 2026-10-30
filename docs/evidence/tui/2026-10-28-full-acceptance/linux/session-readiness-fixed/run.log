@@ -1,0 +1,22 @@
+
+running 1 test
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu
+ORACLE case=editor-save name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13320
+ORACLE case=editor-save name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-save name=quit result=pass detail=exit 0
+ORACLE case=editor-nonzero name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu
+ORACLE case=editor-nonzero name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13319
+ORACLE case=editor-nonzero name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-nonzero name=quit result=pass detail=exit 0
+ORACLE case=editor-invalid-utf8 name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu
+ORACLE case=editor-invalid-utf8 name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13319
+ORACLE case=editor-invalid-utf8 name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-invalid-utf8 name=quit result=pass detail=exit 0
+ORACLE case=editor-missing-program name=source-pair result=pass detail=aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu
+ORACLE case=editor-missing-program name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13317
+ORACLE case=editor-missing-program name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-missing-program name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 28 filtered out; finished in 41.97s
+

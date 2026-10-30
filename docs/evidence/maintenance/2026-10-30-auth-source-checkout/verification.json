@@ -1,0 +1,68 @@
+{
+  "base_commit": "efc6afd34e78d7bd9310ed8337d77c7f394828a1",
+  "pinned_api_commit": "f31b13e114d7bfddca01e108dfa0b051f132f1f9",
+  "observed_api_commit": "f31b13e114d7bfddca01e108dfa0b051f132f1f9",
+  "scanner_source_sha256": "5a25f0e265e5c65bba2c359c4dcc63307733040bf8b887cbfe431bc5b69c5bb1",
+  "compiler": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "compile_command": "CARGO_MANIFEST_DIR=$PWD/apps/auth rustc --edition=2021 --test apps/auth/src/architecture.rs -o <local-target>/auth-architecture-test",
+  "scanner_invocation": "<local-target>/auth-architecture-test --nocapture",
+  "cases": [
+    {
+      "setup": "API submodule not initialized",
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 1,
+      "failure": "scan root did not yield a relative path for contexts/logs.rs"
+    },
+    {
+      "setup": "git submodule update --init apps/api",
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 1,
+      "failure": "a3s-api/contexts/identity/application/org_budgets.rs mixes a controller or application path with SQL, ORM, or Redis"
+    }
+  ],
+  "workflow_yaml_check": "PyYAML safe_load; Auth-only condition, existing composite action, exact apps/api path and read-only token expression checked; all cargo test commands unchanged",
+  "checks": {
+    "cargo_fmt_all_check": 0,
+    "workspace_dependencies": {
+      "exit_code": 0,
+      "passed": 6
+    },
+    "studio_checkout": {
+      "exit_code": 0,
+      "passed": 1
+    }
+  },
+  "files": [
+    {
+      "path": "auth-architecture-after.log.gz",
+      "bytes": 381,
+      "sha256": "72f3a41678ec88616162cfc1a26a13b3c17ba711f46dbd4ca74462d60d800daf",
+      "uncompressed_bytes": 658,
+      "uncompressed_sha256": "052125f0e029965100ae0b0ff433329f5b66147928e10e27d3b36e49f5b439d0"
+    },
+    {
+      "path": "auth-architecture-before.log.gz",
+      "bytes": 337,
+      "sha256": "a221f37cbea03eb0d6dea9f49863fdbcbe9439b7138da755ab2b3dda5b6b98b9",
+      "uncompressed_bytes": 581,
+      "uncompressed_sha256": "65061e1631f6d6b0f53f06d821153e996813b858374e3656d298a4b26fffa270"
+    },
+    {
+      "path": "auth-checkout-dependencies.log",
+      "bytes": 1682,
+      "sha256": "ecafda97e6b0fbc04753e8929b47c5e871bfb24044a5f82b54d654009d7e8d2b"
+    },
+    {
+      "path": "auth-checkout-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "auth-checkout-studio.log",
+      "bytes": 98,
+      "sha256": "2ce463b14c3edc9e3890e6e2304ad304a485b8976eb8eb7348fafdc8532ec47f"
+    }
+  ]
+}

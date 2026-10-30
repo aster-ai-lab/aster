@@ -1,0 +1,10 @@
+
+running 1 test
+test kimi_tui_writes_and_verifies_actual_workspace_bytes ... ORACLE case=write-verify name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=write-verify name=settled-turn result=pass detail=facts=20 model_turns=6 prompt_tokens=84512
+ORACLE case=write-verify name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=write-verify name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 52.34s
+

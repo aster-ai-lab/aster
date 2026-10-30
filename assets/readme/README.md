@@ -1,9 +1,36 @@
 # README 图形
 
-根目录 README 使用 Hairline 的装配工作台：固定底座对应内核边界，
-三个工位表示任务中的推演、执行与核验。这是过程隐喻；五个实际组合部件在 README 中单独列出。
+当前根目录 README 引用六张由 [Pele](https://pele.run/) 1.10.0 生成的 SVG。
+网页与 README 使用同一份 Mermaid 源文件，公开导出图不含脚本或外部资源。
 
-- `meta-harness.svg`：GitHub 使用的静态预览，无脚本或外部资源。
+| 文件 | 内容 |
+| --- | --- |
+| `aster-overview.svg` | 用户、界面、ACP、Core、模型与工作区 |
+| `task-control-loop.svg` | 模型提案、权限判定、工具执行、事实日志和完成检查 |
+| `meta-harness-assembly.svg` | 固定约束、事实日志和可组合组件 |
+| `extension-surfaces.svg` | 内核、工具、上下文、工作指导和宿主装配 |
+| `verification-recovery.svg` | 副作用、外部观察、子任务、修改摘要、验证和收尾 |
+| `durable-goal.svg` | 目标、计划、tick、切片执行、步骤证据和完成 |
+
+图源位于 `apps/web/content/docs/code/9.1.6/_diagrams/`；
+`apps/web/content/docs/atlas.json` 的 `readme` 字段声明导出文件名。
+在仓库根目录修改图源后，运行：
+
+```sh
+npm --prefix apps/web run build
+npm --prefix apps/web run check
+```
+
+构建器同步生成网页、独立 SVG 和这六张 README 图片。
+只编辑 Mermaid、讲解 JSON 或渲染器源码，再重新生成。
+`source/render_anatomy.py` 保留了旧版四图的历史来源；当前六图由站点构建器维护。
+
+## 历史 Hairline 工作台
+
+这份独立演示使用固定底座和推演、执行、核验三个工位说明任务过程。
+当前根目录 README 没有引用它，相关源文件与许可证继续保留用于追溯。
+
+- `meta-harness.svg`：历史工作台的静态预览，无脚本或外部资源。
 - `hairline-workbench.html`：自包含交互页，下载后直接用浏览器打开；按 **play** 或用 `?play=1` 播放巡览。
 - `source/workbench.js`：图形的可编辑源文件。
 - `source/render.mjs`：保留原版引擎与页面，校验交互后导出静态 SVG。
@@ -29,7 +56,7 @@
 python assets/readme/source/render_anatomy.py
 ```
 
-## 重建
+## 重建历史工作台
 
 需要 Node、安装好的 `hairline-create` 技能，以及 Chrome 或该技能检查器使用的 Chromium。
 技能安装方式见 [Hairline Skills](https://hairline.lucasmarkes.com/skills)。

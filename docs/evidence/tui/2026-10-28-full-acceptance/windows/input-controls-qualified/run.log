@@ -1,0 +1,41 @@
+
+running 5 tests
+ORACLE case=draft-edit-controls name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=draft-edit-controls name=undo-redo result=pass detail=word deletion and actual undo/redo restore the intended draft
+ORACLE case=draft-edit-controls name=stash-pop result=pass detail=Ctrl+S clears and restores the Unicode draft without submitting it
+ORACLE case=draft-edit-controls name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13442
+ORACLE case=draft-edit-controls name=exact-edited-prompt result=pass detail=cursor/line deletion, clear and undo retain exact UTF-8 bytes in one real model request
+ORACLE case=draft-edit-controls name=quit result=pass detail=exit 0
+test input_controls::kimi_draft_edits_undo_redo_stash_and_clear_preserve_exact_text ... ok
+ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=editor-save name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13441
+ORACLE case=editor-save name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-save name=quit result=pass detail=exit 0
+ORACLE case=editor-nonzero name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=editor-nonzero name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13441
+ORACLE case=editor-nonzero name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-nonzero name=quit result=pass detail=exit 0
+ORACLE case=editor-invalid-utf8 name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=editor-invalid-utf8 name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13440
+ORACLE case=editor-invalid-utf8 name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-invalid-utf8 name=quit result=pass detail=exit 0
+ORACLE case=editor-missing-program name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=editor-missing-program name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13441
+ORACLE case=editor-missing-program name=editor-roundtrip result=pass detail=real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi
+ORACLE case=editor-missing-program name=quit result=pass detail=exit 0
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ok
+ORACLE case=history-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=history-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=history-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_history_help_uses_reachable_entry ... ok
+ORACLE case=paste-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=paste-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=paste-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_paste_help_matches_text_only_backend ... ok
+ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-pc-windows-msvc
+ORACLE case=sessions-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=sessions-help-capability name=quit result=pass detail=exit 0
+test input_controls::kimi_sessions_help_uses_reachable_entry ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 60.41s
+

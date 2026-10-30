@@ -1,0 +1,8 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/crates/code/acp)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 37s

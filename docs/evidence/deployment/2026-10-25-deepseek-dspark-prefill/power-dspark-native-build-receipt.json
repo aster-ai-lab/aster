@@ -1,0 +1,8 @@
+{
+  "source_fingerprint": "4a36d1653572a00c24a33232f00c337ead9183ee5703c5531c13d923627ffb1f",
+  "binary_sha256": "8b14f1067fed2f9b453fdfd533fcf74a4f5838da78a3ae6c5f65e608c2653cc3",
+  "features": [
+    "server"
+  ],
+  "source_root": "/code/aster/.wt-deepseek-platform-runtime/apps/cloud/crates/power"
+}

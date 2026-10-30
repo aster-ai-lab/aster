@@ -1,0 +1,6 @@
+{"windows": {"passed": 35, "failed": 0, "seconds": 1417.58, "reports": 41}, "linux": {"passed": 34, "failed": 1, "seconds": 1645.04, "reports": 41}}
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/source/reconcile_final_runs.py", line 44, in <module>
+    assert result['all_entrypoints_passed'], 'retained failures prevent claiming a fully passing live batch'
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: retained failures prevent claiming a fully passing live batch

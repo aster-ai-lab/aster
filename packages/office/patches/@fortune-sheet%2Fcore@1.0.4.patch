@@ -73,6 +73,47 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    toolbar: {
      toolbar: "工具栏",
      undo: "撤销",
+@@ -19699,26 +19707,26 @@
+     pageInfoFull: "共${total}条，${totalPage}页，已显示全部数据",
+     sheetIsFocused: "已启用工作表焦点锁定。",
+     sheetNotFocused: "工作表焦点锁定已禁用。",
+-    sheetSrIntro: "要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。",
++    sheetSrIntro: "要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。",
+     currentCellInput: "当前单元格输入",
+     newSheet: "新表",
+     sheetOptions: "图纸选项",
+     Dropdown: "下拉菜单",
+     zoomIn: "放大",
+     zoomOut: "缩小",
+-    toggleSheetFocusShortcut: "切换表格焦点锁定: Shift, Control, F。",
+-    selectRangeShortcut: "选择范围: Shift, 方向键。",
+-    autoFillDownShortcut: "从首个单元格向下自动填充: Control 或 Meta 键, D。",
+-    autoFillRightShortcut: "从首个单元格向右自动填充: Control 或 Meta 键, R。",
+-    boldTextShortcut: "加粗文本: Control 或 Meta 键, B。",
+-    copyShortcut: "复制: Control 或 Meta 键, C。",
+-    pasteShortcut: "粘贴: Control 或 Meta 键, V。",
+-    undoShortcut: "撤销: Control 或 Meta 键, Z。",
+-    redoShortcut: "重做: Control 或 Meta 键, Shift, Z。",
+-    deleteCellContentShortcut: "删除单元格内容: Delete 或 Backspace。",
+-    confirmCellEditShortcut: "确认编辑并向下移动: Enter。",
+-    moveRightShortcut: "向右移动: Tab。",
+-    moveLeftShortcut: "向左移动: Shift, Tab。",
++    toggleSheetFocusShortcut: "切换表格焦点锁定：⇧ + Ctrl + F。",
++    selectRangeShortcut: "选择范围：⇧ + 方向键。",
++    autoFillDownShortcut: "从首个单元格向下自动填充：Ctrl / ⌘ + D。",
++    autoFillRightShortcut: "从首个单元格向右自动填充：Ctrl / ⌘ + R。",
++    boldTextShortcut: "加粗文本：Ctrl / ⌘ + B。",
++    copyShortcut: "复制：Ctrl / ⌘ + C。",
++    pasteShortcut: "粘贴：Ctrl / ⌘ + V。",
++    undoShortcut: "撤销：Ctrl / ⌘ + Z。",
++    redoShortcut: "重做：Ctrl / ⌘ + ⇧ + Z。",
++    deleteCellContentShortcut: "删除单元格内容：删除键或退格键。",
++    confirmCellEditShortcut: "确认编辑并向下移动：回车键。",
++    moveRightShortcut: "向右移动：制表键。",
++    moveLeftShortcut: "向左移动：⇧ + 制表键。",
+     shortcuts: "键盘快捷键"
+   },
+   currencyDetail: [{
 @@ -52070,10 +52078,10 @@ var zh_tw = {
  var localeObj = {
    en: en,
@@ -88,7 +129,19 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
  };
  function locale(ctx) {
    var _ctx$lang;
-@@ -53979,7 +53987,7 @@ function hasPartMC(ctx, cfg, r1, r2, c1, c2) {
+@@ -52928,9 +52936,10 @@
+     } else {
+       value = cell;
+     }
+-    if (_.isEmpty(value)) {
++    if (_.isNil(value) || value === "") {
+       return null;
+     }
++    value = String(value);
+   }
+   if (tr === "3") {
+     renderCtx.textBaseline = "top";
+@@ -53979,7 +53988,7 @@ function hasPartMC(ctx, cfg, r1, r2, c1, c2) {
    return ret;
  }
  
@@ -147,7 +200,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      if (aut.selectunLockedCells === 1 || _.isNil(aut.selectunLockedCells)) {
        return true;
      }
-@@ -58547,10 +58568,230 @@ function getColorGradation(color1, color2, value1, value2, value) {
+@@ -58547,10 +58569,230 @@ function getColorGradation(color1, color2, value1, value2, value) {
    var b = Math.round(b1 - (b1 - b2) / v12 * v10);
    return "rgb(".concat(r, ", ").concat(g, ", ").concat(b, ")");
  }
@@ -378,7 +431,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var computeMap = {};
    if (ruleArr.length > 0) {
      var _loop = function _loop() {
-@@ -59123,8 +59364,19 @@ function getComputeMap(ctx) {
+@@ -59123,8 +59365,19 @@ function getComputeMap(ctx) {
    return computeMap;
  }
  function checkCF(r, c, computeMap) {
@@ -400,7 +453,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    }
    return null;
  }
-@@ -59687,6 +59939,9 @@ function validateIdCard(ctx, idCard) {
+@@ -59687,6 +59940,9 @@ function validateIdCard(ctx, idCard) {
    return false;
  }
  function validateCellData(ctx, item, cellValue) {
@@ -410,7 +463,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var value1 = item.value1,
      value2 = item.value2;
    var type = item.type,
-@@ -59822,11 +60077,40 @@ function validateCellData(ctx, item, cellValue) {
+@@ -59822,11 +60078,40 @@ function validateCellData(ctx, item, cellValue) {
    }
    return true;
  }
@@ -454,7 +507,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    item.checked = !item.checked;
    var value = item.value2;
    if (item.checked) {
-@@ -59837,6 +60121,11 @@ function checkboxChange(ctx, r, c) {
+@@ -59837,6 +60122,11 @@ function checkboxChange(ctx, r, c) {
  }
  function getFailureText(ctx, item) {
    var failureText = "";
@@ -466,7 +519,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var lang = ctx.lang;
    var type = item.type,
      type2 = item.type2,
-@@ -60149,10 +60438,7 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60149,10 +60439,7 @@ function cellFocus(ctx, r, c, clickMode) {
    if (!showHintBox || !dropDownBtn) return;
    showHintBox.style.display = "none";
    dropDownBtn.style.display = "none";
@@ -477,7 +530,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var row = ctx.visibledatarow[r];
    var row_pre = r === 0 ? 0 : ctx.visibledatarow[r - 1];
    var col = ctx.visibledatacolumn[c];
-@@ -60168,12 +60454,12 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60168,12 +60455,12 @@ function cellFocus(ctx, r, c, clickMode) {
      col_pre = _margeSet$column[0];
      col = _margeSet$column[1];
    }
@@ -492,7 +545,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      dropDownBtn.style.display = "block";
      dropDownBtn.style.maxWidth = "".concat(col - col_pre, "px");
      dropDownBtn.style.maxHeight = "".concat(row - row_pre, "px");
-@@ -60196,7 +60482,11 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60196,7 +60483,11 @@ function cellFocus(ctx, r, c, clickMode) {
      } else if (lang === "hi") {
        hintText = '<span style="color:#f5a623;">सुझाव: </span>';
      }
@@ -505,7 +558,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      showHintBox.innerHTML = hintText;
      showHintBox.style.display = "block";
      showHintBox.style.left = "".concat(col_pre, "px");
-@@ -60223,7 +60513,7 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60223,7 +60514,7 @@ function cellFocus(ctx, r, c, clickMode) {
      } else if (_lang === "hi") {
        failureText = '<span style="color:#f72626;">असफलता: </span>';
      }
@@ -514,7 +567,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      showHintBox.innerHTML = failureText;
      showHintBox.style.display = "block";
      showHintBox.style.left = "".concat(col_pre, "px");
-@@ -60238,8 +60528,8 @@ function setDropcownValue(ctx, value, arr) {
+@@ -60238,8 +60529,8 @@ function setDropcownValue(ctx, value, arr) {
    var rowIndex = last.row_focus;
    var colIndex = last.column_focus;
    if (rowIndex == null || colIndex == null) return;
@@ -525,7 +578,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    if (item.type2 === "true") {
      value = item.value1.split(",").filter(function (v) {
        return arr.indexOf(v) >= 0;
-@@ -60389,7 +60679,6 @@ function normalizedCellAttr(cell, attr) {
+@@ -60389,7 +60680,6 @@ function normalizedCellAttr(cell, attr) {
  }
  function normalizedAttr(data, r, c, attr) {
    if (!data || !data[r]) {
@@ -533,7 +586,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      return null;
    }
    var cell = data[r][c];
-@@ -60402,7 +60691,7 @@ function getCellValue(r, c, data, attr) {
+@@ -60402,7 +60692,7 @@ function getCellValue(r, c, data, attr) {
    }
    var d_value;
    if (!_.isNil(r) && !_.isNil(c)) {
@@ -542,7 +595,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    } else if (!_.isNil(r)) {
      d_value = data[r];
    } else if (!_.isNil(c)) {
-@@ -60438,6 +60727,11 @@ function setCellValue(ctx, r, c, d, v) {
+@@ -60438,6 +60728,11 @@ function setCellValue(ctx, r, c, d, v) {
      d = getFlowdata(ctx);
    }
    if (!d) return;
@@ -554,7 +607,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var cell = d[r][c];
    var vupdate;
    if (_.isPlainObject(v)) {
-@@ -60641,7 +60935,6 @@ function getRealCellValue(r, c, data, attr) {
+@@ -60641,7 +60936,6 @@ function getRealCellValue(r, c, data, attr) {
  }
  function mergeBorder(ctx, d, row_index, col_index) {
    if (!d || !d[row_index]) {
@@ -612,7 +665,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    }
    if (_.isNil(cell)) {
      return null;
-@@ -63467,32 +63771,42 @@ function getFlowdata(ctx, id) {
+@@ -63467,32 +63772,42 @@ function getFlowdata(ctx, id) {
    return (_ctx$luckysheetfile = ctx.luckysheetfile) === null || _ctx$luckysheetfile === void 0 ? void 0 : (_ctx$luckysheetfile$i = _ctx$luckysheetfile[i]) === null || _ctx$luckysheetfile$i === void 0 ? void 0 : _ctx$luckysheetfile$i.data;
  }
  function calcRowColSize(ctx, rowCount, colCount) {
@@ -674,7 +727,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      } else {
        var _flowdata$;
        if (flowdata === null || flowdata === void 0 ? void 0 : (_flowdata$ = flowdata[0]) === null || _flowdata$ === void 0 ? void 0 : _flowdata$[c]) {
-@@ -63502,22 +63816,23 @@ function calcRowColSize(ctx, rowCount, colCount) {
+@@ -63502,22 +63817,23 @@ function calcRowColSize(ctx, rowCount, colCount) {
            firstcolumnlen = ctx.defaultcollen;
          }
          if (firstcolumnlen !== ctx.defaultcollen) {
@@ -706,7 +759,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
  }
  function ensureSheetIndex(data, generateSheetId) {
    if ((data === null || data === void 0 ? void 0 : data.length) > 0) {
-@@ -66976,12 +67291,17 @@ function initSheetData(draftCtx, index, newData) {
+@@ -66976,12 +67292,17 @@ function initSheetData(draftCtx, index, newData) {
      lastColNum = Math.max(lastColNum, draftCtx.defaultcolumnNum);
    }
    if (lastRowNum && lastColNum) {
@@ -729,7 +782,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        expandedData[d.r][d.c] = d.v;
      });
      if (draftCtx.luckysheetfile[index] == null) {
-@@ -67067,24 +67387,25 @@ function copySheet(ctx, sheetId) {
+@@ -67067,24 +67388,25 @@ function copySheet(ctx, sheetId) {
  function calculateSheetFromula(ctx, id, range) {
    var index$1 = getSheetIndex(ctx, id);
    if (!ctx.luckysheetfile[index$1].data) return;
@@ -768,7 +821,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        insertUpdateFunctionGroup(ctx, r, c, id);
      }
    }
-@@ -67225,8 +67546,23 @@ function updateSheet(ctx, newData) {
+@@ -67225,8 +67547,23 @@ function updateSheet(ctx, newData) {
        column = newDatum.column;
      var index = getSheetIndex(ctx, newDatum.id);
      if (data != null) {
@@ -793,7 +846,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        if (row != null && column != null && row > 0 && column > 0) {
          lastRowNum = Math.max(lastRowNum, row);
          lastColNum = Math.max(lastColNum, column);
-@@ -67234,19 +67570,28 @@ function updateSheet(ctx, newData) {
+@@ -67234,19 +67571,28 @@ function updateSheet(ctx, newData) {
          lastRowNum = Math.max(lastRowNum, ctx.defaultrowNum);
          lastColNum = Math.max(lastColNum, ctx.defaultcolumnNum);
        }
@@ -831,7 +884,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
          }
        }
        newDatum.data = expandedData;
-@@ -67349,6 +67694,14 @@ function mergeCells(ctx, sheetId, ranges, type) {
+@@ -67349,6 +67695,14 @@ function mergeCells(ctx, sheetId, ranges, type) {
      cfg.merge = {};
    }
    var d = sheet.data;
@@ -846,7 +899,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    if (type === "merge-cancel") {
      for (var i = 0; i < ranges.length; i += 1) {
        var range = ranges[i];
-@@ -72990,10 +73343,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -72990,10 +73344,7 @@ var Canvas = /*#__PURE__*/function () {
          var _startX = item.startX;
          var _endY = item.endY;
          var _endX = item.endX;
@@ -858,7 +911,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
            this.nullCellRender(_r, _c, _startY, _startX, _endY, _endX, renderCtx, afCompute, cfCompute, offsetLeft, offsetTop, dynamicArrayCompute, cellOverflowMap, colStart, colEnd, scrollHeight, scrollWidth, bodrder05);
          } else {
            var cell = flowdata[_r][_c];
-@@ -73191,8 +73541,10 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73191,8 +73542,10 @@ var Canvas = /*#__PURE__*/function () {
            continue;
          }
          var hasCellOver = false;
@@ -870,7 +923,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
            var cell = data[r][c];
            if (((_this$sheetCtx$config16 = this.sheetCtx.config) === null || _this$sheetCtx$config16 === void 0 ? void 0 : (_this$sheetCtx$config17 = _this$sheetCtx$config16.colhidden) === null || _this$sheetCtx$config17 === void 0 ? void 0 : _this$sheetCtx$config17[c]) != null) {
              continue;
-@@ -73274,6 +73626,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73274,6 +73627,7 @@ var Canvas = /*#__PURE__*/function () {
        var checksCF = checkCF(r, c, cfCompute);
        var flowdata = getFlowdata(this.sheetCtx);
        if (!flowdata) return;
@@ -878,7 +931,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        var borderfix = getBorderFix();
        var fillStyle = normalizedAttr(flowdata, r, c, "bg");
        if (!_.isNil(checksCF) && !_.isNil(checksCF.cellColor)) {
-@@ -73285,7 +73638,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73285,7 +73639,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.fillStyle = fillStyle;
        }
        var cellsize = [startX + offsetLeft + borderfix[0], startY + offsetTop + borderfix[1], endX - startX + borderfix[2] - (isMerge ? 1 : 0), endY - startY + borderfix[3]];
@@ -887,7 +940,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
          row: r,
          column: c,
          startX: cellsize[0],
-@@ -73341,7 +73694,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73341,7 +73695,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.stroke();
          renderCtx.closePath();
        }
@@ -896,7 +949,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
          row: r,
          column: c,
          startY: cellsize[1],
-@@ -73353,7 +73706,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73353,7 +73707,7 @@ var Canvas = /*#__PURE__*/function () {
    }, {
      key: "cellRender",
      value: function cellRender(r, c, startY, startX, endY, endX, value, renderCtx, afCompute, cfCompute, offsetLeft, offsetTop, dynamicArrayCompute, cellOverflowMap, colStart, colEnd, scrollHeight, scrollWidth, bodrder05) {
@@ -905,7 +958,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        var isMerge = arguments.length > 19 && arguments[19] !== undefined ? arguments[19] : false;
        var flowdata = getFlowdata(this.sheetCtx);
        if (!flowdata) {
-@@ -73390,9 +73743,8 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73390,9 +73744,8 @@ var Canvas = /*#__PURE__*/function () {
          return;
        }
        renderCtx.fillRect(cellsize[0], cellsize[1], cellsize[2], cellsize[3]);
@@ -917,7 +970,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
          var dv_w = 5 * this.sheetCtx.zoomRatio;
          var dv_h = 5 * this.sheetCtx.zoomRatio;
          renderCtx.beginPath();
-@@ -73433,7 +73785,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73433,7 +73786,7 @@ var Canvas = /*#__PURE__*/function () {
          } else {
            cellOverflow_bd_r_render = false;
          }
@@ -926,7 +979,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
          var pos_x = startX + offsetLeft;
          var pos_y = startY + offsetTop + 1;
          renderCtx.save();
-@@ -73469,7 +73821,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73469,7 +73822,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.lineWidth = 1;
          renderCtx.strokeStyle = "#000";
          renderCtx.strokeRect(horizonAlignPos, verticalAlignPos_checkbox, 10, 10);
@@ -935,7 +988,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
            renderCtx.beginPath();
            renderCtx.lineTo(horizonAlignPos + 1, verticalAlignPos_checkbox + 6);
            renderCtx.lineTo(horizonAlignPos + 4, verticalAlignPos_checkbox + 9);
-@@ -76066,8 +76418,12 @@ var dataToCelldata = function dataToCelldata(data) {
+@@ -76066,8 +76419,12 @@ var dataToCelldata = function dataToCelldata(data) {
    if (data == null) {
      return celldata;
    }
@@ -950,7 +1003,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        var v = data[r][c];
        if (v != null) {
          celldata.push({
-@@ -76076,8 +76432,8 @@ var dataToCelldata = function dataToCelldata(data) {
+@@ -76076,8 +76433,8 @@ var dataToCelldata = function dataToCelldata(data) {
            v: v
          });
        }
@@ -961,7 +1014,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    return celldata;
  };
  var celldataToData = function celldataToData(celldata, rowCount, colCount) {
-@@ -76091,13 +76447,18 @@ var celldataToData = function celldataToData(celldata, rowCount, colCount) {
+@@ -76091,13 +76448,18 @@ var celldataToData = function celldataToData(celldata, rowCount, colCount) {
      lastColNum = Math.max(lastColNum, colCount);
    }
    if (lastRowNum && lastColNum) {
@@ -986,7 +1039,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      });
      return expandedData;
    }
-@@ -76136,7 +76497,8 @@ function getCellValue$1(ctx, row, column) {
+@@ -76136,7 +76498,8 @@ function getCellValue$1(ctx, row, column) {
    if (!targetSheetData) {
      throw SHEET_NOT_FOUND;
    }
@@ -996,7 +1049,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var ret;
    if (cellData && _.isPlainObject(cellData)) {
      var _cellData$ct;
-@@ -76159,6 +76521,19 @@ function getCellValue$1(ctx, row, column) {
+@@ -76159,6 +76522,19 @@ function getCellValue$1(ctx, row, column) {
    }
    return ret;
  }
@@ -1016,7 +1069,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
  function setCellValue$1(ctx, row, column, value, cellInput) {
    var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
    if (!_.isNumber(row) || !_.isNumber(column)) {
-@@ -76166,6 +76541,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76166,6 +76542,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
    }
    var sheet = getSheet(ctx, options);
    var data = sheet.data;
@@ -1024,7 +1077,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var formatList = {
      bg: 1,
      ff: 1,
-@@ -76198,7 +76574,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76198,7 +76575,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
        if (value.ct != null) {
          curv.ct = value.ct;
        }
@@ -1033,7 +1086,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      } else {
        if (value.ct != null) {
          curv.ct = value.ct;
-@@ -76227,7 +76603,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76227,7 +76604,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
      data[row][column] = cell;
    } else {
      if (value.toString().substr(0, 1) === "=" || value.toString().substr(0, 5) === "<span") {
@@ -1042,7 +1095,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
      } else {
        delFunctionGroup(ctx, row, column);
        setCellValue(ctx, row, column, data, value);
-@@ -76263,6 +76639,7 @@ function setCellFormat(ctx, row, column, attr, value) {
+@@ -76263,6 +76640,7 @@ function setCellFormat(ctx, row, column, attr, value) {
    }
    var sheet = getSheet(ctx, options);
    var targetSheetData = sheet.data;
@@ -1050,7 +1103,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var cellData = (targetSheetData === null || targetSheetData === void 0 ? void 0 : (_targetSheetData$row = targetSheetData[row]) === null || _targetSheetData$row === void 0 ? void 0 : _targetSheetData$row[column]) || {};
    var cfg = sheet.config || {};
    if (attr === "ct" && (!value || value.fa == null || value.t == null)) {
-@@ -77702,12 +78079,8 @@ function handleCellAreaDoubleClick(ctx, globalCache, settings, e, container) {
+@@ -77702,12 +78080,8 @@ function handleCellAreaDoubleClick(ctx, globalCache, settings, e, container) {
    var row_index = row_location[2];
    var col_location = colLocation(x, ctx.visibledatacolumn);
    var col_index = col_location[2];
@@ -1065,7 +1118,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
    var margeset = mergeBorder(ctx, flowdata, row_index, col_index);
    if (margeset) {
      var _margeset$row2 = _slicedToArray(margeset.row, 3);
-@@ -80366,4 +80739,4 @@ function handlePasteByClick(ctx, clipboardData, triggerType) {
+@@ -80366,4 +80740,4 @@ function handlePasteByClick(ctx, clipboardData, triggerType) {
    } else ;
  }
  
@@ -1133,6 +1186,47 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    toolbar: {
      toolbar: "工具栏",
      undo: "撤销",
+@@ -19709,26 +19717,26 @@
+     pageInfoFull: "共${total}条，${totalPage}页，已显示全部数据",
+     sheetIsFocused: "已启用工作表焦点锁定。",
+     sheetNotFocused: "工作表焦点锁定已禁用。",
+-    sheetSrIntro: "要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。",
++    sheetSrIntro: "要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。",
+     currentCellInput: "当前单元格输入",
+     newSheet: "新表",
+     sheetOptions: "图纸选项",
+     Dropdown: "下拉菜单",
+     zoomIn: "放大",
+     zoomOut: "缩小",
+-    toggleSheetFocusShortcut: "切换表格焦点锁定: Shift, Control, F。",
+-    selectRangeShortcut: "选择范围: Shift, 方向键。",
+-    autoFillDownShortcut: "从首个单元格向下自动填充: Control 或 Meta 键, D。",
+-    autoFillRightShortcut: "从首个单元格向右自动填充: Control 或 Meta 键, R。",
+-    boldTextShortcut: "加粗文本: Control 或 Meta 键, B。",
+-    copyShortcut: "复制: Control 或 Meta 键, C。",
+-    pasteShortcut: "粘贴: Control 或 Meta 键, V。",
+-    undoShortcut: "撤销: Control 或 Meta 键, Z。",
+-    redoShortcut: "重做: Control 或 Meta 键, Shift, Z。",
+-    deleteCellContentShortcut: "删除单元格内容: Delete 或 Backspace。",
+-    confirmCellEditShortcut: "确认编辑并向下移动: Enter。",
+-    moveRightShortcut: "向右移动: Tab。",
+-    moveLeftShortcut: "向左移动: Shift, Tab。",
++    toggleSheetFocusShortcut: "切换表格焦点锁定：⇧ + Ctrl + F。",
++    selectRangeShortcut: "选择范围：⇧ + 方向键。",
++    autoFillDownShortcut: "从首个单元格向下自动填充：Ctrl / ⌘ + D。",
++    autoFillRightShortcut: "从首个单元格向右自动填充：Ctrl / ⌘ + R。",
++    boldTextShortcut: "加粗文本：Ctrl / ⌘ + B。",
++    copyShortcut: "复制：Ctrl / ⌘ + C。",
++    pasteShortcut: "粘贴：Ctrl / ⌘ + V。",
++    undoShortcut: "撤销：Ctrl / ⌘ + Z。",
++    redoShortcut: "重做：Ctrl / ⌘ + ⇧ + Z。",
++    deleteCellContentShortcut: "删除单元格内容：删除键或退格键。",
++    confirmCellEditShortcut: "确认编辑并向下移动：回车键。",
++    moveRightShortcut: "向右移动：制表键。",
++    moveLeftShortcut: "向左移动：⇧ + 制表键。",
+     shortcuts: "键盘快捷键"
+   },
+   currencyDetail: [{
 @@ -52080,10 +52088,10 @@ var zh_tw = {
  var localeObj = {
    en: en,
@@ -1148,7 +1242,19 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
  };
  function locale(ctx) {
    var _ctx$lang;
-@@ -53989,7 +53997,7 @@ function hasPartMC(ctx, cfg, r1, r2, c1, c2) {
+@@ -52938,9 +52946,10 @@
+     } else {
+       value = cell;
+     }
+-    if (___default['default'].isEmpty(value)) {
++    if (___default['default'].isNil(value) || value === "") {
+       return null;
+     }
++    value = String(value);
+   }
+   if (tr === "3") {
+     renderCtx.textBaseline = "top";
+@@ -53989,7 +53998,7 @@ function hasPartMC(ctx, cfg, r1, r2, c1, c2) {
    return ret;
  }
  
@@ -1207,7 +1313,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      if (aut.selectunLockedCells === 1 || ___default['default'].isNil(aut.selectunLockedCells)) {
        return true;
      }
-@@ -58557,10 +58578,230 @@ function getColorGradation(color1, color2, value1, value2, value) {
+@@ -58557,10 +58579,230 @@ function getColorGradation(color1, color2, value1, value2, value) {
    var b = Math.round(b1 - (b1 - b2) / v12 * v10);
    return "rgb(".concat(r, ", ").concat(g, ", ").concat(b, ")");
  }
@@ -1438,7 +1544,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var computeMap = {};
    if (ruleArr.length > 0) {
      var _loop = function _loop() {
-@@ -59133,8 +59374,19 @@ function getComputeMap(ctx) {
+@@ -59133,8 +59375,19 @@ function getComputeMap(ctx) {
    return computeMap;
  }
  function checkCF(r, c, computeMap) {
@@ -1460,7 +1566,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    }
    return null;
  }
-@@ -59697,6 +59949,9 @@ function validateIdCard(ctx, idCard) {
+@@ -59697,6 +59950,9 @@ function validateIdCard(ctx, idCard) {
    return false;
  }
  function validateCellData(ctx, item, cellValue) {
@@ -1470,7 +1576,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var value1 = item.value1,
      value2 = item.value2;
    var type = item.type,
-@@ -59832,11 +60087,40 @@ function validateCellData(ctx, item, cellValue) {
+@@ -59832,11 +60088,40 @@ function validateCellData(ctx, item, cellValue) {
    }
    return true;
  }
@@ -1514,7 +1620,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    item.checked = !item.checked;
    var value = item.value2;
    if (item.checked) {
-@@ -59847,6 +60131,11 @@ function checkboxChange(ctx, r, c) {
+@@ -59847,6 +60132,11 @@ function checkboxChange(ctx, r, c) {
  }
  function getFailureText(ctx, item) {
    var failureText = "";
@@ -1526,7 +1632,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var lang = ctx.lang;
    var type = item.type,
      type2 = item.type2,
-@@ -60159,10 +60448,7 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60159,10 +60449,7 @@ function cellFocus(ctx, r, c, clickMode) {
    if (!showHintBox || !dropDownBtn) return;
    showHintBox.style.display = "none";
    dropDownBtn.style.display = "none";
@@ -1537,7 +1643,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var row = ctx.visibledatarow[r];
    var row_pre = r === 0 ? 0 : ctx.visibledatarow[r - 1];
    var col = ctx.visibledatacolumn[c];
-@@ -60178,12 +60464,12 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60178,12 +60465,12 @@ function cellFocus(ctx, r, c, clickMode) {
      col_pre = _margeSet$column[0];
      col = _margeSet$column[1];
    }
@@ -1552,7 +1658,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      dropDownBtn.style.display = "block";
      dropDownBtn.style.maxWidth = "".concat(col - col_pre, "px");
      dropDownBtn.style.maxHeight = "".concat(row - row_pre, "px");
-@@ -60206,7 +60492,11 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60206,7 +60493,11 @@ function cellFocus(ctx, r, c, clickMode) {
      } else if (lang === "hi") {
        hintText = '<span style="color:#f5a623;">सुझाव: </span>';
      }
@@ -1565,7 +1671,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      showHintBox.innerHTML = hintText;
      showHintBox.style.display = "block";
      showHintBox.style.left = "".concat(col_pre, "px");
-@@ -60233,7 +60523,7 @@ function cellFocus(ctx, r, c, clickMode) {
+@@ -60233,7 +60524,7 @@ function cellFocus(ctx, r, c, clickMode) {
      } else if (_lang === "hi") {
        failureText = '<span style="color:#f72626;">असफलता: </span>';
      }
@@ -1574,7 +1680,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      showHintBox.innerHTML = failureText;
      showHintBox.style.display = "block";
      showHintBox.style.left = "".concat(col_pre, "px");
-@@ -60248,8 +60538,8 @@ function setDropcownValue(ctx, value, arr) {
+@@ -60248,8 +60539,8 @@ function setDropcownValue(ctx, value, arr) {
    var rowIndex = last.row_focus;
    var colIndex = last.column_focus;
    if (rowIndex == null || colIndex == null) return;
@@ -1585,7 +1691,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    if (item.type2 === "true") {
      value = item.value1.split(",").filter(function (v) {
        return arr.indexOf(v) >= 0;
-@@ -60399,7 +60689,6 @@ function normalizedCellAttr(cell, attr) {
+@@ -60399,7 +60690,6 @@ function normalizedCellAttr(cell, attr) {
  }
  function normalizedAttr(data, r, c, attr) {
    if (!data || !data[r]) {
@@ -1593,7 +1699,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      return null;
    }
    var cell = data[r][c];
-@@ -60412,7 +60701,7 @@ function getCellValue(r, c, data, attr) {
+@@ -60412,7 +60702,7 @@ function getCellValue(r, c, data, attr) {
    }
    var d_value;
    if (!___default['default'].isNil(r) && !___default['default'].isNil(c)) {
@@ -1602,7 +1708,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    } else if (!___default['default'].isNil(r)) {
      d_value = data[r];
    } else if (!___default['default'].isNil(c)) {
-@@ -60448,6 +60737,11 @@ function setCellValue(ctx, r, c, d, v) {
+@@ -60448,6 +60738,11 @@ function setCellValue(ctx, r, c, d, v) {
      d = getFlowdata(ctx);
    }
    if (!d) return;
@@ -1614,7 +1720,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var cell = d[r][c];
    var vupdate;
    if (___default['default'].isPlainObject(v)) {
-@@ -60651,7 +60945,6 @@ function getRealCellValue(r, c, data, attr) {
+@@ -60651,7 +60946,6 @@ function getRealCellValue(r, c, data, attr) {
  }
  function mergeBorder(ctx, d, row_index, col_index) {
    if (!d || !d[row_index]) {
@@ -1672,7 +1778,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    }
    if (___default['default'].isNil(cell)) {
      return null;
-@@ -63477,32 +63781,42 @@ function getFlowdata(ctx, id) {
+@@ -63477,32 +63782,42 @@ function getFlowdata(ctx, id) {
    return (_ctx$luckysheetfile = ctx.luckysheetfile) === null || _ctx$luckysheetfile === void 0 ? void 0 : (_ctx$luckysheetfile$i = _ctx$luckysheetfile[i]) === null || _ctx$luckysheetfile$i === void 0 ? void 0 : _ctx$luckysheetfile$i.data;
  }
  function calcRowColSize(ctx, rowCount, colCount) {
@@ -1734,7 +1840,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      } else {
        var _flowdata$;
        if (flowdata === null || flowdata === void 0 ? void 0 : (_flowdata$ = flowdata[0]) === null || _flowdata$ === void 0 ? void 0 : _flowdata$[c]) {
-@@ -63512,22 +63826,23 @@ function calcRowColSize(ctx, rowCount, colCount) {
+@@ -63512,22 +63827,23 @@ function calcRowColSize(ctx, rowCount, colCount) {
            firstcolumnlen = ctx.defaultcollen;
          }
          if (firstcolumnlen !== ctx.defaultcollen) {
@@ -1766,7 +1872,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
  }
  function ensureSheetIndex(data, generateSheetId) {
    if ((data === null || data === void 0 ? void 0 : data.length) > 0) {
-@@ -66986,12 +67301,17 @@ function initSheetData(draftCtx, index, newData) {
+@@ -66986,12 +67302,17 @@ function initSheetData(draftCtx, index, newData) {
      lastColNum = Math.max(lastColNum, draftCtx.defaultcolumnNum);
    }
    if (lastRowNum && lastColNum) {
@@ -1789,7 +1895,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        expandedData[d.r][d.c] = d.v;
      });
      if (draftCtx.luckysheetfile[index] == null) {
-@@ -67077,24 +67397,25 @@ function copySheet(ctx, sheetId) {
+@@ -67077,24 +67398,25 @@ function copySheet(ctx, sheetId) {
  function calculateSheetFromula(ctx, id, range) {
    var index$1 = getSheetIndex(ctx, id);
    if (!ctx.luckysheetfile[index$1].data) return;
@@ -1828,7 +1934,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        insertUpdateFunctionGroup(ctx, r, c, id);
      }
    }
-@@ -67235,8 +67556,23 @@ function updateSheet(ctx, newData) {
+@@ -67235,8 +67557,23 @@ function updateSheet(ctx, newData) {
        column = newDatum.column;
      var index = getSheetIndex(ctx, newDatum.id);
      if (data != null) {
@@ -1853,7 +1959,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        if (row != null && column != null && row > 0 && column > 0) {
          lastRowNum = Math.max(lastRowNum, row);
          lastColNum = Math.max(lastColNum, column);
-@@ -67244,19 +67580,28 @@ function updateSheet(ctx, newData) {
+@@ -67244,19 +67581,28 @@ function updateSheet(ctx, newData) {
          lastRowNum = Math.max(lastRowNum, ctx.defaultrowNum);
          lastColNum = Math.max(lastColNum, ctx.defaultcolumnNum);
        }
@@ -1891,7 +1997,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
          }
        }
        newDatum.data = expandedData;
-@@ -67359,6 +67704,14 @@ function mergeCells(ctx, sheetId, ranges, type) {
+@@ -67359,6 +67705,14 @@ function mergeCells(ctx, sheetId, ranges, type) {
      cfg.merge = {};
    }
    var d = sheet.data;
@@ -1906,7 +2012,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    if (type === "merge-cancel") {
      for (var i = 0; i < ranges.length; i += 1) {
        var range = ranges[i];
-@@ -73000,10 +73353,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73000,10 +73354,7 @@ var Canvas = /*#__PURE__*/function () {
          var _startX = item.startX;
          var _endY = item.endY;
          var _endX = item.endX;
@@ -1918,7 +2024,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
            this.nullCellRender(_r, _c, _startY, _startX, _endY, _endX, renderCtx, afCompute, cfCompute, offsetLeft, offsetTop, dynamicArrayCompute, cellOverflowMap, colStart, colEnd, scrollHeight, scrollWidth, bodrder05);
          } else {
            var cell = flowdata[_r][_c];
-@@ -73201,8 +73551,10 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73201,8 +73552,10 @@ var Canvas = /*#__PURE__*/function () {
            continue;
          }
          var hasCellOver = false;
@@ -1930,7 +2036,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
            var cell = data[r][c];
            if (((_this$sheetCtx$config16 = this.sheetCtx.config) === null || _this$sheetCtx$config16 === void 0 ? void 0 : (_this$sheetCtx$config17 = _this$sheetCtx$config16.colhidden) === null || _this$sheetCtx$config17 === void 0 ? void 0 : _this$sheetCtx$config17[c]) != null) {
              continue;
-@@ -73284,6 +73636,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73284,6 +73637,7 @@ var Canvas = /*#__PURE__*/function () {
        var checksCF = checkCF(r, c, cfCompute);
        var flowdata = getFlowdata(this.sheetCtx);
        if (!flowdata) return;
@@ -1938,7 +2044,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        var borderfix = getBorderFix();
        var fillStyle = normalizedAttr(flowdata, r, c, "bg");
        if (!___default['default'].isNil(checksCF) && !___default['default'].isNil(checksCF.cellColor)) {
-@@ -73295,7 +73648,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73295,7 +73649,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.fillStyle = fillStyle;
        }
        var cellsize = [startX + offsetLeft + borderfix[0], startY + offsetTop + borderfix[1], endX - startX + borderfix[2] - (isMerge ? 1 : 0), endY - startY + borderfix[3]];
@@ -1947,7 +2053,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
          row: r,
          column: c,
          startX: cellsize[0],
-@@ -73351,7 +73704,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73351,7 +73705,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.stroke();
          renderCtx.closePath();
        }
@@ -1956,7 +2062,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
          row: r,
          column: c,
          startY: cellsize[1],
-@@ -73363,7 +73716,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73363,7 +73717,7 @@ var Canvas = /*#__PURE__*/function () {
    }, {
      key: "cellRender",
      value: function cellRender(r, c, startY, startX, endY, endX, value, renderCtx, afCompute, cfCompute, offsetLeft, offsetTop, dynamicArrayCompute, cellOverflowMap, colStart, colEnd, scrollHeight, scrollWidth, bodrder05) {
@@ -1965,7 +2071,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        var isMerge = arguments.length > 19 && arguments[19] !== undefined ? arguments[19] : false;
        var flowdata = getFlowdata(this.sheetCtx);
        if (!flowdata) {
-@@ -73400,9 +73753,8 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73400,9 +73754,8 @@ var Canvas = /*#__PURE__*/function () {
          return;
        }
        renderCtx.fillRect(cellsize[0], cellsize[1], cellsize[2], cellsize[3]);
@@ -1977,7 +2083,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
          var dv_w = 5 * this.sheetCtx.zoomRatio;
          var dv_h = 5 * this.sheetCtx.zoomRatio;
          renderCtx.beginPath();
-@@ -73443,7 +73795,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73443,7 +73796,7 @@ var Canvas = /*#__PURE__*/function () {
          } else {
            cellOverflow_bd_r_render = false;
          }
@@ -1986,7 +2092,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
          var pos_x = startX + offsetLeft;
          var pos_y = startY + offsetTop + 1;
          renderCtx.save();
-@@ -73479,7 +73831,7 @@ var Canvas = /*#__PURE__*/function () {
+@@ -73479,7 +73832,7 @@ var Canvas = /*#__PURE__*/function () {
          renderCtx.lineWidth = 1;
          renderCtx.strokeStyle = "#000";
          renderCtx.strokeRect(horizonAlignPos, verticalAlignPos_checkbox, 10, 10);
@@ -1995,7 +2101,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
            renderCtx.beginPath();
            renderCtx.lineTo(horizonAlignPos + 1, verticalAlignPos_checkbox + 6);
            renderCtx.lineTo(horizonAlignPos + 4, verticalAlignPos_checkbox + 9);
-@@ -76076,8 +76428,12 @@ var dataToCelldata = function dataToCelldata(data) {
+@@ -76076,8 +76429,12 @@ var dataToCelldata = function dataToCelldata(data) {
    if (data == null) {
      return celldata;
    }
@@ -2010,7 +2116,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        var v = data[r][c];
        if (v != null) {
          celldata.push({
-@@ -76086,8 +76442,8 @@ var dataToCelldata = function dataToCelldata(data) {
+@@ -76086,8 +76443,8 @@ var dataToCelldata = function dataToCelldata(data) {
            v: v
          });
        }
@@ -2021,7 +2127,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    return celldata;
  };
  var celldataToData = function celldataToData(celldata, rowCount, colCount) {
-@@ -76101,13 +76457,18 @@ var celldataToData = function celldataToData(celldata, rowCount, colCount) {
+@@ -76101,13 +76458,18 @@ var celldataToData = function celldataToData(celldata, rowCount, colCount) {
      lastColNum = Math.max(lastColNum, colCount);
    }
    if (lastRowNum && lastColNum) {
@@ -2046,7 +2152,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      });
      return expandedData;
    }
-@@ -76146,7 +76507,8 @@ function getCellValue$1(ctx, row, column) {
+@@ -76146,7 +76508,8 @@ function getCellValue$1(ctx, row, column) {
    if (!targetSheetData) {
      throw SHEET_NOT_FOUND;
    }
@@ -2056,7 +2162,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var ret;
    if (cellData && ___default['default'].isPlainObject(cellData)) {
      var _cellData$ct;
-@@ -76169,6 +76531,19 @@ function getCellValue$1(ctx, row, column) {
+@@ -76169,6 +76532,19 @@ function getCellValue$1(ctx, row, column) {
    }
    return ret;
  }
@@ -2076,7 +2182,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
  function setCellValue$1(ctx, row, column, value, cellInput) {
    var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
    if (!___default['default'].isNumber(row) || !___default['default'].isNumber(column)) {
-@@ -76176,6 +76551,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76176,6 +76552,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
    }
    var sheet = getSheet(ctx, options);
    var data = sheet.data;
@@ -2084,7 +2190,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var formatList = {
      bg: 1,
      ff: 1,
-@@ -76208,7 +76584,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76208,7 +76585,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
        if (value.ct != null) {
          curv.ct = value.ct;
        }
@@ -2093,7 +2199,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      } else {
        if (value.ct != null) {
          curv.ct = value.ct;
-@@ -76237,7 +76613,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
+@@ -76237,7 +76614,7 @@ function setCellValue$1(ctx, row, column, value, cellInput) {
      data[row][column] = cell;
    } else {
      if (value.toString().substr(0, 1) === "=" || value.toString().substr(0, 5) === "<span") {
@@ -2102,7 +2208,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
      } else {
        delFunctionGroup(ctx, row, column);
        setCellValue(ctx, row, column, data, value);
-@@ -76273,6 +76649,7 @@ function setCellFormat(ctx, row, column, attr, value) {
+@@ -76273,6 +76650,7 @@ function setCellFormat(ctx, row, column, attr, value) {
    }
    var sheet = getSheet(ctx, options);
    var targetSheetData = sheet.data;
@@ -2110,7 +2216,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var cellData = (targetSheetData === null || targetSheetData === void 0 ? void 0 : (_targetSheetData$row = targetSheetData[row]) === null || _targetSheetData$row === void 0 ? void 0 : _targetSheetData$row[column]) || {};
    var cfg = sheet.config || {};
    if (attr === "ct" && (!value || value.fa == null || value.t == null)) {
-@@ -77712,12 +78089,8 @@ function handleCellAreaDoubleClick(ctx, globalCache, settings, e, container) {
+@@ -77712,12 +78090,8 @@ function handleCellAreaDoubleClick(ctx, globalCache, settings, e, container) {
    var row_index = row_location[2];
    var col_location = colLocation(x, ctx.visibledatacolumn);
    var col_index = col_location[2];
@@ -2125,7 +2231,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
    var margeset = mergeBorder(ctx, flowdata, row_index, col_index);
    if (margeset) {
      var _margeset$row2 = _slicedToArray(margeset.row, 3);
-@@ -80473,6 +80846,7 @@ exports.getComputeMap = getComputeMap;
+@@ -80473,6 +80847,7 @@ exports.getComputeMap = getComputeMap;
  exports.getCurrentRules = getCurrentRules;
  exports.getDataArr = getDataArr;
  exports.getDataBySelectionNoCopy = getDataBySelectionNoCopy;

@@ -1,0 +1,24 @@
+{
+  "source_pair": "aster-cli-pair-v1:7f282ad7c4cc5580d1811b0d4a2dd4c12de32865:x86_64-pc-windows-msvc",
+  "folder": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\.tmp\\paired-cli-windows\\session-info-20261029210609955644",
+  "files": [
+    {
+      "name": "aster.exe",
+      "sha256": "3b8749721ffec9cfde8f5f7cb8f5c69ad3eaba3f968afa0da21300ba13c07222",
+      "bytes": 324005376
+    },
+    {
+      "name": "a3s-code-acp.exe",
+      "sha256": "14fa5c4206bb874aaaa61da6c5cfe9e3e6d628cafa1651a35d70f7617b748560",
+      "bytes": 181146112
+    }
+  ],
+  "test_binary": {
+    "name": "aster_tui_session_info.exe",
+    "sha256": "6ed17b9426c5e7e94847b9a21425562c7c5c4a83115ce9ba34a8a347805eb1bd",
+    "bytes": 6361088
+  },
+  "build_json": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\docs\\evidence\\tui\\2026-10-28-full-acceptance\\windows\\session-info-qualified-build\\build.jsonl",
+  "test_build_json": "D:\\code\\aster\\.tmp\\tui-acceptance-20261029\\docs\\evidence\\tui\\2026-10-28-full-acceptance\\windows\\session-info-qualified-build\\test-build.jsonl",
+  "created_at": "2026-10-29T21:06:09.955644+00:00"
+}

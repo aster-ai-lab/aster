@@ -1,0 +1,14 @@
+
+running 9 tests
+test inference::decision_transport::tests::chunked_oversized_response_is_refused ... ok
+test inference::decision_transport::tests::decision_chat_strictly_validates_model_output ... ok
+test inference::decision_transport::tests::decision_protocol_is_closed_and_round_trips ... ok
+test inference::decision_transport::tests::declared_oversized_response_is_refused ... ok
+test inference::decision_transport::tests::native_contract_keeps_full_authorization_header ... ok
+test inference::decision_transport::tests::neural_chat_calls_configured_backend_without_gateway_recursion ... ok
+test inference::decision_transport::tests::oversized_turn_is_refused_before_send ... ok
+test inference::decision_transport::tests::redirects_are_refused_instead_of_forwarding_secrets ... ok
+test inference::decision_transport::tests::unicode_chat_uses_bounded_typed_document_without_truncation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 2115 filtered out; finished in 0.06s
+

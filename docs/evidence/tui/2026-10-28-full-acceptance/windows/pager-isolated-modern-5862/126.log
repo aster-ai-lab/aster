@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::render::tests::collapsed_block_header_file_path_is_scanned' (39288) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\render_tests.rs:1802:18:
+url
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::render::tests::collapsed_block_header_file_path_is_scanned ... FAILED
+
+failures:
+
+failures:
+    scrollback::render::tests::collapsed_block_header_file_path_is_scanned
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

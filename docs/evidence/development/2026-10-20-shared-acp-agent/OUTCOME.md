@@ -5,8 +5,8 @@
 Headless, `aster agent stdio`, `models`, and `worktree` start the
 same `a3s-code-acp` sidecar as the interactive pager. A missing
 executable returns `MISSING_AGENT_BACKEND`. The product shell-spawn
-file set is empty. The six initialize `x.ai/` advertisements stay a
-closed client set. An ordinary prompt meta sends no `x.ai/` key.
+file set is empty. The six initialize `a3s/` advertisements stay a
+closed client set. An ordinary prompt meta sends no `a3s/` key.
 
 The live prompt gate passed on the official DeepSeek provider in the
 repo `.a3s/config.acl`. Two consecutive runs started the shipped
@@ -96,7 +96,7 @@ prompts were not repeated.
 - The leader cluster still uses in-process `MvpAgent`.
 - Pager layout and license notices were not rewritten.
 - `SessionFlags::to_meta` is session create and load, not the ordinary
-  prompt. Inbound `x.ai/session/update`, `x.ai/session_notification`,
+  prompt. Inbound `a3s/session/update`, `a3s/session_notification`,
   and the agent host methods were not reclassified.
 - `event_loop.rs` was not split. Its inline tests stayed.
 - No new ACL or TOML setting. `A3S_REFUSE_UNQUALIFIED_NATIVE_SHELL`

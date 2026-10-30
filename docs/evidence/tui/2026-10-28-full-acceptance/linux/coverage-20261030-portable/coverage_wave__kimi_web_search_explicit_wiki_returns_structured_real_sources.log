@@ -1,0 +1,10 @@
+
+running 1 test
+test coverage_wave::kimi_web_search_explicit_wiki_returns_structured_real_sources ... ORACLE case=coverage-web-search-wiki name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-web-search-wiki name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40394
+ORACLE case=coverage-web-search-wiki name=real-public-wiki-search result=pass detail=the explicit anonymous wiki engine returns one or two real structured search rows with titles and HTTP source URLs; failures remain failures without engine substitution
+ORACLE case=coverage-web-search-wiki name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 25.34s
+

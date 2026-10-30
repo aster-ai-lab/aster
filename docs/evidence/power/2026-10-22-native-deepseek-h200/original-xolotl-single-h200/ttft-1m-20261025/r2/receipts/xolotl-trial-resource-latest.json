@@ -1,0 +1,104 @@
+{
+  "unix": 1792860322.5830948,
+  "job": "aster-xolotl-1mc6-43da44c9b0a4-57982995",
+  "job_uid": "04278df1-210a-4611-8bdc-bf7f5a848dde",
+  "phase": "Running",
+  "replicas": [
+    {
+      "name": "aster-xolotl-1mc6-43da44c9b0a4-57982995-hrwvl",
+      "uid": "8d111540-5afb-4422-b464-b4bb48635182",
+      "phase": "Running",
+      "status": {
+        "conditions": [
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-24T16:14:30Z",
+            "status": "True",
+            "type": "Initialized"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-24T16:20:31Z",
+            "status": "True",
+            "type": "Ready"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-24T16:20:31Z",
+            "status": "True",
+            "type": "ContainersReady"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-24T16:14:30Z",
+            "status": "True",
+            "type": "PodScheduled"
+          }
+        ],
+        "containerStatuses": [
+          {
+            "containerID": "containerd://9014c4411d48b7c318761451bd4565e2721b29d55d1680532b6a78c482ce68a4",
+            "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+            "imageID": "registry.h.pjlab.org.cn/ailab-safeag/zoubo@sha256:6430d45b74a8d6059bd15774cf92216985f86b4b7285cb5393db8e5fcf3f6d8a",
+            "lastState": {},
+            "name": "t0",
+            "ready": true,
+            "restartCount": 0,
+            "started": true,
+            "state": {
+              "running": {
+                "startedAt": "2026-10-24T16:20:31Z"
+              }
+            }
+          }
+        ],
+        "hostIP": "10.102.245.45",
+        "nodeName": "gpu-l-lg-cmc-h-h200-0054.host.h.pjlab.org.cn",
+        "phase": "Running",
+        "podIP": "100.101.194.241",
+        "podIPs": [
+          {
+            "ip": "100.101.194.241"
+          }
+        ],
+        "qosClass": "Guaranteed",
+        "startTime": "2026-10-24T16:14:30Z"
+      }
+    }
+  ],
+  "resource-result.json": {
+    "schema": "aster-h200-resource-allocation-v1",
+    "unix": 1792858831.9990242,
+    "hostname": "rjob-62100e7e56904ecf-f61eb500bddbbf61-0",
+    "expectedGpus": 1,
+    "modelExecutionClaimed": false,
+    "phase": "passed",
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA H200",
+        "uuid": "GPU-b8b277be-1edb-a43b-0942-c0054908f64c",
+        "totalMiB": 143771,
+        "usedMiB": 0,
+        "driver": "595.71.05"
+      }
+    ],
+    "topology": "\t\u001b[4mGPU0\tNIC0\tNIC1\tNIC2\tNIC3\tNIC4\tNIC5\tNIC6\tNIC7\tNIC8\tNIC9\tNIC10\tNIC11\tNIC12\tNIC13\tNIC14\tNIC15\tNIC16\tNIC17\tCPU Affinity\tNUMA Affinity\tGPU NUMA ID\u001b[0m\nGPU0\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\t\t\t\tN/A\nNIC0\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\t\t\t\t\nNIC1\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC2\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC3\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC4\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tPIX\t\t\t\t\nNIC5\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC6\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\t\t\t\t\nNIC7\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\t\t\t\t\nNIC8\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\t\t\t\t\nNIC9\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC10\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC11\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC12\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\tPIX\t\t\t\t\nNIC13\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\tNODE\t\t\t\t\nNIC14\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\tNODE\t\t\t\t\nNIC15\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\tNODE\t\t\t\t\nNIC16\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\t X \tNODE\t\t\t\t\nNIC17\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tNODE\tPIX\tNODE\tNODE\tNODE\tNODE\t X \t\t\t\t\n\nLegend:\n\n  X    = Self\n  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)\n  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node\n  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)\n  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)\n  PIX  = Connection traversing at most a single PCIe bridge\n  NV#  = Connection traversing a bonded set of # NVLinks\n\nNIC Legend:\n\n  NIC0: mlx5_0\n  NIC1: mlx5_1\n  NIC2: mlx5_2\n  NIC3: mlx5_3\n  NIC4: mlx5_4\n  NIC5: mlx5_5\n  NIC6: mlx5_6\n  NIC7: mlx5_7\n  NIC8: mlx5_20\n  NIC9: mlx5_21\n  NIC10: mlx5_22\n  NIC11: mlx5_23\n  NIC12: mlx5_24\n  NIC13: mlx5_25\n  NIC14: mlx5_26\n  NIC15: mlx5_27\n  NIC16: mlx5_bond_0\n  NIC17: mlx5_data_0\n\n",
+    "cuda": {
+      "driverVersion": 13020,
+      "capability": [
+        9,
+        0
+      ],
+      "cudaGpuUuids": [
+        "GPU-b8b277be-1edb-a43b-0942-c0054908f64c"
+      ],
+      "memoryRoundTrips": 1,
+      "completedPeerDirections": []
+    },
+    "cgroup": {},
+    "completedUnix": 1792858832.770246,
+    "leaseEndsUnix": 1792880432.7702465
+  },
+  "worker.log": "RESOURCE_PROBE_BOOTSTRAP uid=10250\n{\"schema\": \"aster-h200-resource-allocation-v1\", \"unix\": 1792858831.9990242, \"hostname\": \"rjob-62100e7e56904ecf-f61eb500bddbbf61-0\", \"expectedGpus\": 1, \"modelExecutionClaimed\": false, \"phase\": \"passed\", \"gpus\": [{\"index\": 0, \"name\": \"NVIDIA H200\", \"uuid\": \"GPU-b8b277be-1edb-a43b-0942-c0054908f64c\", \"totalMiB\": 143771, \"usedMiB\": 0, \"driver\": \"595.71.05\"}], \"topology\": \"\\t\\u001b[4mGPU0\\tNIC0\\tNIC1\\tNIC2\\tNIC3\\tNIC4\\tNIC5\\tNIC6\\tNIC7\\tNIC8\\tNIC9\\tNIC10\\tNIC11\\tNIC12\\tNIC13\\tNIC14\\tNIC15\\tNIC16\\tNIC17\\tCPU Affinity\\tNUMA Affinity\\tGPU NUMA ID\\u001b[0m\\nGPU0\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\tN/A\\nNIC0\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\t\\t\\t\\t\\nNIC1\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC2\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC3\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC4\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\t\\t\\t\\t\\nNIC5\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC6\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC7\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC8\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\t\\t\\t\\t\\nNIC9\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC10\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC11\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC12\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\t\\t\\t\\t\\nNIC13\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC14\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\tNODE\\t\\t\\t\\t\\nNIC15\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\tNODE\\t\\t\\t\\t\\nNIC16\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\tNODE\\t\\t\\t\\t\\nNIC17\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tNODE\\tPIX\\tNODE\\tNODE\\tNODE\\tNODE\\t X \\t\\t\\t\\t\\n\\nLegend:\\n\\n  X    = Self\\n  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)\\n  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node\\n  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)\\n  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)\\n  PIX  = Connection traversing at most a single PCIe bridge\\n  NV#  = Connection traversing a bonded set of # NVLinks\\n\\nNIC Legend:\\n\\n  NIC0: mlx5_0\\n  NIC1: mlx5_1\\n  NIC2: mlx5_2\\n  NIC3: mlx5_3\\n  NIC4: mlx5_4\\n  NIC5: mlx5_5\\n  NIC6: mlx5_6\\n  NIC7: mlx5_7\\n  NIC8: mlx5_20\\n  NIC9: mlx5_21\\n  NIC10: mlx5_22\\n  NIC11: mlx5_23\\n  NIC12: mlx5_24\\n  NIC13: mlx5_25\\n  NIC14: mlx5_26\\n  NIC15: mlx5_27\\n  NIC16: mlx5_bond_0\\n  NIC17: mlx5_data_0\\n\\n\", \"cuda\": {\"driverVersion\": 13020, \"capability\": [9, 0], \"cudaGpuUuids\": [\"GPU-b8b277be-1edb-a43b-0942-c0054908f64c\"], \"memoryRoundTrips\": 1, \"completedPeerDirections\": []}, \"cgroup\": {}, \"completedUnix\": 1792858832.770246, \"leaseEndsUnix\": 1792880432.7702465}\n"
+}

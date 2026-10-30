@@ -1,5 +1,25 @@
 use pretty_assertions::assert_eq;
 
+#[tokio::test(start_paused = true)]
+async fn headless_auth_does_not_wait_forever_for_a_live_silent_sidecar() {
+    let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
+    let method = acp::AuthMethod::Agent(acp::AuthMethodAgent::new(
+        acp::AuthMethodId::new("a3s.api_key"),
+        "Fixture",
+    ));
+    let methods = [method];
+    let result = tokio::time::timeout(
+        std::time::Duration::from_secs(7200),
+        super::authenticate(&tx, &methods, None, false),
+    )
+    .await;
+    let error = result
+        .expect("authentication must have its own deadline")
+        .unwrap_err();
+    assert!(error.to_string().contains("authenticate"), "{error}");
+    assert!(error.to_string().contains("timed out"), "{error}");
+}
+
 #[tokio::test]
 async fn local_config_agent_with_no_auth_methods_skips_acp_login() {
     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();

@@ -1,0 +1,35 @@
+{
+  "out": "/data/deepseek-v41-xq-1017/native-fresh-bf16-60g-8t-ttft-20261025",
+  "profile": "Fresh baseline: exact routing, BF16 KV, 8 threads, 60 GiB arena, PCIe 0.75",
+  "routes": [
+    "default"
+  ],
+  "decode_trials": 4,
+  "prefill": true,
+  "tuning": {
+    "context_tokens": 1048576,
+    "cpu_threads": 8,
+    "arena_gib": 60,
+    "prompt_batch": 8192,
+    "prefill_chunk": 512,
+    "pcie_bp": 7500,
+    "tier_batch_pcie_bp": 10000
+  },
+  "exact_startup_route_biases": [
+    0,
+    0,
+    0
+  ],
+  "kv_fp4": false,
+  "active_acl_sha256": "13054f6ce98e4169452113351e1f3ccde0f87f4a9093190384aded39df0b568e",
+  "power_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+  "source_fingerprint": "c6be3cc41e94cab5ace30210d8a8e123a69c0ee80d67eee0cc7120c93c2cd0e0",
+  "gpu_uuid": "GPU-ab93a347-c678-1d71-0e85-0f520463debe",
+  "deployment_receipt": "native-exact-baseline-bf16-60g-8t-ttft-deployment.json",
+  "public_gateway_queue_compat_sha256": "17d6d7c86ce2680503d56f6d1c1d33177e89bdc851d302ddfd16ea4d7036a674",
+  "stream_io": true,
+  "arena_load_diagnostics": [
+    "arena: pinned (cudaHostRegister PORTABLE ok; MAP_HUGETLB unavailable (needed 30719 2 MiB pages, vm.nr_hugepages=0); transparent huge pages requested (MADV_HUGEPAGE))",
+    "tier: 0 experts in VRAM, 0 on the remote card (0.0 GiB), 6697 in the RAM arena (60.0 GiB), 8663 file tier; seeded in 23.5 s"
+  ]
+}

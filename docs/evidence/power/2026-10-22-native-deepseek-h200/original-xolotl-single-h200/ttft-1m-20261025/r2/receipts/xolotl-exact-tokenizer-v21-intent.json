@@ -1,0 +1,57 @@
+{
+  "unix": 1792859063.743212,
+  "phase": "cpu_preflight_running",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc6-43da44c9b0a4/tokenizer-preflight-v21",
+  "source_public_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/serve-ttft-v15",
+  "source_overlay": {
+    "upstream_sha256": "5180c184d1a421dd5b56e799360fe6306b96d41da2d443d0bb68dae6714f2e5d",
+    "patched_sha256": "08703bc5e6148f58ccd4b5ad4bddb7469d047aaf4f2a9e5765c7ceb73947b573",
+    "helper_sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145",
+    "gpu_qualified": false,
+    "production_changed": false,
+    "max_memo_bytes": 33554432,
+    "max_memo_entries": 4
+  },
+  "public_fixture_only": true,
+  "gpu_executed": false,
+  "credentials_copied": false,
+  "files": [
+    {
+      "file": "overlay/serve_ds41.py",
+      "bytes": 27358,
+      "sha256": "08703bc5e6148f58ccd4b5ad4bddb7469d047aaf4f2a9e5765c7ceb73947b573"
+    },
+    {
+      "file": "overlay/aster_token_cache.py",
+      "bytes": 3765,
+      "sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145"
+    },
+    {
+      "file": "test_exact_token_cache.py",
+      "bytes": 4741,
+      "sha256": "20502c3a0f787c189fb1e68b296f838a0f36eab5d1924f6c3470ee645d455ccd"
+    },
+    {
+      "file": "benchmark_real_tokenizer.py",
+      "bytes": 3454,
+      "sha256": "efe3136fd8fe82a6461dffc5cbd6009ecf801731122c3c8782dd441fc3a99c0a"
+    },
+    {
+      "file": "benchmark-plan.json",
+      "bytes": 356,
+      "sha256": "09e11cac9a07a897cca4b43c273503d7b98841dc2feb117035288c5936a92019"
+    },
+    {
+      "file": "cpu_preflight_worker.py",
+      "bytes": 2256,
+      "sha256": "a4af875388b1dc651110f0c697e479bd5e637b13ee927241cec86a9566670afa"
+    }
+  ],
+  "process": {
+    "pid": 811259,
+    "start_ticks": 278585829,
+    "uid": 10250,
+    "unix": 1792859073.368682,
+    "budget_seconds": 240
+  }
+}

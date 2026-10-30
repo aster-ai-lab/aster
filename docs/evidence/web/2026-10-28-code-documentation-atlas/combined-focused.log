@@ -1,0 +1,48 @@
+✔ all atlas specifications render with accessible labels, local watermark assets and no inline code or style (1105.0374ms)
+✔ atlas refuses unknown types and missing explanations at the real renderer boundary (0.5702ms)
+✔ diagram stepping, keyboard bounds and complete view do not start animation timers (81.219ms)
+✔ requested narration is finite and reduced motion keeps manual controls (119.0353ms)
+✔ exploded diagram assembles and expands without changing any other figure (24.8961ms)
+✔ source walkthrough works without IntersectionObserver and exposes full reading mode (64.0423ms)
+✔ scroll walkthrough follows an observed narrative without announcing every scroll (54.6541ms)
+✔ static source walks retain every explanation and original code line without JavaScript (4913.5371ms)
+✔ excerpt resolution refuses stale or ambiguous selections and invalid extents (294.024ms)
+✔ missing or unavailable cosmic canvas keeps the fallback without scheduling work (4.6903ms)
+✔ cosmic DPR is clamped at two and unchanged resize does not reset the canvas (1.6609ms)
+✔ reduced motion draws a static cosmos and never starts an animation loop (2.8293ms)
+✔ cosmic painting is capped at thirty FPS and pauses for visibility and intersection (1.4939ms)
+✔ cosmic page cache lifecycle stops and resumes without a size change (0.9853ms)
+✔ cosmic pointer parallax is small and touch does not move the star field (3.8799ms)
+✔ older browsers without intersection observation keep a static cosmos (1.0607ms)
+✔ WebGL supplies three-dimensional star layers and a galaxy with clamped DPR (5.8301ms)
+✔ WebGL reduced motion renders once and toggles the animation lifecycle (4.281ms)
+✔ WebGL camera parallax changes with mouse input while touch stays neutral (12.9437ms)
+✔ unavailable WebGL shaders retain the existing Canvas fallback (1.3259ms)
+✔ homepage assets resolve under project Pages and no-JS content stays available (104.4736ms)
+✔ scenario tabs switch panels and support arrow, Home and End keys (80.8565ms)
+✔ scenario selection carries a sliding indicator and directional panel motion (36.7957ms)
+✔ scenario replay starts only on request and settles at a replay action (35.8262ms)
+✔ scenario steps stop playback and changing panels or hiding the page pauses it (29.3811ms)
+✔ reduced motion changes replay to immediate next-step navigation (29.3577ms)
+✔ mobile navigation closes on selection, Escape and desktop resize (32.4678ms)
+✔ download disclosures switch, support keyboard focus and close outside or on Escape (28.9995ms)
+✔ download disclosures open on hover, close after leaving and stay pinned after click (32.2665ms)
+✔ current desktop platform is labelled and the quickstart command can be copied (31.6726ms)
+✔ hero title types every character in place and retires the cursor (40.2223ms)
+✔ reduced motion preserves the original hero title without typing (37.9708ms)
+✔ back to top respects reduced motion and uses the recorded scroll position (28.0106ms)
+✔ download links support arrow navigation and close when focus leaves (33.3485ms)
+✔ surface feedback coalesces pointer input, stays bounded and resets on reduced motion (26.2296ms)
+✔ coarse pointers keep the surface interactions at their original static state (28.5371ms)
+✔ copy feedback distinguishes success and failure and restores its original icon (27.7287ms)
+✔ replay feedback announces real step changes and cancels superseded transitions (54.3959ms)
+✔ hero alternates both exact taglines and returns to the first (29.1032ms)
+✔ hero stops its rotation when the page leaves and reduced motion starts no rotation (48.7525ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7673.7333

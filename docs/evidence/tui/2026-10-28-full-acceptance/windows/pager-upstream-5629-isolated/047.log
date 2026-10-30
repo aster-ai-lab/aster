@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::modes::set_yolo_mode_toast_format' (29568) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\modes.rs:1055:5:
+assertion `left == right` failed
+  left: "! YOLO ON: all tool actions auto-run"
+ right: "⚠ YOLO ON: all tool actions auto-run"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::modes::set_yolo_mode_toast_format ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::modes::set_yolo_mode_toast_format
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

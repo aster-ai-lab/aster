@@ -117,6 +117,12 @@ impl WorkspaceRuntime {
                 message: "the workspace runtime is shutting down".to_owned(),
             });
         }
+        if let Some(message) = slot
+            .profile
+            .unavailable_reason(&self.canonical_root, &self.layout)
+        {
+            return Err(CodeIntelligenceError::Unavailable { message });
+        }
         let state = Arc::clone(&slot.state);
         let mut state = tokio::select! {
             _ = cancellation.cancelled() => return Err(CodeIntelligenceError::Cancelled),

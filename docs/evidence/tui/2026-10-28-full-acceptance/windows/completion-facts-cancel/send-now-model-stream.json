@@ -1,0 +1,61 @@
+{
+  "case": "send-now-model-stream",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "send-now-model-owner",
+      "detail": "an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-AGALWd\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Produce exactly two thousand lines. Each line consists of the uppercase label ITEM, a space, and a   12:45 PM           four digit decimal counter starting at one and increasing by one. Do not call any tool.                                                                                                                                                                                                                                                                               ♦ Thought for 0.5s                                                                                                                                                                                                                                                                                                                                                      > Reply only MODEL-CANCEL-NEXT. Do not call any tool.                                                  12:45 PM                                                                                                                                                                                                                                                         Turn completed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13512,
+        "has_text": true,
+        "tool": null
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "11769f730f15c98d06e582c22a9db9be3fa1a0d26aae084f3aeed1701272c793"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

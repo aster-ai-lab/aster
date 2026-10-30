@@ -40,6 +40,7 @@ jobs:
           python3 tests/cli_pair_identity.py
           python3 tests/aster_cli_linux.py
           python3 tests/cli_release_workflow.py
+          python3 tests/release_governance.py
 
   build:
     needs: preflight
@@ -84,6 +85,10 @@ jobs:
       - name: Install pinned toolchain
         shell: bash
         run: rustup show active-toolchain
+      - name: Shorten Windows Cargo home
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
@@ -218,9 +223,9 @@ jobs:
           fi
           python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.5-macos.tar.gz --output-dir qualification
           python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.5-macos.tar.gz --mode yolo --output-dir qualification/yolo
-          macos_sha="$(sha256sum -b dist/aster-cli-v0.1.5-macos.tar.gz | cut -d' ' -f1)"
-          linux_sha="$(sha256sum -b dist/aster-cli-v0.1.5-linux.tar.gz | cut -d' ' -f1)"
-          windows_sha="$(sha256sum -b dist/aster-cli-v0.1.5-windows.zip | cut -d' ' -f1)"
+          macos_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.5-macos.tar.gz | cut -d' ' -f1)"
+          linux_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.5-linux.tar.gz | cut -d' ' -f1)"
+          windows_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.5-windows.zip | cut -d' ' -f1)"
           # Compact single-line manifest: scripts/install.sh parses this exact shape.
           printf '{"version":"0.1.5","tag":"aster-cli-v0.1.5","assets":{"macos":{"name":"aster-cli-v0.1.5-macos.tar.gz","sha256":"%s"},"linux":{"name":"aster-cli-v0.1.5-linux.tar.gz","sha256":"%s"},"windows":{"name":"aster-cli-v0.1.5-windows.zip","sha256":"%s"}}}\n' \
             "$macos_sha" "$linux_sha" "$windows_sha" > dist/latest.json

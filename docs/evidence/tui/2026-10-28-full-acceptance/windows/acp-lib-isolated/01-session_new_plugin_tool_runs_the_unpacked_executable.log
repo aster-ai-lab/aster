@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'agent::tests::session_new_plugin_tool_runs_the_unpacked_executable' (2820) panicked at crates\code\acp\src\agent_tests.rs:1288:5:
+assertion `left == right` failed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent::tests::session_new_plugin_tool_runs_the_unpacked_executable ... FAILED
+
+failures:
+
+failures:
+    agent::tests::session_new_plugin_tool_runs_the_unpacked_executable
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.18s
+

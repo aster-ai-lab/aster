@@ -1,0 +1,6 @@
+
+running 1 test
+test agent_api::tests::long_horizon_capabilities::compaction_between_debt_and_settlement_does_not_forgive_it ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 2.71s
+

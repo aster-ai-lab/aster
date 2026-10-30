@@ -1,0 +1,418 @@
+{
+  "schema": "aster-xolotl-resident-mmq-r3",
+  "unix": 1792865872.0038486,
+  "rounds": [
+    {
+      "profile": "v15_control",
+      "requests": 28,
+      "short": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.12853529048152268,
+        "ttft_p95_seconds": 0.15864893491379917,
+        "api_wall_completion_tok_s": 85.36114673384668,
+        "stream_interval_tok_s_estimate": 95.12929328293978
+      },
+      "long": {
+        "cold35700": {
+          "ttft_seconds": 48.91329057328403,
+          "seconds": 49.060049834195524,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "restored35700": {
+          "ttft_seconds": 0.06207377603277564,
+          "seconds": 0.12020795093849301,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 35700
+            }
+          }
+        },
+        "mixed-short": {
+          "ttft_seconds": 5.394570586737245,
+          "seconds": 5.424297377001494,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "mixed-cold-long": {
+          "ttft_seconds": 52.298553318716586,
+          "seconds": 52.33348588692024,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        },
+        "fresh-three-records": {
+          "ttft_seconds": 49.776902372948825,
+          "seconds": 50.132383178919554,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-isolation-53": {
+          "ttft_seconds": 5.438188917934895,
+          "seconds": 5.473282531835139,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-three-records": {
+          "ttft_seconds": 54.415239290799946,
+          "seconds": 54.779992945026606,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        }
+      },
+      "three_position_retrieval_passed": true
+    },
+    {
+      "profile": "v35_keep",
+      "requests": 28,
+      "short": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.132623276906088,
+        "ttft_p95_seconds": 0.17696014046669006,
+        "api_wall_completion_tok_s": 83.21442613369932,
+        "stream_interval_tok_s_estimate": 92.92409058827644
+      },
+      "long": {
+        "cold35700": {
+          "ttft_seconds": 56.08850952424109,
+          "seconds": 56.15404818626121,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "restored35700": {
+          "ttft_seconds": 0.06093242205679417,
+          "seconds": 0.158033006824553,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 35700
+            }
+          }
+        },
+        "mixed-short": {
+          "ttft_seconds": 2.521160049829632,
+          "seconds": 2.5524804880842566,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "mixed-cold-long": {
+          "ttft_seconds": 55.343991060275584,
+          "seconds": 55.380941409152,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        },
+        "fresh-three-records": {
+          "ttft_seconds": 55.54971243813634,
+          "seconds": 55.85169955715537,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-isolation-53": {
+          "ttft_seconds": 2.534239675849676,
+          "seconds": 2.5665766317397356,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-three-records": {
+          "ttft_seconds": 56.36916075088084,
+          "seconds": 56.72405976289883,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        }
+      },
+      "three_position_retrieval_passed": true
+    },
+    {
+      "profile": "v35_packed",
+      "requests": 28,
+      "short": {
+        "measured_requests": 16,
+        "ttft_p50_seconds": 0.13089959346689284,
+        "ttft_p95_seconds": 0.16317557671573013,
+        "api_wall_completion_tok_s": 83.26495140230219,
+        "stream_interval_tok_s_estimate": 92.7660248723741
+      },
+      "long": {
+        "cold35700": {
+          "ttft_seconds": 40.03045743284747,
+          "seconds": 40.133735860232264,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "restored35700": {
+          "ttft_seconds": 0.060690400656312704,
+          "seconds": 0.1308897379785776,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 35700
+            }
+          }
+        },
+        "mixed-short": {
+          "ttft_seconds": 1.5854328158311546,
+          "seconds": 1.616921631153673,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "mixed-cold-long": {
+          "ttft_seconds": 39.66371749760583,
+          "seconds": 39.699461144860834,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 2,
+            "total_tokens": 35702,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        },
+        "fresh-three-records": {
+          "ttft_seconds": 38.51503474870697,
+          "seconds": 38.8969100266695,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-isolation-53": {
+          "ttft_seconds": 1.5926160519011319,
+          "seconds": 1.6260792198590934,
+          "usage": {
+            "prompt_tokens": 18,
+            "completion_tokens": 2,
+            "total_tokens": 20,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          }
+        },
+        "yielded-three-records": {
+          "ttft_seconds": 39.523466067854315,
+          "seconds": 39.874941980000585,
+          "usage": {
+            "prompt_tokens": 35700,
+            "completion_tokens": 17,
+            "total_tokens": 35717,
+            "prompt_tokens_details": {
+              "cached_tokens": 1024
+            }
+          }
+        }
+      },
+      "three_position_retrieval_passed": true
+    }
+  ],
+  "gate": {
+    "schema": "aster-xolotl-resident-mmq-v35-gpu-gate",
+    "unix": 1792864305.5718448,
+    "phase": "passed",
+    "runs": [
+      {
+        "name": "sized-slot-byte-gate",
+        "returncode": 0,
+        "stdout": "PASS mixed cache: 3 shrink/grow cycles, 194 restored slots, 478 slot byte comparisons, exact live ownership\n",
+        "stderr": ""
+      },
+      {
+        "name": "real-f32-reference-0",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\nok   L0 tok 0 classes 0 1 2 3 4 5  rel 1.112e-02\nok   L0 tok 1 classes 1 2 3 4 5 6  rel 1.058e-02\nok   L39 tok 0 classes 0 1 2 4 5 6  rel 5.360e-03\nok   L39 tok 1 classes 1 2 4 5 6 7  rel 1.123e-02\nok   L0 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.136e-02\nok   L39 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.242e-02\nstats: 120 hit, 0 cpu, 0 pcie, 337 file; worst rel 1.242e-02 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 2 calls, 2 launches: wall 1 ms = waits on reads 0 + wave/copy waits 0 + final sync 1 + other host 0; reader wall 0 ms; GPU grouped kernels 0 ms (resident 0); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 2 sub-runs; PTQ1_0 -> Q2_0 transcode 0 ms GPU (inside the grouped kernels) over 0 sub-runs, 0.0 GB of ternary read = 0 GB/s\nresident MMQ stage: 0 waves, 0 exact D2D bytes\n",
+        "resident_packing_waves": 0
+      },
+      {
+        "name": "real-f32-reference-1",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\nok   L0 tok 0 classes 0 1 2 3 4 5  rel 1.112e-02\nok   L0 tok 1 classes 1 2 3 4 5 6  rel 1.058e-02\nok   L39 tok 0 classes 0 1 2 4 5 6  rel 5.360e-03\nok   L39 tok 1 classes 1 2 4 5 6 7  rel 1.123e-02\nok   L0 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.135e-02\nok   L39 chunk 8 tokens: 0 rows off, 0 non-finite, worst rel 1.262e-02\nstats: 120 hit, 0 cpu, 0 pcie, 337 file; worst rel 1.262e-02 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 2 calls, 4 launches: wall 8 ms = waits on reads 0 + wave/copy waits 0 + final sync 7 + other host 0; reader wall 0 ms; GPU grouped kernels 1 ms (resident 1); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 33 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 4 sub-runs, 0.3 GB of ternary read = 510 GB/s\nresident MMQ stage: 31 waves, 839854080 exact D2D bytes\n",
+        "resident_packing_waves": 31
+      },
+      {
+        "name": "paired-operator-timing-0",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\ntime L0 chunk 512 tokens (0 remote entries): 379.4 ms\ntime L0 chunk 512 tokens (0 remote entries): 46.0 ms\ntime L0 chunk 512 tokens (0 remote entries): 45.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.2 ms\ntime L39 chunk 512 tokens (0 remote entries): 32.2 ms\nstats: 18432 hit, 0 cpu, 0 pcie, 337 file; worst rel 0.000e+00 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 6 calls, 6 launches: wall 184 ms = waits on reads 0 + wave/copy waits 0 + final sync 183 + other host 0; reader wall 0 ms; GPU grouped kernels 3 ms (resident 3); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 6 sub-runs; PTQ1_0 -> Q2_0 transcode 0 ms GPU (inside the grouped kernels) over 0 sub-runs, 0.0 GB of ternary read = 0 GB/s\nresident MMQ stage: 0 waves, 0 exact D2D bytes\n",
+        "layer_timings": [
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 379.4
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 46.0
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 45.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.2
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 32.2
+          }
+        ]
+      },
+      {
+        "name": "paired-operator-timing-1",
+        "returncode": 0,
+        "stdout": "40 layers, 8 classes: 11/42 143/143 42/42 143/11 143/42 42/11 11/11 42/143\ntier gpu: 768 resident, 0 remote, 431 arena\ntime L0 chunk 512 tokens (0 remote entries): 360.1 ms\ntime L0 chunk 512 tokens (0 remote entries): 34.7 ms\ntime L0 chunk 512 tokens (0 remote entries): 34.4 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.7 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.6 ms\ntime L39 chunk 512 tokens (0 remote entries): 29.6 ms\nstats: 18432 hit, 0 cpu, 0 pcie, 337 file; worst rel 0.000e+00 -> PASS\n",
+        "stderr": "arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nchunk prof: 6 calls, 6 launches: wall 175 ms = waits on reads 0 + wave/copy waits 0 + final sync 147 + other host 28; reader wall 0 ms; GPU grouped kernels 2 ms (resident 2); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s\nchunk prof MMQ: 75 sub-runs; PTQ1_0 -> Q2_0 transcode 1 ms GPU (inside the grouped kernels) over 3 sub-runs, 9.5 GB of ternary read = 9877 GB/s\nresident MMQ stage: 69 waves, 21812060160 exact D2D bytes\n",
+        "layer_timings": [
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 360.1
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 34.7
+          },
+          {
+            "layer": 0,
+            "chunk_tokens": 512,
+            "milliseconds": 34.4
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.7
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.6
+          },
+          {
+            "layer": 39,
+            "chunk_tokens": 512,
+            "milliseconds": 29.6
+          }
+        ]
+      }
+    ],
+    "model_api_speedup_claimed": false,
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+    "lease_ends_unix": 1792884595.778009,
+    "binary_sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd",
+    "finished_unix": 1792864336.1713917,
+    "real_weight_f32_reference_passed": true,
+    "paired_operator_timing_completed": true
+  },
+  "api_results_are_same_physical_gpu": true,
+  "weight_bytes_changed": false,
+  "routing_changed": false,
+  "new_gpu_kernels": false,
+  "additional_vram_buffers": false,
+  "production_promoted": false,
+  "full1m_candidate_qualified": false,
+  "credential_occurrences": 0
+}

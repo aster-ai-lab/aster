@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-tutorial-review/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "browser_containment": "hostname_v1",
+    "event_count": 25,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-tutorial-review/events.jsonl",
+    "finished_at_ms": 1793008240722,
+    "goal": "检查十二章教程的路线、相邻章节、分组导航、高亮和 Pele 图在桌面与手机上的阅读",
+    "schema_version": 1,
+    "session": "aster-tutorial-review",
+    "started_at_ms": 1793007808853,
+    "status": "passed",
+    "success_criteria": [
+      "能从路线进入会话和终端章节，在手机切换到确认与交付章节"
+    ],
+    "summary": "Reviewed tutorial route, setup-to-streaming navigation, desktop TUI code, mobile directory, confirmation chapter and delivery chapter. The ACL regression visits all twelve chapters.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-tutorial-review/report.json",
+  "session": "aster-tutorial-review",
+  "status": "passed"
+}

@@ -1,0 +1,27 @@
+{
+  "unix": 1792852063.4373772,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "loading",
+    "unix": 1792851986.2130818,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
+    "lease_ends_unix": 1792862381.5974355,
+    "binary_sha256": "af31bbd8e441cf2a5d976413117403e55f5eae2d72c6723148ae5474369ee18b",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 3259,
+      "start_ticks": 727892040,
+      "uid": 10250
+    },
+    "startup_unix": 1792851998.4824593
+  },
+  "service-worker.log": "",
+  "engine.log": "[strata] 2026-10-24 14:26:38 engine started: /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v11/ds41_generate --serve -m /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf --backend cuda --experts gpu --engram /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-b345/engram --rank /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin --ctx 1048576 --threads 16 --prompt-batch 4096 --prefill-chunk 128 --arena-gib 160 --arena-skip-resident --pcie 1 --route-bias 0 --route-bias-file 0 --skip-miss 0 --skip-file 0 --temp 0 --seed 1 --conversation-cache-mib 8192 --prompt-cache 1 --stop 1 --conversation-cache-slots 8 --no-vram-lru --batch 2\nggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):\n  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB\nbatch slots: 2 x 3211.3 MiB of conversation state (ctx 1048576 each) = 6.27 GiB, slabs\nbatch slots: 2 (per-slot states in the dense half)\nenc-skip: cut at layer 20 (last kv source), replay window 2560 (reach 2560)\nds41: stage 0 layers [0,40) CUDA device 0\narena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)\ntier: 0 experts in VRAM, 0 on the remote card (0.0 GiB), 15360 in the RAM arena (142.4 GiB), 0 file tier; seeded in 52.7 s\nloaded in 56.5 s: 40 layers, ctx 1048576, prefill chunk 128, experts gpu, 8 classes\n\nDSpark: /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf, 5.14 GB of weights on the card (1.9 s)serve: VRAM ready seed -> 12485 experts in VRAM, 15360 arena (seed 2.48 s)\nserve: conversation pool 8192 MiB, 8 slots, records >= 256 tokens\nserve: conversation pool store: pinned\nserve: ready (ctx 1048576, prefill chunk 128)\nserve: batch slots 2 (core), prompts of <= 768 new tokens read in the windows\n",
+  "api-longctx-v1-attempt1.stdout.log": "[strata] sampling defaults from the config: temperature=0.0, seed=1\nloading the model (the first start takes a minute or two) ...\n[strata] starting the engine: reading the model's weights ...\n[strata] still starting (20 s) - please wait ...\n[strata] still starting (40 s) - please wait ...\n[strata] still starting (60 s) - please wait ...\n[strata] thinking level: none (reasoning_effort in the config; a request, or the Chat settings shared with other apps, can set its own)\nready: http://127.0.0.1:30003/v1  (OpenAI: /v1/chat/completions, Anthropic: /v1/messages, context 1048576 tokens, API key required)\n       open http://127.0.0.1:30003/ in a browser to chat; close this window to stop the model\n       from other devices: http://100.97.136.42:30003/   (API: http://100.97.136.42:30003/v1)\n",
+  "api-longctx-v1-attempt1.stderr.log": "",
+  "qualification_root_exists": false
+}

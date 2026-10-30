@@ -1,0 +1,236 @@
+[
+  {
+    "case": "simple-first",
+    "http_status": 200,
+    "seconds": 3.1406457639532164,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "0ae72a9076b83f526afd3d42f85de43620e8c28a3e1b0cc8079614c4993ea349"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "7e20cea1532f735bbc252500b27a220c14bb5acdc059056f7b1caa3549e24dc9",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "READY",
+            "reasoning_content": "We need answer READY. Simple.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942632,
+      "id": "chatcmpl-f2f6b4c5-6ac7-4f1c-bc4d-758cd2132f60",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 40,
+          "total_tokens": 50
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 40,
+        "total_tokens": 50
+      }
+    }
+  },
+  {
+    "case": "simple-replay",
+    "http_status": 200,
+    "seconds": 0.312036357994657,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "0ae72a9076b83f526afd3d42f85de43620e8c28a3e1b0cc8079614c4993ea349"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "7e20cea1532f735bbc252500b27a220c14bb5acdc059056f7b1caa3549e24dc9",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "READY",
+            "reasoning_content": "We need answer READY. Simple.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942633,
+      "id": "chatcmpl-a42f872c-3cd6-4110-90c2-d91aefc5ba9f",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 40,
+          "total_tokens": 50
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 40,
+        "total_tokens": 50
+      }
+    }
+  },
+  {
+    "case": "complex",
+    "http_status": 200,
+    "seconds": 12.49338506598724,
+    "response": {
+      "attestation_receipt": {
+        "decoding": {
+          "parameters": {
+            "frequency_penalty": null,
+            "max_completion_tokens": null,
+            "max_tokens": 256,
+            "min_p": null,
+            "mirostat": null,
+            "mirostat_eta": null,
+            "mirostat_tau": null,
+            "modalities": null,
+            "n": null,
+            "num_ctx": null,
+            "parallel_tool_calls": null,
+            "penalize_newline": null,
+            "presence_penalty": null,
+            "repeat_last_n": null,
+            "repeat_penalty": null,
+            "seed": null,
+            "stream": false,
+            "temperature": 0.0,
+            "tfs_z": null,
+            "top_k": null,
+            "top_p": null,
+            "typical_p": null
+          }
+        },
+        "input": {
+          "kind": "chat.messages",
+          "sha256": "2c231278c45f6ca9ba5e13326e0ec2ce4a500d57e08d8b0ede0073f26c46612f"
+        },
+        "model": "deepseek-v41-flash-1017-xq-1m",
+        "request_type": "chat-completion",
+        "runtime_policy": {
+          "execution": {
+            "gpu_sha256": "8bb983eda8f529503d29d72224b54ec81c42b190c0caabc254ee95d1900d1b49",
+            "inference_sha256": "b53f8034eecec10985578770dc9b5db4ff68559415ca4c4e5baa384a6330c3e2"
+          }
+        },
+        "schema": "a3s.power.inference-receipt.v2"
+      },
+      "attestation_receipt_sha256": "a89c890345f59544d96043552a7c204f04d626f497c7d7c68a1f4ddea1835261",
+      "choices": [
+        {
+          "finish_reason": "length",
+          "index": 0,
+          "message": {
+            "content": "",
+            "reasoning_content": "We need answer. Need design protocol. Need prove consistency/idempotency invariants, identify impossible guarantees, derive recovery states. Three concise invariants. Need likely distributed ledger financial transfers multi-region async replication, concurrent transfers, partitions. Need recoverable. Need discuss CAP impossible guarantees: linearizable + availability under partition impossible; exactly-once across partitions impossible without coordination? Need derive recovery states. Need concise but thorough.\n\nWe need formulate protocol. Multi-region financial ledger with accounts balances, transfers. Async replication. Concurrent transfers. Network partitions. Recoverable. Need consistency and idempotency invariants. Identify impossible guarantees. Derive recovery states. Three concise invariants.\n\nLet's design. Maybe use per-account shards with primary region? Multi-region financial ledger. Transfers involve debit source account and credit destination account. Need atomic transfer across accounts possibly in different regions. Async replication. Concurrent transfers. Network partitions. Recoverable. Need consistency/idempotency invariants. Impossible guarantees. Recovery states.\n\nWe need propose protocol. Could use operation log with transfer IDs, deterministic application, per-account balance as sum of applied entries, idempotency via unique transfer ID and dedupe. Async replication with vector clocks/version per account",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1792942645,
+      "id": "chatcmpl-5d362b73-ebcf-4c65-bfbd-b662e1bb3d91",
+      "model": "deepseek-v41-flash-1017-xq-1m",
+      "object": "chat.completion",
+      "prism_upstream": {
+        "source": "upstream-reported",
+        "usage": {
+          "completion_tokens": 260,
+          "prompt_tokens": 80,
+          "total_tokens": 340
+        }
+      },
+      "system_fingerprint": "fp_a3s_power",
+      "usage": {
+        "completion_tokens": 260,
+        "prompt_tokens": 80,
+        "total_tokens": 340
+      }
+    }
+  }
+]

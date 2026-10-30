@@ -1,0 +1,6 @@
+{"platform": "linux", "source_pair": "aster-cli-pair-v1:43ce1a064098dff30e187665d4bcce5ed4cca316:x86_64-unknown-linux-gnu", "cases": [{"case": "headless-json", "exit_code": 0, "timed_out": false, "seconds": 10.667, "stdout_sha256": "580a113d064cd6dbe9f6d28967b9173159b5f86a5f3366a4a15716eee0925f22", "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "tool_calls": 0, "model_turns": 1, "checks": {"exit_zero": true, "exact_text": true, "end_turn": true, "session_id_nonempty": true, "request_id_nonempty": false}, "result": "fail"}]}
+Traceback (most recent call last):
+  File "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/docs/evidence/tui/2026-10-28-full-acceptance/source/native_cli_boundary_probe.py", line 153, in <module>
+    assert report['all_passed'], 'retained native CLI boundary failure'
+           ~~~~~~^^^^^^^^^^^^^^
+AssertionError: retained native CLI boundary failure

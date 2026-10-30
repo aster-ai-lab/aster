@@ -1,0 +1,9 @@
+{
+  "profile": "Fresh paired DSpark-off baseline; exact FP4 24t/144GiB/PCIe0 tier1 chunk512 1M",
+  "quality_passed": 5,
+  "decode_medians": {
+    "default": 26.0
+  },
+  "prefill_median": 661.0,
+  "full_one_million_completed": false
+}

@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "subject": "actual packaged macOS release binaries",
+  "prefix": "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin",
+  "cases": [
+    "paired installer",
+    "CLI version",
+    "ACP version",
+    "compiled updater check with three-platform manifest",
+    "compiled updater forced paired reinstall"
+  ],
+  "results": [
+    {
+      "command": [
+        "bash",
+        "/Users/roylin/code/aster/target/worktrees/aster-cli-v0.1.3/scripts/install.sh",
+        "--prefix",
+        "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin"
+      ],
+      "exit_code": 0,
+      "stdout": "platform=macos\nrelease=aster-cli-v0.1.3\nasset=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/channel/aster-cli-v0.1.3-macos.tar.gz\ninstalled Aster v0.1.3 into /Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin\naster=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster\na3s-code-acp=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/a3s-code-acp\n"
+    },
+    {
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "aster 0.1.3 (220562fe9912)\n"
+    },
+    {
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/a3s-code-acp",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "9.1.5\n"
+    },
+    {
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster",
+        "update",
+        "--check",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"currentVersion\":\"0.1.3 (220562fe9912)\",\"latestVersion\":\"0.1.3\",\"updateAvailable\":false,\"installer\":\"aster-cli\",\"channel\":\"unknown\",\"autoUpdate\":false,\"error\":null}\n"
+    },
+    {
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster",
+        "update",
+        "--force-reinstall"
+      ],
+      "exit_code": 0,
+      "stdout": "installed Aster v0.1.3 into /Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin\nidentity=aster-cli-pair-v1:2e83fbdba371677ab3ae7dad42b1a81bbde22010:aarch64-apple-darwin\naster=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/aster\na3s-code-acp=/Users/roylin/code/aster/target/qualification/net-progress-build/installer-release915three-v2/bin/a3s-code-acp\n"
+    }
+  ],
+  "installed_hashes_match_candidate": true,
+  "lock_cleaned": true,
+  "scope": "owned prefix and local release directory; no global install or real-model performance claim",
+  "test_only_red_control": "release915three-installer-red.json"
+}

@@ -1,0 +1,58 @@
+
+running 1 test
+ORACLE case=sessions-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc
+ORACLE case=sessions-help-capability name=capability-help result=pass detail=actual shortcut detail does not promise backend-refused commands or content types
+ORACLE case=sessions-help-capability name=quit result=pass detail=exit 0
+ORACLE case=send-now-help-capability name=source-pair result=pass detail=aster-cli-pair-v1:5862dded8faeab96d4be04ae9ae535e3c474973e:x86_64-pc-windows-msvc
+
+thread 'input_controls::kimi_sessions_help_uses_reachable_entry' (49672) panicked at crates\code\acp\tests\aster_tui_live_e2e\input_controls.rs:170:5:
+missing shortcut detail:                                                                                                                         
+  C:\W\T\aster-kimi-XooKbC\workspace                                                                          0 / 128K  
+                                                                                                                        
+                                                                                                                        
+                    ┌─ Keyboard Shortcuts ─────────────────────────────────────────────────── [x] ─┐                    
+                    │                                                                              │                    
+                    │  Send now while running (cancels the current turn)                           │                    
+                    │  Ctrl+Enter / Ctrl+i                                                         │                    
+                    │                                                                              │                    
+                    │  Cancels the current turn and sends the composer text as the next prompt.    │                    
+                    │                                                                              │                    
+                    │  Plain Enter while running queues a follow-up instead.                       │                    
+                    │                                                                              │                    
+                    │  The previous turn must finish cancellation and release its resources        │                    
+                    │  before the next prompt can start. Existing permissions and verification     │                    
+                    │  rules still apply.                                                          │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+                    │                                                                              │                    
+  ╭─────────────────│                  Esc back  |  ↑/↓ scroll  |  Ctrl+./X close                  │─────────────────╮  
+  │ >               └──────────────────────────────────────────────────────────────────────────────┘                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test input_controls::kimi_sessions_help_uses_reachable_entry ... FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_sessions_help_uses_reachable_entry
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 34 filtered out; finished in 11.59s
+

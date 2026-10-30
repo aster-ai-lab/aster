@@ -1,0 +1,16 @@
+{
+  "unix": 1792904108.6517699,
+  "phase": "failed",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/ncu-preflight-v176-cpu",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "GPU_math_executed": false,
+  "model_touched": false,
+  "profiling_executed": false,
+  "hardware_counters_collected": false,
+  "clock_control": "none",
+  "cache_control": "none",
+  "smoke_returncode": 0,
+  "smoke_stdout_exact": true,
+  "error": "RuntimeError: bounded installed H200 metric query exceeded",
+  "finished_unix": 1792904117.460302
+}

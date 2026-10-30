@@ -1,0 +1,17 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+    Checking smallvec v1.16.3
+    Checking bitflags v2.13.0
+    Checking mio v1.2.1
+   Compiling syn v2.0.117
+    Checking parking_lot_core v0.9.12
+    Checking nix v0.30.1
+    Checking parking_lot v0.12.5
+   Compiling tokio-macros v2.7.0
+    Checking tokio v1.53.3
+    Checking a3s-tty-utils v0.1.0 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/terminal/crates/codegen/a3s-tty-utils)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.45s

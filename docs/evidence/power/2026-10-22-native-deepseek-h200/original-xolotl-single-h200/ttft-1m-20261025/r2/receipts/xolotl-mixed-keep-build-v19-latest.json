@@ -1,0 +1,34 @@
+{
+  "unix": 1792856756.1415296,
+  "result.json": {
+    "unix": 1792856701.230135,
+    "phase": "built",
+    "gpu_tests_claimed": false,
+    "promoted": false,
+    "step": "checked-candidate-link",
+    "control_binary_sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988",
+    "cache_policy_tests_passed": true,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-mixed-keep-v19/ds41_generate",
+      "bytes": 251528752,
+      "sha256": "bfda174bcfd11cfc5bb2f4b815a871dc4f62c094bd14fef404de9ac4d67a645e"
+    },
+    "finished_unix": 1792856716.7557402
+  },
+  "process.json": {
+    "pid": 4977,
+    "start_ticks": 728362312,
+    "uid": 10250,
+    "unix": 1792856701.1995566,
+    "budget_seconds": 210
+  },
+  "exact_build_alive": false,
+  "logs": {
+    "cache-policy-test.log": "PASS 30 sized cache ownership/capacity cases\n",
+    "cache-policy-compile.log": "",
+    "worker.log": "",
+    "v15-control-relink.log": "",
+    "checked-candidate-link.log": "",
+    "checked-moe-compile.log": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-mixed-keep-v19/ds41_moe.cpp: In function \u2018bool strata::v41::gpu_run_n_ex(strata::v41::Ds41MoeImpl&, int64_t, int, const int32_t*, const float*, const float*, float*, void*)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-mixed-keep-v19/ds41_moe.cpp:4341:80: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]\n 4341 |                          i, (const void*) j.blob, (const void*) j.fmt, j.fmt ? (const void*) j.fmt->gu_act : nullptr,\n      |                                                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-mixed-keep-v19/ds41_moe.cpp:4340:96: warning: format \u2018%d\u2019 expects argument of type \u2018int\u2019, but argument 8 has type \u2018long unsigned int\u2019 [-Wformat=]\n 4340 |             std::fprintf(stderr, \"[dbg_x] job%d blob=%p fmt=%p gu_act=%p gu_type=%d act_bytes=%d nt=%d nact0=%p out0=%p\\n\",\n      |                                                                                               ~^\n      |                                                                                                |\n      |                                                                                                int\n      |                                                                                               %ld\n 4341 |                          i, (const void*) j.blob, (const void*) j.fmt, j.fmt ? (const void*) j.fmt->gu_act : nullptr,\n 4342 |                          j.fmt ? j.fmt->gu_type : -9, j.fmt ? j.fmt->act_bytes : -9, j.nt, (void*) j.nact[0],\n      |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~             \n      |                                                             |\n      |                                                             long unsigned int\n"
+  }
+}

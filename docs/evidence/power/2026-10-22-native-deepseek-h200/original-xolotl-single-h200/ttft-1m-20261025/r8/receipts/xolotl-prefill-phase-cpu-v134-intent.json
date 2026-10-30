@@ -1,0 +1,62 @@
+{
+  "unix": 1792895613.8857372,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-prefill-phase-v134",
+  "gpu_executed": false,
+  "original_source_sha256": "2a1b90d79f2376b5cd667b956fad856122abd052bb3a5c67091a1e6774e7a8c3",
+  "files": [
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 228205,
+      "sha256": "47af8a6d48d42d0bd745b59279ed1ed2e907829e4402e4b366e70b6494e4ba7e"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f"
+    },
+    {
+      "file": "build-plan.json",
+      "bytes": 1348,
+      "sha256": "a431aae5c125e8e77ddb692d406c2c593d297349c00553bfcb8ae753e7216936"
+    },
+    {
+      "file": "worker.py",
+      "bytes": 3688,
+      "sha256": "f05184e4222a47069d5723341291f98d9f82b3034bea6f4ccf859f9b8d69f403"
+    }
+  ],
+  "process": {
+    "pid": 1200137,
+    "start_ticks": 282240793,
+    "uid": 10250,
+    "unix": 1792895623.0072765,
+    "budget_seconds": 260,
+    "namespace": "jump host"
+  }
+}

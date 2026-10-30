@@ -30,6 +30,7 @@ npm install motion react react-dom tailwindcss
 > `@a3s-lab/ui/utils`
 > `@a3s-lab/ui/styles/tokens.css`
 > `@a3s-lab/ui/styles/theme.css`
+> `@a3s-lab/ui/chart`（共享 Chart/ChartProps、Sparkline、ActivityHeatmap 与 heatmap 工具；按需注册、主题、ARIA、减少动效和实例生命周期）
 >
 ### Two Integration Modes
 

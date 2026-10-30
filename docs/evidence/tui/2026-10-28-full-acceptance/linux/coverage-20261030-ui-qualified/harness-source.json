@@ -1,0 +1,8 @@
+{
+  "runtime_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu",
+  "runtime_pair_rebuilt": false,
+  "harness_source_digest": "a1208f00e45e87991b37d6eb21d7496cfadb4125",
+  "harness_snapshot": "source/coverage-20261030-ui-qualified-source.json",
+  "original_pair_manifest_sha256": "cd4d2faef410c25c703dd8f7fb61a290c54c5b6108e6d478cd9468dd52450bec",
+  "test_binary_sha256": "0c8077978d4ed131e53c2105d382bf907947f437e67f1b9e5bc9a3c1ca1b9096"
+}

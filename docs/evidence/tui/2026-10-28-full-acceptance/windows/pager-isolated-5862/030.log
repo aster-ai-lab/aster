@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::dashboard_open_detects_standalone_grok_worktree' (32868) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2093:5:
+assertion `left == right` failed
+  left: Some("~/AppData\\Local\\Temp\\.tmplcGHpR\\repo")
+ right: Some("C:\\Users\\admin\\AppData\\Local\\Temp\\.tmplcGHpR\\repo")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::dashboard_open_detects_standalone_grok_worktree ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::dashboard_open_detects_standalone_grok_worktree
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.30s
+

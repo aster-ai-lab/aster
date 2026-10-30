@@ -1,0 +1,181 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+    Checking windows-sys v0.61.2
+    Checking indexmap v2.14.0
+    Checking windows-sys v0.60.2
+    Checking crypto-common v0.1.6
+    Checking publicsuffix v2.3.0
+    Checking cookie v0.18.2
+    Checking windows-sys v0.59.0
+    Checking gix-utils v0.3.3
+    Checking compact_str v0.9.0
+    Checking ordered_hashmap v0.0.3 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\third_party\ordered_hashmap)
+    Checking block-padding v0.3.3
+    Checking cssparser v0.37.0
+    Checking markup5ever v0.39.0
+    Checking rquickjs-sys v0.11.0
+    Checking rmp v0.8.14
+    Checking fluent-uri v0.4.1
+    Checking socks v0.3.4
+    Checking quick-xml v0.38.4
+    Checking ordered-float v4.6.0
+    Checking spm_precompiled v0.1.4
+    Checking digest v0.10.7
+    Checking serde_json v1.0.154
+    Checking serde_yaml v0.9.34+deprecated
+    Checking toml_edit v0.22.27
+    Checking zip v2.4.2
+    Checking universal-hash v0.5.1
+    Checking graphlib_rust v0.0.2 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\third_party\graphlib_rust)
+    Checking inout v0.1.4
+    Checking html5ever v0.39.0
+    Checking serde_yaml_ng v0.10.0
+    Checking opentelemetry v0.21.0
+    Checking rquickjs-core v0.11.0
+    Checking sha2 v0.10.9
+    Checking sha1 v0.10.6
+    Checking md-5 v0.10.6
+    Checking hmac v0.12.1
+    Checking selectors v0.38.0
+    Checking cipher v0.4.4
+    Checking dagre_rust v0.0.5 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\third_party\dagre_rust)
+    Checking polyval v0.6.2
+    Checking socket2 v0.6.4
+    Checking winapi-util v0.1.11
+    Checking tempfile v3.27.0
+    Checking nu-ansi-term v0.50.3
+    Checking dirs-sys v0.5.0
+    Checking anstyle-wincon v3.0.10
+    Checking anstyle-query v1.1.4
+    Checking cookie_store v0.21.1
+    Checking schemars v1.2.3
+    Checking a3s-acl v0.3.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\acl)
+    Checking rustls-platform-verifier v0.6.2
+    Checking fs-set-times v0.20.3
+    Checking winx v0.36.4
+    Checking tungstenite v0.28.0
+    Checking mio v1.2.1
+    Checking schannel v0.1.28
+    Checking sha1-checked v0.10.0
+    Checking aes v0.8.4
+    Checking mermaid-to-svg v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\third_party\mermaid-to-svg)
+    Checking io-extras v0.19.0
+    Checking ecb v0.1.2
+    Checking same-file v1.0.6
+    Checking cbc v0.1.2
+    Checking tracing-subscriber v0.3.23
+    Checking dirs v6.0.0
+    Checking console v0.15.11
+    Checking anstream v0.6.21
+    Checking anstream v1.0.0
+    Checking a3s-form-core v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\form-core)
+    Checking dom_query v0.28.0
+    Checking olpc-cjson v0.1.4
+    Checking agent-client-protocol-schema v0.11.4
+    Checking a3s-tool-types v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\common\a3s-tool-types)
+    Checking tokio v1.53.3
+    Checking ghash v0.5.1
+    Checking rustls-native-certs v0.8.2
+    Checking ctr v0.9.2
+    Checking referencing v0.47.0
+    Checking cap-primitives v4.0.3
+    Checking ureq v2.12.1
+    Checking walkdir v2.5.0
+    Checking lopdf v0.42.0
+    Checking rmp-serde v1.3.0
+    Checking signature v2.2.0
+    Checking indicatif v0.17.11
+    Checking env_logger v0.11.8
+    Checking clap_builder v4.6.7
+    Checking toml v0.9.12+spec-1.1.0
+    Checking a3s-use-core v0.2.4 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\use\core)
+    Checking dom_smoothie v0.18.2
+    Checking aead v0.5.2
+    Checking imbl v3.0.0
+    Checking monostate v0.1.18
+    Checking esaxx-rs v0.1.10
+    Checking rayon-cond v0.4.0
+    Checking scraper v0.22.0
+    Checking ignore v0.4.24
+    Checking notify v8.2.0
+    Checking gix-features v0.48.1
+    Checking cap-std v4.0.2
+    Checking cron v0.17.0
+    Checking roaring v0.11.1
+    Checking tokio-util v0.7.19
+    Checking tokio-rustls v0.26.6
+    Checking async-compression v0.4.19
+    Checking a3s-tty-utils v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-tty-utils)
+    Checking aws-smithy-async v1.2.14
+    Checking cpu-time v1.0.0
+    Checking unicode-normalization-alignments v0.1.12
+    Checking clap v4.6.7
+    Checking combine v4.6.9
+    Checking dary_heap v0.3.9
+    Checking a3s-sandbox v0.2.3 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\sandbox)
+    Checking jsonschema v0.47.0
+    Checking aes-gcm v0.10.3
+    Checking hf-hub v0.4.3
+    Checking gix-hash v0.25.1
+    Checking cap-fs-ext v4.0.2
+    Checking a3s-common v0.1.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\common)
+    Checking agent-client-protocol v0.10.4
+    Checking tokio-tungstenite v0.28.0
+    Checking h2 v0.4.19
+    Checking tower v0.5.2
+    Checking tokio-stream v0.1.17
+    Checking aws-smithy-types v1.4.3
+    Checking a3s-code-mermaid v0.1.0 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\terminal\crates\codegen\a3s-code-mermaid)
+    Checking anndists v0.1.5
+    Checking a3s-vec v0.1.8 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\vec)
+    Checking a3s-memory v0.1.5 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\memory)
+    Checking tokenizers v0.21.4
+    Checking sha256 v1.6.0
+    Checking lsp-types v0.97.0
+    Checking ndarray v0.15.6
+    Checking a3s-effect v0.2.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\effect)
+    Checking gix-hashtable v0.15.1
+    Checking hkdf v0.12.4
+error: this `impl` can be derived
+  --> crates\common\src\privacy.rs:38:1
+   |
+38 | / impl Default for SensitivityLevel {
+39 | |     fn default() -> Self {
+40 | |         Self::Normal
+41 | |     }
+42 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#derivable_impls
+   = note: `-D clippy::derivable-impls` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::derivable_impls)]`
+help: replace the manual implementation with a derive attribute and mark the default variant
+   |
+18 + #[derive(Default)]
+19 | pub enum SensitivityLevel {
+20 |     Public,
+21 ~     #[default]
+22 ~     Normal,
+   |
+
+error: consider using `sort_by_key`
+   --> crates\common\src\privacy.rs:171:9
+    |
+171 |         matches.sort_by(|a, b| b.start.cmp(&a.start));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_sort_by
+    = note: `-D clippy::unnecessary-sort-by` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_sort_by)]`
+help: try
+    |
+171 -         matches.sort_by(|a, b| b.start.cmp(&a.start));
+171 +         matches.sort_by_key(|b| std::cmp::Reverse(b.start));
+    |
+
+error: could not compile `a3s-common` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

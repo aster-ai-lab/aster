@@ -1,0 +1,35 @@
+{
+  "source_pair": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+  "tests": [
+    {
+      "test": "questions_and_forms::kimi_cancelled_question_returns_cancelled_without_completion_and_recovers",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_cancelled_question_returns_cancelled_without_completion_and_recovers.log"
+    },
+    {
+      "test": "questions_and_forms::kimi_ask_user_choices_and_unseen_free_text_match_the_real_question",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_ask_user_choices_and_unseen_free_text_match_the_real_question.log"
+    },
+    {
+      "test": "forms_catalog::kimi_catalog_native_viewport_and_typed_values_match_source",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_catalog_native_viewport_and_typed_values_match_source.log"
+    },
+    {
+      "test": "forms_catalog::kimi_form_type_bounds_choice_and_required_errors_keep_edits",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_form_type_bounds_choice_and_required_errors_keep_edits.log"
+    },
+    {
+      "test": "forms_catalog::kimi_form_cancel_returns_no_values_and_next_turn_succeeds",
+      "exit_code": 0,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_form_cancel_returns_no_values_and_next_turn_succeeds.log"
+    },
+    {
+      "test": "forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel",
+      "exit_code": 101,
+      "log": "windows/forms-20261030-layout-qualified-pair/kimi_long_form_small_window_reaches_fields_submit_and_cancel.log"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "phase": "passed",
+  "unix": 1792878319.417638,
+  "client": "installed WorkBuddy lite-wb, one stream-json conversation",
+  "gui_test_passed": false,
+  "base_url": "http://10.102.93.68/v1",
+  "tests": [
+    {
+      "turn": 1,
+      "passed": true,
+      "seconds": 104.89425325393677,
+      "time_to_first_output_seconds": 104.62317299842834,
+      "reply": "hi",
+      "result": {
+        "subtype": "success",
+        "is_error": false,
+        "result": "hi",
+        "duration_ms": 100932,
+        "duration_api_ms": 100931,
+        "num_turns": 2,
+        "usage": {
+          "input_tokens": 25671,
+          "output_tokens": 2,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": null,
+          "server_tool_use": null,
+          "service_tier": null
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "passed": true,
+      "seconds": 3.0183968544006348,
+      "time_to_first_output_seconds": 2.7337183952331543,
+      "reply": "hi",
+      "result": {
+        "subtype": "success",
+        "is_error": false,
+        "result": "hi",
+        "duration_ms": 2971,
+        "duration_api_ms": 103902,
+        "num_turns": 4,
+        "usage": {
+          "input_tokens": 52208,
+          "output_tokens": 4,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 25672,
+          "cache_creation": null,
+          "server_tool_use": null,
+          "service_tier": null
+        }
+      }
+    }
+  ],
+  "client_pid": 180624,
+  "current_turn": 2,
+  "started_unix": 1792878424.384385,
+  "events": 19,
+  "elapsed_seconds": 2.8268048763275146,
+  "client_exit_code": 0,
+  "finished_unix": 1792878427.6896315
+}

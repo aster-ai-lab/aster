@@ -1,0 +1,66 @@
+{
+  "exit_code": 0,
+  "source_root": "/code/aster/.wt-deepseek-dspark-main-20261025/crates/power",
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "/home/user/.cargo/bin/cargo",
+    "+1.97.1",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "a3s-power",
+    "--no-default-features",
+    "--features",
+    "server",
+    "--bin",
+    "a3s-power",
+    "--message-format=json-render-diagnostics"
+  ],
+  "compiler_artifact": {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///code/aster/.wt-deepseek-dspark-main-20261025/crates/power#a3s-power@0.10.0",
+    "manifest_path": "/code/aster/.wt-deepseek-dspark-main-20261025/crates/power/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "a3s-power",
+      "src_path": "/code/aster/.wt-deepseek-dspark-main-20261025/crates/power/src/main.rs",
+      "edition": "2021",
+      "required-features": [
+        "server"
+      ],
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": false,
+      "test": false
+    },
+    "features": [
+      "artifact-provisioning",
+      "server"
+    ],
+    "filenames": [
+      "/code/aster/target/release/a3s-power"
+    ],
+    "executable": "/code/aster/target/release/a3s-power",
+    "fresh": false
+  },
+  "unique_dependency_executable": "/code/aster/target/release/deps/a3s_power-26db1364c89fdd86",
+  "captured_executable": "/data/deepseek-v41-xq-1017/health-fixed-release-capture/a3s-power",
+  "sha256": "899084c8e07d7da2a902169dd21d6dc4e294352caf7b110c4eded34a78e59d28",
+  "size_bytes": 8176288,
+  "capture_stable": true,
+  "at_epoch": 1792939650.0417476
+}

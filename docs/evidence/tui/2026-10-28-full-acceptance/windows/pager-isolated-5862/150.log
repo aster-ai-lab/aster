@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow' (20788) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\privacy_banner.rs:373:9:
+assertion `left != right` failed: policy link still clickable
+  left: Rect { x: 0, y: 0, width: 0, height: 0 }
+ right: Rect { x: 0, y: 0, width: 0, height: 0 }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow ... FAILED
+
+failures:
+
+failures:
+    views::privacy_banner::tests::buttons_drop_whole_when_the_row_is_too_narrow
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

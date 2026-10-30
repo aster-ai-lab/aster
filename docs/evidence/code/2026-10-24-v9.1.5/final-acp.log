@@ -1,0 +1,32 @@
+
+running 20 tests
+test a_continuation_attempt_never_outlives_the_run_deadline ... ok
+test a_delegated_child_refusal_returns_to_the_actual_acp_parent ... ACP_CHILD_REFUSAL_OBSERVATION {"childModelCalls":5,"deniedChildReceipts":2,"parentModelCalls":2,"promptMs":833,"successfulChildReceipts":3,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-child-refusal-ws-60401-1792850420213952000"}
+ok
+test a_goal_launch_runs_the_first_attempt_as_the_bound_task_slice ... ok
+test a_missing_skill_call_does_not_block_later_writes ... ok
+test a_successful_write_cycle_stops_before_another_actual_acp_generation ... ACP_STATE_CYCLE_OBSERVATION {"deniedReceipts":0,"externalEdit":false,"modelCalls":8,"promptMs":2457,"successfulReceipts":8,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-state-cycle-ws-60401-1792850513170165000"}
+ok
+test an_interactive_launch_never_binds_the_gate_and_keeps_state_in_the_workspace ... ok
+test an_interactive_run_stops_generating_after_repeated_original_refusals ... ACP_REFUSAL_CYCLE_OBSERVATION {"deniedReceipts":2,"modelCalls":5,"promptMs":277,"successfulReceipts":3,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-refusal-ws-60401-1792850575898033000"}
+ok
+test artifact::tests::bounded_artifacts_refuse_directories_oversize_and_traversal ... ok
+test artifact::tests::fixture_links_and_nonregular_files_are_refused_before_reading ... ok
+test bash_in_a_large_non_git_workspace_does_not_end_the_run ... ok
+test candidate::tests::a_member_changed_after_selection_cannot_be_frozen_as_approved ... ok
+test candidate::tests::linked_or_nonregular_members_are_refused_without_reading_them ... ok
+test candidate::tests::registered_pair_copies_only_the_declared_bytes_despite_other_candidates ... ok
+test candidate::tests::same_build_id_does_not_admit_changed_binary_bytes_or_a_partial_pair ... ok
+test candidate::tests::unknown_manifest_fields_stale_ids_and_oversized_records_fail_closed ... ok
+test default_goal_stagnation_writes_a_terminal_result_before_the_deadline ... STALLED_GOAL_OBSERVATION {"modelCalls":14,"privateState":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-stalled-goal-tmp-60401-1792850637182814000","resultExists":true,"slices":4,"timedOut":false,"verificationAttempts":4,"verifiedSequence":17,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-stalled-goal-ws-60401-1792850637182719000","written":true}
+STALLED_GOAL_RESULT {"artifactEvidenceCount":0,"durationMs":3024,"errorCount":0,"exitCode":1,"lastError":"goal.continuation_stopped: the task goal is unfinished; next=needs_input","outcome":"failed","reason":"execution_failed","schema":"a3s.code.terminal-bench-result.v1","successfulToolCalls":5,"terminalEvent":true,"toolCalls":5,"turns":13}
+ok
+test one_external_edit_does_not_disable_later_actual_acp_cycle_detection ... ACP_STATE_CYCLE_OBSERVATION {"deniedReceipts":0,"externalEdit":true,"modelCalls":9,"promptMs":3388,"successfulReceipts":9,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-state-cycle-ws-60401-1792850670271879000"}
+ok
+test reused_model_ids_keep_distinct_actual_acp_authorizations_and_rows ... ACP_REUSED_ID_OBSERVATION {"modelCalls":8,"rawModelId":"call_write_1","successfulReceipts":8,"toolRows":8,"uniqueApprovals":8,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-state-cycle-ws-60401-1792850707743575000"}
+ACP_STATE_CYCLE_OBSERVATION {"deniedReceipts":0,"externalEdit":false,"modelCalls":8,"promptMs":2721,"successfulReceipts":8,"workspace":"/Users/roylin/code/aster/target/q/r915final-unattended/t/a3s-unattended-state-cycle-ws-60401-1792850707743575000"}
+ok
+test unattended_prompt_binds_proves_and_records_without_touching_the_workspace ... ok
+test verified_goal_finishes_without_repeating_read_only_verification ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 417.68s

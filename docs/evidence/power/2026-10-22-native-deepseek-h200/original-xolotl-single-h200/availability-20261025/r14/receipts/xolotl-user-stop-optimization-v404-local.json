@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-25T14:21:43.0957844Z",
+  "phase": "local_optimization_controllers_stopped",
+  "stopped": [
+    {
+      "pid": 194876,
+      "script": "watch_c15_manual_profile_v392.py",
+      "created_utc": "2026-10-25T13:26:04.2374240Z",
+      "namespace": "Windows",
+      "reason": "User requested no further optimization"
+    },
+    {
+      "pid": 196240,
+      "script": "run_graph_native_model_aba_v375.frozen.py",
+      "created_utc": "2026-10-25T13:08:12.1720510Z",
+      "namespace": "Windows",
+      "reason": "User requested no further optimization"
+    }
+  ],
+  "formal_service_changed": false,
+  "resource_release_pending": true
+}

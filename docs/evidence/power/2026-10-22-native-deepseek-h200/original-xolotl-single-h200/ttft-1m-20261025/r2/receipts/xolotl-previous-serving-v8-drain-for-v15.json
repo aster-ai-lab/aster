@@ -1,0 +1,17 @@
+{
+  "phase": "drain_requested",
+  "unix": 1792858049.1794386,
+  "signal": {
+    "unix": 1792858056.458119,
+    "signal": "SIGTERM",
+    "exact_process": {
+      "pid": 3817,
+      "start_ticks": 729101598,
+      "uid": 10250,
+      "unix": 1792848988.1364517,
+      "deadline_seconds": 10872
+    },
+    "old_slots_idle": true,
+    "new_gpu": "GPU-117aafbe-8432-d158-0666-42464fe5ff49"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "unix": 1792903502.176811,
+  "phase": "waiting_exact_API_comparison",
+  "maximum_h200_roles": 2,
+  "formal_service_changed": false,
+  "goal_complete": false,
+  "hardware_counters_collected": false,
+  "formal_phase": "Running",
+  "formal_uid": "1cfa236c-40ba-408f-a45e-003e0261bdf5",
+  "formal_observed_unix": 1792904126.0157027,
+  "formal_health": 200,
+  "formal_health_checked_unix": 1792904118.6737077,
+  "api_comparison_phase": "candidate_fullwindow",
+  "api_suite_phase": "running",
+  "api_tests": 1,
+  "observed_unix": 1792904198.7052975
+}

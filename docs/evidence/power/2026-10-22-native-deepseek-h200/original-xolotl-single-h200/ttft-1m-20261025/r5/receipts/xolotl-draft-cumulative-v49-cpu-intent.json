@@ -1,0 +1,38 @@
+{
+  "unix": 1792871998.9211013,
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/draft-cumulative-cpu-v49",
+  "gpu_executed": false,
+  "generator_compiled": false,
+  "files": [
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "cumulative-draft-v49.patch",
+      "bytes": 1648,
+      "sha256": "512954d975cd4fd59a08d738077e9bb7622d7f5d0f7bffb74255105a0c266b97"
+    },
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 221080,
+      "sha256": "299a2958c364827270a974425d908383cd0de2bcc2cfc9933c31575e94eeaeec"
+    },
+    {
+      "file": "ds41_generate.original.cpp",
+      "bytes": 220648,
+      "sha256": "196c58faf7c1674869fd49757b3f5775ab672ec37fc121ebeb32e511cdaf8578"
+    },
+    {
+      "file": "policy_test.cpp",
+      "bytes": 2423,
+      "sha256": "bdab86a2f71bc9e56d119733939473a2256c237a5fa10c81a06bbcb234a429be"
+    },
+    {
+      "file": "source-manifest.json",
+      "bytes": 649,
+      "sha256": "d24751d82e3afee05c9adcef66fd1f0e644421bec4c8dc1d360be9b1b4041b83"
+    }
+  ]
+}

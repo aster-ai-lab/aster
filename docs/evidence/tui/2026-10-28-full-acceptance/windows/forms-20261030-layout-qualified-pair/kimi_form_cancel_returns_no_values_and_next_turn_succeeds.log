@@ -1,0 +1,12 @@
+
+running 1 test
+test forms_catalog::kimi_form_cancel_returns_no_values_and_next_turn_succeeds ... ORACLE case=form-cancel-continue name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc
+ORACLE case=form-cancel-continue name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40845
+ORACLE case=form-cancel-continue name=form-cancel-no-default-values result=pass detail=the actual cancelled tool returns an error, never returns the prefilled default as accepted values, and preserves the form source bytes
+ORACLE case=form-cancel-continue name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13928
+ORACLE case=form-cancel-continue name=form-cancel-next-turn result=pass detail=the same session completes a fresh real model request after form cancellation without retrying the form
+ORACLE case=form-cancel-continue name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 37.02s
+

@@ -1,0 +1,83 @@
+{
+  "filesCompared": 70,
+  "changedFiles": [
+    {
+      "path": "dist/index.esm.js",
+      "beforeSha256": "f92c859c861964d5fda1c0bc391c28b004ed98b2a820303a0a639c6756c62183",
+      "afterSha256": "81486814a8b88218d25c9a421f5db4c352427033bdab9322aec558ebc7f575cd",
+      "removed": [
+        "    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。\",",
+        "    toggleSheetFocusShortcut: \"切换表格焦点锁定: Shift, Control, F。\",",
+        "    selectRangeShortcut: \"选择范围: Shift, 方向键。\",",
+        "    autoFillDownShortcut: \"从首个单元格向下自动填充: Control 或 Meta 键, D。\",",
+        "    autoFillRightShortcut: \"从首个单元格向右自动填充: Control 或 Meta 键, R。\",",
+        "    boldTextShortcut: \"加粗文本: Control 或 Meta 键, B。\",",
+        "    copyShortcut: \"复制: Control 或 Meta 键, C。\",",
+        "    pasteShortcut: \"粘贴: Control 或 Meta 键, V。\",",
+        "    undoShortcut: \"撤销: Control 或 Meta 键, Z。\",",
+        "    redoShortcut: \"重做: Control 或 Meta 键, Shift, Z。\",",
+        "    deleteCellContentShortcut: \"删除单元格内容: Delete 或 Backspace。\",",
+        "    confirmCellEditShortcut: \"确认编辑并向下移动: Enter。\",",
+        "    moveRightShortcut: \"向右移动: Tab。\",",
+        "    moveLeftShortcut: \"向左移动: Shift, Tab。\","
+      ],
+      "added": [
+        "    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。\",",
+        "    toggleSheetFocusShortcut: \"切换表格焦点锁定：⇧ + Ctrl + F。\",",
+        "    selectRangeShortcut: \"选择范围：⇧ + 方向键。\",",
+        "    autoFillDownShortcut: \"从首个单元格向下自动填充：Ctrl / ⌘ + D。\",",
+        "    autoFillRightShortcut: \"从首个单元格向右自动填充：Ctrl / ⌘ + R。\",",
+        "    boldTextShortcut: \"加粗文本：Ctrl / ⌘ + B。\",",
+        "    copyShortcut: \"复制：Ctrl / ⌘ + C。\",",
+        "    pasteShortcut: \"粘贴：Ctrl / ⌘ + V。\",",
+        "    undoShortcut: \"撤销：Ctrl / ⌘ + Z。\",",
+        "    redoShortcut: \"重做：Ctrl / ⌘ + ⇧ + Z。\",",
+        "    deleteCellContentShortcut: \"删除单元格内容：删除键或退格键。\",",
+        "    confirmCellEditShortcut: \"确认编辑并向下移动：回车键。\",",
+        "    moveRightShortcut: \"向右移动：制表键。\",",
+        "    moveLeftShortcut: \"向左移动：⇧ + 制表键。\","
+      ],
+      "diff": "--- before/dist/index.esm.js\n\n+++ after/dist/index.esm.js\n\n@@ -19707,26 +19707,26 @@\n\n     pageInfoFull: \"共${total}条，${totalPage}页，已显示全部数据\",\n     sheetIsFocused: \"已启用工作表焦点锁定。\",\n     sheetNotFocused: \"工作表焦点锁定已禁用。\",\n-    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。\",\n+    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。\",\n     currentCellInput: \"当前单元格输入\",\n     newSheet: \"新表\",\n     sheetOptions: \"图纸选项\",\n     Dropdown: \"下拉菜单\",\n     zoomIn: \"放大\",\n     zoomOut: \"缩小\",\n-    toggleSheetFocusShortcut: \"切换表格焦点锁定: Shift, Control, F。\",\n-    selectRangeShortcut: \"选择范围: Shift, 方向键。\",\n-    autoFillDownShortcut: \"从首个单元格向下自动填充: Control 或 Meta 键, D。\",\n-    autoFillRightShortcut: \"从首个单元格向右自动填充: Control 或 Meta 键, R。\",\n-    boldTextShortcut: \"加粗文本: Control 或 Meta 键, B。\",\n-    copyShortcut: \"复制: Control 或 Meta 键, C。\",\n-    pasteShortcut: \"粘贴: Control 或 Meta 键, V。\",\n-    undoShortcut: \"撤销: Control 或 Meta 键, Z。\",\n-    redoShortcut: \"重做: Control 或 Meta 键, Shift, Z。\",\n-    deleteCellContentShortcut: \"删除单元格内容: Delete 或 Backspace。\",\n-    confirmCellEditShortcut: \"确认编辑并向下移动: Enter。\",\n-    moveRightShortcut: \"向右移动: Tab。\",\n-    moveLeftShortcut: \"向左移动: Shift, Tab。\",\n+    toggleSheetFocusShortcut: \"切换表格焦点锁定：⇧ + Ctrl + F。\",\n+    selectRangeShortcut: \"选择范围：⇧ + 方向键。\",\n+    autoFillDownShortcut: \"从首个单元格向下自动填充：Ctrl / ⌘ + D。\",\n+    autoFillRightShortcut: \"从首个单元格向右自动填充：Ctrl / ⌘ + R。\",\n+    boldTextShortcut: \"加粗文本：Ctrl / ⌘ + B。\",\n+    copyShortcut: \"复制：Ctrl / ⌘ + C。\",\n+    pasteShortcut: \"粘贴：Ctrl / ⌘ + V。\",\n+    undoShortcut: \"撤销：Ctrl / ⌘ + Z。\",\n+    redoShortcut: \"重做：Ctrl / ⌘ + ⇧ + Z。\",\n+    deleteCellContentShortcut: \"删除单元格内容：删除键或退格键。\",\n+    confirmCellEditShortcut: \"确认编辑并向下移动：回车键。\",\n+    moveRightShortcut: \"向右移动：制表键。\",\n+    moveLeftShortcut: \"向左移动：⇧ + 制表键。\",\n     shortcuts: \"键盘快捷键\"\n   },\n   currencyDetail: [{\n"
+    },
+    {
+      "path": "dist/index.js",
+      "beforeSha256": "bf8aae03f5bab9f435ab2f8cd9f93708808b04907eb52da88f5842055daeef96",
+      "afterSha256": "f2a04bab6ef9a64bc728a4bf490fe6575ad99539f2061de2650ebd841c25a5b2",
+      "removed": [
+        "    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。\",",
+        "    toggleSheetFocusShortcut: \"切换表格焦点锁定: Shift, Control, F。\",",
+        "    selectRangeShortcut: \"选择范围: Shift, 方向键。\",",
+        "    autoFillDownShortcut: \"从首个单元格向下自动填充: Control 或 Meta 键, D。\",",
+        "    autoFillRightShortcut: \"从首个单元格向右自动填充: Control 或 Meta 键, R。\",",
+        "    boldTextShortcut: \"加粗文本: Control 或 Meta 键, B。\",",
+        "    copyShortcut: \"复制: Control 或 Meta 键, C。\",",
+        "    pasteShortcut: \"粘贴: Control 或 Meta 键, V。\",",
+        "    undoShortcut: \"撤销: Control 或 Meta 键, Z。\",",
+        "    redoShortcut: \"重做: Control 或 Meta 键, Shift, Z。\",",
+        "    deleteCellContentShortcut: \"删除单元格内容: Delete 或 Backspace。\",",
+        "    confirmCellEditShortcut: \"确认编辑并向下移动: Enter。\",",
+        "    moveRightShortcut: \"向右移动: Tab。\",",
+        "    moveLeftShortcut: \"向左移动: Shift, Tab。\","
+      ],
+      "added": [
+        "    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。\",",
+        "    toggleSheetFocusShortcut: \"切换表格焦点锁定：⇧ + Ctrl + F。\",",
+        "    selectRangeShortcut: \"选择范围：⇧ + 方向键。\",",
+        "    autoFillDownShortcut: \"从首个单元格向下自动填充：Ctrl / ⌘ + D。\",",
+        "    autoFillRightShortcut: \"从首个单元格向右自动填充：Ctrl / ⌘ + R。\",",
+        "    boldTextShortcut: \"加粗文本：Ctrl / ⌘ + B。\",",
+        "    copyShortcut: \"复制：Ctrl / ⌘ + C。\",",
+        "    pasteShortcut: \"粘贴：Ctrl / ⌘ + V。\",",
+        "    undoShortcut: \"撤销：Ctrl / ⌘ + Z。\",",
+        "    redoShortcut: \"重做：Ctrl / ⌘ + ⇧ + Z。\",",
+        "    deleteCellContentShortcut: \"删除单元格内容：删除键或退格键。\",",
+        "    confirmCellEditShortcut: \"确认编辑并向下移动：回车键。\",",
+        "    moveRightShortcut: \"向右移动：制表键。\",",
+        "    moveLeftShortcut: \"向左移动：⇧ + 制表键。\","
+      ],
+      "diff": "--- before/dist/index.js\n\n+++ after/dist/index.js\n\n@@ -19717,26 +19717,26 @@\n\n     pageInfoFull: \"共${total}条，${totalPage}页，已显示全部数据\",\n     sheetIsFocused: \"已启用工作表焦点锁定。\",\n     sheetNotFocused: \"工作表焦点锁定已禁用。\",\n-    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 Shift、Control、F。\",\n+    sheetSrIntro: \"要切换工作表焦点以辅助工具栏和其他非工作表导航，请使用 ⇧ + Ctrl + F。\",\n     currentCellInput: \"当前单元格输入\",\n     newSheet: \"新表\",\n     sheetOptions: \"图纸选项\",\n     Dropdown: \"下拉菜单\",\n     zoomIn: \"放大\",\n     zoomOut: \"缩小\",\n-    toggleSheetFocusShortcut: \"切换表格焦点锁定: Shift, Control, F。\",\n-    selectRangeShortcut: \"选择范围: Shift, 方向键。\",\n-    autoFillDownShortcut: \"从首个单元格向下自动填充: Control 或 Meta 键, D。\",\n-    autoFillRightShortcut: \"从首个单元格向右自动填充: Control 或 Meta 键, R。\",\n-    boldTextShortcut: \"加粗文本: Control 或 Meta 键, B。\",\n-    copyShortcut: \"复制: Control 或 Meta 键, C。\",\n-    pasteShortcut: \"粘贴: Control 或 Meta 键, V。\",\n-    undoShortcut: \"撤销: Control 或 Meta 键, Z。\",\n-    redoShortcut: \"重做: Control 或 Meta 键, Shift, Z。\",\n-    deleteCellContentShortcut: \"删除单元格内容: Delete 或 Backspace。\",\n-    confirmCellEditShortcut: \"确认编辑并向下移动: Enter。\",\n-    moveRightShortcut: \"向右移动: Tab。\",\n-    moveLeftShortcut: \"向左移动: Shift, Tab。\",\n+    toggleSheetFocusShortcut: \"切换表格焦点锁定：⇧ + Ctrl + F。\",\n+    selectRangeShortcut: \"选择范围：⇧ + 方向键。\",\n+    autoFillDownShortcut: \"从首个单元格向下自动填充：Ctrl / ⌘ + D。\",\n+    autoFillRightShortcut: \"从首个单元格向右自动填充：Ctrl / ⌘ + R。\",\n+    boldTextShortcut: \"加粗文本：Ctrl / ⌘ + B。\",\n+    copyShortcut: \"复制：Ctrl / ⌘ + C。\",\n+    pasteShortcut: \"粘贴：Ctrl / ⌘ + V。\",\n+    undoShortcut: \"撤销：Ctrl / ⌘ + Z。\",\n+    redoShortcut: \"重做：Ctrl / ⌘ + ⇧ + Z。\",\n+    deleteCellContentShortcut: \"删除单元格内容：删除键或退格键。\",\n+    confirmCellEditShortcut: \"确认编辑并向下移动：回车键。\",\n+    moveRightShortcut: \"向右移动：制表键。\",\n+    moveLeftShortcut: \"向左移动：⇧ + 制表键。\",\n     shortcuts: \"键盘快捷键\"\n   },\n   currencyDetail: [{\n"
+    }
+  ],
+  "unchangedFiles": 68,
+  "corePatchSha256": "4f826ce89652b8031474a996bdc52cc169eb4f9781bb6c764bb624497980989e"
+}

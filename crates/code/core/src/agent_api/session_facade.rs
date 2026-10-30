@@ -507,8 +507,23 @@ impl AgentSession {
     /// `history()` is the live in-memory buffer. A resumed session has to show
     /// the log even when that buffer was never copied into the pager.
     pub fn durable_transcript(&self) -> Vec<Message> {
-        crate::fact_control::compaction_transcript(&self.workspace, &self.session_id)
-            .unwrap_or_default()
+        let slot = self.run_admission.fact_log_slot();
+        let log = match slot.lock() {
+            Ok(slot) => slot.clone(),
+            Err(_) => return Vec::new(),
+        };
+        let Some(log) = log else {
+            return crate::fact_control::compaction_transcript(&self.workspace, &self.session_id)
+                .unwrap_or_default();
+        };
+        // Active runs must read through their existing handle: opening a
+        // second FileLog would contend with the original writer's fence.
+        a3s_effect::LogStore::read(
+            log.as_ref(),
+            &crate::fact_control::thread_for_session(&self.session_id),
+        )
+        .map(|facts| crate::fact_control::compaction_transcript_from_facts(&facts))
+        .unwrap_or_default()
     }
 
     /// Fork the conversation at fact `seq`: every fact after `seq` is

@@ -1,0 +1,7 @@
+cwd=/code/aster/.wt-deepseek-dspark-main-20261025
+command=['python3', 'tests/governance_regime.py']
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.003s
+
+OK

@@ -1,0 +1,67 @@
+[
+  {
+    "exit": 101,
+    "test": "agent::tests::session_new_plugin_tool_runs_the_unpacked_executable",
+    "file": "01-session_new_plugin_tool_runs_the_unpacked_executable.log"
+  },
+  {
+    "exit": 101,
+    "test": "cursor_account::tests::catalog_list_does_not_request_write_or_shell_access",
+    "file": "02-catalog_list_does_not_request_write_or_shell_access.log"
+  },
+  {
+    "exit": 101,
+    "test": "document_read::run_tests::native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns",
+    "file": "03-native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns.log"
+  },
+  {
+    "exit": 101,
+    "test": "document_read::tests::actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications",
+    "file": "04-actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications.log"
+  },
+  {
+    "exit": 101,
+    "test": "document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations",
+    "file": "05-actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations.log"
+  },
+  {
+    "exit": 101,
+    "test": "document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation",
+    "file": "06-workspace_replaced_during_read_cannot_accept_old_host_observation.log"
+  },
+  {
+    "exit": 101,
+    "test": "host_context::tests::host_text_lands_in_extra_and_keeps_the_budget_line",
+    "file": "07-host_text_lands_in_extra_and_keeps_the_budget_line.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory",
+    "file": "08-an_admitted_tool_refuses_a_recreated_workspace_directory.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes",
+    "file": "09-artifact_verification_is_bound_to_the_created_path_and_saved_bytes.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_file::tests::nested_verification::native_png_proofs_survive_program_batch_and_parallel_nested_calls",
+    "file": "10-native_png_proofs_survive_program_batch_and_parallel_nested_calls.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness",
+    "file": "11-native_png_proofs_survive_program_boundaries_in_the_real_harness.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates",
+    "file": "12-tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates.log"
+  },
+  {
+    "exit": 101,
+    "test": "office_read::tests::governed::live_tool_turn_reads_only_with_read_authority_and_permission",
+    "file": "13-live_tool_turn_reads_only_with_read_authority_and_permission.log"
+  }
+]

@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::permissions::set_permission_mode_ask_emits_brand_consistent_toast' (49792) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\permissions.rs:376:5:
+assertion `left == right` failed: PR 11 R1 G-3 #11: Ask toast must brand as 'Permission mode' not 'Always-approve'
+  left: "√ Permission mode: Ask"
+ right: "✓ Permission mode: Ask"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::permissions::set_permission_mode_ask_emits_brand_consistent_toast ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::permissions::set_permission_mode_ask_emits_brand_consistent_toast
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

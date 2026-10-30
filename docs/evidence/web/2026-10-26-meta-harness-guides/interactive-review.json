@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "session": "aster-meta-harness-docs",
+  "surface": "web",
+  "status": "passed",
+  "goal": "Verify the Meta Harness guide index, eight grouped chapters, code examples and mobile navigation",
+  "success_criteria": [
+    "The Meta Harness index links to seven topic guides",
+    "Nested topic navigation retains the active page and project prefix",
+    "The overview diagram and long code blocks remain readable at desktop and mobile widths"
+  ],
+  "auto_resolve_repairs": false,
+  "allowed_origins": [
+    "http://127.0.0.1:4192"
+  ],
+  "browser_containment": "hostname_v1",
+  "browser_allowed_origins": [
+    "http://127.0.0.1:4192"
+  ],
+  "browser_allowed_domains": [],
+  "event_count": 26,
+  "artifacts_dir": ".a3s-test/agent-sessions/aster-meta-harness-docs/artifacts",
+  "events_path": ".a3s-test/agent-sessions/aster-meta-harness-docs/events.jsonl",
+  "started_at_ms": 1793002493375,
+  "finished_at_ms": 1793003053519,
+  "summary": "Observed Meta Harness index, seven topic guides, desktop diagram and mobile code examples. All nested routes and grouped navigation also passed the 62-step deterministic suite."
+}

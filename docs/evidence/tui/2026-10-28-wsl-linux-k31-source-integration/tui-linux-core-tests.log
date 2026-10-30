@@ -1,0 +1,305 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+   Compiling libc v0.2.186
+   Compiling serde_core v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling num-traits v0.2.19
+   Compiling zerocopy v0.8.48
+   Compiling ring v0.17.14
+   Compiling futures-util v0.3.34
+   Compiling web_atoms v0.2.3
+   Compiling crossbeam-epoch v0.9.20
+   Compiling getrandom v0.3.4
+   Compiling icu_normalizer v2.0.0
+   Compiling derive_more-impl v2.1.1
+   Compiling concurrent-queue v2.5.0
+   Compiling anyhow v1.0.104
+   Compiling selectors v0.38.0
+   Compiling cssparser v0.37.0
+   Compiling crossbeam-deque v0.8.6
+   Compiling flate2 v1.1.5
+   Compiling event-listener v5.4.1
+   Compiling num-integer v0.1.46
+   Compiling parking_lot_core v0.9.12
+   Compiling getrandom v0.2.16
+   Compiling mio v1.2.1
+   Compiling errno v0.3.14
+   Compiling socket2 v0.6.4
+   Compiling rand_core v0.6.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling parking_lot v0.12.5
+   Compiling getrandom v0.4.1
+   Compiling crypto-common v0.1.6
+   Compiling idna_adapter v1.2.1
+   Compiling socket2 v0.5.10
+   Compiling num-bigint v0.4.6
+   Compiling fs2 v0.4.3
+   Compiling tokio v1.53.3
+   Compiling serde v1.0.229
+   Compiling digest v0.10.7
+   Compiling cipher v0.4.4
+   Compiling proc-macro2 v1.0.106
+   Compiling universal-hash v0.5.1
+   Compiling uuid v1.26.1
+   Compiling num-iter v0.1.45
+   Compiling event-listener-strategy v0.5.4
+   Compiling rayon-core v1.13.0
+   Compiling idna v1.1.0
+   Compiling sha2 v0.10.9
+   Compiling string_cache v0.9.0
+   Compiling chrono v0.4.45
+   Compiling futures-executor v0.3.34
+   Compiling derive_more v2.1.1
+   Compiling string_cache v0.8.9
+   Compiling num-rational v0.4.2
+   Compiling ahash v0.8.12
+   Compiling num_cpus v1.17.0
+   Compiling cssparser v0.34.0
+   Compiling num-complex v0.4.6
+   Compiling markup5ever v0.14.1
+   Compiling either v1.15.0
+   Compiling quote v1.0.45
+   Compiling url v2.5.8
+   Compiling publicsuffix v2.3.0
+   Compiling a3s-acl v0.3.0 (/mnt/d/code/aster/crates/acl)
+   Compiling polyval v0.6.2
+   Compiling fluent-uri v0.4.1
+   Compiling num v0.4.3
+   Compiling rayon v1.12.0
+   Compiling futures v0.3.34
+   Compiling ppv-lite86 v0.2.21
+   Compiling selectors v0.26.0
+   Compiling cookie_store v0.21.1
+   Compiling rmp v0.8.14
+   Compiling rand_chacha v0.3.1
+   Compiling html5ever v0.29.1
+   Compiling async-lock v3.4.1
+   Compiling tracing-serde v0.2.0
+   Compiling serde_urlencoded v0.7.1
+   Compiling serde_spanned v0.6.9
+   Compiling toml_datetime v0.6.11
+   Compiling rand v0.8.8
+   Compiling aes v0.8.4
+   Compiling unicode-general-category v1.1.0
+   Compiling rand_xoshiro v0.6.0
+   Compiling dirs-sys v0.5.0
+   Compiling inotify-sys v0.1.5
+   Compiling dirs-sys v0.4.1
+   Compiling ordered-float v4.6.0
+   Compiling bytemuck v1.25.2
+   Compiling deadpool-runtime v0.1.4
+   Compiling referencing v0.47.0
+   Compiling toml_edit v0.22.27
+   Compiling dashmap v6.2.1
+   Compiling tracing-subscriber v0.3.23
+   Compiling dirs v5.0.1
+   Compiling inotify v0.11.0
+   Compiling scraper v0.22.0
+   Compiling tokio-util v0.7.19
+   Compiling tower v0.5.2
+   Compiling async-compression v0.4.19
+   Compiling deadpool v0.12.3
+   Compiling roaring v0.11.1
+   Compiling imbl v3.0.0
+   Compiling dirs v6.0.0
+   Compiling rquickjs-core v0.11.0
+   Compiling rmp-serde v1.3.0
+   Compiling ghash v0.5.1
+   Compiling fraction v0.15.3
+   Compiling cron v0.17.0
+   Compiling rand v0.10.3
+   Compiling tower-http v0.6.8
+   Compiling h2 v0.4.19
+   Compiling tokio-stream v0.1.17
+   Compiling tempfile v3.27.0
+   Compiling assert-json-diff v2.0.2
+   Compiling email_address v0.2.9
+   Compiling rust-stemmers v1.2.0
+   Compiling quick-xml v0.38.4
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling bincode v1.3.3
+   Compiling ecb v0.1.2
+   Compiling ctr v0.9.2
+   Compiling cbc v0.1.2
+   Compiling md-5 v0.10.6
+   Compiling aead v0.5.2
+   Compiling memmap2 v0.9.11
+   Compiling yasna v0.5.2
+   Compiling ttf-parser v0.25.1
+   Compiling jsonschema v0.47.0
+   Compiling sha256 v1.6.0
+   Compiling notify v8.2.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling aes-gcm v0.10.3
+   Compiling a3s-vec v0.1.8 (/mnt/d/code/aster/crates/vec)
+   Compiling lsp-types v0.97.0
+   Compiling a3s-form-core v0.1.0 (/mnt/d/code/aster/crates/form-core)
+   Compiling rquickjs v0.11.0
+   Compiling toml v0.8.23
+   Compiling hyper v1.8.1
+   Compiling a3s-sandbox v0.2.3 (/mnt/d/code/aster/crates/sandbox)
+   Compiling a3s-effect v0.2.1 (/mnt/d/code/aster/crates/effect)
+   Compiling syn v2.0.117
+   Compiling a3s-memory v0.1.5 (/mnt/d/code/aster/crates/memory)
+   Compiling a3s-common v0.1.1 (/mnt/d/code/aster/crates/common)
+   Compiling ignore v0.4.24
+   Compiling rustls v0.23.46
+   Compiling a3s-lane v0.5.1 (/mnt/d/code/aster/crates/lane)
+   Compiling lopdf v0.42.0
+   Compiling rustls-webpki v0.103.15
+   Compiling rcgen v0.13.2
+   Compiling hyper-util v0.1.20
+   Compiling wiremock v0.6.5
+   Compiling tokio-rustls v0.26.6
+   Compiling hyper-rustls v0.27.7
+   Compiling reqwest v0.12.24
+   Compiling markup5ever v0.38.0
+   Compiling markup5ever v0.39.0
+   Compiling html5ever v0.38.0
+   Compiling xml5ever v0.38.0
+   Compiling html5ever v0.39.0
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling html2text v0.16.7
+   Compiling dom_query v0.28.0
+   Compiling htmd v0.5.4
+   Compiling dom_smoothie v0.18.2
+   Compiling a3s-search v3.4.0 (/mnt/d/code/aster/crates/search)
+   Compiling a3s-code-core v9.1.6 (/mnt/d/code/aster/crates/code/core)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning (run `cargo fix --lib -p a3s-code-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5m 57s
+     Running unittests src/lib.rs (target/wsl-linux/debug/deps/a3s_code_core-840c28faad4accf0)
+
+running 118 tests
+test porcelain::bounded_stamp_tests::a_large_dirty_file_edit_has_a_receipt_even_with_restored_mtime ... ok
+test porcelain::bounded_stamp_tests::an_unchanged_large_file_does_not_poison_the_next_observation ... ok
+test porcelain::receipt_tests::a_caller_budget_is_remaining_bytes_not_a_fresh_per_file_allowance ... ok
+test porcelain::receipt_tests::a_changed_data_file_larger_than_a_baseline_budget_has_byte_identity ... ok
+test porcelain::receipt_tests::a_large_non_git_tree_is_a_complete_index_and_a_bounded_receipt ... ok
+test porcelain::receipt_tests::a_large_status_list_is_a_digest_in_the_prepared_baseline ... ok
+test porcelain::receipt_tests::a_nested_git_workspace_observes_only_its_exact_relative_bytes ... ok
+test porcelain::receipt_tests::a_non_git_read_failure_stays_incomplete ... ok
+test porcelain::receipt_tests::a_non_git_walk_past_the_node_cap_is_a_budget_with_no_prefix ... ok
+test porcelain::receipt_tests::a_rename_cannot_cross_the_path_bound_and_malformed_status_cannot_panic ... ok
+test porcelain::receipt_tests::absolute_parent_and_empty_paths_are_refused_while_absence_is_a_typed_identity ... ok
+test porcelain::receipt_tests::an_ignored_nested_workspace_boundary_change_or_lost_baseline_stays_unknown ... ok
+test porcelain::receipt_tests::an_ignored_nested_workspace_child_retains_its_live_file_baseline ... ok
+test porcelain::receipt_tests::an_ignored_nested_workspace_observes_its_actual_bytes_and_no_parent_paths ... ok
+test porcelain::receipt_tests::an_invalid_utf8_directory_entry_cannot_be_silently_dropped ... ok
+test porcelain::receipt_tests::an_oversized_sparse_file_is_refused_before_reading_any_bytes ... ok
+test porcelain::receipt_tests::directory_eof_resets_stale_errno_and_keeps_the_maximum_legal_name ... ok
+test porcelain::receipt_tests::failed_directory_and_stat_reads_are_explicitly_incomplete ... ok
+test porcelain::receipt_tests::failed_reads_keep_spent_bytes_and_never_produce_a_digest ... ok
+test porcelain::receipt_tests::git_output_read_failure_cannot_become_an_empty_success ... ok
+test porcelain::receipt_tests::git_output_stops_at_its_byte_bound_and_never_returns_a_prefix_as_success ... ok
+test porcelain::receipt_tests::git_parsers_bound_paths_and_do_not_accept_overflow_as_complete ... ok
+test porcelain::receipt_tests::harness_directory_components_do_not_hide_literal_unix_backslash_files ... ok
+test porcelain::receipt_tests::nested_hidden_index_identity_stays_in_workspace_and_detects_preserved_mtime ... ok
+test porcelain::receipt_tests::nested_revision_deltas_exclude_outside_commits_and_keep_inside_relative_paths ... ok
+test porcelain::receipt_tests::non_git_delta_sees_preserved_mtime_writes_and_keeps_all_forty_paths ... ok
+test porcelain::receipt_tests::nul_rename_fields_and_legacy_unicode_renames_keep_exact_paths_without_panicking ... ok
+test porcelain::receipt_tests::old_stat_only_baselines_remain_readable_without_fabricating_a_hash ... ok
+test porcelain::receipt_tests::oversized_relative_paths_are_refused_before_component_allocation_or_io ... ok
+test porcelain::receipt_tests::path_budget_exhaustion_is_explicit_and_cannot_become_an_empty_success ... ok
+test porcelain::receipt_tests::real_git_nul_names_are_exact_before_hashing_even_with_quotes_spaces_and_arrows ... ok
+test porcelain::receipt_tests::receipt_preimages_bind_known_nongit_and_dirty_git_bytes_without_rewrite_progress ... ok
+test porcelain::receipt_tests::receipt_preimages_do_not_invent_the_first_clean_git_file_baseline ... ok
+test porcelain::receipt_tests::receipt_preimages_keep_uncaptured_existing_bytes_unknown_after_baseline_budget_failure ... ok
+test porcelain::receipt_tests::receipt_preimages_use_complete_nongit_absence_for_creation_and_known_bytes_for_deletion ... ok
+test porcelain::receipt_tests::same_length_and_preserved_mtime_still_change_the_content_identity ... ok
+test porcelain::receipt_tests::stable_porcelain_lines_do_not_hide_preserved_metadata_writes ... ok
+test porcelain::receipt_tests::symlink_identity_hashes_only_its_target_spelling_and_never_external_contents ... ok
+test porcelain::receipt_tests::total_byte_budget_is_shared_and_overflow_marks_the_changed_paths_incomplete ... ok
+test porcelain::receipt_tests::typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct ... ok
+test porcelain::receipt_tests::unreadable_subdirectories_are_not_silently_dropped ... ok
+test porcelain::receipt_tests::unsupported_nodes_are_refused_before_a_fifo_open_can_block ... ok
+test porcelain::tests::a_clean_revision_path_is_not_kept_when_git_was_not_invoked ... ok
+test porcelain::tests::a_failed_reread_is_not_an_empty_mutation ... ok
+test porcelain::tests::a_foreign_commit_is_not_a_command_mutation_unless_this_command_invoked_git ... ok
+test porcelain::tests::a_missed_status_outside_git_is_not_a_git_observation ... ok
+test porcelain::tests::a_missed_status_with_a_known_head_is_not_an_empty_tree ... ok
+test porcelain::tests::a_quoted_porcelain_path_is_a_mutation ... ok
+test porcelain::tests::a_renamed_quoted_pair_records_both_paths ... ok
+test porcelain::tests::a_revision_path_left_dirty_stays_on_the_command ... ok
+test porcelain::tests::a_run_level_budget_closes_the_gate_and_a_command_path_list_does_not ... ok
+test porcelain::tests::a_status_budget_does_not_diff_a_prefix_or_fail_the_read ... ok
+test porcelain::tests::a_status_byte_cap_is_a_budget_and_a_hidden_index_byte_cap_keeps_the_status ... ok
+test porcelain::tests::a_status_record_cap_is_a_budget_and_drops_the_prefix ... ok
+test porcelain::tests::an_unchanged_git_worktree_is_a_complete_empty_delta ... ok
+test porcelain::tests::an_undecodable_quoted_path_is_not_an_empty_mutation ... ok
+test porcelain::tests::an_unstamped_existing_dirty_path_is_an_observation_gap ... ok
+test porcelain::tests::hidden_index_tags_are_paths_and_ordinary_tags_are_not ... ok
+test porcelain::tests::nul_status_keeps_a_path_with_a_space ... ok
+test porcelain::tests::porcelain_keeps_the_suffix_past_thirty_two_paths ... ok
+test verification::tests::acceptance_file_exists_quotes_paths_with_spaces ... ok
+test verification::tests::acceptance_file_exists_skips_paths_that_escape_workspace ... ok
+test verification::tests::acceptance_helpers_cover_empty_quote_and_absolute_in_workspace_paths ... ok
+test verification::tests::acceptance_subject_helpers_recognize_passing_shell_acceptance ... ok
+test verification::tests::artifact_uri_collection_walks_arrays_and_nested_objects ... ok
+test verification::tests::bind_host_shell_reports_to_mutations_sets_effect_digest_for_matching_path ... ok
+test verification::tests::contract_admission_refuses_empty_id_command_or_covers ... ok
+test verification::tests::contract_coverage_matches_exact_suffix_and_directory_glob ... ok
+test verification::tests::contract_report_binds_only_a_full_passing_covered_run ... ok
+test verification::tests::contract_report_refuses_failed_partial_and_foreign_runs ... ok
+test verification::tests::contract_report_rejects_masked_status_quoted_mentions_and_modified_arguments ... ok
+test verification::tests::each_active_loop_needs_its_own_acceptance_report_before_goal_emit ... ok
+test verification::tests::format_summary_covers_skipped_failed_and_review_without_subjects ... ok
+test verification::tests::format_summary_includes_actionable_counts_and_subjects ... ok
+test verification::tests::format_summary_mentions_residual_risks ... ok
+test verification::tests::format_summary_needs_review_mentions_pending_subject ... ok
+test verification::tests::format_summary_skipped_mentions_no_reports ... ok
+test verification::tests::go_workspace_preset_uses_go_test_and_vet ... ok
+test verification::tests::goal_achievement_gate_requires_passed_required_checks ... ok
+test verification::tests::goal_emit_requires_acceptance_report_when_machine_acceptance_exists ... ok
+test verification::tests::host_report_for_verified_mutation_path_binds_digest_for_completion_gate ... ok
+test verification::tests::merge_shell_verification_metadata_attaches_rust_preset_report ... ok
+test verification::tests::merge_shell_verification_metadata_without_workspace_keeps_shell_command_only ... ok
+test verification::tests::node_package_manager_detection_and_script_commands_cover_lockfile_variants ... ok
+test verification::tests::node_package_without_scripts_yields_no_preset ... ok
+test verification::tests::node_workspace_preset_detects_lockfile_package_managers ... ok
+test verification::tests::node_workspace_preset_uses_declared_scripts_only ... ok
+test verification::tests::normalize_shell_command_and_preset_coverage_handle_semicolons_and_empty ... ok
+test verification::tests::path_from_existence_check_command_parses_common_forms ... ok
+test verification::tests::powershell_literal_item_checks_require_terminating_errors_and_literal_operands ... ok
+test verification::tests::program_verification_hint_builds_required_and_optional_checks ... ok
+test verification::tests::python_mypy_and_ruff_presets_are_detected_from_config_files ... ok
+test verification::tests::python_pytest_ini_and_mypy_markers_produce_presets ... ok
+test verification::tests::python_workspace_preset_includes_mypy_when_configured ... ok
+test verification::tests::python_workspace_preset_requires_clear_markers ... ok
+test verification::tests::report_fails_when_any_check_fails ... ok
+test verification::tests::report_from_required_program_hint_needs_review ... ok
+test verification::tests::report_passes_when_required_checks_pass ... ok
+test verification::tests::report_to_value_and_residual_risk_update_status ... ok
+test verification::tests::rust_workspace_preset_uses_cargo_commands ... ok
+test verification::tests::shell_command_covers_preset_matches_exact_and_trailing_args ... ok
+test verification::tests::shell_verification_report_attaches_for_goal_acceptance_commands ... ok
+test verification::tests::shell_verification_report_attaches_for_workspace_preset_commands ... ok
+test verification::tests::stale_completed_loop_acceptance_does_not_authorize_or_pollute_active_goal ... ok
+test verification::tests::static_verifier_builds_report ... ok
+test verification::tests::summary_passes_when_reports_pass ... ok
+test verification::tests::summary_prioritizes_failed_checks ... ok
+test verification::tests::summary_skips_empty_reports ... ok
+test verification::tests::summary_tracks_pending_required_checks ... ok
+test verification::tests::supports_goal_achievement_rejects_optional_only_and_residual_risk ... ok
+test verification::tests::verification_command_builds_failed_check_from_exit_code ... ok
+test verification::tests::verification_command_builds_passed_check_with_evidence ... ok
+test verification::tests::verification_command_marks_execution_error_and_exit_mismatch_failed ... ok
+test verification::tests::verification_command_optional_to_check_and_timeout_builder ... ok
+test verification::tests::verification_command_timeout_and_summary_to_value_are_exercised ... ok
+test verification::tests::verification_report_empty_is_skipped_and_residual_risk_needs_review ... ok
+test verification::tests::verification_status_label_covers_all_variants ... ok
+test verification::tests::verification_summary_reports_passed_only_with_required_checks ... ok
+
+test result: ok. 118 passed; 0 failed; 0 ignored; 0 measured; 5300 filtered out; finished in 39.42s
+

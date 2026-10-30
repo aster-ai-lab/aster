@@ -1,0 +1,14 @@
+{
+  "unix": 1792896637.313926,
+  "formal_phase": "Running",
+  "formal_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+  "replica_phases": [
+    "Running"
+  ],
+  "http_status": 200,
+  "loaded": true,
+  "max_context": 1048576,
+  "seconds": 0.06300000008195639,
+  "no_inference": true,
+  "no_restart": true
+}

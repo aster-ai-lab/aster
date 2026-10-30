@@ -1,0 +1,57 @@
+
+running 1 test
+test coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes ... ORACLE case=coverage-markdown-raw name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=coverage-markdown-raw name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13221
+
+thread 'coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes' (11050) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:382:9:
+timeout waiting for "1/2"
+                                                                                                                        
+  /t/aster-kimi-JhWkc8/workspace                                                                            13K / 128K  
+ ┌                                                                                                                    ┐ 
+ │                                                                                                                    │ 
+ │   ❯ Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.      1:46 PM  │ 
+ │     # Viewer heading                                                                                               │ 
+ │                                                                                                                    │ 
+ │     **RAW-03369aed-fc84-4a41-9754-af606836f30c**                                                                   │ 
+ │                                                                                                                    │ 
+ │     - alpha                                                                                                        │ 
+ │     - beta                                                                                                         │ 
+ │                                                                                                                    │ 
+ └                                                                                                                    ┘ 
+     ◆ Thought for 1.8s                                                                                                 
+                                                                                                                        
+     Viewer heading                                                                                          1:46 PM    
+                                                                                                                        
+     RAW-03369aed-fc84-4a41-9754-af606836f30c                                                                           
+                                                                                                                        
+     • alpha                                                                                                            
+     • beta                                                                                                             
+                                                                                                                        
+     Worked for 7.1s                                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────  
+   search: RAW-03369aed-fc84-4a41-9754-af606836f30c                                                                1/3  
+                                                                                                                        
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮  
+  │ ❯ Build anything                                                                                                 │  
+  ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯  
+                                                                                                                        
+  ↓/↑:next/prev  │  Esc:cancel  │  Ctrl+x:shortcuts                                                                     
+                                                                                                                        
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    coverage_wave::kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 95 filtered out; finished in 23.34s
+

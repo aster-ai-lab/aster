@@ -5,7 +5,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
 #
 # The newest release is discovered from the channel manifest:
-#   https://github.com/aster-ai-lab/aster/releases/latest/download/latest.json
+#   https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json
 # `--version X.Y.Z` installs that exact release. A positional URL may name
 # one official archive directly. macOS downloads a .tar.gz, Linux a .tar.gz,
 # Windows a .zip; each archive contains aster and a3s-code-acp.
@@ -14,7 +14,7 @@
 set -euo pipefail
 
 official_releases="https://github.com/aster-ai-lab/aster/releases"
-latest_manifest="${official_releases}/latest/download/latest.json"
+latest_manifest="${official_releases}/download/aster-cli-stable/latest.json"
 
 usage() {
   echo "Usage: install.sh [--prefix DIR] [--version X.Y.Z] [ARCHIVE-URL]" >&2

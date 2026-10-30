@@ -1,0 +1,42 @@
+{
+  "unix": 1792904601.4230366,
+  "GPU_executed": false,
+  "model_executed": false,
+  "paths": [
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/ds41_engram_hot",
+      "exists": false
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/CMakeFiles/ds41_engram_hot.dir/link.txt",
+      "exists": false
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/CMakeFiles/bench_ds41_engram.dir/link.txt",
+      "exists": false
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram_hot.cpp",
+      "exists": true,
+      "bytes": 17443,
+      "sha256": "172e7e6f5341f5b84ec12e9a45fc71db577753a10cc807c7d2664c1f38e47a8f"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.hpp",
+      "exists": true,
+      "bytes": 9611,
+      "sha256": "459bf6cfef67edb144e47883f7ceb95e72de9ac5a1086817e10723f501c8a04b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_engram.cpp",
+      "exists": true,
+      "bytes": 37273,
+      "sha256": "f416e336beb9bba744ebd43753172ec1f3dcbc019f19e944a44171fe2d3cb42b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/build/libstrata_core.a",
+      "exists": true,
+      "bytes": 311614
+    }
+  ]
+}

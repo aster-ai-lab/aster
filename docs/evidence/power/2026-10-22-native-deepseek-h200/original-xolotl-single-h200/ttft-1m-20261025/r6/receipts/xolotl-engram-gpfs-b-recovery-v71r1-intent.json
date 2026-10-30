@@ -1,0 +1,17 @@
+{
+  "unix": 1792883163.5246897,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-engram-disk-v68-gpfs_b",
+  "allocation_uid": "08538623-2284-45f9-b98a-7733bb70f32d",
+  "reason": "Original bootstrap required1800s remaining before any child was created; this finite19-request comparison requires900s; original service lease deadline retained",
+  "original_refusal_retained": true,
+  "resource_deadline_extended": false,
+  "process": {
+    "pid": 9365,
+    "start_ticks": 316264937,
+    "uid": 10250,
+    "unix": 1792883173.486196,
+    "deadline_seconds": 1412,
+    "namespace": "optimization pod"
+  }
+}

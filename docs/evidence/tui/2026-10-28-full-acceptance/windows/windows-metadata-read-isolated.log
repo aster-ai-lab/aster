@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable' (51696) panicked at crates\code\core\src\porcelain\windows_tests.rs:29:5:
+assertion `left == right` failed: a real sandboxed read must not change the observed file identity
+  left: ContentStamp { path: "proof.txt", present: true, len: 15, modified: 13437694838352547600, changed: 0, node: (1841253919, 17169973579787101), mode: 32, kind: 0, content_digest: Some("624f91b0589750f05423ef87ea193fad7b9745e732da386a4c2971129db734ec"), metadata_digest: Some("fdacc7b0abca71ca63062d592824ba643f4e5aee65b7cf0096603514201a84fb") }
+ right: ContentStamp { path: "proof.txt", present: true, len: 15, modified: 13437694838352547600, changed: 0, node: (1841253919, 17169973579787101), mode: 32, kind: 0, content_digest: Some("624f91b0589750f05423ef87ea193fad7b9745e732da386a4c2971129db734ec"), metadata_digest: Some("41e9fa5f6fdb5a169c315cc6e48e64e02b0b64c315a2dcbd740b0964f40dc031") }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable ... FAILED
+
+failures:
+
+failures:
+    porcelain::windows::tests::native_sandbox_bash_read_keeps_the_observation_stable
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5296 filtered out; finished in 2.97s
+

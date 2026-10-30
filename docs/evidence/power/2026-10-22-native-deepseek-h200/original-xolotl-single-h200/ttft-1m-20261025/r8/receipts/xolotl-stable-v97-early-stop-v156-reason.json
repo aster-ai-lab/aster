@@ -1,0 +1,374 @@
+{
+  "unix": 1792899806.868897,
+  "cause_identified": false,
+  "service_restart_requested": false,
+  "rjob": {
+    "metadata": {
+      "annotations": {
+        "kubebrain.brainpp.cn/module": "hrprda3s_gpu_pool",
+        "kubebrain.brainpp.cn/showname": "aster-xolotl-1mc9-e81ede480e07",
+        "rjob.brainpp.cn/job-command": "submit --namespace ailab-hrprdduanyan --name aster-xolotl-1mc9-e81ede480e07 --task-type=normal --gpu=1 --cpu=40 --memory=450560 --charged-group=hrprda3s_gpu_pool --positive-tags H200 feature/gpfs=yes --mount gpfs://gpfs1/yangchao:/mnt/shared-storage-user/yangchao gpfs://gpfs2/gpfs2-shared-public:/mnt/shared-storage-gpfs2/gpfs2-shared-public --private-machine=group --preemptible=no --image=registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2 --restart-policy=never --backoff_limit=1 -- bash -lc exec timeout --signal=TERM --kill-after=30 21660 python3 -u -c 'import base64;exec(base64.b64decode('\"'\"'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBvcyxzdWJwcm9jZXNzLHN5cyx0aW1lLHRyYWNlYmFjawpyb290PVBhdGgoJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOS1lODFlZGU0ODBlMDcnKQp0cnk6CiBpZiByb290LnJlc29sdmUoKSE9cm9vdCBvciByb290LnN0YXQoKS5zdF91aWQhPTEwMjUwOnJhaXNlIFJ1bnRpbWVFcnJvcignb3duZWQgcmVzb3VyY2Ugc3RhZ2UgVUlEIGNoYW5nZWQnKQogaWYgb3MuZ2V0dWlkKCk9PTA6CiAgb3Muc2V0Z3JvdXBzKFtdKTtvcy5zZXRnaWQocm9vdC5zdGF0KCkuc3RfZ2lkKTtvcy5zZXR1aWQoMTAyNTApCiBpZiBvcy5nZXR1aWQoKSE9MTAyNTA6cmFpc2UgUnVudGltZUVycm9yKCdwcm9iZSBtdXN0IHJ1biBhcyBpdHMgYXJ0aWZhY3Qgb3duZXInKQogb3MudW1hc2soMG8wNzcpCiB3aXRoIChyb290Lyd3b3JrZXIubG9nJykub3BlbigneGInLGJ1ZmZlcmluZz0wKSBhcyBsb2c6CiAgb3MuZHVwMihsb2cuZmlsZW5vKCksMSk7b3MuZHVwMihsb2cuZmlsZW5vKCksMikKICBwcmludCgnUkVTT1VSQ0VfUFJPQkVfQk9PVFNUUkFQIHVpZD0nK3N0cihvcy5nZXR1aWQoKSksZmx1c2g9VHJ1ZSkKICByZXN1bHQ9c3VicHJvY2Vzcy5ydW4oWydweXRob24zJywgJy11JywgJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOS1lODFlZGU0ODBlMDcvd29ya2VyLnB5JywgJy0tZXhwZWN0ZWQtZ3B1cycsICcxJywgJy0tbGVhc2Utc2Vjb25kcycsICcyMTYwMCcsICctLXdvcmtlci1zaGEyNTYnLCAnMzBlNDUzYzI2NzFkOWQ4YTE4YjIzMzdhNzQ3ZjJiNWY4YWU5MDJmM2JkZWU5ODc4ZTViNzY0YjhhNjMxMDZkYiddLGN3ZD1yb290LHRpbWVvdXQ9MjE2MjApCiAgaWYgcmVzdWx0LnJldHVybmNvZGU6CiAgIHByaW50KCdSRVNPVVJDRV9QUk9CRV9GQUlMRUQgZGlhZ25vc3RpY19ob2xkX3NlY29uZHM9NjAwJyxmbHVzaD1UcnVlKTt0aW1lLnNsZWVwKDYwMCkKICBzeXMuZXhpdChyZXN1bHQucmV0dXJuY29kZSkKZXhjZXB0IEV4Y2VwdGlvbjoKIHRyYWNlYmFjay5wcmludF9leGMoKTtwcmludCgnUkVTT1VSQ0VfQk9PVFNUUkFQX0ZBSUxFRCBkaWFnbm9zdGljX2hvbGRfc2Vjb25kcz02MDAnLGZsdXNoPVRydWUpO3RpbWUuc2xlZXAoNjAwKTtyYWlzZQo='\"'\"'))'",
+        "rjob.brainpp.cn/scheduler-name": "volcano",
+        "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+        "scheduling.k8s.io/group-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "scheduling.volcano.sh/queue-name": "ailab-hrprdduanyan-hrprda3s-gpu-pool",
+        "volcano.brainpp.cn/priority": "5"
+      },
+      "creationTimestamp": "2026-10-24T23:36:49Z",
+      "finalizers": [
+        "rjob.brainpp.cn/rjob-finalizer"
+      ],
+      "labels": {
+        "brainpp-log-collector": "fluent-bit",
+        "kubebrain.brainpp.cn/creator": "yangchao",
+        "kubebrain.brainpp.cn/creator-department": "default",
+        "kubebrain.brainpp.cn/creator-id": "2719f82309b46a2aca14f264bc0437ae",
+        "kubebrain.brainpp.cn/creator-type": "user",
+        "kubebrain.brainpp.cn/resourcetype": "rjob",
+        "quotagroup.brainpp.cn/preemptible": "no",
+        "quotagroup.brainpp.cn/quotagroup": "hrprda3s_gpu_pool",
+        "rjob.brainpp.cn/auto-delete-policy": "server-managed",
+        "rjob.brainpp.cn/auto-delete-policy-version": "v1",
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "rjob.brainpp.cn/rjob-version": "v2",
+        "rjob.brainpp.cn/scheduler-name": "volcano",
+        "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+        "scheduling.k8s.io/group-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "scheduling.volcano.sh/queue-name": "ailab-hrprdduanyan-hrprda3s-gpu-pool",
+        "volcano.brainpp.cn/interruptible": "false",
+        "workspace.brainpp.cn/workspace-namspace": "ailab-hrprdduanyan"
+      },
+      "name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+      "namespace": "ailab-hrprdduanyan",
+      "resourceVersion": "504740781",
+      "uid": "3a66564e-0a12-4c17-9b41-741fd78e0017"
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-10-24T23:36:49Z",
+          "lastUpdateTime": "2026-10-24T23:36:49Z",
+          "message": "RJob is inqueue",
+          "reason": "StartInqueue",
+          "status": "True",
+          "type": "Inqueue"
+        },
+        {
+          "lastTransitionTime": "2026-10-24T23:36:56Z",
+          "lastUpdateTime": "2026-10-24T23:36:56Z",
+          "message": "RJob is starting",
+          "reason": "Starting",
+          "status": "True",
+          "type": "Starting"
+        },
+        {
+          "lastTransitionTime": "2026-10-24T23:41:51Z",
+          "lastUpdateTime": "2026-10-24T23:41:51Z",
+          "message": "RJob is running",
+          "reason": "StartRunning",
+          "status": "True",
+          "type": "Running"
+        },
+        {
+          "lastTransitionTime": "2026-10-25T02:51:41Z",
+          "lastUpdateTime": "2026-10-25T02:51:41Z",
+          "message": "RJob is stopped",
+          "reason": "StartStopped",
+          "status": "True",
+          "type": "Stopped"
+        }
+      ],
+      "finishTime": "2026-10-25T02:51:41Z",
+      "message": "RJob stopped",
+      "phase": "Stopped",
+      "reason": "RJobStopped",
+      "taskStatuses": {
+        "t0": {
+          "stopped": 1
+        }
+      }
+    }
+  },
+  "replica": {
+    "metadata": {
+      "annotations": {
+        "kubebrain.brainpp.cn/client-working-dir": "",
+        "kubebrain.brainpp.cn/command": "bash -lc exec timeout --signal=TERM --kill-after=30 21660 python3 -u -c 'import base64;exec(base64.b64decode('\"'\"'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBvcyxzdWJwcm9jZXNzLHN5cyx0aW1lLHRyYWNlYmFjawpyb290PVBhdGgoJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOS1lODFlZGU0ODBlMDcnKQp0cnk6CiBpZiByb290LnJlc29sdmUoKSE9cm9vdCBvciByb290LnN0YXQoKS5zdF91aWQhPTEwMjUwOnJhaXNlIFJ1bnRpbWVFcnJvcignb3duZWQgcmVzb3VyY2Ugc3RhZ2UgVUlEIGNoYW5nZWQnKQogaWYgb3MuZ2V0dWlkKCk9PTA6CiAgb3Muc2V0Z3JvdXBzKFtdKTtvcy5zZXRnaWQocm9vdC5zdGF0KCkuc3RfZ2lkKTtvcy5zZXR1aWQoMTAyNTApCiBpZiBvcy5nZXR1aWQoKSE9MTAyNTA6cmFpc2UgUnVudGltZUVycm9yKCdwcm9iZSBtdXN0IHJ1biBhcyBpdHMgYXJ0aWZhY3Qgb3duZXInKQogb3MudW1hc2soMG8wNzcpCiB3aXRoIChyb290Lyd3b3JrZXIubG9nJykub3BlbigneGInLGJ1ZmZlcmluZz0wKSBhcyBsb2c6CiAgb3MuZHVwMihsb2cuZmlsZW5vKCksMSk7b3MuZHVwMihsb2cuZmlsZW5vKCksMikKICBwcmludCgnUkVTT1VSQ0VfUFJPQkVfQk9PVFNUUkFQIHVpZD0nK3N0cihvcy5nZXR1aWQoKSksZmx1c2g9VHJ1ZSkKICByZXN1bHQ9c3VicHJvY2Vzcy5ydW4oWydweXRob24zJywgJy11JywgJy9tbnQvc2hhcmVkLXN0b3JhZ2UtdXNlci95YW5nY2hhby9Xb3Jrc3BhY2UvYXN0ZXItaDIwMC14cS9hc3Rlci14b2xvdGwtMW1jOS1lODFlZGU0ODBlMDcvd29ya2VyLnB5JywgJy0tZXhwZWN0ZWQtZ3B1cycsICcxJywgJy0tbGVhc2Utc2Vjb25kcycsICcyMTYwMCcsICctLXdvcmtlci1zaGEyNTYnLCAnMzBlNDUzYzI2NzFkOWQ4YTE4YjIzMzdhNzQ3ZjJiNWY4YWU5MDJmM2JkZWU5ODc4ZTViNzY0YjhhNjMxMDZkYiddLGN3ZD1yb290LHRpbWVvdXQ9MjE2MjApCiAgaWYgcmVzdWx0LnJldHVybmNvZGU6CiAgIHByaW50KCdSRVNPVVJDRV9QUk9CRV9GQUlMRUQgZGlhZ25vc3RpY19ob2xkX3NlY29uZHM9NjAwJyxmbHVzaD1UcnVlKTt0aW1lLnNsZWVwKDYwMCkKICBzeXMuZXhpdChyZXN1bHQucmV0dXJuY29kZSkKZXhjZXB0IEV4Y2VwdGlvbjoKIHRyYWNlYmFjay5wcmludF9leGMoKTtwcmludCgnUkVTT1VSQ0VfQk9PVFNUUkFQX0ZBSUxFRCBkaWFnbm9zdGljX2hvbGRfc2Vjb25kcz02MDAnLGZsdXNoPVRydWUpO3RpbWUuc2xlZXAoNjAwKTtyYWlzZQo='\"'\"'))'",
+        "kubebrain.brainpp.cn/module": "hrprda3s_gpu_pool",
+        "kubebrain.brainpp.cn/overlay2.size": "50g",
+        "kubebrain.brainpp.cn/readonly-hostpath-mounts": "/checkpoints/2:/mnt/nvme2n1/shared/checkpoints,/checkpoints/3:/mnt/nvme3n1/shared/checkpoints",
+        "mount.brainpp.cn/gpfs": "gpfs://gpfs1/yangchao:/mnt/shared-storage-user/yangchao;gpfs://gpfs2/gpfs2-shared-public:/mnt/shared-storage-gpfs2/gpfs2-shared-public",
+        "rjob.brainpp.cn/failure-retention-duration": "",
+        "rjob.brainpp.cn/failure-retention-enabled": "",
+        "rjob.brainpp.cn/failure-retention-webhook": "",
+        "rjob.brainpp.cn/replica-running": "2026-10-25T07:41:50.422559382+08:00",
+        "rjob.brainpp.cn/scheduler-name": "volcano",
+        "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+        "scheduling.k8s.io/group-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "scheduling.volcano.sh/queue-name": "ailab-hrprdduanyan-hrprda3s-gpu-pool"
+      },
+      "creationTimestamp": "2026-10-24T23:36:49Z",
+      "finalizers": [
+        "rjob.brainpp.cn/replica-finalizer"
+      ],
+      "labels": {
+        "brainpp-log-collector": "fluent-bit",
+        "kubebrain.brainpp.cn/creator": "yangchao",
+        "kubebrain.brainpp.cn/creator-department": "default",
+        "kubebrain.brainpp.cn/creator-id": "2719f82309b46a2aca14f264bc0437ae",
+        "kubebrain.brainpp.cn/creator-type": "user",
+        "kubebrain.brainpp.cn/extraresourceid": "",
+        "kubebrain.brainpp.cn/extraresourcetype": "",
+        "kubebrain.brainpp.cn/lxcfs": "yes",
+        "kubebrain.brainpp.cn/replica": "0",
+        "kubebrain.brainpp.cn/resourcetype": "rjob",
+        "privatemachine.brainpp.cn/privatemachine": "group",
+        "quotagroup.brainpp.cn/allocate-scope": "tenant_public",
+        "quotagroup.brainpp.cn/machine-type": "GPU",
+        "quotagroup.brainpp.cn/online": "false",
+        "quotagroup.brainpp.cn/preemptible": "no",
+        "quotagroup.brainpp.cn/quotagroup": "hrprda3s_gpu_pool",
+        "quotagroup.brainpp.cn/use-type": "workload",
+        "rjob.brainpp.cn/managed-by": "replica",
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "rjob.brainpp.cn/rjob-task-id": "aster-xolotl-1mc9-e81ede480e07-8789662-t0",
+        "rjob.brainpp.cn/rjob-task-type": "t0",
+        "rjob.brainpp.cn/scheduler-name": "volcano",
+        "rjob.brainpp.cn/zs-task-type": "rjob-normal",
+        "scheduling.k8s.io/group-name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+        "scheduling.volcano.sh/queue-name": "ailab-hrprdduanyan-hrprda3s-gpu-pool",
+        "volcano.brainpp.cn/interruptible": "false",
+        "workspace.brainpp.cn/workspace-namspace": "ailab-hrprdduanyan"
+      },
+      "name": "aster-xolotl-1mc9-e81ede480e07-8789662-5s74q",
+      "namespace": "ailab-hrprdduanyan",
+      "ownerReferences": [
+        {
+          "apiVersion": "rjob.brainpp.cn/v1alpha1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "RJob",
+          "name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+          "uid": "3a66564e-0a12-4c17-9b41-741fd78e0017"
+        }
+      ],
+      "resourceVersion": "504740764",
+      "uid": "c19ea7d8-bb55-4d85-966a-f10cd42a08cb"
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T23:36:54Z",
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T23:41:49Z",
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T23:41:49Z",
+          "status": "True",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-24T23:36:54Z",
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "containerID": "containerd://1dc3570f9fc99c8c64eeabceacb2275ac3f16f43e535ca997e93aa7e19a393b5",
+          "image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
+          "imageID": "registry.h.pjlab.org.cn/ailab-safeag/zoubo@sha256:6430d45b74a8d6059bd15774cf92216985f86b4b7285cb5393db8e5fcf3f6d8a",
+          "lastState": {},
+          "name": "t0",
+          "ready": true,
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-24T23:41:48Z"
+            }
+          }
+        }
+      ],
+      "hostIP": "10.102.246.38",
+      "nodeName": "gpu-lg-cmc-h-h200-2480.host.h.pjlab.org.cn",
+      "phase": "Stopped",
+      "podIP": "100.101.229.46",
+      "podIPs": [
+        {
+          "ip": "100.101.229.46"
+        }
+      ],
+      "qosClass": "Guaranteed",
+      "startTime": "2026-10-24T23:36:54Z"
+    }
+  },
+  "service": {
+    "metadata": {
+      "annotations": {
+        "aster.serving/allocation-uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+        "aster.serving/lease-ends-unix": "1792906909.8635943",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"aster.serving/allocation-uid\":\"3a66564e-0a12-4c17-9b41-741fd78e0017\",\"aster.serving/lease-ends-unix\":\"1792906909.8635943\",\"metallb.universe.tf/address-pool\":\"bgp-pool-v3\",\"metallb.universe.tf/ip-allocated-from-pool\":\"bgp-pool-v3\"},\"creationTimestamp\":\"2026-10-24T11:45:48Z\",\"labels\":{\"app.kubernetes.io/managed-by\":\"aster-h200-deployment\",\"aster-task\":\"xolotl-single-h200\"},\"name\":\"aster-xolotl-api-v3pool-20261024\",\"namespace\":\"ailab-hrprdduanyan\",\"ownerReferences\":[{\"apiVersion\":\"rjob.brainpp.cn/v1alpha1\",\"blockOwnerDeletion\":false,\"controller\":false,\"kind\":\"RJob\",\"name\":\"aster-xolotl-1mc9-e81ede480e07-8789662\",\"uid\":\"3a66564e-0a12-4c17-9b41-741fd78e0017\"}],\"resourceVersion\":\"14554371966\",\"uid\":\"1f968a8d-4ddc-4cee-b32a-390cd44210c7\"},\"spec\":{\"allocateLoadBalancerNodePorts\":false,\"clusterIP\":\"10.68.85.120\",\"clusterIPs\":[\"10.68.85.120\"],\"externalTrafficPolicy\":\"Cluster\",\"internalTrafficPolicy\":\"Cluster\",\"ipFamilies\":[\"IPv4\"],\"ipFamilyPolicy\":\"SingleStack\",\"ports\":[{\"appProtocol\":\"http\",\"name\":\"openai-http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":30003}],\"selector\":{\"rjob.brainpp.cn/rjob-name\":\"aster-xolotl-1mc9-e81ede480e07-8789662\"},\"sessionAffinity\":\"None\",\"type\":\"LoadBalancer\"}}\n",
+        "metallb.universe.tf/address-pool": "bgp-pool-v3",
+        "metallb.universe.tf/ip-allocated-from-pool": "bgp-pool-v3"
+      },
+      "creationTimestamp": "2026-10-24T11:45:48Z",
+      "labels": {
+        "app.kubernetes.io/managed-by": "aster-h200-deployment",
+        "aster-task": "xolotl-single-h200"
+      },
+      "name": "aster-xolotl-api-v3pool-20261024",
+      "namespace": "ailab-hrprdduanyan",
+      "ownerReferences": [
+        {
+          "apiVersion": "rjob.brainpp.cn/v1alpha1",
+          "blockOwnerDeletion": false,
+          "controller": false,
+          "kind": "RJob",
+          "name": "aster-xolotl-1mc9-e81ede480e07-8789662",
+          "uid": "3a66564e-0a12-4c17-9b41-741fd78e0017"
+        }
+      ],
+      "resourceVersion": "14558174220",
+      "uid": "1f968a8d-4ddc-4cee-b32a-390cd44210c7"
+    },
+    "spec": {
+      "allocateLoadBalancerNodePorts": false,
+      "clusterIP": "10.68.85.120",
+      "clusterIPs": [
+        "10.68.85.120"
+      ],
+      "externalTrafficPolicy": "Cluster",
+      "internalTrafficPolicy": "Cluster",
+      "ipFamilies": [
+        "IPv4"
+      ],
+      "ipFamilyPolicy": "SingleStack",
+      "ports": [
+        {
+          "appProtocol": "http",
+          "name": "openai-http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": 30003
+        }
+      ],
+      "selector": {
+        "rjob.brainpp.cn/rjob-name": "aster-xolotl-1mc9-e81ede480e07-8789662"
+      },
+      "sessionAffinity": "None",
+      "type": "LoadBalancer"
+    },
+    "status": {
+      "loadBalancer": {
+        "ingress": [
+          {
+            "ip": "10.102.93.68"
+          }
+        ]
+      }
+    }
+  },
+  "service-longctx-v1-result.json": {
+    "modified_unix": 1792896681.4142027,
+    "result": {
+      "schema": "aster-xolotl-stable-service-v1",
+      "phase": "serving",
+      "unix": 1792888033.656024,
+      "model": "deepseek-v4.1-flash-1017-xq",
+      "performance_300_claimed": false,
+      "context_tokens": 1048576,
+      "cpu_api_tests_passed": true,
+      "gpu_uuid": "GPU-43dd75b7-4024-e33d-325e-3042ce0f3c43",
+      "lease_ends_unix": 1792906909.8635943,
+      "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+      "api_attempt": 1,
+      "api_process": {
+        "pid": 1890,
+        "start_ticks": 730749279,
+        "uid": 10250
+      },
+      "startup_unix": 1792888045.8706577,
+      "last_health_status": 200,
+      "last_health_unix": 1792896681.4135869
+    }
+  },
+  "readiness-watch-v99/watch-result.json": {
+    "modified_unix": 1792896707.837173,
+    "result": {
+      "schema": "aster-xolotl-readiness-watch-v65",
+      "unix": 1792896707.834974,
+      "phase": "resource_terminal",
+      "allocation_uid": "3a66564e-0a12-4c17-9b41-741fd78e0017",
+      "observation_only": true,
+      "failures": [],
+      "job_phase": "Stopped",
+      "last_ready_unix": 1792896647.538596,
+      "health_status": 200,
+      "scope": "jump host direct to the owned VIP; no inference request",
+      "terminal_status": {
+        "conditions": [
+          {
+            "lastTransitionTime": "2026-10-24T23:36:49Z",
+            "lastUpdateTime": "2026-10-24T23:36:49Z",
+            "message": "RJob is inqueue",
+            "reason": "StartInqueue",
+            "status": "True",
+            "type": "Inqueue"
+          },
+          {
+            "lastTransitionTime": "2026-10-24T23:36:56Z",
+            "lastUpdateTime": "2026-10-24T23:36:56Z",
+            "message": "RJob is starting",
+            "reason": "Starting",
+            "status": "True",
+            "type": "Starting"
+          },
+          {
+            "lastTransitionTime": "2026-10-24T23:41:51Z",
+            "lastUpdateTime": "2026-10-24T23:41:51Z",
+            "message": "RJob is running",
+            "reason": "StartRunning",
+            "status": "True",
+            "type": "Running"
+          },
+          {
+            "lastTransitionTime": "2026-10-25T02:51:41Z",
+            "lastUpdateTime": "2026-10-25T02:51:41Z",
+            "message": "RJob is stopped",
+            "reason": "StartStopped",
+            "status": "True",
+            "type": "Stopped"
+          }
+        ],
+        "finishTime": "2026-10-25T02:51:41Z",
+        "message": "RJob stopped",
+        "phase": "Stopped",
+        "reason": "RJobStopped",
+        "taskStatuses": {
+          "t0": {
+            "stopped": 1
+          }
+        }
+      },
+      "finished_unix": 1792896707.8349779
+    }
+  },
+  "exact_readiness_observer_alive": false,
+  "recorded_lease_ends_unix": 1792906909.8635943,
+  "observed_terminal_before_lease": true,
+  "windows_direct_health": {
+    "phase": "failed",
+    "error": "URLError: <urlopen error timed out>",
+    "seconds": 5.04700000025332
+  }
+}

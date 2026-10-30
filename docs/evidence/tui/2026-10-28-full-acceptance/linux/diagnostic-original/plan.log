@@ -1,0 +1,19 @@
+
+running 1 test
+test functional::kimi_plan_read_then_yolo_verified_write ... ORACLE case=plan-read-write name=source-pair result=pass detail=aster-cli-pair-v1:589a2967872c9e61354aa648add5d0e9aa5d5d0d:x86_64-unknown-linux-gnu
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26825
+ORACLE case=plan-read-write name=plan-read result=pass detail=explicit plan launch, actual read receipt and unchanged source bytes
+ORACLE case=plan-read-write name=settled-turn result=pass detail=facts=7 model_turns=2 prompt_tokens=27630
+
+thread 'functional::kimi_plan_read_then_yolo_verified_write' (4970) panicked at crates/code/acp/tests/aster_tui_live_e2e/functional.rs:92:73:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    functional::kimi_plan_read_then_yolo_verified_write
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 125.69s
+

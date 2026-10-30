@@ -255,18 +255,24 @@ fn workspace_key(workspace: &Path) -> String {
 type Store = BTreeMap<String, Vec<String>>;
 
 fn render_store(store: &Store) -> String {
-    let mut document = String::new();
-    for (workspace, rules) in store {
-        let rules = rules
+    let document = a3s_acl::Document {
+        blocks: store
             .iter()
-            .map(|rule| format!("\"{rule}\""))
-            .collect::<Vec<_>>()
-            .join(", ");
-        document.push_str(&format!(
-            "workspace \"{workspace}\" {{\n  rules = [{rules}]\n}}\n"
-        ));
-    }
-    document
+            .map(|(workspace, rules)| a3s_acl::Block {
+                name: "workspace".into(),
+                labels: vec![workspace.clone()],
+                blocks: vec![],
+                attributes: [(
+                    "rules".into(),
+                    a3s_acl::Value::List(
+                        rules.iter().cloned().map(a3s_acl::Value::String).collect(),
+                    ),
+                )]
+                .into(),
+            })
+            .collect(),
+    };
+    a3s_acl::generate_acl(&document)
 }
 
 fn parse_store(text: &str) -> anyhow::Result<Store> {

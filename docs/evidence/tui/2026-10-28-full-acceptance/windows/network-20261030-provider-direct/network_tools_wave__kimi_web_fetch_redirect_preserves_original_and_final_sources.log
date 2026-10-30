@@ -1,0 +1,10 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_redirect_preserves_original_and_final_sources ... ORACLE case=network-fetch-redirect name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=network-fetch-redirect name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40552
+ORACLE case=network-fetch-redirect name=web-fetch-real-redirect-sources result=pass detail=the actual proxy records the redirect and destination requests; returned content is from the destination and safe metadata retains original/final source paths without query data
+ORACLE case=network-fetch-redirect name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 22.52s
+

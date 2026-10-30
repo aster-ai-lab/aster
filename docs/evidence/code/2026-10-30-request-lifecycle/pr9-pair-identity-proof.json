@@ -1,0 +1,7 @@
+{
+  "build_id": "aster-cli-pair-v1:3d366eb1295ebae5c7784ac3f367d2f198820ff4:aarch64-apple-darwin",
+  "matches_both_binaries": true,
+  "source": "scripts/cli_pair_build.rs::stamp, executed unchanged from the source checkout",
+  "identity_kind": "content fingerprint including uncommitted Rust source, not a Git commit id",
+  "watched_file_count": 5759
+}

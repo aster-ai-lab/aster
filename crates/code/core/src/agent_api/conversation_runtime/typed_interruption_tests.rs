@@ -6,6 +6,7 @@ use tokio_util::sync::CancellationToken;
 
 mod budget_denial_tests;
 mod cancellation_publication_tests;
+mod model_completion_facts;
 
 struct NoCommands;
 

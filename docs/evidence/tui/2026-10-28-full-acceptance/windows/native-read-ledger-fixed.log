@@ -1,0 +1,11 @@
+
+running 6 tests
+test porcelain::windows::tests::actual_powershell_read_keeps_the_observation_stable ... ok
+test porcelain::windows::tests::actual_windows_files_have_bounded_byte_identities ... ok
+test porcelain::windows::tests::actual_windows_walk_detects_changes_without_git ... ok
+test porcelain::windows::tests::native_sandbox_read_has_no_completion_debt ... ok
+test porcelain::windows::tests::windows_observer_refuses_escapes_and_streams ... ok
+test porcelain::windows::tests::windows_observer_refuses_reparse_point_ancestors ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 5296 filtered out; finished in 4.78s
+

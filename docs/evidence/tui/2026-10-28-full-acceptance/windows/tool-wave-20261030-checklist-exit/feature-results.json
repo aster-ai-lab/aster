@@ -1,0 +1,11 @@
+{
+  "source_pair": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+  "harness_source_digest": "76fb76a8fb44ff42da5fc6adb5e47643acb0e36e",
+  "tests": [
+    {
+      "test": "tool_wave::kimi_checklist_exact_projection_leaves_overlay_before_clean_exit",
+      "exit_code": 0,
+      "log": "windows/tool-wave-20261030-checklist-exit/kimi_checklist_exact_projection_leaves_overlay_before_clean_exit.log"
+    }
+  ]
+}

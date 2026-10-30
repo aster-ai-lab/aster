@@ -1,0 +1,17 @@
+{
+  "unix": 1792891559.849035,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/nsys-cpu-protocol-v115-launch",
+  "gpu_executed": false,
+  "credentials_copied": false,
+  "worker_sha256": "824dcaa775aaf735d46248ed26bab5068092a0efdede8d67de8fb44dd44a1d02",
+  "worker_bytes": 3439,
+  "process": {
+    "pid": 2073,
+    "start_ticks": 712084251,
+    "uid": 10250,
+    "unix": 1792891571.5226395,
+    "budget_seconds": 90,
+    "namespace": "optimization pod"
+  }
+}

@@ -1,0 +1,16 @@
+
+running 1 test
+test app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface ... 
+thread 'app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface' (36733) panicked at crates/terminal/crates/codegen/a3s-code-pager/src/app/dispatch/tests/billing.rs:822:5:
+got: https://github.com/A3S-Lab/a3s
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::billing::manage_billing_gates_on_consumer_billing_surface
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10232 filtered out; finished in 0.36s
+

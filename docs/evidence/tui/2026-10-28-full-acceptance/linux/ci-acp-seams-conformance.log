@@ -1,0 +1,196 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/.tmp/tui-acceptance-20261029/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: `a3s-code-acp` (lib) generated 2 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 16s
+     Running tests/acp_conformance_stdio.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/acp_conformance_stdio-df6dcdcb34ac9d68)
+
+running 10 tests
+test acp_v1_conformance ... # a3s-code-acp 9.1.6 ACP v1 conformance
+
+11 of 11 cases pass. Client: raw JSON-RPC over stdio (`acp/tests/acp_conformance_stdio.rs`), scripted local model.
+
+| Case | ACP v1 requirement | Result |
+|---|---|---|
+| `initialize-version` | initialize answers protocolVersion 1 for a v1 client, and its latest supported version (1) for a client asking a newer one | pass |
+| `initialize-capabilities` | initialize returns agentCapabilities (loadSession, promptCapabilities) and an authMethods list | pass |
+| `prompt-end-turn` | session/prompt streams agent_message_chunk updates for the session, then answers stopReason end_turn | pass |
+| `prompt-unsupported-content` | session/prompt rejects content that cannot reach the model instead of dropping it or starting a model call | pass |
+| `prompt-unknown-session` | session/prompt for an unknown sessionId is a JSON-RPC error, not a result | pass |
+| `prompt-invalid-params` | session/prompt without sessionId is invalid params (-32602) | pass |
+| `unknown-method` | an unknown method is method not found (-32601) | pass |
+| `cancel-in-flight` | session/cancel during a model call answers the pending session/prompt with stopReason cancelled | pass |
+| `permission-request-shape` | session/request_permission names the session and toolCallId and offers options with an optionId, a name and a kind from the closed set; a reject ends the turn normally | pass |
+| `permission-cancelled` | a client that cancels the turn and answers the pending permission request with outcome cancelled gets stopReason cancelled | pass |
+| `load-replays-history` | with loadSession, session/load replays the conversation as user_message_chunk and agent_message_chunk updates before its response | pass |
+
+ok
+test activation_oracle_detects_a_started_companion_without_launching_one ... ok
+test artifact::tests::bounded_artifacts_refuse_directories_oversize_and_traversal ... ok
+test artifact::tests::fixture_links_and_nonregular_files_are_refused_before_reading ... ok
+test candidate::tests::a_member_changed_after_selection_cannot_be_frozen_as_approved ... ok
+test candidate::tests::linked_or_nonregular_members_are_refused_without_reading_them ... ok
+test candidate::tests::registered_pair_copies_only_the_declared_bytes_despite_other_candidates ... ok
+test candidate::tests::same_build_id_does_not_admit_changed_binary_bytes_or_a_partial_pair ... ok
+test candidate::tests::unknown_manifest_fields_stale_ids_and_oversized_records_fail_closed ... ok
+test case_filter_selects_exactly_one_known_case_and_refuses_unknown_names ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.18s
+
+     Running tests/v912_seam.rs (/mnt/d/code/aster/target/wsl-linux/debug/deps/v912_seam-31a4a48c596b637a)
+
+running 8 tests
+test v912_compact_keeps_obligations ... ORACLE compaction-summary=## Durable source
+sequence: 2
+schema: a3s.code.execution-identity.v1
+domain: a3s.code.session-fact-source.v1
+digest: sha256:cb720c766df0d4e1a01d1607935e62fe3cc2d1a36da9401372ff50e50d6da363
+Reference only: policy, goal state and accepted progress come from original facts.
+
+# Instructions (personal + project AGENTS.md chain)
+
+Personal: never print the token named CARRY-PERSONAL-7f3a.
+
+--- instruction-doc ---
+
+Project: format Rust with cargo fmt before finishing CARRY-PROJECT-7f3a.
+
+<!-- /standing -->
+
+## Goal
+the active task is a JSON exporter in crates/export.
+
+## Earlier goal
+Add a CSV parser in crates/import.
+
+## Constraints
+- Must not: add a dependency to parse CSV.
+
+## Open steps
+- write the JSON exporter
+
+## Completed steps
+- read the export schema
+
+## Summary
+The task is finished. All required steps are done. Goal: Add a CSV parser in crates/import. No constraints remain.
+ok
+test v912_completion_gate_keeps_path ... ORACLE yolo-gate-error=completion gate: workspace mutation f54a18e2cdc1c7c1cd89b11fbb3edc010e29d81af380e280e764e5a86df9b1c9 (gate-target.ts) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f gate-target.ts` with the check that proves the change, for example `test -f gate-target.ts && <test command>`.
+ok
+test v912_cursor_replays_before_new_chain_digest ... ORACLE cursor replayed=true appended=true previous_digest=sha256:c1e8c11904659a4eb316e39391f0d7de44123b8a0cdf491569d519e1c766d025 entry_digest=sha256:14a08553d2e2f73ee2f61069b23f51086d04f880b23e49642dfd46b519169946
+ok
+test v912_image_bytes_reach_the_model ... ORACLE image-bytes model-body-contains=PNG_BASE64
+ok
+test v912_readonly_git_parallel_commit_stays_ok ... ORACLE readonly-git prompt=ok foreign-paths=[] seen=READONLY-SEEN
+ok
+test v912_remember_before_stream_close ... ignored, retired raw-input fallback: empty model extraction grants no write authority; covered by Core memory_retention_tests
+test v912_session_posture_and_deny ... ORACLE rejected-posture=always-approve error="unknown permission posture \"always-approve\"; expected one of: default, plan, auto, yolo"
+ORACLE rejected-posture=force error="unknown permission posture \"force\"; expected one of: default, plan, auto, yolo"
+ORACLE permissionPosture="default" unknown-posture-rejected=always-approve,force
+ORACLE permissionPosture=plan
+ORACLE permissionPosture=auto
+ok
+test v912_standing_context_before_model ... ORACLE standing-context seq=1 before user.message seq=4
+ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 16.60s
+

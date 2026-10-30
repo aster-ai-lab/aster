@@ -1086,6 +1086,7 @@ pub(crate) async fn run(
         remote_permission_mode,
     );
     app.default_yolo = launch_yolo.yolo;
+    app.launch_yolo = launch_yolo.yolo;
     let launch_auto = a3s_code_shell::util::config::effective_auto_for_launch(
         args.yolo,
         args.permission_mode_flag.as_deref(),
@@ -3265,7 +3266,22 @@ async fn drain_and_process(
     let preserve_keys = app.gboom_active()
         || matches!(app.active_view, ActiveView::Agent(id)
             if app.agents.get(&id).is_some_and(|agent| agent.focused_card().is_some()));
-    coalesced.extend(coalesce_live_keys(live_events, preserve_keys));
+    // A native single-line paste must not invoke a picker's leading-letter command.
+    let merge_single_line = app.session_picker_entries.is_some()
+        || app.session_picker_loading
+        || app.dashboard_session_picker.is_some()
+        || app.agents.values().any(|agent| {
+            matches!(
+                agent.active_modal,
+                Some(crate::views::modal::ActiveModal::SessionPicker { .. })
+            )
+        });
+    coalesced.extend(coalesce_live_keys_with_single_line(
+        live_events,
+        preserve_keys,
+        app.voice_hold_owned(),
+        merge_single_line,
+    ));
     let coalesced = csi_filter.filter(coalesced);
     let coalesced = x10_filter.filter(coalesced);
     let coalesced = coalesced
@@ -3466,9 +3482,9 @@ async fn drain_and_process(
         handled,
     }
 }
-/// Timeout for the first extension round (detection).
-/// If no event arrives within this window the batch was a normal keystroke.
-const PASTE_DETECT_TIMEOUT: Duration = Duration::from_millis(2);
+/// Initial detection and continuation share one quiet window so native input
+/// records cannot turn the first character of a paste into a picker shortcut.
+const PASTE_DETECT_TIMEOUT: Duration = PASTE_CONTINUE_TIMEOUT;
 /// Timeout for subsequent rounds once paste has been detected.
 const PASTE_CONTINUE_TIMEOUT: Duration = Duration::from_millis(10);
 /// Safety cap on events accumulated in one extension pass.
@@ -3486,17 +3502,23 @@ async fn detect_paste(
     batch: &mut Vec<TimedInputEvent>,
     input_rx: &mut tokio::sync::mpsc::UnboundedReceiver<TimedInputEvent>,
 ) -> bool {
-    match tokio::time::timeout(PASTE_DETECT_TIMEOUT, input_rx.recv()).await {
-        Ok(Some(ev)) => {
-            let prev_len = batch.len();
-            batch.push(ev);
-            drain_immediate(batch, input_rx);
-            batch
-                .iter()
-                .skip(prev_len)
-                .any(|e| is_pasteable_key_event(&e.event))
+    let deadline = tokio::time::Instant::now() + PASTE_DETECT_TIMEOUT;
+    loop {
+        match tokio::time::timeout_at(deadline, input_rx.recv()).await {
+            Ok(Some(ev)) => {
+                let prev_len = batch.len();
+                batch.push(ev);
+                drain_immediate(batch, input_rx);
+                if batch
+                    .iter()
+                    .skip(prev_len)
+                    .any(|e| is_pasteable_key_event(&e.event))
+                {
+                    return true;
+                }
+            }
+            _ => return false,
         }
-        _ => false,
     }
 }
 /// Collect remaining paste events using [`PASTE_CONTINUE_TIMEOUT`].
@@ -3537,6 +3559,10 @@ pub(super) fn drain_immediate(
         batch.push(ev);
     }
 }
+#[cfg(test)]
+#[path = "event_loop/native_paste_tests.rs"]
+mod native_paste_tests;
+
 /// Minimum key events in a run to trigger paste coalescing.
 const PASTE_COALESCE_THRESHOLD: usize = 3;
 /// Minimum run length for the Windows path-shape coalesce branch.
@@ -3637,32 +3663,53 @@ fn coalesce_rapid_keys_since(
     let live_start = events.partition_point(|event| event.arrived_at < live_input_started_at);
     let mut events = events;
     let live_events = events.split_off(live_start);
-    events.extend(coalesce_live_keys(live_events, false));
+    events.extend(coalesce_live_keys(live_events, false, false));
     events
 }
-fn coalesce_live_keys(events: Vec<TimedInputEvent>, preserve_keys: bool) -> Vec<TimedInputEvent> {
+fn coalesce_live_keys(
+    events: Vec<TimedInputEvent>,
+    preserve_keys: bool,
+    voice_hold_owned: bool,
+) -> Vec<TimedInputEvent> {
+    coalesce_live_keys_with_single_line(events, preserve_keys, voice_hold_owned, false)
+}
+
+fn coalesce_live_keys_with_single_line(
+    events: Vec<TimedInputEvent>,
+    preserve_keys: bool,
+    voice_hold_owned: bool,
+    merge_single_line: bool,
+) -> Vec<TimedInputEvent> {
     if preserve_keys || events.len() < PASTE_COALESCE_THRESHOLD {
         return events;
     }
+    // Only an owned voice hold or a voice press in this batch needs its release.
+    // Native Windows pastes also emit ordinary space releases between text keys.
+    let voice_release_needed = voice_hold_owned
+        || events.iter().any(|event| {
+            matches!(&event.event, Event::Key(key)
+                if key.kind == KeyEventKind::Press && is_voice_chord(key))
+        });
+    let events: Vec<TimedInputEvent> = events
+        .into_iter()
+        .filter(|ev| {
+            !matches!(&ev.event, Event::Key(ke)
+                if ke.kind == KeyEventKind::Release
+                    && !(voice_release_needed && is_voice_chord(ke)))
+        })
+        .collect();
     let (mut has_paste, mut has_keys) = (false, false);
     for e in &events {
         has_paste |= matches!(e.event, Event::Paste(_));
         has_keys |= is_pasteable_key_event(&e.event);
     }
     if has_paste {
-        return if has_keys {
+        return if has_keys && !voice_release_needed {
             merge_paste_fragments(events)
         } else {
             events
         };
     }
-    let events: Vec<TimedInputEvent> = events
-        .into_iter()
-        .filter(|ev| {
-            !matches!(&ev.event, Event::Key(ke)
-                if ke.kind == KeyEventKind::Release && !is_voice_chord(ke))
-        })
-        .collect();
     let mut result = Vec::with_capacity(events.len());
     let mut i = 0;
     while i < events.len() {
@@ -3723,7 +3770,10 @@ fn coalesce_live_keys(events: Vec<TimedInputEvent>, preserve_keys: bool) -> Vec<
                 && crate::prompt_images::starts_with_drop_anchor(&text);
             #[cfg(not(target_os = "windows"))]
             let path_shaped_drop = false;
-            if multiline_paste || path_shaped_drop {
+            if multiline_paste
+                || path_shaped_drop
+                || (merge_single_line && run_len >= PASTE_COALESCE_THRESHOLD)
+            {
                 tracing::debug!(
                     run_len,
                     text_len = text.len(),
@@ -3755,7 +3805,7 @@ pub(super) fn is_bare_esc_press(ev: &Event) -> bool {
     )
 }
 /// Merge `Event::Paste` fragments and interleaved key events into a single `Event::Paste`.
-/// Non-paste, non-key events (Resize, Mouse, Focus) are preserved in order around the merged paste.
+/// Non-pasteable events are preserved in order around the merged paste.
 fn merge_paste_fragments(events: Vec<TimedInputEvent>) -> Vec<TimedInputEvent> {
     // A trailing Enter after a framed paste is submission, even in a resize batch.
     let submit_index = events
@@ -3785,7 +3835,6 @@ fn merge_paste_fragments(events: Vec<TimedInputEvent>) -> Vec<TimedInputEvent> {
                     _ => {}
                 }
             }
-            Event::Key(_) if Some(index) != submit_index => {}
             _ => {
                 if !merged_text.is_empty() {
                     result.push(TimedInputEvent {
@@ -5586,7 +5635,7 @@ mod tests {
             .iter()
             .map(|event| event.event.clone())
             .collect::<Vec<_>>();
-        let actual = coalesce_live_keys(events, true)
+        let actual = coalesce_live_keys(events, true, false)
             .into_iter()
             .map(|event| event.event)
             .collect::<Vec<_>>();

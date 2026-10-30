@@ -1,0 +1,8 @@
+{
+  "at_epoch": 1792917702.4108481,
+  "source_root": "/code/aster",
+  "source_fingerprint": "afe123ebe5aad82ff5fc3027544a6e69497e7c49523705865c4933bcf075c8ea",
+  "binary_sha256": "17d6d7c86ce2680503d56f6d1c1d33177e89bdc851d302ddfd16ea4d7036a674",
+  "main_head": "974d0c4527dfdc3ab1ca6893638276504c71f55a",
+  "current_live_binary_sha256": "265cf6ac6889b64470d061f3b2da4df14e7d79aeadf63ae7938e7df8ce6620fe"
+}

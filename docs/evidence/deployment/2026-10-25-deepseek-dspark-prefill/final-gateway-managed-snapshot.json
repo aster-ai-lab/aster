@@ -1,0 +1,9 @@
+{
+  "snapshot": {
+    "gateway_id": "be551a9b-66e4-4c70-8611-463502c54d89",
+    "revision": 48,
+    "snapshot_digest": "sha256:78352ed8c6079b47e0c2c4304bf156701e12bcfd940c4f150ab479f289866c1c"
+  },
+  "ready": true,
+  "state": "applied"
+}

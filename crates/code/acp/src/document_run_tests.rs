@@ -94,13 +94,31 @@ impl Client for Host {
             .calls
             .lock()
             .unwrap()
-            .push((method, params.clone()));
-        self.state.closing.add_permits(1);
-        self.state.release.acquire().await.unwrap().forget();
-        let mut probe = self.state.probe.lock().unwrap();
-        let value = match probe.as_mut() {
-            Some(probe) => {
-                probe.call(json!({"harness":{"operation":"release_run","params":params}}))
+            .push((method.clone(), params.clone()));
+        let value = if method == "a3s/document/release_run" {
+            self.state.closing.add_permits(1);
+            self.state.release.acquire().await.unwrap().forget();
+            let mut probe = self.state.probe.lock().unwrap();
+            match probe.as_mut() {
+                Some(probe) => {
+                    probe.call(json!({"harness":{"operation":"release_run","params":params}}))
+                }
+                None => json!({"runId":params["runId"],"released":self.state.ack}),
+            }
+        } else {
+            assert_eq!(method, "a3s/document/read");
+            let mut probe = self.state.probe.lock().unwrap();
+            match probe.as_mut() {
+                Some(probe) => {
+                    let value = probe.call(json!({"harness":{"operation":"read","params":params}}));
+                    if let Some(lease) = probe.editor.take() {
+                        probe.call(json!({"request":{"operation":"close","lease":lease}}));
+                    }
+                    value
+                }
+                None => {
+                    json!({"path":self.root.join("note.txt"),"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap().to_string(),"version":1,"text":"clean text","dirty":false,"diskConflict":false},"runId":params["runId"],"released":false})
+                }
             }
             None => json!({"runId":params["runId"],"released":self.state.ack}),
         };
@@ -141,6 +159,7 @@ struct Model {
     calls: AtomicUsize,
     state: Arc<State>,
     results: Mutex<Vec<String>>,
+    result_errors: Mutex<Vec<bool>>,
     injected: bool,
 }
 #[async_trait]
@@ -158,16 +177,19 @@ impl LlmClient for Model {
         }
         let turn = self.calls.fetch_add(1, Ordering::SeqCst);
         if turn > 0 {
-            let content = messages
+            let (content, is_error) = messages
                 .iter()
                 .rev()
                 .flat_map(|message| message.content.iter().rev())
                 .find_map(|block| match block {
-                    ContentBlock::ToolResult { content, .. } => Some(content.as_text()),
+                    ContentBlock::ToolResult {
+                        content, is_error, ..
+                    } => Some((content.as_text(), is_error.unwrap_or(false))),
                     _ => None,
                 })
                 .context("document Tool result missing")?;
             self.results.lock().unwrap().push(content);
+            self.result_errors.lock().unwrap().push(is_error);
             if let Some(context) = self.state.context.lock().unwrap().clone() {
                 anyhow::ensure!(
                     context.capability_run_instance_id().is_err(),
@@ -289,6 +311,7 @@ impl Fixture {
             calls: AtomicUsize::new(0),
             state: state.clone(),
             results: Mutex::new(vec![]),
+            result_errors: Mutex::new(vec![]),
             injected,
         });
         let agent =
@@ -410,13 +433,9 @@ async fn native_release_acknowledgement_gates_completion_and_keeps_one_actual_ru
                 "done"
             );
             assert!(f.bridge.runs.lock().unwrap().is_empty());
-            assert!(f
-                .model
-                .results
-                .lock()
-                .unwrap()
-                .iter()
-                .all(|text| successful_tool_json(text)["retainedForRun"] == true));
+            assert!(f.model.results.lock().unwrap().iter().all(|text| {
+                crate::test_support::successful_tool_json(text)["retainedForRun"] == true
+            }));
             f.stop().await;
         })
         .await;
@@ -483,13 +502,24 @@ async fn denied_read_and_forged_owner_input_cannot_pin_a_native_resource() {
                 f.session.send("Read twice", None).await.unwrap();
                 assert!(f.state.calls.lock().unwrap().is_empty());
                 assert!(f.bridge.runs.lock().unwrap().is_empty());
-                assert!(f
-                    .model
-                    .results
-                    .lock()
-                    .unwrap()
-                    .iter()
-                    .all(|text| serde_json::from_str::<Value>(text).is_err()));
+                let texts = f.model.results.lock().unwrap();
+                let errors = f.model.result_errors.lock().unwrap();
+                assert_eq!(texts.len(), errors.len());
+                for (text, is_error) in texts.iter().zip(errors.iter()) {
+                    assert!(
+                        *is_error,
+                        "refused inputs must be actual error results: {text}"
+                    );
+                    // Pre-execution schema refusals have no process exit code.
+                    let body = text.strip_prefix("Tool exit code: 1\n").unwrap_or(text);
+                    assert!(!text.starts_with("Tool exit code: 0\n"));
+                    assert!(
+                        serde_json::from_str::<Value>(body).is_err(),
+                        "unvalidated document JSON entered model input: {body}"
+                    );
+                }
+                drop(errors);
+                drop(texts);
                 f.stop().await;
             }
         })
@@ -569,7 +599,10 @@ async fn actual_harness_keeps_clean_native_model_across_turns_and_releases_it_be
                 let values = f.model.results.lock().unwrap();
                 assert_eq!(values.len(), 2);
                 for value in values.iter() {
-                    assert_eq!(successful_tool_json(value)["documentId"], identity);
+                    assert_eq!(
+                        crate::test_support::successful_tool_json(value)["documentId"],
+                        identity
+                    );
                 }
             }
             {

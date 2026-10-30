@@ -1,0 +1,6 @@
+
+running 1 test
+test views::dock::tests::a_long_section_shows_what_fits_then_summarizes_the_rest ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

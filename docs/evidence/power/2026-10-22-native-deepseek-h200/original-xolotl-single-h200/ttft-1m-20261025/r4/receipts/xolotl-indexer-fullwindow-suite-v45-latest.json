@@ -1,0 +1,109 @@
+{
+  "unix": 1792870681.6917946,
+  "suite-result.json": {
+    "schema": "aster-xolotl-indexer-fullwindow-suite-v45",
+    "unix": 1792869859.1463153,
+    "phase": "running",
+    "stages": [
+      {
+        "name": "remainder",
+        "phase": "passed",
+        "finished_unix": 1792870000.7523026
+      }
+    ],
+    "formal_promoted": false,
+    "current_stage": "fullwindow",
+    "stage_started_unix": 1792870000.7592757,
+    "stage_process": {
+      "pid": 870213,
+      "start_ticks": 279678569,
+      "uid": 10250,
+      "budget_seconds": 3400
+    }
+  },
+  "remainder/request-result.json": {
+    "schema": "aster-xolotl-qos-one-token-remainder-v15",
+    "phase": "passed",
+    "unix": 1792869859.2238343,
+    "source_hostname": "yangchao-dev",
+    "destination": "http://100.97.210.241:30003/v1",
+    "performance_300_claimed": false,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "short_control": {
+      "passed": true,
+      "content": "42",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 2,
+        "total_tokens": 20,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    "prompt_tokens_verified": 132097,
+    "prompt_sha256": "0f1676d8729e7dd8557cc65369f70040d7e74f1ad10eb0a2e4023be04a682edc",
+    "prompt_characters": 528383,
+    "max_new_tokens": 64,
+    "context_tokens": 1048576,
+    "request_started_unix": 1792869860.4099913,
+    "http_status": 200,
+    "headers_received_unix": 1792869860.5523796,
+    "events": 3,
+    "first_content_unix": 1792870000.639952,
+    "last_event_unix": 1792870000.6961818,
+    "done": true,
+    "finish_reason": "stop",
+    "content": "42",
+    "reasoning_characters": 0,
+    "usage": {
+      "prompt_tokens": 132097,
+      "completion_tokens": 2,
+      "total_tokens": 132099,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "elapsed_seconds": 140.29115200042725,
+    "time_to_first_content_seconds": 140.22996068000793,
+    "finished_unix": 1792870000.7011478
+  },
+  "fullwindow/request-result.json": {
+    "schema": "aster-xolotl-full1m-qualification-v17",
+    "unix": 1792870000.8437667,
+    "phase": "prefilling",
+    "tests": [],
+    "client": "yangchao-dev",
+    "destination": "http://100.97.210.241:30003/v1",
+    "full_1m_length_qualified": false,
+    "health": {
+      "loaded": true,
+      "max_context": 1048576
+    },
+    "context_safety_tokens": 8,
+    "actual_prompt_tokens": 1048504,
+    "max_new_tokens": 64,
+    "prompt_plus_output_tokens": 1048568,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "0149634cc9fbae367f049cd432cc316a98454a0f814725e56fce2563b0b77d5f",
+    "prompt_bytes": 4193972,
+    "record_token_positions": {
+      "begin": 19,
+      "middle": 524241,
+      "end": 1048465
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    },
+    "current_test": "cold-full1m-three-records",
+    "request_started_unix": 1792870005.6553202,
+    "payload_bytes": 4194199,
+    "http_status": 200
+  },
+  "exact_client_alive": true
+}

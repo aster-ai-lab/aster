@@ -1,0 +1,14 @@
+
+running 1 test
+ORACLE case=session-info-contract name=source-pair result=pass detail=aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc
+ORACLE case=session-info-contract name=session-info-empty result=pass detail=persisted identity/cwd, configured model, default mode and zero turn/context match
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=5 model_turns=1 prompt_tokens=13308
+ORACLE case=session-info-contract name=session-info-first-turn result=pass detail=actual user turns=1, provider usage=13349/128000 (10%), mode=default
+ORACLE case=session-info-contract name=session-info-yolo result=pass detail=the real permission-mode transition is reflected without changing turn or usage
+ORACLE case=session-info-contract name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13364
+ORACLE case=session-info-contract name=session-info-second-turn result=pass detail=same id, actual user turns=2, cumulative provider usage=26759/128000 (21%), mode=yolo
+ORACLE case=session-info-contract name=quit result=pass detail=exit 0
+test functional::kimi_session_info_matches_backend_identity_mode_turn_and_usage ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 56 filtered out; finished in 28.69s
+

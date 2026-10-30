@@ -1,0 +1,30 @@
+{
+  "profile": "cum010",
+  "reference": "off",
+  "first_different_character": 821,
+  "reference_chars": 3941,
+  "candidate_chars": 4023,
+  "reference_sha": "16d9c6addfbf20f894e14d8de7cdf735e3f99d74b1ae17c8a606e3b0dc8c0196",
+  "candidate_sha": "bbb52df4640a18e778ca16948f218f577de213f64699f2588bdde933e68b7bba",
+  "reference_seconds": 18.668317968025804,
+  "candidate_seconds": 17.08768483577296,
+  "reference_near": "mbines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: nodes need to point both forward and backward, and the map needs to point at nodes. The idiomatic solution is to store nodes in a `Vec` (or arena) and use indices instead of pointers. This avoids `Rc<RefCell<...>>` cycles, keeps memory contiguous, and makes the borrow checker happy.\n\nOur design:\n\n```rust\npub struct LruCache<K, V> {\n    capacity: usize,\n    map: HashMap<K, usize>,          // key -> node index\n    nodes: Vec<Node<K, V>>,          // arena of nodes\n    head: Option<usize>,        ",
+  "candidate_near": "mbines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: you can't easily have two nodes point at each other without `Rc<RefCell<...>>` or unsafe pointers. We'll use a **safe, idiomatic approach**: store nodes in a `Vec` arena indexed by integer IDs, and link them via indices. This avoids `Rc`, avoids `unsafe`, and gives us predictable memory behavior.\n\n### Design decisions\n\n1. **Generic over `K` and `V`** with `K: Eq + Hash`.\n2. **Arena-based doubly-linked list** \u2014 nodes live in a `Vec<Node<K, V>>`, links are `Option<usize>` indices.\n3. **HashMap fro",
+  "tokens_reference": {
+    "prompt_tokens": 61,
+    "completion_tokens": 1024,
+    "total_tokens": 1085,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "tokens_candidate": {
+    "prompt_tokens": 61,
+    "completion_tokens": 1024,
+    "total_tokens": 1085,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "formal_promoted": false
+}

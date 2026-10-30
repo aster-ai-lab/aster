@@ -1,0 +1,508 @@
+{
+  "model": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+  "rank": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin",
+  "sidecar": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+  "engram": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-b345/engram",
+  "schema": "aster-ncu-actual1m-v172r1",
+  "context_tokens": 1048576,
+  "prompt_tokens": 1047544,
+  "profile_output_tokens": 128,
+  "native_args": [
+    "-m",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-payload-73df1934302f/V41-XQ-1017-v3.gguf",
+    "--backend",
+    "cuda",
+    "--experts",
+    "gpu",
+    "--engram",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-b345/engram",
+    "--rank",
+    "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/v3/rank-1017-v3.bin",
+    "--ctx",
+    "1048576",
+    "--threads",
+    "16",
+    "--prompt-batch",
+    "8192",
+    "--prefill-chunk",
+    "512",
+    "--arena-gib",
+    "160",
+    "--arena-skip-resident",
+    "--pcie",
+    "1",
+    "--route-bias",
+    "0",
+    "--route-bias-file",
+    "0",
+    "--skip-miss",
+    "0",
+    "--skip-file",
+    "0",
+    "--temp",
+    "0",
+    "--seed",
+    "1",
+    "--conversation-cache-mib",
+    "8192",
+    "--prompt-cache",
+    "1",
+    "--stop",
+    "1",
+    "--conversation-cache-slots",
+    "8",
+    "--batch",
+    "2"
+  ],
+  "engine_env": {
+    "STRATA_NO_LARGEPAGES": "1",
+    "STRATA_SERVE_DSPARK": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/assets/V41-MTP-Vision-1017.Q2_K.gguf",
+    "STRATA_DSPARK_DEPTH": "5",
+    "STRATA_DSPARK_CONF": "0.45",
+    "STRATA_D3_PF": "0",
+    "STRATA_EXP_MODE_T143": "4",
+    "STRATA_EXP_MODE_T11": "0",
+    "ASTER_XQ_SPLIT_MMVQ": "11",
+    "ASTER_XQ_PASS_GRAPH_MIB": "1024",
+    "ASTER_XQ_DENSE_ASYNC_CHAIN": "0",
+    "DS41_GRAPH_REUSE": "1",
+    "STRATA_TEXT_LOG": "0",
+    "STRATA_SERVE_BATCH_TAIL": "1",
+    "STRATA_SERVE_KEEP_CACHE": "1",
+    "STRATA_SERVE_KEEP_MAX": "1048576",
+    "STRATA_SERVE_KEEP_LRU": "1",
+    "ASTER_XQ_PREFILL_QOS": "1",
+    "MIMO_CHUNK_PROF": "1",
+    "STRATA_DENSE_PROF": "1",
+    "ASTER_XQ_KEEP_MIXED": "1",
+    "ASTER_XQ_RESIDENT_MMQ": "1",
+    "ASTER_XQ_INDEXER_MASK_SKIP": "1",
+    "ASTER_XQ_DSPARK_CUM": "0",
+    "STRATA_ENGRAM_CACHE_ROWS": "2000000",
+    "STRATA_ROWS_REF": "0",
+    "STRATA_BATCH_SERIAL": "0",
+    "ASTER_XQ_ADMIT_DRAFT_SEED": "1",
+    "ASTER_XQ_POOL_DRAFT_SEED": "1",
+    "ASTER_XQ_PREFILL_PHASE_TRACE": "1"
+  },
+  "expected_gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "input_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-actual1m-input-v169-cpu",
+  "public_api_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148",
+  "lease_ends_unix": 1792910673.5259097,
+  "prior_service_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/serve-literal-v149-literal",
+  "diagnostic_only": true,
+  "full1024_completion_gate_substituted": false,
+  "inputs": [
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/LICENSE",
+      "bytes": 1093,
+      "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/__init__.py",
+      "bytes": 95,
+      "sha256": "7195d862b09ee0c290b6c28d5c1b6e7c5819212328ecbea7cd1422b4a5d4a3d6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/cache_drop.py",
+      "bytes": 2648,
+      "sha256": "49dbc6e301f5f4005d7a30ebc8a0ea16a5df42a40e969aa93fc8c8df8711d618"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/cpu_affinity.py",
+      "bytes": 2713,
+      "sha256": "2f0394b97d94404fafbfc59bf637fdfb32f2fa71010b9b994aa771286348e51c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/fixtures/fake_sd_cli.py",
+      "bytes": 2379,
+      "sha256": "2916b3328c25f2b6d269b5d0989334629476237f50aa841dd8bf56543756ffa6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/frontend.py",
+      "bytes": 74956,
+      "sha256": "54e7c1e2bc7f2ea52fe05cdd6d5b62d9ef83ef2e2bf8919db8ec417d3cb0713e"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/images.py",
+      "bytes": 23286,
+      "sha256": "9ea414b3b21610333aec84dc7ad0073753ea6c34febb625ebd6958ddfd27270a"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/keepawake.py",
+      "bytes": 3156,
+      "sha256": "874d33da4aff553c12da2ded297a6856dce48e09877167f9c387b667cd7b060f"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/logit_bias.py",
+      "bytes": 2383,
+      "sha256": "a11e00f358eb9f165c51488eeaad158767cc094ff264e64d07bdf10441ebf3e3"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/mcp.py",
+      "bytes": 31701,
+      "sha256": "659c8e3c7db7d51c939870f843b2350f3efcf2ce8f1ff4b4372db4631e39b77f"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/mcp_fake_server.py",
+      "bytes": 7426,
+      "sha256": "ecc6afa3b44461e120d6901822a1b0db96bddf59324fefe8faa8f2cad48b7157"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/prometheus.py",
+      "bytes": 9553,
+      "sha256": "3b46bdfab7b02c063a54a041b457d7f15fc0f25c51addc67d63a1c147f3fd6d0"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/replicas.py",
+      "bytes": 16853,
+      "sha256": "db3f2b363dd9344311e2df2ef2f68a4421e9e306e9ddd84808a957b91069509d"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/responses.py",
+      "bytes": 37165,
+      "sha256": "5215aafab91eea1b77b4c81a1405731cd175fcbdcc9b0e56aa64db701a7100f4"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/runconfig.py",
+      "bytes": 8536,
+      "sha256": "08c5ee5af5b599d11c25778725613948b8f6b8b74432aa6b645845e6d145bf31"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/server.py",
+      "bytes": 439846,
+      "sha256": "04abb76be1608b0c718891fb1486f8a05faada618948f963b222b8f60d62417b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/session_save_retry.py",
+      "bytes": 3292,
+      "sha256": "a474a0ae50fd22a24308298d5edfe9a47200bc7bdd0bae4f08957ed063a45977"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/structured.py",
+      "bytes": 9230,
+      "sha256": "cd92893b672c89c9126839729c4f0d5a787dfe81ea020005f7494c6f9fe904d3"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/telemetry.py",
+      "bytes": 23116,
+      "sha256": "96d9e8fd8bb536531f96cfa0b410424dabef387f2260e3626171be08992742dc"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_cache_drop.py",
+      "bytes": 1666,
+      "sha256": "8ffd7a0267fe839e652c58b1f896fcf176b0a8cda11226ef376b3b8a7a492a1b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_chunked_body.py",
+      "bytes": 7506,
+      "sha256": "646627cf49a939c8660a6b264ead72df5f12eda589881d0d061c5065ab582f2f"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_context_overflow.py",
+      "bytes": 5647,
+      "sha256": "6ea558b3d8b6ef3986ebf4e49b672d1e79ca252c6869b7b22fcc90d52ec16588"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_control_cancel.py",
+      "bytes": 1711,
+      "sha256": "bf685446e4aee36483a7e530eaa1b51f751ecaf62fec280832d76692a551cc51"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_decide.py",
+      "bytes": 1873,
+      "sha256": "56726adaabeb1901ca8cc73156427837e89b0a60e8c17a34bb8205fbc9059b78"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_detok.py",
+      "bytes": 12195,
+      "sha256": "7a5bc54138daf95df6fb23b94e6ca939c21a80878164f0ac60b772a2081490f9"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_effort_paths.py",
+      "bytes": 10053,
+      "sha256": "79f4600a3fbe7a73753eb697c2d3665e56dc9d235422a7bed4e564c48e458f6c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_env_to_user.py",
+      "bytes": 3095,
+      "sha256": "e78d8e973d72f39a6dc8977848543db9f104d0a7a9451b5ba2caa32e76ea123c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_exif_orientation.py",
+      "bytes": 1595,
+      "sha256": "9e258b3494cd21e05902f8c3e04f9e4582a3ed5d4fea985195ab10e2fc5032df"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_family_name.py",
+      "bytes": 1246,
+      "sha256": "7115e79ed6ab93930e3487d687cda3028fca9cab3aa21eb2684f2b2231a173be"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_fatal_recovery.py",
+      "bytes": 6038,
+      "sha256": "8796f18e9027226a830f85b6fccb4e76c9a2cfb840574cc29c848d57f1cfb06e"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_frontend.py",
+      "bytes": 19885,
+      "sha256": "694201431937217233049ff17274831fd15efc180aff02dbc57d176576c7feac"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_images.py",
+      "bytes": 16502,
+      "sha256": "5d0c8535df765b2203cc43d384815703d3d1721024b3a81adf39796e5793c654"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_keepawake.py",
+      "bytes": 3687,
+      "sha256": "93ce569868f594cbe41252a19ff96812997994034f8ea4235d5255fa8e401f73"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_lifecycle.py",
+      "bytes": 9222,
+      "sha256": "6652d32df39c5a0fd67a0df74e6bf333afd414795b72a779613adc88039fa778"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_logit_bias.py",
+      "bytes": 3175,
+      "sha256": "6d5fd04ce8547a01b2cd166d7af9f3b30f24a0b54bb3e91fc685af0d62569478"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_mcp.py",
+      "bytes": 22939,
+      "sha256": "4f77c5773c49098228795a79ed2faaa1f543ae6a8581c80f08dd5199a4c27d86"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_monitor.py",
+      "bytes": 13691,
+      "sha256": "c5d8af4b3e1877afd0a8b044688dfc7f58531cbe7081647a924edced2649eb5f"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_parallel.py",
+      "bytes": 44799,
+      "sha256": "fbe0df3cb6fc498b16598099cdd4cd04640f6d05706ab7db1184fca6006ed597"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_parser_track.py",
+      "bytes": 5940,
+      "sha256": "9539134578bed96cbda96d8405133877f609e6d9163461dac36c91b44969efc9"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_prometheus.py",
+      "bytes": 9080,
+      "sha256": "6ff62b63c896842bbe60861a1c17940f846f0fb4134da86f734d18362803b6c9"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_queue_keepalive.py",
+      "bytes": 3196,
+      "sha256": "17893b3f69667f1ad9dff1c0120775d668207d7ae62e2500ca143ede3fa90c62"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_quiet_cancel.py",
+      "bytes": 10142,
+      "sha256": "cd3c4b02180dbacaa4900cdfa5f692ef02ce6b5514c2f9c5dc8eaeb597315c5c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_ready_timeout.py",
+      "bytes": 4764,
+      "sha256": "0ccfa9ecaef608c1067674039acb74f9158e05f64d8227182795d3fc2f5dd69e"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_reasoning_loop_recovery.py",
+      "bytes": 11903,
+      "sha256": "fd7a3b857db20237260d7368f712f936a815dde5c56f09414482291dd81c7e0b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_reasoning_rescue.py",
+      "bytes": 14111,
+      "sha256": "d91252b93945465bce47bd3602d0c7a4fed36639d7cb5cc08b3153ac535a1d03"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_reasoning_tools.py",
+      "bytes": 10174,
+      "sha256": "a7703a25adfa46fb47053269cb0d1f8057a8de46f982fec906025c7344abded3"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_replicas.py",
+      "bytes": 10566,
+      "sha256": "cc69d9912520d4b2c4589f37f57e76a5ea76c28f8e20cf45a499f6a7a2480031"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_request_accounting.py",
+      "bytes": 12396,
+      "sha256": "c2a414e3bd9420619c2a3122329a03bb54960ac119f951fa8c1c1243cbd90f53"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_request_hardening.py",
+      "bytes": 9798,
+      "sha256": "5e9d4e904f48fe0224965fb1e43311d6175f404c687af225ccf96c48fc366f87"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_responses.py",
+      "bytes": 47105,
+      "sha256": "2fa7e52940f7c41fed953547fd3846215f7aeedd3e5722b792aa51bdc7092269"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_restart_waiters.py",
+      "bytes": 8845,
+      "sha256": "5c0a322fa2d8b92ad5543f582d0f06ac7116f755730d932a7f7511c184f6824c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_runconfig.py",
+      "bytes": 9111,
+      "sha256": "efa3712dd39d3367d156da606d2155cd2b1a6ec6894dc17b9210a11dde761650"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_security.py",
+      "bytes": 16404,
+      "sha256": "50a1497a3757d220f663112f2c4d1f2a1d6e5731a3b5a5237a0c3652421c673b"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_server.py",
+      "bytes": 309461,
+      "sha256": "cb70f9a0d87d2bb31a3efc80e9c563b5f7baec82e387c67bbb3f9faed09c6193"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_session_save_retry.py",
+      "bytes": 10794,
+      "sha256": "6ab00d066b380f652f8857280deab5f30d03bbecbe3d575f35c1d5a686a8ec35"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_slot_alloc.py",
+      "bytes": 3329,
+      "sha256": "766acb2e25f5da87e6b79f7cdc2b3cfd850f9ef2c801029984661534815ae04e"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_slots.py",
+      "bytes": 22001,
+      "sha256": "55f72e4b4fc32948d3f4e848f7fd3da030d33d7e2aba9250ed41d716e77f9658"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_structured.py",
+      "bytes": 12111,
+      "sha256": "6361f10e7237ffaa9cafaec114650ff23c0480fa09335914ec061ceb03a2ec01"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_tool_name_space.py",
+      "bytes": 1881,
+      "sha256": "07cbe06fc7fd4f2b27c0477c2fa39b0ea06262e26cdf2eb718c383ecd44f5078"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_vision_busy.py",
+      "bytes": 2263,
+      "sha256": "b78de126c4afa27dfa4090faf2db2d203d89e99c1bbddb8f7b2c6aadd8464648"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_vision_elastic.py",
+      "bytes": 5620,
+      "sha256": "2fd8879d7326c4a6ae1248b0d19e5489761b1d17ba9c2a30290096c307993e2d"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_vision_lazy.py",
+      "bytes": 9414,
+      "sha256": "f8cb4a65016e35d6c8b9945e6ca8f6016a3a25083325bb823be925b025625a63"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_voice.py",
+      "bytes": 3471,
+      "sha256": "143f8c264fdfe628f45063dde1334d526212c99a1c763f21c858e11372424fd2"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_vram.py",
+      "bytes": 6192,
+      "sha256": "40967f4970ff017ae43d58bb08c1df795fb71f3cecaea89ab4cb375c5f537ac6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/test_winjob.py",
+      "bytes": 3632,
+      "sha256": "069d5e28845b44ee1f1b34c63de6cd68b6d722609726f72a270f51ed7f7ee1a6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/voice.py",
+      "bytes": 9796,
+      "sha256": "17d0d7cc56f993909c34456108ec0648f0290307eb5e966fc9d40a58112a4875"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/serve/winjob.py",
+      "bytes": 4939,
+      "sha256": "8fff65cf850e108b84ab06c3fb44a68b947b0f4834ce5880139ada5dfb11a749"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/strata_tokenizer.py",
+      "bytes": 22090,
+      "sha256": "b135c0fdbd7ad8ec2319013a669eed070a04be5639d88f530eafbcef88a4e43c"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/v41/dsv41_encoding.py",
+      "bytes": 37962,
+      "sha256": "13231c592e958fb39e2af6001dae69d90e7a36b265702b9b390236fb387599e2"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/v41/serve/serve_ds41.py",
+      "bytes": 29588,
+      "sha256": "6fd2a8b6135fc5e676933f8c729f33dc2bba5849d721cab6d28b6a68a9d43954"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/v41/serve/test_serve_ds41.py",
+      "bytes": 13761,
+      "sha256": "d6c2cdbebce5497c040d738ee7714147eae9b9907c3df8bb4c01d9d55d5f732e"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/tokenizer/chat_template.jinja",
+      "bytes": 92,
+      "sha256": "51c0317430399fbcedcea75c651f70757eddfeb897b0f1b5f8c21affb865c963"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/tokenizer/merges.txt",
+      "bytes": 1632573,
+      "sha256": "47b0b7ca8188ae704a386ba5879d8669ca0321d96d0680f9e14d0379111a4af6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/tokenizer/token_type.json",
+      "bytes": 387840,
+      "sha256": "50bd0c477193145a1cd597623fe7d842e609e6b787ad49b7819cadca09a18ed6"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/tokenizer/vocab.json",
+      "bytes": 2730577,
+      "sha256": "2f0bf5b31f4aa191d5d0d78291927a4f28c9ceb498a5e345b97e926c4cb99c1a"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/wheels/jinja2-3.1.6-py3-none-any.whl",
+      "bytes": 134899,
+      "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/wheels/markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "bytes": 20681,
+      "sha256": "f42d0984e947b8adf7dd6dde396e720934d12c506ce84eea8476409563607591"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/wheels/regex-2026.9.10-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "bytes": 790214,
+      "sha256": "faa911fbbcf8ac90bda0e0657d60768e3390954ef0588211d63a22add1cb1cd1"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/v41/serve/aster_token_cache.py",
+      "bytes": 3765,
+      "sha256": "5ba6d789717e01a33396c9e6fba2b5f2a3eeecfba3281a21f45f13b3e2d05145"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/api-literal-preflight-v148/source/tools/v41/serve/aster_literal_scan.py",
+      "bytes": 8920,
+      "sha256": "25587cae9ea90b3155b80d1a02691e4debe7da4f6a95e0f6bd8e44a9dffb86d8"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-actual1m-input-v169-cpu/prompt.u32le",
+      "bytes": 4190176,
+      "sha256": "b442a593a4066e3e99b663b670db4d7d624c471f1c5f6ee906e315c99d1969c4"
+    },
+    {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/native-actual1m-input-v169-cpu/prompt.csv",
+      "bytes": 4728701,
+      "sha256": "355a6f40dc806449d93c2fc27f6517f6f561d640ba14cfa4cb8a54f4f2aef473"
+    }
+  ]
+}

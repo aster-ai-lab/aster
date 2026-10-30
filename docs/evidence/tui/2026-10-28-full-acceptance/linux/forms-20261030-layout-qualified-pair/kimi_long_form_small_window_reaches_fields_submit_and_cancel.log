@@ -1,0 +1,54 @@
+
+running 1 test
+test forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel ... ORACLE case=form-long-small-window name=source-pair result=pass detail=aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-unknown-linux-gnu
+ORACLE case=form-long-small-window name=small-window-field-01 result=pass detail=Required 01 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-02 result=pass detail=Required 02 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-03 result=pass detail=Required 03 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-04 result=pass detail=Required 04 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-05 result=pass detail=Required 05 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-06 result=pass detail=Required 06 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-07 result=pass detail=Required 07 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-08 result=pass detail=Required 08 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-09 result=pass detail=Required 09 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-10 result=pass detail=Required 10 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-11 result=pass detail=Required 11 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-12 result=pass detail=Required 12 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-13 result=pass detail=Required 13 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-14 result=pass detail=Required 14 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-15 result=pass detail=Required 15 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-16 result=pass detail=Required 16 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-17 result=pass detail=Required 17 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-18 result=pass detail=Required 18 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-19 result=pass detail=Required 19 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-20 result=pass detail=Required 20 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-21 result=pass detail=Required 21 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-22 result=pass detail=Required 22 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-23 result=pass detail=Required 23 is reachable while native actions remain visible in a 14x64 terminal
+ORACLE case=form-long-small-window name=small-window-field-24 result=pass detail=Required 24 is reachable while native actions remain visible in a 14x64 terminal
+
+thread 'forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel' (22563) panicked at crates/code/acp/tests/aster_tui_live_e2e/forms_catalog.rs:439:9:
+missing actual field error "required"
+ /t/aster-kimi-dUidUw/workspace                      14K / 128K 
+                                                               █
+ ┃                                                              
+ ┃  MCP “Aster” requests your input                             
+ ┃                                                              
+ ┃  Long form acceptance · Long form 24                         
+ ┃  ↑ more                                                      
+ ┃  n Required 23 (required)  seed23                            
+ ┃  o Required 24 (required)                                    
+ ┃  ↓ more                                                      
+ ┃  y (●) Accept                                                
+ ┃  d (○) Decline                                               
+ ┃                                                              
+ Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab: 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    forms_catalog::kimi_long_form_small_window_reaches_fields_submit_and_cancel
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 66 filtered out; finished in 81.38s
+

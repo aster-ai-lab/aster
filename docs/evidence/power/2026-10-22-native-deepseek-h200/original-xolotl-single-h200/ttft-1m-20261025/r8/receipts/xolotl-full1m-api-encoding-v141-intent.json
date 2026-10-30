@@ -1,0 +1,16 @@
+{
+  "unix": 1792897493.0109785,
+  "phase": "failed",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/cpu-api-encoding-v141",
+  "fixture_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/code-fullwindow-fixture-v114-cpu",
+  "source_public_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/api-hybrid-preflight-v52",
+  "gpu_executed": false,
+  "model_requests_sent": 0,
+  "live_service_changed": false,
+  "process": {
+    "pid": 1220272,
+    "start_ticks": 282428591,
+    "uid": 10250,
+    "namespace": "jump host"
+  }
+}

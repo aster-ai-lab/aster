@@ -1,0 +1,30 @@
+{
+  "unix": 1792934682.0106044,
+  "files": [
+    {
+      "file": "discover_c15_nsys_device_v389.py",
+      "bytes": 1944,
+      "sha256": "d35c4343d540604194f68a699c6e372539a862fc8310542655d641f1e6290d93"
+    },
+    {
+      "file": "h200_interactive_nsys_worker_v390.py",
+      "bytes": 9148,
+      "sha256": "02a33bbd5c2bba272bda50759c623793aaadfa03bfcf590e6ef84415ccb90e5d"
+    },
+    {
+      "file": "manage_c15_nsys_smoke_v390.py",
+      "bytes": 5132,
+      "sha256": "48bb856d9fa0698fc0efc9b26fc09fe12f56be27bd910391dac2046bf629a966"
+    },
+    {
+      "file": "manage_c15_manual_actual1m_v391.py",
+      "bytes": 12452,
+      "sha256": "f27302ecf5ff54faa770f7814670fe7d4c1be3ddaaeb246c3c4b1a3d2fa20d36"
+    }
+  ],
+  "GPU_work_started": false,
+  "requires_all_three_profiles_drained": true,
+  "requires_new_C15_smoke": true,
+  "physical_counter_values_qualified": false,
+  "formal_changed": false
+}

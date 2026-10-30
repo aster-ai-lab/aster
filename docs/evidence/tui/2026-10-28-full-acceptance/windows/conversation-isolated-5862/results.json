@@ -1,0 +1,44 @@
+[
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_close_timeout_uses_original_five_second_drain_in_both_stores",
+    "log": "001.log",
+    "exit_code": 101,
+    "seconds": 0.997242
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_entered_store_results_remain_truthful_in_both_stores",
+    "log": "002.log",
+    "exit_code": 101,
+    "seconds": 1.0132904
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_extraction_budget_deny_has_no_provider_retry_in_both_stores",
+    "log": "003.log",
+    "exit_code": 101,
+    "seconds": 1.1091368
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_failed_empty_disabled_turns_admit_no_extraction_in_both_stores",
+    "log": "004.log",
+    "exit_code": 101,
+    "seconds": 1.0107768
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::actual_session_original_cancel_before_store_refuses_in_both_stores",
+    "log": "005.log",
+    "exit_code": 101,
+    "seconds": 0.9995378
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::blocking_send_awaits_original_extraction_and_accounts_usage_in_both_stores",
+    "log": "006.log",
+    "exit_code": 101,
+    "seconds": 1.0313205
+  },
+  {
+    "name": "agent_api::conversation_runtime::memory_retention_tests::lifecycle::supplemental_original_facade_parts_match_and_aux_keep_guard_usage_in_both_stores",
+    "log": "007.log",
+    "exit_code": 101,
+    "seconds": 1.058292
+  }
+]

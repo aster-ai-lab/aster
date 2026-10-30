@@ -3522,6 +3522,7 @@ fn routed_config(backend: SocketAddr, key: &str) -> GatewayConfig {
     model.routing = Some(crate::config::InferenceRoutingPlan {
         mode: crate::config::InferenceRoutingMode::SmartSaving,
         decision_model: Some("allowed-model".into()),
+        decision_protocol: Default::default(),
         economy_targets: Some(vec![economy_target]),
         primary_targets: Some(vec![primary_target]),
         simple_probability_threshold_bp: 8000,
@@ -3777,6 +3778,7 @@ async fn hr_content_reaches_a_real_decision_service_over_http() {
     model.routing = Some(crate::config::InferenceRoutingPlan {
         mode: crate::config::InferenceRoutingMode::SmartSaving,
         decision_model: Some("decider".into()),
+        decision_protocol: Default::default(),
         economy_targets: model
             .routing
             .as_ref()
@@ -4513,6 +4515,7 @@ async fn hr_d6_competence_protection_is_category_scoped() {
     model.routing = Some(crate::config::InferenceRoutingPlan {
         mode: crate::config::InferenceRoutingMode::Branches,
         decision_model: Some("allowed-model".into()),
+        decision_protocol: Default::default(),
         economy_targets: None,
         primary_targets: Some(vec![pri_id]),
         simple_probability_threshold_bp: 8000,
@@ -4740,7 +4743,7 @@ async fn hr_c5_no_re_route_after_the_response_starts() {
                 }
                 // Headers + one valid chunk, then the connection dies
                 // mid-body: the response HAS started.
-                let partial = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n20\r\n{\"partial\":\"yes\"\",\"rest";
+                let partial = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\n\r\n20\r\n{\"partial\":\"yes\"\",\"rest";
                 let _ = stream.write_all(partial.as_bytes()).await;
                 let _ = stream.flush().await;
                 // Drop the stream without the terminating chunk.
@@ -4748,6 +4751,15 @@ async fn hr_c5_no_re_route_after_the_response_starts() {
         }
     });
     let mut config = routed_config(address, &key);
+    config
+        .inference
+        .as_mut()
+        .unwrap()
+        .routes
+        .values_mut()
+        .next()
+        .unwrap()
+        .wire = crate::config::InferenceWire::Openai;
     // Both targets point at the breaking backend — whichever the
     // window picks, the response starts there.
     let double = std::sync::Arc::new(SwitchableDecision::armed(0.95));
@@ -4762,7 +4774,7 @@ async fn hr_c5_no_re_route_after_the_response_starts() {
         .post(format!("http://{gateway_address}/v1/chat/completions"))
         .bearer_auth(&key)
         .header("content-type", "application/json")
-        .body(r#"{"model":"allowed-model","messages":[{"role":"user","content":"stream me"}]}"#)
+        .body(r#"{"model":"allowed-model","messages":[{"role":"user","content":"stream me"}],"stream":true}"#)
         .send()
         .await
         .unwrap();
@@ -4824,3 +4836,6 @@ async fn hr_b3_a_rebuilt_history_forces_a_fresh_decision() {
 
     stop_test_entrypoint(shutdown_tx, handle).await;
 }
+
+#[path = "neural_routing_tests.rs"]
+mod neural_routing_tests;

@@ -1,0 +1,11 @@
+
+running 1 test
+test context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once ... FAILED
+
+failures:
+
+failures:
+    context_and_input::kimi_long_bracketed_unicode_paste_is_submitted_exactly_once
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 22 filtered out; finished in 12.99s
+

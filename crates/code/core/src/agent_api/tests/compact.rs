@@ -55,15 +55,16 @@ impl crate::llm::LlmClient for RecordingCompactClient {
         ));
         let (tx, rx) = tokio::sync::mpsc::channel(4);
         let reply = self.reply.clone();
+        let prompt_tokens = crate::llm::estimate_message_tokens(messages);
         tokio::spawn(async move {
             let _ = tx.send(StreamEvent::TextDelta(reply.clone())).await;
             let _ = tx
                 .send(StreamEvent::Done(LlmResponse {
                     message: Message::assistant(&reply),
                     usage: TokenUsage {
-                        prompt_tokens: 1024,
+                        prompt_tokens,
                         completion_tokens: 1,
-                        total_tokens: 1025,
+                        total_tokens: prompt_tokens + 1,
                         ..Default::default()
                     },
                     stop_reason: None,

@@ -1,0 +1,24 @@
+{
+  "product_pair_digest": "e1a37d311f896ceebb6a7a228a0f6a889f15313b",
+  "product_pair_rebuilt": false,
+  "model": "kimi/k3.1-pro",
+  "existing_prompts_timeouts_graders_changed": false,
+  "new_test_count": 3,
+  "sources": [
+    {
+      "file": "crates/code/acp/tests/aster_tui_live_e2e.rs",
+      "archive": "source/questions-20261030-initial/aster_tui_live_e2e.rs",
+      "sha256": "f13651ebb8062ea449fe26666d33355fe920b067525efc9d7d0689565db5f820"
+    },
+    {
+      "file": "crates/code/acp/tests/aster_tui_live_e2e/driver.rs",
+      "archive": "source/questions-20261030-initial/driver.rs",
+      "sha256": "eb635ac0fa7d69fbf34ace5bd617d6e97134bff33109cfb319b5ec997762fea2"
+    },
+    {
+      "file": "crates/code/acp/tests/aster_tui_live_e2e/questions_and_forms.rs",
+      "archive": "source/questions-20261030-initial/questions_and_forms.rs",
+      "sha256": "dcdb0fdcd86807e19a9ff4b030a56e965e7801302f2f23cff0a1994b99176db4"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "at_epoch": 1792938376.3968809,
+  "profile": "Merged main DSpark depth4 tier0.25 chunk256 indexer2^26 exact FP4 1M",
+  "activated": true,
+  "success": true,
+  "preserved_services_before": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "phase": "ready_for_controlled_measurement",
+  "updated_at_epoch": 1792938642.764302,
+  "old_acl_sha256": "162528307c283416670d3cc836d147320b9fbdbb5b2998cc5b5fc8fb8e0661d1",
+  "new_acl_sha256": "0baf088a10191560bf050cc7e272a86aa0705386aa2128df091d30bab773a4d4",
+  "new_unit_sha256": "551d1ac40ffeb34e1bf4017e3640a1c8969c2568999cd8b445b33051f4258899",
+  "power_binary_sha256": "de631f93da0831144ada8855e0ee1d2020ef9a2e8271376ff9204e9b928fd0b3",
+  "bridge_sha256": "ca4b0f9319df0875e10970b17215e09298be203dc669a8eb3ebce2fb60a57b6e",
+  "preserved_services_after": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "new_pid": 3174438,
+  "engine": {
+    "pid": 3179530,
+    "argv": [
+      "/opt/a3s/releases/deepseek-xolotl-dspark-a99fe7fc22e10081/bin/ds41_generate",
+      "--serve",
+      "-m",
+      "/data/power/deepseek-v41-gpu6/V41-XQ-1017-v3.gguf",
+      "--engram",
+      "/data/models/DeepSeek-V4.1-Flash-1017-Engram/runtime-1bae0e1088993b9b82de08f59de5be5a34e42170",
+      "--rank",
+      "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/v3/rank-1017-v3.bin",
+      "--backend",
+      "cuda",
+      "--experts",
+      "gpu",
+      "--ctx",
+      "1048576",
+      "--threads",
+      "24",
+      "--arena-gib",
+      "144",
+      "--prompt-batch",
+      "8192",
+      "--prefill-chunk",
+      "256",
+      "--pcie",
+      "0.0000",
+      "--tier-batch-pcie",
+      "0.2500",
+      "--route-bias",
+      "0",
+      "--route-bias-file",
+      "0",
+      "--route-bias-remote",
+      "0",
+      "--kv-fp4"
+    ],
+    "dspark_env": {
+      "STRATA_DSPARK_CONF": "0.6000",
+      "STRATA_DSPARK_DEPTH": "4",
+      "STRATA_SERVE_DSPARK": "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/V41-MTP-Vision-1017.Q2_K.gguf",
+      "STRATA_SERVE_DSPARK_EVICT": "4096"
+    },
+    "indexer_tile_elements": "67108864"
+  },
+  "other_service_pids_unchanged": true,
+  "smoke_timings": {
+    "cache_n": 0,
+    "prompt_n": 56,
+    "prompt_ms": 2233.7,
+    "prompt_per_token_ms": 39.887,
+    "prompt_per_second": 25.1,
+    "predicted_n": 60,
+    "predicted_ms": 1951.6,
+    "predicted_per_token_ms": 32.527,
+    "predicted_per_second": 30.7,
+    "draft_n": 52,
+    "draft_n_accepted": 42
+  }
+}

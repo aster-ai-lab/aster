@@ -144,8 +144,12 @@ fn host_report_binds_a_passed_required_check_to_the_digest() {
 #[test]
 fn host_notes_keep_the_bind_distinct_from_the_grader() {
     let digest = digest(1);
-    let bound = bind_continuation(&digest);
+    let gate = "completion gate: workspace mutation digest (work/explore.py) has no bound Passed verification. Next step: run one `bash` command that exits 0 and includes `test -f work/explore.py`.";
+    let bound = bind_continuation(&digest, Some(gate));
     assert!(bound.contains(&digest));
+    assert!(bound.contains(gate));
+    assert!(bound.contains("Next step: run one `bash` command"));
+    assert!(!bind_continuation(&digest, Some("unrelated error")).contains("unrelated error"));
     for note in [
         TASK_PROOF_NOTE,
         bound.as_str(),

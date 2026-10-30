@@ -1,0 +1,22 @@
+{
+  "samples": 283,
+  "wall_observed_seconds": 2863.8611829280853,
+  "unit_memory_peak_gib": 148.57086181640625,
+  "host_available_min_gib": 272.5093307495117,
+  "gpu6_memory_peak_mib": 23082.0,
+  "gpu6_power_peak_watts": 332.71,
+  "gpu6_util_peak_percent": 100.0,
+  "memory_events_max": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "cpu_throttled_max": 0,
+  "cpu_throttled_usec_max": 0,
+  "configured_memory_max_bytes": 429496729600,
+  "configured_cpu_quota_per_second_usec": 32000000,
+  "passed": true
+}

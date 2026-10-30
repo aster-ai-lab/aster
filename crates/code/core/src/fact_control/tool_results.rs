@@ -109,7 +109,24 @@ pub(super) fn message_from_folded_tool(id: &str, body: &str, folded_error: bool)
             Some(crate::llm::Attachment::new(bytes, image.media_type.clone()))
         })
         .collect::<Vec<_>>();
-    message_from_tool_observation(id, &envelope.text, is_error, &images, envelope.exit_code)
+    let stream_text = envelope
+        .metadata
+        .as_ref()
+        .and_then(|metadata| metadata.get("shell_output_streams"))
+        .and_then(|streams| crate::tools::builtin::bash::output_streams::split(&envelope.text, streams))
+        .map(|(stdout, stderr)| {
+            format!(
+                "Captured stdout ({} UTF-8 bytes):\n{stdout}\nCaptured stderr ({} UTF-8 bytes):\n{stderr}",
+                stdout.len(), stderr.len()
+            )
+        });
+    message_from_tool_observation(
+        id,
+        stream_text.as_deref().unwrap_or(&envelope.text),
+        is_error,
+        &images,
+        envelope.exit_code,
+    )
 }
 
 pub(super) fn message_from_tool_observation(

@@ -1,0 +1,159 @@
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/grpc_handler.rs:70:
+ 
+             if let Some(phc) = state.passive_health.get(&route.service_name) {
+                 phc.record_response_with_peers(
+-                &backend,
+-                status_code,
+-                crate::entrypoint::healthy_backend_count(
+-                    state.service_registry.get(&route.service_name).as_ref(),
+-                ),
+-            );
++                    &backend,
++                    status_code,
++                    crate::entrypoint::healthy_backend_count(
++                        state.service_registry.get(&route.service_name).as_ref(),
++                    ),
++                );
+             }
+ 
+             let mut resp_builder = http::Response::builder().status(grpc_resp.http_status);
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/grpc_handler.rs:178:
+             if e.permits_pre_response_fallback() {
+                 if let Some(phc) = state.passive_health.get(&route.service_name) {
+                     phc.record_error_with_peers(
+-                &backend,
+-                error_status,
+-                crate::entrypoint::healthy_backend_count(
+-                    state.service_registry.get(&route.service_name).as_ref(),
+-                ),
+-            );
++                        &backend,
++                        error_status,
++                        crate::entrypoint::healthy_backend_count(
++                            state.service_registry.get(&route.service_name).as_ref(),
++                        ),
++                    );
+                 }
+             }
+ 
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/http_handler.rs:213:
+ 
+                 if let Some(phc) = state.passive_health.get(&route.service_name) {
+                     phc.record_response_with_peers(
+-                                &backend,
+-                                status_code,
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&route.service_name).as_ref(),
+-                                ),
+-                            );
++                        &backend,
++                        status_code,
++                        crate::entrypoint::healthy_backend_count(
++                            state.service_registry.get(&route.service_name).as_ref(),
++                        ),
++                    );
+                 }
+ 
+                 let mut upstream_response = http::Response::new(proxy_resp.body);
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/http_handler.rs:776:
+                     pipeline.observe_upstream_failure_with_request(&req_parts.extensions);
+                     if let Some(phc) = state.passive_health.get(&route.service_name) {
+                         phc.record_error_with_peers(
+-                                &backend,
+-                                error_status,
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&route.service_name).as_ref(),
+-                                ),
+-                            );
++                            &backend,
++                            error_status,
++                            crate::entrypoint::healthy_backend_count(
++                                state.service_registry.get(&route.service_name).as_ref(),
++                            ),
++                        );
+                     }
+                 }
+ 
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:95:
+                     );
+                     if let Some(phc) = state.passive_health.get(&service_name) {
+                         phc.record_response_with_peers(
+-                                &backend,
+-                                response.status.as_u16(),
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&service_name).as_ref(),
+-                                ),
+-                            );
++                            &backend,
++                            response.status.as_u16(),
++                            crate::entrypoint::healthy_backend_count(
++                                state.service_registry.get(&service_name).as_ref(),
++                            ),
++                        );
+                     }
+                     if allow_backend_reselection {
+                         if let Some(next) =
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:118:
+                     pipeline.observe_upstream_failure_with_request(&req_parts.extensions);
+                     if let Some(phc) = state.passive_health.get(&service_name) {
+                         phc.record_error_with_peers(
+-                                &backend,
+-                                proxy_error_status(error),
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&service_name).as_ref(),
+-                                ),
+-                            );
++                            &backend,
++                            proxy_error_status(error),
++                            crate::entrypoint::healthy_backend_count(
++                                state.service_registry.get(&service_name).as_ref(),
++                            ),
++                        );
+                     }
+                     if allow_backend_reselection {
+                         if let Some(next) =
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:153:
+ 
+                 if let Some(phc) = state.passive_health.get(&route.service_name) {
+                     phc.record_response_with_peers(
+-                                &backend,
+-                                status_code,
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&route.service_name).as_ref(),
+-                                ),
+-                            );
++                        &backend,
++                        status_code,
++                        crate::entrypoint::healthy_backend_count(
++                            state.service_registry.get(&route.service_name).as_ref(),
++                        ),
++                    );
+                 }
+ 
+                 let mut upstream_response = http::Response::new(stream_resp.body);
+Diff in /code/aster/.wt-deepseek-platform-runtime/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:518:
+                     pipeline.observe_upstream_failure_with_request(&req_parts.extensions);
+                     if let Some(phc) = state.passive_health.get(&route.service_name) {
+                         phc.record_error_with_peers(
+-                                &backend,
+-                                error_status,
+-                                crate::entrypoint::healthy_backend_count(
+-                                    state.service_registry.get(&route.service_name).as_ref(),
+-                                ),
+-                            );
++                            &backend,
++                            error_status,
++                            crate::entrypoint::healthy_backend_count(
++                                state.service_registry.get(&route.service_name).as_ref(),
++                            ),
++                        );
+                     }
+                 }
+ 
+error: couldn't read `/code/aster/.wt-deepseek-platform-runtime/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs`: No such file or directory (os error 2)
+   --> /code/aster/.wt-deepseek-platform-runtime/apps/studio/src-tauri/src/app_updater.rs:129:1
+    |
+129 | mod os_feed_tests;
+    | ^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `os_feed_tests`: /code/aster/.wt-deepseek-platform-runtime/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs does not exist

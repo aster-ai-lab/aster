@@ -1,0 +1,398 @@
+{
+  "unix": 1792893496.2891002,
+  "exact_cpu_process_alive": false,
+  "statistics-result.json": {
+    "unix": 1792893491.0238078,
+    "phase": "passed",
+    "gpu_executed": false,
+    "raw_profiler_artifacts_published": false,
+    "statistics_exit": 0,
+    "summary_sha256": "e7c9a2e80639d890d89388708f6c48817229e80200db6872bdf993817a89a54f",
+    "summary_bytes": 15470,
+    "trace_bytes": 14556303,
+    "database_bytes": 35508224,
+    "finished_unix": 1792893493.2891352
+  },
+  "numeric-summary.json": {
+    "schema": "aster-xolotl-native-critical-path-v123",
+    "unix": 1792893493.2884264,
+    "binary_sha256": "9a684b2442d4b648fff6a73024de5b7bab096657fe45897bf036c7e216895bbf",
+    "context_tokens": 1048576,
+    "prefill_chunk_tokens": 512,
+    "parallel_slots": 2,
+    "native_info": {
+      "ctx": "1048576",
+      "experts_vram": "12475",
+      "arena_experts": "15360",
+      "conversation_cache_mib": "8192",
+      "conversation_cache_slots": "8",
+      "batch_slots": "2",
+      "slot_cache": "1"
+    },
+    "gpu_profiled_requests": 1,
+    "prompt_tokens": 21,
+    "completion_tokens": 128,
+    "pretrace_control_requests": 3,
+    "all_output_id_sequences_equal": true,
+    "kernel_count": 188945,
+    "kernel_duration_sum_ns": 1258880697,
+    "memcpy_count": 46029,
+    "memcpy_duration_sum_ns": 106003699,
+    "memcpy_bytes": 3927823584,
+    "runtime_count": 75063,
+    "runtime_duration_sum_ns": 1866946940,
+    "recorded_gpu_event_span_ns": 1993922379,
+    "recorded_gpu_event_busy_union_ns": 1305895443,
+    "recorded_gpu_event_busy_union_fraction": 0.65493795383095,
+    "top_kernels": [
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_gu_multi_kernel<(int)11, (bool)0, (bool)0>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 1743,
+        "duration_sum_ns": 128262802,
+        "min_ns": 19488,
+        "max_ns": 300063
+      },
+      {
+        "symbol": "void strata::kernels::native_gu_amd_kernel<(int)143, (int)4>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 2810,
+        "duration_sum_ns": 102658748,
+        "min_ns": 9504,
+        "max_ns": 151520
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_down_multi_kernel<(int)11, (bool)0>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 1613,
+        "duration_sum_ns": 76208823,
+        "min_ns": 13888,
+        "max_ns": 204864
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)6, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 3543,
+        "duration_sum_ns": 66094414,
+        "min_ns": 7296,
+        "max_ns": 352352
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)3, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 4546,
+        "duration_sum_ns": 62611073,
+        "min_ns": 4320,
+        "max_ns": 248063
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)5, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 2965,
+        "duration_sum_ns": 61935782,
+        "min_ns": 5280,
+        "max_ns": 305919
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_gu_multi_kernel<(int)42, (bool)0, (bool)1>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *, float *)",
+        "count": 2545,
+        "duration_sum_ns": 61179861,
+        "min_ns": 8256,
+        "max_ns": 89760
+      },
+      {
+        "symbol": "void strata::kernels::<unnamed>::native_down_multi_kernel<(int)42, (bool)1>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 3780,
+        "duration_sum_ns": 60569968,
+        "min_ns": 5216,
+        "max_ns": 63968
+      },
+      {
+        "symbol": "void strata::kernels::native_down_amd_kernel<(int)143, (int)4>(const unsigned long long *, const int *, const int *, const int *, const block_q8_1 *, strata::kernels::NativeExpertLayout, float *)",
+        "count": 1705,
+        "duration_sum_ns": 44943383,
+        "min_ns": 5600,
+        "max_ns": 81759
+      },
+      {
+        "symbol": "quantize_q8_1(const float *, void *, long, long, long, long, long, unsigned int, uint3)",
+        "count": 17295,
+        "duration_sum_ns": 42872531,
+        "min_ns": 1120,
+        "max_ns": 6656
+      },
+      {
+        "symbol": "void flash_attn_ext_f16<(int)512, (int)512, (int)1, (int)8, (bool)0, (bool)0, (bool)0>(const char *, const char *, const char *, const char *, const char *, const int *, float *, float2 *, float, float, float, float, unsigned int, float, int, uint3, int, int, int, int, int, int, int, int, int, int, int, long, int, int, long, int, int, int, int, int, long)",
+        "count": 2024,
+        "duration_sum_ns": 42393534,
+        "min_ns": 19488,
+        "max_ns": 23104
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)4, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 2588,
+        "duration_sum_ns": 40629616,
+        "min_ns": 4608,
+        "max_ns": 285791
+      },
+      {
+        "symbol": "void rms_norm_f32<(int)1024, (bool)1, (bool)0>(const float *, float *, int, long, long, long, float, const float *, long, long, long, uint3, uint3, uint3, uint3, const float *, long, long, long, uint3, uint3, uint3, uint3)",
+        "count": 6310,
+        "duration_sum_ns": 26964395,
+        "min_ns": 2720,
+        "max_ns": 6752
+      },
+      {
+        "symbol": "strata::kernels::decode_rows_sum_kernel(const float *, const float *, int, long, float *)",
+        "count": 7840,
+        "duration_sum_ns": 22819991,
+        "min_ns": 2048,
+        "max_ns": 4096
+      },
+      {
+        "symbol": "void cutlass::Kernel2<cutlass_80_tensorop_s1688gemm_64x64_32x6_tn_align4>(T1::Params)",
+        "count": 3888,
+        "duration_sum_ns": 20315223,
+        "min_ns": 4608,
+        "max_ns": 6304
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)7, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 963,
+        "duration_sum_ns": 19497828,
+        "min_ns": 7392,
+        "max_ns": 395199
+      },
+      {
+        "symbol": "void rms_norm_f32<(int)1024, (bool)0, (bool)0>(const float *, float *, int, long, long, long, float, const float *, long, long, long, uint3, uint3, uint3, uint3, const float *, long, long, long, uint3, uint3, uint3, uint3)",
+        "count": 4142,
+        "duration_sum_ns": 17986004,
+        "min_ns": 3584,
+        "max_ns": 6816
+      },
+      {
+        "symbol": "void mul_mat_vec_q_moe<(ggml_type)10, (int)2, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 432,
+        "duration_sum_ns": 17840249,
+        "min_ns": 37568,
+        "max_ns": 45600
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)2, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 1332,
+        "duration_sum_ns": 16728375,
+        "min_ns": 4288,
+        "max_ns": 218304
+      },
+      {
+        "symbol": "void concat_cont<unsigned short, (int)1>(const T1 *, const T1 *, T1 *, long, long, long, long, long, long)",
+        "count": 2998,
+        "duration_sum_ns": 15140411,
+        "min_ns": 1888,
+        "max_ns": 12480
+      },
+      {
+        "symbol": "void k_bin_bcast<&op_add, float, float, float, const float *>(const T2 *, const T3 *, T4 *, unsigned int, unsigned int, unsigned int, uint3, uint3, uint3, uint3, uint3, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, T5...)",
+        "count": 7497,
+        "duration_sum_ns": 14267779,
+        "min_ns": 1184,
+        "max_ns": 4320
+      },
+      {
+        "symbol": "void dsv4_hc_post_f32<(bool)1>(const float *, const float *, const float *, const float *, float *, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long)",
+        "count": 4048,
+        "duration_sum_ns": 14045562,
+        "min_ns": 2368,
+        "max_ns": 5088
+      },
+      {
+        "symbol": "void mul_mat_f<float, (int)32, (int)6, (int)8, (bool)0>(const T1 *, const float *, const int *, float *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "count": 440,
+        "duration_sum_ns": 13538075,
+        "min_ns": 29792,
+        "max_ns": 32096
+      },
+      {
+        "symbol": "void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)",
+        "count": 3888,
+        "duration_sum_ns": 13044483,
+        "min_ns": 2976,
+        "max_ns": 3616
+      },
+      {
+        "symbol": "strata::kernels::<unnamed>::swiglu_q8_1_entries_kernel(const float *, const float *, const int *, const int *, int, block_q8_1 *, float)",
+        "count": 7098,
+        "duration_sum_ns": 12370456,
+        "min_ns": 1376,
+        "max_ns": 2944
+      },
+      {
+        "symbol": "void convert_unary<__half, float>(const void *, T2 *, long, long, long, uint3, long, long, long)",
+        "count": 3600,
+        "duration_sum_ns": 12298503,
+        "min_ns": 3136,
+        "max_ns": 4288
+      },
+      {
+        "symbol": "dsv4_hc_comb_f32(const float *, const float *, const float *, float *, long, long, long, long, long, long, long, long, float, int)",
+        "count": 4048,
+        "duration_sum_ns": 12247101,
+        "min_ns": 2592,
+        "max_ns": 4064
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)1, (bool)1, (bool)1, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 240,
+        "duration_sum_ns": 10762636,
+        "min_ns": 43264,
+        "max_ns": 48832
+      },
+      {
+        "symbol": "void mul_mat_vec_q<(ggml_type)8, (int)1, (bool)0, (bool)0, (bool)0>(const void *, const void *, const int *, ggml_cuda_mm_fusion_args_device, float *, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, uint3, unsigned int, unsigned int, unsigned int, unsigned int)",
+        "count": 686,
+        "duration_sum_ns": 10359976,
+        "min_ns": 2976,
+        "max_ns": 248415
+      },
+      {
+        "symbol": "void mul_mat_f<float, (int)32, (int)4, (int)8, (bool)0>(const T1 *, const float *, const int *, float *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "count": 320,
+        "duration_sum_ns": 9818888,
+        "min_ns": 29664,
+        "max_ns": 32128
+      },
+      {
+        "symbol": "void rope_norm<(bool)1, (bool)0, float, float>(const T3 *, T4 *, int, int, int, int, int, int, int, int, int, int, int, const int *, float, float, float, rope_corr_dims, float, const float *, const long *, int, bool)",
+        "count": 4947,
+        "duration_sum_ns": 7907958,
+        "min_ns": 1152,
+        "max_ns": 2688
+      },
+      {
+        "symbol": "void dsv4_hc_pre_f32<(bool)0>(const float *, const float *, float *, long, long, long, long, long, long, long, long, long, long, long, float)",
+        "count": 4143,
+        "duration_sum_ns": 7475116,
+        "min_ns": 1408,
+        "max_ns": 3872
+      }
+    ],
+    "top_runtime_calls": [
+      {
+        "symbol": "cudaStreamSynchronize_v3020",
+        "count": 9610,
+        "duration_sum_ns": 1309038858,
+        "min_ns": 1576,
+        "max_ns": 4980552
+      },
+      {
+        "symbol": "cudaGraphLaunch_v10000",
+        "count": 3792,
+        "duration_sum_ns": 295970693,
+        "min_ns": 4414,
+        "max_ns": 4897496
+      },
+      {
+        "symbol": "cudaMemcpyAsync_v3020",
+        "count": 20011,
+        "duration_sum_ns": 141047171,
+        "min_ns": 813,
+        "max_ns": 4761911
+      },
+      {
+        "symbol": "cudaLaunchKernel_v7000",
+        "count": 34140,
+        "duration_sum_ns": 92345775,
+        "min_ns": 756,
+        "max_ns": 4671897
+      },
+      {
+        "symbol": "cudaLaunchKernelExC_v11060",
+        "count": 6662,
+        "duration_sum_ns": 16257698,
+        "min_ns": 744,
+        "max_ns": 20846
+      },
+      {
+        "symbol": "cudaGraphInstantiate_v12000",
+        "count": 19,
+        "duration_sum_ns": 5830461,
+        "min_ns": 29515,
+        "max_ns": 440969
+      },
+      {
+        "symbol": "cudaGraphExecDestroy_v10000",
+        "count": 16,
+        "duration_sum_ns": 2478935,
+        "min_ns": 125416,
+        "max_ns": 201792
+      },
+      {
+        "symbol": "cudaMemcpy2DAsync_v3020",
+        "count": 356,
+        "duration_sum_ns": 1339235,
+        "min_ns": 939,
+        "max_ns": 10055
+      },
+      {
+        "symbol": "cudaGraphExecUpdate_v10020",
+        "count": 27,
+        "duration_sum_ns": 1034597,
+        "min_ns": 1735,
+        "max_ns": 734816
+      },
+      {
+        "symbol": "cudaGraphDestroy_v10000",
+        "count": 24,
+        "duration_sum_ns": 926548,
+        "min_ns": 3614,
+        "max_ns": 74139
+      },
+      {
+        "symbol": "cuLaunchKernel",
+        "count": 176,
+        "duration_sum_ns": 441653,
+        "min_ns": 733,
+        "max_ns": 4203
+      },
+      {
+        "symbol": "cuKernelGetFunction",
+        "count": 176,
+        "duration_sum_ns": 91008,
+        "min_ns": 173,
+        "max_ns": 1063
+      },
+      {
+        "symbol": "cudaStreamEndCapture_v10000",
+        "count": 27,
+        "duration_sum_ns": 90711,
+        "min_ns": 935,
+        "max_ns": 5403
+      },
+      {
+        "symbol": "cudaStreamBeginCapture_v10000",
+        "count": 27,
+        "duration_sum_ns": 53597,
+        "min_ns": 1472,
+        "max_ns": 2937
+      }
+    ],
+    "memory_by_cupti_copy_kind_code": [
+      {
+        "copy_kind_code": 1,
+        "count": 12124,
+        "duration_sum_ns": 52782190,
+        "bytes": 1859224928
+      },
+      {
+        "copy_kind_code": 8,
+        "count": 27456,
+        "duration_sum_ns": 28727487,
+        "bytes": 1758123328
+      },
+      {
+        "copy_kind_code": 2,
+        "count": 6449,
+        "duration_sum_ns": 24494022,
+        "bytes": 310475328
+      }
+    ],
+    "diagnostic_only": true,
+    "actual1m_input_executed": false,
+    "performance_300_claimed": false,
+    "limits": "Trace overhead is included. Summed kernel/memory/runtime durations overlap and cannot be added as wall time. Event union is only recorded GPU intervals, not SM utilization or a hardware speed ceiling. Pre-trace controls are not post-trace performance qualification."
+  }
+}

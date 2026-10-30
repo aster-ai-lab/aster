@@ -1,0 +1,106 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/crates/code/acp)
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 16s
+     Running unittests src/lib.rs (target/wsl-linux/debug/deps/a3s_code_acp-2cd89ceb44c970dc)
+
+running 4 tests
+
+thread 'agent::client_permission_tests::cli_permission_invalid_metadata_is_refused_before_state_changes' (6700) panicked at crates/code/acp/src/agent/client_permission_tests.rs:141:14:
+called `Result::unwrap_err()` on an `Ok` value: InitializeResponse { protocol_version: ProtocolVersion(1), agent_capabilities: AgentCapabilities { load_session: true, prompt_capabilities: PromptCapabilities { image: false, audio: false, embedded_context: false, meta: None }, mcp_capabilities: McpCapabilities { http: false, sse: false, meta: None }, session_capabilities: SessionCapabilities { list: None, additional_directories: None, fork: None, resume: None, close: None, meta: None }, auth: AgentAuthCapabilities { logout: None, meta: None }, nes: None, position_encoding: None, meta: None }, auth_methods: [], agent_info: None, meta: Some({"a3s": Object {"droppedDirs": Array [], "withheldBlocks": Array [], "workspaceMcp": Object {"pending": Array [], "trustCommand": String("a3s-code-acp --trust-workspace-mcp <id|all>"), "trusted": Array []}}, "a3sCode": Bool(true), "agentVersion": String("9.1.6"), "availableCommands": Array [Object {"description": String("Set, pause, resume, or clear a durable goal"), "input": Object {"hint": String("<objective> | status | pause | resume | clear")}, "name": String("goal")}], "cancelRewind": Bool(false), "currentWorkingDirectory": String("/tmp"), "feedbackTraceOffer": Bool(false), "grokShell": Bool(false), "modelState": Object {"availableModels": Array [Object {"_meta": Object {"reasoningEffort": String("high"), "reasoningEfforts": Array [Object {"description": String("Faster, lighter reasoning"), "id": String("low"), "label": String("low"), "value": String("low")}, Object {"description": String("Balanced reasoning"), "id": String("medium"), "label": String("medium"), "value": String("medium")}, Object {"default": Bool(true), "description": String("Heavy reasoning"), "id": String("high"), "label": String("high"), "value": String("high")}, Object {"description": String("Extended reasoning"), "id": String("xhigh"), "label": String("xhigh"), "value": String("xhigh")}, Object {"description": String("Maximum reasoning"), "id": String("max"), "label": String("max"), "value": String("max")}], "supportsReasoningEffort": Bool(true)}, "description": String("From A3S ACL provider anthropic"), "modelId": String("anthropic/claude-sonnet-4-20250514"), "name": String("anthropic/Claude Sonnet 4")}, Object {"_meta": Object {"reasoningEfforts": Array [Object {"description": String("Faster, lighter reasoning"), "id": String("low"), "label": String("low"), "value": String("low")}, Object {"description": String("Balanced reasoning"), "id": String("medium"), "label": String("medium"), "value": String("medium")}, Object {"default": Bool(true), "description": String("Heavy reasoning"), "id": String("high"), "label": String("high"), "value": String("high")}, Object {"description": String("Extended reasoning"), "id": String("xhigh"), "label": String("xhigh"), "value": String("xhigh")}, Object {"description": String("Maximum reasoning"), "id": String("max"), "label": String("max"), "value": String("max")}], "supportsReasoningEffort": Bool(true)}, "description": String("From A3S ACL provider openai"), "modelId": String("openai/gpt-4o"), "name": String("openai/GPT-4o")}], "currentModelId": String("anthropic/claude-sonnet-4-20250514")}, "openModelConfig": Bool(false), "sessionRecap": Bool(false)}) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent::client_permission_tests::cli_permission_invalid_metadata_is_refused_before_state_changes ... FAILED
+test agent::client_permission_tests::cli_permission_deny_is_applied_during_research_admission ... ok
+test agent::client_permission_tests::cli_permission_allow_cannot_relax_plan_or_research_and_deny_stays_binding ... ok
+test agent::client_permission_tests::cli_permission_deny_survives_yolo_mode_and_model_replacement ... ok
+
+failures:
+
+failures:
+    agent::client_permission_tests::cli_permission_invalid_metadata_is_refused_before_state_changes
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 388 filtered out; finished in 0.58s
+
+error: test failed, to rerun pass `-p a3s-code-acp --lib`

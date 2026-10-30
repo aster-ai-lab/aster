@@ -1,0 +1,335 @@
+{
+  "unix": 1792928583.0012593,
+  "phase": "observed",
+  "different_cases": 6,
+  "different_score_values": 7848,
+  "details": [
+    {
+      "case": 30,
+      "heads": 32,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 0,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 12.97391414642334,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "fe165141",
+          "premask_bits": "a1b99340",
+          "reference_value": 13.068113327026367,
+          "premask_value": 4.616409778594971
+        },
+        {
+          "index": 1,
+          "reference_bits": "08d8e440",
+          "premask_bits": "327d1040",
+          "reference_value": 7.151371002197266,
+          "premask_value": 2.257641315460205
+        },
+        {
+          "index": 2,
+          "reference_bits": "a12e7340",
+          "premask_bits": "60581140",
+          "reference_value": 3.7997210025787354,
+          "premask_value": 2.2710189819335938
+        },
+        {
+          "index": 3,
+          "reference_bits": "0bba5441",
+          "premask_bits": "64227940",
+          "reference_value": 13.29542064666748,
+          "premask_value": 3.89272403717041
+        },
+        {
+          "index": 4,
+          "reference_bits": "0a511f41",
+          "premask_bits": "83424c40",
+          "reference_value": 9.957284927368164,
+          "premask_value": 3.1915595531463623
+        },
+        {
+          "index": 5,
+          "reference_bits": "0c7cc240",
+          "premask_bits": "56601140",
+          "reference_value": 6.077642440795898,
+          "premask_value": 2.2715048789978027
+        }
+      ]
+    },
+    {
+      "case": 31,
+      "heads": 32,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 1,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 13.667431354522705,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "117f0141",
+          "premask_bits": "f6332a40",
+          "reference_value": 8.093522071838379,
+          "premask_value": 2.659421443939209
+        },
+        {
+          "index": 1,
+          "reference_bits": "f63d1241",
+          "premask_bits": "6d321940",
+          "reference_value": 9.140127182006836,
+          "premask_value": 2.393702745437622
+        },
+        {
+          "index": 2,
+          "reference_bits": "2fcb6541",
+          "premask_bits": "f0217840",
+          "reference_value": 14.362105369567871,
+          "premask_value": 3.8770713806152344
+        },
+        {
+          "index": 3,
+          "reference_bits": "6c4b0141",
+          "premask_bits": "cebe2a40",
+          "reference_value": 8.080913543701172,
+          "premask_value": 2.667895793914795
+        },
+        {
+          "index": 4,
+          "reference_bits": "63b10241",
+          "premask_bits": "124dd53f",
+          "reference_value": 8.168307304382324,
+          "premask_value": 1.666414499282837
+        },
+        {
+          "index": 5,
+          "reference_bits": "2315cf40",
+          "premask_bits": "b311bb3f",
+          "reference_value": 6.471330165863037,
+          "premask_value": 1.4614776372909546
+        }
+      ]
+    },
+    {
+      "case": 32,
+      "heads": 32,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 2,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 12.97391414642334,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "fe165141",
+          "premask_bits": "a1b99340",
+          "reference_value": 13.068113327026367,
+          "premask_value": 4.616409778594971
+        },
+        {
+          "index": 1,
+          "reference_bits": "08d8e440",
+          "premask_bits": "327d1040",
+          "reference_value": 7.151371002197266,
+          "premask_value": 2.257641315460205
+        },
+        {
+          "index": 2,
+          "reference_bits": "a12e7340",
+          "premask_bits": "60581140",
+          "reference_value": 3.7997210025787354,
+          "premask_value": 2.2710189819335938
+        },
+        {
+          "index": 3,
+          "reference_bits": "0bba5441",
+          "premask_bits": "64227940",
+          "reference_value": 13.29542064666748,
+          "premask_value": 3.89272403717041
+        },
+        {
+          "index": 4,
+          "reference_bits": "0a511f41",
+          "premask_bits": "83424c40",
+          "reference_value": 9.957284927368164,
+          "premask_value": 3.1915595531463623
+        },
+        {
+          "index": 5,
+          "reference_bits": "0c7cc240",
+          "premask_bits": "56601140",
+          "reference_value": 6.077642440795898,
+          "premask_value": 2.2715048789978027
+        }
+      ]
+    },
+    {
+      "case": 165,
+      "heads": 64,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 0,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 22.799424171447754,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "4769b641",
+          "premask_bits": "f41dfc40",
+          "reference_value": 22.80140495300293,
+          "premask_value": 7.878656387329102
+        },
+        {
+          "index": 1,
+          "reference_bits": "1957c141",
+          "premask_bits": "10f71c41",
+          "reference_value": 24.16752815246582,
+          "premask_value": 9.810317993164062
+        },
+        {
+          "index": 2,
+          "reference_bits": "e7e78741",
+          "premask_bits": "936fd840",
+          "reference_value": 16.98823356628418,
+          "premask_value": 6.763619899749756
+        },
+        {
+          "index": 3,
+          "reference_bits": "33888841",
+          "premask_bits": "ae228c40",
+          "reference_value": 17.066503524780273,
+          "premask_value": 4.379233360290527
+        },
+        {
+          "index": 4,
+          "reference_bits": "f6da9641",
+          "premask_bits": "6ec6d240",
+          "reference_value": 18.856914520263672,
+          "premask_value": 6.586722373962402
+        },
+        {
+          "index": 5,
+          "reference_bits": "4eadab41",
+          "premask_bits": "370ad740",
+          "reference_value": 21.45962142944336,
+          "premask_value": 6.719996929168701
+        }
+      ]
+    },
+    {
+      "case": 166,
+      "heads": 64,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 1,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 21.735101222991943,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "5c962b41",
+          "premask_bits": "3d8d2240",
+          "reference_value": 10.72420883178711,
+          "premask_value": 2.539870500564575
+        },
+        {
+          "index": 1,
+          "reference_bits": "7dff3541",
+          "premask_bits": "69724940",
+          "reference_value": 11.37487506866455,
+          "premask_value": 3.1476080417633057
+        },
+        {
+          "index": 2,
+          "reference_bits": "5e73a941",
+          "premask_bits": "e8e7a440",
+          "reference_value": 21.181331634521484,
+          "premask_value": 5.153308868408203
+        },
+        {
+          "index": 3,
+          "reference_bits": "a33e8941",
+          "premask_bits": "49818e40",
+          "reference_value": 17.15558433532715,
+          "premask_value": 4.453281879425049
+        },
+        {
+          "index": 4,
+          "reference_bits": "c5dc4c41",
+          "premask_bits": "3b047640",
+          "reference_value": 12.803898811340332,
+          "premask_value": 3.844008207321167
+        },
+        {
+          "index": 5,
+          "reference_bits": "71b58841",
+          "premask_bits": "8a198740",
+          "reference_value": 17.088594436645508,
+          "premask_value": 4.221867561340332
+        }
+      ]
+    },
+    {
+      "case": 167,
+      "heads": 64,
+      "type_ordinal": 2,
+      "pattern": 0,
+      "replay": 2,
+      "changed_values": 1308,
+      "nonfinite_pairs": 0,
+      "max_finite_absolute_difference": 22.799424171447754,
+      "first_pairs": [
+        {
+          "index": 0,
+          "reference_bits": "4769b641",
+          "premask_bits": "f41dfc40",
+          "reference_value": 22.80140495300293,
+          "premask_value": 7.878656387329102
+        },
+        {
+          "index": 1,
+          "reference_bits": "1957c141",
+          "premask_bits": "10f71c41",
+          "reference_value": 24.16752815246582,
+          "premask_value": 9.810317993164062
+        },
+        {
+          "index": 2,
+          "reference_bits": "e7e78741",
+          "premask_bits": "936fd840",
+          "reference_value": 16.98823356628418,
+          "premask_value": 6.763619899749756
+        },
+        {
+          "index": 3,
+          "reference_bits": "33888841",
+          "premask_bits": "ae228c40",
+          "reference_value": 17.066503524780273,
+          "premask_value": 4.379233360290527
+        },
+        {
+          "index": 4,
+          "reference_bits": "f6da9641",
+          "premask_bits": "6ec6d240",
+          "reference_value": 18.856914520263672,
+          "premask_value": 6.586722373962402
+        },
+        {
+          "index": 5,
+          "reference_bits": "4eadab41",
+          "premask_bits": "370ad740",
+          "reference_value": 21.45962142944336,
+          "premask_value": 6.719996929168701
+        }
+      ]
+    }
+  ],
+  "new_GPU_work": false,
+  "gate_weakened": false,
+  "cause_proven": false
+}

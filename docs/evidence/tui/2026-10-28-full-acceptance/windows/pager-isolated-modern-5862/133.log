@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::text_selection::tests::semantic_selection_single_row_word_and_url' (48980) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\text_selection.rs:2980:9:
+assertion `left == right` failed
+  left: SemanticSelection { anchor: SelectionEndpoint { block_line_idx: 0, col_within_range: 4 }, head: SelectionEndpoint { block_line_idx: 0, col_within_range: 33 }, text: "https://github.com/A3S-Lab/a3s" }
+ right: SemanticSelection { anchor: SelectionEndpoint { block_line_idx: 0, col_within_range: 4 }, head: SelectionEndpoint { block_line_idx: 0, col_within_range: 15 }, text: "https://github.com/A3S-Lab/a3s" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::text_selection::tests::semantic_selection_single_row_word_and_url ... FAILED
+
+failures:
+
+failures:
+    scrollback::text_selection::tests::semantic_selection_single_row_word_and_url
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

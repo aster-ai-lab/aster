@@ -1,0 +1,392 @@
+{
+  "assertions_finished": true,
+  "case": "coverage-batch-missing-reference",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "request-missing-ref.json"
+          },
+          "id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13330,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+            "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+            "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"invocations\\\":[{\\\"args\\\":{\\\"limit\\\":1,\\\"path\\\":\\\"entries\\\"},\\\"id\\\":\\\"first\\\",\\\"step\\\":1,\\\"tool\\\":\\\"ls\\\"},{\\\"args\\\":{\\\"file_path\\\":{\\\"$ref\\\":\\\"first.missing_path\\\"}},\\\"id\\\":\\\"second\\\",\\\"step\\\":2,\\\"tool\\\":\\\"read\\\"}],\\\"max_concurrency\\\":2}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-missing-ref.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":240},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":240,\"projected_bytes\":240,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"projected_digest\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"repeat_key\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"content_ref\":\"inline:sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:71a50cccf425ef8d0fdd0a074a5621585a481fb5d8c9db59242c6cb9caa0464b\"}",
+        "prepared_digest": "sha256:ffc5dea29e09a543bd7ef68e2fa416aa4c61ea404275f0d4c79b399b10a98f44",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "invocations": [
+              {
+                "args": {
+                  "limit": 1,
+                  "path": "entries"
+                },
+                "id": "first",
+                "step": 1,
+                "tool": "ls"
+              },
+              {
+                "args": {
+                  "file_path": {
+                    "$ref": "first.missing_path"
+                  }
+                },
+                "id": "second",
+                "step": 2,
+                "tool": "read"
+              }
+            ],
+            "max_concurrency": 2
+          },
+          "id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+          "name": "batch"
+        },
+        "has_text": false,
+        "prompt_tokens": 13576,
+        "text": null,
+        "tool": "batch"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+            "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+          "turn": 1
+        },
+        "tool": "batch"
+      },
+      "seq": 11,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+            "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"--- [1 / step 1: ls · first] ---\\nDirectory: \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-PahjG9\\\\workspace\\\\entries\\n\\nfile         8B  first.txt\\n\\n1 of 2 entries\\nMore entries available; continue with cursor=1\\n\\n--- [2 / step 2: read · second] ---\\nERROR: batch $ref 'first.missing_path' has no field 'missing_path'\\n\\n\\nBatch completed with 1 successful and 1 failed item(s). Retry only failed indices [1]; do not repeat successful items.\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"evidence_incomplete\":false,\"status\":\"partial_failure\",\"requested_concurrency\":2,\"applied_concurrency\":2,\"execution_mode\":\"staged\",\"steps\":2,\"highest_step\":2,\"total_count\":2,\"success_count\":1,\"failure_count\":1,\"failed_indices\":[1],\"binding_errors\":[],\"results\":[{\"index\":0,\"step\":1,\"id\":\"first\",\"tool\":\"ls\",\"success\":true,\"exit_code\":0,\"output_bytes\":158,\"error_kind\":null,\"metadata\":{\"page\":{\"offset\":0,\"requested_limit\":1,\"applied_limit\":1,\"returned_items\":1,\"total_items\":2,\"next_cursor\":\"1\",\"truncated\":true,\"limit_clamped\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":158,\"projected_bytes\":158,\"original_estimated_tokens\":40,\"projected_estimated_tokens\":40,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"projected_digest\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"repeat_key\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"content_ref\":\"inline:sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":1,\"step\":2,\"id\":\"second\",\"tool\":\"read\",\"success\":false,\"exit_code\":1,\"output_bytes\":59,\"error_kind\":null,\"metadata\":null}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":418,\"projected_bytes\":418,\"original_estimated_tokens\":105,\"projected_estimated_tokens\":105,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"projected_digest\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"repeat_key\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"content_ref\":\"inline:sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:543da512bac8319cf63cae015bbcfc0bdfbc5969419067260cc3959fd43f45f3\"}",
+        "prepared_digest": "sha256:f3e095ed89be27c92d79a3977f075754e757642dbbe9a2d2e8bf825bf1da42c8",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 12,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13857,
+        "text": "The second invocation failed with this reference error:\n\n`ERROR: batch $ref 'first.missing_path' has no field 'missing_path'`",
+        "tool": null
+      },
+      "seq": 13,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "f364c137bfd417cb7583cce2f916a0b95d0e5c643a23dd4cc235fcdbe9958e78",
+          "seq": 13
+        },
+        "receipt_keys": [
+          "sha256:29c1b0a07838143a75afb92a86b7fa9d21ee621c5f39f182c7cbc45f307d7485",
+          "sha256:2541e6cc8afe67cf653d65003a5adb629b2ac907a2cbf8af94a83051f08eac4e"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 14,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "answered a real permission card",
+      "name": "permission-answer",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PahjG9\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-missing-ref.json once. Call batch exactly once with its exact JSON object as             1:43 PM           arguments. Report the actual reference error without retrying, correcting arguments or calling                          other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ batch                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run batch 0.0s                                                                                 13s ↓13.6k [stop]                                                                                                                            │                                                                                                                       │  Allow batch?                                                                                                         │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=12 model_turns=3 prompt_tokens=40763",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PahjG9\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-missing-ref.json once. Call batch exactly once with its exact JSON object as             1:43 PM           arguments. Report the actual reference error without retrying, correcting arguments or calling                          other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ batch                                                                                                                 ♦ Listed 1 dir                                                                                                                                                                                                                                  The second invocation failed with this reference error:                                                 1:44 PM                                                                                                                                 ERROR: batch $ref 'first.missing_path' has no field 'missing_path'                                                                                                                                                                              Worked for 19s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the actual first stage succeeds; an absent bound path fails only the dependent item and is not silently guessed or repaired",
+      "name": "batch-dependent-reference-failure",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-PahjG9\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read request-missing-ref.json once. Call batch exactly once with its exact JSON object as             1:43 PM           arguments. Report the actual reference error without retrying, correcting arguments or calling                          other tools.                                                                                                                                                                                                                                                                                                                                                          ♦ Read 1 file                                                                                                           ♦ batch                                                                                                                 ♦ Listed 1 dir                                                                                                                                                                                                                                  The second invocation failed with this reference error:                                                 1:44 PM                                                                                                                                 ERROR: batch $ref 'first.missing_path' has no field 'missing_path'                                                                                                                                                                              Worked for 19s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "coverage-batch-missing-reference",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "request-missing-ref.json"
+              },
+              "id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13330,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+                "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+                "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_f366baa07d9b47a3aa5cf62315824cd9",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"invocations\\\":[{\\\"args\\\":{\\\"limit\\\":1,\\\"path\\\":\\\"entries\\\"},\\\"id\\\":\\\"first\\\",\\\"step\\\":1,\\\"tool\\\":\\\"ls\\\"},{\\\"args\\\":{\\\"file_path\\\":{\\\"$ref\\\":\\\"first.missing_path\\\"}},\\\"id\\\":\\\"second\\\",\\\"step\\\":2,\\\"tool\\\":\\\"read\\\"}],\\\"max_concurrency\\\":2}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"request-missing-ref.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":240},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":240,\"projected_bytes\":240,\"original_estimated_tokens\":60,\"projected_estimated_tokens\":60,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"projected_digest\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"repeat_key\":\"sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"content_ref\":\"inline:sha256:7973e1d2fba2111d98ae80c4844b33ee162bc1258954a113a2b4f7a2d7694acf\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:71a50cccf425ef8d0fdd0a074a5621585a481fb5d8c9db59242c6cb9caa0464b\"}",
+            "prepared_digest": "sha256:ffc5dea29e09a543bd7ef68e2fa416aa4c61ea404275f0d4c79b399b10a98f44",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "invocations": [
+                  {
+                    "args": {
+                      "limit": 1,
+                      "path": "entries"
+                    },
+                    "id": "first",
+                    "step": 1,
+                    "tool": "ls"
+                  },
+                  {
+                    "args": {
+                      "file_path": {
+                        "$ref": "first.missing_path"
+                      }
+                    },
+                    "id": "second",
+                    "step": 2,
+                    "tool": "read"
+                  }
+                ],
+                "max_concurrency": 2
+              },
+              "id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+              "name": "batch"
+            },
+            "has_text": false,
+            "prompt_tokens": 13576,
+            "text": null,
+            "tool": "batch"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+                "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+              "turn": 1
+            },
+            "tool": "batch"
+          },
+          "seq": 11,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-260bee35-87c8-47e7-9160-7235ddfa2929",
+                "thread_id": "c4ded620-2b19-4322-b742-316a2214dd17"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_fef2bc6c3fb24d19bd6ae31376cec97c",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"--- [1 / step 1: ls · first] ---\\nDirectory: \\\\\\\\?\\\\C:\\\\Windows\\\\Temp\\\\aster-kimi-PahjG9\\\\workspace\\\\entries\\n\\nfile         8B  first.txt\\n\\n1 of 2 entries\\nMore entries available; continue with cursor=1\\n\\n--- [2 / step 2: read · second] ---\\nERROR: batch $ref 'first.missing_path' has no field 'missing_path'\\n\\n\\nBatch completed with 1 successful and 1 failed item(s). Retry only failed indices [1]; do not repeat successful items.\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"evidence_incomplete\":false,\"status\":\"partial_failure\",\"requested_concurrency\":2,\"applied_concurrency\":2,\"execution_mode\":\"staged\",\"steps\":2,\"highest_step\":2,\"total_count\":2,\"success_count\":1,\"failure_count\":1,\"failed_indices\":[1],\"binding_errors\":[],\"results\":[{\"index\":0,\"step\":1,\"id\":\"first\",\"tool\":\"ls\",\"success\":true,\"exit_code\":0,\"output_bytes\":158,\"error_kind\":null,\"metadata\":{\"page\":{\"offset\":0,\"requested_limit\":1,\"applied_limit\":1,\"returned_items\":1,\"total_items\":2,\"next_cursor\":\"1\",\"truncated\":true,\"limit_clamped\":false},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":158,\"projected_bytes\":158,\"original_estimated_tokens\":40,\"projected_estimated_tokens\":40,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"projected_digest\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"repeat_key\":\"sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"content_ref\":\"inline:sha256:4a8d2dbcd9e5ffc3ea23b2dd9f2b01dadf7f260a563624c4a6055c9299880c0c\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}},{\"index\":1,\"step\":2,\"id\":\"second\",\"tool\":\"read\",\"success\":false,\"exit_code\":1,\"output_bytes\":59,\"error_kind\":null,\"metadata\":null}],\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":418,\"projected_bytes\":418,\"original_estimated_tokens\":105,\"projected_estimated_tokens\":105,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"projected_digest\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"repeat_key\":\"sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"content_ref\":\"inline:sha256:d2fdb3dd527a0e46a51a880bed7c8e322da96c30fd6bb14f479b061d045fc25a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:543da512bac8319cf63cae015bbcfc0bdfbc5969419067260cc3959fd43f45f3\"}",
+            "prepared_digest": "sha256:f3e095ed89be27c92d79a3977f075754e757642dbbe9a2d2e8bf825bf1da42c8",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 12,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13857,
+            "text": "The second invocation failed with this reference error:\n\n`ERROR: batch $ref 'first.missing_path' has no field 'missing_path'`",
+            "tool": null
+          },
+          "seq": 13,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "f364c137bfd417cb7583cce2f916a0b95d0e5c643a23dd4cc235fcdbe9958e78",
+              "seq": 13
+            },
+            "receipt_keys": [
+              "sha256:29c1b0a07838143a75afb92a86b7fa9d21ee621c5f39f182c7cbc45f307d7485",
+              "sha256:2541e6cc8afe67cf653d65003a5adb629b2ac907a2cbf8af94a83051f08eac4e"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 14,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "c4ded620-2b19-4322-b742-316a2214dd17"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

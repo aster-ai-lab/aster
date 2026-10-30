@@ -1,0 +1,12 @@
+{
+  "source_pair_digest": "9ad25fa79e7cd51f605714bae75f231caafeff02",
+  "base": "89418e07dd5bc78d0e705f8d99f960cc7023dd0c",
+  "bytes": 3060,
+  "sha256": "a23ef04c89f55f795120ba563ba75b466ad9a92766522a7ad00ee38cbb09d0a3",
+  "tracked_paths": [
+    "crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs"
+  ],
+  "new_paths": [],
+  "reverse_check": "passed",
+  "created_utc": "2026-10-29T06:11:37.994462+00:00"
+}

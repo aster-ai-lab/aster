@@ -1,0 +1,47 @@
+{
+  "unix": 1792896999.7179472,
+  "exact_link_process_alive": false,
+  "native-link-result.json": {
+    "unix": 1792896993.7020113,
+    "phase": "linked",
+    "gpu_math_executed": false,
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "variants": [
+      {
+        "profile": "trace_control",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-phase-simd-v138/ds41_generate.trace_control",
+        "bytes": 253082432,
+        "sha256": "99f3eee8c7eeee54c304120db50e8e632a7c001f9ac90fadf0983040fef92c25",
+        "invalid_modes_refused": 8
+      },
+      {
+        "profile": "trace_simd",
+        "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-native-phase-simd-v138/ds41_generate.trace_simd",
+        "bytes": 253087088,
+        "sha256": "1ca3284fd93329a36c3fdd12ff44c7740e012e42c69686c0da35dc8b582b7af0",
+        "invalid_modes_refused": 8
+      }
+    ],
+    "current": "trace-simd-candidate",
+    "control_binary_byte_equal": true,
+    "dense_members": [
+      {
+        "member": "ds41_dense.cpp.o",
+        "sha256": "61be5025c151dacde10b9b4454436b4b0cb871b9cfcb384db3a5c969141de3f3",
+        "unchanged": true
+      },
+      {
+        "member": "ds41_engram.cpp.o",
+        "sha256": "cf4769ab22eb4167222a202810f5a23c874e1cdad8f29484e14efeb92de8ad62",
+        "unchanged": false
+      }
+    ],
+    "only_engram_member_changed": true,
+    "model_math_executed": false,
+    "routing_changed": false,
+    "acceptance_changed": false,
+    "finished_unix": 1792896998.6480515
+  },
+  "worker.log": ""
+}

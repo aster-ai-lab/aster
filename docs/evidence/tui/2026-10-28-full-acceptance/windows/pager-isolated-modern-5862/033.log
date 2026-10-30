@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::dashboard::workspace_dispatch_with_attach_selects_the_provisional_row' (22052) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\dashboard.rs:2585:5:
+assertion `left == right` failed: live rows render even before the store snapshot has loaded
+  left: []
+ right: [TopLevel(AgentId(0))]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::dashboard::workspace_dispatch_with_attach_selects_the_provisional_row ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::dashboard::workspace_dispatch_with_attach_selects_the_provisional_row
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.02s
+

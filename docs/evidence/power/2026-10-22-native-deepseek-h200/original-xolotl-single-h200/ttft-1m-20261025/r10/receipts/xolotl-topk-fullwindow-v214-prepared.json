@@ -1,0 +1,18 @@
+{
+  "file": "manage_topk_fullwindow_suite_v214.py",
+  "bytes": 9354,
+  "sha256": "734d46d2653236d1fb75263c20a294919cc5f8465475d16d3af6405aaeb7eae5",
+  "parent": "manage_literal_fullwindow_suite_v150.py",
+  "fullwindow_worker": "xolotl_code_fullwindow_long_worker_v119.frozen.py",
+  "suite_worker": "xolotl_literal_fullwindow_suite_worker_v150.frozen.py",
+  "profiles": [
+    "control_a",
+    "topk",
+    "control_b"
+  ],
+  "calls_per_profile": 20,
+  "actual1m_calls_per_profile": 18,
+  "output_tokens": 1024,
+  "full_output_identity_and_concurrency_gates_changed": false,
+  "formal_changed": false
+}

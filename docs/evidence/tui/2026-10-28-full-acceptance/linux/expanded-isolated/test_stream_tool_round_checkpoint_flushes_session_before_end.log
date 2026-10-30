@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::stream::test_stream_tool_round_checkpoint_flushes_session_before_end' (5430) panicked at crates/code/core/src/agent_api/tests/stream.rs:144:5:
+session JSON must flush at the tool-round checkpoint before stream End
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::stream::test_stream_tool_round_checkpoint_flushes_session_before_end ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::stream::test_stream_tool_round_checkpoint_flushes_session_before_end
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5431 filtered out; finished in 0.72s
+

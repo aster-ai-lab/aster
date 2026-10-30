@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'scrollback::link_map::tests::file_target_provenance_survives_overlay_to_visible_map' (34516) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\link_map.rs:251:31:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::link_map::tests::file_target_provenance_survives_overlay_to_visible_map ... FAILED
+
+failures:
+
+failures:
+    scrollback::link_map::tests::file_target_provenance_survives_overlay_to_visible_map
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

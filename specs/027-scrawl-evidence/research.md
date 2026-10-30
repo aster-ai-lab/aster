@@ -4,7 +4,7 @@ Reference implementation: `kitlangton/scrawl` at `7b184c67767a1aee6c1d44640d94d8
 
 | Decision | Existing prior art | Reason |
 | --- | --- | --- |
-| Vendor the evidence engine in `crates/scrawl` | `src/model.rs`, `keyframes.rs`, `autocrop.rs`, `sketch.rs`, `export/` upstream | UI, agent and headless ingest all need the same evidence logic; copying only selected algorithms would silently drop capabilities |
+| Vendor the evidence engine in `crates/capture` | `src/model.rs`, `keyframes.rs`, `autocrop.rs`, `sketch.rs`, `export/` upstream | UI, agent and headless ingest all need the same evidence logic; copying only selected algorithms would silently drop capabilities |
 | Keep Scrawl.app and GPUI shell outside Aster | Existing Tauri/Studio shell | Aster owns its windows, identity, settings and updates; only native capture/review surfaces are integrated |
 | Put the button after the existing screenshot group | `ComposerScreenshotControl.tsx`, root `DESIGN.md` §4 | Every composer already shares this entry and the 32px/48px geometry is specified |
 | Reuse image/video editing and redaction | `VisualFeedbackEditor.tsx`, `visual_feedback/{mod,media}.rs` | Existing editor already supports imported video, exact frame annotations, projects and sanitized derivatives |
@@ -29,7 +29,7 @@ The implementation and acceptance matrix in `contracts/capability-matrix.md` tra
 - Keyframe selection, scene/spoken cues, auto-crop, contact sheet, summary and manifest.
 - Preview, inspect, zoom, frames, export/camera, reprocess, recover, import and demo fixtures.
 - Clipboard, explicit session delivery, page registration, localhost routing and smart send/offer/keep decisions with undo.
-- ScrawlKit appFrames/ReplayKit, gestures, app events/context, pairing, USB, HTTPS outbox and headless ingest.
+- CaptureKit appFrames/ReplayKit, gestures, app events/context, pairing, USB, HTTPS outbox and headless ingest.
 - Retention, pin, shrink, recovery and bounded cleanup.
 - Settings, permissions, CLI operations and local helper diagnostics. Scrawl's separate updater and branded installer are deliberately replaced by Aster's existing mechanisms, not duplicated.
 

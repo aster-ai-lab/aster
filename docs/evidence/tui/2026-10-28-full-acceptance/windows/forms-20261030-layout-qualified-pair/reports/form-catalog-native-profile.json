@@ -1,0 +1,377 @@
+{
+  "assertions_finished": true,
+  "case": "form-catalog-native-profile",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "file_path": "catalog-form.json"
+          },
+          "id": "call_246e66ae7e6d4261acf80e56d878cc09",
+          "name": "read"
+        },
+        "has_text": false,
+        "prompt_tokens": 13338,
+        "text": null,
+        "tool": "read"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+            "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_246e66ae7e6d4261acf80e56d878cc09",
+          "turn": 1
+        },
+        "tool": "read"
+      },
+      "seq": 7,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+            "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_246e66ae7e6d4261acf80e56d878cc09",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"card\\\":{\\\"children\\\":[\\\"stack\\\"],\\\"props\\\":{\\\"title\\\":\\\"Catalog 13\\\"},\\\"type\\\":\\\"Card\\\"},\\\"chart\\\":{\\\"props\\\":{\\\"labels\\\":[\\\"West\\\",\\\"East\\\"],\\\"values\\\":[2,5]},\\\"type\\\":\\\"BarChart\\\"},\\\"choice\\\":{\\\"props\\\":{\\\"label\\\":\\\"Choice\\\",\\\"options\\\":[\\\"alpha\\\",\\\"beta\\\"],\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/choice\\\"}},\\\"type\\\":\\\"Select\\\"},\\\"count\\\":{\\\"props\\\":{\\\"label\\\":\\\"Count\\\",\\\"max\\\":5,\\\"min\\\":1,\\\"step\\\":1,\\\"type\\\":\\\"number\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/count\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"email\\\":{\\\"props\\\":{\\\"label\\\":\\\"Email\\\",\\\"type\\\":\\\"email\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/email\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"enabled\\\":{\\\"props\\\":{\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/enabled\\\"},\\\"label\\\":\\\"Enabled\\\",\\\"required\\\":true},\\\"type\\\":\\\"Checkbox\\\"},\\\"grid\\\":{\\\"children\\\":[\\\"name\\\",\\\"count\\\",\\\"email\\\",\\\"phone\\\",\\\"notes\\\",\\\"choice\\\",\\\"level\\\",\\\"enabled\\\"],\\\"props\\\":{\\\"columns\\\":2},\\\"type\\\":\\\"Grid\\\"},\\\"intro\\\":{\\\"props\\\":{\\\"content\\\":\\\"All controls\\\"},\\\"type\\\":\\\"Text\\\"},\\\"level\\\":{\\\"props\\\":{\\\"label\\\":\\\"Level\\\",\\\"max\\\":10,\\\"min\\\":0,\\\"step\\\":2,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/level\\\"}},\\\"type\\\":\\\"Slider\\\"},\\\"metric\\\":{\\\"props\\\":{\\\"label\\\":\\\"Latency\\\",\\\"unit\\\":\\\"ms\\\",\\\"value\\\":42},\\\"type\\\":\\\"Metric\\\"},\\\"name\\\":{\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"required\\\":true,\\\"type\\\":\\\"text\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"notes\\\":{\\\"props\\\":{\\\"label\\\":\\\"Notes\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/notes\\\"}},\\\"type\\\":\\\"Textarea\\\"},\\\"phone\\\":{\\\"props\\\":{\\\"label\\\":\\\"Phone\\\",\\\"type\\\":\\\"tel\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/phone\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"root\\\":{\\\"children\\\":[\\\"card\\\"],\\\"props\\\":{\\\"submitAction\\\":\\\"submit\\\"},\\\"type\\\":\\\"Form\\\"},\\\"stack\\\":{\\\"children\\\":[\\\"intro\\\",\\\"grid\\\",\\\"metric\\\",\\\"chart\\\",\\\"submit\\\"],\\\"props\\\":{\\\"direction\\\":\\\"vertical\\\",\\\"gap\\\":1},\\\"type\\\":\\\"Stack\\\"},\\\"submit\\\":{\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"},\\\"type\\\":\\\"Button\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"choice\\\":\\\"alpha\\\",\\\"count\\\":2,\\\"email\\\":\\\"seed@example.invalid\\\",\\\"enabled\\\":true,\\\"level\\\":4,\\\"name\\\":\\\"\\\",\\\"notes\\\":\\\"seed-note\\\",\\\"phone\\\":\\\"seed-phone\\\"}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"catalog-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":1811},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":1811,\"projected_bytes\":1811,\"original_estimated_tokens\":453,\"projected_estimated_tokens\":453,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"projected_digest\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"repeat_key\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"content_ref\":\"inline:sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a78a0c01370bd89efb0c398099da0958c97d7c97d6f51cf7a253fb3a5917a727\"}",
+        "prepared_digest": "sha256:21cf90d839547382ee67fcf2d6800ed0e117756cde7e6b27920a28a905109df0",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 8,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "form": "{\"elements\":{\"card\":{\"children\":[\"stack\"],\"props\":{\"title\":\"Catalog 13\"},\"type\":\"Card\"},\"chart\":{\"props\":{\"labels\":[\"West\",\"East\"],\"values\":[2,5]},\"type\":\"BarChart\"},\"choice\":{\"props\":{\"label\":\"Choice\",\"options\":[\"alpha\",\"beta\"],\"required\":true,\"value\":{\"$bindState\":\"/form/choice\"}},\"type\":\"Select\"},\"count\":{\"props\":{\"label\":\"Count\",\"max\":5,\"min\":1,\"step\":1,\"type\":\"number\",\"value\":{\"$bindState\":\"/form/count\"}},\"type\":\"Input\"},\"email\":{\"props\":{\"label\":\"Email\",\"type\":\"email\",\"value\":{\"$bindState\":\"/form/email\"}},\"type\":\"Input\"},\"enabled\":{\"props\":{\"checked\":{\"$bindState\":\"/form/enabled\"},\"label\":\"Enabled\",\"required\":true},\"type\":\"Checkbox\"},\"grid\":{\"children\":[\"name\",\"count\",\"email\",\"phone\",\"notes\",\"choice\",\"level\",\"enabled\"],\"props\":{\"columns\":2},\"type\":\"Grid\"},\"intro\":{\"props\":{\"content\":\"All controls\"},\"type\":\"Text\"},\"level\":{\"props\":{\"label\":\"Level\",\"max\":10,\"min\":0,\"step\":2,\"value\":{\"$bindState\":\"/form/level\"}},\"type\":\"Slider\"},\"metric\":{\"props\":{\"label\":\"Latency\",\"unit\":\"ms\",\"value\":42},\"type\":\"Metric\"},\"name\":{\"props\":{\"label\":\"Name\",\"required\":true,\"type\":\"text\",\"value\":{\"$bindState\":\"/form/name\"}},\"type\":\"Input\"},\"notes\":{\"props\":{\"label\":\"Notes\",\"value\":{\"$bindState\":\"/form/notes\"}},\"type\":\"Textarea\"},\"phone\":{\"props\":{\"label\":\"Phone\",\"type\":\"tel\",\"value\":{\"$bindState\":\"/form/phone\"}},\"type\":\"Input\"},\"root\":{\"children\":[\"card\"],\"props\":{\"submitAction\":\"submit\"},\"type\":\"Form\"},\"stack\":{\"children\":[\"intro\",\"grid\",\"metric\",\"chart\",\"submit\"],\"props\":{\"direction\":\"vertical\",\"gap\":1},\"type\":\"Stack\"},\"submit\":{\"props\":{\"action\":\"submit\",\"label\":\"Continue\"},\"type\":\"Button\"}},\"root\":\"root\",\"state\":{\"form\":{\"choice\":\"alpha\",\"count\":2,\"email\":\"seed@example.invalid\",\"enabled\":true,\"level\":4,\"name\":\"\",\"notes\":\"seed-note\",\"phone\":\"seed-phone\"}}}",
+            "prompt": "Catalog acceptance"
+          },
+          "id": "call_9bcdf81120554381bbc15461ee0da6a3",
+          "name": "ask_user_form"
+        },
+        "has_text": false,
+        "prompt_tokens": 13963,
+        "text": null,
+        "tool": "ask_user_form"
+      },
+      "seq": 9,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+            "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_9bcdf81120554381bbc15461ee0da6a3",
+          "turn": 1
+        },
+        "tool": "ask_user_form"
+      },
+      "seq": 10,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+            "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+          },
+          "batch_index": 0,
+          "cycle": 1,
+          "tool_call_id": "call_9bcdf81120554381bbc15461ee0da6a3",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-b39232c4-b7ff-496b-b433-8807a7110548-run-404f447b-e666-48ad-a71e-233851a97a74-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"name\\\":\\\"用户甲\\\",\\\"count\\\":4.0,\\\"email\\\":\\\"host@example.invalid\\\",\\\"phone\\\":\\\"020-42\\\",\\\"notes\\\":\\\"中文备注\\\",\\\"choice\\\":\\\"beta\\\",\\\"level\\\":6.0,\\\"enabled\\\":true},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":340,\"projected_bytes\":340,\"original_estimated_tokens\":85,\"projected_estimated_tokens\":85,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"projected_digest\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"repeat_key\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"content_ref\":\"inline:sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c42e884f5d6bf128d1387252eb4d5ed790200e1ee065e5aee039735d5e160189\"}",
+        "prepared_digest": "sha256:340c56f1c413e384ec84d0a4c55a644557e56df118741525d36b358f67a880cf",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 11,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 14687,
+        "text": "```json\n{\n  \"name\": \"用户甲\",\n  \"count\": 4.0,\n  \"email\": \"host@example.invalid\",\n  \"phone\": \"020-42\",\n  \"notes\": \"中文备注\",\n  \"choice\": \"beta\",\n  \"level\": 6.0,\n  \"enabled\": true\n}\n```",
+        "tool": null
+      },
+      "seq": 12,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "f327727ce5ba7e6ec50c377975974945c3555b63d5d7834c19310c3a05025101",
+          "seq": 12
+        },
+        "receipt_keys": [
+          "sha256:aaf835e5ef472253acfe4f0977f5775cc7ecf5d7907dda647f3dadbcba2f4183",
+          "sha256:9bc781ac5c5b5bd55e770034bea50ab54b32f2e652b6b3222e563e3903652145"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 13,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:2484faae030dbb8ee7bd1c765db3ca28ad1988bb:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "all 13 shared component types are represented; native metric/chart text retains the numeric values and units using the shared parser's floating-point display",
+      "name": "catalog-text-values",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 0.0s                                                                         18s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │                                                                                                                       │  1 Name (required)                                                                                                    │  2 Count               2.0                                                                                            │  3 Email               seed@example.invalid                                                                           │  4 Phone               seed-phone                                                                                     │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual focused native field accepts its host-only edit",
+      "name": "catalog-field-Name",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 0.5s                                                                         19s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │                                                                                                                       │  1 Name (required)     用户甲                                                                                         │  2 Count               2.0                                                                                            │  3 Email               seed@example.invalid                                                                           │  4 Phone               seed-phone                                                                                     │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual focused native field accepts its host-only edit",
+      "name": "catalog-field-Count",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 1.0s                                                                         19s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │                                                                                                                       │  1 Name (required)     用户甲                                                                                         │  2 Count               4                                                                                              │  3 Email               seed@example.invalid                                                                           │  4 Phone               seed-phone                                                                                     │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual focused native field accepts its host-only edit",
+      "name": "catalog-field-Email",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 1.6s                                                                         20s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │                                                                                                                       │  1 Name (required)     用户甲                                                                                         │  2 Count               4                                                                                              │  3 Email               host@example.invalid                                                                           │  4 Phone               seed-phone                                                                                     │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual focused native field accepts its host-only edit",
+      "name": "catalog-field-Phone",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 2.2s                                                                         21s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │                                                                                                                       │  1 Name (required)     用户甲                                                                                         │  2 Count               4                                                                                              │  3 Email               host@example.invalid                                                                           │  4 Phone               020-42                                                                                         │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "the actual focused native field accepts its host-only edit",
+      "name": "catalog-field-Notes",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ♦ Run ask_user_form 2.7s                                                                         21s ↓14.0k [stop]                                                                                                                            │                                                                                                                       │  MCP “Aster” requests your input                                                                                      │                                                                                                                       │  Catalog acceptance · Catalog 13 · All controls · Latency: 42.0ms · West: 2.0 · East: 5.0                             │  ↑ more                                                                                                               │  2 Count               4                                                                                              │  3 Email               host@example.invalid                                                                           │  4 Phone               020-42                                                                                         │  5 Notes               中文备注                                                                                       │  ↓ more                                                                                                               │  y (○) Accept                                                                                                         │  d (○) Decline                                                                                                        │                                                                                                                                                                                                                                               Enter:accept / toggle  │  d:decline  │  Ctrl+c:cancel  │  Tab:next field  │  Esc:scrollback                                                                                                                                                   "
+    },
+    {
+      "detail": "facts=11 model_turns=3 prompt_tokens=41988",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 2.8s                                                                                                                                                                                                                              {                                                                                                      11:19 AM           \"name\": \"用户甲\",                                                                                                       \"count\": 4.0,                                                                                                           \"email\": \"host@example.invalid\",                                                                                        \"phone\": \"020-42\",                                                                                                      \"notes\": \"中文备注\",                                                                                                    \"choice\": \"beta\",                                                                                                       \"level\": 6.0,                                                                                                           \"enabled\": true                                                                                                       }                                                                                                                                                                                                                                               Worked for 30s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "the actual tool receipt contains exactly the eight edited fields with correct Unicode strings, enum, numbers and boolean; the source document is unchanged",
+      "name": "catalog-eight-typed-values",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-s6xnZ7\\workspace                                                                        14K / 128K                                                                                                                                                                                                                                                       > Read catalog-form.json once. Call ask_user_form exactly once with the exact JSON Render document     11:18 AM           from the file and prompt 'Catalog acceptance'. After the user submits, report the returned values                       without calling other tools or modifying files.                                                                                                                                                                                                                                                                                                                       ♦ Read 1 file                                                                                                           ♦ ask_user_form                                                                                                         ♦ Thought for 2.8s                                                                                                                                                                                                                              {                                                                                                      11:19 AM           \"name\": \"用户甲\",                                                                                                       \"count\": 4.0,                                                                                                           \"email\": \"host@example.invalid\",                                                                                        \"phone\": \"020-42\",                                                                                                      \"notes\": \"中文备注\",                                                                                                    \"choice\": \"beta\",                                                                                                       \"level\": 6.0,                                                                                                           \"enabled\": true                                                                                                       }                                                                                                                                                                                                                                               Worked for 30s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "form-catalog-native-profile",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "file_path": "catalog-form.json"
+              },
+              "id": "call_246e66ae7e6d4261acf80e56d878cc09",
+              "name": "read"
+            },
+            "has_text": false,
+            "prompt_tokens": 13338,
+            "text": null,
+            "tool": "read"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+                "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_246e66ae7e6d4261acf80e56d878cc09",
+              "turn": 1
+            },
+            "tool": "read"
+          },
+          "seq": 7,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+                "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_246e66ae7e6d4261acf80e56d878cc09",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"     1\\t{\\\"elements\\\":{\\\"card\\\":{\\\"children\\\":[\\\"stack\\\"],\\\"props\\\":{\\\"title\\\":\\\"Catalog 13\\\"},\\\"type\\\":\\\"Card\\\"},\\\"chart\\\":{\\\"props\\\":{\\\"labels\\\":[\\\"West\\\",\\\"East\\\"],\\\"values\\\":[2,5]},\\\"type\\\":\\\"BarChart\\\"},\\\"choice\\\":{\\\"props\\\":{\\\"label\\\":\\\"Choice\\\",\\\"options\\\":[\\\"alpha\\\",\\\"beta\\\"],\\\"required\\\":true,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/choice\\\"}},\\\"type\\\":\\\"Select\\\"},\\\"count\\\":{\\\"props\\\":{\\\"label\\\":\\\"Count\\\",\\\"max\\\":5,\\\"min\\\":1,\\\"step\\\":1,\\\"type\\\":\\\"number\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/count\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"email\\\":{\\\"props\\\":{\\\"label\\\":\\\"Email\\\",\\\"type\\\":\\\"email\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/email\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"enabled\\\":{\\\"props\\\":{\\\"checked\\\":{\\\"$bindState\\\":\\\"/form/enabled\\\"},\\\"label\\\":\\\"Enabled\\\",\\\"required\\\":true},\\\"type\\\":\\\"Checkbox\\\"},\\\"grid\\\":{\\\"children\\\":[\\\"name\\\",\\\"count\\\",\\\"email\\\",\\\"phone\\\",\\\"notes\\\",\\\"choice\\\",\\\"level\\\",\\\"enabled\\\"],\\\"props\\\":{\\\"columns\\\":2},\\\"type\\\":\\\"Grid\\\"},\\\"intro\\\":{\\\"props\\\":{\\\"content\\\":\\\"All controls\\\"},\\\"type\\\":\\\"Text\\\"},\\\"level\\\":{\\\"props\\\":{\\\"label\\\":\\\"Level\\\",\\\"max\\\":10,\\\"min\\\":0,\\\"step\\\":2,\\\"value\\\":{\\\"$bindState\\\":\\\"/form/level\\\"}},\\\"type\\\":\\\"Slider\\\"},\\\"metric\\\":{\\\"props\\\":{\\\"label\\\":\\\"Latency\\\",\\\"unit\\\":\\\"ms\\\",\\\"value\\\":42},\\\"type\\\":\\\"Metric\\\"},\\\"name\\\":{\\\"props\\\":{\\\"label\\\":\\\"Name\\\",\\\"required\\\":true,\\\"type\\\":\\\"text\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/name\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"notes\\\":{\\\"props\\\":{\\\"label\\\":\\\"Notes\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/notes\\\"}},\\\"type\\\":\\\"Textarea\\\"},\\\"phone\\\":{\\\"props\\\":{\\\"label\\\":\\\"Phone\\\",\\\"type\\\":\\\"tel\\\",\\\"value\\\":{\\\"$bindState\\\":\\\"/form/phone\\\"}},\\\"type\\\":\\\"Input\\\"},\\\"root\\\":{\\\"children\\\":[\\\"card\\\"],\\\"props\\\":{\\\"submitAction\\\":\\\"submit\\\"},\\\"type\\\":\\\"Form\\\"},\\\"stack\\\":{\\\"children\\\":[\\\"intro\\\",\\\"grid\\\",\\\"metric\\\",\\\"chart\\\",\\\"submit\\\"],\\\"props\\\":{\\\"direction\\\":\\\"vertical\\\",\\\"gap\\\":1},\\\"type\\\":\\\"Stack\\\"},\\\"submit\\\":{\\\"props\\\":{\\\"action\\\":\\\"submit\\\",\\\"label\\\":\\\"Continue\\\"},\\\"type\\\":\\\"Button\\\"}},\\\"root\\\":\\\"root\\\",\\\"state\\\":{\\\"form\\\":{\\\"choice\\\":\\\"alpha\\\",\\\"count\\\":2,\\\"email\\\":\\\"seed@example.invalid\\\",\\\"enabled\\\":true,\\\"level\\\":4,\\\"name\\\":\\\"\\\",\\\"notes\\\":\\\"seed-note\\\",\\\"phone\\\":\\\"seed-phone\\\"}}}\\n[End of file: no final newline.]\\n\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"source_anchors\":[\"catalog-form.json\"],\"range\":{\"offset\":0,\"requested_limit\":2000,\"applied_limit\":2000,\"returned_lines\":1,\"next_offset\":null,\"eof\":true,\"total_lines\":1,\"limit_clamped\":false,\"budget_clamped\":false,\"final_line_ending\":\"none\",\"output_bytes\":1811},\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":1811,\"projected_bytes\":1811,\"original_estimated_tokens\":453,\"projected_estimated_tokens\":453,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"projected_digest\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"repeat_key\":\"sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"content_ref\":\"inline:sha256:54ac5b3e3ab0bd61c98a18352fbff4df3bff4d9bae8d364a8fa1df7281fd7127\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:a78a0c01370bd89efb0c398099da0958c97d7c97d6f51cf7a253fb3a5917a727\"}",
+            "prepared_digest": "sha256:21cf90d839547382ee67fcf2d6800ed0e117756cde7e6b27920a28a905109df0",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 8,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "form": "{\"elements\":{\"card\":{\"children\":[\"stack\"],\"props\":{\"title\":\"Catalog 13\"},\"type\":\"Card\"},\"chart\":{\"props\":{\"labels\":[\"West\",\"East\"],\"values\":[2,5]},\"type\":\"BarChart\"},\"choice\":{\"props\":{\"label\":\"Choice\",\"options\":[\"alpha\",\"beta\"],\"required\":true,\"value\":{\"$bindState\":\"/form/choice\"}},\"type\":\"Select\"},\"count\":{\"props\":{\"label\":\"Count\",\"max\":5,\"min\":1,\"step\":1,\"type\":\"number\",\"value\":{\"$bindState\":\"/form/count\"}},\"type\":\"Input\"},\"email\":{\"props\":{\"label\":\"Email\",\"type\":\"email\",\"value\":{\"$bindState\":\"/form/email\"}},\"type\":\"Input\"},\"enabled\":{\"props\":{\"checked\":{\"$bindState\":\"/form/enabled\"},\"label\":\"Enabled\",\"required\":true},\"type\":\"Checkbox\"},\"grid\":{\"children\":[\"name\",\"count\",\"email\",\"phone\",\"notes\",\"choice\",\"level\",\"enabled\"],\"props\":{\"columns\":2},\"type\":\"Grid\"},\"intro\":{\"props\":{\"content\":\"All controls\"},\"type\":\"Text\"},\"level\":{\"props\":{\"label\":\"Level\",\"max\":10,\"min\":0,\"step\":2,\"value\":{\"$bindState\":\"/form/level\"}},\"type\":\"Slider\"},\"metric\":{\"props\":{\"label\":\"Latency\",\"unit\":\"ms\",\"value\":42},\"type\":\"Metric\"},\"name\":{\"props\":{\"label\":\"Name\",\"required\":true,\"type\":\"text\",\"value\":{\"$bindState\":\"/form/name\"}},\"type\":\"Input\"},\"notes\":{\"props\":{\"label\":\"Notes\",\"value\":{\"$bindState\":\"/form/notes\"}},\"type\":\"Textarea\"},\"phone\":{\"props\":{\"label\":\"Phone\",\"type\":\"tel\",\"value\":{\"$bindState\":\"/form/phone\"}},\"type\":\"Input\"},\"root\":{\"children\":[\"card\"],\"props\":{\"submitAction\":\"submit\"},\"type\":\"Form\"},\"stack\":{\"children\":[\"intro\",\"grid\",\"metric\",\"chart\",\"submit\"],\"props\":{\"direction\":\"vertical\",\"gap\":1},\"type\":\"Stack\"},\"submit\":{\"props\":{\"action\":\"submit\",\"label\":\"Continue\"},\"type\":\"Button\"}},\"root\":\"root\",\"state\":{\"form\":{\"choice\":\"alpha\",\"count\":2,\"email\":\"seed@example.invalid\",\"enabled\":true,\"level\":4,\"name\":\"\",\"notes\":\"seed-note\",\"phone\":\"seed-phone\"}}}",
+                "prompt": "Catalog acceptance"
+              },
+              "id": "call_9bcdf81120554381bbc15461ee0da6a3",
+              "name": "ask_user_form"
+            },
+            "has_text": false,
+            "prompt_tokens": 13963,
+            "text": null,
+            "tool": "ask_user_form"
+          },
+          "seq": 9,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+                "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_9bcdf81120554381bbc15461ee0da6a3",
+              "turn": 1
+            },
+            "tool": "ask_user_form"
+          },
+          "seq": 10,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-404f447b-e666-48ad-a71e-233851a97a74",
+                "thread_id": "b39232c4-b7ff-496b-b433-8807a7110548"
+              },
+              "batch_index": 0,
+              "cycle": 1,
+              "tool_call_id": "call_9bcdf81120554381bbc15461ee0da6a3",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"{\\\"schema\\\":\\\"a3s.code.user-form.v1\\\",\\\"question_id\\\":\\\"ask-form-b39232c4-b7ff-496b-b433-8807a7110548-run-404f447b-e666-48ad-a71e-233851a97a74-1\\\",\\\"status\\\":\\\"answered\\\",\\\"values\\\":{\\\"name\\\":\\\"用户甲\\\",\\\"count\\\":4.0,\\\"email\\\":\\\"host@example.invalid\\\",\\\"phone\\\":\\\"020-42\\\",\\\"notes\\\":\\\"中文备注\\\",\\\"choice\\\":\\\"beta\\\",\\\"level\\\":6.0,\\\"enabled\\\":true},\\\"permission_grant\\\":false}\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"schema\":\"a3s.code.user-form.v1\",\"permission_grant\":false,\"wrote_files\":false,\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":340,\"projected_bytes\":340,\"original_estimated_tokens\":85,\"projected_estimated_tokens\":85,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"projected_digest\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"repeat_key\":\"sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"content_ref\":\"inline:sha256:2c875eb9f29733c909f7611f86732eb62710492df7467bd27d545a211005a070\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}},\"observation_digest\":\"sha256:c42e884f5d6bf128d1387252eb4d5ed790200e1ee065e5aee039735d5e160189\"}",
+            "prepared_digest": "sha256:340c56f1c413e384ec84d0a4c55a644557e56df118741525d36b358f67a880cf",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 11,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 14687,
+            "text": "```json\n{\n  \"name\": \"用户甲\",\n  \"count\": 4.0,\n  \"email\": \"host@example.invalid\",\n  \"phone\": \"020-42\",\n  \"notes\": \"中文备注\",\n  \"choice\": \"beta\",\n  \"level\": 6.0,\n  \"enabled\": true\n}\n```",
+            "tool": null
+          },
+          "seq": 12,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "f327727ce5ba7e6ec50c377975974945c3555b63d5d7834c19310c3a05025101",
+              "seq": 12
+            },
+            "receipt_keys": [
+              "sha256:aaf835e5ef472253acfe4f0977f5775cc7ecf5d7907dda647f3dadbcba2f4183",
+              "sha256:9bc781ac5c5b5bd55e770034bea50ab54b32f2e652b6b3222e563e3903652145"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 13,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "b39232c4-b7ff-496b-b433-8807a7110548"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

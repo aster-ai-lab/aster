@@ -1,0 +1,63 @@
+{
+  "assertions_finished": true,
+  "case": "editor-nonzero",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13313,
+        "text": "EDITOR-CONTROL-OK",
+        "tool": null
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "e2e80be30b383aba258bd0662c12ffd64f00ad15a4e5b6746d630cce3a0b3288",
+          "seq": 6
+        },
+        "receipt_keys": [],
+        "terminal": "narrative"
+      },
+      "seq": 7,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13313",
+      "name": "settled-turn",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-ixKuMP\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: f3572062-e1fc-465b-9092-ea7a539a1c1d\n  Working directory: C:\\Windows\\Temp\\aster-kimi-ixKuMP\\workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor exited unsuccessfully; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 3.6s\n│ I need respond exact? User says Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should interpret     \n│ likely output \"EDITOR-CONTROL-OK\" only? User includes ORIGINAL-DRAFT perhaps must reply with both? User says Reply    │ with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should have no tools. I should output EDITOR-CONTROL-OK.   \n│ Perhaps ORIGINAL-DRAFT is extraneous instruction? Could be tests editor control. Most exact respond with EDITOR-      │ CONTROL-OK. Respond.\nEDITOR-CONTROL-OK\nWorked for 7.7s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "real editor save/failure returns control; only the explicitly submitted exact draft reaches Kimi",
+      "name": "editor-roundtrip",
+      "screen": "╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮│                                                                                                                      ││                                                          +#+ ...++o                                                  ││                                                        +*###*+  :::                                                  ││                                                    ..+*##* *##*+:                                                    ││                                                  ...  ::*#*#+                                                        ││                                                  .:::::   #                                                          ││                                                                                                                      ││ Aster  v9.1.4                                                                                                        ││ C:\\Windows\\Temp\\aster-kimi-ixKuMP\\workspace                                                                          ││ Model · kimi/K3.1 Pro                                                                                                ││ /help for commands                                                                                                   ││                                                                                                                      │╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯  Title: kimi/k3.1-pro\n  Shell version: 9.1.4\n  Auth method: OAuth\n  Session ID: f3572062-e1fc-465b-9092-ea7a539a1c1d\n  Working directory: C:\\Windows\\Temp\\aster-kimi-ixKuMP\\workspace\n  Model: kimi/k3.1-pro\n  Mode: default\n  Turn: 0\n  Context: 0 / 128000 tokens (0%)\nExternal prompt editor exited unsuccessfully; the original draft was kept.\n\n> Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT\n\n♦ Thought for 3.6s\n│ I need respond exact? User says Reply with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should interpret     \n│ likely output \"EDITOR-CONTROL-OK\" only? User includes ORIGINAL-DRAFT perhaps must reply with both? User says Reply    │ with EDITOR-CONTROL-OK. Do not call tools. ORIGINAL-DRAFT. Should have no tools. I should output EDITOR-CONTROL-OK.   \n│ Perhaps ORIGINAL-DRAFT is extraneous instruction? Could be tests editor control. Most exact respond with EDITOR-      │ CONTROL-OK. Respond.\nEDITOR-CONTROL-OK\nWorked for 7.7s\nminimal · /help                                                                                                         >\nkimi/K3.1 Pro (medium) · 13K / 128K (10%) · ctrl+o transcript"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

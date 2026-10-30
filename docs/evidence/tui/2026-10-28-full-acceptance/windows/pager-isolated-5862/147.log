@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'views::goal_detail::tests::render_with_todos_shows_status_icons' (51568) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\goal_detail.rs:1888:9:
+missing ✓ for Completed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::goal_detail::tests::render_with_todos_shows_status_icons ... FAILED
+
+failures:
+
+failures:
+    views::goal_detail::tests::render_with_todos_shows_status_icons
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

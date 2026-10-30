@@ -1,0 +1,28 @@
+{
+  "release_build_source": "e2d2f6224f0993e1058b90b767fd52a5c89655c0",
+  "release_run": 40104259230,
+  "rust_ci_run": 40104203537,
+  "whole_workspace_format": {
+    "exit_code": 1,
+    "reason": "pinned Studio app_updater.rs references absent os_feed_tests.rs",
+    "same_local_submodule_head": "92cec9d14a0870b13a08a62cfa086f29a5b6a37f",
+    "local_missing_file_confirmed": true,
+    "tracked_in_pin": false,
+    "affected_jobs": [
+      "check (macos-latest)",
+      "check (ubuntu-latest)"
+    ],
+    "earlier_whole_workspace_pass_claim": "corrected; unsupported for the exact pinned sources"
+  },
+  "scoped_format": {
+    "command": "cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check",
+    "exit_code": 0
+  },
+  "optional_features": {
+    "command": "cargo check --locked --offline -p a3s-code-core --features advanced-harness,deep-live",
+    "exit_code": 0,
+    "scope": "compile only; no optional runtime qualification"
+  },
+  "desktop_renderer": "unchanged parent baseline lacks jsonRender.ts referenced by the same Studio pin; see desktop-baseline-mismatch.json",
+  "scope": "CLI/ACP component qualification only. Whole-workspace CI is not green; these baseline failures are not hidden or counted as passing."
+}

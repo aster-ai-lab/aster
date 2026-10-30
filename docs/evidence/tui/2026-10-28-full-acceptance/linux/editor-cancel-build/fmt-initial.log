@@ -1,0 +1,25 @@
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs:188:
+     });
+     let marker = tui.workspace.join("editor-cancel-exited");
+     if cfg!(windows) {
+[31m-        std::fs::write(&script, "[IO.File]::WriteAllText($args[1], 'EXITED'); exit 0").unwrap();
+(B[m[32m+        std::fs::write(
+(B[m[32m+            &script,
+(B[m[32m+            "[IO.File]::WriteAllText($args[1], 'EXITED'); exit 0",
+(B[m[32m+        )
+(B[m[32m+        .unwrap();
+(B[m         let shell = std::path::PathBuf::from(std::env::var_os("SystemRoot").unwrap())
+             .join("System32/WindowsPowerShell/v1.0/powershell.exe");
+         tui.editor = Some(format!(
+Diff in /mnt/d/code/aster/.tmp/tui-acceptance-20261029/crates/code/acp/tests/aster_tui_live_e2e/input_controls.rs:212:
+         .map(|bytes| bytes != b"EXITED")
+         .unwrap_or(true)
+     {
+[31m-        assert!(
+(B[m[31m-            Instant::now() < deadline,
+(B[m[31m-            "external editor did not exit"
+(B[m[31m-        );
+(B[m[32m+        assert!(Instant::now() < deadline, "external editor did not exit");
+(B[m         tui.pump(50);
+     }
+     tui.pump(300);

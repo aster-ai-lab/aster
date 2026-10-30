@@ -1,0 +1,11 @@
+
+running 1 test
+test coverage_wave::kimi_program_repo_map_registered_template_runs_all_seven_steps ... ORACLE case=coverage-program-repo-map name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-pc-windows-msvc
+ORACLE case=coverage-program-repo-map name=permission-answer result=pass detail=answered a real permission card
+ORACLE case=coverage-program-repo-map name=settled-turn result=pass detail=facts=12 model_turns=3 prompt_tokens=45112
+ORACLE case=coverage-program-repo-map name=registered-repo-map-template result=pass detail=the second default template runs root ls and all six real project-file searches in catalog order with complete nested receipts
+ORACLE case=coverage-program-repo-map name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 22.41s
+

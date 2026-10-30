@@ -1,0 +1,76 @@
+{
+  "unix": 1792889893.5520928,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/pool-seed-cpu-v105r1",
+  "gpu_executed": false,
+  "files": [
+    {
+      "file": "ds41_generate.cpp",
+      "bytes": 226092,
+      "sha256": "2a1b90d79f2376b5cd667b956fad856122abd052bb3a5c67091a1e6774e7a8c3"
+    },
+    {
+      "file": "ds41_conv_reuse.hpp",
+      "bytes": 20482,
+      "sha256": "82927cf0434f585833b006fea945a8656e923590eae9a8eab8152332ca5c4d4f"
+    },
+    {
+      "file": "aster_dspark_seed.hpp",
+      "bytes": 2997,
+      "sha256": "0692f41d917ed1bb8e1cdcfe4c19310db57a176bea5ee2d91465e3a28239eb23"
+    },
+    {
+      "file": "aster_prefill_policy.hpp",
+      "bytes": 1708,
+      "sha256": "8c2009be2b7dc9813d66af10927c9983e8d6ca74aa97de78bd56c86290cd1aa8"
+    },
+    {
+      "file": "aster_draft_cumulative.hpp",
+      "bytes": 1204,
+      "sha256": "b2bd875e4f594ea145bba43a5145d0b787814f923c7f871e4fead3881b406bbe"
+    },
+    {
+      "file": "generator_cpu_worker_v105.py",
+      "bytes": 5129,
+      "sha256": "b33ce3488b5701e558acc86f9a43798007f62abfbbe939e15cc749903e183615"
+    },
+    {
+      "file": "test_pool_seed.cpp",
+      "bytes": 5668,
+      "sha256": "9606e27ba95ff3d603fb4abc80046f646ff062344ae703f9928d7afb103883c8"
+    },
+    {
+      "file": "ds41_conv_pool.cpp",
+      "bytes": 36012,
+      "sha256": "b72f510acf36522ad78f3eb97ee4a827c57d81f5edd40cf3dc6f12ebe675f552"
+    },
+    {
+      "file": "ds41_conv_pool.hpp",
+      "bytes": 11190,
+      "sha256": "5bd9cb37407c809c099b5fd1a3afb2f8908c86332f2387f693ec1c4935a23267"
+    },
+    {
+      "file": "ds41_conv_pool_dense.hpp",
+      "bytes": 1994,
+      "sha256": "a5ff329d301e2334233995054f4a4108f1e9c71d7badd08b021cd3b4c87b2112"
+    },
+    {
+      "file": "test_ds41_conv_pool.cpp",
+      "bytes": 19655,
+      "sha256": "8a568e31d15e9e760753914ae8e6577bd5bf4e0eba84b79387dbcfdeeda32536"
+    },
+    {
+      "file": "build-plan.json",
+      "bytes": 2145,
+      "sha256": "074d9bc3c8ceeb1befb703e6456075874d6b23e72f4a8ef0f77b0a524187e857"
+    }
+  ],
+  "process": {
+    "pid": 1116922,
+    "start_ticks": 281668747,
+    "uid": 10250,
+    "unix": 1792889902.5420444,
+    "budget_seconds": 480,
+    "namespace": "jump host"
+  }
+}

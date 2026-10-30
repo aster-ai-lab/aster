@@ -1,0 +1,61 @@
+Diff in /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/native_response.rs:107:
+             let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+             let rate = tokens as f64 / seconds;
+             if let Ok(value) = http::HeaderValue::from_str(&format!("{rate:.2}")) {
+-                response.headers_mut().insert("x-a3s-tokens-per-second", value);
++                response
++                    .headers_mut()
++                    .insert("x-a3s-tokens-per-second", value);
+             }
+         }
+     }
+Diff in /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/protocol/http_handler.rs:16:
+ use bytes::Bytes;
+ use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
+ use http::{HeaderValue, Response};
+-use hyper::body::Body as _;
+ use http_body_util::BodyExt;
++use hyper::body::Body as _;
+ use std::sync::Arc;
+ 
+ pub(super) async fn with_inference_metrics(
+Diff in /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/protocol/http_handler.rs:48:
+                         let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+                         let rate = tokens as f64 / seconds;
+                         if let Ok(value) = HeaderValue::from_str(&format!("{rate:.2}")) {
+-                            let mut response = Response::from_parts(parts, ResponseBody::full(bytes));
+-                            response.headers_mut().insert("x-a3s-tokens-per-second", value);
++                            let mut response =
++                                Response::from_parts(parts, ResponseBody::full(bytes));
++                            response
++                                .headers_mut()
++                                .insert("x-a3s-tokens-per-second", value);
+                             return response;
+                         }
+                     }
+Diff in /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:332:
+                                         }
+                                         drop(inference_admission);
+                                         drop(service_request);
+-                return track_usage_response(response, usage_lifecycle);
++                                        return track_usage_response(response, usage_lifecycle);
+                                     }
+                                     crate::wire::Gated::Forward {
+                                         body: gated,
+Diff in /code/aster/.wt-deepseek-dspark-main-20261025/apps/gateway/src/entrypoint/protocol/streaming_handler.rs:510:
+                     observed_tokens,
+                     attribution,
+                 );
+-                let response = super::http_handler::with_inference_metrics(response, request_start).await;
++                let response =
++                    super::http_handler::with_inference_metrics(response, request_start).await;
+                 return track_usage_response(response, usage_lifecycle);
+             }
+             Err(error) => {
+error: couldn't read `/code/aster/.wt-deepseek-dspark-main-20261025/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs`: No such file or directory (os error 2)
+   --> /code/aster/.wt-deepseek-dspark-main-20261025/apps/studio/src-tauri/src/app_updater.rs:129:1
+    |
+129 | mod os_feed_tests;
+    | ^^^^^^^^^^^^^^^^^^
+
+Error writing files: failed to resolve mod `os_feed_tests`: /code/aster/.wt-deepseek-dspark-main-20261025/apps/studio/src-tauri/src/app_updater/os_feed_tests.rs does not exist

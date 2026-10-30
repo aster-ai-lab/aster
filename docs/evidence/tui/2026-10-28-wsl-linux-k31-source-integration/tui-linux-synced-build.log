@@ -1,0 +1,1300 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/apps/gateway/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /mnt/d/code/aster/crates/power/Cargo.toml
+workspace: /mnt/d/code/aster/Cargo.toml
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling unicode-ident v1.0.24
+   Compiling cfg-if v1.0.4
+   Compiling serde_core v1.0.229
+   Compiling libc v0.2.186
+   Compiling serde v1.0.229
+   Compiling memchr v2.8.2
+   Compiling equivalent v1.0.2
+   Compiling itoa v1.0.17
+   Compiling value-bag v1.12.0
+   Compiling allocator-api2 v0.2.21
+   Compiling portable-atomic v1.15.0
+   Compiling bitflags v2.13.0
+   Compiling foldhash v0.2.0
+   Compiling scopeguard v1.2.0
+   Compiling find-msvc-tools v0.1.15
+   Compiling shlex v2.0.1
+   Compiling parking_lot_core v0.9.12
+   Compiling log v0.4.32
+   Compiling lock_api v0.4.14
+   Compiling pin-project-lite v0.2.16
+   Compiling version_check v0.9.5
+   Compiling hashbrown v0.17.1
+   Compiling thiserror v2.0.20
+   Compiling autocfg v1.5.0
+   Compiling futures-core v0.3.34
+   Compiling zmij v1.0.19
+   Compiling libm v0.2.15
+   Compiling subtle v2.6.1
+   Compiling typenum v1.19.0
+   Compiling stable_deref_trait v1.2.1
+   Compiling percent-encoding v2.3.2
+   Compiling crc32fast v1.5.0
+   Compiling slab v0.4.11
+   Compiling serde_json v1.0.154
+   Compiling generic-array v0.14.7
+   Compiling fnv v1.0.7
+   Compiling regex-syntax v0.8.11
+   Compiling futures-sink v0.3.34
+   Compiling num-traits v0.2.19
+   Compiling pkg-config v0.3.32
+   Compiling futures-io v0.3.34
+   Compiling const-oid v0.9.6
+   Compiling futures-task v0.3.34
+   Compiling futures-channel v0.3.34
+   Compiling byteorder v1.5.0
+   Compiling aho-corasick v1.1.3
+   Compiling cpufeatures v0.2.17
+   Compiling form_urlencoded v1.2.2
+   Compiling litemap v0.8.0
+   Compiling once_cell v1.21.4
+   Compiling crossbeam-utils v0.8.21
+   Compiling writeable v0.6.1
+   Compiling icu_properties_data v2.0.1
+   Compiling icu_normalizer_data v2.0.0
+   Compiling ryu v1.0.20
+   Compiling tracing-core v0.1.36
+   Compiling syn v2.0.117
+   Compiling syn v3.0.4
+   Compiling jobserver v0.1.34
+   Compiling utf8_iter v1.0.4
+   Compiling base64 v0.22.1
+   Compiling adler2 v2.0.1
+   Compiling pin-utils v0.1.0
+   Compiling dunce v1.0.5
+   Compiling powerfmt v0.2.0
+   Compiling cc v1.9.0
+   Compiling regex-automata v0.4.18
+   Compiling getrandom v0.3.4
+   Compiling getrandom v0.2.16
+   Compiling errno v0.3.14
+   Compiling indexmap v2.14.0
+   Compiling mio v1.2.1
+   Compiling socket2 v0.6.4
+   Compiling num-conv v0.2.0
+   Compiling time-core v0.1.8
+   Compiling rand_core v0.6.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling zerocopy v0.8.48
+   Compiling untrusted v0.9.0
+   Compiling zlib-rs v0.5.5
+   Compiling simd-adler32 v0.3.7
+   Compiling atomic-waker v1.1.2
+   Compiling deranged v0.5.5
+   Compiling time-macros v0.2.27
+   Compiling miniz_oxide v0.8.9
+   Compiling fastrand v2.3.0
+   Compiling rand_core v0.10.0
+   Compiling fs_extra v1.3.0
+   Compiling tower-service v0.3.3
+   Compiling cmake v0.1.54
+   Compiling aws-lc-rs v1.18.1
+   Compiling getrandom v0.4.1
+   Compiling httparse v1.10.1
+   Compiling rustix v1.1.5
+   Compiling heck v0.5.0
+   Compiling linux-raw-sys v0.12.1
+   Compiling untrusted v0.7.1
+   Compiling unicase v2.8.1
+   Compiling ipnet v2.11.0
+   Compiling try-lock v0.2.5
+   Compiling tower-layer v0.3.3
+   Compiling sync_wrapper v1.0.2
+   Compiling rustls v0.23.46
+   Compiling want v0.3.1
+   Compiling siphasher v1.0.3
+   Compiling anyhow v1.0.104
+   Compiling mime v0.3.17
+   Compiling openssl-probe v0.1.6
+   Compiling ring v0.17.14
+   Compiling aws-lc-sys v0.45.0
+   Compiling same-file v1.0.6
+   Compiling httpdate v1.0.3
+   Compiling socket2 v0.5.10
+   Compiling walkdir v2.5.0
+   Compiling iana-time-zone v0.1.64
+   Compiling either v1.15.0
+   Compiling synstructure v0.13.2
+   Compiling bstr v1.12.1
+   Compiling hdrhistogram v7.5.4
+   Compiling libz-rs-sys v0.5.2
+   Compiling time v0.3.47
+   Compiling tinyvec_macros v0.1.1
+   Compiling sha1_smol v1.0.1
+   Compiling mime_guess v2.0.5
+   Compiling iri-string v0.7.9
+   Compiling flate2 v1.1.5
+   Compiling tinyvec v1.10.0
+   Compiling uuid v1.26.1
+   Compiling zstd-sys v2.0.16+zstd.1.5.7
+   Compiling encoding_rs v0.8.35
+   Compiling hex v0.4.3
+   Compiling zstd-safe v7.2.4
+   Compiling unicode-normalization v0.1.24
+   Compiling rand_core v0.9.3
+   Compiling spin v0.9.9
+   Compiling crossbeam-channel v0.5.15
+   Compiling utf-8 v0.7.6
+   Compiling num-integer v0.1.46
+   Compiling rustversion v1.0.22
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.20
+   Compiling futures-macro v0.3.34
+   Compiling async-trait v0.1.92
+   Compiling regex v1.12.4
+   Compiling thiserror v1.0.69
+   Compiling alloc-no-stdlib v2.0.4
+   Compiling strsim v0.11.1
+   Compiling flagset v0.4.7
+   Compiling litrs v1.0.0
+   Compiling zeroize_derive v1.4.2
+   Compiling zerofrom-derive v0.1.6
+   Compiling tracing-attributes v0.1.31
+   Compiling tokio-macros v2.7.0
+   Compiling yoke-derive v0.8.2
+   Compiling zerovec-derive v0.11.1
+   Compiling displaydoc v0.2.5
+   Compiling zerocopy-derive v0.8.48
+   Compiling alloc-stdlib v0.2.2
+   Compiling thiserror-impl v1.0.69
+   Compiling document-features v0.2.12
+   Compiling unicode-segmentation v1.12.0
+   Compiling futures-util v0.3.34
+   Compiling cpufeatures v0.3.0
+   Compiling zeroize v1.8.2
+   Compiling cookie v0.18.2
+   Compiling rustls-pki-types v1.14.0
+   Compiling ref-cast v1.0.25
+   Compiling brotli-decompressor v4.0.3
+   Compiling ref-cast-impl v1.0.25
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling tracing v0.1.44
+   Compiling zerofrom v0.1.6
+   Compiling webpki-roots v1.0.9
+   Compiling rustls-native-certs v0.8.2
+   Compiling memmap2 v0.9.11
+   Compiling digest v0.10.7
+   Compiling yoke v0.8.3
+   Compiling psl-types v2.0.11
+   Compiling winnow v0.7.14
+   Compiling jiff v0.2.28
+   Compiling brotli v7.0.0
+   Compiling lazy_static v1.5.0
+   Compiling dyn-clone v1.0.20
+   Compiling base64ct v1.8.0
+   Compiling der_derive v0.7.3
+   Compiling unicode-width v0.2.0
+   Compiling bytes v1.12.1
+   Compiling zerovec v0.11.4
+   Compiling zerotrie v0.2.2
+   Compiling pem-rfc7468 v0.7.0
+   Compiling strum_macros v0.27.2
+   Compiling sha1 v0.10.6
+   Compiling sha2 v0.10.9
+   Compiling futures-executor v0.3.34
+   Compiling ident_case v1.0.1
+   Compiling semver v1.0.28
+   Compiling smallvec v1.16.3
+   Compiling chrono v0.4.45
+   Compiling serde_urlencoded v0.7.1
+   Compiling gix-trace v0.1.20
+   Compiling webpki-roots v0.26.11
+   Compiling tinystr v0.8.1
+   Compiling potential_utf v0.1.3
+   Compiling itertools v0.14.0
+   Compiling http v1.4.0
+   Compiling tempfile v3.27.0
+   Compiling gix-validate v0.11.2
+   Compiling hashbrown v0.14.5
+   Compiling crossbeam-epoch v0.9.20
+   Compiling outref v0.5.2
+   Compiling parking_lot v0.12.5
+   Compiling icu_collections v2.0.0
+   Compiling icu_locale_core v2.0.0
+   Compiling der v0.7.10
+   Compiling foldhash v0.1.5
+   Compiling tokio v1.53.3
+   Compiling http-body v1.0.1
+   Compiling vsimd v0.8.0
+   Compiling hashbrown v0.15.5
+   Compiling dashmap v6.2.1
+   Compiling gix-path v0.12.1
+   Compiling icu_provider v2.0.0
+   Compiling http-body-util v0.1.3
+   Compiling gix-utils v0.3.3
+   Compiling phf_shared v0.13.1
+   Compiling spki v0.7.3
+   Compiling icu_normalizer v2.0.0
+   Compiling icu_properties v2.0.1
+   Compiling cfg_aliases v0.2.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling strum v0.27.2
+   Compiling prost-derive v0.14.4
+   Compiling futures v0.3.34
+   Compiling serde_derive_internals v0.30.0
+   Compiling concurrent-queue v2.5.0
+   Compiling new_debug_unreachable v1.0.6
+   Compiling data-encoding v2.9.0
+   Compiling parking v2.2.1
+   Compiling winnow v1.0.4
+   Compiling phf_generator v0.13.1
+   Compiling rand_chacha v0.9.0
+   Compiling rand_chacha v0.3.1
+   Compiling crossbeam-deque v0.8.6
+   Compiling prodash v31.0.0
+   Compiling darling_core v0.20.11
+   Compiling signature v2.2.0
+   Compiling bytemuck_derive v1.10.2
+   Compiling hashbrown v0.16.1
+   Compiling rand v0.9.5
+   Compiling zlib-rs v0.6.6
+   Compiling arrayvec v0.7.6
+   Compiling rand v0.8.8
+   Compiling option-ext v0.2.0
+   Compiling precomputed-hash v0.1.1
+   Compiling nix v0.30.1
+   Compiling idna_adapter v1.2.1
+   Compiling schemars_derive v1.2.3
+   Compiling http v0.2.12
+   Compiling rustc_version v0.4.1
+   Compiling chacha20 v0.10.2
+   Compiling pin-project-internal v1.1.11
+   Compiling gix-error v0.2.4
+   Compiling phf_shared v0.11.3
+   Compiling base64 v0.23.1
+   Compiling idna v1.1.0
+   Compiling urlencoding v2.1.3
+   Compiling rand v0.10.3
+   Compiling event-listener v5.4.1
+   Compiling base64-simd v0.8.0
+   Compiling bytes-utils v0.1.4
+   Compiling http-body v0.4.6
+   Compiling tracing-serde v0.2.0
+   Compiling sharded-slab v0.1.7
+   Compiling matchers v0.2.0
+   Compiling bytemuck v1.25.2
+   Compiling tracing-log v0.2.0
+   Compiling thread_local v1.1.9
+   Compiling utf8parse v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling tokio-util v0.7.19
+   Compiling heapless v0.8.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling url v2.5.8
+   Compiling publicsuffix v2.3.0
+   Compiling phf_generator v0.11.3
+   Compiling event-listener-strategy v0.5.4
+   Compiling gix-features v0.48.1
+   Compiling phf_codegen v0.13.1
+   Compiling serde_path_to_error v0.1.20
+   Compiling hash32 v0.3.1
+   Compiling pin-project v1.1.11
+   Compiling darling_macro v0.20.11
+   Compiling tracing-subscriber v0.3.23
+   Compiling multer v3.1.0
+   Compiling rayon-core v1.13.0
+   Compiling static_assertions v1.1.0
+   Compiling hmac v0.12.1
+   Compiling dirs-sys v0.5.0
+   Compiling phf_macros v0.13.1
+   Compiling axum-core v0.5.5
+   Compiling cookie_store v0.21.1
+   Compiling schemars v1.2.3
+   Compiling h2 v0.4.19
+   Compiling tower v0.5.2
+   Compiling tokio-stream v0.1.17
+   Compiling aws-smithy-types v1.4.3
+   Compiling faster-hex v0.10.0
+   Compiling axum-macros v0.5.0
+   Compiling anstyle-query v1.1.4
+   Compiling matchit v0.8.4
+   Compiling colorchoice v1.0.4
+   Compiling prettyplease v0.2.37
+   Compiling darling v0.20.11
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling fixedbitset v0.5.7
+   Compiling rayon v1.12.0
+   Compiling dirs v6.0.0
+   Compiling aws-smithy-async v1.2.14
+   Compiling string_cache_codegen v0.6.1
+   Compiling phf v0.13.1
+   Compiling prost v0.14.4
+   Compiling sha1-checked v0.10.0
+   Compiling minimal-lexical v0.2.1
+   Compiling aws-smithy-runtime-api v1.11.3
+   Compiling tower-http v0.6.8
+   Compiling string_cache v0.9.0
+   Compiling pkcs8 v0.10.2
+   Compiling nom v7.1.3
+   Compiling convert_case v0.10.0
+   Compiling num-bigint v0.4.6
+   Compiling web_atoms v0.2.3
+   Compiling num-iter v0.1.45
+   Compiling pem v3.0.6
+   Compiling gix-hash v0.25.1
+   Compiling nom v8.0.0
+   Compiling unicode-xid v0.2.6
+   Compiling weezl v0.1.10
+   Compiling vcpkg v0.2.15
+   Compiling a3s-tty-utils v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-tty-utils)
+   Compiling tendril v0.5.0
+   Compiling derive_more-impl v2.1.1
+   Compiling opentelemetry v0.32.0
+   Compiling tls_codec_derive v0.4.2
+   Compiling rustix v0.38.44
+   Compiling pulldown-cmark v0.13.0
+   Compiling prost-types v0.14.3
+   Compiling hyper v1.8.1
+   Compiling zstd v0.13.3
+   Compiling a3s-tool-types v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-tool-types)
+   Compiling derive_builder_core v0.20.2
+   Compiling phf_macros v0.11.3
+   Compiling phf_codegen v0.11.3
+   Compiling async-compression v0.4.19
+   Compiling gix-date v0.15.5
+   Compiling getopts v0.2.24
+   Compiling enumflags2_derive v0.7.12
+   Compiling core_maths v0.1.1
+   Compiling a3s-code-version v9.1.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-version)
+   Compiling dtoa v1.0.10
+   Compiling tls_codec v0.4.2
+   Compiling linux-raw-sys v0.4.15
+   Compiling dtoa-short v0.3.5
+   Compiling gix-actor v0.41.1
+   Compiling ttf-parser v0.25.1
+   Compiling derive_builder_macro v0.20.2
+   Compiling hyper-util v0.1.20
+   Compiling gix-hashtable v0.15.1
+   Compiling aws-smithy-eventstream v0.60.18
+   Compiling phf v0.11.3
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling a3s-dirs v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-dirs)
+   Compiling x509-cert v0.2.5
+   Compiling arc-swap v1.9.2
+   Compiling fdeflate v0.3.7
+   Compiling serde_spanned v1.1.2
+   Compiling toml_datetime v0.7.5+spec-1.1.0
+   Compiling fs2 v0.4.3
+   Compiling hybrid-array v0.4.10
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling unicode-properties v0.1.4
+   Compiling env_home v0.1.0
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling derive_builder v0.20.2
+   Compiling gix-object v0.60.0
+   Compiling which v8.0.0
+   Compiling aws-smithy-http v0.62.6
+   Compiling png v0.18.0
+   Compiling pulldown-cmark-to-cmark v21.1.0
+   Compiling hyper-timeout v0.5.2
+   Compiling derive_more v2.1.1
+   Compiling opentelemetry_sdk v0.32.1
+   Compiling petgraph v0.7.1
+   Compiling half v2.7.1
+   Compiling md-5 v0.10.6
+   Compiling blake3 v1.8.7
+   Compiling ff v0.13.1
+   Compiling filetime v0.2.29
+   Compiling unicode-bidi v0.3.18
+   Compiling crunchy v0.2.4
+   Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.1
+   Compiling base16ct v0.2.0
+   Compiling ryu-js v1.0.3
+   Compiling multimap v0.10.1
+   Compiling unsafe-libyaml v0.2.11
+   Compiling group v0.13.0
+   Compiling sec1 v0.7.3
+   Compiling prost-build v0.14.1
+   Compiling aws-credential-types v1.2.8
+   Compiling tonic-build v0.14.3
+   Compiling hkdf v0.12.4
+   Compiling string_cache_codegen v0.5.4
+   Compiling anstyle-parse v0.2.7
+   Compiling aws-types v1.3.9
+   Compiling debugid v0.8.0
+   Compiling crypto-bigint v0.5.5
+   Compiling serde_repr v0.1.20
+   Compiling globset v0.4.18
+   Compiling const-hex v1.18.1
+   Compiling servo_arc v0.4.3
+   Compiling tiny-keccak v2.0.2
+   Compiling constant_time_eq v0.4.2
+   Compiling bumpalo v3.19.0
+   Compiling mac v0.1.1
+   Compiling bitflags v1.3.2
+   Compiling ignore v0.4.24
+   Compiling futf v0.1.5
+   Compiling zopfli v0.8.3
+   Compiling markup5ever v0.14.1
+   Compiling tonic-prost-build v0.14.3
+   Compiling elliptic-curve v0.13.8
+   Compiling prod-mc-cli-chat-proxy-types v0.1.0 (/mnt/d/code/aster/crates/terminal/prod/mc/cli-chat-proxy-types)
+   Compiling pbjson-build v0.9.0
+   Compiling prost-reflect v0.16.4
+   Compiling aws-smithy-observability v0.1.4
+   Compiling slotmap v1.0.7
+   Compiling small_ctor v0.1.2
+   Compiling tendril v0.4.3
+   Compiling aws-sigv4 v1.3.5
+   Compiling anstream v0.6.21
+   Compiling crypto-common v0.2.2
+   Compiling enumflags2 v0.7.12
+   Compiling selectors v0.26.0
+   Compiling tracing-opentelemetry v0.33.0
+   Compiling sigstore-types v0.6.6
+   Compiling shellexpand v3.1.2
+   Compiling a3s-proto-build v0.0.0 (/mnt/d/code/aster/crates/terminal/crates/build/a3s-proto-build)
+   Compiling gix-fs v0.21.2
+   Compiling fastant v0.1.10
+   Compiling rfc6979 v0.4.0
+   Compiling a3s-code-env v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-env)
+   Compiling aws-smithy-runtime v1.9.3
+   Compiling curve25519-dalek v4.1.3
+   Compiling string_cache v0.8.9
+   Compiling dirs-sys v0.4.1
+   Compiling lru v0.12.5
+   Compiling env_filter v0.1.4
+   Compiling cssparser-macros v0.6.1
+   Compiling fax_derive v0.2.0
+   Compiling typeshare-annotation v1.0.4
+   Compiling fastrace-macro v0.7.18
+   Compiling serde_derive_internals v0.29.1
+   Compiling fxhash v0.2.1
+   Compiling num-bigint-dig v0.8.6
+   Compiling zune-core v0.5.1
+   Compiling float-cmp v0.9.0
+   Compiling quick-error v2.0.1
+   Compiling rtrb v0.3.5
+   Compiling object v0.37.3
+   Compiling pulldown-cmark-escape v0.11.0
+   Compiling schemars v0.8.22
+   Compiling a3s-code-config v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-config)
+   Compiling typeshare v1.0.4
+   Compiling schemars_derive v0.8.22
+   Compiling rustls-webpki v0.103.15
+   Compiling zune-jpeg v0.5.15
+   Compiling cssparser v0.34.0
+   Compiling fax v0.2.6
+   Compiling fastrace v0.7.18
+   Compiling aws-runtime v1.5.12
+   Compiling strict-num v0.1.1
+   Compiling env_logger v0.11.8
+   Compiling dirs v5.0.1
+   Compiling ecdsa v0.16.9
+   Compiling const-random-macro v0.1.16
+   Compiling primeorder v0.13.6
+   Compiling stringprep v0.1.5
+   Compiling cms v0.2.3
+   Compiling eventsource-stream v0.2.3
+   Compiling aws-smithy-json v0.61.6
+   Compiling gix-chunk v0.7.2
+   Compiling async-stream-impl v0.3.6
+   Compiling match_token v0.1.0
+   Compiling curve25519-dalek-derive v0.1.1
+   Compiling derive_more v0.99.20
+   Compiling pxfm v0.1.25
+   Compiling ahash v0.8.12
+   Compiling spin v0.10.1
+   Compiling instant v0.1.12
+   Compiling gimli v0.32.3
+   Compiling color_quant v1.1.0
+   Compiling arrayref v0.3.9
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling rustc-demangle v0.1.26
+   Compiling regex-lite v0.1.8
+   Compiling futures-timer v3.0.3
+   Compiling nonempty v0.12.0
+   Compiling roxmltree v0.20.0
+   Compiling byteorder-lite v0.1.0
+   Compiling fontconfig-parser v0.5.8
+   Compiling async-stream v0.3.6
+   Compiling image-webp v0.2.4
+   Compiling moxcms v0.8.1
+   Compiling gif v0.14.1
+   Compiling tiny-skia-path v0.12.0
+   Compiling backoff v0.4.0
+   Compiling regress v0.11.1
+   Compiling crmf v0.2.0
+   Compiling addr2line v0.25.1
+   Compiling const-random v0.1.18
+   Compiling tiff v0.11.3
+   Compiling a3s-tool-protocol v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling gix-tempfile v23.0.1
+   Compiling ed25519 v2.2.3
+   Compiling pkcs1 v0.7.5
+   Compiling gix-quote v0.7.2
+   Compiling secrecy v0.10.3
+   Compiling async-openai-macros v0.1.1 (/mnt/d/code/aster/crates/third-party/async-openai-macros)
+   Compiling a3s-circuit-breaker v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-circuit-breaker)
+   Compiling protobuf v3.7.2
+   Compiling unicode-bidi-mirroring v0.4.0
+   Compiling unicode-script v0.5.8
+   Compiling unicode-ccc v0.4.0
+   Compiling crc-catalog v2.4.0
+   Compiling procfs v0.17.0
+   Compiling typed-path v0.12.3
+   Compiling ego-tree v0.10.0
+   Compiling xmlparser v0.13.6
+   Compiling crc v3.3.0
+   Compiling tokio-rustls v0.26.6
+   Compiling image v0.25.10
+   Compiling rustybuzz v0.20.1
+   Compiling aws-smithy-xml v0.60.11
+   Compiling backtrace v0.3.76
+   Compiling rsa v0.9.10
+   Compiling gix-lock v23.0.1
+   Compiling typify-impl v0.6.2
+   Compiling ed25519-dalek v2.2.0
+   Compiling cmpv2 v0.2.0
+   Compiling fontdb v0.23.0
+   Compiling p256 v0.13.2
+   Compiling p384 v0.13.1
+   Compiling sentry-types v0.42.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling block-buffer v0.12.0
+   Compiling libz-sys v1.1.22
+   Compiling simple_asn1 v0.6.3
+   Compiling gix-glob v0.26.1
+   Compiling serde_tokenstream v0.2.3
+   Compiling quick-xml v0.41.0
+   Compiling protobuf-support v3.7.2
+   Compiling strum_macros v0.26.4
+   Compiling procfs-core v0.17.0
+   Compiling shell-words v1.1.0
+   Compiling const-oid v0.10.2
+   Compiling prometheus v0.14.0
+   Compiling pollster v0.4.0
+   Compiling digest v0.11.2
+   Compiling fastrace-opentelemetry v0.18.1
+   Compiling hyper-rustls v0.27.7
+   Compiling x509-tsp v0.1.0
+   Compiling crc-fast v1.9.0
+   Compiling tiny-skia v0.12.0
+   Compiling gix-commitgraph v0.37.1
+   Compiling fastrace-tonic v0.1.1
+   Compiling block-padding v0.4.2
+   Compiling typify-macro v0.6.2
+   Compiling xattr v1.6.1
+   Compiling aws-smithy-query v0.60.8
+   Compiling sentry-core v0.42.0
+   Compiling strum v0.26.3
+   Compiling a3s-code-secrets v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-secrets)
+   Compiling async-broadcast v0.7.2
+   Compiling font-types v0.10.1
+   Compiling token-source v1.0.0
+   Compiling itertools v0.12.1
+   Compiling unicode-bom v2.0.3
+   Compiling path-clean v1.0.1
+   Compiling similar v2.7.0
+   Compiling home v0.5.12
+   Compiling tar v0.4.46
+   Compiling reqwest v0.12.24
+   Compiling read-fonts v0.35.0
+   Compiling prometheus-parse v0.2.5
+   Compiling gix-revwalk v0.31.0
+   Compiling inout v0.2.2
+   Compiling aws-sdk-sts v1.88.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling nix v0.31.3
+   Compiling reflink-copy v0.1.28
+   Compiling libgit2-sys v0.18.2+1.9.1
+   Compiling findshlibs v0.10.2
+   Compiling phf_shared v0.14.0
+   Compiling unicode-linebreak v0.1.5
+   Compiling phf_generator v0.14.0
+   Compiling cipher v0.5.2
+   Compiling sha2 v0.11.0
+   Compiling serde_json_canonicalizer v0.3.2
+   Compiling kstring v2.0.2
+   Compiling async-lock v3.4.1
+   Compiling anstyle-parse v1.0.0
+   Compiling aws-smithy-checksums v0.63.13
+   Compiling typify v0.6.2
+   Compiling kurbo v0.12.0
+   Compiling strum_macros v0.28.0
+   Compiling a3s-token-estimation v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-token-estimation)
+   Compiling debug_unsafe v0.1.3
+   Compiling gix-attributes v0.33.2
+   Compiling anstream v1.0.0
+   Compiling atoi_simd v0.18.1
+   Compiling phf_macros v0.14.0
+   Compiling nono v0.53.0
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling aws-config v1.8.8
+   Compiling sentry-backtrace v0.42.0
+   Compiling a3s-code-image v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-image)
+   Compiling zip v8.6.0
+   Compiling landlock v0.4.4
+   Compiling a3s-code-compaction v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-code-compaction)
+   Compiling brotli-decompressor v5.0.0
+   Compiling enum-ordinalize-derive v4.3.1
+   Compiling cfb v0.7.3
+   Compiling skrifa v0.37.0
+   Compiling strum v0.28.0
+   Compiling write-fonts v0.43.0
+   Compiling gix-sec v0.14.1
+   Compiling clap_lex v1.0.0
+   Compiling fast-float2 v0.2.3
+   Compiling grid v1.0.1
+   Compiling hayro-ccitt v0.3.0
+   Compiling cpubits v0.1.1
+   Compiling clap_builder v4.6.7
+   Compiling hayro-jbig2 v0.3.0
+   Compiling office_oxide v0.1.9
+   Compiling taffy v0.12.2
+   Compiling aes v0.9.3
+   Compiling agent-client-protocol-schema v0.11.4
+   Compiling enum-ordinalize v4.3.0
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling brotli v8.0.2
+   Compiling phf v0.14.0
+   Compiling cbc v0.2.0
+   Compiling md-5 v0.11.0
+   Compiling gix-ref v0.63.0
+   Compiling lsp-types v0.95.1
+   Compiling libsqlite3-sys v0.35.0
+   Compiling jpeg-decoder v0.3.2
+   Compiling sentry-contexts v0.42.0
+   Compiling a3s-code-workspace-types v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-types)
+   Compiling gix-config-value v0.18.1
+   Compiling fast_image_resize v6.1.0
+   Compiling waitpid-any v0.3.0
+   Compiling clap_derive v4.6.7
+   Compiling vte v0.14.1
+   Compiling hayro-jpeg2000 v0.4.0
+   Compiling memo-map v0.3.3
+   Compiling weezl v0.2.1
+   Compiling qcms v0.3.0
+   Compiling minijinja v2.21.0
+   Compiling strip-ansi-escapes v0.2.1
+   Compiling subsetter v0.2.3
+   Compiling educe v0.6.0
+   Compiling infer v0.19.0
+   Compiling a3s-code-feedback v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-feedback)
+   Compiling gix-traverse v0.57.0
+   Compiling gix-command v0.9.1
+   Compiling command-fds v0.3.2
+   Compiling clap v4.6.7
+   Compiling gix-packetline v0.21.5
+   Compiling gix-bitmap v0.3.2
+   Compiling a3s-interjection-core v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-interjection-core)
+   Compiling zip v3.0.0
+   Compiling inotify-sys v0.1.5
+   Compiling num_cpus v1.17.0
+   Compiling hostname v0.4.1
+   Compiling uname v0.1.1
+   Compiling wildmatch v2.6.0
+   Compiling pastey v0.2.3
+   Compiling a3s-message-delivery-core v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-message-delivery-core)
+   Compiling paste v1.0.15
+   Compiling inotify v0.11.0
+   Compiling gix-index v0.51.0
+   Compiling gix-pathspec v0.18.1
+   Compiling sentry-panic v0.42.0
+   Compiling sentry-tracing v0.42.0
+   Compiling sentry-anyhow v0.42.0
+   Compiling sentry-debug-images v0.42.0
+   Compiling gix-ignore v0.21.1
+   Compiling futures-lite v2.6.1
+   Compiling hashlink v0.10.0
+   Compiling onig_sys v69.9.3
+   Compiling fallible-iterator v0.3.0
+   Compiling notify-types v2.0.0
+   Compiling agent-client-protocol v0.10.4
+   Compiling tree-sitter-language v0.1.5
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling hmac-sha256 v1.1.12
+   Compiling gix-worktree v0.52.0
+   Compiling notify v8.2.0
+   Compiling mid v4.0.0
+   Compiling tracing-appender v0.2.4
+   Compiling tracing-chrome v0.7.2
+   Compiling a3s-code-session-events v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-session-events)
+   Compiling gix-url v0.36.1
+   Compiling whoami v1.6.1
+   Compiling gix-filter v0.30.0
+   Compiling gix-discover v0.51.0
+   Compiling async-lsp v0.2.3
+   Compiling toml_edit v0.23.7
+   Compiling gix-revision v0.45.0
+   Compiling gix-imara-diff v0.2.3
+   Compiling pdf_oxide v0.3.74
+   Compiling darling_core v0.24.1
+   Compiling rusqlite v0.37.0
+   Compiling castaway v0.2.4
+   Compiling async-io v2.6.0
+   Compiling async-task v4.7.1
+   Compiling glob v0.3.3
+   Compiling clru v0.6.2
+   Compiling gix-diff v0.63.0
+   Compiling gix-dir v0.25.0
+   Compiling gix-pack v0.70.0
+   Compiling gix-refspec v0.41.0
+   Compiling proc-macro-crate v3.4.0
+   Compiling gix-transport v0.57.2
+   Compiling gix-config v0.56.0
+   Compiling gix-shallow v0.12.1
+   Compiling async-channel v2.5.0
+   Compiling zvariant_utils v3.3.0
+   Compiling polling v3.11.0
+   Compiling maybe-async v0.2.10
+   Compiling wayland-sys v0.31.8
+   Compiling bit-vec v0.8.0
+   Compiling downcast-rs v1.2.1
+   Compiling gix-status v0.30.0
+   Compiling bit-set v0.8.0
+   Compiling zvariant_derive v5.10.0
+   Compiling gix-odb v0.80.0
+   Compiling gix-submodule v0.30.0
+   Compiling a3s-sqlite-journal v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-sqlite-journal)
+   Compiling libmimalloc-sys v0.1.44
+   Compiling wayland-backend v0.3.12
+   Compiling darling_macro v0.24.1
+   Compiling gix-protocol v0.61.0
+   Compiling piper v0.2.4
+   Compiling rmcp v3.4.0
+   Compiling camino v1.2.1
+   Compiling endi v1.1.1
+   Compiling blocking v1.6.2
+   Compiling gix v0.83.0
+   Compiling darling v0.24.1
+   Compiling tree-sitter v0.26.13
+   Compiling sse-stream v0.2.5
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling tree-sitter-go v0.25.0
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling crossbeam-queue v0.3.12
+   Compiling rmcp-macros v3.4.0
+   Compiling num-complex v0.4.6
+   Compiling wait-timeout v0.2.1
+   Compiling quick-xml v0.39.4
+   Compiling borrow-or-share v0.2.4
+   Compiling wayland-client v0.31.12
+   Compiling crossbeam v0.8.4
+   Compiling wayland-scanner v0.31.10
+   Compiling webbrowser v1.2.4
+   Compiling block-padding v0.3.3
+   Compiling nucleo-matcher v0.3.1 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling tree-sitter-bash v0.25.0
+   Compiling file-id v0.2.3
+   Compiling fixedbitset v0.4.2
+   Compiling streaming-iterator v0.1.9
+   Compiling signal-hook v0.3.18
+   Compiling petgraph v0.6.5
+   Compiling notify-debouncer-full v0.5.0
+   Compiling nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling zvariant v5.10.0
+   Compiling inout v0.1.4
+   Compiling a3s-code-paths v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-paths)
+   Compiling mimalloc v0.1.48
+   Compiling async-executor v1.13.3
+   Compiling num-rational v0.4.2
+   Compiling rapidhash v4.2.0
+   Compiling nohash-hasher v0.2.0
+   Compiling humantime v2.4.0
+   Compiling humantime-serde v1.1.1
+   Compiling a3s-gix-status v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling num v0.4.3
+   Compiling cipher v0.4.4
+   Compiling a3s-fuzzy-file-search v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+   Compiling async-signal v0.2.13
+   Compiling wayland-protocols v0.32.10
+   Compiling compact_str v0.9.0
+   Compiling a3s-acp-lib v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-acp-lib)
+   Compiling petgraph v0.8.3
+   Compiling zbus_names v4.3.1
+   Compiling a3s-hunk-tracker v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling a3s-fast-worktree v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling bincode v1.3.3
+   Compiling indoc v2.0.7
+   Compiling utf8-width v0.1.7
+   Compiling linked-hash-map v0.5.6
+   Compiling toml_write v0.1.2
+   Compiling yaml-rust v0.4.5
+   Compiling toml_edit v0.22.27
+   Compiling html-escape v0.2.13
+   Compiling tree_magic_mini v3.2.2
+   Compiling zbus_macros v5.14.0
+   Compiling async-process v2.5.0
+   Compiling signal-hook-mio v0.2.5
+   Compiling fraction v0.15.3
+   Compiling uuid-simd v0.8.0
+   Compiling wayland-protocols-wlr v0.3.10
+   Compiling email_address v0.2.9
+   Compiling rust-stemmers v1.2.0
+   Compiling gethostname v1.1.0
+   Compiling async-recursion v1.1.1
+   Compiling onig v6.5.2
+   Compiling os_pipe v1.2.3
+   Compiling ordered-stream v0.2.0
+   Compiling bytecount v0.6.9
+   Compiling x11rb-protocol v0.13.2
+   Compiling num-cmp v0.1.0
+   Compiling cpp_demangle v0.4.5
+   Compiling io-lifetimes v2.0.4
+   Compiling io-lifetimes v3.0.1
+   Compiling instability v0.3.9
+   Compiling wl-clipboard-rs v0.9.3
+   Compiling crossterm v0.28.1
+   Compiling polycool v0.4.0
+   Compiling equator-macro v0.4.2
+   Compiling itertools v0.13.0
+   Compiling symbolic-demangle v12.16.3
+   Compiling cfg_aliases v0.1.1
+   Compiling unicode-width v0.1.14
+   Compiling io-extras v0.19.0
+   Compiling nix v0.28.0
+   Compiling equator v0.4.2
+   Compiling zbus v5.14.0
+   Compiling unicode-truncate v1.1.0
+   Compiling plist v1.10.0
+   Compiling x11rb v0.13.2
+   Compiling kurbo v0.13.1
+   Compiling compact_str v0.8.1
+   Compiling symbolic-common v12.16.3
+   Compiling a3s-acl v0.3.0 (/mnt/d/code/aster/crates/acl)
+   Compiling selectors v0.38.0
+   Compiling arboard v3.6.1
+   Compiling a3s-code-status-line v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-status-line)
+   Compiling markup5ever v0.38.0
+   Compiling a3s-code-models v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-models)
+   Compiling cssparser-macros v0.7.1
+   Compiling sqlite-vec v0.1.7-alpha.10
+   Compiling smartstring v1.0.1
+   Compiling pprof v0.15.0
+   Compiling cassowary v0.3.0
+   Compiling cap-primitives v4.0.3
+   Compiling ordered_hashmap v0.0.3 (/mnt/d/code/aster/crates/terminal/third_party/ordered_hashmap)
+   Compiling html5ever v0.38.0
+   Compiling xml5ever v0.38.0
+   Compiling graphlib_rust v0.0.2 (/mnt/d/code/aster/crates/terminal/third_party/graphlib_rust)
+   Compiling ratatui v0.29.0
+   Compiling syntect v5.3.0
+   Compiling a3s-code-shared v0.0.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling cssparser v0.37.0
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling markup5ever v0.39.0
+   Compiling svgtypes v0.16.1
+   Compiling htmd v0.5.4
+   Compiling fs-set-times v0.20.3
+   Compiling aligned-vec v0.6.4
+   Compiling aes v0.8.4
+   Compiling nix v0.26.4
+   Compiling regress v0.10.5
+   Compiling stop-words v0.9.0
+   Compiling rustix-linux-procfs v0.1.1
+   Compiling rquickjs-sys v0.11.0
+   Compiling phf_shared v0.12.1
+   Compiling simplecss v0.2.2
+   Compiling roxmltree v0.21.1
+   Compiling ambient-authority v0.0.2
+   Compiling cap-std v4.0.2
+   Compiling xmlwriter v0.1.0
+   Compiling imagesize v0.14.0
+   Compiling maybe-owned v0.3.4
+   Compiling unicode-vo v0.1.0
+   Compiling pico-args v0.5.0
+   Compiling unicode-general-category v1.1.0
+   Compiling data-url v0.3.2
+   Compiling a3s-form-core v0.1.0 (/mnt/d/code/aster/crates/form-core)
+   Compiling usvg v0.47.0
+   Compiling two-face v0.4.5
+   Compiling phf_generator v0.12.1
+   Compiling html5ever v0.39.0
+   Compiling dagre_rust v0.0.5 (/mnt/d/code/aster/crates/terminal/third_party/dagre_rust)
+   Compiling cbc v0.1.2
+   Compiling ecb v0.1.2
+   Compiling unicode-truncate v2.0.1
+   Compiling fluent-uri v0.3.2
+   Compiling cached_proc_macro v0.25.0
+   Compiling rgb v0.8.52
+   Compiling lru v0.16.3
+   Compiling kasuari v0.4.11
+   Compiling thin-vec v0.2.18
+   Compiling console v0.15.11
+   Compiling filedescriptor v0.8.3
+   Compiling universal-hash v0.5.1
+   Compiling rhai_codegen v3.2.0
+   Compiling esaxx-rs v0.1.10
+   Compiling serial2 v0.2.34
+   Compiling matrixmultiply v0.3.11
+   Compiling number_prefix v0.4.0
+   Compiling event-listener v2.5.3
+   Compiling moka v0.12.11
+   Compiling smawk v0.3.2
+   Compiling cap-fs-ext v4.0.2
+   Compiling rangemap v1.8.0
+   Compiling cached_proc_macro_types v0.1.1
+   Compiling zip v2.4.2
+   Compiling opaque-debug v0.3.1
+   Compiling bitmaps v3.1.0
+   Compiling cached v0.56.0
+   Compiling polyval v0.6.2
+   Compiling lopdf v0.42.0
+   Compiling textwrap v0.16.2
+   Compiling async-channel v1.9.0
+   Compiling indicatif v0.17.11
+   Compiling rhai v1.25.1
+   Compiling imbl-sized-chunks v0.1.3
+   Compiling portable-pty v0.9.0
+   Compiling ratatui-core v0.1.0
+   Compiling resvg v0.47.0
+   Compiling referencing v0.30.0
+   Compiling mermaid-to-svg v0.1.0 (/mnt/d/code/aster/crates/terminal/third_party/mermaid-to-svg)
+   Compiling a3s-code-markdown v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling html5ever v0.29.1
+   Compiling dom_query v0.28.0
+   Compiling phf_macros v0.12.1
+   Compiling a3s-system-power v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling scraper v0.23.1
+   Compiling async-global-executor v2.4.1
+   Compiling fluent-uri v0.4.1
+   Compiling async-fs v2.2.0
+   Compiling async-net v2.0.0
+   Compiling fancy-regex v0.14.0
+   Compiling rmp v0.8.14
+   Compiling a3s-code-shell v1.0.41 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling serde_yaml_ng v0.10.0
+   Compiling process-wrap v9.0.0
+   Compiling backon v1.6.0
+   Compiling opentelemetry v0.21.0
+   Compiling a3s-hooks-plugins-types v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-hooks-plugins-types)
+   Compiling quick-xml v0.38.4
+   Compiling olpc-cjson v0.1.4
+   Compiling convert_case v0.8.0
+   Compiling monostate-impl v0.1.18
+   Compiling optfield v0.4.0
+   Compiling enum-as-inner v0.6.1
+   Compiling tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+   Compiling rand_xoshiro v0.6.0
+   Compiling ordered-float v4.6.0
+   Compiling socks v0.3.4
+   Compiling kv-log-macro v1.0.7
+   Compiling tagptr v0.2.0
+   Compiling deunicode v1.6.2
+   Compiling is_ci v1.2.0
+   Compiling dark-light v2.0.0
+   Compiling gjson v0.8.1
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+   Compiling base64 v0.13.1
+   Compiling rawpointer v0.2.1
+   Compiling micromap v0.3.0
+   Compiling obfstr v0.4.4
+   Compiling shlex v1.3.0
+   Compiling sysctl v0.6.0
+   Compiling spm_precompiled v0.1.4
+   Compiling referencing v0.47.0
+   Compiling documented-macros v0.9.2
+   Compiling monostate v0.1.18
+   Compiling a3s-workflow v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-workflow)
+   Compiling dom_smoothie v0.18.2
+   Compiling rquickjs-core v0.11.0
+   Compiling supports-color v3.0.2
+   Compiling bm25 v2.3.2
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling async-std v1.13.2
+   Compiling imbl v3.0.0
+   Compiling macro_rules_attribute v0.2.3
+   Compiling a3s-use-core v0.2.4 (/mnt/d/code/aster/crates/use/core)
+   Compiling rmp-serde v1.3.0
+   Compiling a3s-code-mermaid v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling ashpd v0.10.3
+   Compiling phf v0.12.1
+   Compiling anstyle-syntect v1.0.4
+   Compiling scraper v0.22.0
+   Compiling tui-scrollbar v0.2.2
+   Compiling ghash v0.5.1
+   Compiling ctr v0.9.2
+   Compiling rayon-cond v0.4.0
+   Compiling fancy-regex v0.18.0
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling infer v0.15.0
+   Compiling a3s-code-bundle v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling a3s-code-markdown-core v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-markdown-core)
+   Compiling fluent-uri v0.1.4
+   Compiling cron v0.17.0
+   Compiling tokio-retry v0.3.0
+   Compiling anstyle-lossy v1.1.4
+   Compiling roaring v0.11.1
+   Compiling combine v4.6.9
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling dary_heap v0.3.9
+   Compiling a3s-prompt-queue v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-prompt-queue)
+   Compiling console v0.16.1
+   Compiling a3s-agent-lifecycle v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-agent-lifecycle)
+   Compiling a3s-code-file-lock v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-file-lock)
+   Compiling aead v0.5.2
+   Compiling serde_ignored v0.1.14
+   Compiling cpu-time v1.0.0
+   Compiling jsonschema-regex v0.47.0
+   Compiling kanal v0.1.1
+   Compiling linkify v0.10.0
+   Compiling unicode_categories v0.1.1
+   Compiling tdigests v1.0.1
+   Compiling a3s-tracing-macros v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-tracing-macros)
+   Compiling unit-prefix v0.5.1
+   Compiling tokenizers v0.21.4
+   Compiling indicatif v0.18.3
+   Compiling mmap-rs v0.7.0
+   Compiling anndists v0.1.5
+   Compiling aes-gcm v0.10.3
+   Compiling a3s-lane v0.5.1 (/mnt/d/code/aster/crates/lane)
+   Compiling lsp-types v0.97.0
+   Compiling a3s-ratatui-textarea v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+   Compiling a3s-effect v0.2.1 (/mnt/d/code/aster/crates/effect)
+   Compiling documented v0.9.2
+   Compiling rquickjs v0.11.0
+   Compiling ndarray v0.15.6
+   Compiling a3s-ratatui-inline v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-ratatui-inline)
+   Compiling html2text v0.16.7
+   Compiling a3s-code-gboom v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-gboom)
+   Compiling toml v0.8.23
+   Compiling a3s-sandbox v0.2.3 (/mnt/d/code/aster/crates/sandbox)
+   Compiling a3s-memory v0.1.5 (/mnt/d/code/aster/crates/memory)
+   Compiling sha256 v1.6.0
+   Compiling a3s-common v0.1.1 (/mnt/d/code/aster/crates/common)
+   Compiling vte v0.15.0
+   Compiling smallstr v0.3.1
+   Compiling safetensors v0.5.3
+   Compiling base64 v0.21.7
+   Compiling simdutf8 v0.1.5
+   Compiling ansi-to-tui v7.0.0
+   Compiling yrs v0.27.3
+   Compiling hnsw_rs v0.3.5
+   Compiling pdf-inspector v1.17.0
+   Compiling a3s-code-dashboard-store v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling a3s-code-active-sessions v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling clap_complete v4.6.5
+   Compiling sigstore-crypto v0.6.6
+   Compiling jsonwebtoken v10.3.0
+   Compiling a3s-crash-handler v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-crash-handler)
+   Compiling zip v7.2.0
+   Compiling sigstore-merkle v0.6.6
+   Compiling sigstore-trust-root v0.6.3
+   Compiling a3s-office-formula-parser v0.45.0 (/mnt/d/code/aster/crates/office/crates/formula-parser)
+   Compiling a3s-code-acp v9.1.6 (/mnt/d/code/aster/crates/code/acp)
+   Compiling a3s-use-reconcile v0.2.10 (/mnt/d/code/aster/crates/use/reconcile)
+   Compiling aster v0.1.4 (/mnt/d/code/aster/apps/aster)
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling tungstenite v0.28.0
+   Compiling ureq v2.12.1
+   Compiling reqwest v0.13.5
+   Compiling tokio-tungstenite v0.28.0
+   Compiling aws-smithy-http-client v1.1.9
+   Compiling hf-hub v0.4.3
+   Compiling axum v0.8.6
+   Compiling model2vec-rs v0.3.0
+   Compiling reqwest-middleware v0.4.2
+   Compiling opentelemetry-http v0.32.0
+   Compiling a3s-code-extra-ca v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-extra-ca)
+   Compiling reqwest-eventsource v0.6.0
+   Compiling fastrace-reqwest v0.2.0
+   Compiling gcloud-metadata v1.0.2
+   Compiling tonic v0.14.6
+   Compiling reqwest-middleware v0.5.2
+   Compiling sigstore-rekor v0.6.6
+   Compiling a3s-code-auth v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-auth)
+   Compiling async-openai v0.33.1 (/mnt/d/code/aster/crates/third-party/async-openai)
+   Compiling gcloud-auth v1.3.0
+   Compiling sigstore-tsa v0.6.6
+   Compiling sentry v0.42.0
+   Compiling a3s-mixpanel v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-mixpanel)
+   Compiling oauth2 v5.0.0
+   Compiling a3s-code-diag-server v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-diag-server)
+   Compiling a3s-code-shell-base v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling jsonschema v0.30.0
+   Compiling a3s-search v3.4.0 (/mnt/d/code/aster/crates/search)
+   Compiling sigstore-bundle v0.6.6
+   Compiling a3s-code-voice v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-voice)
+   Compiling tonic-prost v0.14.6
+   Compiling tonic-types v0.14.5
+   Compiling a3s-okf v0.1.0 (/mnt/d/code/aster/crates/okf)
+   Compiling a3s-office v0.45.0 (/mnt/d/code/aster/crates/office/crates/core)
+   Compiling sigstore-verify v0.6.3
+   Compiling opentelemetry-proto v0.32.0
+   Compiling gcloud-storage v1.3.0
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling a3s-tool-runtime v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-tracing v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-tracing)
+   Compiling a3s-code-otel v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-otel)
+   Compiling a3s-code-sandbox v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-code-sampling-types v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-sampling-types)
+   Compiling a3s-computer-hub-core v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-file-utils v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling git2 v0.20.2
+   Compiling a3s-code-sampler v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-sampler)
+   Compiling a3s-compaction-transcript v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling a3s-fsnotify v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-fsnotify)
+   Compiling a3s-codebase-graph v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling a3s-code-foreign-sessions v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+   Compiling a3s-chat-state v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-chat-state)
+   Compiling a3s-code-workspace-client v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-telemetry v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-vec v0.1.8 (/mnt/d/code/aster/crates/vec)
+   Compiling jsonschema v0.47.0
+   Compiling a3s-code-session-search v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-session-search)
+   Compiling a3s-code-core v9.1.6 (/mnt/d/code/aster/crates/code/core)
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-hooks v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-agent v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-workspace)
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+warning: unused variable: `tie`
+   --> crates/code/core/src/durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+   Compiling tikv-jemallocator v0.7.0
+   Compiling tikv-jemalloc-ctl v0.7.0
+   Compiling a3s-embedding v0.1.0 (/mnt/d/code/aster/crates/embedding)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates/embedding/src/vector/hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo fix --lib -p a3s-embedding` to apply 2 suggestions)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:51:12
+   |
+44 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+51 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+   Compiling a3s-code-http v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+warning: `a3s-code-acp` (lib) generated 2 warnings
+   Compiling a3s-code-login v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-login)
+warning: `a3s-code-core` (lib) generated 5 warnings (run `cargo fix --lib -p a3s-code-core` to apply 2 suggestions)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-pager)
+   Compiling a3s-code-pager-minimal v0.1.0 (/mnt/d/code/aster/crates/terminal/crates/codegen/a3s-code-pager-minimal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13m 04s

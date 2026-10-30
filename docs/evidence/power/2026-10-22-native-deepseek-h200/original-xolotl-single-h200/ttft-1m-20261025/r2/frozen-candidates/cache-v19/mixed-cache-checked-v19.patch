@@ -1,0 +1,140 @@
+--- a/tools/v41/engine/ds41_moe.cpp
++++ b/tools/v41/engine/ds41_moe.cpp
+@@ -10,6 +10,7 @@
+ // initialise the driver - accidental or otherwise.  Compiled with `DS4_MOE_CUDA` it is the full three-tier
+ // implementation.  `tools/ds4/cmake/ds4_moe.cmake` builds both.
+ #include "ds41_moe.hpp"
++#include "aster_cache_restore_policy.hpp"
+ #include "ds41_transcode.hpp"
+ #include "strata/kernels/cpu/expert_layout.hpp"
+ 
+@@ -2884,7 +2885,9 @@
+     const int64_t K = im.g.top_k;
+     const int64_t B = im.blob;                        // staging STRIDE (the largest blob)
+     auto BLX = [&](int32_t e) { return im.bl[(size_t) im.g.cls(layer, e)]; };   // an expert's blob (the bytes a DMA moves)
+-    const bool lru = im.cfg.vram_lru && gp.cache && !im.cfg.no_cache;   // uniform (DS4) too: every slot fits any blob
++    // A one-token prefill remainder may use this pass path while tail slots are loaned.
++    // Keep exact saved ownership until regrow_cache restores it.
++    const bool lru = im.cfg.vram_lru && gp.cache && !im.cfg.no_cache && (!im.mixed_sizes || im.shrunk.empty());   // uniform (DS4) too: every slot fits any blob
+     ++im.run_seq;
+     im.run_layer = layer;
+     if (lru && !im.cfg.arena_adapt) ++im.tick;   // (arena_adapt bumps it below)
+@@ -4089,7 +4092,9 @@
+     // is demoted into the arena slot the incoming expert vacates.  Without this the pass never admitted anything
+     // (the old admission was off for mixed blob sizes - every DS4 model) and the hit rate decayed over a run
+     // (DS41_PROF_X: sum+sync 1.44 -> 1.67 ms/call over 256 tokens). ----
+-    const bool lru = im.cfg.vram_lru && gp.cache && !im.cfg.no_cache;
++    // A one-token prefill remainder may use this pass path while tail slots are loaned.
++    // Keep exact saved ownership until regrow_cache restores it.
++    const bool lru = im.cfg.vram_lru && gp.cache && !im.cfg.no_cache && (!im.mixed_sizes || im.shrunk.empty());
+     const int64_t NXL = im.g.n_experts;
+     static const int64_t kLruWin = std::getenv("STRATA_LRU_WIN") ? std::atoll(std::getenv("STRATA_LRU_WIN")) : 4;   // admission window (calls)
+     int64_t lc = 0;
+@@ -5677,6 +5682,46 @@
+     return on;
+ }
+ 
++#if defined(DS4_MOE_CUDA)
++namespace {
++// A separate, closed opt-in from uniform KEEP_LRU. Mixed slots require both
++// the complete ownership/size gate and exact slot restoration below.
++int aster_keep_mixed_mode() {
++    static const int mode = [] {
++        const char* value = std::getenv("ASTER_XQ_KEEP_MIXED");
++        if (!value || std::strcmp(value, "0") == 0) return 0;
++        if (std::strcmp(value, "1") == 0) return 1;
++        return -1;
++    }();
++    return mode;
++}
++
++bool aster_cache_map_valid(const Ds41MoeImpl& im, const strata::core::ExpertCache& cache,
++                           bool restoring, std::string& err) {
++    if (cache.per_layer_admission()) {
++        err = "mixed cache restore does not support per-layer admission";
++        return false;
++    }
++    std::vector<uint64_t> offsets;
++    offsets.reserve(static_cast<size_t>(cache.full_slots()) + 1);
++    for (int64_t slot = 0; slot <= cache.full_slots(); ++slot)
++        offsets.push_back(cache.slot_offset(slot));
++    std::vector<aster_cache_restore::Record> records;
++    for (int64_t layer = 0; layer < im.g.n_layers; ++layer)
++        for (int64_t expert = 0; expert < im.g.n_experts; ++expert) {
++            const int32_t slot = cache.slot_of(layer, expert);
++            if (slot >= 0) records.push_back({slot, layer, expert, im.bl[static_cast<size_t>(im.g.cls(layer, expert))]});
++        }
++    if (restoring)
++        for (const auto& entry : im.shrunk)
++            if (entry[0] < cache.slots())
++                records.push_back({entry[0], entry[1], entry[2],
++                                  im.bl[static_cast<size_t>(im.g.cls(entry[1], entry[2]))]});
++    return aster_cache_restore::valid(records, offsets, cache.slots(), im.g.n_layers, im.g.n_experts, err);
++}
++} // namespace
++#endif
++
+ int64_t Ds41MoeTier::shrink_cache_for(int64_t need_bytes, std::string& err) {
+ #if defined(DS4_MOE_CUDA)
+     // every refusal says why (s6: the first A/B never kept the cache and logged nothing)
+@@ -5689,10 +5734,14 @@
+         const char * value = std::getenv("STRATA_SERVE_KEEP_LRU");
+         return value && value[0] == '1';
+     }();
+-    if (im_->cfg.vram_lru && (!keep_lru || im_->mixed_sizes)) {
+-        err = "--vram-lru (uniform cache needs STRATA_SERVE_KEEP_LRU=1)";
++    const int mixed_mode = aster_keep_mixed_mode();
++    if (mixed_mode < 0) { err = "ASTER_XQ_KEEP_MIXED must be exactly 0 or 1"; return -1; }
++    if (im_->cfg.vram_lru && (!keep_lru || (im_->mixed_sizes && mixed_mode != 1))) {
++        err = "--vram-lru requires KEEP_LRU=1; sized slots also require checked ASTER_XQ_KEEP_MIXED=1";
+         return -1;
+     }
++    if (im_->mixed_sizes && mixed_mode == 1 && !aster_cache_map_valid(*im_, *im_->gpu->cache, false, err))
++        return -1;
+     if (!im_->shrunk.empty()) { err = "still shrunk from the last batch (regrow_cache did not run)"; return -1; }
+     if (im_->cfg.cuda_device >= 0 && cudaSetDevice(im_->cfg.cuda_device) != cudaSuccess) {
+         err = "shrink_cache_for: cudaSetDevice failed"; return -1;
+@@ -5767,11 +5816,23 @@
+             return -1;
+         }
+     }
++    const bool checked_mixed = im_->mixed_sizes && aster_keep_mixed_mode() == 1;
++    if (checked_mixed && !aster_cache_map_valid(*im_, c, true, err)) {
++        im_->shrunk.clear();
++        return -1;
++    }
+     std::vector<std::array<int64_t, 3>> fjobs;   // slot, layer, expert (not in the arena: read from the file)
+     int64_t added = 0;
+     for (const auto& j : im_->shrunk) {
+         if (j[0] >= c.slots()) break;   // a short grow (VRAM taken meanwhile): the rest stay out
+-        if (c.admit_at(j[1], j[2], j[0]) < 0) continue;   // re-admitted elsewhere meanwhile - leave the slot empty
++        if (c.admit_at(j[1], j[2], j[0]) < 0) {
++            if (checked_mixed) {
++                err = "mixed cache exact-slot restoration refused";
++                im_->shrunk.clear();
++                return -1;
++            }
++            continue;   // uniform legacy path: leave a re-admitted expert's old slot empty
++        }
+         const int64_t BL = im_->bl[(size_t) im_->g.cls(j[1], j[2])];
+         if (const uint8_t* p = im_->gpu->arena.ptr(j[1], j[2])) {
+             if (!c.fill_slot_queued(j[0], p, err, BL)) { im_->shrunk.clear(); return -1; }
+@@ -5800,10 +5861,16 @@
+             if (c.slot_of(j[1], j[2]) != j[0]) continue;
+             const size_t len = (size_t) im_->bl[(size_t) im_->g.cls(j[1], j[2])];
+             im_->blobs->read(j[1], j[2], ref.data());
+-            cudaMemcpy(got.data(), c.device_slot(j[0]), len, cudaMemcpyDeviceToHost);
+-            ++n; bad += std::memcmp(got.data(), ref.data(), len) != 0;
++            const cudaError_t copied = cudaMemcpy(got.data(), c.device_slot(j[0]), len, cudaMemcpyDeviceToHost);
++            ++n;
++            bad += copied != cudaSuccess || std::memcmp(got.data(), ref.data(), len) != 0;
+         }
+         std::fprintf(stderr, "[keep-chk] %lld refilled slots checked, %lld bad\n", (long long) n, (long long) bad);
++        if (checked_mixed && bad != 0) {
++            err = "mixed cache refilled expert bytes differ from source";
++            im_->shrunk.clear();
++            return -1;
++        }
+     }
+     im_->admitted += added;
+     std::fprintf(stderr, "serve: cache regrown: %lld experts back (%zu from the file) in %.0f ms\n", (long long) added,

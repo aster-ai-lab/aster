@@ -2954,6 +2954,7 @@ fn hr1_routing_plans_validate_fail_closed() {
         InferenceRoutingPlan {
             mode,
             decision_model: None,
+            decision_protocol: Default::default(),
             economy_targets: None,
             primary_targets: None,
             simple_probability_threshold_bp: 8000,
@@ -2968,6 +2969,7 @@ fn hr1_routing_plans_validate_fail_closed() {
     let mut plan = InferenceRoutingPlan {
         mode: InferenceRoutingMode::SmartSaving,
         decision_model: Some("platform/decider".into()),
+        decision_protocol: Default::default(),
         economy_targets: Some(vec![eco_a, eco_b]),
         primary_targets: Some(vec![pri_a]),
         simple_probability_threshold_bp: 8000,
@@ -3003,6 +3005,7 @@ fn hr1_routing_plans_validate_fail_closed() {
     let mut plan = InferenceRoutingPlan {
         mode: InferenceRoutingMode::Branches,
         decision_model: Some("platform/decider".into()),
+        decision_protocol: Default::default(),
         economy_targets: None,
         primary_targets: None,
         simple_probability_threshold_bp: 8000,

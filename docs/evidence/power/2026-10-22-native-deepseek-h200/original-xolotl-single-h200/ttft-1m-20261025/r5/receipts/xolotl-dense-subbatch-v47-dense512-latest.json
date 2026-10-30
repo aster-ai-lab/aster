@@ -1,0 +1,61 @@
+{
+  "unix": 1792872646.3519702,
+  "service-longctx-v1-result.json": {
+    "schema": "aster-xolotl-stable-service-v1",
+    "phase": "stopped",
+    "unix": 1792872347.548579,
+    "model": "deepseek-v4.1-flash-1017-xq",
+    "performance_300_claimed": false,
+    "context_tokens": 1048576,
+    "cpu_api_tests_passed": true,
+    "gpu_uuid": "GPU-355373e1-1013-8629-4bee-c64f810da5a4",
+    "lease_ends_unix": 1792884595.778009,
+    "binary_sha256": "fa0195a9b64f5e18136eec6852997cd0637f3197e9b6b97e4f512c5f50d5f373",
+    "api_attempt": 1,
+    "api_process": {
+      "pid": 4399,
+      "start_ticks": 315183624,
+      "uid": 10250
+    },
+    "startup_unix": 1792872360.356759,
+    "last_health_status": 200,
+    "last_health_unix": 1792872620.8158178,
+    "api_reaped": true,
+    "api_exit": 0,
+    "finished_unix": 1792872632.694484
+  },
+  "service-process.json": {
+    "pid": 4268,
+    "start_ticks": 315182338,
+    "uid": 10250,
+    "unix": 1792872347.4992962,
+    "deadline_seconds": 12238
+  },
+  "exact_supervisor_alive": false,
+  "numeric_diagnostics": [
+    "resident MMQ stage: 753 waves, 110182625280 exact D2D bytes",
+    "serve: cache regrown: 1198 experts back (0 from the file) in 256 ms",
+    "dense prof turn: 1560 attn spans: build 45 ms, alloc 71, gpu compute 11027, engram wait 151, readback 1041, upload 1247, finish build 7",
+    "serve: prompt phases: 35700 new = 35700 batch (36.12 s: dense 13.68, experts 21.13, logits 0.00) + DSpark tail 128 from the batch (cache open 0.00 s, seed 0.01 s)",
+    "serve: prompt 35700 tokens (0 reused, batch) in 36.14 s = 988.0 tok/s (experts 4081789 hit / 0 cpu / 676931 pcie / 0 file)",
+    "serve: cache kept for a 35700-token batch (1198 tail slots out, 11278 experts stay)",
+    "chunk prof: 40 calls, 58 launches: wall 537 ms = waits on reads 0 + wave/copy waits 0 + final sync 531 + other host 6; reader wall 0 ms; GPU grouped kernels 61 ms (resident 53); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 245 sub-runs; PTQ1_0 -> Q2_0 transcode 8 ms GPU (inside the grouped kernels) over 18 sub-runs, 12.4 GB of ternary read = 1631 GB/s",
+    "resident MMQ stage: 181 waves, 34043719680 exact D2D bytes",
+    "serve: cache regrown: 1198 experts back (0 from the file) in 256 ms",
+    "dense prof turn: 80 attn spans: build 3 ms, alloc 11, gpu compute 474, engram wait 4, readback 54, upload 14, finish build 1",
+    "serve: prompt phases: 18 new = 18 passes (0.16 s: dense 0.06, experts 0.10, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 18 tokens (0 reused, passes) in 0.16 s = 111.2 tok/s (experts 4275 hit / 0 cpu / 45 pcie / 0 file)",
+    "serve: cache kept for a 34676-token batch (1198 tail slots out, 11278 experts stay)",
+    "chunk prof: 180 calls, 248 launches: wall 18144 ms = waits on reads 0 + wave/copy waits 0 + final sync 16297 + other host 1847; reader wall 0 ms; GPU grouped kernels 1480 ms (resident 786); file tier 0.0 GB read in 0 ms of reader time = 0.00 GB/s",
+    "chunk prof MMQ: 702 sub-runs; PTQ1_0 -> Q2_0 transcode 5 ms GPU (inside the grouped kernels) over 18 sub-runs, 4.1 GB of ternary read = 758 GB/s",
+    "resident MMQ stage: 697 waves, 88323563520 exact D2D bytes",
+    "serve: cache regrown: 1198 experts back (0 from the file) in 262 ms",
+    "dense prof turn: 1520 attn spans: build 43 ms, alloc 55, gpu compute 10856, engram wait 163, readback 988, upload 1244, finish build 6",
+    "serve: prompt phases: 34676 new = 34676 batch (34.99 s: dense 13.44, experts 20.26, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: prompt 35700 tokens (1024 reused, batch) in 34.99 s = 991.1 tok/s (experts 3919877 hit / 0 cpu / 715963 pcie / 0 file)",
+    "dense prof turn: 0 attn spans: build 0 ms, alloc 0, gpu compute 0, engram wait 0, readback 0, upload 0, finish build 0",
+    "serve: prompt phases: 1 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 1 as passes (cache open 0.00 s, seed 0.03 s)",
+    "serve: prompt 35703 tokens (35702 reused, batch) in 0.03 s = 39.7 tok/s (experts 237 hit / 0 cpu / 3 pcie / 0 file)"
+  ]
+}

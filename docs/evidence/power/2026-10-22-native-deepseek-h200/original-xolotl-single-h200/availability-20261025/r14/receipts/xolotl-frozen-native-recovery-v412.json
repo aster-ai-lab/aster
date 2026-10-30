@@ -1,0 +1,32 @@
+{
+  "unix": 1792939178.6051698,
+  "phase": "recovery_outcome_requires_inspection",
+  "reason": "WorkBuddy fresh HI hangs; retained native inactivity while API reports reading",
+  "old_observation_unix": 1792938722.9781392,
+  "old_native": {
+    "pid": 316,
+    "state": "S",
+    "cpu_ticks": 140550,
+    "io": {
+      "rchar": 155842676954,
+      "wchar": 164440,
+      "syscr": 22048865,
+      "syscw": 13580,
+      "read_bytes": 126615552,
+      "write_bytes": 0,
+      "cancelled_write_bytes": 0
+    },
+    "thread_states": {
+      "S": 54
+    },
+    "thread_waits": {
+      "futex_wait_queue_me": 50,
+      "do_poll.constprop.0": 3,
+      "pipe_read": 1
+    }
+  },
+  "formal_allocation_uid": "bd638591-0ba6-4c60-9eb6-129a531714ee",
+  "model_config_changed": false,
+  "optimization_resumed": false,
+  "error_type": "RuntimeError"
+}

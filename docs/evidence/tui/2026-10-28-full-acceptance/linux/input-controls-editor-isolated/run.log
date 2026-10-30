@@ -1,0 +1,34 @@
+
+running 1 test
+test input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal ... ORACLE case=editor-save name=source-pair result=pass detail=aster-cli-pair-v1:25f6f0f867358b34bec5ced1cc9b7f3153b07c88:x86_64-unknown-linux-gnu
+
+thread 'input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal' (2777) panicked at crates/code/acp/tests/aster_tui_live_e2e/driver.rs:335:9:
+timeout waiting for "Session ID"
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                      │
+│                                                          +#+ ...++o                                                  │
+│                                                        +*###*+  :::                                                  │
+│                                                    ..+*##* *##*+:                                                    │
+│                                                  ...  ::*#*#+                                                        │
+│                                                  .:::::   #                                                          │
+│                                                                                                                      │
+│ Aster  v9.1.4                                                                                                        │
+│ /tmp/aster-kimi-Srph1d/workspace                                                                                     │
+│ Model · kimi/K3.1 Pro                                                                                                │
+│ /help for commands                                                                                                   │
+│                                                                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+No active session
+minimal · /help                                                                                                         
+❯
+kimi/K3.1 Pro (medium) · ctrl+o transcript
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    input_controls::kimi_external_editor_save_and_failures_preserve_draft_and_terminal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 28 filtered out; finished in 32.85s
+

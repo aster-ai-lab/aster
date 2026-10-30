@@ -1,0 +1,10 @@
+{
+  "unix": 1792892423.0139098,
+  "parent": "run_pool_seed_comparison_v112r1.frozen.py",
+  "parent_sha256": "2582cc695efa6546db23f3cd48c98323e5b8b619bbe91156ff2960062b8eeda0",
+  "resumed": "run_pool_seed_comparison_v112r2.frozen.py",
+  "resumed_sha256": "169094a23adfaf6b14e2e88a8b33ce0aa94fbb2fd3beb7db96ed6ca2f00508ac",
+  "existing_service_relaunched": false,
+  "completed_profiles_retained": 2,
+  "acceptance_gates_unchanged": true
+}

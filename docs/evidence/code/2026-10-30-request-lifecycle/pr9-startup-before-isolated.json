@@ -1,0 +1,27 @@
+{
+  "binary_path": "/Users/roylin/code/aster/target/debug/deps/a3s_code_pager-cd0768442fd9ed52",
+  "binary_sha256": "30dbe8ef5720ac63a7e43196f060fff74fc6c50d1d2760925f3b2ffe1f2a3825",
+  "process_timeout_seconds": 15,
+  "isolated_results": [
+    {
+      "test": "acp::startup_deadline_tests::initialization_failure_cancels_the_agent_token",
+      "returncode": 101,
+      "seconds": 0.055
+    },
+    {
+      "test": "acp::startup_deadline_tests::initialize_expires_when_the_live_sidecar_never_responds",
+      "returncode": 101,
+      "seconds": 0.049
+    },
+    {
+      "test": "acp::startup_deadline_tests::tui_authentication_uses_the_same_bounded_request",
+      "returncode": 101,
+      "seconds": 0.05
+    },
+    {
+      "test": "headless::tests::headless_auth_does_not_wait_forever_for_a_live_silent_sidecar",
+      "returncode": 101,
+      "seconds": 0.05
+    }
+  ]
+}

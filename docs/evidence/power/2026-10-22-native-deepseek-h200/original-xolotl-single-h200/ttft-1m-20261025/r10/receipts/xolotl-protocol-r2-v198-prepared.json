@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "file": "xolotl_ncu_actual1m_worker_v171r2.frozen.py",
+      "bytes": 16331,
+      "sha256": "8ee413409531fa35b46931d9e572a4a121fcf96d5967fe9bfb8a2acd14809e85"
+    },
+    {
+      "file": "manage_ncu_actual1m_v172r2.py",
+      "bytes": 12296,
+      "sha256": "7b3aee5a395b1e3305111afdb86fee038f51e201983b0d853ea751ada59540e1"
+    },
+    {
+      "file": "run_fullwindow_then_hardware_profile_v173r2.frozen.py",
+      "bytes": 7070,
+      "sha256": "62b599c547a68a721ed9896246c14cc3430108aa8f4da708f83dd3c81b1c4030"
+    },
+    {
+      "file": "manage_topk_harness_v195r1.py",
+      "bytes": 14478,
+      "sha256": "e9c6e01d6261e5f9c3f754262f8ab7b87c097d245b2364650bb934abd93e579f"
+    }
+  ],
+  "actual_input_tokens": 1047544,
+  "diagnostic_output_tokens": 128,
+  "cold_request_budget_seconds": 2400,
+  "total_profile_budget_seconds": 2600,
+  "unchanged_1024_output_API_gates": true,
+  "selected_kernel_limit": 96,
+  "retained_failures": [
+    "xolotl-profiler-prefix-failure-v196.json",
+    "xolotl-topk-harness-v195-compile-latest.json"
+  ],
+  "GPU_executed": false
+}

@@ -125,3 +125,121 @@ fn truncate_after_on_a_corrupt_line_leaves_the_log_untouched() {
     ));
     assert_eq!(std::fs::read(&file).unwrap(), before);
 }
+
+fn typed_fact(kind: &str, key: &str) -> NewFact {
+    NewFact {
+        kind: kind.into(),
+        key: key.into(),
+        payload: serde_json::json!({ "text": key }),
+    }
+}
+
+#[test]
+fn message_compaction_preserves_evidence_and_reopens_sequence_gaps() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    for (kind, key) in [
+        ("session.source", "source"),
+        ("user.message", "old-user"),
+        ("model.turn", "old-model"),
+        ("tool.result", "old-tool"),
+        ("verification.report", "proof"),
+        ("compaction.done", "compaction"),
+        ("goal.definition", "goal"),
+        ("user.message", "after-compaction"),
+    ] {
+        log.append("thread-1", &[typed_fact(kind, key)], None)
+            .unwrap();
+    }
+    let opened = log.read_opened("thread-1", false).unwrap().unwrap();
+    let retained = compacted_message_prefix(&opened.facts).unwrap();
+    log.rewrite_compacted("thread-1", &opened, &retained)
+        .unwrap();
+    drop(opened);
+
+    let facts = log.read("thread-1").unwrap();
+    let keys = facts
+        .iter()
+        .map(|fact| fact.key.as_str())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        keys,
+        [
+            "source",
+            "old-user",
+            "old-model",
+            "old-tool",
+            "proof",
+            "compaction",
+            "goal",
+            "after-compaction",
+        ]
+    );
+    for key in ["old-user", "old-model", "old-tool"] {
+        let fact = facts.iter().find(|fact| fact.key == key).unwrap();
+        assert_eq!(fact.kind, "compaction.pruned");
+        assert_eq!(fact.payload, serde_json::json!({}));
+    }
+    assert_eq!(
+        facts.iter().map(|fact| fact.seq).collect::<Vec<_>>(),
+        [1, 2, 3, 4, 5, 6, 7, 8]
+    );
+    let reopened = FileLog::open(dir.path()).unwrap();
+    reopened
+        .append("thread-1", &[user_fact("next", "next")], None)
+        .unwrap();
+    assert_eq!(reopened.read("thread-1").unwrap().last().unwrap().seq, 9);
+}
+
+#[test]
+fn byte_limit_compacts_only_the_already_summarized_message_prefix() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    log.append("thread-1", &[typed_fact("session.source", "source")], None)
+        .unwrap();
+    let blob = "x".repeat(1024 * 1024);
+    for index in 0..14 {
+        log.append(
+            "thread-1",
+            &[user_fact(&format!("old-{index}"), &blob)],
+            None,
+        )
+        .unwrap();
+    }
+    for (kind, key) in [
+        ("verification.report", "proof"),
+        ("compaction.done", "compaction"),
+        ("goal.definition", "goal"),
+    ] {
+        log.append("thread-1", &[typed_fact(kind, key)], None)
+            .unwrap();
+    }
+    for index in 0..4 {
+        log.append(
+            "thread-1",
+            &[user_fact(&format!("after-{index}"), &blob)],
+            None,
+        )
+        .unwrap();
+    }
+
+    let facts = log.read("thread-1").unwrap();
+    let keys = facts
+        .iter()
+        .map(|fact| fact.key.as_str())
+        .collect::<Vec<_>>();
+    for required in ["source", "proof", "compaction", "goal", "after-3"] {
+        assert!(keys.contains(&required), "missing {required}: {keys:?}");
+    }
+    assert_eq!(
+        facts.iter().find(|fact| fact.key == "old-0").unwrap().kind,
+        "compaction.pruned"
+    );
+    assert_eq!(facts.last().unwrap().seq, 22);
+    assert!(
+        std::fs::metadata(dir.path().join("thread-1.jsonl"))
+            .unwrap()
+            .len()
+            <= MAX_LOG_BYTES
+    );
+}

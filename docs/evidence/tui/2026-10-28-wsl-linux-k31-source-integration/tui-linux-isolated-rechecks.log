@@ -1,0 +1,128 @@
+RUN kimi_tui_durable_goal_controls_persist_real_facts
+
+running 1 test
+test kimi_tui_durable_goal_controls_persist_real_facts ... ORACLE case=goal name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=goal name=goal-create result=pass detail=actual Core goal.created fact preserves the objective
+ORACLE case=goal name=/goal pause result=pass detail=a3s.goal.paused
+ORACLE case=goal name=/goal resume result=pass detail=a3s.goal.resumed
+ORACLE case=goal name=/goal clear result=pass detail=a3s.goal.cancelled
+ORACLE case=goal name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 23.75s
+
+
+RUN kimi_tui_interrupts_a_running_tool_without_late_side_effects
+
+running 1 test
+test kimi_tui_interrupts_a_running_tool_without_late_side_effects ... ORACLE case=interrupt name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=interrupt name=interrupt result=pass detail=Ctrl+C settles an admitted bash call; no delayed write after eight seconds
+ORACLE case=interrupt name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 20.37s
+
+
+RUN kimi_tui_multiturn_edits_and_runs_the_real_checker
+
+running 1 test
+test kimi_tui_multiturn_edits_and_runs_the_real_checker ... ORACLE case=coding name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=coding name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26958
+ORACLE case=coding name=coding-diagnose result=pass detail=both functions diagnosed, source bytes unchanged
+ORACLE case=coding name=settled-turn result=pass detail=facts=13 model_turns=4 prompt_tokens=57635
+ORACLE case=coding name=coding-repair result=pass detail=real edit receipt, verified terminal, unchanged checker and independent passing execution
+ORACLE case=coding name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 87.93s
+
+
+RUN kimi_tui_native_form_validates_submits_and_cancels
+
+running 1 test
+test kimi_tui_native_form_validates_submits_and_cancels ... ORACLE case=form-submit name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=form-submit name=form-required result=pass detail=native required-field validation blocks empty submission
+ORACLE case=form-submit name=form-range result=pass detail=native numeric validation blocks amount 6
+ORACLE case=form-submit name=form-submit result=pass detail=actual ACP/Core tool receipt contains Ada, 4 and true
+ORACLE case=form-submit name=quit result=pass detail=exit 0
+ORACLE case=form-cancel name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=form-cancel name=form-cancel result=pass detail=actual tool result carries the cancelled outcome
+ORACLE case=form-cancel name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 53.11s
+
+
+RUN kimi_tui_offered_commands_have_observable_effects
+surface name=context result=pass detail=actual context report after a live turn
+ORACLE case=surface name=find result=pass detail=search locates actual assistant transcript token
+ORACLE case=surface name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13548
+ORACLE case=surface name=jump result=pass detail=turn picker opened and selected a turn
+ORACLE case=surface name=/theme grokday result=pass detail=grokday
+ORACLE case=surface name=/compact-mode result=pass detail=compact_mode = true
+ORACLE case=surface name=/timestamps result=pass detail=show_timestamps = false
+ORACLE case=surface name=/timeline result=pass detail=show_timeline = true
+ORACLE case=surface name=/vim-mode result=pass detail=vim_mode = true
+ORACLE case=surface name=multiline-on result=pass detail=session toggle shown
+ORACLE case=surface name=multiline-off result=pass detail=toggle returned to ordinary input
+ORACLE case=surface name=model result=pass detail=catalog selection changed and restored to Kimi before further inference
+ORACLE case=surface name=effort result=pass detail=reasoning effort actually changed to low in model footer
+ORACLE case=surface name=yolo result=pass detail=permission posture flag enabled
+ORACLE case=surface name=toggle-mouse-reporting result=pass detail=actual terminal mouse capture mode changed
+ORACLE case=surface name=edit-prompt result=pass detail=real editor process ran and returned edited composer bytes
+ORACLE case=surface name=compact result=pass detail=actual model compaction appended compaction.done
+ORACLE case=surface name=quit result=pass detail=exit 0
+ORACLE case=surface name=continue result=pass detail=same source-built ACP session reconnected
+ORACLE case=surface name=quit result=pass detail=exit 0
+ORACLE case=surface name=resume result=pass detail=explicit session identity restored
+ORACLE case=surface name=home result=pass detail=returned to welcome screen
+ORACLE case=surface name=new result=pass detail=new session identity
+ORACLE case=surface name=minimal result=pass detail=switched renderer
+ORACLE case=surface name=expand-empty result=pass detail=actual empty result in minimal mode
+ORACLE case=surface name=fullscreen result=pass detail=returned to fullscreen renderer
+ORACLE case=surface name=delete result=pass detail=persisted session summary removed and welcome screen restored
+ORACLE case=surface name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 164.48s
+
+
+RUN kimi_tui_permission_reject_and_cancel_leave_no_side_effect
+
+running 1 test
+test kimi_tui_permission_reject_and_cancel_leave_no_side_effect ... ORACLE case=permission-reject name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=permission-reject name=permission-reject result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-reject name=quit result=pass detail=exit 0
+ORACLE case=permission-cancel name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=permission-cancel name=permission-cancel result=pass detail=real permission card dismissed; file absent before and after rejection/cancellation
+ORACLE case=permission-cancel name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 38.46s
+
+
+RUN kimi_tui_reads_actual_workspace_bytes
+
+running 1 test
+test kimi_tui_reads_actual_workspace_bytes ... ORACLE case=read name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=read name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26827
+ORACLE case=read name=live-read result=pass detail=actual read receipt and unseen file token in settled assistant reply
+ORACLE case=read name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 19.12s
+
+
+RUN kimi_tui_writes_and_verifies_actual_workspace_bytes
+
+running 1 test
+test kimi_tui_writes_and_verifies_actual_workspace_bytes ... ORACLE case=write-verify name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=write-verify name=settled-turn result=pass detail=facts=20 model_turns=6 prompt_tokens=84512
+ORACLE case=write-verify name=live-write-verify result=pass detail=real read/write/shell receipts, exact output bytes and verified terminal
+ORACLE case=write-verify name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 52.34s
+
+
+All eight previously failing tests passed individually.

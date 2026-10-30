@@ -1,0 +1,344 @@
+{
+  "unix": 1792891371.545288,
+  "result": {
+    "schema": "aster-xolotl-pool-long-output-v110",
+    "unix": 1792891077.6021745,
+    "phase": "failed",
+    "client": "yangchao-dev",
+    "tests": [
+      {
+        "name": "short-control-42",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "42",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "seconds": 0.3906068652868271,
+        "ttft_seconds": 0.3491126820445061,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1097
+      },
+      {
+        "name": "cold-technical-long8244",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the problem of ensuring that every reader of a cached value observes a value that is compatible with the authoritative state of the system. In a single-process cache the problem is trivial: the cache and the source of truth share memory, so invalidation is a function call. In a distributed system the cache is a separate failure domain, the source of truth may be replicated, and the network between them can reorder, delay, duplicate, or drop messages. Consistency therefore becomes a protocol problem rather than a data-structure problem. This chapter treats cache consistency as a set of concrete mechanisms \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 and shows how each behaves under races, partitions, and failover, with timelines, pseudocode, monitoring signals, and operational trade-offs.\n\n## 1. Defining the consistency target\n\nBefore choosing a mechanism, state the guarantee you need. Four levels are common.\n\n**Linearizable reads.** A read returns the value of the most recent completed write, in real time. This requires that the cache either be bypassed or that invalidation be synchronous with the write's commit. It is expensive because every write must reach every cache before the write is acknowledged, or reads must consult the authority.\n\n**Sequential consistency.** All readers see writes in the same order, but that order need not match wall-clock completion. This is achievable with a single invalidation stream per key and monotonic version numbers.\n\n**Read-your-writes (RYW).** A client that performed a write sees that write on its next read. This is the usual target for session-scoped caches and is achievable without global synchronization if the writer's own cache entry is updated or invalidated locally and the client is pinned to a cache node that has seen the invalidation.\n\n**Bounded staleness.** Reads may be stale by at most a duration or a version delta. TTL and version fences implement this. It is the cheapest guarantee and the one most production caches actually provide.\n\nThe guarantee determines the mechanism. A cache that promises linearizability cannot rely on TTL alone, because TTL bounds staleness only probabilistically: a write at time t and a read at t+\u03b5 can still return the pre-write value until expiry. Conversely, a cache that promises bounded staleness does not need synchronous invalidation and can tolerate lost invalidation messages, provided the TTL is short enough relative to the staleness budget.\n\nA useful formalization: let `V_k` be the authoritative version of key `k`, and let `C_k` be the version held by a cache node. Consistency holds when `C_k >= V_k - D` for a staleness budget `D` measured in versions, or when `age(C_k) <= T` measured in time. Every mechanism below is a way of bounding one of these two quantities.\n\n## 2. Invalidation\n\nInvalidation is the act of telling cache nodes that a key's cached value is no longer authoritative. It is the primary mechanism for strong consistency and the one with the most failure modes.\n\n### 2.1 Invalidation shapes\n\n**Key invalidation.** The authority publishes `invalidate(k)`. Cache nodes drop `k`. Simple, but coarse: a write that changes one field of a composite object invalidates the whole object.\n\n**Tag or dependency invalidation.** Entries are annotated with tags (e.g., `user:42`, `tenant:7`, `query:orders-by-status`). A write publishes `invalidate_tag(user:42)` and every entry carrying that tag is dropped. This is how CDNs and application caches handle derived data: a page rendered from several rows is invalidated when any contributing row changes. The cost is bookkeeping \u2014 each entry must record its tags, and tag membership must be maintained on insert.\n\n**Range invalidation.** For ordered data (a sorted index, a paginated list), invalidation of a range `[a, b)` avoids dropping the entire collection. Useful when writes are localized.\n\n**Version fence invalidation.** Instead of dropping the entry, the authority publishes the new version and the cache compares. This is covered in \u00a77.\n\n### 2.2 Push versus pull\n\n**Push invalidation** has the authority send messages to caches after commit. It is fast and precise but requires the authority to know every cache node, to survive node churn, and to handle message loss. Push is the right choice when the staleness budget is small and the write rate is moderate.\n\n**Pull invalidation** has caches poll a change log or a version endpoint. It is robust to node churn and message loss because the cache re-derives state from a durable log, but it adds latency equal to the poll interval. Pull is the right choice when caches are numerous,",
+        "usage": {
+          "prompt_tokens": 8244,
+          "completion_tokens": 1024,
+          "total_tokens": 9268,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "4de65e134fbadbd68a75bc61e59d542bcbe7344e82d6d205739f70c75a6214aa",
+        "seconds": 37.10260251071304,
+        "ttft_seconds": 17.466755617875606,
+        "first_to_last_text_seconds": 19.635100781917572,
+        "text_chunks": 1019,
+        "response_bytes": 235040,
+        "matches_control_cold": true
+      },
+      {
+        "name": "isolation-technical-long8244-53",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "53",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "2858dcd1057d3eae7f7d5f782167e24b61153c01551450a628cee722509f6529",
+        "seconds": 0.17612943798303604,
+        "ttft_seconds": 0.11628994904458523,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1098
+      },
+      {
+        "name": "isolation-technical-long8244-47",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "47",
+        "usage": {
+          "prompt_tokens": 12,
+          "completion_tokens": 2,
+          "total_tokens": 14,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "31489056e0916d59fe3add79e63f095af3ffb81604691f21cad442a85c7be617",
+        "seconds": 0.16521303821355104,
+        "ttft_seconds": 0.09622294642031193,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1097
+      },
+      {
+        "name": "isolation-technical-long8244-89",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "89",
+        "usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 2,
+          "total_tokens": 13,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "cd70bea023f752a0564abb6ed08d42c1440f2e33e29914e55e0be1595e24f45a",
+        "seconds": 0.17620139196515083,
+        "ttft_seconds": 0.08316578296944499,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1097
+      },
+      {
+        "name": "restored-technical-long8244",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that a cached copy of data agrees with the authoritative source, or at least agrees with whatever staleness contract the system promises. In a distributed system there is no single cache: there are client caches, edge caches, application-level object caches, database page caches, and replication buffers, each with its own notion of truth. Consistency is therefore not a binary property but a negotiated set of guarantees: read-your-writes, monotonic reads, bounded staleness, linearizable invalidation, or eventual convergence. The engineering problem is to choose one of those guarantees per data class, implement it with invalidation, TTL, write policy, and replication, and then prove it under failover and races.\n\n## 1. The consistency contract\n\nBefore choosing mechanisms, define what the cache promises. Four common contracts:\n\n1. **Strong consistency.** A read returns the latest committed write. This requires invalidation or version checks on every read path, and usually means the cache is a read-through layer with a coherence protocol rather than an independent store.\n2. **Read-your-writes.** A client that wrote a value sees that value on subsequent reads, even if other clients may see older data. Implemented with session affinity, client-side version tracking, or sticky routing to a replica that has applied the write.\n3. **Bounded staleness.** Reads may be stale by at most N seconds or M versions. Implemented with TTL and version fences.\n4. **Eventual consistency.** Reads converge to the truth once writes stop. Implemented with invalidation messages, replication, and repair.\n\nThe contract determines which failure modes are acceptable. A product catalog can tolerate minutes of staleness; an account balance cannot. Mixing contracts inside one cache is the most common source of \"phantom\" inconsistency, because a key cached under a strong contract and a key cached under a bounded-staleness contract share the same eviction machinery but different correctness expectations.\n\n## 2. Invalidation\n\nInvalidation is the act of telling caches that a specific key or set of keys no longer reflects truth. There are three families.\n\n### 2.1 Explicit key invalidation\n\nThe writer publishes a message naming the key. Caches delete or mark the entry. This is precise but requires the writer to know every cache that holds the key, and requires the invalidation channel to be reliable. A typical flow:\n\n```\non write(k, v):\n    commit(k, v) to primary\n    publish invalidation(k, version=v.version)\n    caches receiving invalidation(k) drop entry or store version\n```\n\nThe danger is the gap between commit and publish. If the publish fails, caches keep serving old data indefinitely. Mitigations: publish before acknowledging the write to the client (adds latency), publish with retries and a durable queue, or attach a version to every cached entry so a read can detect staleness without an invalidation message.\n\n### 2.2 Tag or namespace invalidation\n\nInstead of naming keys, writers invalidate a tag. A cache entry carries tags such as `user:42`, `tenant:7`, `catalog:2024-06`. Invalidating `tenant:7` drops every entry tagged with it. This scales when a write affects many derived keys (for example, a tenant rename changes dozens of denormalized fields). The cost is tag bookkeeping: each entry must record its tags, and invalidation must scan the tag index. Tag invalidation is coarse, so it can over-evict and cause a cache stampede.\n\n### 2.3 Generation or epoch invalidation\n\nA namespace carries a generation number. Writers bump the generation; readers compare the cached generation against the current one and treat mismatches as misses. This avoids per-key messages entirely: one counter invalidates a whole namespace. It is cheap and robust to lost messages, because the generation is read from the authoritative store on each lookup (or cached with a short TTL). The trade-off is that a generation bump invalidates everything in the namespace, so it suits data that changes as a unit.\n\n### 2.4 Invalidation ordering hazards\n\nInvalidation messages can arrive out of order relative to writes. Consider two writes to key `k`: write A sets version 10, write B sets version 11. If the invalidation for A arrives after the invalidation for B, a cache that simply deletes on message will delete the entry that already holds version 11, causing a needless miss but not incorrectness. If the cache instead stores the invalidation's version as a floor, an out-of-order older invalidation must not lower the floor. Rule: invalidation carries a monotonic version, and caches apply `max(existing_floor, incoming_version)`.\n\n## 3. TTL",
+        "usage": {
+          "prompt_tokens": 8244,
+          "completion_tokens": 1024,
+          "total_tokens": 9268,
+          "prompt_tokens_details": {
+            "cached_tokens": 8244
+          }
+        },
+        "output_sha256": "46e36d756cba08b94a37db749f5a0ec0a88a5a83dc0f3d22e736bfdcc1b88063",
+        "seconds": 25.522302580066025,
+        "ttft_seconds": 0.018420793116092682,
+        "first_to_last_text_seconds": 25.50342810805887,
+        "text_chunks": 1015,
+        "response_bytes": 234089,
+        "pool_restore_logged": true,
+        "pool_seed_restore_logged": false,
+        "matches_control_cold": false
+      },
+      {
+        "name": "repeated-technical-long8244",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that a cached copy of data agrees with the authoritative source, or at least agrees with whatever staleness contract the system promises. In a distributed system there is no single cache: there are client caches, edge caches, application-level object caches, database page caches, and replication buffers, each with its own notion of truth. Consistency is therefore not a binary property but a negotiated set of guarantees: read-your-writes, monotonic reads, bounded staleness, linearizable invalidation, or eventual convergence. The engineering problem is to choose one of those guarantees per data class, implement it with invalidation, TTL, write policy, and replication, and then prove it under failover and races.\n\n## 1. The consistency contract\n\nBefore choosing mechanisms, define what the cache promises. Four common contracts:\n\n1. **Strong consistency.** A read returns the latest committed write. This requires invalidation or version checks on every read path, and usually means the cache is a read-through layer with a coherence protocol rather than an independent store.\n2. **Read-your-writes.** A client that wrote a value sees that value on subsequent reads, even if other clients may see older data. Implemented with session affinity, client-side version tracking, or sticky routing to a replica that has applied the write.\n3. **Bounded staleness.** Reads may be stale by at most N seconds or M versions. Implemented with TTL and version fences.\n4. **Eventual consistency.** Reads converge to the truth once writes stop. Implemented with invalidation messages, replication, and repair.\n\nThe contract determines which failure modes are acceptable. A product catalog can tolerate minutes of staleness; an account balance cannot. Mixing contracts inside one cache is the most common source of \"phantom\" inconsistency, because a key cached under a strong contract and a key cached under a bounded-staleness contract share the same eviction machinery but different correctness expectations.\n\n## 2. Invalidation\n\nInvalidation is the act of telling caches that a specific key or set of keys no longer reflects truth. There are three families.\n\n### 2.1 Explicit key invalidation\n\nThe writer publishes a message naming the key. Caches delete or mark the entry. This is precise but requires the writer to know every cache that holds the key, and requires the invalidation channel to be reliable. A typical flow:\n\n```\non write(k, v):\n    commit(k, v) to primary\n    publish invalidation(k, version=v.version)\n    caches receiving invalidation(k) drop entry or store version\n```\n\nThe danger is the gap between commit and publish. If the publish fails, caches keep serving old data indefinitely. Mitigations: publish before acknowledging the write to the client (adds latency), publish with retries and a durable queue, or attach a version to every cached entry so a read can detect staleness without an invalidation message.\n\n### 2.2 Tag or namespace invalidation\n\nInstead of naming keys, writers invalidate a tag. A cache entry carries tags such as `user:42`, `tenant:7`, `catalog:2024-06`. Invalidating `tenant:7` drops every entry tagged with it. This scales when a write affects many derived keys (for example, a tenant rename changes dozens of denormalized fields). The cost is tag bookkeeping: each entry must record its tags, and invalidation must scan the tag index. Tag invalidation is coarse, so it can over-evict and cause a cache stampede.\n\n### 2.3 Generation or epoch invalidation\n\nA namespace carries a generation number. Writers bump the generation; readers compare the cached generation against the current one and treat mismatches as misses. This avoids per-key messages entirely: one counter invalidates a whole namespace. It is cheap and robust to lost messages, because the generation is read from the authoritative store on each lookup (or cached with a short TTL). The trade-off is that a generation bump invalidates everything in the namespace, so it suits data that changes as a unit.\n\n### 2.4 Invalidation ordering hazards\n\nInvalidation messages can arrive out of order relative to writes. Consider two writes to key `k`: write A sets version 10, write B sets version 11. If the invalidation for A arrives after the invalidation for B, a cache that simply deletes on message will delete the entry that already holds version 11, causing a needless miss but not incorrectness. If the cache instead stores the invalidation's version as a floor, an out-of-order older invalidation must not lower the floor. Rule: invalidation carries a monotonic version, and caches apply `max(existing_floor, incoming_version)`.\n\n## 3. TTL",
+        "usage": {
+          "prompt_tokens": 8244,
+          "completion_tokens": 1024,
+          "total_tokens": 9268,
+          "prompt_tokens_details": {
+            "cached_tokens": 8244
+          }
+        },
+        "output_sha256": "46e36d756cba08b94a37db749f5a0ec0a88a5a83dc0f3d22e736bfdcc1b88063",
+        "seconds": 22.976548321079463,
+        "ttft_seconds": 0.017676549963653088,
+        "first_to_last_text_seconds": 22.95825457992032,
+        "text_chunks": 1015,
+        "response_bytes": 234088,
+        "matches_control_cold": false
+      },
+      {
+        "name": "cold-technical-long25671",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the problem of ensuring that every reader of a distributed system observes data that is compatible with the authoritative source, even though copies of that data live in multiple places: in-process memory, local disk, remote cache servers, CDN edges, browser caches, and replicated database nodes. The difficulty is not the cache itself; it is the coordination between the cache and the writer, between multiple caches, and between caches and replicas that may lag. A cache that is fast but stale is worse than no cache at all when the stale value drives a decision, a payment, a permission check, or a schema migration.\n\nThis chapter treats cache consistency as an engineering discipline with concrete mechanisms, timelines, pseudocode, and operational trade-offs. It covers invalidation, TTL, write-through and write-back, replication, failover, race conditions, versioning, monitoring, and the operational cost of each choice.\n\n## 1. The consistency model vocabulary\n\nBefore choosing a mechanism, define the guarantee you actually need. Distributed caches commonly offer one of these models:\n\n- **Strong consistency (linearizable).** Every read returns the value of the most recent completed write, as if all operations were serialized on one machine. This requires coordination on every read or write, so it is expensive and rarely used for high-throughput caches.\n- **Sequential consistency.** All clients see writes in the same order, but a read may return an older value than the latest write. Useful when ordering matters more than freshness.\n- **Read-your-writes.** A client that performed a write will subsequently read at least that write. This is the minimum guarantee most applications need for user-facing flows.\n- **Monotonic reads.** A client never observes a value older than one it already observed. Prevents \"time travel\" where a page refreshes backward.\n- **Eventual consistency.** Replicas converge to the same value once writes stop. The convergence window is the consistency lag, and it must be bounded and measured.\n\nThe choice determines which mechanisms are mandatory. Read-your-writes requires either sticky routing to the writer's replica or a version check that rejects stale reads. Monotonic reads require per-client version tracking. Eventual consistency permits TTL-only designs but demands monitoring of lag.\n\nA useful rule: consistency requirements are per-key, not per-system. A product catalog can tolerate minutes of staleness; an account balance cannot. Tag keys with a consistency class and route them accordingly.\n\n## 2. Invalidation\n\nInvalidation is the act of telling caches that a cached entry is no longer valid. There are three families.\n\n### 2.1 Active invalidation (explicit eviction)\n\nThe writer, after committing to the source of truth, sends an invalidation message to every cache holding the key. This is the most precise mechanism and the most fragile, because it depends on the writer knowing all caches and on the message arriving.\n\nPseudocode for a write path with active invalidation:\n\n```\nfunction update(key, value):\n    version = source.commit(key, value)          # durable write first\n    for cache in registry.caches_for(key):\n        cache.evict(key, version)                # best-effort, bounded retry\n    return version\n```\n\nThe ordering matters: commit before invalidate. If you invalidate first and the commit fails, caches refill with the old value and the invalidation is wasted. If you commit first and invalidation fails, caches hold stale data until TTL expires, which is why active invalidation must always be paired with a TTL safety net.\n\nActive invalidation has three failure modes:\n\n1. **Lost message.** The cache never receives the eviction. Mitigation: TTL fallback plus a reconciliation sweep.\n2. **Partial delivery.** Some caches evict, others do not. Mitigation: idempotent invalidation keyed by version, so a retry is harmless.\n3. **Race with a concurrent fill.** A reader repopulates the key between commit and eviction, so the eviction removes a fresh value and the next reader refills from a stale replica. Mitigation: version-tagged fills (see \u00a77).\n\n### 2.2 Passive invalidation (TTL expiry)\n\nThe cache expires entries after a fixed duration. This is simple, requires no coordination, and bounds staleness by construction. The cost is that the bound is only as good as the TTL, and a TTL that is too short destroys hit rate while a TTL that is too long permits stale reads.\n\nTTL is not a consistency mechanism by itself; it is a staleness ceiling. A system with TTL-only caching is eventually consistent with a lag equal to the TTL plus the refill latency.\n\n### 2.3 Invalidation by dependency graph\n\nWhen a cached entry is derived from several",
+        "usage": {
+          "prompt_tokens": 25671,
+          "completion_tokens": 1024,
+          "total_tokens": 26695,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "c6f2168ee64893f9155ba5276746b5d873a1018f9b4435fe01ca71fdc58499ec",
+        "seconds": 52.30066881002858,
+        "ttft_seconds": 29.44372253632173,
+        "first_to_last_text_seconds": 22.856597320642322,
+        "text_chunks": 1017,
+        "response_bytes": 234711,
+        "matches_control_cold": true
+      },
+      {
+        "name": "isolation-technical-long25671-53",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "53",
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 2,
+          "total_tokens": 20,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "2858dcd1057d3eae7f7d5f782167e24b61153c01551450a628cee722509f6529",
+        "seconds": 0.23289421433582902,
+        "ttft_seconds": 0.18239906942471862,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1098
+      },
+      {
+        "name": "isolation-technical-long25671-47",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "47",
+        "usage": {
+          "prompt_tokens": 12,
+          "completion_tokens": 2,
+          "total_tokens": 14,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "31489056e0916d59fe3add79e63f095af3ffb81604691f21cad442a85c7be617",
+        "seconds": 0.1251710536889732,
+        "ttft_seconds": 0.07389767188578844,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1096
+      },
+      {
+        "name": "isolation-technical-long25671-89",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "89",
+        "usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 2,
+          "total_tokens": 13,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "output_sha256": "cd70bea023f752a0564abb6ed08d42c1440f2e33e29914e55e0be1595e24f45a",
+        "seconds": 0.1220254311338067,
+        "ttft_seconds": 0.06436485005542636,
+        "first_to_last_text_seconds": 0.0,
+        "text_chunks": 1,
+        "response_bytes": 1097
+      },
+      {
+        "name": "restored-technical-long25671",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that every reader of a distributed system observes data that is coherent with the authoritative source, within a bounded and explicitly stated staleness budget. A cache is a copy of state held closer to the consumer than the origin. Copies are cheap to read and expensive to keep truthful. The central engineering problem is not \"how do we store a copy\" but \"how do we decide when the copy is wrong, how quickly we learn that it is wrong, and what a reader should do while we are learning.\"\n\nThis chapter treats consistency as a contract rather than an aspiration. Each mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is described with its failure modes, its concrete timelines, and the operational cost it imposes. Pseudocode is given for the paths that matter. Monitoring signals are named so that inconsistency is observable rather than inferred from user complaints.\n\n## 1. The consistency contract\n\nBefore choosing a mechanism, state the contract. Four properties matter:\n\n1. **Read-your-writes.** A client that wrote a value must observe that value on its next read, even if the read is served by a different node.\n2. **Monotonic reads.** A client must never observe an older version after observing a newer one. This is weaker than linearizability but far cheaper.\n3. **Bounded staleness.** Every read is at most `S` seconds or `V` versions behind the origin. `S` is a published number, not a hope.\n4. **Convergence.** After the origin stops changing, every cache reaches the origin value within a bounded time.\n\nA cache that satisfies read-your-writes but not monotonic reads produces the classic \"flip-flop\" bug: a user refreshes and sees version 12, refreshes again and sees version 11. A cache that satisfies monotonic reads but not read-your-writes produces \"I saved it and it still shows the old value,\" which users interpret as data loss.\n\nThe contract determines the mechanism. Read-your-writes requires either sticky routing to the writer's cache node, or invalidation propagated synchronously before the write is acknowledged. Monotonic reads require version comparison at read time, not merely freshness by timestamp. Bounded staleness requires TTL or explicit invalidation with a measured propagation latency. Convergence requires that invalidation is delivered even when the cache node was unreachable at write time \u2014 which means invalidation must be durable, not fire-and-forget.\n\n## 2. Invalidation\n\nInvalidation is the act of telling a cache that a specific key's copy is no longer trustworthy. It is the strongest mechanism because it removes the copy rather than aging it. It is also the most fragile because it depends on delivery.\n\n### 2.1 Invalidation shapes\n\n- **Key invalidation.** `INVALIDATE(key)` removes one entry. Cheap, precise, and the default for entity updates.\n- **Tag invalidation.** Entries are annotated with tags (e.g. `user:42`, `tenant:7`, `listing:991`). `INVALIDATE_TAG(user:42)` removes every entry carrying that tag. This handles derived views: a profile page assembled from user, avatar, and preferences entries is invalidated by one tag when the user row changes.\n- **Namespace invalidation.** `INVALIDATE_NAMESPACE(\"catalog\")` drops a whole partition. Used for schema migrations and bulk imports, where per-key invalidation would be millions of messages.\n- **Range invalidation.** For sorted structures (leaderboards, time-series windows), invalidate a key range. Requires the cache to support ordered keys, which most KV caches do not; it is usually implemented as tag invalidation over window tags.\n\n### 2.2 Delivery models\n\nThree delivery models exist, and they differ in what they guarantee when a cache node is down.\n\n**Push (origin-initiated).** The origin publishes invalidation to cache nodes after commit. Guarantee: invalidation arrives if the node is reachable. Failure: a node that is down at publish time misses the message permanently unless the publisher retains it.\n\n**Pull (cache-initiated).** Cache nodes poll a change log or version index. Guarantee: a node that was down catches up on restart because the log is durable. Failure: staleness is bounded by poll interval, not by write latency.\n\n**Hybrid.** Push for latency, pull as reconciliation. The origin pushes immediately; each cache node also polls a durable change log every `P` seconds and applies any invalidation it missed. This is the recommended default because it converts \"lost message\" from a permanent inconsistency into a bounded one.\n\nPseudocode for hybrid invalidation with a durable log:\n\n```\n# Origin, after commit\ndef publish_invalidation",
+        "usage": {
+          "prompt_tokens": 25671,
+          "completion_tokens": 1024,
+          "total_tokens": 26695,
+          "prompt_tokens_details": {
+            "cached_tokens": 25671
+          }
+        },
+        "output_sha256": "8efcf7be9b50777a25d5663348193152c358767761f17ffe64a249a90a5b0024",
+        "seconds": 26.073732452001423,
+        "ttft_seconds": 0.048779203090816736,
+        "first_to_last_text_seconds": 26.0238545271568,
+        "text_chunks": 1018,
+        "response_bytes": 234771,
+        "pool_restore_logged": true,
+        "pool_seed_restore_logged": false,
+        "matches_control_cold": false
+      },
+      {
+        "name": "repeated-technical-long25671",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "{\"begin\":731927,\"middle\":408563,\"end\":962814}\n\n# Cache Consistency in Distributed Systems\n\nCache consistency is the discipline of ensuring that every reader of a distributed system observes data that is coherent with the authoritative source, within a bounded and explicitly stated staleness budget. A cache is a copy of state held closer to the consumer than the origin. Copies are cheap to read and expensive to keep truthful. The central engineering problem is not \"how do we store a copy\" but \"how do we decide when the copy is wrong, how quickly we learn that it is wrong, and what a reader should do while we are learning.\"\n\nThis chapter treats consistency as a contract rather than an aspiration. Each mechanism below \u2014 invalidation, TTL, write-through, write-back, replication, failover, versioning \u2014 is described with its failure modes, its concrete timelines, and the operational cost it imposes. Pseudocode is given for the paths that matter. Monitoring signals are named so that inconsistency is observable rather than inferred from user complaints.\n\n## 1. The consistency contract\n\nBefore choosing a mechanism, state the contract. Four properties matter:\n\n1. **Read-your-writes.** A client that wrote a value must observe that value on its next read, even if the read is served by a different node.\n2. **Monotonic reads.** A client must never observe an older version after observing a newer one. This is weaker than linearizability but far cheaper.\n3. **Bounded staleness.** Every read is at most `S` seconds or `V` versions behind the origin. `S` is a published number, not a hope.\n4. **Convergence.** After the origin stops changing, every cache reaches the origin value within a bounded time.\n\nA cache that satisfies read-your-writes but not monotonic reads produces the classic \"flip-flop\" bug: a user refreshes and sees version 12, refreshes again and sees version 11. A cache that satisfies monotonic reads but not read-your-writes produces \"I saved it and it still shows the old value,\" which users interpret as data loss.\n\nThe contract determines the mechanism. Read-your-writes requires either sticky routing to the writer's cache node, or invalidation propagated synchronously before the write is acknowledged. Monotonic reads require version comparison at read time, not merely freshness by timestamp. Bounded staleness requires TTL or explicit invalidation with a measured propagation latency. Convergence requires that invalidation is delivered even when the cache node was unreachable at write time \u2014 which means invalidation must be durable, not fire-and-forget.\n\n## 2. Invalidation\n\nInvalidation is the act of telling a cache that a specific key's copy is no longer trustworthy. It is the strongest mechanism because it removes the copy rather than aging it. It is also the most fragile because it depends on delivery.\n\n### 2.1 Invalidation shapes\n\n- **Key invalidation.** `INVALIDATE(key)` removes one entry. Cheap, precise, and the default for entity updates.\n- **Tag invalidation.** Entries are annotated with tags (e.g. `user:42`, `tenant:7`, `listing:991`). `INVALIDATE_TAG(user:42)` removes every entry carrying that tag. This handles derived views: a profile page assembled from user, avatar, and preferences entries is invalidated by one tag when the user row changes.\n- **Namespace invalidation.** `INVALIDATE_NAMESPACE(\"catalog\")` drops a whole partition. Used for schema migrations and bulk imports, where per-key invalidation would be millions of messages.\n- **Range invalidation.** For sorted structures (leaderboards, time-series windows), invalidate a key range. Requires the cache to support ordered keys, which most KV caches do not; it is usually implemented as tag invalidation over window tags.\n\n### 2.2 Delivery models\n\nThree delivery models exist, and they differ in what they guarantee when a cache node is down.\n\n**Push (origin-initiated).** The origin publishes invalidation to cache nodes after commit. Guarantee: invalidation arrives if the node is reachable. Failure: a node that is down at publish time misses the message permanently unless the publisher retains it.\n\n**Pull (cache-initiated).** Cache nodes poll a change log or version index. Guarantee: a node that was down catches up on restart because the log is durable. Failure: staleness is bounded by poll interval, not by write latency.\n\n**Hybrid.** Push for latency, pull as reconciliation. The origin pushes immediately; each cache node also polls a durable change log every `P` seconds and applies any invalidation it missed. This is the recommended default because it converts \"lost message\" from a permanent inconsistency into a bounded one.\n\nPseudocode for hybrid invalidation with a durable log:\n\n```\n# Origin, after commit\ndef publish_invalidation",
+        "usage": {
+          "prompt_tokens": 25671,
+          "completion_tokens": 1024,
+          "total_tokens": 26695,
+          "prompt_tokens_details": {
+            "cached_tokens": 25671
+          }
+        },
+        "output_sha256": "8efcf7be9b50777a25d5663348193152c358767761f17ffe64a249a90a5b0024",
+        "seconds": 23.168938744347543,
+        "ttft_seconds": 0.049285372253507376,
+        "first_to_last_text_seconds": 23.11872766399756,
+        "text_chunks": 1018,
+        "response_bytes": 234771,
+        "matches_control_cold": false
+      }
+    ],
+    "levels": [],
+    "active_requests": {},
+    "scope": "Exact8244/25671 public technical-document inputs, six1024-output calls and forced pool restores; configured1M, not actual1M input.",
+    "full_1m_length_qualified": false,
+    "long_output_qualified": false,
+    "performance_300_claimed": false,
+    "profile": "pool_off",
+    "diagnostic_completed": true,
+    "cold_reference_qualified": true,
+    "cases": [
+      {
+        "case": "technical-long8244",
+        "actual_input_tokens": 8244,
+        "cold_seconds": 37.10260251071304,
+        "cold_ttft_seconds": 17.466755617875606,
+        "restored_seconds": 25.522302580066025,
+        "restored_ttft_seconds": 0.018420793116092682,
+        "repeated_seconds": 22.976548321079463,
+        "pool_restore_logged": true,
+        "pool_seed_restore_logged": false,
+        "restored_matches_control_cold": false,
+        "repeated_matches_control_cold": false
+      },
+      {
+        "case": "technical-long25671",
+        "actual_input_tokens": 25671,
+        "cold_seconds": 52.30066881002858,
+        "cold_ttft_seconds": 29.44372253632173,
+        "restored_seconds": 26.073732452001423,
+        "restored_ttft_seconds": 0.048779203090816736,
+        "repeated_seconds": 23.168938744347543,
+        "pool_restore_logged": true,
+        "pool_seed_restore_logged": false,
+        "restored_matches_control_cold": false,
+        "repeated_matches_control_cold": false
+      }
+    ],
+    "identity_failures": [
+      "restored-technical-long8244",
+      "repeated-technical-long8244",
+      "restored-technical-long25671",
+      "repeated-technical-long25671"
+    ],
+    "actual1m_input_tested": false,
+    "formal_service_changed": false,
+    "current_case": "technical-long25671",
+    "finished_unix": 1792891266.231378,
+    "error": "Complete greedy output differs from the structurally qualified cold reference; original identity gate retained"
+  },
+  "exact_client_alive": false,
+  "failure_log": ""
+}

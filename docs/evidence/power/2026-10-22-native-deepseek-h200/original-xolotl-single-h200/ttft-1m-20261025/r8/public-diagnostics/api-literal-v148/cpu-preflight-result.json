@@ -1,0 +1,80 @@
+{
+  "phase": "passed",
+  "unix": 1792899308.1045513,
+  "gpu_executed": false,
+  "tests": [
+    {
+      "mode": "0",
+      "name": "upstream-security",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "upstream-ds41",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "exact-memo",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "strict-native-json",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "combined-adapter",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "hybrid-native-json",
+      "exit_code": 0
+    },
+    {
+      "mode": "0",
+      "name": "actual-api-canonical1m",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "upstream-security",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "upstream-ds41",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "exact-memo",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "strict-native-json",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "combined-adapter",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "hybrid-native-json",
+      "exit_code": 0
+    },
+    {
+      "mode": "1",
+      "name": "actual-api-canonical1m",
+      "exit_code": 0
+    }
+  ],
+  "tests_completed": 14,
+  "api_sha256": "6fd2a8b6135fc5e676933f8c729f33dc2bba5849d721cab6d28b6a68a9d43954",
+  "finished_unix": 1792899353.7066329
+}

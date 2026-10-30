@@ -1,0 +1,97 @@
+{
+  "unix": 1792876506.2512064,
+  "result": {
+    "schema": "aster-xolotl-draft-long-output-v50",
+    "unix": 1792876299.3762753,
+    "phase": "failed",
+    "profile": "cum010",
+    "client": "yangchao-dev",
+    "tests": [
+      {
+        "name": "forced-native-tool-stream",
+        "status": 200,
+        "done": true,
+        "finish_reason": "tool_calls",
+        "content": "",
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tool_calls": [
+          {
+            "id": "call_bbc2cbcbb9a442bfbf346a9b",
+            "type": "function",
+            "function": {
+              "name": "add_numbers",
+              "arguments": "{\"a\": 17, \"b\": 25}"
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 305,
+          "completion_tokens": 24,
+          "total_tokens": 329,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 2.0835421518422663,
+        "ttft_seconds": null,
+        "first_to_last_text_seconds": null
+      },
+      {
+        "name": "native-tool-followup-42",
+        "status": 200,
+        "done": true,
+        "finish_reason": "stop",
+        "content": "42",
+        "output_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 363,
+          "completion_tokens": 2,
+          "total_tokens": 365,
+          "prompt_tokens_details": {
+            "cached_tokens": 296
+          }
+        },
+        "seconds": 0.48415385419502854,
+        "ttft_seconds": 0.43020560313016176,
+        "first_to_last_text_seconds": 0.0
+      },
+      {
+        "name": "warmup-0-rust-lru-1024",
+        "status": 200,
+        "done": true,
+        "finish_reason": "length",
+        "content": "# Building an LRU Cache in Rust: A Comprehensive Tutorial\n\nThis tutorial walks through implementing a production-quality LRU (Least Recently Used) cache in Rust from scratch. We'll cover the generic data structure, all methods, error handling, memory-safety reasoning, concurrency options, complexity analysis, and worked examples. By the end, you'll have a complete, tested implementation you can drop into your project.\n\n---\n\n## 1. Introduction and Design Goals\n\nAn LRU cache evicts the least-recently-used entry when capacity is exceeded. The classic implementation combines two structures:\n\n- **A hash map** for O(1) key lookup.\n- **A doubly-linked list** ordered by recency (most-recent at the front, least-recent at the back).\n\nThe tricky part in Rust is that a doubly-linked list with shared ownership is awkward: you can't easily have two nodes point at each other without `Rc<RefCell<...>>` or unsafe pointers. We'll use a **safe, idiomatic approach**: store nodes in a `Vec` arena indexed by integer IDs, and link them via indices. This avoids `Rc`, avoids `unsafe`, and gives us predictable memory behavior.\n\n### Design decisions\n\n1. **Generic over `K` and `V`** with `K: Eq + Hash`.\n2. **Arena-based doubly-linked list** \u2014 nodes live in a `Vec<Node<K, V>>`, links are `Option<usize>` indices.\n3. **HashMap from key \u2192 node index** for O(1) lookup.\n4. **Free-list of indices** so eviction reuses slots instead of growing the arena unboundedly.\n5. **Explicit error type** for capacity validation and missing keys.\n6. **Optional concurrency** via a `Mutex` wrapper, plus a lock-free-ish alternative discussion.\n\n---\n\n## 2. The Core Data Structure\n\n```rust\nuse std::collections::HashMap;\nuse std::hash::Hash;\n\n/// A node in the doubly-linked recency list.\nstruct Node<K, V> {\n    key: K,\n    value: V,\n    prev: Option<usize>, // toward MRU\n    next: Option<usize>, // toward LRU\n}\n\n/// LRU cache with arena-backed doubly-linked list.\npub struct LruCache<K, V> {\n    map: HashMap<K, usize>,\n    nodes: Vec<Option<Node<K, V>>>, // arena; None = free slot\n    free: Vec<usize>,               // reusable indices\n    head: Option<usize>,            // MRU node index\n    tail: Option<usize>,            // LRU node index\n    capacity: usize,\n    len: usize,\n}\n```\n\nWhy `Vec<Option<Node<K, V>>>`? Because eviction leaves holes. We keep a free-list so we can reuse those holes. `Option<Node>` lets us represent \"slot is free\" without shifting the vector.\n\n### Why not `Rc<RefCell>`?\n\n`Rc<RefCell<Node>>` works but:\n- Every node allocates separately (heap fragmentation).\n- `RefCell` borrow checks at runtime.\n- Cycles require careful `Weak` handling to avoid leaks.\n\nThe arena approach:\n- One contiguous allocation for nodes.\n- No runtime borrow checks.\n- No reference cycles.\n- Predictable memory footprint.\n\n---\n\n## 3. Constructor and Error Handling\n\n```rust\n#[derive(Debug, Clone, PartialEq, Eq)]\npub enum LruError {\n    ZeroCapacity,\n    KeyNotFound,\n}\n\nimpl std::fmt::Display for LruError {\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n        match self {\n            LruError::ZeroCapacity => write!(f, \"capacity must be greater than zero\"),\n            LruError::KeyNotFound => write!(f, \"key not found in cache\"),\n        }\n    }\n}\n\nimpl std::error::Error for LruError {}\n```\n\nConstructor:\n\n```rust\nimpl<K: Eq + Hash, V> LruCache<K, V> {\n    pub fn new(capacity: usize) -> Result<Self, LruError> {\n        if capacity == 0 {\n            return Err(LruError::ZeroCapacity);\n        }\n        Ok(Self {\n            map: HashMap::with_capacity(capacity),\n            nodes: Vec::with_capacity(capacity),\n            free: Vec::new(),\n            head: None,\n            tail: None,\n            capacity,\n            len: 0,\n        })\n    }\n\n    pub fn capacity(&self) -> usize {\n        self.capacity\n    }\n\n    pub fn len(&self) -> usize {\n        self.len\n    }\n\n    pub fn is_empty(&self) -> bool {\n        self.len == 0\n    }\n}\n```\n\nWe pre-size the map and arena to `capacity` so we",
+        "output_sha256": "bbb52df4640a18e778ca16948f218f577de213f64699f2588bdde933e68b7bba",
+        "tool_calls": [],
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 1024,
+          "total_tokens": 1085,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "seconds": 17.08768483577296,
+        "ttft_seconds": 0.41414247965440154,
+        "first_to_last_text_seconds": 16.673184528015554,
+        "case": "rust-lru-1024",
+        "warmup": true
+      }
+    ],
+    "scope": "Single active API request; ctx1M configured, short public prompts,1024 generated tokens; not actual1M input or cold concurrency.",
+    "full1m_input_qualified": false,
+    "speed_300_qualified": false,
+    "current_request": "warmup-0-rust-lru-1024",
+    "native_tool_roundtrip_passed": true,
+    "context_tokens": 1048576,
+    "max_output_tokens": 1024,
+    "warmup_requests": 2,
+    "measured_requests": 8,
+    "one_active_request": true,
+    "error": "RuntimeError: cumulative draft changed a matched greedy long output",
+    "finished_unix": 1792876319.0538118
+  },
+  "exact_client_alive": false,
+  "failure_log": "Traceback (most recent call last):\n  File \"/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/serve-draft-v53-cum010/qualification-extended-v53/request-worker.py\", line 165, in <module>\n    raise RuntimeError('cumulative draft changed a matched greedy long output')\nRuntimeError: cumulative draft changed a matched greedy long output\n"
+}

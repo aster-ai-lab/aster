@@ -1,0 +1,27 @@
+{
+  "unix": 1792890324.266712,
+  "phase": "launched",
+  "root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc10-d0ed8472c851/build-pool-seed-v106",
+  "allocation_uid": "7455d989-8255-4f7c-ae8f-3cc0aa5928e4",
+  "gpu_uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+  "gpu_qualified": false,
+  "files": [
+    {
+      "file": "native_link_worker.py",
+      "bytes": 4672,
+      "sha256": "f3226da19c81dcb77a558a004a593fc9dcecb166f61aee9c860a5402cc8b7865"
+    },
+    {
+      "file": "native-link-plan.json",
+      "bytes": 5272,
+      "sha256": "c136996e103ef71fa55b7a71a7f904b09d035a78d666916e8f5952c789146eb7"
+    }
+  ],
+  "process": {
+    "pid": 1201,
+    "start_ticks": 711960534,
+    "uid": 10250,
+    "unix": 1792890334.3516798,
+    "budget_seconds": 200
+  }
+}

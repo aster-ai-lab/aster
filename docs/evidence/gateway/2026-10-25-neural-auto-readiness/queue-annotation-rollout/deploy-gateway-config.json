@@ -1,0 +1,30 @@
+{
+  "preserved_pids": {
+    "prism-27b@0.service": "2073548",
+    "prism-27b@1.service": "2073908",
+    "prism-27b@2.service": "2074263",
+    "prism-27b@3.service": "2074649",
+    "prism-27b@4.service": "2075000",
+    "prism-27b@5.service": "2075354",
+    "a3s-power@0.service": "3845392",
+    "a3s-power@1.service": "3845569",
+    "a3s-power@2.service": "3845745",
+    "a3s-power@3.service": "3845957",
+    "a3s-power@4.service": "3846134",
+    "a3s-power@5.service": "3846431",
+    "a3s-power-deepseek-gpu6.service": "3221770",
+    "qwen3-asr.service": "76190",
+    "qwen3-asr-b.service": "76186"
+  },
+  "old_pid": "3381670",
+  "old_sha256": "281ff44b44e2dc928e06afb374ccbe77cd496b385a6eef67859ee0d22e11640d",
+  "old_release": "/opt/a3s/releases/gateway-neural-auto-281ff44b44e2dc92/a3s-gateway",
+  "binary": "/data/deepseek-v41-xq-1017/neural-auto-queue-annotation-fixed-release/a3s-gateway",
+  "new_sha256": "af7ccb465e147e56afbddd0bc22257db444c600e83ddfedff76e648ab5d78d24",
+  "release": "/opt/a3s/releases/gateway-neural-auto-af7ccb465e147e56/a3s-gateway",
+  "base_path": "/etc/a3s/gateway-prism.acl",
+  "selected_base_path": "/data/deepseek-v41-xq-1017/private-neural-auto-config/selected-base.acl",
+  "base_before_sha256": "5ea6d094e6018fea396f1ef80af57304aedaa23c05217b14992d6590749206b0",
+  "base_selected_sha256": "5ea6d094e6018fea396f1ef80af57304aedaa23c05217b14992d6590749206b0",
+  "journal": "/var/lib/a3s/web/gateway/main-journal.json"
+}

@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-visuals/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4192"
+    ],
+    "browser_containment": "hostname_v1",
+    "event_count": 27,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-visuals/events.jsonl",
+    "finished_at_ms": 1793006708305,
+    "goal": "检查 Pele 架构图和静态代码高亮在桌面及移动端是否清晰、可滚动",
+    "schema_version": 1,
+    "session": "aster-docs-visuals",
+    "started_at_ms": 1793006316636,
+    "status": "passed",
+    "success_criteria": [
+      "三张图可读，代码着色且手机横向滚动不影响整页"
+    ],
+    "summary": "Reviewed Pele diagrams at natural scale and Shiki code at desktop and 390px widths. Static tests verify code preservation, focusability, palette contrast and no inline styles/scripts.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/aster-docs-visuals/report.json",
+  "session": "aster-docs-visuals",
+  "status": "passed"
+}

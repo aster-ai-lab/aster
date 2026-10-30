@@ -1,0 +1,13 @@
+{
+  "cache_metrics": [
+    "serve: prompt phases: 30 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 30 as passes (cache open 0.00 s, seed 0.16 s)",
+    "serve: keep-cache: --vram-lru (uniform cache needs STRATA_SERVE_KEEP_LRU=1) - releasing the cache",
+    "serve: prompt phases: 35700 new = 35700 batch (45.04 s: dense 16.28, experts 27.20, logits 0.00) + DSpark tail 128 from the batch (cache open 2.51 s, seed 0.01 s)",
+    "serve: prompt phases: 18 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 18 as passes (cache open 0.00 s, seed 0.14 s)",
+    "serve: prompt phases: 0 new = 0 batch (0.00 s: dense 0.00, experts 0.00, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.01 s)",
+    "serve: keep-cache: --vram-lru (uniform cache needs STRATA_SERVE_KEEP_LRU=1) - releasing the cache",
+    "serve: prompt phases: 18 new = 18 passes (0.20 s: dense 0.08, experts 0.12, logits 0.00) + DSpark tail 0 as passes (cache open 0.00 s, seed 0.00 s)",
+    "serve: keep-cache: --vram-lru (uniform cache needs STRATA_SERVE_KEEP_LRU=1) - releasing the cache"
+  ],
+  "actual_moe_keep_source": "int64_t Ds41MoeTier::shrink_cache_for(int64_t need_bytes, std::string& err) {\n#if defined(DS4_MOE_CUDA)\n    // every refusal says why (s6: the first A/B never kept the cache and logged nothing)\n    if (!im_->gpu || !im_->gpu->cache) { err = \"no VRAM cache\"; return -1; }\n    if (!im_->gpu->cache->segmented()) { err = \"the cache is not segmented\"; return -1; }\n    // The layer-major path does not perform LRU admission. Keep its live slot\n    // mapping, remove the tail, and restore those exact (slot, layer, expert)\n    // records after the batch. Opt-in until real-model byte/quality gates pass.\n    static const bool keep_lru = [] {\n        const char * value = std::getenv(\"STRATA_SERVE_KEEP_LRU\");\n        return value && value[0] == '1';\n    }();\n    if (im_->cfg.vram_lru && (!keep_lru || im_->mixed_sizes)) {\n        err = \"--vram-lru (uniform cache needs STRATA_SERVE_KEEP_LRU=1)\";\n        return -1;\n    }\n    if (!im_->shrunk.empty()) { err = \"still shrunk from the last batch (regrow_cache did not run)\"; return -1; }\n    if (im_->cfg.cuda_device >= 0 && cudaSetDevice(im_->cfg.cuda_device) != cudaSuccess) {\n        err = \"shrink_cache_for: cudaSetDevice failed\"; return -1;\n    }\n    strata::core::ExpertCache& c = *im_->gpu->cache;\n    if (cudaDeviceSynchronize() != cudaSuccess) { err = \"shrink_cache_for: device failed\"; return -1; }\n    size_t fr = 0, tot = 0;\n    if (cudaMemGetInfo(&fr, &tot) != cudaSuccess) { err = \"shrink_cache_for: cudaMemGetInfo failed\"; return -1; }\n    c"
+}

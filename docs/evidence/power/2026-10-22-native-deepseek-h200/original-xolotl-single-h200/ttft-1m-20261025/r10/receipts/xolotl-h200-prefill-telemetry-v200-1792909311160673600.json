@@ -1,0 +1,65 @@
+{
+  "samples": [
+    {
+      "unix": 1792909314.229281,
+      "uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+      "utilization.gpu": "0",
+      "utilization.memory": "0",
+      "memory.used": "143385",
+      "memory.total": "143771",
+      "power.draw": "125.10",
+      "power.limit": "700.00",
+      "temperature.gpu": "41",
+      "clocks.current.sm": "1980",
+      "clocks.current.memory": "3201",
+      "clocks.max.sm": "1980",
+      "profile_state": {
+        "phase": "running",
+        "current_request": 0,
+        "current_state": "prefilling"
+      }
+    },
+    {
+      "unix": 1792909316.3928218,
+      "uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+      "utilization.gpu": "99",
+      "utilization.memory": "17",
+      "memory.used": "143385",
+      "memory.total": "143771",
+      "power.draw": "391.35",
+      "power.limit": "700.00",
+      "temperature.gpu": "48",
+      "clocks.current.sm": "1980",
+      "clocks.current.memory": "3201",
+      "clocks.max.sm": "1980",
+      "profile_state": {
+        "phase": "running",
+        "current_request": 0,
+        "current_state": "prefilling"
+      }
+    },
+    {
+      "unix": 1792909318.5920107,
+      "uuid": "GPU-099e8da4-8df0-c431-9e67-eb721e59beee",
+      "utilization.gpu": "100",
+      "utilization.memory": "11",
+      "memory.used": "143385",
+      "memory.total": "143771",
+      "power.draw": "393.91",
+      "power.limit": "700.00",
+      "temperature.gpu": "46",
+      "clocks.current.sm": "1980",
+      "clocks.current.memory": "3201",
+      "clocks.max.sm": "1980",
+      "profile_state": {
+        "phase": "running",
+        "current_request": 0,
+        "current_state": "prefilling"
+      }
+    }
+  ],
+  "GPU_work_started": false,
+  "GPU_policy_changed": false,
+  "inference_sent": false,
+  "interpretation": "Three instantaneous cold-prefill observations; not sustained utilization, Tensor Core counters, or an API speed result."
+}

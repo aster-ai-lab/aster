@@ -1,0 +1,177 @@
+{
+  "at_epoch": 1792920910.678529,
+  "profile": "Exact routing + packed KV; 24 threads, 144 GiB arena, PCIe 0.00",
+  "phase": "ready_for_controlled_measurement",
+  "activated": true,
+  "success": true,
+  "preserved_services_before": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "updated_at_epoch": 1792921141.349158,
+  "old_acl_sha256": "13054f6ce98e4169452113351e1f3ccde0f87f4a9093190384aded39df0b568e",
+  "new_acl_sha256": "622336d46f8c20b3829671e97b1e4d2ccc8626465b73b04db6eeafc7ad556942",
+  "power_binary_sha256": "458ef8f70211d0809840b59c89bda6242452f4bc505a69aae1cb3962e64066bb",
+  "preserved_services_after": {
+    "a3s-gateway.service": {
+      "MainPID": "2011098",
+      "ActiveState": "active"
+    },
+    "prism-27b@0.service": {
+      "MainPID": "2073548",
+      "ActiveState": "active"
+    },
+    "prism-27b@1.service": {
+      "MainPID": "2073908",
+      "ActiveState": "active"
+    },
+    "prism-27b@2.service": {
+      "MainPID": "2074263",
+      "ActiveState": "active"
+    },
+    "prism-27b@3.service": {
+      "MainPID": "2074649",
+      "ActiveState": "active"
+    },
+    "prism-27b@4.service": {
+      "MainPID": "2075000",
+      "ActiveState": "active"
+    },
+    "prism-27b@5.service": {
+      "MainPID": "2075354",
+      "ActiveState": "active"
+    },
+    "a3s-power@0.service": {
+      "MainPID": "3845392",
+      "ActiveState": "active"
+    },
+    "a3s-power@1.service": {
+      "MainPID": "3845569",
+      "ActiveState": "active"
+    },
+    "a3s-power@2.service": {
+      "MainPID": "3845745",
+      "ActiveState": "active"
+    },
+    "a3s-power@3.service": {
+      "MainPID": "3845957",
+      "ActiveState": "active"
+    },
+    "a3s-power@4.service": {
+      "MainPID": "3846134",
+      "ActiveState": "active"
+    },
+    "a3s-power@5.service": {
+      "MainPID": "3846431",
+      "ActiveState": "active"
+    },
+    "qwen3-asr.service": {
+      "MainPID": "76190",
+      "ActiveState": "active"
+    },
+    "qwen3-asr-b.service": {
+      "MainPID": "76186",
+      "ActiveState": "active"
+    }
+  },
+  "new_pid": 2477768,
+  "engine": {
+    "pid": 2482344,
+    "argv": [
+      "/opt/a3s/releases/deepseek-xolotl-dd68536bbd4f15c2/bin/ds41_generate",
+      "--serve",
+      "-m",
+      "/data/power/deepseek-v41-gpu6/V41-XQ-1017-v3.gguf",
+      "--engram",
+      "/data/models/DeepSeek-V4.1-Flash-1017-Engram/runtime-1bae0e1088993b9b82de08f59de5be5a34e42170",
+      "--rank",
+      "/data/models/DeepSeek-V4.1-Flash-1017-XQ-Uncensored/runtime-v3-7a28b7272c80500bcfe28bba969ef0d239aeefd5/v3/rank-1017-v3.bin",
+      "--backend",
+      "cuda",
+      "--experts",
+      "gpu",
+      "--ctx",
+      "1048576",
+      "--threads",
+      "24",
+      "--arena-gib",
+      "144",
+      "--prompt-batch",
+      "8192",
+      "--prefill-chunk",
+      "512",
+      "--pcie",
+      "0.0000",
+      "--tier-batch-pcie",
+      "1.0000",
+      "--route-bias",
+      "0",
+      "--route-bias-file",
+      "0",
+      "--route-bias-remote",
+      "0",
+      "--kv-fp4"
+    ]
+  },
+  "context_tokens": 1048576,
+  "arithmetic_smoke_passed": true,
+  "other_service_pids_unchanged": true
+}

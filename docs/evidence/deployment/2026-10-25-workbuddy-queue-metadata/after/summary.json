@@ -1,0 +1,12 @@
+[
+    {
+        "status":  200,
+        "seconds":  9.7400962,
+        "model":  "deepseek-v4.1-flash"
+    },
+    {
+        "status":  200,
+        "seconds":  1.2488416999999998,
+        "model":  "prism-27b"
+    }
+]

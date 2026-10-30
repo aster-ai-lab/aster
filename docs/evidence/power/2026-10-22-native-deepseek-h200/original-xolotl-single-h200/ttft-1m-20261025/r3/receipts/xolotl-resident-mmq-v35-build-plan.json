@@ -1,0 +1,63 @@
+{
+  "parent": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200",
+  "source_sha256": "e123b8209be7cd0b9da8ceaf29c97d2e7edf2ed43850e8525ad89261aa4599e0",
+  "compile_command": "/usr/bin/c++ -DDS4_MOE_CUDA=1 -DDS4_MOE_MMQ=1 -DGGML_USE_CPU -DGGML_USE_CUDA -DSTRATA_NATIVE_EXPERTS=1 -DSTRATA_Q6K_EXPERTS=1 -DSTRATA_VERSION=\\\"0.1.44.1\\\" -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/include -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine -I/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/third_party/llama.cpp/ggml/src/../include -isystem /usr/local/cuda/targets/x86_64-linux/include -O3 -DNDEBUG -std=c++20 -Wall -Wextra -MD -MT CMakeFiles/ds41_moe_cuda.dir/tools/v41/engine/ds41_moe.cpp.o -MF CMakeFiles/ds41_moe_cuda.dir/tools/v41/engine/ds41_moe.cpp.o.d -o CMakeFiles/ds41_moe_cuda.dir/tools/v41/engine/ds41_moe.cpp.o -c /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-pair-1fab10648af3/xolotl-split-mmvq-h200/source/tools/v41/engine/ds41_moe.cpp",
+  "source_file": "D:\\code\\aster\\target\\h200-native\\xolotl-mixed-keep-v18-ds41_moe.original.cpp",
+  "local_sha256": "e123b8209be7cd0b9da8ceaf29c97d2e7edf2ed43850e8525ad89261aa4599e0",
+  "local_source_matches": true,
+  "link_command": ": && /usr/bin/c++ -O3 -DNDEBUG  CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_generate.cpp.o CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_cuda_policy.cpp.o CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_pipeline.cpp.o CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_conversation.cpp.o CMakeFiles/ds41_generate.dir/tools/v41/engine/ds41_dspark.cpp.o -o ds41_generate -L/usr/local/cuda/targets/x86_64-linux/lib -Wl,-rpath,/usr/local/cuda-12.6/targets/x86_64-linux/lib  libds41_dense.a  libds41_moe_cuda.a  libds41_conv_pool.a  ggml/src/libggml.a  ggml/src/ggml-cuda/libggml-cuda.a  /usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublas.so  /usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so  /usr/local/cuda-12.6/targets/x86_64-linux/lib/libculibos.a  /usr/lib/x86_64-linux-gnu/libnccl.so  libds41_transcode.a  libstrata_engine.a  libstrata_kernels.a  libstrata_core.a  libstrata_kernels_cpu.a  ggml/src/libggml-cpu.a  libstrata_mmq.a  /usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so  libstrata_mmq_w4a4.a  ggml/src/libggml-base.a  -lm  /usr/local/cuda-12.6/targets/x86_64-linux/lib/libcudart.so  -ldl  /usr/lib/x86_64-linux-gnu/librt.a  -lcudadevrt  -lcudart_static  -lrt  -lpthread  -ldl && :",
+  "v15_build_root": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15",
+  "v15_binary_sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988",
+  "sources": [
+    {
+      "file": "aster_cache_restore_policy.hpp",
+      "bytes": 2391,
+      "sha256": "31b4720bcef27d9fc0eb9596ddff6b76a6ec7800e11d4aadf8e06f2d812b31e8"
+    },
+    {
+      "file": "aster_resident_stage_policy.hpp",
+      "bytes": 754,
+      "sha256": "3a7f73176bab85fd096bb17bc2ed748ee25592b08e73aeac3714bd6e41d20ba3"
+    },
+    {
+      "file": "build_worker.py",
+      "bytes": 5319,
+      "sha256": "f229317c061d0323b0a9b94258afbb381cc2b070135e078e84192e8a34f065e2"
+    },
+    {
+      "file": "cache_policy_test.cpp",
+      "bytes": 2675,
+      "sha256": "05e38decfc2bd92589cbb5c1d7ac44d8dea7fa0c1801b86a832c710908ae4dca"
+    },
+    {
+      "file": "ds41_moe.cpp",
+      "bytes": 375596,
+      "sha256": "8e3fe090b73b90ac3012cc423b65642b1077e2c15451edb677bc5ec4cfb0f0b2"
+    },
+    {
+      "file": "resident-mmq-v35.patch",
+      "bytes": 5471,
+      "sha256": "a4ba5b688b60e0f13be4e607b316905e0eb8bc1f7c53ed0f00350d7b21b31266"
+    },
+    {
+      "file": "resident_stage_policy_test.cpp",
+      "bytes": 1258,
+      "sha256": "087c1e0a35477777c3c6a3d6c12ea06b78971f42938175a63a992c98d4ef2a81"
+    },
+    {
+      "file": "test_resident_mmq.cpp",
+      "bytes": 13940,
+      "sha256": "bd8590072882408be71cfe6d90670fa6a4216a51302510c4d05b86fa34a88599"
+    },
+    {
+      "file": "upstream-test_ds41_moe.cpp",
+      "bytes": 13905,
+      "sha256": "9560676b2447563a1bd3b158eeccb07dc505ff1b92ff6c07ba635c04c8a2f6df"
+    },
+    {
+      "file": "source-manifest.json",
+      "bytes": 1904,
+      "sha256": "4ec99bbd91db1828a07f9b1451cfcfe29b1cbaf1e0d7842dbd07107cb4e75ae6"
+    }
+  ]
+}

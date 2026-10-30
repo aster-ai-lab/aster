@@ -1069,6 +1069,7 @@ fn worktree_session_seeds_available_commands_from_bootstrap() {
 #[test]
 fn exit_session_unregisters_active_session() {
     let mut app = test_app_with_agent();
+    let original_id = expect_agent(&app, AgentId(0)).session.session_id.clone();
     let effects = dispatch(Action::ExitSession, &mut app);
     assert!(
         effects
@@ -1077,6 +1078,15 @@ fn exit_session_unregisters_active_session() {
         "ExitSession must emit UnregisterActiveSession, got: {effects:?}"
     );
     assert!(matches!(app.active_view, ActiveView::Welcome));
+    assert_eq!(app.agents.len(), 1);
+    assert_eq!(
+        expect_agent(&app, AgentId(0)).session.session_id,
+        original_id
+    );
+    assert!(!effects.iter().any(|effect| matches!(
+        effect,
+        Effect::CreateSession { .. } | Effect::CreateWorktreeSession { .. }
+    )));
 }
 /// Minimal has no welcome chrome; /exit must open an empty session like startup.
 #[test]
@@ -1131,6 +1141,62 @@ fn new_session_falls_back_to_app_cwd_on_welcome_screen() {
     let new_id = AgentId(0);
     assert!(!expect_agent(&app, new_id).session.is_worktree);
 }
+#[test]
+fn new_session_restores_launch_yolo_after_bound_session_toggle() {
+    for launch_yolo in [false, true] {
+        let mut app = test_app_with_agent();
+        app.launch_yolo = launch_yolo;
+        app.default_yolo = launch_yolo;
+        app.current_ui.permission_mode = launch_yolo.then(|| "yolo".into());
+        app.agents.get_mut(&AgentId(0)).unwrap().session.yolo_mode = launch_yolo;
+        let toggled = !launch_yolo;
+        let _ = dispatch(Action::SetYoloMode(toggled), &mut app);
+
+        let effects = dispatch(Action::NewSession, &mut app);
+
+        assert_eq!(
+            test_agent(&app, AgentId(0)).session.is_yolo(),
+            toggled,
+            "/new must not rewrite the previous session"
+        );
+        assert_eq!(test_agent(&app, AgentId(1)).session.is_yolo(), launch_yolo);
+        assert_eq!(app.default_yolo, launch_yolo);
+        assert_eq!(
+            app.current_ui.permission_mode.as_deref(),
+            if launch_yolo {
+                Some("yolo")
+            } else {
+                Some("ask")
+            }
+        );
+        assert!(effects.iter().any(|effect| matches!(
+            effect,
+            Effect::CreateSession {
+                agent_id: AgentId(1),
+                ..
+            }
+        )));
+        assert!(
+            !effects
+                .iter()
+                .any(|effect| matches!(effect, Effect::PersistPermissionMode { .. }))
+        );
+    }
+}
+
+#[test]
+fn new_session_keeps_soft_default_permission_seed() {
+    let mut app = test_app_with_agent();
+    app.launch_yolo = false;
+    app.default_yolo = true;
+    app.current_ui.permission_mode = Some("yolo".into());
+
+    dispatch(Action::NewSession, &mut app);
+
+    assert!(test_agent(&app, AgentId(1)).session.is_yolo());
+    assert!(app.default_yolo);
+}
+
 #[test]
 fn new_session_starts_with_prompt_focused() {
     let mut app = test_app();

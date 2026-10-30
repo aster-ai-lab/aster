@@ -1,0 +1,20 @@
+
+running 1 test
+test app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review ... FAILED
+
+failures:
+
+---- app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review stdout ----
+
+thread 'app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review' (14532) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\acp_handler\tests\plan_mode.rs:674:9:
+assertion `left == right` failed
+  left: None
+ right: Some("/tmp/second.plan.md")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    app::acp_handler::tests::plan_mode::plan_kept_replaces_the_keep_and_refreshes_mounted_review
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10163 filtered out; finished in 0.02s
+

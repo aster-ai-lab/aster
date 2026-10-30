@@ -19,6 +19,23 @@ permissions, release certification or support on another operating system.
 The bounded implementation and acceptance contract is
 `specs/027-scrawl-evidence/`.
 
+## Documentation atlas, 2026-10-28
+
+The existing static website now uses SeeCode 0.6.2 for the current Code/ACP
+architecture drawings and Code Hike 1.1.0 for committed-source walkthroughs.
+SeeCode's original MIT skill source is retained under `apps/web/vendor/seecode`.
+Its provenance file records the archive revision and SHA-256. Code Hike and
+the shared high-contrast theme are pinned in the website package lock.
+
+These dependencies run during documentation generation. The public site
+continues to load one local progressive script and local assets. It has no
+browser dependency on Studio source, a model service, a CDN or a diagram API.
+README vectors come from the same authored diagram specifications. Historical
+9.1.5 prose is preserved; 9.1.6 source walks use the explicit committed source
+revision from the documentation catalog. This is not a Rust runtime or SDK
+binding change. Acceptance is recorded under
+`docs/evidence/web/2026-10-28-code-documentation-atlas`.
+
 ## Native Power integration, 2026-10-22
 
 The existing `crates/power` submodule is integrated into the root Cargo
@@ -580,3 +597,87 @@ XQ 的 FP32、epsilon 与归一化轴顺序；通过显式构建 feature 作为�
 后续资料库 UI 修正保留 Word 蓝、Excel 绿和 PowerPoint 橙，以文件标签页负责
 切换与关闭，删除编辑区重复返回栏；菜单改为非模态，并修复共享选择器圆角变量。
 验收范围及未完成项见 `docs/evidence/office/2026-10-30-library-chrome/OUTCOME.md`。
+
+## 2026-10-25 — single-GPU DeepSeek DSpark and managed readiness
+
+Power main 24b364c6935c1b62a689d91839ec394bfc74c059 retains the published H200/storage history and merges upstream typed WorkBuddy message metadata support. Native DeepSeek serving on GPU6 uses ACL-owned launch parameters, the pinned upstream Xolotl engine with retained license/provenance and actual DSpark draft accounting, and shared OpenAI tool compatibility. The Gateway normalizes only the enumerated client annotations. A bounded readiness wait fixes false 503 responses when concurrent health probes share the lifecycle lock. Sources and deployment evidence: tools/model-runtime/deepseek-v41-xq and docs/evidence/deployment/2026-10-25-deepseek-dspark-main/OUTCOME.md. No credentials, tenant state, weights, or unrelated concurrent Cloud/API edits are imported.
+
+## 2026-10-25 — unified Gateway availability and neural Auto
+
+Auto now uses the existing typed decision plane with an explicit ACL decision protocol, bounded neural Prism calls, per-turn coalescing, policy-bound frozen decisions and a primary-model floor for oversized observations. A failed console credential fetch rejects activation and retains the previous valid runtime; an authoritative empty credential list still revokes keyed routes. All platform supplier protocols share the console-key boundary. Shared message normalization includes the known WorkBuddy queue annotations without changing tool semantics. The model-service API registers the six-backend Prism pool supplier, and the existing managed snapshot publisher persists its ACL policy. Validation and retained counterexamples: docs/evidence/gateway/2026-10-25-neural-auto-readiness/OUTCOME.md. No private ACL, credentials, actual user prompts or unrelated control-plane edits are imported.
+
+## 2026-10-28 — source-built Windows Aster TUI and Code 9.1.6
+
+Aster 0.1.4 and its local ACP/Core 9.1.6 sources remain one paired build. The
+public Code main checked for this integration is cfaa22e8f1fca7ad1bfe132ac97ce7be930071f2
+(9.1.4); it does not replace the newer maintained Aster sources. Windows now
+uses handle-anchored, no-follow, bounded file and directory observations rather
+than the non-Unix unavailable stubs. Literal PowerShell `Get-Item` checks with
+terminating errors can bind actual file bytes to completion verification.
+Public Rust APIs, workspace ownership and sandbox policy are unchanged.
+
+The native PTY acceptance suite drives the actual TUI and sibling ACP with the
+operator-selected `kimi/k3.1-pro` ACL, preserving that file byte-for-byte. Its
+checks include actual file bytes, committed receipts, parent-session identity,
+UI state, persisted settings and independent checker execution. Evidence and
+retained counterexamples live in
+`docs/evidence/tui/2026-10-28-kimi-k31-source-integration/OUTCOME.md`.
+
+## 2026-10-28 — native Linux TUI qualification in WSL
+
+The paired Aster 0.1.4 and Code Core/ACP 9.1.6 sources also build as native
+`x86_64-unknown-linux-gnu` ELF executables under Ubuntu 24.04 / WSL2. The same
+ten live acceptance entry points now include Unix shell versions of the
+interruption and two-turn editing fixtures. PTY input waits for rendered and
+cleared composer state before submission. Frozen model prompts and byte,
+receipt, session and independent-checker assertions remain in force.
+The original Kimi ACL is used without importing credentials or user state.
+Build identities, complete results, isolated reruns and retained input-driver
+counterexamples are in
+`docs/evidence/tui/2026-10-28-wsl-linux-k31-source-integration/OUTCOME.md`.
+
+## 2026-10-29: Documentation diagrams use Pele
+
+Replaced all 23 current SeeCode diagrams with authored Mermaid sources rendered
+by the existing pinned Pele 1.10.0 dependency. Six README SVG exports now share
+those sources. Preserved diagram node identities, labels, relationship labels,
+ordered explanations and exact source references. Conceptual layers are block
+diagrams; their arrangement does not introduce execution edges.
+
+Removed the unused SeeCode vendor tree, project settings, motion selectors and
+watermark assets. Historical provenance and evidence remain in this repository.
+The Code Hike source walks and their pinned source revision are unchanged.
+See `docs/evidence/web/2026-10-29-pele-diagram-migration/OUTCOME.md`.
+
+## 2026-10-29: Spotlight documentation reading surfaces
+
+Reworked the source walks around the official Code Hike Spotlight pattern.
+Rendering uses the installed Code Hike 1.1.0 Pre and focus handlers. The existing
+single navigation script now bundles Code Hike token transitions and diff using
+the repository's existing esbuild 0.25.12 tool. License texts are retained in
+`apps/web/licenses` and in the generated script banner.
+
+Kept seven walks, 38 exact Git excerpts, their source revision and original line
+anchors. Explicit selection replaces scroll-driven switching. Code and diagrams
+share the Aster light reading surface, accessible controls and expanded reading.
+Pele node identities and relationships are preserved; layout direction and
+conceptual block columns change to fit the documentation canvas.
+
+See `docs/evidence/web/2026-10-29-spotlight-reading-experience/OUTCOME.md` for actual
+browser screenshots, source comparisons, reduced-motion and no-script checks.
+
+## 2026-10-29 — native Windows Unicode text commits
+
+Vendored the published Crossterm 0.28.1 archive under its original MIT license
+and package/API identities. A narrow Windows input-parser patch treats a
+nonzero UTF-16 Alt-code commit on VK_MENU release as text input. Native ConPTY
+records demonstrated that the old classification dropped every combining acute
+accent in the frozen long-paste acceptance case. Ordinary key releases remain
+releases; surrogate-pair behavior is retained. The source archive, revision and
+license location are recorded in docs/source-manifest.json.
+
+The package joins the existing root workspace, uses its lockfile and remains
+unpublished. The paired CLI source stamp now covers the local input parser.
+Evidence, the failing regression and subsequent qualification are retained in
+docs/evidence/tui/2026-10-28-full-acceptance/OUTCOME.md. No credentials or user
+session state are imported.

@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'scrollback::blocks::tool::read::tests::expanded_header_selection_matches_relative_path' (42060) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\scrollback\blocks\tool\read.rs:627:9:
+assertion `left == right` failed
+  left: "src\\main.rs"
+ right: "src/main.rs"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test scrollback::blocks::tool::read::tests::expanded_header_selection_matches_relative_path ... FAILED
+
+failures:
+
+failures:
+    scrollback::blocks::tool::read::tests::expanded_header_selection_matches_relative_path
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.00s
+

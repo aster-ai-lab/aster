@@ -1,0 +1,319 @@
+{
+  "run_id": "a3s-test-88142-1",
+  "suite": "tutorial-agent",
+  "status": "passed",
+  "scenarios": [
+    {
+      "id": "offline-conversation",
+      "name": "Read, confirm, answer a question and finish the original Run",
+      "surface": "tui",
+      "status": "passed",
+      "duration_ms": 3855,
+      "steps": [
+        {
+          "id": "ready",
+          "status": "passed",
+          "duration_ms": 3581,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 3226,
+                "total_bytes": 3226,
+                "truncated": false
+              },
+              "process": {
+                "running": true
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": true,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 120,
+                "cursor": {
+                  "column": 120,
+                  "row": 33,
+                  "visible": false
+                },
+                "rows": 36,
+                "text": "┌对话与工具────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌确认与问题────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│当前没有待处理的交互                                                                                                  │\n│F2 保存 · Esc 取消当前 Run · Ctrl+C 退出                                                                              │\n│PageUp / PageDown 阅读回复                                                                                            │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌输入任务 · Enter 发送─────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "task",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "text pasted into terminal",
+            "data": {
+              "bracketed": false,
+              "bytes": 18,
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "submit",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal key pressed",
+            "data": {
+              "key": "Enter",
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "confirmation",
+          "status": "passed",
+          "duration_ms": 100,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 4393,
+                "total_bytes": 4393,
+                "truncated": false
+              },
+              "process": {
+                "running": true
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": true,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 120,
+                "cursor": {
+                  "column": 3,
+                  "row": 28,
+                  "visible": false
+                },
+                "rows": 36,
+                "text": "┌对话与工具────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│你：运行离线练习                                                                                                      │\n│                                                                                                                      │\n│read：退出码 0                                                                                                        │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌确认与问题────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│待确认 1 项 · F5 切换 · F6 批准 · F7 拒绝                                                                             │\n│project_label                                                                                                         │\n│ID: call_35dd0b216318407dbf467a73767c4da8 · 剩余 60000ms                                                              │\n│F3 / F4 滚动参数                                                                                                      │\n│{}                                                                                                                    │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌输入任务 · Enter 发送─────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n执行 read"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "selected-tool",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal text is visible",
+            "data": {
+              "text": "project_label",
+              "visible": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "approve",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal key pressed",
+            "data": {
+              "key": "Alt+y",
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "question",
+          "status": "passed",
+          "duration_ms": 35,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 6087,
+                "total_bytes": 6087,
+                "truncated": false
+              },
+              "process": {
+                "running": true
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": true,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 120,
+                "cursor": {
+                  "column": 52,
+                  "row": 34,
+                  "visible": false
+                },
+                "rows": 36,
+                "text": "┌对话与工具────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│你：运行离线练习                                                                                                      │\n│                                                                                                                      │\n│read：退出码 0                                                                                                        │\n│                                                                                                                      │\n│project_label：退出码 0                                                                                               │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌确认与问题────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│业务提问：question-demo                                                                                               │\n│请选择输出格式                                                                                                        │\n│选项：Markdown                                                                                                        │\n│F8 切换 · F9 提交回答                                                                                                 │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌输入任务 · Enter 发送─────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n问题待回答：F8 切换选项，F9 提交选项或输入框中的回答          "
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "choose-answer",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal key pressed",
+            "data": {
+              "key": "Alt+o",
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "answer",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal key pressed",
+            "data": {
+              "key": "Alt+a",
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "reply",
+          "status": "passed",
+          "duration_ms": 12,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 7128,
+                "total_bytes": 7128,
+                "truncated": false
+              },
+              "process": {
+                "running": true
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": true,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 120,
+                "cursor": {
+                  "column": 60,
+                  "row": 9,
+                  "visible": false
+                },
+                "rows": 36,
+                "text": "┌对话与工具────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│你：运行离线练习                                                                                                      │\n│                                                                                                                      │\n│read：退出码 0                                                                                                        │\n│                                                                                                                      │\n│project_label：退出码 0                                                                                               │\n│                                                                                                                      │\n│ask_user：退出码 0                                                                                                    │\n│                                                                                                                      │\n│离线练习完成：已读取 README、处理工具确认，并收到业务回答。                                                           │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌确认与问题────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│当前没有待处理的交互                                                                                                  │\n│F2 保存 · Esc 取消当前 Run · Ctrl+C 退出                                                                              │\n│PageUp / PageDown 阅读回复                                                                                            │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌输入任务 · Enter 发送─────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n回答已提交，等待原运行处理                                    "
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "settled",
+          "status": "passed",
+          "duration_ms": 24,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 8229,
+                "total_bytes": 8229,
+                "truncated": false
+              },
+              "process": {
+                "running": true
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": true,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 120,
+                "cursor": {
+                  "column": 62,
+                  "row": 34,
+                  "visible": false
+                },
+                "rows": 36,
+                "text": "┌对话与工具────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│你：运行离线练习                                                                                                      │\n│                                                                                                                      │\n│read：退出码 0                                                                                                        │\n│                                                                                                                      │\n│project_label：退出码 0                                                                                               │\n│                                                                                                                      │\n│ask_user：退出码 0                                                                                                    │\n│                                                                                                                      │\n│完成检查：Narrative                                                                                                   │\n│验证：VerificationSummary { status: Skipped, report_count: 0, required_check_count: 0, pending_required_check_count:  │\n│0, failed_check_count: 0, residual_risk_count: 0, pending_subjects: [], failed_subjects: [] }                         │\n│停止原因：None                                                                                                        │\n│                                                                                                                      │\n│离线练习完成：已读取 README、处理工具确认，并收到业务回答。                                                           │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌确认与问题────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\n│当前没有待处理的交互                                                                                                  │\n│F2 保存 · Esc 取消当前 Run · Ctrl+C 退出                                                                              │\n│PageUp / PageDown 阅读回复                                                                                            │\n│                                                                                                                      │\n│                                                                                                                      │\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n┌输入任务 · Enter 发送─────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                                      │\n└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\n运行 run-2808d535-d0c0-47ff-8379-cbdc3fd14eba：Some(Completed)"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "result",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal recording captured",
+            "data": {
+              "bytes": 8229
+            },
+            "evidence": [
+              {
+                "name": "terminal/offline-flow.vt",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-88142-1/offline-conversation/terminal/offline-flow.vt",
+                "media_type": "application/vnd.a3s.terminal-vt"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "id": "exit",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal key pressed",
+            "data": {
+              "key": "Control+c",
+              "surface": "tui"
+            },
+            "evidence": []
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    }
+  ]
+}

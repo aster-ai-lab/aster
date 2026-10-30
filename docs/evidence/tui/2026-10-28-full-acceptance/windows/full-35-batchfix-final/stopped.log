@@ -1,0 +1,6 @@
+Candidate batch stopped after independent shell failures proved guidance alone insufficient. No completed-batch claim.
+2026-10-29T08:13:36.8575426Z
+SUCCESS: The process with PID 41752 (child process of PID 45448) has been terminated.
+SUCCESS: The process with PID 33880 (child process of PID 50800) has been terminated.
+SUCCESS: The process with PID 45448 (child process of PID 50800) has been terminated.
+SUCCESS: The process with PID 50800 (child process of PID 56208) has been terminated.

@@ -89,3 +89,31 @@ fn code_ordinary_and_literal_prompts_keep_their_original_text() {
         matches!(effects.as_slice(), [Effect::SendPrompt { text, .. }] if text == "/unknown-cmd literal text")
     );
 }
+
+#[test]
+fn code_direct_shell_refusal_preserves_draft_without_queue_or_turn() {
+    for bound in [true, false] {
+        let mut app = code_app();
+        let id = AgentId(0);
+        let agent = app.agents.get_mut(&id).unwrap();
+        if !bound {
+            agent.session.session_id = None;
+        }
+        agent.prompt_input_mode = crate::app::agent_view::PromptInputMode::Bash;
+        agent.prompt.set_text("printf retained-command");
+        let effects = dispatch(
+            Action::SendBashCommand("printf retained-command".into()),
+            &mut app,
+        );
+        let agent = agent_ref(&app, id);
+        assert!(effects.is_empty());
+        assert_eq!(agent.session.queue_len(), 0);
+        assert!(!agent.session.state.is_turn_running());
+        assert_eq!(agent.prompt.text(), "printf retained-command");
+        assert!(agent.session.prompt_history.is_empty());
+        assert_eq!(
+            agent.toast.as_ref().map(|(message, _)| message.as_str()),
+            Some("Direct shell commands are unavailable with the Code backend.")
+        );
+    }
+}

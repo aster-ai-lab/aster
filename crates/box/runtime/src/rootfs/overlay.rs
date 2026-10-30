@@ -142,7 +142,7 @@ pub fn overlay_mount(lower: &Path, upper: &Path, work: &Path, merged: &Path) -> 
             vec![(&base_options, false)]
         };
         let source = CString::new("overlay").unwrap();
-        let target = CString::new(merged.to_string_lossy().as_ref())
+        let target = CString::new(merged.to_string_lossy().as_bytes())
             .map_err(|e| BoxError::BuildError(format!("Invalid merged path for mount: {}", e)))?;
         let fstype = CString::new("overlay").unwrap();
         let mut failures = Vec::new();
@@ -268,7 +268,7 @@ fn overlay_unmount_with_mode(merged: &Path, lazy: bool) -> Result<()> {
     {
         use std::ffi::CString;
 
-        let target = CString::new(merged.to_string_lossy().as_ref())
+        let target = CString::new(merged.to_string_lossy().as_bytes())
             .map_err(|e| BoxError::BuildError(format!("Invalid path for umount: {}", e)))?;
 
         let flags = if lazy { libc::MNT_DETACH } else { 0 };
@@ -608,7 +608,7 @@ fn mount_tmpfs(target: &Path, bytes: u64) -> Result<()> {
 
     let source = CString::new("tmpfs").unwrap();
     let target_string = target.to_string_lossy();
-    let target_c = CString::new(target_string.as_ref())
+    let target_c = CString::new(target_string.as_bytes())
         .map_err(|error| BoxError::BuildError(format!("Invalid tmpfs target path: {error}")))?;
     let fstype = CString::new("tmpfs").unwrap();
     // nosuid/nodev belong in mount flags, not tmpfs superblock options.
@@ -677,10 +677,10 @@ fn bind_alias(source: &Path, target: &Path) -> Result<()> {
     #[cfg(target_os = "linux")]
     {
         use std::ffi::CString;
-        let source_c = CString::new(source.to_string_lossy().as_ref()).map_err(|error| {
+        let source_c = CString::new(source.to_string_lossy().as_bytes()).map_err(|error| {
             BoxError::BuildError(format!("Invalid writable-layer source path: {error}"))
         })?;
-        let target_c = CString::new(target.to_string_lossy().as_ref()).map_err(|error| {
+        let target_c = CString::new(target.to_string_lossy().as_bytes()).map_err(|error| {
             BoxError::BuildError(format!("Invalid writable-layer alias path: {error}"))
         })?;
         // SAFETY: See the enclosing function's safety documentation.
@@ -731,7 +731,7 @@ fn unmount_path(path: &Path, lazy: bool) -> Result<()> {
     #[cfg(target_os = "linux")]
     {
         use std::ffi::CString;
-        let target = CString::new(path.to_string_lossy().as_ref()).map_err(|error| {
+        let target = CString::new(path.to_string_lossy().as_bytes()).map_err(|error| {
             BoxError::BuildError(format!("Invalid path for writable-layer unmount: {error}"))
         })?;
         let flags = if lazy { libc::MNT_DETACH } else { 0 };

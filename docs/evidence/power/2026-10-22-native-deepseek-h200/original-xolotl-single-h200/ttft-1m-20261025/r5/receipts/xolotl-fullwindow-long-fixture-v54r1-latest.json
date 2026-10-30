@@ -1,0 +1,54 @@
+{
+  "unix": 1792876534.6495435,
+  "prepare-result.json": {
+    "schema": "aster-xolotl-fullwindow-long-prepare-v54r1",
+    "unix": 1792876498.674002,
+    "phase": "passed",
+    "gpu_executed": false,
+    "credentials_copied": false,
+    "acceptance_unit_methods_passed": 6,
+    "fixture": {
+      "context_tokens": 1048576,
+      "actual_prompt_tokens": 1047544,
+      "max_output_tokens": 1024,
+      "context_safety_tokens": 8,
+      "total_reserved_tokens": 1048576,
+      "prompt_sha256": "258cd8937ecb88f8e8abb208d9bc17530505297cebb90a7820518b3bec2c5951",
+      "prompt_bytes": 4190230,
+      "prompt_id_sha256": "d7e94f90a70f0d75157c4d80cbddfce09f337895b92f47000fbbc1836545a8be",
+      "record_token_positions": {
+        "begin": 28,
+        "middle": 523725,
+        "end": 1047424
+      },
+      "expected": {
+        "begin": 731927,
+        "middle": 408563,
+        "end": 962814
+      }
+    },
+    "finished_unix": 1792876504.0081909
+  },
+  "fixture-metadata.json": {
+    "context_tokens": 1048576,
+    "actual_prompt_tokens": 1047544,
+    "max_output_tokens": 1024,
+    "context_safety_tokens": 8,
+    "total_reserved_tokens": 1048576,
+    "prompt_sha256": "258cd8937ecb88f8e8abb208d9bc17530505297cebb90a7820518b3bec2c5951",
+    "prompt_bytes": 4190230,
+    "prompt_id_sha256": "d7e94f90a70f0d75157c4d80cbddfce09f337895b92f47000fbbc1836545a8be",
+    "record_token_positions": {
+      "begin": 28,
+      "middle": 523725,
+      "end": 1047424
+    },
+    "expected": {
+      "begin": 731927,
+      "middle": 408563,
+      "end": 962814
+    }
+  },
+  "unit-tests.log": "test_complete_cold_and_exact_warm_answer (__main__.FullWindowAcceptanceTests) ... ok\ntest_incomplete_http_sse_and_output_budget_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_missing_or_inline_continuation_refused (__main__.FullWindowAcceptanceTests) ... ok\ntest_reservation_and_cache_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_timing_and_identity_refusals (__main__.FullWindowAcceptanceTests) ... ok\ntest_wrong_or_partial_record_values_refused (__main__.FullWindowAcceptanceTests) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n",
+  "exact_cpu_process_alive": false
+}

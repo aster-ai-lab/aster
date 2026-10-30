@@ -1,0 +1,12 @@
+
+running 1 test
+test network_tools_wave::kimi_web_fetch_http_404_reports_actual_failure_and_recovers ... ORACLE case=network-fetch-404 name=source-pair result=pass detail=aster-cli-pair-v1:c860e66c1e42149f47a9bfadff219fd6fae2f8fa:x86_64-unknown-linux-gnu
+ORACLE case=network-fetch-404 name=settled-turn result=pass detail=facts=11 model_turns=3 prompt_tokens=40215
+ORACLE case=network-fetch-404 name=web-fetch-controlled-error result=pass detail=the real web_fetch failure preserves its actual status or timeout reason; the controlled endpoint confirms whether network dispatch occurred
+ORACLE case=network-fetch-404 name=settled-turn result=pass detail=facts=4 model_turns=1 prompt_tokens=13654
+ORACLE case=network-fetch-404 name=web-fetch-error-recovery result=pass detail=the same session completes a fresh model turn after the real fetch failure
+ORACLE case=network-fetch-404 name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 46.30s
+

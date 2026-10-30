@@ -1,0 +1,34 @@
+{
+  "unix": 1792883510.791968,
+  "exact_link_process_alive": false,
+  "native-link-result.json": {
+    "unix": 1792883506.2624218,
+    "phase": "linked",
+    "gpu_qualified": false,
+    "performance_claimed": false,
+    "step": "engram-fp8-lut-candidate-link",
+    "control_binary_byte_equal": true,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-engram-fp8-v74/ds41_generate",
+      "bytes": 253077832,
+      "sha256": "1a1b3b902381770b108cb5177ad3e2880e1289be339d4587631c23158e680137"
+    },
+    "archive_members": [
+      {
+        "member": "ds41_dense.cpp.o",
+        "sha256": "61be5025c151dacde10b9b4454436b4b0cb871b9cfcb384db3a5c969141de3f3",
+        "unchanged": true
+      },
+      {
+        "member": "ds41_engram.cpp.o",
+        "sha256": "954668f0f35605b1718f067ddc5d9e03a7b8a2edd587ff89d26be672e8a75062",
+        "unchanged": false
+      }
+    ],
+    "invalid_startup_modes_rejected": 8,
+    "routing_changed": false,
+    "gpu_math_executed": false,
+    "changed_control": "Only Engram FP8 lookup function; original scale arithmetic unchanged",
+    "finished_unix": 1792883510.2196314
+  }
+}

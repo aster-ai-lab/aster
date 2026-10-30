@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'acp::a3s_spawn::tests::a3s_acp_executable_reads_the_environment_override' (48700) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\acp\a3s_spawn.rs:496:13:
+assertion `left == right` failed: override "C:\\Users\\admin\\AppData\\Local\\Temp\\pager-acp-env-5852-1793250011446812700\\plain" must not select a sibling
+  left: Some("C:\\Users\\admin\\AppData\\Local\\Temp\\pager-acp-env-5852-1793250011446812700\\plain")
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test acp::a3s_spawn::tests::a3s_acp_executable_reads_the_environment_override ... FAILED
+
+failures:
+
+failures:
+    acp::a3s_spawn::tests::a3s_acp_executable_reads_the_environment_override
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

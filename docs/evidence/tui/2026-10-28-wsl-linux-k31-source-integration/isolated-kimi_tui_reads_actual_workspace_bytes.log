@@ -1,0 +1,10 @@
+
+running 1 test
+test kimi_tui_reads_actual_workspace_bytes ... ORACLE case=read name=source-pair result=pass detail=aster-cli-pair-v1:09f5a18bf9767c1da42011f8a2314d1609691344:x86_64-unknown-linux-gnu
+ORACLE case=read name=settled-turn result=pass detail=facts=8 model_turns=2 prompt_tokens=26827
+ORACLE case=read name=live-read result=pass detail=actual read receipt and unseen file token in settled assistant reply
+ORACLE case=read name=quit result=pass detail=exit 0
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 19.12s
+

@@ -1,0 +1,7 @@
+
+running 2 tests
+test acp::permission_rules_tests::cli_permission_wire_preserves_original_rules_only_for_the_sidecar ... ok
+test headless::permission_rules_tests::cli_permission_headless_initialize_carries_the_same_compact_rules ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 10165 filtered out; finished in 0.00s
+

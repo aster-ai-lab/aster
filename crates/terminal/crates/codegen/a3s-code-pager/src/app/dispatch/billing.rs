@@ -558,7 +558,7 @@ pub(super) fn dispatch_open_supergrok_url(app: &mut AppView) -> Vec<Effect> {
         .gate
         .as_ref()
         .and_then(|g| g.url.as_deref())
-        .unwrap_or("https://github.com/kense-labs/aster");
+        .unwrap_or("https://github.com/aster-ai-lab/aster");
     // Funnel attribution: tag A3S Code upsell clicks from the CLI with `referrer=a3s-build`, matching the OAuth consent flow and a3s/cli links
     // It applies even when the URL came from remote settings's `gate_url`, so nothing depends on the remote flag being configured correctly
     // If the URL already specifies a referrer it's left alone

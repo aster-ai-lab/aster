@@ -217,6 +217,7 @@ async fn benchmark_hybrid_search(
     session_id: &str,
     lexical_engine: WorkspaceLexicalEngine,
 ) -> Result<HybridMeasurement> {
+    let rerank_mode = rerank.mode;
     let workspace = tempfile::tempdir()?;
     let source_bytes = write_hybrid_workspace(workspace.path())?;
     let provider = Arc::new(BenchmarkProvider::new());
@@ -239,7 +240,7 @@ async fn benchmark_hybrid_search(
             max_text_bytes: MAX_CATALOG_BYTES,
             max_index_bytes: MAX_CATALOG_BYTES,
         })
-        .with_rerank_options(rerank);
+        .with_rerank_options(rerank.clone());
     let agent = Agent::from_config(benchmark_config()?).await?;
     let session_started = Instant::now();
     let session = agent

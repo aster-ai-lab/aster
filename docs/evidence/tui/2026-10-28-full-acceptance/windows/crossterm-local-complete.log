@@ -1,0 +1,183 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+   Compiling smallvec v1.16.3
+   Compiling futures-sink v0.3.34
+   Compiling windows-sys v0.61.2
+   Compiling futures-lite v2.6.1
+   Compiling winapi v0.3.9
+   Compiling piper v0.2.4
+   Compiling log v0.4.32
+   Compiling hashbrown v0.12.3
+   Compiling windows-sys v0.60.2
+   Compiling event-listener v5.4.1
+   Compiling syn v3.0.4
+   Compiling syn v2.0.117
+   Compiling serde_json v1.0.154
+   Compiling parking_lot_core v0.9.12
+   Compiling futures-channel v0.3.34
+   Compiling kv-log-macro v1.0.7
+   Compiling async-executor v1.13.3
+   Compiling event-listener-strategy v0.5.4
+   Compiling parking_lot v0.12.5
+   Compiling dashmap v5.4.0
+   Compiling errno v0.3.14
+   Compiling socket2 v0.6.4
+   Compiling polling v3.11.0
+   Compiling mio v1.2.1
+   Compiling async-channel v2.5.0
+   Compiling async-lock v3.4.1
+   Compiling temp-env v0.3.6
+   Compiling tokio-macros v2.7.0
+   Compiling serial_test_derive v2.0.0
+   Compiling futures-macro v0.3.34
+   Compiling rustix v1.1.5
+   Compiling crossterm_winapi v0.9.1
+   Compiling blocking v1.6.2
+   Compiling async-io v2.6.0
+   Compiling tokio v1.53.3
+   Compiling futures-util v0.3.34
+   Compiling async-global-executor v2.4.1
+   Compiling async-std v1.13.2
+   Compiling futures-executor v0.3.34
+   Compiling futures v0.3.34
+   Compiling serial_test v2.0.0
+   Compiling crossterm v0.28.1 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\third-party\crossterm)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates\third-party\crossterm\src\lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates\third-party\crossterm\src\lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates\third-party\crossterm\src\lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates\third-party\crossterm\src\lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: `crossterm` (lib test) generated 4 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.96s
+     Running unittests src\lib.rs (D:/code/aster/target\debug\deps\crossterm-b70c0acee5321e76.exe)
+
+running 79 tests
+test cursor::sys::windows::tests::test_move_down_winapi ... ok
+test cursor::sys::windows::tests::test_move_left_winapi ... ok
+test cursor::sys::windows::tests::test_move_right_winapi ... ok
+test cursor::sys::windows::tests::test_move_to_column_winapi ... ok
+test cursor::sys::windows::tests::test_move_to_next_line_winapi ... ok
+test cursor::sys::windows::tests::test_move_to_previous_line_winapi ... ok
+test cursor::sys::windows::tests::test_move_to_row_winapi ... ok
+test cursor::sys::windows::tests::test_move_to_winapi ... ok
+test cursor::sys::windows::tests::test_move_up_winapi ... ok
+test cursor::sys::windows::tests::test_save_restore_position_winapi ... ok
+test cursor::tests::test_move_down ... ignored
+test cursor::tests::test_move_left ... ignored
+test cursor::tests::test_move_right ... ignored
+test cursor::tests::test_move_to ... ignored
+test cursor::tests::test_move_up ... ignored
+test cursor::tests::test_save_restore_position ... ignored
+test event::read::tests::test_poll_continues_after_error ... ok
+test event::read::tests::test_poll_fails_without_event_source ... ok
+test event::read::tests::test_poll_propagates_error ... ok
+test event::read::tests::test_poll_returns_false_after_all_source_events_are_consumed ... ok
+test event::read::tests::test_poll_returns_true_for_matching_event_in_queue_at_front ... ok
+test event::read::tests::test_poll_returns_true_if_source_has_at_least_one_event ... ok
+test event::read::tests::test_poll_timeouts_if_source_has_no_events ... ok
+test event::read::tests::test_read_continues_after_error ... ok
+test event::read::tests::test_read_propagates_error ... ok
+test event::read::tests::test_read_returns_events_if_source_has_events ... ok
+test event::read::tests::test_read_returns_matching_event_in_queue_at_front ... ok
+test event::read::tests::test_reads_returns_event_if_source_has_at_least_one_event ... ok
+test event::sys::windows::parse::alt_code_tests::committed_alt_code_characters_are_text_presses ... ok
+test event::sys::windows::parse::alt_code_tests::committed_alt_code_surrogates_still_form_one_text_press ... ok
+test event::sys::windows::parse::alt_code_tests::ordinary_alt_release_does_not_insert_text ... ok
+test event::sys::windows::parse::alt_code_tests::ordinary_character_release_remains_a_release ... ok
+test event::tests::keycode_display ... ok
+test event::tests::media_keycode_display ... ok
+test event::tests::modifier_keycode_display ... ok
+test event::tests::modifier_keycode_display_windows ... ok
+test event::tests::test_equality ... ok
+test event::tests::test_hash ... ok
+test event::timeout::tests::test_elapsed_timeout_has_zero_leftover ... ok
+test event::timeout::tests::test_not_elapsed_timeout_has_positive_leftover ... ok
+test event::timeout::tests::test_timeout_elapses ... ok
+test event::timeout::tests::test_timeout_without_duration_does_not_have_leftover ... ok
+test event::timeout::tests::test_timeout_without_duration_never_elapses ... ok
+test macros::tests::windows::test_many_queues ... ok
+test macros::tests::windows::test_queue_one ... ok
+test macros::tests::windows::test_queue_some ... ok
+test style::attributes::tests::test_attributes ... ok
+test style::attributes::tests::test_attributes_const ... ok
+test style::stylize::tests::set_fg_bg_add_attr ... ok
+test style::sys::windows::tests::test_original_console_color_is_set ... ok
+test style::sys::windows::tests::test_parse_bg_color ... ok
+test style::sys::windows::tests::test_parse_fg_color ... ok
+test style::tests::colorterm_overrides_term ... ok
+test style::tests::default_color_count ... ok
+test style::tests::term_24bits ... ok
+test style::tests::term_256color ... ok
+test style::tests::unsupported_term_colorterm_values ... ok
+test style::tests::windows_always_truecolor ... ok
+test style::types::color::tests::test_know_rgb_color_conversion ... ok
+test style::types::color::tests::test_known_color_conversion ... ok
+test style::types::color::tests::test_unknown_color_conversion_yields_white ... ok
+test style::types::colored::tests::test_format_bg_color ... ok
+test style::types::colored::tests::test_format_fg_ansi_color ... ok
+test style::types::colored::tests::test_format_fg_color ... ok
+test style::types::colored::tests::test_format_fg_rgb_color ... ok
+test style::types::colored::tests::test_format_reset_bg_color ... ok
+test style::types::colored::tests::test_format_reset_fg_color ... ok
+test style::types::colored::tests::test_no_color ... ok
+test style::types::colored::tests::test_parse_ansi_bg ... ok
+test style::types::colored::tests::test_parse_ansi_fg ... ok
+test style::types::colored::tests::test_parse_invalid_ansi_color ... ok
+test style::types::colors::tests::test_colors_then ... ok
+test terminal::sys::windows::tests::test_resize_winapi_20_21 ... ok
+test terminal::sys::windows::tests::test_resize_winapi_30_31 ... ignored
+test terminal::sys::windows::tests::test_scroll_down_winapi ... ignored
+test terminal::sys::windows::tests::test_scroll_up_winapi ... ignored
+test terminal::sys::windows::tests::test_set_title_winapi ... ok
+test terminal::tests::test_raw_mode ... ok
+test terminal::tests::test_resize_ansi ... ignored
+
+test result: ok. 69 passed; 0 failed; 10 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

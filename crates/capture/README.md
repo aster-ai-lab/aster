@@ -887,7 +887,7 @@ workload). Release builds also need GPUI's shader compiler: set `GPUI_FXC_PATH` 
 `fxc.exe` (for example `C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe`).
 
 ```powershell
-cargo build --release
+cargo build --release --features ui
 .\target\release\capture.exe app
 ```
 
@@ -938,3 +938,5 @@ INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PA
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+In Aster, the workspace default builds the embedded recording library. The retained standalone GPUI application requires `--features ui` and the platform UI build tools.

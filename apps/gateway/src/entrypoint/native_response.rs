@@ -92,8 +92,27 @@ pub(super) async fn finish_native_response(
     request_start: std::time::Instant,
     access_log: Option<RequestAccessLog>,
     identity: Option<&InferenceRequestIdentity>,
-    response: hyper::Response<Bytes>,
+    mut response: hyper::Response<Bytes>,
 ) -> hyper::Response<ResponseBody> {
+    let latency_ms = request_start.elapsed().as_millis() as u64;
+    if let Ok(value) = http::HeaderValue::from_str(&latency_ms.to_string()) {
+        response.headers_mut().insert("x-a3s-latency-ms", value);
+    }
+    if let Ok(json) = serde_json::from_slice::<serde_json::Value>(response.body().as_ref()) {
+        if let Some(tokens) = json
+            .get("usage")
+            .and_then(|usage| usage.get("completion_tokens"))
+            .and_then(|tokens| tokens.as_u64())
+        {
+            let seconds = request_start.elapsed().as_secs_f64().max(0.001);
+            let rate = tokens as f64 / seconds;
+            if let Ok(value) = http::HeaderValue::from_str(&format!("{rate:.2}")) {
+                response
+                    .headers_mut()
+                    .insert("x-a3s-tokens-per-second", value);
+            }
+        }
+    }
     let response = response_pipeline.apply(response).await;
     let status = response.status().as_u16();
     let response_bytes = response.body().size_hint().exact().unwrap_or(0);

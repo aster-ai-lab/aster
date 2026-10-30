@@ -1,0 +1,73 @@
+{
+  "case": "send-now-model-stream",
+  "model": "kimi/k3.1-pro",
+  "assertions_finished": true,
+  "panicked": false,
+  "oracles": [
+    {
+      "name": "source-pair",
+      "detail": "aster-cli-pair-v1:a891556b0cee8096b81768f051ce80918e460099:x86_64-pc-windows-msvc",
+      "screen": null
+    },
+    {
+      "name": "send-now-model-owner",
+      "detail": "an actual partial Kimi response is cancelled; the next exact message completes once in the same session without tools",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-AzEVRo\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Produce exactly two thousand lines. Each line consists of the uppercase label ITEM, a space, and a    6:13 PM           four digit decimal counter starting at one and increasing by one. Do not call any tool.                                                                                                                                                                                                                                                                               ♦ Thought for 6.2s                                                                                                                                                                                                                                                                                                                                                      > Reply only MODEL-CANCEL-NEXT. Do not call any tool.                                                   6:13 PM                                                                                                                                                                                                                                                         Turn completed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "name": "quit",
+      "detail": "exit 0",
+      "screen": null
+    }
+  ],
+  "last_screen": "",
+  "facts": [
+    {
+      "seq": 6,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": null,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "(Response interrupted by the user.)"
+      }
+    },
+    {
+      "seq": 9,
+      "type": "model.turn",
+      "payload": {
+        "prompt_tokens": 13383,
+        "has_text": true,
+        "tool": null,
+        "call": {
+          "id": null,
+          "name": null,
+          "args": null
+        },
+        "text": "MODEL-CANCEL-NEXT"
+      }
+    },
+    {
+      "seq": 10,
+      "type": "turn.complete",
+      "payload": {
+        "terminal": "narrative",
+        "effect_digest": null,
+        "forced_stop": null,
+        "receipt_keys": [],
+        "background_receipt_keys": [],
+        "log_cut": {
+          "seq": 9,
+          "digest": "28366d8afff4895011e5d44bec8882e71914deaef27516abeb1ddb7fae097621"
+        }
+      }
+    }
+  ],
+  "raw_terminal_tail": null,
+  "config_unchanged": true
+}

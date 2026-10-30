@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'views::dashboard::render::tests::render_row_two_line_layout_paints_title_and_secondary' (55812) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\views\dashboard\render_tests.rs:2795:5:
+assertion `left == right` failed: row 0 col 2 must be the spinner glyph `⸬` at tick=8
+  left: "·"
+ right: "⸬"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test views::dashboard::render::tests::render_row_two_line_layout_paints_title_and_secondary ... FAILED
+
+failures:
+
+failures:
+    views::dashboard::render::tests::render_row_two_line_layout_paints_title_and_secondary
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10161 filtered out; finished in 0.01s
+

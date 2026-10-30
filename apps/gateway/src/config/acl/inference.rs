@@ -532,6 +532,7 @@ fn parse_routing(block: &Block) -> Result<crate::config::inference::InferenceRou
         &[
             "mode",
             "decision_model",
+            "decision_protocol",
             "economy_targets",
             "primary_targets",
             "simple_probability_threshold_bp",
@@ -577,6 +578,13 @@ fn parse_routing(block: &Block) -> Result<crate::config::inference::InferenceRou
     let plan = InferenceRoutingPlan {
         mode,
         decision_model: optional_literal_string_attr(block, "decision_model")?,
+        decision_protocol: optional_literal_string_attr(block, "decision_protocol")?
+            .map(|value| {
+                crate::config::inference::InferenceDecisionProtocol::parse(&value)
+                    .map_err(config_error)
+            })
+            .transpose()?
+            .unwrap_or_default(),
         economy_targets: uuid_list("economy_targets")?,
         primary_targets: uuid_list("primary_targets")?,
         simple_probability_threshold_bp: u32_attr(block, &["simple_probability_threshold_bp"])?

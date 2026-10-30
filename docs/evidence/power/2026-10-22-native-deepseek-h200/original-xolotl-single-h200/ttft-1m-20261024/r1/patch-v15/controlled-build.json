@@ -1,0 +1,33 @@
+{
+  "unix": 1792853337.0175354,
+  "result.json": {
+    "unix": 1792853233.3961616,
+    "phase": "built",
+    "gpu_tests_claimed": false,
+    "promoted": false,
+    "step": "candidate-link",
+    "control_binary_sha256": "e943305094fd8612718cf817985cf232ee457e31d434c0512b32a8097e7f30b8",
+    "policy_test_passed": true,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate",
+      "bytes": 251519096,
+      "sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988"
+    },
+    "finished_unix": 1792853245.6017249
+  },
+  "process.json": {
+    "pid": 3909,
+    "start_ticks": 728015528,
+    "uid": 10250,
+    "unix": 1792853233.3660586,
+    "budget_seconds": 210
+  },
+  "logs": {
+    "candidate-compile.log": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp: In function \u2018int main(int, char**)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-500c5-d4b1e973e3de/build-ttft-v15/ds41_generate.cpp:3302:113: warning: format \u2018%ld\u2019 expects argument of type \u2018long int\u2019, but argument 7 has type \u2018int\u2019 [-Wformat=]\n 3302 |             std::fprintf(stderr, \"DSpark totals: verify %.2f ms/pass draft %.2f ms/pass acc %.2f (%ld passes, %ld tokens)\\n\",\n      |                                                                                                               ~~^\n      |                                                                                                                 |\n      |                                                                                                                 long int\n      |                                                                                                               %d\n 3303 |                          sp_vms / sp_pass, sp_dms / sp_pass, (double) sp_acc / sp_pass, sp_pass, gen);\n      |                                                                                                  ~~~             \n      |                                                                                                  |\n      |                                                                                                  int\n",
+    "worker.log": "",
+    "policy-test.log": "PASS 80 tail/budget/window cases plus strict QoS flag and replay-floor checks\n",
+    "candidate-link.log": "",
+    "control-relink.log": "",
+    "policy-compile.log": ""
+  }
+}

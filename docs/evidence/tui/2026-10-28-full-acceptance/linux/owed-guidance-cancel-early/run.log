@@ -1,0 +1,22 @@
+
+running 2 tests
+test tool_contracts::kimi_send_now_cancels_running_tool_and_preserves_verification_obligations ... ORACLE case=send-now-cancel-ownership name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-unknown-linux-gnu
+ORACLE case=send-now-cancel-ownership name=send-now-owner result=pass detail=the native shortcut submits exact text once and cancels the old running tool without a late write; the unverified prior mutation causes an explicit typed refusal
+ORACLE case=send-now-cancel-ownership name=quit result=pass detail=exit 0
+ok
+test tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once ... ORACLE case=send-now-model-stream name=source-pair result=pass detail=aster-cli-pair-v1:07cc0ea17bde1d8ce19f6b562362ad721ce9cdd3:x86_64-unknown-linux-gnu
+
+thread 'tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once' (35657) panicked at crates/code/acp/tests/aster_tui_live_e2e/tool_contracts.rs:328:5:
+assertion `left == right` failed
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tool_contracts::kimi_send_now_interrupts_model_stream_and_completes_next_prompt_once
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 45.75s
+

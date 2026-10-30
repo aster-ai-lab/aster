@@ -1,0 +1,66 @@
+{
+  "at_epoch": 1792938915.9170039,
+  "power_pid_before": 3174438,
+  "power_pid_after": 3174438,
+  "concurrency": 2,
+  "observations": [
+    {
+      "index": 0,
+      "status": 200,
+      "ready_status": "ok",
+      "loaded_models": 1,
+      "wall_ms": 3.2225209870375693
+    },
+    {
+      "index": 1,
+      "status": 503,
+      "ready_status": "not_ready",
+      "loaded_models": 1,
+      "wall_ms": 1.6082790098153055
+    },
+    {
+      "index": 2,
+      "status": 503,
+      "ready_status": "not_ready",
+      "loaded_models": 1,
+      "wall_ms": 1.770142000168562
+    },
+    {
+      "index": 3,
+      "status": 200,
+      "ready_status": "ok",
+      "loaded_models": 1,
+      "wall_ms": 2.2355180117301643
+    },
+    {
+      "index": 4,
+      "status": 200,
+      "ready_status": "ok",
+      "loaded_models": 1,
+      "wall_ms": 2.8104360098950565
+    },
+    {
+      "index": 5,
+      "status": 503,
+      "ready_status": "not_ready",
+      "loaded_models": 1,
+      "wall_ms": 1.3082089717499912
+    },
+    {
+      "index": 6,
+      "status": 200,
+      "ready_status": "ok",
+      "loaded_models": 1,
+      "wall_ms": 2.4438860127702355
+    },
+    {
+      "index": 7,
+      "status": 503,
+      "ready_status": "not_ready",
+      "loaded_models": 1,
+      "wall_ms": 1.7046720022335649
+    }
+  ],
+  "all_healthy": false,
+  "lifecycle_unchanged": true
+}

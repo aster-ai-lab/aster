@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'diagnostics::fix::tests::applicable_fix_listing_uses_report_metadata_and_planner_availability' (54888) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\diagnostics\fix_tests.rs:116:5:
+assertion `left == right` failed
+  left: []
+ right: [(DiagnosticId { domain: "terminal", item: "ssh-wrap" }, "ssh-wrap", Here)]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test diagnostics::fix::tests::applicable_fix_listing_uses_report_metadata_and_planner_availability ... FAILED
+
+failures:
+
+failures:
+    diagnostics::fix::tests::applicable_fix_listing_uses_report_metadata_and_planner_availability
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.00s
+

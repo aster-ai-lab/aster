@@ -1,0 +1,30 @@
+{
+  "unix": 1792864169.5269375,
+  "result.json": {
+    "unix": 1792864103.368643,
+    "phase": "built",
+    "gpu_tests_claimed": false,
+    "promoted": false,
+    "step": "real-weight-gate-compile",
+    "control_binary_sha256": "b258617180a47af0a24524d9f3389d84be841a422fa1f864ae407351c49bb988",
+    "real_weight_gate_binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/test_resident_mmq",
+      "sha256": "f041470d443d68fe67326eb423ddf712d497705e720353a3d8be733c53ec2fa4"
+    },
+    "resident_stage_policy_tests_passed": true,
+    "cache_policy_tests_passed": true,
+    "binary": {
+      "path": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_generate",
+      "bytes": 251528976,
+      "sha256": "fedf3b4199ec2c34915ca86b40f53656e27282763f34fa5eb0883b42e649eedd"
+    },
+    "finished_unix": 1792864124.0632327
+  },
+  "exact_build_process_alive": false,
+  "checked-moe-compile.log": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_moe.cpp: In function \u2018bool strata::v41::gpu_run_n_ex(strata::v41::Ds41MoeImpl&, int64_t, int, const int32_t*, const float*, const float*, float*, void*)\u2019:\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_moe.cpp:4342:80: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]\n 4342 |                          i, (const void*) j.blob, (const void*) j.fmt, j.fmt ? (const void*) j.fmt->gu_act : nullptr,\n      |                                                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-1mc7-79269eb61f30/build-resident-mmq-v35/ds41_moe.cpp:4341:96: warning: format \u2018%d\u2019 expects argument of type \u2018int\u2019, but argument 8 has type \u2018long unsigned int\u2019 [-Wformat=]\n 4341 |             std::fprintf(stderr, \"[dbg_x] job%d blob=%p fmt=%p gu_act=%p gu_type=%d act_bytes=%d nt=%d nact0=%p out0=%p\\n\",\n      |                                                                                               ~^\n      |                                                                                                |\n      |                                                                                                int\n      |                                                                                               %ld\n 4342 |                          i, (const void*) j.blob, (const void*) j.fmt, j.fmt ? (const void*) j.fmt->gu_act : nullptr,\n 4343 |                          j.fmt ? j.fmt->gu_type : -9, j.fmt ? j.fmt->act_bytes : -9, j.nt, (void*) j.nact[0],\n      |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~             \n      |                                                             |\n      |                                                             long unsigned int\n",
+  "cache-policy-test.log": "PASS 30 sized cache ownership/capacity cases\n",
+  "resident-stage-policy-compile.log": "",
+  "resident-stage-policy-test.log": "PASS resident stage policy: 32 ownership and bounds checks\n",
+  "real-weight-gate-compile.log": "",
+  "worker.log": ""
+}

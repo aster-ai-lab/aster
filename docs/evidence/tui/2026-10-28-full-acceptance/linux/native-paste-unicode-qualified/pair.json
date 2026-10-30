@@ -1,0 +1,16 @@
+{
+  "source_pair": "aster-cli-pair-v1:bd25365589634ad2ceecc80e0aea4ef1d8bf3a99:x86_64-unknown-linux-gnu",
+  "folder": "/mnt/d/code/aster/.tmp/tui-acceptance-20261029/.tmp/paired-cli-linux/bd25365589634ad2ceecc80e0aea4ef1d8bf3a99-20261029002723837305",
+  "files": [
+    {
+      "name": "aster",
+      "sha256": "9e42e889f227cdf75ce07bfa2ce4f2929bd04dd6f8540b0444079336ce6cb5ee",
+      "bytes": 1115592400
+    },
+    {
+      "name": "a3s-code-acp",
+      "sha256": "957354c00818d2fa15c09f84aa6e4188cb13c34e4c6082b707599bec490e6ab9",
+      "bytes": 415364232
+    }
+  ]
+}

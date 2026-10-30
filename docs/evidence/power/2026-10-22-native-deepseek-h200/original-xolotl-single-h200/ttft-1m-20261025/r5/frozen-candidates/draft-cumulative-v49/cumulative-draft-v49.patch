@@ -1,0 +1,37 @@
+--- v15/ds41_generate.cpp
++++ v49/ds41_generate.cpp
+@@ -40,6 +40,7 @@
+ // Load the real model only through tools/ds4/memguard.sh (RAM cap + the shared GPU lock).
+ #include "ds41_conversation.hpp"
+ #include "aster_prefill_policy.hpp"
++#include "aster_draft_cumulative.hpp"
+ #include "ds41_cuda_policy.hpp"
+ #include "ds41_dense.hpp"
+ #include "ds41_exec.hpp"
+@@ -395,6 +396,10 @@
+ }  // namespace
+ 
+ int main(int argc, char ** argv) {
++    const auto draft_cumulative = aster_draft::parse(std::getenv("ASTER_XQ_DSPARK_CUM"));
++    if (draft_cumulative == aster_draft::Mode::invalid) {
++        std::fprintf(stderr, "ASTER_XQ_DSPARK_CUM must be 0, 0.1, 0.25, or 0.5\n"); return 2;
++    }
+     bool prefill_qos = false;
+     if (!aster_prefill::qos_value(std::getenv("ASTER_XQ_PREFILL_QOS"), prefill_qos)) {
+         std::fprintf(stderr, "ASTER_XQ_PREFILL_QOS must be 0 or 1\n"); return 2;
+@@ -2899,6 +2904,7 @@
+                         while (kk < k && 1.0f / (1.0f + std::exp(-sp_conf[kk])) >= conf_tau_s) ++kk;
+                         k = kk;
+                     }
++                    k = aster_draft::truncate(draft_cumulative, sp_conf, k);
+                     const bool refeed = dirty && ((P + 1) & 1);
+                     for (int i = 0; i < k; ++i) dr[i] = sp_ids[i];
+                     bool is_lk = false;
+@@ -3234,6 +3240,7 @@
+                 while (kk < k && sig(sp_conf[kk]) >= conf_tau) ++kk;
+                 k = kk;
+             }
++            k = aster_draft::truncate(draft_cumulative, sp_conf, k);
+             const bool refeed = dirty && ((P + 1) & 1);
+             vt.clear();
+             if (refeed) vt.push_back(prev);

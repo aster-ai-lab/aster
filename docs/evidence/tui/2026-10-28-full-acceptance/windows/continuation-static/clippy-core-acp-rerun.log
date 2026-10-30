@@ -1,0 +1,399 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\apps\gateway\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\code\aster\.tmp\tui-acceptance-20261029\crates\power\Cargo.toml
+workspace: D:\code\aster\.tmp\tui-acceptance-20261029\Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates\code\core\src\goal_control\facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `tie`
+   --> crates\code\core\src\durable_memory_vec.rs:967:28
+    |
+967 |         .map(|(id, (score, tie))| (id, score as f32))
+    |                            ^^^ help: if this is intentional, prefix it with an underscore: `_tie`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `observed_mutations` is never used
+  --> crates\code\core\src\goal_control\facts\run\continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates\code\core\src\harness_loop.rs:690:19
+    |
+357 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+690 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates\code\core\src\porcelain.rs:493:21
+    |
+493 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates\code\core\src\agent\tool_completion_runtime.rs:316:5
+    |
+316 | /     pub(crate) fn record_native_artifact_verification(
+317 | |         &self,
+318 | |         call: &ToolCall,
+319 | |         result: &a3s_effect::ToolExecutionResultV1,
+...   |
+324 | |         nested: Option<&crate::harness_loop::MutationLedger>,
+325 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: casting to the same type is unnecessary (`u64` -> `u64`)
+  --> crates\code\core\src\fact_control\receipts.rs:95:51
+   |
+95 |             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `request.identity.turn`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#unnecessary_cast
+   = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+  --> crates\code\core\src\porcelain\windows.rs:81:6
+   |
+81 | ) -> Option<(Vec<(OsString, NodeInfo)>, bool, bool)> {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#type_complexity
+   = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\sandbox\guest.rs:535:9
+    |
+535 |         return;
+    |         ^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+    = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+    |
+534 -     if pid == 0 {
+535 -         return;
+534 +     if pid == 0 {
+    |
+
+warning: the following explicit lifetimes could be elided: 'a
+  --> crates\code\core\src\tools\builtin\bash\windows_shell.rs:54:44
+   |
+54 | pub(crate) fn first_usable_host_powershell<'a>(
+   |                                            ^^
+55 |     candidates: &'a [std::path::PathBuf],
+   |                  ^^
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 | ) -> Option<&'a std::path::PathBuf> {
+   |              ^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_lifetimes
+   = note: `#[warn(clippy::needless_lifetimes)]` on by default
+help: elide the lifetimes
+   |
+54 ~ pub(crate) fn first_usable_host_powershell(
+55 ~     candidates: &[std::path::PathBuf],
+56 |     usable: impl Fn(&std::path::Path) -> bool,
+57 ~ ) -> Option<&std::path::PathBuf> {
+   |
+
+warning: unneeded `return` statement
+   --> crates\code\core\src\tools\builtin\bash.rs:195:13
+    |
+195 |             return None;
+    |             ^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+help: remove `return`
+    |
+195 -             return None;
+195 +             None
+    |
+
+warning: stripping a prefix manually
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:632:33
+    |
+632 |                     let after = &rest[identifier.len()..];
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: the prefix was tested here
+   --> crates\code\core\src\workspace\retrieval\rerank.rs:631:17
+    |
+631 |                 if rest.starts_with(identifier) {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_strip
+    = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+    |
+631 ~                 if let Some(after) = rest.strip_prefix(identifier) {
+632 ~                     if after.is_empty()
+    |
+
+warning: `a3s-code-core` (lib) generated 12 warnings (run `cargo clippy --fix --lib -p a3s-code-core -- --no-deps` to apply 7 suggestions)
+warning: unused import: `AsRawHandle`
+    --> crates\terminal\crates\codegen\a3s-tty-utils\src\lib.rs:1131:36
+     |
+1131 |         use std::os::windows::io::{AsRawHandle, FromRawHandle};
+     |                                    ^^^^^^^^^^^
+     |
+     = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-tty-utils` (lib) generated 1 warning (run `cargo clippy --fix --lib -p a3s-tty-utils -- --no-deps` to apply 1 suggestion)
+warning: unused import: `super::linear::LinearBackend`
+  --> crates\embedding\src\vector\hnsw.rs:11:5
+   |
+11 | use super::linear::LinearBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `sha2::Digest`
+  --> crates\embedding\src\hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+  --> crates\embedding\src\vector\hnsw.rs:42:13
+   |
+42 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates\embedding\src\vector\hnsw.rs:22:5
+   |
+18 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+22 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-acp v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\acp)
+    Checking a3s-code-core v9.1.6 (D:\code\aster\.tmp\tui-acceptance-20261029\crates\code\core)
+warning: `a3s-embedding` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p a3s-embedding -- --no-deps` to apply 2 suggestions)
+warning: variable does not need to be mutable
+   --> crates\code\acp\src\unattended.rs:223:9
+    |
+223 |     let mut builder = std::fs::DirBuilder::new();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_embedding_provider` is never used
+  --> crates\code\acp\src\agent\local_embedding.rs:35:8
+   |
+35 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates\code\acp\src\host_context.rs:56:12
+   |
+49 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+56 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: this function has too many arguments (8/7)
+   --> crates\code\acp\src\agent\emit.rs:133:5
+    |
+133 | /     pub(super) async fn emit_tool_call_completed(
+134 | |         &self,
+135 | |         session_id: &acp::SessionId,
+136 | |         id: &str,
+...   |
+141 | |         metadata: Option<&serde_json::Value>,
+142 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates\code\acp\src\agent\tool_render.rs:179:8
+    |
+179 |     if metadata.get("validated")?.as_bool()? != true
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+    = note: `#[warn(clippy::bool_comparison)]` on by default
+
+warning: this function has too many arguments (9/7)
+   --> crates\code\acp\src\agent\turn.rs:395:5
+    |
+395 | /     pub(super) async fn stream_turn(
+396 | |         &self,
+397 | |         session_id: &acp::SessionId,
+398 | |         session: &AgentSession,
+...   |
+404 | |         requested_posture: Option<PermissionPosture>,
+405 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+error[E0425]: cannot find type `c_void` in this scope
+  --> crates\code\core\tests\test_mcp_stdio_soak.rs:82:73
+   |
+82 |             fn OpenProcess(access: u32, inherit: i32, pid: u32) -> *mut c_void;
+   |                                                                         ^^^^^^ not found in this scope
+   |
+help: consider importing one of these items
+   |
+ 6 + use std::ffi::c_void;
+   |
+ 6 + use std::os::raw::c_void;
+   |
+ 6 + use core::ffi::c_void;
+   |
+
+error[E0425]: cannot find type `c_void` in this scope
+  --> crates\code\core\tests\test_mcp_stdio_soak.rs:83:48
+   |
+83 |             fn GetExitCodeProcess(handle: *mut c_void, code: *mut u32) -> i32;
+   |                                                ^^^^^^ not found in this scope
+   |
+help: consider importing one of these items
+   |
+ 6 + use std::ffi::c_void;
+   |
+ 6 + use std::os::raw::c_void;
+   |
+ 6 + use core::ffi::c_void;
+   |
+
+error[E0425]: cannot find type `c_void` in this scope
+  --> crates\code\core\tests\test_mcp_stdio_soak.rs:84:41
+   |
+84 |             fn CloseHandle(handle: *mut c_void) -> i32;
+   |                                         ^^^^^^ not found in this scope
+   |
+help: consider importing one of these items
+   |
+ 6 + use std::ffi::c_void;
+   |
+ 6 + use std::os::raw::c_void;
+   |
+ 6 + use core::ffi::c_void;
+   |
+
+warning: unneeded `return` statement
+  --> crates\code\acp\src\office_file.rs:26:9
+   |
+26 |         return crate::artifact_image::render_png(svg);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+   = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+   |
+26 -         return crate::artifact_image::render_png(svg);
+26 +         crate::artifact_image::render_png(svg)
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates\code\acp\src\office_file.rs:193:12
+    |
+193 |         if metadata.get("validated")?.as_bool()? != true
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `a3s-code-core` (test "test_mcp_stdio_soak") due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+warning: the borrowed expression implements the required traits
+   --> crates\code\acp\src\unattended.rs:414:37
+    |
+414 |             progress.remember_error(&error.to_string());
+    |                                     ^^^^^^^^^^^^^^^^^^ help: change this to: `error.to_string()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_borrows_for_generic_args
+    = note: `#[warn(clippy::needless_borrows_for_generic_args)]` on by default
+
+warning: `a3s-code-acp` (lib) generated 9 warnings (run `cargo clippy --fix --lib -p a3s-code-acp -- --no-deps` to apply 5 suggestions)
+warning: this `MutexGuard` is held across an await point
+   --> crates\code\acp\src\agent\native_send_now_tests.rs:187:9
+    |
+187 |     let seen = client.seen.lock().unwrap();
+    |         ^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates\code\acp\src\agent\native_send_now_tests.rs:215:21
+    |
+215 |     session.close().await;
+    |                     ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+    = note: `#[warn(clippy::await_holding_lock)]` on by default
+
+warning: field assignment outside of initializer for an instance created with Default::default()
+   --> crates\code\acp\src\codex_account.rs:568:9
+    |
+568 |         config.default_model = Some("mock/m".to_string());
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+note: consider initializing the variable with `a3s_code_core::CodeConfig { default_model: Some("mock/m".to_string()), ..Default::default() }` and removing relevant reassignments
+   --> crates\code\acp\src\codex_account.rs:567:9
+    |
+567 |         let mut config = a3s_code_core::CodeConfig::default();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#field_reassign_with_default
+    = note: `#[warn(clippy::field_reassign_with_default)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates\code\acp\src\document_run_tests.rs:452:21
+    |
+452 |                 let texts = f.model.results.lock().unwrap();
+    |                     ^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates\code\acp\src\document_run_tests.rs:470:26
+    |
+470 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: this `MutexGuard` is held across an await point
+   --> crates\code\acp\src\document_run_tests.rs:453:21
+    |
+453 |                 let errors = f.model.result_errors.lock().unwrap();
+    |                     ^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates\code\acp\src\document_run_tests.rs:470:26
+    |
+470 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: `a3s-code-acp` (lib test) generated 11 warnings (7 duplicates)

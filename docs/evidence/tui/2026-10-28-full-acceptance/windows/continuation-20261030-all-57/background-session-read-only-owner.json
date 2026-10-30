@@ -1,0 +1,278 @@
+{
+  "assertions_finished": true,
+  "case": "background-session-read-only-owner",
+  "config_unchanged": true,
+  "facts": [
+    {
+      "payload": {
+        "call": {
+          "args": {
+            "command": "Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt",
+            "timeout": 120000
+          },
+          "id": "call_d73c881c14d046a38684863fccdba969",
+          "name": "bash"
+        },
+        "has_text": false,
+        "prompt_tokens": 13338,
+        "text": null,
+        "tool": "bash"
+      },
+      "seq": 6,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c86f8640-671d-4743-a6f5-d35c3f034a22",
+            "thread_id": "748b0ed9-2a5a-4c9d-9daa-89ce5a797f6d"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_d73c881c14d046a38684863fccdba969",
+          "turn": 1
+        },
+        "tool": "bash"
+      },
+      "seq": 8,
+      "type": "tool.prepared"
+    },
+    {
+      "payload": {
+        "effects": {
+          "changes": [
+            {
+              "after": {
+                "content_digest": "sha256:53722736fe6fc664e27cf639e0f71e94458a01ba93fedeb2e3f6d3c1e7a50ab5",
+                "kind": "file",
+                "mode": 32
+              },
+              "before": {
+                "content_digest": "sha256:53722736fe6fc664e27cf639e0f71e94458a01ba93fedeb2e3f6d3c1e7a50ab5",
+                "kind": "file",
+                "mode": 32
+              },
+              "path": "owner-input.txt"
+            }
+          ],
+          "completeness": "complete"
+        },
+        "identity": {
+          "admission": {
+            "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+            "run_id": "run-c86f8640-671d-4743-a6f5-d35c3f034a22",
+            "thread_id": "748b0ed9-2a5a-4c9d-9daa-89ce5a797f6d"
+          },
+          "batch_index": 0,
+          "cycle": 0,
+          "tool_call_id": "call_d73c881c14d046a38684863fccdba969",
+          "turn": 1
+        },
+        "outcome": "succeeded",
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6\\r\\n\\n[mutation observation] path=owner-input.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":49,\"captured_bytes\":49,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":49,\"sha256\":\"58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"changed_paths\":[\"owner-input.txt\"],\"verification_shell_command\":\"Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":49,\"projected_bytes\":49,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"projected_digest\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"repeat_key\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"content_ref\":\"inline:sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"owner-input.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:6c9b16224f6b1428e7a59ea5bd13d818c6d6d8825a8b58855fca6f092602021b\"}",
+        "prepared_digest": "sha256:2db8c140185e70e2845194eb34409206bc3d53af2edcb274bf59c0a068957b72",
+        "scheduler_output_matches_receipt": true
+      },
+      "seq": 9,
+      "type": "tool.result"
+    },
+    {
+      "payload": {
+        "call": {
+          "args": null,
+          "id": null,
+          "name": null
+        },
+        "has_text": true,
+        "prompt_tokens": 13554,
+        "text": "OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6\n\n[mutation observation] path=owner-input.txt status=persisted",
+        "tool": null
+      },
+      "seq": 10,
+      "type": "model.turn"
+    },
+    {
+      "payload": {
+        "background_receipt_keys": [],
+        "effect_digest": null,
+        "forced_stop": null,
+        "log_cut": {
+          "digest": "48fea31af769333f7abdaa1e3230db63e89b31b8f8d51937769aa4d59b09dfe5",
+          "seq": 10
+        },
+        "receipt_keys": [
+          "sha256:f64278a3b27ec05d8e4ec9d906f5c7f8feca5ae6983133de51d1178d2c4b3e74"
+        ],
+        "terminal": "narrative"
+      },
+      "seq": 11,
+      "type": "turn.complete"
+    }
+  ],
+  "last_screen": "",
+  "model": "kimi/k3.1-pro",
+  "oracles": [
+    {
+      "detail": "aster-cli-pair-v1:e1a37d311f896ceebb6a7a228a0f6a889f15313b:x86_64-pc-windows-msvc",
+      "name": "source-pair",
+      "screen": null
+    },
+    {
+      "detail": "facts=5 model_turns=1 prompt_tokens=13327",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Duplicate title                                                                                       9:53 AM           Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-                     READY. Do not call tools.                                                                                                                                                                                                                                                                                                                                             ♦ Thought for 2.2s                                                                                                                                                                                                                              SESSION-READY                                                                                           9:53 AM                                                                                                                                 Worked for 7.0s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    },
+    {
+      "detail": "the read-only tool request waits in session A while session B has no permission card, output, or log changes",
+      "name": "background-permission-owner",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                       > Duplicate title                                                                                       9:54 AM           Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-                     READY. Do not call tools.                                                                                                                                                                                                                                                                                                                                             SESSION-READY                                                                                           9:54 AM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "returning to session A reveals its pending permission card",
+      "name": "background-permission-card-owner",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                        13K / 128K                                                                                                                                                                                                                                                       > Use the bash tool exactly once to run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-    9:53 AM           input.txt. Reply with the exact output. Do not call other tools or modify any file.                                                                                                                                                                                                                                                                                   ♦ Thought for 2.8s                                                                                                      ♦ Run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ♦ Run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt 0.2s             7.9s ↓13.3k [↓][stop]                                                                                                                            │                                                                                                                       │  Allow Execute?                                                                                                       │                                                                                                                       │  1 (•) Yes, proceed                                                                                                   │  2 (○) No, reject (type to add feedback)                                                                              │                                                                                                                                                                                                                                               1/2:select  │  Tab:next option  │  Ctrl+o:yolo  │  Ctrl+c:cancel  │  Esc:scrollback                                                                                                                                                           "
+    },
+    {
+      "detail": "the approved read completes in session A while session B's screen and byte-identical fact log have no result",
+      "name": "background-tool-owner",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                          0 / 128K                                                                                                                                                                                                                                                       > Duplicate title                                                                                       9:54 AM           Remember this exact token for the rest of this session: BACKGROUND-READ-ONLY-B. Reply only SESSION-                     READY. Do not call tools.                                                                                                                                                                                                                                                                                                                                             SESSION-READY                                                                                           9:54 AM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "facts=9 model_turns=2 prompt_tokens=26892",
+      "name": "settled-turn",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                        27K / 128K                                                                                                                                                                                                                                                       > Use the bash tool exactly once to run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-    9:53 AM           input.txt. Reply with the exact output. Do not call other tools or modify any file.                                                                                                                                                                                                                                                                                   ♦ Thought for 2.8s                                                                                                      ♦ Run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt                                             ♦ Thought for 2.5s                                                                                                                                                                                                                              OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6                                                         9:54 AM                                                                                                                                 [mutation observation] path=owner-input.txt status=persisted                                                                                                                                                                                    Worked for 24s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "detail": "session A alone receives the single tool result and final reply containing the unseen file token; the input file remains unchanged",
+      "name": "background-response-owner",
+      "screen": "                                                                                                                          C:\\W\\T\\aster-kimi-yPYf9X\\workspace                                                                        27K / 128K                                                                                                                                                                                                                                                       > Use the bash tool exactly once to run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-    9:53 AM           input.txt. Reply with the exact output. Do not call other tools or modify any file.                                                                                                                                                                                                                                                                                   ♦ Thought for 2.8s                                                                                                      ♦ Run Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt                                             ♦ Thought for 2.5s                                                                                                                                                                                                                              OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6                                                         9:54 AM                                                                                                                                 [mutation observation] path=owner-input.txt status=persisted                                                                                                                                                                                    Worked for 24s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮    │ >                                                                                                                │    ╰───────────────────────────────────────────────────────────────────────────────────────── kimi/K3.1 Pro (medium) ─╯                                                                                                                            Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                                                                                                                                           "
+    },
+    {
+      "checkpoint": "background-read-only-owner",
+      "facts": [
+        {
+          "payload": {
+            "call": {
+              "args": {
+                "command": "Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt",
+                "timeout": 120000
+              },
+              "id": "call_d73c881c14d046a38684863fccdba969",
+              "name": "bash"
+            },
+            "has_text": false,
+            "prompt_tokens": 13338,
+            "text": null,
+            "tool": "bash"
+          },
+          "seq": 6,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c86f8640-671d-4743-a6f5-d35c3f034a22",
+                "thread_id": "748b0ed9-2a5a-4c9d-9daa-89ce5a797f6d"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_d73c881c14d046a38684863fccdba969",
+              "turn": 1
+            },
+            "tool": "bash"
+          },
+          "seq": 8,
+          "type": "tool.prepared"
+        },
+        {
+          "payload": {
+            "effects": {
+              "changes": [
+                {
+                  "after": {
+                    "content_digest": "sha256:53722736fe6fc664e27cf639e0f71e94458a01ba93fedeb2e3f6d3c1e7a50ab5",
+                    "kind": "file",
+                    "mode": 32
+                  },
+                  "before": {
+                    "content_digest": "sha256:53722736fe6fc664e27cf639e0f71e94458a01ba93fedeb2e3f6d3c1e7a50ab5",
+                    "kind": "file",
+                    "mode": 32
+                  },
+                  "path": "owner-input.txt"
+                }
+              ],
+              "completeness": "complete"
+            },
+            "identity": {
+              "admission": {
+                "capability_binding_digest": "sha256:001e41f215478164267e3d303a17571c41e7b1590686646d4417641e7ec14faa",
+                "run_id": "run-c86f8640-671d-4743-a6f5-d35c3f034a22",
+                "thread_id": "748b0ed9-2a5a-4c9d-9daa-89ce5a797f6d"
+              },
+              "batch_index": 0,
+              "cycle": 0,
+              "tool_call_id": "call_d73c881c14d046a38684863fccdba969",
+              "turn": 1
+            },
+            "outcome": "succeeded",
+            "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6\\r\\n\\n[mutation observation] path=owner-input.txt status=persisted\",\"is_error\":false,\"images\":[],\"exit_code\":0,\"outcome\":\"succeeded\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":0,\"sandboxed\":true,\"output\":{\"total_bytes\":49,\"captured_bytes\":49,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"a3s.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":49,\"sha256\":\"58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"changed_paths\":[\"owner-input.txt\"],\"verification_shell_command\":\"Start-Sleep -Seconds 6; Get-Content -Raw -LiteralPath owner-input.txt\",\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":49,\"projected_bytes\":49,\"original_estimated_tokens\":13,\"projected_estimated_tokens\":13,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"projected_digest\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"repeat_key\":\"sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"content_ref\":\"inline:sha256:58c9622129368e9fea77e5ad24c4cb800b0a7e9ab71dd100a6d9f9f38be4b036\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"},\"mutation_observation\":{\"schema\":\"a3s.code.mutation-observation.v1\",\"path\":\"owner-input.txt\",\"status\":\"persisted\"}},\"observation_digest\":\"sha256:6c9b16224f6b1428e7a59ea5bd13d818c6d6d8825a8b58855fca6f092602021b\"}",
+            "prepared_digest": "sha256:2db8c140185e70e2845194eb34409206bc3d53af2edcb274bf59c0a068957b72",
+            "scheduler_output_matches_receipt": true
+          },
+          "seq": 9,
+          "type": "tool.result"
+        },
+        {
+          "payload": {
+            "call": {
+              "args": null,
+              "id": null,
+              "name": null
+            },
+            "has_text": true,
+            "prompt_tokens": 13554,
+            "text": "OWNER-READ-dc09f89c-e75f-4da3-ba0c-f4785e7d3bf6\n\n[mutation observation] path=owner-input.txt status=persisted",
+            "tool": null
+          },
+          "seq": 10,
+          "type": "model.turn"
+        },
+        {
+          "payload": {
+            "background_receipt_keys": [],
+            "effect_digest": null,
+            "forced_stop": null,
+            "log_cut": {
+              "digest": "48fea31af769333f7abdaa1e3230db63e89b31b8f8d51937769aa4d59b09dfe5",
+              "seq": 10
+            },
+            "receipt_keys": [
+              "sha256:f64278a3b27ec05d8e4ec9d906f5c7f8feca5ae6983133de51d1178d2c4b3e74"
+            ],
+            "terminal": "narrative"
+          },
+          "seq": 11,
+          "type": "turn.complete"
+        }
+      ],
+      "session": "748b0ed9-2a5a-4c9d-9daa-89ce5a797f6d"
+    },
+    {
+      "detail": "exit 0",
+      "name": "quit",
+      "screen": null
+    }
+  ],
+  "panicked": false,
+  "raw_terminal_tail": null
+}

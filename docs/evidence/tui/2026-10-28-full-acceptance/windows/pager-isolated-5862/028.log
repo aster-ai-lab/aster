@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok' (50008) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\app\dispatch\tests\billing.rs:443:5:
+got: https://github.com/A3S-Lab/a3s
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok ... FAILED
+
+failures:
+
+failures:
+    app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.01s
+

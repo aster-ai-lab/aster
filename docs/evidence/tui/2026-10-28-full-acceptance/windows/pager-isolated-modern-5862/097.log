@@ -1,0 +1,21 @@
+
+running 1 test
+
+thread 'headless::tests::worktree_create_opens_session_at_worktree_subdirectory' (32128) panicked at crates\terminal\crates\codegen\a3s-code-pager\src\headless_tests.rs:401:5:
+assertion failed: `(left == right)`
+
+Diff < left / right > :
+<"C:\\crates\\pager"
+>"C:\\Users\\admin\\AppData\\Local\\Temp\\.tmpLaGQhU\\crates\\pager"
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test headless::tests::worktree_create_opens_session_at_worktree_subdirectory ... FAILED
+
+failures:
+
+failures:
+    headless::tests::worktree_create_opens_session_at_worktree_subdirectory
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10181 filtered out; finished in 0.02s
+
