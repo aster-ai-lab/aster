@@ -117,66 +117,28 @@ impl WaitingReason {
         self.label_for_language(None)
     }
 
-    pub fn label_for_language(&self, language: Option<&str>) -> String {
-        let chinese = matches!(language, Some("zh-CN" | "zh-TW" | "zh"));
+    pub fn label_for_language(&self, _language: Option<&str>) -> String {
+        // This tag describes the model reply, not the TUI chrome, which stays English.
         match self {
-            Self::Model => if chinese {
-                "等待模型回复…"
-            } else {
-                "Waiting for response…"
-            }
-            .to_string(),
+            Self::Model => "Working…".to_string(),
             Self::Subagent { display } => match display.as_deref().map(clamp_activity_subject) {
                 Some(display) if !display.is_empty() => format!("{display}…"),
-                _ => if chinese {
-                    "等待子任务…"
-                } else {
-                    "Waiting on subagent…"
-                }
-                .to_string(),
+                _ => "Waiting on subagent…".to_string(),
             },
             Self::TaskOutput {
                 subject: Some(subject),
                 ..
             } => format_waiting_for_subject(subject),
-            Self::TaskOutput { .. } => if chinese {
-                "等待任务结果…"
-            } else {
-                "Waiting on task output…"
-            }
-            .to_string(),
-            Self::TasksComplete => if chinese {
-                "等待任务完成…"
-            } else {
-                "Waiting on tasks…"
-            }
-            .to_string(),
-            Self::Sleep => if chinese {
-                "等待中…"
-            } else {
-                "Sleeping…"
-            }
-            .to_string(),
+            Self::TaskOutput { .. } => "Waiting on task output…".to_string(),
+            Self::TasksComplete => "Waiting on tasks…".to_string(),
+            Self::Sleep => "Sleeping…".to_string(),
             Self::Hooks { event_name, count } if *count > 1 => {
-                if chinese {
-                    format!("正在执行 {count} 项 {event_name} 检查…")
-                } else {
-                    format!("Running {count} {event_name} hooks…")
-                }
+                format!("Running {count} {event_name} hooks…")
             }
             Self::Hooks { event_name, .. } => {
-                if chinese {
-                    format!("正在执行 {event_name} 检查…")
-                } else {
-                    format!("Running {event_name} hook…")
-                }
+                format!("Running {event_name} hook…")
             }
-            Self::PromptAck => if chinese {
-                "等待接收请求…"
-            } else {
-                "Waiting for the agent to accept the prompt…"
-            }
-            .to_string(),
+            Self::PromptAck => "Waiting for the agent to accept the prompt…".to_string(),
         }
     }
     /// Short, stable snake_case label for telemetry / phase-transition logs.
@@ -1205,18 +1167,11 @@ impl AcpUpdateTracker {
         }
         let is_replay = meta.is_replay;
         let id = *self.current_thinking.get_or_insert_with(|| {
-            let mut block = if is_replay {
+            let block = if is_replay {
                 RenderBlock::thinking_streaming_replay()
             } else {
                 RenderBlock::thinking_streaming()
             };
-            if let RenderBlock::Thinking(thinking) = &mut block {
-                thinking.set_output_language(
-                    meta.output_language
-                        .as_deref()
-                        .or(self.output_language.as_deref()),
-                );
-            }
             let entry_id = scrollback.push_block(block);
             scrollback.set_last_running(true);
             entry_id

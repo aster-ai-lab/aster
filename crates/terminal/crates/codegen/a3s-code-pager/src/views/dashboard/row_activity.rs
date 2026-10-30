@@ -84,10 +84,7 @@ pub(crate) fn top_level_activity(agent: &AgentView, state: RowState) -> Option<S
             if let Some(cmd) = agent.session.state.command_in_flight() {
                 Some(format!("{}…", cmd.display_name()))
             } else if let Some(activity) = agent.resolve_turn_activity() {
-                Some(sanitize(&format_activity_label(
-                    &activity,
-                    agent.session.tracker.output_language.as_deref(),
-                )))
+                Some(sanitize(&format_activity_label(&activity)))
             } else if agent.session.loading_replay {
                 Some("Loading…".to_string())
             } else {

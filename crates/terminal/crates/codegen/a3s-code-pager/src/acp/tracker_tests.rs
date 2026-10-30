@@ -21,6 +21,50 @@ fn batch(event_name: &str, tool_name: Option<&str>) -> HookBatchId {
         tool_name: tool_name.map(str::to_string),
     }
 }
+
+#[test]
+fn waiting_labels_ignore_the_model_reply_language() {
+    let cases = [
+        (WaitingReason::Model, "Working…"),
+        (
+            WaitingReason::Subagent { display: None },
+            "Waiting on subagent…",
+        ),
+        (
+            WaitingReason::TaskOutput {
+                task_ids: Vec::new(),
+                subject: None,
+                waits: true,
+            },
+            "Waiting on task output…",
+        ),
+        (WaitingReason::TasksComplete, "Waiting on tasks…"),
+        (WaitingReason::Sleep, "Sleeping…"),
+        (
+            WaitingReason::Hooks {
+                event_name: "PreToolUse".into(),
+                count: 1,
+            },
+            "Running PreToolUse hook…",
+        ),
+        (
+            WaitingReason::Hooks {
+                event_name: "PreToolUse".into(),
+                count: 2,
+            },
+            "Running 2 PreToolUse hooks…",
+        ),
+        (
+            WaitingReason::PromptAck,
+            "Waiting for the agent to accept the prompt…",
+        ),
+    ];
+
+    for (reason, expected) in cases {
+        assert_eq!(reason.label_for_language(Some("zh-CN")), expected);
+    }
+}
+
 #[test]
 fn workflow_suppression_keeps_authoring_calls_visible() {
     let wf = |title: &str, raw: serde_json::Value| {

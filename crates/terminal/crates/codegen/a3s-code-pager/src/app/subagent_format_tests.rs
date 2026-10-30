@@ -284,7 +284,7 @@ fn activity_label_rendered_for_each_turn_activity() {
         ),
     ];
     for (activity, expected) in &cases {
-        assert_eq!(&format_activity_label(activity, None), expected);
+        assert_eq!(&format_activity_label(activity), expected);
     }
 }
 
