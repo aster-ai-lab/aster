@@ -109,11 +109,11 @@ async fn guest_discovery_detail_reaches_both_native_apis_without_changing_policy
         assert!(error.to_string().contains(reason), "{error:#}");
         let text = error.to_string();
         assert!(
-            text.contains("invoke it once"),
+            text.contains("sandbox_permissions=require_escalated"),
             "a later request must still be allowed to invoke the tool: {text}"
         );
         assert!(
-            text.contains("the command does not start"),
+            text.contains("command did not start"),
             "the refusal must still say the command does not start: {text}"
         );
         assert!(

@@ -136,9 +136,8 @@ pub fn hostable_context_window(window: usize) -> Result<usize, String> {
 
 /// Vendor-documented context window for a model whose ACL block omits one.
 ///
-/// DeepSeek's model page lists 1M tokens for Flash and Pro. The legacy Flash
-/// ids are served by that same Flash model. Any other id stays `None`, and
-/// auto-compact keeps the conservative unknown-model window.
+/// Exact documented model identities only; unknown models keep `None`.
+/// Moonshot: https://platform.kimi.com/docs/guide/kimi-k3-1-pro-quickstart
 pub fn documented_context_tokens(model_name: &str) -> Option<usize> {
     let id = model_name
         .rsplit(['/', ':'])
@@ -152,6 +151,9 @@ pub fn documented_context_tokens(model_name: &str) -> Option<usize> {
         | "deepseek-v4-flash-vision-exp"
         | "deepseek-v4.1-flash"
         | "deepseek-v4-pro" => Some(1_000_000),
+        "kimi-k3.1-pro" | "k3.1-pro" | "kimi-k3.1-pro-highspeed" | "k3.1-pro-highspeed" => {
+            Some(1_048_576)
+        }
         _ => None,
     }
 }

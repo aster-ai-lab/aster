@@ -49,7 +49,17 @@ fn explore_permissions() -> PermissionPolicy {
 
 pub(crate) fn plan_permissions() -> PermissionPolicy {
     let mut policy = PermissionPolicy::new()
-        .allow_all(&["read", "search", "ls", "update_plan"])
+        .allow_all(&[
+            "read",
+            "office_read",
+            "search",
+            "ls",
+            "code_symbols",
+            "code_navigation",
+            "code_diagnostics",
+            "output_check",
+            "update_plan",
+        ])
         .deny_all(&[
             "write",
             "edit",

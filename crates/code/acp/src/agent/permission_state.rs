@@ -100,13 +100,13 @@ impl PermissionPosture {
         acp::SessionModeState::new(
             self.as_str(),
             vec![
-                acp::SessionMode::new("default", "Normal").description("Ask before changes"),
+                acp::SessionMode::new("default", "Normal").description("Allow workspace reads; ask before changes and commands; host execution requires approval"),
                 acp::SessionMode::new("plan", "Plan")
                     .description("Read and plan without workspace writes"),
                 acp::SessionMode::new("auto", "Auto")
-                    .description("Allow known reads and ask before changes"),
-                acp::SessionMode::new("yolo", "Always approve")
-                    .description("Allow execution while preserving explicit denies"),
+                    .description("Allow workspace edits and sandboxed commands; host execution and network grants require approval"),
+                acp::SessionMode::new("yolo", "Full access")
+                    .description("Run local commands on the host without sandboxing or approval prompts; explicit tool denies still apply"),
             ],
         )
     }

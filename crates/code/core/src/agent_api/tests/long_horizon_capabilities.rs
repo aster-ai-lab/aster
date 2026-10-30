@@ -161,6 +161,7 @@ async fn plan_batch_and_recovery_choreography_survives_the_fact_spine() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-capabilities-twin")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
@@ -510,6 +511,7 @@ async fn declared_suite_contract_binds_a_passing_run_and_completes_verified() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-gate-contract")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
@@ -611,6 +613,7 @@ async fn contract_does_not_bind_a_suite_that_covers_only_part_of_the_mutation() 
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-gate-partial")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
@@ -657,6 +660,7 @@ async fn without_a_contract_a_bare_suite_run_still_does_not_bind() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-gate-bare")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false),
@@ -791,6 +795,9 @@ async fn crash_mid_long_task_resumes_its_mutation_ledger_and_completes_verified(
                         Some(
                             SessionOptions::new()
                                 .with_session_id("lh4-recovery")
+                                .with_permission_policy(crate::permissions::policy_for_posture(
+                                    "yolo",
+                                ))
                                 .with_llm_client(
                                     Arc::clone(&src_client) as Arc<dyn crate::llm::LlmClient>
                                 )
@@ -885,6 +892,7 @@ async fn crash_mid_long_task_resumes_its_mutation_ledger_and_completes_verified(
             Some(
                 SessionOptions::new()
                     .with_session_id("lh4-recovery")
+                    .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                     .with_llm_client(Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>)
                     .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                     .with_auto_delegation_enabled(false)
@@ -1023,6 +1031,7 @@ async fn interrupted_run_mutations_carry_into_the_next_send_gate() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-continuation")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
@@ -1234,6 +1243,7 @@ fn debt_session(
 ) -> AgentSession {
     let mut options = SessionOptions::new()
         .with_session_id("lh4-debt")
+        .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
         .with_planning_mode(crate::prompts::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false);
@@ -1531,6 +1541,7 @@ async fn debts_from_multiple_unsettled_turns_settle_together() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-debt")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
@@ -1973,6 +1984,7 @@ async fn settled_end_carries_the_gates_verification_summary() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-gate-stream-summary")
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)

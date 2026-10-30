@@ -52,7 +52,7 @@ fn bound_run<'a>(
     facts: &'a [Fact],
     view: &DurableGoalDefinitionV1,
     run_id: &str,
-) -> Result<&'a Fact, GoalControlError> {
+) -> Result<(&'a Fact, run::RunFact), GoalControlError> {
     let fact = facts
         .iter()
         .find(|fact| fact.seq == view.goal_sequence)
@@ -68,7 +68,7 @@ fn bound_run<'a>(
             "step evidence belongs to another Run",
         ));
     }
-    Ok(fact)
+    Ok((fact, stored))
 }
 
 /// The current slice's Run and step, as a reference check for host review binding.
@@ -99,13 +99,14 @@ pub(crate) fn prepare_step(
     let Some(view) = definition_from_facts(facts, session_id, workspace, policy_digest)? else {
         return Ok(None);
     };
-    let run = bound_run(facts, &view, run_id)?;
+    let (run, source) = bound_run(facts, &view, run_id)?;
     let Some((reports, evidence, _)) = crate::fact_control::evidence_for_goal_step(
         facts,
         run.seq,
         session_id,
         run_id,
         attestation,
+        source.body.continuation.as_ref(),
     ) else {
         return Ok(None);
     };
@@ -215,13 +216,14 @@ pub(super) fn fold_step(
             "accepted step differs from its current evidence",
         ));
     }
-    bound_run(prefix, current, &stored.body.run_id)?;
+    let (_, source) = bound_run(prefix, current, &stored.body.run_id)?;
     let (reports, _, mutated) = crate::fact_control::evidence_for_goal_step(
         prefix,
         stored.body.run_sequence,
         session_id,
         &stored.body.run_id,
         stored.body.attestation.as_ref(),
+        source.body.continuation.as_ref(),
     )
     .ok_or_else(|| {
         refused(

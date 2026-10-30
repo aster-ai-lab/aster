@@ -9,12 +9,18 @@ on:
         type: string
         default: ""
 
+      qualified_runner:
+        description: Optional macOS ARM64 runner label with nested virtualization. Otherwise build only; run the shared publisher on a qualified Mac.
+        required: false
+        type: string
+        default: ""
+
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: aster-cli-v0.1.4
+  group: aster-cli-v0.1.5
   cancel-in-progress: false
 
 jobs:
@@ -32,12 +38,15 @@ jobs:
       - name: Check product formatting and delivery contracts
         run: |
           cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check
+          python3 tests/release_governance.py
           python3 tests/workspace_dependencies.py
           python3 tests/studio_checkout.py
           python3 tests/cli_pair_delivery.py
+          python3 tests/cli_sandbox.py
+          python3 tests/cli_sandbox_smoke_test.py
+          python3 tests/cli_pair_identity.py
           python3 tests/aster_cli_linux.py
           python3 tests/cli_release_workflow.py
-          python3 tests/release_governance.py
 
   build:
     needs: preflight
@@ -51,10 +60,10 @@ jobs:
         include:
           - os: macos-latest
             platform: macos
-            asset: aster-cli-v0.1.4-macos.tar.gz
+            asset: aster-cli-v0.1.5-macos.tar.gz
           - os: windows-latest
             platform: windows
-            asset: aster-cli-v0.1.4-windows.zip
+            asset: aster-cli-v0.1.5-windows.zip
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
@@ -66,7 +75,9 @@ jobs:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Install macOS build tools
         if: runner.os == 'macOS'
-        run: brew install protobuf just
+        run: |
+          brew install protobuf just coreutils e2fsprogs llvm jq xz gnu-tar
+          rustup target add aarch64-unknown-linux-musl
       - name: Install Windows protoc
         if: runner.os == 'Windows'
         shell: pwsh
@@ -87,6 +98,12 @@ jobs:
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
+      - name: Verify native host execution
+        shell: bash
+        run: cargo test --locked --release -p a3s-code-core --lib sandbox::host_access::tests -- --test-threads=1
+      - name: Stage macOS sandbox companions
+        if: runner.os == 'macOS'
+        run: python3 scripts/aster_sandbox.py stage --profile release
       - name: Package aster-cli archive
         shell: bash
         run: |
@@ -171,11 +188,16 @@ jobs:
           set -euo pipefail
           . "$HOME/.cargo/env"
           bin_dir="${CARGO_TARGET_DIR:-target}/release"
-          bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.4-linux.tar.gz"
+          bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.5-linux.tar.gz"
+      - name: Verify native host execution
+        shell: bash
+        run: |
+          . "$HOME/.cargo/env"
+          cargo test --locked --release -p a3s-code-core --lib sandbox::host_access::tests -- --test-threads=1
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-linux
-          path: aster-cli-v0.1.4-linux.tar.gz
+          path: aster-cli-v0.1.5-linux.tar.gz
           if-no-files-found: error
 
   publish:
@@ -184,10 +206,13 @@ jobs:
       contents: write
       actions: read
     needs: [preflight, build, build-linux]
-    if: ${{ !cancelled() && (needs.preflight.result == 'success' || inputs.artifact_run_id != '') && (needs.build.result == 'success' || needs.build.result == 'skipped') && (needs.build-linux.result == 'success' || needs.build-linux.result == 'skipped') }}
-    runs-on: ubuntu-latest
+    if: ${{ inputs.qualified_runner != '' && !cancelled() && (needs.preflight.result == 'success' || inputs.artifact_run_id != '') && (needs.build.result == 'success' || needs.build.result == 'skipped') && (needs.build-linux.result == 'success' || needs.build-linux.result == 'skipped') }}
+    runs-on: ${{ inputs.qualified_runner }}
     timeout-minutes: 20
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install release verification tools
+        run: brew install coreutils
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: aster-cli-*
@@ -195,56 +220,18 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Assemble draft aster-cli v0.1.4
+      - name: Assemble draft aster-cli v0.1.5
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           ARTIFACT_RUN_ID: ${{ inputs.artifact_run_id }}
           BUILD_SHA: ${{ github.sha }}
         run: |
-          set -euo pipefail
-          shopt -s nullglob
-          files=(dist/*)
-          if [[ ${#files[@]} -ne 3 ]]; then
-            echo "expected 3 release archives, found ${#files[@]}" >&2
-            printf '%s\n' "${files[@]:-}" >&2
-            exit 1
-          fi
-          macos_sha="$(sha256sum -b dist/aster-cli-v0.1.4-macos.tar.gz | cut -d' ' -f1)"
-          linux_sha="$(sha256sum -b dist/aster-cli-v0.1.4-linux.tar.gz | cut -d' ' -f1)"
-          windows_sha="$(sha256sum -b dist/aster-cli-v0.1.4-windows.zip | cut -d' ' -f1)"
-          # Compact single-line manifest: scripts/install.sh parses this exact shape.
-          printf '{"version":"0.1.4","tag":"aster-cli-v0.1.4","assets":{"macos":{"name":"aster-cli-v0.1.4-macos.tar.gz","sha256":"%s"},"linux":{"name":"aster-cli-v0.1.4-linux.tar.gz","sha256":"%s"},"windows":{"name":"aster-cli-v0.1.4-windows.zip","sha256":"%s"}}}\n' \
-            "$macos_sha" "$linux_sha" "$windows_sha" > dist/latest.json
-          if [[ -n "$ARTIFACT_RUN_ID" ]]; then
-            built="$(gh api "repos/${GH_REPO}/actions/runs/${ARTIFACT_RUN_ID}" --jq .head_sha)"
-          else
-            built="$BUILD_SHA"
-          fi
-          cat > notes.md <<'EOF'
-          aster-cli v0.1.4 — Core / ACP 9.1.6
-
-          ACP now rejects image, audio, embedded resource, and resource-link prompt blocks with invalid_params instead of silently dropping them. Unsupported prompts fail before any model call, and initialization no longer advertises embedded-context prompt support.
-
-          The embeddable SDK remains Rust-only and local to this workspace. Optional workflow features remain disabled in the default CLI/ACP build.
-
-          Qualification covers scripted ACP conformance, including proof that unsupported content never reaches the model, plus paired CLI/ACP delivery contracts. It does not claim whole-workspace qualification or real-model Terminal Bench speed and token savings.
-
-          Each archive contains the locked release build of aster 0.1.4 and a3s-code-acp 9.1.6 from this repository, plus their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
-          The Linux archive uses one x86_64, glibc 2.31 compatibility baseline.
-          Update with `aster update`, or use `aster update --check` to inspect first. Installations predating the paired updater can use scripts/install.sh or scripts/install.ps1.
-          EOF
-          printf 'Built from %s.\n' "$built" >> notes.md
-          # A rerun may extend this draft, never replace published assets.
-          if gh release view aster-cli-v0.1.4 >/dev/null 2>&1; then
-            test "$(gh release view aster-cli-v0.1.4 --json isDraft --jq .isDraft)" = true
-            test "$(gh release view aster-cli-v0.1.4 --json targetCommitish --jq .targetCommitish)" = "$built"
-            gh release upload aster-cli-v0.1.4 "${files[@]}" dist/latest.json --clobber
-          else
-            gh release create aster-cli-v0.1.4 \
-              --draft --target "$built" \
-              --title "aster-cli v0.1.4" \
-              --notes-file notes.md \
-              "${files[@]}" dist/latest.json
-          fi
-          gh release view aster-cli-v0.1.4
+          bash scripts/publish-aster-cli.sh
+      - name: Retain installed archive qualification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aster-cli-macos-qualification
+          path: qualification/
+          if-no-files-found: warn

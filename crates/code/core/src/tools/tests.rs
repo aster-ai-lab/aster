@@ -412,7 +412,6 @@ async fn test_tool_executor_creation() {
         [
             "ask_user",
             "ask_user_form",
-            "background",
             "bash",
             "batch",
             "download",
@@ -692,7 +691,6 @@ fn test_tool_executor_registry() {
         [
             "ask_user",
             "ask_user_form",
-            "background",
             "bash",
             "batch",
             "download",

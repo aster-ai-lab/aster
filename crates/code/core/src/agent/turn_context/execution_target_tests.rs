@@ -173,7 +173,12 @@ impl WorkspaceCommandRunner for NotedRunner {
     fn shell_note(&self) -> Option<String> {
         Some(
             crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(
-                std::path::Path::new(r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"),
+                &std::path::PathBuf::from("C:")
+                    .join("Windows")
+                    .join("System32")
+                    .join("WindowsPowerShell")
+                    .join("v1.0")
+                    .join("powershell.exe"),
             )),
         )
     }

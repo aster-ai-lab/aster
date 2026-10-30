@@ -662,7 +662,11 @@ impl Tool for BashTool {
                 )));
             }
         };
-        let request_network_grant = raw_mode == "request_network_grant";
+        let request_network_grant = raw_mode == "request_network_grant"
+            && ctx
+                .sandbox
+                .as_ref()
+                .is_none_or(|sandbox| sandbox.is_isolated());
         if let Err(error) = self.validate_execution_available(args, ctx) {
             let message = error.to_string();
             return Ok(
@@ -718,6 +722,7 @@ impl Tool for BashTool {
         }
         if !require_escalated {
             if let Some(ref sandbox) = ctx.sandbox {
+                let isolated = sandbox.is_isolated();
                 // Gate 10: the host confirmation layer has already surfaced
                 // this exact origin to the user (requires_confirmation covers
                 // request_network_grant); apply the digest-pinned grant and
@@ -778,7 +783,7 @@ impl Tool for BashTool {
                             serde_json::json!({
                                 "exit_code": null,
                                 "timeout_ms": timeout_ms,
-                                "sandboxed": true,
+                                "sandboxed": isolated,
                                 "output": capture_metadata,
                             }),
                             &span.finish(ctx).await,
@@ -816,7 +821,7 @@ impl Tool for BashTool {
                         serde_json::json!({
                             "exit_code": result.exit_code,
                             "timeout_ms": timeout_ms,
-                            "sandboxed": true,
+                            "sandboxed": isolated,
                             "output": capture_metadata,
                             "shell_output_streams": streams,
                         }),
@@ -831,7 +836,7 @@ impl Tool for BashTool {
 
                 let mut base_metadata = serde_json::json!({
                     "exit_code": result.exit_code,
-                    "sandboxed": true,
+                    "sandboxed": isolated,
                     "output": capture_metadata,
                     "shell_output_streams": streams,
                 });
@@ -840,7 +845,7 @@ impl Tool for BashTool {
                 }
                 let changed_paths = span.finish(ctx).await;
                 let mut content = output;
-                if result.exit_code != 0 {
+                if isolated && result.exit_code != 0 {
                     if let Some(why) = sandbox_failure_hint(&content) {
                         base_metadata["sandbox_failure_hint"] = serde_json::json!(why);
                         content.push_str(&format!(

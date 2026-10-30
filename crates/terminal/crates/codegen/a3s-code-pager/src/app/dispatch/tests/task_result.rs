@@ -1016,6 +1016,13 @@ fn kill_rpc_failure_does_not_finalize_but_nothing_live_does() {
             .is_some_and(|s| !s.is_finished()),
         "a failed cancel RPC must not finalize the row"
     );
+    assert!(
+        expect_agent(&app, id)
+            .subagent_sessions
+            .get("child-1")
+            .is_some_and(|s| !s.attempt.pending_kill && s.attempt.kill_requested_at.is_none()),
+        "a failed cancel must permit retry"
+    );
 
     // Nothing live means no finish is coming, so the pager finalizes the row
     dispatch_task_result(

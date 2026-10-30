@@ -23,15 +23,29 @@ impl A3sCodeAgent {
             // notification (the ACP prompt-ack contract: the pager disarms
             // its ack watch on the first update naming the prompt).
             if notification.meta.is_none() {
-                let prompt_id = self.prompt_id_for_session(&notification.session_id);
-                if let Some(prompt_id) = prompt_id {
-                    let mut meta = acp::Meta::new();
-                    meta.insert("promptId".to_string(), serde_json::json!(prompt_id));
+                let meta = self.notification_meta(&notification.session_id);
+                if !meta.is_empty() {
                     notification.meta = Some(meta);
                 }
             }
             let _ = client.session_notification(notification).await;
         }
+    }
+
+    fn notification_meta(&self, session_id: &acp::SessionId) -> acp::Meta {
+        let mut meta = acp::Meta::new();
+        if let Some(prompt_id) = self.prompt_id_for_session(session_id) {
+            meta.insert("promptId".into(), prompt_id.into());
+        }
+        let language = self.sessions.try_lock().ok().and_then(|sessions| {
+            sessions
+                .get(session_id.0.as_ref())
+                .and_then(|live| live.session.reply_language())
+        });
+        if let Some(language) = language {
+            meta.insert("outputLanguage".into(), language.into());
+        }
+        meta
     }
 
     pub(super) async fn emit_run_observation(
@@ -238,6 +252,7 @@ impl A3sCodeAgent {
         let payload = serde_json::json!({
             "sessionId": session_id.0.as_ref(),
             "update": update,
+            "_meta": self.notification_meta(session_id),
         });
         let Ok(raw) = serde_json::value::to_raw_value(&payload) else {
             return;
@@ -319,7 +334,6 @@ impl A3sCodeAgent {
         session_id: &acp::SessionId,
         task_id: &str,
         child_session_id: &str,
-        status: &str,
         window_tokens: u64,
         metadata: &serde_json::Value,
         started_ms: u64,
@@ -327,30 +341,26 @@ impl A3sCodeAgent {
     ) {
         let tokens_used = progress_tokens_used(metadata);
         let (context_window_tokens, context_usage_pct) = context_usage(window_tokens, tokens_used);
-        self.emit_xai_session_update(
-            session_id,
-            serde_json::json!({
-                "sessionUpdate": "subagent_progress",
-                "subagent_id": task_id,
-                "parent_session_id": session_id.0.as_ref(),
-                "child_session_id": child_session_id,
-                "duration_ms": progress_duration_ms(started_ms, unix_now_ms()),
-                "turn_count": progress.turn_count,
-                "tool_call_count": progress.tool_call_count,
-                "tokens_used": tokens_used,
-                "context_window_tokens": context_window_tokens,
-                "context_usage_pct": context_usage_pct,
-                "tools_used": progress.tools_used,
-                "error_count": progress.error_count,
-            }),
-        )
-        .await;
-        // Surface the progress text as thought so the TUI still shows movement
-        // when the typed SubagentProgress payload has no message field.
-        if !status.is_empty() {
-            self.emit_thought(session_id, &format!("[{task_id}] {status}\n"))
-                .await;
+        let mut update = serde_json::json!({
+            "sessionUpdate": "subagent_progress",
+            "subagent_id": task_id,
+            "parent_session_id": session_id.0.as_ref(),
+            "child_session_id": child_session_id,
+            "duration_ms": progress_duration_ms(started_ms, unix_now_ms()),
+            "turn_count": progress.turn_count,
+            "tool_call_count": progress.tool_call_count,
+            "tokens_used": tokens_used,
+            "context_window_tokens": context_window_tokens,
+            "context_usage_pct": context_usage_pct,
+            "tools_used": progress.tools_used,
+            "error_count": progress.error_count,
+        });
+        for key in ["command", "disposition", "exitCode"] {
+            if let Some(value) = metadata.get(key) {
+                update[key] = value.clone();
+            }
         }
+        self.emit_xai_session_update(session_id, update).await;
     }
 
     #[allow(clippy::too_many_arguments)] // event surface arity is the ACP wire shape
@@ -366,7 +376,7 @@ impl A3sCodeAgent {
         progress: &ChildProgress,
     ) {
         let duration_ms = finished_ms.saturating_sub(started_ms);
-        let update = subagent_finished_update(
+        let mut update = subagent_finished_update(
             task_id,
             child_session_id,
             success,
@@ -374,6 +384,21 @@ impl A3sCodeAgent {
             duration_ms,
             progress,
         );
+        update["completedAt"] = serde_json::json!(finished_ms);
+        let session = self
+            .sessions
+            .lock()
+            .await
+            .get(session_id.0.as_ref())
+            .map(|live| Arc::clone(&live.session));
+        if let Some(session) = session {
+            if session.subagent_task(task_id).await.is_some_and(|task| {
+                task.status == a3s_code_core::subagent_task_tracker::SubagentStatus::Cancelled
+            }) {
+                update["status"] = "stopped".into();
+                update["error"] = serde_json::Value::Null;
+            }
+        }
         self.emit_xai_session_update(session_id, update).await;
     }
 }

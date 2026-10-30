@@ -698,12 +698,18 @@ async fn cancellation_rolls_back_a_prepared_stdio_connection_without_publication
         .unwrap();
 
     let cancellation = CancellationToken::new();
-    let apply = tokio::spawn({
+    let mut apply = tokio::spawn({
         let session = Arc::clone(&session);
         let cancellation = cancellation.clone();
         async move { session.apply_capability_batch(batch, cancellation).await }
     });
-    entered.acquire().await.unwrap().forget();
+    tokio::select! {
+        permit = entered.acquire() => permit.unwrap().forget(),
+        completed = &mut apply => match completed {
+            Ok(Err(error)) => panic!("MCP preparation exited before entering its wait: {error}"),
+            _ => panic!("MCP preparation ended before the cancellation boundary"),
+        },
+    }
     let log = std::fs::read_to_string(&log_path).unwrap();
     let pids = fixture_started_pids(&log);
     assert_eq!(pids.len(), 1, "unexpected fixture log: {log}");

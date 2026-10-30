@@ -100,7 +100,7 @@ impl NativeBashSandbox {
 /// Callers identify the refusal by downcasting that type. This text is the
 /// operator-facing reason, not a classifier. A later request may invoke the
 /// process tool once. The command still does not start.
-pub(crate) const NATIVE_PROCESS_LIFETIME_UNQUALIFIED: &str = "native_process_lifetime_unqualified: macOS native command execution is unavailable until descendant lifetime and settlement are qualified. Full access or a permission change cannot enable it. When a later request asks for this process tool, invoke it once; the same refusal is returned and the command does not start. Do not work around the refusal with another tool. Use in-process native Office/file tools for artifacts, or install a qualified v2 guest backend with A3S_CODE_GUEST_SYSTEM_IMAGE and A3S_CODE_KRUN_SHIM";
+pub(crate) const NATIVE_PROCESS_LIFETIME_UNQUALIFIED: &str = "native_process_lifetime_unqualified: the macOS native sandbox cannot contain descendant processes, so this sandboxed command did not start. Retry the exact command with sandbox_permissions=require_escalated and a justification to request host execution approval, or select Full access (yolo) for subsequent runs. Installing the qualified sandbox companions enables isolated commands.";
 
 /// The native backend refused before any command process existed.
 ///
@@ -160,6 +160,10 @@ fn execution_output(output: a3s_sandbox::CommandOutput) -> SandboxExecutionOutpu
 
 #[async_trait]
 impl BashSandbox for NativeBashSandbox {
+    fn allows_host_execution_override(&self) -> bool {
+        true
+    }
+
     fn execution_target(&self) -> super::ShellExecutionTarget {
         super::ShellExecutionTarget::local_host_shell()
     }

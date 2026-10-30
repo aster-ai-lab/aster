@@ -537,7 +537,7 @@ mod tests {
         );
         assert_eq!(
             plan.check("ask_user_form", &serde_json::json!({})),
-            PermissionDecision::Deny
+            PermissionDecision::Allow
         );
         assert_eq!(
             plan.check("read", &serde_json::json!({})),

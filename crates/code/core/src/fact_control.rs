@@ -722,7 +722,12 @@ impl Completion for LiveCompletion {
                 system.take(),
                 &user_text,
                 published.as_deref(),
-                false,
+                surface.as_ref().is_some_and(|surface| {
+                    surface
+                        .agent
+                        .tool_context_handle()
+                        .preserves_parent_reply_language()
+                }),
             );
             system = next_system;
             if let (Some(language), Some(surface)) = (&turn_language, surface.as_ref()) {
@@ -1317,6 +1322,11 @@ impl FactRun {
                 "goal.host_driver_conflict: goal execution requires the actual original Run and log"
             );
         }
+        surface
+            .ledger
+            .lock()
+            .map_err(|_| anyhow::anyhow!("goal receipt ledger lock poisoned"))?
+            .bind_goal_continuation(continuation);
         if policy.policy.is_some()
             && !child
             && !original_model

@@ -23,7 +23,7 @@ use a3s_acp_lib::{AcpAgentTx, AcpClientMessageBox, AcpClientRx, acp_send};
 use a3s_code_shell::agent::auth_method::AuthMethodKind;
 use a3s_code_shell::agent::config::Config as AgentConfig;
 use a3s_code_shell::extensions::memory::MemoryFlushResponse;
-use a3s_code_shell::extensions::task::{CancelSubagentRequest, KillTaskRequest};
+use a3s_code_shell::extensions::task::KillTaskRequest;
 use a3s_code_shell::sampling::error::{
     RATE_LIMITED_ERROR_CODE, error_detail_from_data, format_rate_limited_user_message,
 };
@@ -878,6 +878,13 @@ pub async fn run_single_turn(
         None,
         a3s_code_shell::util::config::PermissionMode::Ask,
     );
+    let permission_posture = crate::app::effects::SessionFlags {
+        plan_mode: options.permission_mode_flag.as_deref() == Some("plan"),
+        yolo_mode: options.yolo,
+        auto_mode: agent_config.default_auto_mode,
+        ..Default::default()
+    }
+    .effective_permission_posture();
     apply_agent_flag(&options.agent, &mut agent_config);
     if let Some(ref json) = options.agents_json {
         agent_config.cli_agents = parse_cli_agents(json)?;
@@ -959,6 +966,12 @@ pub async fn run_single_turn(
         .meta
         .as_ref()
         .and_then(|meta| meta.get("grokShell"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let is_a3s_code = init_resp
+        .meta
+        .as_ref()
+        .and_then(|meta| meta.get("a3sCode"))
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     let is_api_key_auth = match authenticate(
@@ -1202,6 +1215,9 @@ pub async fn run_single_turn(
         Some(prompt) => {
             let prompt_blocks = prompt.into_content_blocks();
             let mut meta = serde_json::Map::new();
+            if is_a3s_code {
+                meta.insert("permissionPosture".into(), permission_posture.into());
+            }
             if verbatim {
                 meta.insert("verbatim".to_string(), serde_json::Value::Bool(true));
             }
@@ -1567,9 +1583,10 @@ fn reap_request_for_work(
     let (method, params) = match work {
         BackgroundWork::Subagent(id) => (
             "a3s/subagent/cancel",
-            serde_json::value::to_raw_value(&CancelSubagentRequest {
-                subagent_id: id.clone(),
-            })?,
+            serde_json::value::to_raw_value(&serde_json::json!({
+                "sessionId": session_id.0.as_ref(),
+                "subagentId": id,
+            }))?,
         ),
         BackgroundWork::Task(id) => (
             "a3s/task/kill",

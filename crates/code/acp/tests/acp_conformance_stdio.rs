@@ -17,7 +17,7 @@ use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use serde_json::{json, Value};
@@ -47,6 +47,7 @@ struct Model {
     addr: SocketAddr,
     slow_seen: Arc<AtomicBool>,
     calls: Arc<AtomicUsize>,
+    images: Arc<Mutex<Vec<String>>>,
 }
 
 fn spawn_model() -> Model {
@@ -54,17 +55,29 @@ fn spawn_model() -> Model {
     let addr = listener.local_addr().expect("model addr");
     let slow_seen = Arc::new(AtomicBool::new(false));
     let calls = Arc::new(AtomicUsize::new(0));
+    let images = Arc::new(Mutex::new(Vec::new()));
     let seen = Arc::clone(&slow_seen);
     let counted = Arc::clone(&calls);
+    let captured_images = Arc::clone(&images);
     std::thread::spawn(move || {
         for stream in listener.incoming() {
             let Ok(mut stream) = stream else { continue };
             let seen = Arc::clone(&seen);
             let counted = Arc::clone(&counted);
+            let captured_images = Arc::clone(&captured_images);
             std::thread::spawn(move || {
                 let _ = stream.set_read_timeout(Some(Duration::from_secs(20)));
                 if let Some(body) = read_http_body(&mut stream) {
                     counted.fetch_add(1, Ordering::SeqCst);
+                    if let Ok(request) = serde_json::from_str::<Value>(&body) {
+                        for message in request["messages"].as_array().into_iter().flatten() {
+                            for part in message["content"].as_array().into_iter().flatten() {
+                                if let Some(url) = part["image_url"]["url"].as_str() {
+                                    captured_images.lock().unwrap().push(url.to_owned());
+                                }
+                            }
+                        }
+                    }
                     let reply = decide(&body, &seen);
                     let _ = write_http(&mut stream, &reply);
                 }
@@ -75,6 +88,7 @@ fn spawn_model() -> Model {
         addr,
         slow_seen,
         calls,
+        images,
     }
 }
 
@@ -182,6 +196,14 @@ fn decide(raw: &str, slow_seen: &AtomicBool) -> String {
         .flatten()
         .any(|tool| tool["function"]["name"] == "bash");
     let messages = parsed["messages"].as_array().cloned().unwrap_or_default();
+    if messages
+        .iter()
+        .any(|message| message["role"] == "user" && message_text(message).contains("CHILDWAIT"))
+    {
+        slow_seen.store(true, Ordering::SeqCst);
+        std::thread::sleep(Duration::from_secs(40));
+        return reply_text("too late", streaming);
+    }
     if !has_bash || messages.last().is_some_and(|m| m["role"] == "tool") {
         return reply_text("done", streaming);
     }
@@ -191,6 +213,14 @@ fn decide(raw: &str, slow_seen: &AtomicBool) -> String {
         .find(|message| message["role"] == "user")
         .map(message_text)
         .unwrap_or_default();
+    if prompt.contains("CANCEL_SUBAGENT") {
+        let args =
+            json!({"tasks":[{"agent":"general","description":"等待取消","prompt":"CHILDWAIT"}]})
+                .to_string();
+        let chunk = json!({"choices":[{"delta":{"tool_calls":[{"index":0,"id":"child-call","function":{"name":"task","arguments":args}}]}}]});
+        let done = json!({"choices":[{"delta":{},"finish_reason":"tool_calls"}]});
+        return format!("data: {chunk}\n\ndata: {done}\n\ndata: [DONE]\n\n");
+    }
     if let Some((_, said)) = prompt.split_once("SAY: ") {
         return reply_text(said.lines().next().unwrap_or(""), streaming);
     }
@@ -498,6 +528,14 @@ const CASES: &[(&str, &str)] = &[
         "session/prompt rejects content that cannot reach the model instead of dropping it or starting a model call",
     ),
     (
+        "subagent-cancel",
+        "the pager's session-scoped stop method cancels an actual in-flight child model and emits typed progress without harness text",
+    ),
+    (
+        "prompt-image",
+        "image and image-only prompts reach the actual model request with unchanged bytes",
+    ),
+    (
         "prompt-unknown-session",
         "session/prompt for an unknown sessionId is a JSON-RPC error, not a result",
     ),
@@ -537,6 +575,8 @@ async fn run_case(id: &str, model: &Model) -> Outcome {
         "prompt-unsupported-content" => {
             prompt_unsupported_content(&mut wire, &fixture, model).await
         }
+        "prompt-image" => prompt_image(&mut wire, &fixture, model).await,
+        "subagent-cancel" => subagent_cancel(&mut wire, &fixture, model).await,
         "prompt-unknown-session" => prompt_unknown_session(&mut wire).await,
         "prompt-invalid-params" => prompt_invalid_params(&mut wire).await,
         "unknown-method" => unknown_method(&mut wire).await,
@@ -586,7 +626,11 @@ async fn initialize_capabilities(wire: &mut Wire) -> Outcome {
     );
     let prompt = &caps["promptCapabilities"];
     ensure!(prompt.is_object(), "no promptCapabilities: {caps}");
-    for capability in ["image", "audio", "embeddedContext"] {
+    ensure!(
+        prompt["image"] == true,
+        "image support not advertised: {prompt}"
+    );
+    for capability in ["audio", "embeddedContext"] {
         ensure!(
             prompt[capability] == false,
             "unsupported prompt capability {capability} is advertised: {prompt}"
@@ -632,7 +676,6 @@ async fn prompt_unsupported_content(wire: &mut Wire, fixture: &Fixture, model: &
     let session = wire.new_session(&fixture.workspace).await?;
     let calls_before = model.calls.load(Ordering::SeqCst);
     let blocks = [
-        json!({"type": "image", "data": "aGVsbG8=", "mimeType": "image/png"}),
         json!({"type": "audio", "data": "aGVsbG8=", "mimeType": "audio/wav"}),
         json!({"type": "resource", "resource": {"uri": "file:///note.txt", "text": "note"}}),
         json!({"type": "resource_link", "name": "note", "uri": "file:///note.txt"}),
@@ -664,18 +707,126 @@ async fn prompt_unsupported_content(wire: &mut Wire, fixture: &Fixture, model: &
             "session/prompt",
             json!({
                 "sessionId": session,
-                "prompt": [{"type": "image", "data": "aGVsbG8=", "mimeType": "image/png"}]
+                "prompt": [{"type": "image", "data": "not-base64", "mimeType": "image/png"}]
             }),
         )
         .await?;
     ensure!(
         error_code(&response) == Some(-32602),
-        "an image-only prompt must not return a successful empty turn: {response}"
+        "an invalid image-only prompt must be rejected: {response}"
     );
     ensure!(
         model.calls.load(Ordering::SeqCst) == calls_before,
         "unsupported prompt content reached the model"
     );
+    Ok(())
+}
+
+async fn subagent_cancel(wire: &mut Wire, fixture: &Fixture, model: &Model) -> Outcome {
+    wire.initialize().await?;
+    let session = wire.new_session(&fixture.workspace).await?;
+    let mode = wire
+        .call(
+            "session/set_mode",
+            json!({"sessionId":session,"modeId":"yolo"}),
+        )
+        .await?;
+    ensure!(
+        mode.get("error").is_none(),
+        "cannot select full access: {mode}"
+    );
+    let start = wire.seen.len();
+    model.slow_seen.store(false, Ordering::SeqCst);
+    let prompt = wire
+        .prompt(&session, "请运行子任务并等待取消。CANCEL_SUBAGENT")
+        .await?;
+    let spawned = wire
+        .read_until("child admission", |v| {
+            v["params"]["update"]["sessionUpdate"] == "subagent_spawned"
+        })
+        .await?;
+    let child = wire.seen[spawned]["params"]["update"]["subagent_id"].clone();
+    ensure!(child.is_string(), "missing child identity");
+    tokio::time::timeout(WAIT, async {
+        while !model.slow_seen.load(Ordering::SeqCst) {
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .map_err(|_| "child did not enter the model".to_string())?;
+    let foreign = wire
+        .call(
+            "_a3s/subagent/cancel",
+            json!({"sessionId":"foreign","subagentId":child}),
+        )
+        .await?;
+    ensure!(
+        foreign.get("error").is_some(),
+        "foreign session cancelled child: {foreign}"
+    );
+    let stopped = wire
+        .call(
+            "_a3s/subagent/cancel",
+            json!({"sessionId":session,"subagentId":child}),
+        )
+        .await?;
+    ensure!(
+        stopped["result"]["result"]["outcome"]["kind"] == "cancelled",
+        "{stopped}"
+    );
+    let response = wire.response(prompt).await?;
+    ensure!(stop_reason(&response)? == "end_turn", "{response}");
+    ensure!(
+        wire.seen[start..].iter().any(|v| {
+            v["params"]["update"]["sessionUpdate"] == "subagent_finished"
+                && v["params"]["update"]["status"] == "stopped"
+        }),
+        "no observed child cancellation"
+    );
+    ensure!(
+        wire.seen[spawned]["params"]["_meta"]["outputLanguage"] == "zh-CN",
+        "child progress lost parent language"
+    );
+    let thoughts: String = wire.seen[start..]
+        .iter()
+        .filter(|v| update_kind(v, &session) == Some("agent_thought_chunk"))
+        .map(chunk_text)
+        .collect();
+    ensure!(
+        !thoughts.contains("tool_completed")
+            && !thoughts.contains("turn_completed")
+            && !thoughts.contains(child.as_str().unwrap()),
+        "internal lifecycle leaked into thoughts: {thoughts}"
+    );
+    Ok(())
+}
+
+async fn prompt_image(wire: &mut Wire, fixture: &Fixture, model: &Model) -> Outcome {
+    const PNG: &str = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/ljsAAAAASUVORK5CYII=";
+    wire.initialize().await?;
+    for with_text in [true, false] {
+        let session = wire.new_session(&fixture.workspace).await?;
+        let before = model.images.lock().unwrap().len();
+        let mut prompt = Vec::new();
+        if with_text {
+            prompt.push(json!({"type":"text","text":"SAY: conformance image accepted"}));
+        }
+        prompt.push(json!({"type":"image","mimeType":"image/png","data":PNG}));
+        let response = wire
+            .call(
+                "session/prompt",
+                json!({"sessionId":session,"prompt":prompt}),
+            )
+            .await?;
+        ensure!(stop_reason(&response)? == "end_turn", "{response}");
+        let images = model.images.lock().unwrap();
+        ensure!(
+            images[before..]
+                .iter()
+                .any(|url| url == &format!("data:image/png;base64,{PNG}")),
+            "image bytes never reached the model request"
+        );
+    }
     Ok(())
 }
 
@@ -925,6 +1076,7 @@ fn activation_oracle_detects_a_started_companion_without_launching_one() {
         addr: "127.0.0.1:1".parse().unwrap(),
         slow_seen: Arc::new(AtomicBool::new(false)),
         calls: Arc::new(AtomicUsize::new(0)),
+        images: Arc::new(Mutex::new(Vec::new())),
     };
     let fixture = Fixture::new(&model);
     assert!(fixture.no_companion_started().is_ok());

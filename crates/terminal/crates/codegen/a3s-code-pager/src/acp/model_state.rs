@@ -120,6 +120,17 @@ impl ModelState {
             .or_else(|| self.current_context_window_tokens())
     }
 
+    /// False only when the agent explicitly reports a fallback budget.
+    pub fn context_window_is_known(&self) -> bool {
+        self.current
+            .as_ref()
+            .and_then(|id| self.available.get(id))
+            .and_then(|info| info.meta.as_ref())
+            .and_then(|meta| meta.get("contextWindowKnown"))
+            .and_then(|value| value.as_bool())
+            .unwrap_or(true)
+    }
+
     /// Used for subagent views where SubagentProgress reports an actual window that may differ from the inherited model's metadata.
     pub fn override_context_window(&mut self, tokens: u64) {
         self.context_window_override = Some(tokens);
@@ -137,6 +148,9 @@ impl ModelState {
         model_id: acp::ModelId,
         effort_override: Option<ReasoningEffort>,
     ) {
+        if self.current.as_ref() != Some(&model_id) {
+            self.context_window_override = None;
+        }
         self.current = Some(model_id.clone());
         self.reasoning_effort = effort_override.or_else(|| {
             self.available
@@ -365,6 +379,36 @@ mod tests {
         );
         state.current = Some(id_a);
         state
+    }
+
+    #[test]
+    fn model_switch_discards_previous_window_and_unknown_is_not_a_capacity() {
+        let mut state = sample_models();
+        let a = acp::ModelId::new("model-a");
+        let b = acp::ModelId::new("model-b");
+        state.available.get_mut(&a).unwrap().meta = Some(
+            serde_json::json!({
+                "contextWindowKnown":true,"totalContextTokens":1_048_576
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        );
+        state.available.get_mut(&b).unwrap().meta = Some(
+            serde_json::json!({
+                "contextWindowKnown":false
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        );
+        state.override_context_window(65_536);
+        state.set_current(b, None);
+        assert_eq!(state.get_context_window(), None);
+        assert!(!state.context_window_is_known());
+        state.set_current(a, None);
+        assert_eq!(state.get_context_window(), Some(1_048_576));
+        assert!(state.context_window_is_known());
     }
 
     #[test]

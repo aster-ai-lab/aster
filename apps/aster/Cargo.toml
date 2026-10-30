@@ -1,6 +1,6 @@
 [package]
 name = "aster"
-version = "0.1.4"
+version = "0.1.5"
 license = "MIT"
 authors = ["A3S Lab"]
 default-run = "aster"
@@ -70,6 +70,13 @@ tikv-jemalloc-sys = {version = "0.7", optional = true}
 tikv-jemalloc-ctl = {version = "0.7", optional = true, features = ["stats", "use_std"]}
 
 [dev-dependencies]
+serde = {workspace = true}
+a3s-acl = {path = "../../crates/acl"}
+a3s-code-core = {path = "../../crates/code/core"}
+a3s-code-markdown = {path = "../../crates/terminal/crates/codegen/a3s-code-markdown"}
+tempfile = {workspace = true}
+uuid = {version = "1", features = ["v4"]}
+vt100 = "0.15"
 portable-pty = {workspace = true}
 serial_test = {workspace = true}
 # `PagerArgs::try_parse_from` in the CLI-parsing unit tests (needs the

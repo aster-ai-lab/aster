@@ -55,12 +55,12 @@ fn seam_admission_permission_posture_denies_under_yolo() {
 
     let auto = policy_for_posture("auto");
     assert_eq!(auto.check("read", &json!({})), PermissionDecision::Allow);
-    assert_eq!(auto.check("bash", &json!({})), PermissionDecision::Ask);
+    assert_eq!(auto.check("bash", &json!({})), PermissionDecision::Allow);
 
     let default_policy = policy_for_posture("default");
     assert_eq!(
         default_policy.check("read", &json!({})),
-        PermissionDecision::Ask
+        PermissionDecision::Allow
     );
     assert_eq!(
         default_policy.check("bash", &json!({})),
@@ -91,7 +91,7 @@ fn seam_admission_permission_posture_denies_under_yolo() {
     assert_eq!(plan.check("Skill", &json!({})), PermissionDecision::Deny);
     assert_eq!(
         plan.check("ask_user_form", &json!({})),
-        PermissionDecision::Deny
+        PermissionDecision::Allow
     );
     assert_eq!(
         policy_for_posture("force").check("ask_user_form", &json!({})),

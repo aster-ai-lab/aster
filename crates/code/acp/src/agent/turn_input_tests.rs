@@ -108,7 +108,7 @@ fn direct_bash_metadata_is_never_reinterpreted_as_model_text() {
                 .as_object()
                 .cloned(),
         );
-        let error = A3sCodeAgent::prompt_text(&[
+        let error = A3sCodeAgent::prompt_content(&[
             acp::ContentBlock::Text(acp::TextContent::new("ordinary prefix")),
             acp::ContentBlock::Text(block),
         ])
@@ -129,7 +129,9 @@ fn ordinary_text_and_unrelated_metadata_preserve_exact_user_bytes() {
             .cloned(),
     );
     assert_eq!(
-        A3sCodeAgent::prompt_text(&[acp::ContentBlock::Text(block)]).unwrap(),
+        A3sCodeAgent::prompt_content(&[acp::ContentBlock::Text(block)])
+            .unwrap()
+            .0,
         text
     );
 }

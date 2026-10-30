@@ -541,6 +541,29 @@ mod tests {
         for index in 0..=crate::porcelain::FILE_WALK_CAP {
             std::fs::write(root.join(format!("f{index:04}.txt")), "x").unwrap();
         }
+        for args in [
+            vec!["add", "--all"],
+            vec![
+                "-c",
+                "user.name=Fixture",
+                "-c",
+                "user.email=fixture@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+                "-c",
+                "core.hooksPath=",
+                "commit",
+                "-qm",
+                "baseline",
+            ],
+        ] {
+            assert!(std::process::Command::new("git")
+                .args(args)
+                .current_dir(root)
+                .status()
+                .unwrap()
+                .success());
+        }
         let mut state = ExecutionLoopState::new(&[]);
         state.bind_run_watch(root).await;
         std::fs::write(root.join("owned.txt"), "owned\n").unwrap();

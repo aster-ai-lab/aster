@@ -565,6 +565,9 @@ impl crate::tools::Tool for ReceiptProbe {
     fn parameters(&self) -> serde_json::Value {
         json!({"type":"object"})
     }
+    fn requires_confirmation(&self, args: &serde_json::Value) -> bool {
+        args["requires_confirmation"] == true
+    }
     fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
         if args["read_only"] == true {
             crate::tools::ToolCapabilities::parallel_safe_read(2)
@@ -943,6 +946,66 @@ async fn unchanged_ask_obeys_the_frozen_host_confirmation_authority() {
             executed,
             "{label}"
         );
+    }
+}
+
+#[tokio::test]
+async fn tool_owned_confirmation_reuses_only_the_exact_actor_approval() {
+    for confirmed in [true, false] {
+        let root = tempfile::tempdir().unwrap();
+        let (base, count) = executor_tools(root.path());
+        let mut tools = base.as_ref().clone();
+        tools.permission.default_decision = if confirmed {
+            PermissionDecision::Ask
+        } else {
+            PermissionDecision::Allow
+        };
+        tools.permission.allow.clear();
+        let (events, mut receiver) = tokio::sync::broadcast::channel(8);
+        let manager = Arc::new(crate::hitl::ConfirmationManager::new(
+            crate::hitl::ConfirmationPolicy::enabled(),
+            events,
+        ));
+        tools.agent = Some(crate::agent::AgentLoop::new(
+            Arc::new(crate::agent::tests::MockLlmClient::new(Vec::new())),
+            Arc::clone(&tools.executor),
+            tools.context.clone(),
+            crate::agent::AgentConfig {
+                confirmation_manager: Some(manager.clone()),
+                ..Default::default()
+            },
+        ));
+        let tools = Arc::new(tools);
+        let mut call = request("owned", json!({"write":true,"requires_confirmation":true}));
+        call.call.needs_confirmation = confirmed;
+        let prepared = prepare_tools(
+            Arc::clone(&tools),
+            call,
+            tokio_util::sync::CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+        let execute = execute_prepared(tools, prepared);
+        tokio::pin!(execute);
+        let mut approvals = 0;
+        let result = tokio::time::timeout(std::time::Duration::from_secs(3), async {
+            loop {
+                tokio::select! {
+                    result = &mut execute => break result,
+                    event = receiver.recv() => {
+                        if let crate::agent::AgentEvent::ConfirmationRequired { tool_id, .. } = event.unwrap() {
+                            approvals += 1;
+                            assert!(!confirmed, "the actor already approved this exact invocation");
+                            assert!(manager.confirm(&tool_id, true, None).await.unwrap());
+                        }
+                    }
+                }
+            }
+        }).await.unwrap();
+        assert_eq!(result.outcome, ToolExecutionOutcome::Succeeded);
+        assert_eq!(approvals, usize::from(!confirmed));
+        assert_eq!(count.load(Ordering::SeqCst), 1);
+        assert!(manager.pending_confirmations().await.is_empty());
     }
 }
 

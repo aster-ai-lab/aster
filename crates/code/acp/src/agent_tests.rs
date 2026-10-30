@@ -1700,9 +1700,11 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let _ = A3sCodeAgent::core_session_options("sid", "model", None);
     assert!(effort_limits_from_meta(None).is_none());
 
-    let text =
-        A3sCodeAgent::prompt_text(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))]);
-    assert_eq!(text.unwrap(), " hello ");
+    let (text, attachments) =
+        A3sCodeAgent::prompt_content(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))])
+            .expect("text prompt");
+    assert_eq!(text, " hello ");
+    assert!(attachments.is_empty());
 
     let session_id = acp::SessionId::new("s");
     let request = tool_permission_request(
@@ -2045,6 +2047,96 @@ async fn tui_turn_renders_every_pager_event() {
         "the End event must stage the turn outcome for the client notification"
     );
     let _ = std::fs::remove_dir_all(&root);
+}
+
+#[test]
+fn prompt_images_preserve_bytes_and_order() {
+    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+        acp::ContentBlock::Text(acp::TextContent::new("first")),
+        acp::ContentBlock::Image(acp::ImageContent::new("AQID", "image/png")),
+        acp::ContentBlock::Text(acp::TextContent::new("second")),
+        acp::ContentBlock::Image(acp::ImageContent::new("BAUG", "image/webp")),
+    ])
+    .expect("supported image prompt");
+    assert_eq!(text, "first\nsecond");
+    assert_eq!(attachments.len(), 2);
+    assert_eq!(attachments[0].data, [1, 2, 3]);
+    assert_eq!(attachments[0].media_type, "image/png");
+    assert_eq!(attachments[1].data, [4, 5, 6]);
+    assert_eq!(attachments[1].media_type, "image/webp");
+}
+
+#[test]
+fn invalid_prompt_images_fail_before_admission() {
+    use base64::Engine as _;
+    let oversized = base64::engine::general_purpose::STANDARD.encode(vec![
+        0;
+        a3s_code_core::llm::MAX_ATTACHMENT_BYTES
+            + 1
+    ]);
+    for (data, mime) in [
+        ("%%%", "image/png"),
+        ("", "image/png"),
+        ("AQID", "application/pdf"),
+        (oversized.as_str(), "image/png"),
+    ] {
+        let error = A3sCodeAgent::prompt_content(&[acp::ContentBlock::Image(
+            acp::ImageContent::new(data, mime),
+        )])
+        .err()
+        .expect("invalid image rejected");
+        assert_eq!(error.code, acp::ErrorCode::InvalidParams);
+    }
+}
+
+#[test]
+fn unsupported_prompt_content_fails_closed_before_a_turn() {
+    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+        acp::ContentBlock::Text(acp::TextContent::new("first")),
+        acp::ContentBlock::Text(acp::TextContent::new("second")),
+    ])
+    .expect("text-only prompt");
+    assert_eq!(text, "first\nsecond");
+    assert!(attachments.is_empty());
+
+    let blocks = vec![
+        (
+            "audio",
+            acp::ContentBlock::Audio(acp::AudioContent::new("aGVsbG8=", "audio/wav")),
+        ),
+        (
+            "resource",
+            acp::ContentBlock::Resource(acp::EmbeddedResource::new(
+                acp::EmbeddedResourceResource::TextResourceContents(
+                    acp::TextResourceContents::new("note", "file:///note.txt"),
+                ),
+            )),
+        ),
+        (
+            "resource",
+            acp::ContentBlock::Resource(acp::EmbeddedResource::new(
+                acp::EmbeddedResourceResource::BlobResourceContents(
+                    acp::BlobResourceContents::new("aGVsbG8=", "file:///note.bin"),
+                ),
+            )),
+        ),
+        (
+            "resource_link",
+            acp::ContentBlock::ResourceLink(acp::ResourceLink::new("note", "file:///note.txt")),
+        ),
+    ];
+    for (kind, block) in blocks {
+        let error = A3sCodeAgent::prompt_content(&[
+            acp::ContentBlock::Text(acp::TextContent::new("must not run")),
+            block,
+        ])
+        .expect_err("unsupported content must not be silently dropped");
+        assert_eq!(error.code, acp::ErrorCode::InvalidParams);
+        let data = error.data.and_then(|data| data.as_str().map(str::to_owned));
+        let data = data.expect("fail-closed explanation");
+        assert!(data.contains(kind), "{data}");
+        assert!(data.contains("did not send"), "{data}");
+    }
 }
 
 /// Session functions the TUI renders. Each entry is an observed effect, not a
@@ -3035,4 +3127,46 @@ fn only_a_learnable_bash_command_offers_allow_always_and_only_it_learns() {
     assert!(permission_response_always(&answer("allow-always")));
     assert!(!permission_response_approved(&answer("reject-once")));
     assert!(!permission_response_always(&answer("reject-once")));
+}
+
+#[test]
+fn model_catalog_preserves_configured_limits_and_marks_unknown_context() {
+    let mut launch = test_launch(None);
+    let mut kimi = test_model("k3.1-pro", "Kimi", "openai");
+    launch.config.providers[0].name = "kimi".into();
+    launch.config.providers[0].models =
+        vec![kimi.clone(), test_model("unknown", "Unknown", "openai")];
+    let agent = A3sCodeAgent::new(launch.clone());
+    let infos = agent.available_model_infos();
+    assert_eq!(
+        infos[0].meta.as_ref().unwrap()["totalContextTokens"],
+        1_048_576
+    );
+    assert_eq!(infos[1].meta.as_ref().unwrap()["contextWindowKnown"], false);
+    assert!(!infos[1]
+        .meta
+        .as_ref()
+        .unwrap()
+        .contains_key("totalContextTokens"));
+    kimi.limit.context = 65_536;
+    launch.config.providers[0].models[0] = kimi;
+    let infos = A3sCodeAgent::new(launch).available_model_infos();
+    assert_eq!(
+        infos[0].meta.as_ref().unwrap()["totalContextTokens"],
+        65_536
+    );
+    assert_eq!(
+        a3s_code_core::context_window_for_model(None, None, "kimi/k3.1-pro", true, 128_000),
+        1_048_576
+    );
+    assert_eq!(
+        a3s_code_core::context_window_for_model(
+            Some(32_768),
+            Some(65_536),
+            "kimi/k3.1-pro",
+            true,
+            128_000
+        ),
+        32_768
+    );
 }

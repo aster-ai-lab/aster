@@ -5,32 +5,35 @@ use super::{
 };
 use crate::queue::SessionLane;
 
-/// Policy the next run admission freezes.
-///
-/// `default` asks, and allows `ask_user` and `ask_user_form`. `plan` allows
-/// reads and denies mutations. `auto` allows known reads and those two
-/// question tools, and still asks before execute. `yolo` allows query and
-/// execute lanes, and those two question tools. Retired names stay on the
-/// asking default. Deny rules added by the caller still win, because
-/// [`PermissionPolicy::check`] evaluates deny before allow.
+/// Policy the next run admission freezes. Explicit deny rules always win.
+/// Normal mode asks before changes; auto allows workspace edits and sandboxed
+/// commands. Only YOLO selects the local host runner without sandboxing.
 pub fn policy_for_posture(posture: &str) -> PermissionPolicy {
-    match posture.trim().to_ascii_lowercase().as_str() {
-        "plan" => super::style_specialty::plan_permissions(),
-        "auto" => PermissionPolicy::new().allow_all(&[
+    let reads = || {
+        PermissionPolicy::new().allow_all(&[
             "read",
+            "office_read",
             "search",
             "ls",
+            "code_symbols",
+            "code_navigation",
+            "code_diagnostics",
+            "output_check",
             "update_plan",
             "ask_user",
             "ask_user_form",
-        ]),
+        ])
+    };
+    match posture.trim().to_ascii_lowercase().as_str() {
+        "plan" => super::style_specialty::plan_permissions()
+            .allow("ask_user")
+            .allow("ask_user_form"),
+        "auto" => reads().allow_all(&["write", "edit", "patch", "office_file", "bash"]),
         "yolo" => PermissionPolicy::new()
             .allow_yolo_lanes([SessionLane::Query, SessionLane::Execute])
             .allow("ask_user")
             .allow("ask_user_form"),
-        "default" => PermissionPolicy::new()
-            .allow("ask_user")
-            .allow("ask_user_form"),
+        "default" => reads(),
         _ => PermissionPolicy::new(),
     }
 }
@@ -413,6 +416,11 @@ impl PermissionPolicy {
 }
 
 impl PermissionChecker for PermissionPolicy {
+    fn allows_unsandboxed_execution(&self) -> bool {
+        let execute = yolo_lane_rule(SessionLane::Execute);
+        self.allow.iter().any(|rule| rule.rule == execute)
+    }
+
     fn expose_to_model(&self, tool_name: &str) -> bool {
         // A deny that covers every argument makes the entire capability
         // unavailable. Argument-scoped denies keep the tool visible so an

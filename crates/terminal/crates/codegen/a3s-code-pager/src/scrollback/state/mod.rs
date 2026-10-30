@@ -536,6 +536,13 @@ impl ScrollbackState {
 
         self.apply_edit_default_display_mode(&mut entry);
 
+        if matches!(entry.block, RenderBlock::Thinking(_))
+            && !entry.display_mode_pinned
+            && entry.display_mode == entry.block.default_display_mode()
+        {
+            entry.display_mode = self.thinking_display_mode;
+        }
+
         // Track if this entry is running
         if entry.is_running {
             self.running.insert(id);
@@ -3241,7 +3248,7 @@ mod tests {
         state.push_chunk_to_thinking(id, "deep thoughts");
         assert_eq!(
             state.get_by_id(id).unwrap().display_mode,
-            DisplayMode::Truncated
+            DisplayMode::Collapsed
         );
 
         state.finish_running(id);

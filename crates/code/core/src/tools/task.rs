@@ -255,6 +255,7 @@ pub struct TaskExecutor {
     /// executor. Keeping it on the executor prevents cached workflow/executor
     /// handles from starting new child runs after their session is closed.
     parent_cancellation: Option<CancellationToken>,
+    reply_language: Option<String>,
     max_parallel_tasks: usize,
     /// Shared across every fan-out started by this executor. Per-call wave
     /// limits alone are insufficient when a dynamic workflow launches several
@@ -305,6 +306,7 @@ impl TaskExecutor {
             search_request_coalescer: None,
             capability_context: None,
             parent_cancellation: None,
+            reply_language: None,
             max_parallel_tasks: crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
             parallel_permits: Arc::new(tokio::sync::Semaphore::new(
                 crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
@@ -351,6 +353,7 @@ impl TaskExecutor {
             search_request_coalescer: None,
             capability_context: None,
             parent_cancellation: None,
+            reply_language: None,
             max_parallel_tasks: crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
             parallel_permits: Arc::new(tokio::sync::Semaphore::new(
                 crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
@@ -403,6 +406,7 @@ impl TaskExecutor {
 
     fn scoped_for_invocation(self: &Arc<Self>, ctx: &ToolContext) -> Arc<Self> {
         let mut scoped = self.as_ref().clone();
+        scoped.reply_language = ctx.reply_language();
         scoped.search_config = ctx.search_config.clone();
         scoped.search_bulkhead = Some(ctx.search_bulkhead());
         scoped.search_retry_budget = Some(ctx.search_retry_budget());
@@ -432,6 +436,7 @@ impl TaskExecutor {
         let mut context = ToolContext::new(PathBuf::from(&self.workspace))
             .with_session_id(session_id)
             .with_cancellation(cancellation);
+        context.inherit_reply_language(self.reply_language.as_deref());
         if let (Some(bulkhead), Some(retry_budget)) =
             (&self.search_bulkhead, &self.search_retry_budget)
         {

@@ -70,6 +70,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: aster-desktop-*
@@ -86,6 +90,7 @@ jobs:
           set -euo pipefail
           asset="Aster-darwin-aarch64-v${DESKTOP_VERSION}.zip"
           test -f "dist/$asset"
+          python3 apps/studio/scripts/studio_delivery.py verify-archive "dist/$asset" "$DESKTOP_VERSION" aster
           # The currently published manifest gates the regression refusal.
           if gh release download desktop-stable --pattern desktop-latest.json --output current.json --clobber 2>/dev/null; then
             existing_args=(--existing current.json)

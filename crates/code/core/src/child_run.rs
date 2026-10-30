@@ -113,6 +113,10 @@ pub(crate) fn compose_permission_checker(
 }
 
 impl PermissionChecker for DelegatedPermissionChecker {
+    fn allows_unsandboxed_execution(&self) -> bool {
+        self.parent.allows_unsandboxed_execution()
+    }
+
     fn snapshot_for_run(&self) -> Option<Arc<dyn PermissionChecker>> {
         let child = self
             .child

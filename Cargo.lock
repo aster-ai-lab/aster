@@ -314,6 +314,7 @@ dependencies = [
  "agent-client-protocol",
  "anyhow",
  "async-trait",
+ "base64 0.22.1",
  "cap-fs-ext",
  "cap-std",
  "chrono",
@@ -4235,12 +4236,15 @@ checksum = "9b34d609dfbaf33d6889b2b7106d3ca345eacad44200913df5ba02bfd31d2ba9"
 
 [[package]]
 name = "aster"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
+ "a3s-acl",
  "a3s-acp-lib",
  "a3s-code-config",
+ "a3s-code-core",
  "a3s-code-extra-ca",
  "a3s-code-login",
+ "a3s-code-markdown",
  "a3s-code-pager",
  "a3s-code-pager-minimal",
  "a3s-code-sandbox",
@@ -4259,10 +4263,12 @@ dependencies = [
  "portable-pty",
  "reqwest 0.12.24",
  "semver",
+ "serde",
  "serde_json",
  "serial_test 3.2.0",
  "sha2 0.10.9",
  "tar",
+ "tempfile",
  "tikv-jemalloc-ctl",
  "tikv-jemalloc-sys",
  "tikv-jemallocator",
@@ -4270,6 +4276,8 @@ dependencies = [
  "tokio-util",
  "tracing",
  "tracing-subscriber",
+ "uuid 1.26.1",
+ "vt100",
  "zip 2.4.2",
 ]
 

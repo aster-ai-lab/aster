@@ -341,93 +341,17 @@ pub(super) fn handle_queue_changed(notif: &acp::ExtNotification, app: &mut AppVi
                 agent.discard_pending_adoption_updates(&p.prompt_id);
             }
         }
-        // One: an actor-run synthetic turn with no `prompt_complete` or `PromptResponse` exit, so nothing would ever call `finish_turn`
-        // Adopting either via `apply_turn_start_shim` would call `start_turn()` and enter `AgentState::TurnRunning`
-        // It must NOT re-adopt the turn the `SessionLoaded` or reconnect adoption already skipped
-        (Some(pid), Some(aid))
-            if app
-                .agents
-                .get(&aid)
-                .is_some_and(|a| !a.should_adopt_running_prompt(&pid)) =>
-        {
-            tracing::debug!(
-                target: "qtrace",
-                pid = std::process::id(),
-                prompt_id = %pid,
-                "queue/changed: skipping turn-start adoption for non-adoptable running \
-                 prompt (synthetic turn with no prompt_complete exit, or terminal-in-replay)",
-            );
-        }
-        (Some(pid), Some(aid)) => {
-            let current = app
-                .agents
-                .get(&aid)
-                .and_then(|a| a.session.current_prompt_id.clone());
-            match current {
-                // Already tracking this running prompt; inert
-                Some(c) if c == pid => {}
-                // Nothing running locally: adopt now and run the turn-start shim (render the queued prompt's user block, set `TurnRunning`)
-                None => {
-                    let page_flip_entry = app.agents.get_mut(&aid).and_then(|agent| {
-                        super::super::dispatch::apply_turn_start_shim(
-                            agent,
-                            pid,
-                            running_text,
-                            &running_kind,
-                            running_combined,
-                        )
-                    });
-                    super::super::dispatch::note_peek_page_flip(app, aid, page_flip_entry);
-                }
-                // A different prompt is still finishing locally: the FIFO handoff race
-                // The next broadcast can arrive before the previous turn's `PromptResponse`
-                // Never corrupt the in-flight turn
-                Some(_) => {
-                    // The leader emits this prompt's user-echo right after this broadcast (it has no `promptId`, so the gate can't drop it)
-                    // Do that ONLY when THIS client will actually paint the block via the deferred shim
-                    // That handler fires only for the client that DROVE the currently-finishing turn (`!attached_as_viewer`)
-                    let drives_current_turn =
-                        app.agents.get(&aid).is_some_and(|a| !a.attached_as_viewer);
-                    let will_render_own_block = drives_current_turn
-                        && super::super::dispatch::shim_renders_own_user_block(
-                            &running_kind,
-                            running_text.as_deref(),
-                        );
-                    if will_render_own_block && let Some(agent) = app.agents.get_mut(&aid) {
-                        agent.session.tracker.expect_user_echo();
-                    }
-                    tracing::debug!(
-                        target: "qtrace",
-                        pid = std::process::id(),
-                        event = "adoption_stashed",
-                        prompt_id = %pid,
-                        "stashing running-prompt adoption (FIFO handoff race)",
-                    );
-                    // Same-prompt rebroadcast must not clobber the stash (`text` is already None).
-                    // Still fall through to local flush: promote may have just cleared the server front.
-                    let same_stashed_prompt = app
-                        .pending_running_adoptions
-                        .get(&aid)
-                        .is_some_and(|p| p.prompt_id == pid);
-                    // A newer running prompt supersedes any earlier stash.
-                    if !same_stashed_prompt
-                        && let Some(prev) = app.pending_running_adoptions.insert(
-                            aid,
-                            PendingRunningAdoption {
-                                prompt_id: pid.clone(),
-                                text: running_text,
-                                combined_texts: running_combined,
-                                kind: running_kind,
-                                turn_ended: false,
-                            },
-                        )
-                        && let Some(agent) = app.agents.get_mut(&aid)
-                    {
-                        agent.discard_pending_adoption_updates(&prev.prompt_id);
-                    }
-                }
-            }
-        }
+        (Some(pid), Some(aid)) => adopt_running_prompt(
+            app,
+            aid,
+            PendingRunningAdoption {
+                prompt_id: pid,
+                text: running_text,
+                combined_texts: running_combined,
+                kind: running_kind,
+                turn_ended: false,
+            },
+        ),
         _ => {}
     }
     // Retry local flush after server-queue rows clear (wait-start can arrive before promote).
@@ -441,6 +365,94 @@ pub(super) fn handle_queue_changed(notif: &acp::ExtNotification, app: &mut AppVi
         app.pending_effects.extend(flush);
     }
     true
+}
+
+pub(super) fn adopt_running_prompt(
+    app: &mut AppView,
+    aid: AgentId,
+    pending: PendingRunningAdoption,
+) {
+    let PendingRunningAdoption {
+        prompt_id: pid,
+        text: running_text,
+        combined_texts: running_combined,
+        kind: running_kind,
+        ..
+    } = pending;
+    if !app
+        .agents
+        .get(&aid)
+        .is_some_and(|agent| agent.should_adopt_running_prompt(&pid))
+    {
+        return;
+    }
+    let current = app
+        .agents
+        .get(&aid)
+        .and_then(|a| a.session.current_prompt_id.clone());
+    match current {
+        // Already tracking this running prompt; inert
+        Some(c) if c == pid => {}
+        // Nothing running locally: adopt now and run the turn-start shim (render the queued prompt's user block, set `TurnRunning`)
+        None => {
+            let page_flip_entry = app.agents.get_mut(&aid).and_then(|agent| {
+                super::super::dispatch::apply_turn_start_shim(
+                    agent,
+                    pid,
+                    running_text,
+                    &running_kind,
+                    running_combined,
+                )
+            });
+            super::super::dispatch::note_peek_page_flip(app, aid, page_flip_entry);
+        }
+        // A different prompt is still finishing locally: the FIFO handoff race
+        // The next broadcast can arrive before the previous turn's `PromptResponse`
+        // Never corrupt the in-flight turn
+        Some(_) => {
+            // The leader emits this prompt's user-echo right after this broadcast (it has no `promptId`, so the gate can't drop it)
+            // Do that ONLY when THIS client will actually paint the block via the deferred shim
+            // That handler fires only for the client that DROVE the currently-finishing turn (`!attached_as_viewer`)
+            let drives_current_turn = app.agents.get(&aid).is_some_and(|a| !a.attached_as_viewer);
+            let will_render_own_block = drives_current_turn
+                && super::super::dispatch::shim_renders_own_user_block(
+                    &running_kind,
+                    running_text.as_deref(),
+                );
+            if will_render_own_block && let Some(agent) = app.agents.get_mut(&aid) {
+                agent.session.tracker.expect_user_echo();
+            }
+            tracing::debug!(
+                target: "qtrace",
+                pid = std::process::id(),
+                event = "adoption_stashed",
+                prompt_id = %pid,
+                "stashing running-prompt adoption (FIFO handoff race)",
+            );
+            // Same-prompt rebroadcast must not clobber the stash (`text` is already None).
+            // Still fall through to local flush: promote may have just cleared the server front.
+            let same_stashed_prompt = app
+                .pending_running_adoptions
+                .get(&aid)
+                .is_some_and(|p| p.prompt_id == pid);
+            // A newer running prompt supersedes any earlier stash.
+            if !same_stashed_prompt
+                && let Some(prev) = app.pending_running_adoptions.insert(
+                    aid,
+                    PendingRunningAdoption {
+                        prompt_id: pid.clone(),
+                        text: running_text,
+                        combined_texts: running_combined,
+                        kind: running_kind,
+                        turn_ended: false,
+                    },
+                )
+                && let Some(agent) = app.agents.get_mut(&aid)
+            {
+                agent.discard_pending_adoption_updates(&prev.prompt_id);
+            }
+        }
+    }
 }
 
 /// `prompt_complete` carries `sessionId`, `stopReason`, `agentResult`, `turnId`, and (on shells with the lost-response fix) `promptId`.
