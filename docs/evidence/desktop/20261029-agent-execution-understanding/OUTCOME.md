@@ -180,3 +180,10 @@
 - 红框复核发现两轮局部缩放方向错误：短会话 12px 上限把时间轴缩到左侧，128px 高度又压扁了参考结构；`t049-compact-timeline.png` 与 `t050-compact-lanes.png` 只保留错误过程，不作为最终结果或提交证据。
 - 已撤销这些缩放，恢复全宽任务段、事件、Token、Context、播放头和拖动区域，以及 160px 四轨高度。新增全宽末事件、全宽拖动区和轨道高度断言；最终截图为 `t051-full-width-timeline.png`。
 - 参考图与当前会话的剩余密度差异来自真实事件数和 Token／Context 测量点数量，不通过伪造数据补齐。7 个核心测试文件共 53 项通过，Oxlint、格式、renderer 构建和完整 Chromium 复验通过；日志为 `t051-full-width-timeline-*.log`。本次未重跑原生包。
+
+## T052 real-time timeline alignment
+
+- 参考图的播放头位置对应 `2m01s / 4m10s ≈ 48.4%`，而不是 `29 / 56 ≈ 51.8%`；此前仅恢复全宽仍保留了错误的等距步骤映射。
+- 新增共享 `workspaceAnalysisTime`：时间戳完整时，Tasks、Events、Tokens、Context、拖动滑杆和播放时钟统一按真实时间定位；任何事件缺少时间戳时，整条轨道回退为步骤布局，不插值伪造时间。
+- Context 遇到无测量事件时保留最近一次实测点并形成连续阶梯，只有真实测量位置绘制新点；Token 仍只画实际记录，不为视觉密度补柱。
+- 12 个测试文件共 73 项通过，覆盖 121／250 时间比例、缺时间戳回退、播放头时间进度、Context 连续性和实际拖动定位；Oxlint 0 warning／0 error，格式、renderer 构建和完整 Chromium 旅程通过。日志为 `t052-time-aligned-*.log`，截图为 `t052-time-aligned-midpoint.png`、`t052-time-aligned.png`。本次未重跑原生包。
