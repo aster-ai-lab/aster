@@ -98,6 +98,9 @@ jobs:
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
+      - name: Verify native host execution
+        shell: bash
+        run: cargo test --locked --release -p a3s-code-core --lib sandbox::host_access::tests -- --test-threads=1
       - name: Stage macOS sandbox companions
         if: runner.os == 'macOS'
         run: python3 scripts/aster_sandbox.py stage --profile release
@@ -186,6 +189,11 @@ jobs:
           . "$HOME/.cargo/env"
           bin_dir="${CARGO_TARGET_DIR:-target}/release"
           bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.5-linux.tar.gz"
+      - name: Verify native host execution
+        shell: bash
+        run: |
+          . "$HOME/.cargo/env"
+          cargo test --locked --release -p a3s-code-core --lib sandbox::host_access::tests -- --test-threads=1
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-linux

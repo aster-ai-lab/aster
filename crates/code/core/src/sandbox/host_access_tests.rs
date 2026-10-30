@@ -15,13 +15,23 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
         .clone()
         .with_run_governance(Some(Arc::new(policy_for_posture("yolo"))), None);
     assert!(!yolo.sandbox.as_ref().unwrap().is_isolated());
-    let command = "git init -q && printf selected > selected.txt && git add selected.txt && git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture && git show HEAD:selected.txt && printf '\\n' && uname -s";
+    #[cfg(windows)]
+    let write = "Set-Content -LiteralPath selected.txt -Value selected -NoNewline";
+    #[cfg(not(windows))]
+    let write = "printf selected > selected.txt";
+    let command = format!("git init -q; {write}; git add selected.txt; git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture; git show HEAD:selected.txt");
+    #[cfg(target_os = "macos")]
+    let command = format!("{command}; printf '\\n'; uname -s");
     let output = crate::tools::builtin::bash::BashTool
         .execute(&serde_json::json!({"command":command}), &yolo)
         .await
         .unwrap();
     assert!(output.success, "{}", output.content);
-    assert!(output.content.contains("selected\n"));
+    assert!(output.content.contains("selected"));
+    assert_eq!(
+        std::fs::read(root.path().join("selected.txt")).unwrap(),
+        b"selected"
+    );
     assert_eq!(output.metadata.as_ref().unwrap()["sandboxed"], false);
     #[cfg(target_os = "macos")]
     assert!(output.content.contains("Darwin"));
