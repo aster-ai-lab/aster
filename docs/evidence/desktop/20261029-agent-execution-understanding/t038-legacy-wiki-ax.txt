@@ -1,0 +1,44 @@
+scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element Analysis journey of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text Analysis journey of UI element Analysis journey of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element Analysis journey of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text Analysis journey of UI element Analysis journey of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text /Users/roylin/code/aster/work/agent-execution-understanding/native-legacy-home/Library/Application Support/dev.a3s.studio/studio/aster/agent-plane/workspace/01a18707-13e4-7750-985f-1ea4390bef0e of group 1 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 页面操作 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+radio button 分析 of tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+radio button 百科 of tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+radio button 产物 of tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+radio button 记忆 of tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+radio button 看板 of tab group 知识视图 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 关闭 of group 1 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 笔记列表工具 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 百科 of group 笔记列表工具 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 百科 of UI element 百科 of group 笔记列表工具 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+checkbox 打开图谱 of group 笔记列表工具 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 知识编译 of group 笔记列表工具 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 2 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+text field 搜索标题和正文 of group 2 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of text field 搜索标题和正文 of group 2 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 搜索标题和正文 of group 1 of text field 搜索标题和正文 of group 2 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 刷新 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 百科 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 百科 of group 百科 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 百科 of group 百科 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 百科 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 还没有百科条目 of group 2 of group 百科 of group 内容列表 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+splitter 调整面板宽度 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 内容详情 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 内容详情 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 还没有百科条目 of group 1 of group 内容详情 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 还没有百科条目 of UI element 还没有百科条目 of group 1 of group 内容详情 of group 1 of group 百科 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio

@@ -1,0 +1,2452 @@
+{
+  "format": "coding-agent-state-trajectory",
+  "version": 1,
+  "session": {
+    "id": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+    "sourceRevision": "run-76882c5e"
+  },
+  "evidence": {
+    "status": "partial",
+    "omittedEventIds": [],
+    "unavailableEventIds": [
+      "message:assistant-2:part:1"
+    ]
+  },
+  "states": [
+    {
+      "id": "state:initial:message:assistant-1:part:2",
+      "title": "Initial src/orders.ts",
+      "eventIds": [],
+      "snapshotEvidence": [
+        {
+          "component": "src/orders.ts",
+          "before": "orders-before",
+          "after": "orders-after",
+          "basis": "hash",
+          "eventIds": [
+            "message:assistant-1:part:2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "state:message:assistant-1:part:2",
+      "title": "src/orders.ts",
+      "eventIds": [
+        "message:assistant-1:part:2"
+      ],
+      "snapshotEvidence": [
+        {
+          "component": "src/orders.ts",
+          "before": "orders-before",
+          "after": "orders-after",
+          "basis": "hash",
+          "eventIds": [
+            "message:assistant-1:part:2"
+          ]
+        }
+      ],
+      "lineage": {
+        "parent": "state:initial:message:assistant-1:part:2",
+        "relation": "derived",
+        "reason": "observed_mutation",
+        "eventIds": [
+          "message:assistant-1:part:2"
+        ]
+      }
+    }
+  ],
+  "branches": [
+    {
+      "id": "phase:state:initial:message:assistant-1:part:2",
+      "stateId": "state:initial:message:assistant-1:part:2",
+      "title": "Initial src/orders.ts",
+      "eventIds": [
+        "message:user-1:prompt",
+        "message:assistant-1:part:0",
+        "message:assistant-1:part:1"
+      ],
+      "status": "attempted"
+    },
+    {
+      "id": "phase:state:message:assistant-1:part:2",
+      "stateId": "state:message:assistant-1:part:2",
+      "title": "src/orders.ts",
+      "eventIds": [
+        "message:assistant-1:part:2",
+        "message:assistant-1:part:3",
+        "message:assistant-1:part:4",
+        "message:assistant-1:part:5",
+        "message:assistant-1:part:6",
+        "message:assistant-1:part:7",
+        "message:assistant-1:part:8",
+        "message:assistant-1:part:9",
+        "message:assistant-1:part:10",
+        "message:assistant-1:part:11",
+        "message:assistant-1:part:12",
+        "message:assistant-1:part:13",
+        "message:assistant-1:part:14",
+        "message:assistant-1:part:15",
+        "message:assistant-1:part:16",
+        "message:assistant-1:part:17",
+        "message:assistant-1:part:18",
+        "message:assistant-1:part:19",
+        "message:assistant-1:part:20",
+        "message:assistant-1:part:21",
+        "message:assistant-1:part:22",
+        "message:assistant-1:part:23",
+        "message:assistant-1:part:24",
+        "message:assistant-1:part:25",
+        "message:assistant-1:part:26",
+        "message:assistant-1:part:27",
+        "message:assistant-1:part:28",
+        "message:assistant-1:part:29",
+        "message:assistant-1:part:30",
+        "message:assistant-1:part:31",
+        "message:assistant-1:part:32",
+        "message:assistant-1:part:33",
+        "message:user-2:prompt",
+        "message:assistant-2:part:0",
+        "message:assistant-2:part:1"
+      ],
+      "status": "retained"
+    }
+  ],
+  "actions": [
+    {
+      "id": "action:message:user-1:prompt",
+      "stateId": "state:initial:message:assistant-1:part:2",
+      "phaseId": "phase:state:initial:message:assistant-1:part:2",
+      "behavior": "plan",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:user-1:prompt"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:0",
+      "stateId": "state:initial:message:assistant-1:part:2",
+      "phaseId": "phase:state:initial:message:assistant-1:part:2",
+      "behavior": "plan",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:0"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:1",
+      "stateId": "state:initial:message:assistant-1:part:2",
+      "phaseId": "phase:state:initial:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:1"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:2",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "edit",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:2"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:3",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "verify",
+      "actorId": "main",
+      "outcome": "error",
+      "eventIds": [
+        "message:assistant-1:part:3"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:4",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "verify",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:4"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:5",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:5"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:6",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "task:launch-reviewer",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:6"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:7",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:7"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:8",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:8"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:9",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:9"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:10",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:10"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:11",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:11"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:12",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:12"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:13",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:13"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:14",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:14"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:15",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:15"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:16",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:16"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:17",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:17"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:18",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:18"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:19",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:19"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:20",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:20"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:21",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:21"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:22",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:22"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:23",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:23"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:24",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:24"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:25",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:25"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:26",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:26"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:27",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:27"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:28",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:28"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:29",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:29"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:30",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:30"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:31",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:31"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:32",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:32"
+      ]
+    },
+    {
+      "id": "action:message:assistant-1:part:33",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-1:part:33"
+      ]
+    },
+    {
+      "id": "action:message:user-2:prompt",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "plan",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:user-2:prompt"
+      ]
+    },
+    {
+      "id": "action:message:assistant-2:part:0",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "plan",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-2:part:0"
+      ]
+    },
+    {
+      "id": "action:message:assistant-2:part:1",
+      "stateId": "state:message:assistant-1:part:2",
+      "phaseId": "phase:state:message:assistant-1:part:2",
+      "behavior": "explore",
+      "actorId": "main",
+      "outcome": "success",
+      "eventIds": [
+        "message:assistant-2:part:1"
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "sourceStateId": "state:initial:message:assistant-1:part:2",
+      "targetStateId": "state:message:assistant-1:part:2",
+      "actionId": "action:message:assistant-1:part:2",
+      "changes": [
+        {
+          "component": "src/orders.ts",
+          "before": "orders-before",
+          "after": "orders-after",
+          "basis": "hash",
+          "eventIds": [
+            "message:assistant-1:part:2"
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "sourceActionId": "action:message:user-1:prompt",
+      "targetActionId": "action:message:assistant-1:part:0",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:user-1:prompt",
+        "message:assistant-1:part:0"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:0",
+      "targetActionId": "action:message:assistant-1:part:1",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:0",
+        "message:assistant-1:part:1"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:1",
+      "targetActionId": "action:message:assistant-1:part:2",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:1",
+        "message:assistant-1:part:2"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:2",
+      "targetActionId": "action:message:assistant-1:part:3",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:2",
+        "message:assistant-1:part:3"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:3",
+      "targetActionId": "action:message:assistant-1:part:4",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:3",
+        "message:assistant-1:part:4"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:4",
+      "targetActionId": "action:message:assistant-1:part:5",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:4",
+        "message:assistant-1:part:5"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:5",
+      "targetActionId": "action:message:assistant-1:part:6",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:5",
+        "message:assistant-1:part:6"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:6",
+      "targetActionId": "action:message:assistant-1:part:7",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:6",
+        "message:assistant-1:part:7"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:7",
+      "targetActionId": "action:message:assistant-1:part:8",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:7",
+        "message:assistant-1:part:8"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:8",
+      "targetActionId": "action:message:assistant-1:part:9",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:8",
+        "message:assistant-1:part:9"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:9",
+      "targetActionId": "action:message:assistant-1:part:10",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:9",
+        "message:assistant-1:part:10"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:10",
+      "targetActionId": "action:message:assistant-1:part:11",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:10",
+        "message:assistant-1:part:11"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:11",
+      "targetActionId": "action:message:assistant-1:part:12",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:11",
+        "message:assistant-1:part:12"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:12",
+      "targetActionId": "action:message:assistant-1:part:13",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:12",
+        "message:assistant-1:part:13"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:13",
+      "targetActionId": "action:message:assistant-1:part:14",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:13",
+        "message:assistant-1:part:14"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:14",
+      "targetActionId": "action:message:assistant-1:part:15",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:14",
+        "message:assistant-1:part:15"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:15",
+      "targetActionId": "action:message:assistant-1:part:16",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:15",
+        "message:assistant-1:part:16"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:16",
+      "targetActionId": "action:message:assistant-1:part:17",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:16",
+        "message:assistant-1:part:17"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:17",
+      "targetActionId": "action:message:assistant-1:part:18",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:17",
+        "message:assistant-1:part:18"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:18",
+      "targetActionId": "action:message:assistant-1:part:19",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:18",
+        "message:assistant-1:part:19"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:19",
+      "targetActionId": "action:message:assistant-1:part:20",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:19",
+        "message:assistant-1:part:20"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:20",
+      "targetActionId": "action:message:assistant-1:part:21",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:20",
+        "message:assistant-1:part:21"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:21",
+      "targetActionId": "action:message:assistant-1:part:22",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:21",
+        "message:assistant-1:part:22"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:22",
+      "targetActionId": "action:message:assistant-1:part:23",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:22",
+        "message:assistant-1:part:23"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:23",
+      "targetActionId": "action:message:assistant-1:part:24",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:23",
+        "message:assistant-1:part:24"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:24",
+      "targetActionId": "action:message:assistant-1:part:25",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:24",
+        "message:assistant-1:part:25"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:25",
+      "targetActionId": "action:message:assistant-1:part:26",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:25",
+        "message:assistant-1:part:26"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:26",
+      "targetActionId": "action:message:assistant-1:part:27",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:26",
+        "message:assistant-1:part:27"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:27",
+      "targetActionId": "action:message:assistant-1:part:28",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:27",
+        "message:assistant-1:part:28"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:28",
+      "targetActionId": "action:message:assistant-1:part:29",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:28",
+        "message:assistant-1:part:29"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:29",
+      "targetActionId": "action:message:assistant-1:part:30",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:29",
+        "message:assistant-1:part:30"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:30",
+      "targetActionId": "action:message:assistant-1:part:31",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:30",
+        "message:assistant-1:part:31"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:31",
+      "targetActionId": "action:message:assistant-1:part:32",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:31",
+        "message:assistant-1:part:32"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:32",
+      "targetActionId": "action:message:assistant-1:part:33",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:32",
+        "message:assistant-1:part:33"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:33",
+      "targetActionId": "action:message:user-2:prompt",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-1:part:33",
+        "message:user-2:prompt"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:user-2:prompt",
+      "targetActionId": "action:message:assistant-2:part:0",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:user-2:prompt",
+        "message:assistant-2:part:0"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-2:part:0",
+      "targetActionId": "action:message:assistant-2:part:1",
+      "kind": "sequence",
+      "evidence": "observed_sequence",
+      "eventIds": [
+        "message:assistant-2:part:0",
+        "message:assistant-2:part:1"
+      ]
+    },
+    {
+      "sourceActionId": "action:message:assistant-1:part:3",
+      "targetActionId": "action:message:assistant-1:part:4",
+      "kind": "informs",
+      "evidence": "retry_of",
+      "eventIds": [
+        "message:assistant-1:part:3",
+        "message:assistant-1:part:4"
+      ]
+    }
+  ],
+  "annotations": [],
+  "timeline": [
+    {
+      "id": "message:user-1:prompt",
+      "seq": 0,
+      "kind": "prompt",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:user-1:prompt:0"
+      ],
+      "command": "Fix the orders API and verify the result.",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:0",
+      "seq": 1,
+      "kind": "response",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:0:0"
+      ],
+      "command": "I will inspect the route and delegate a focused review.",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:1",
+      "seq": 2,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:1:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders.ts",
+      "paths": [
+        "src/orders.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:2",
+      "seq": 3,
+      "kind": "edit",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:2:0"
+      ],
+      "title": "write_file",
+      "command": "src/orders.ts",
+      "paths": [
+        "src/orders.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:3",
+      "seq": 4,
+      "kind": "verify",
+      "status": "error",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:3:0"
+      ],
+      "title": "bash",
+      "command": "pnpm test orders",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:4",
+      "seq": 5,
+      "kind": "verify",
+      "status": "success",
+      "agentId": "main",
+      "retryOf": "message:assistant-1:part:3",
+      "sourceIds": [
+        "source:message:assistant-1:part:4:0"
+      ],
+      "title": "bash",
+      "command": "pnpm test orders",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:5",
+      "seq": 6,
+      "kind": "subagent",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:5:0"
+      ],
+      "title": "agent",
+      "command": "Review the orders change",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:6",
+      "seq": 7,
+      "kind": "task",
+      "status": "success",
+      "agentId": "task:launch-reviewer",
+      "sourceIds": [
+        "source:message:assistant-1:part:6:0"
+      ],
+      "title": "Focused orders review",
+      "command": "The retry covers the original failure.",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:7",
+      "seq": 8,
+      "kind": "compaction",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:7:0"
+      ],
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:8",
+      "seq": 9,
+      "kind": "artifact",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:8:0"
+      ],
+      "title": "report_artifacts",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:9",
+      "seq": 10,
+      "kind": "mcp",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:9:0"
+      ],
+      "title": "mcp__github__search_issues",
+      "command": "orders",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-1:part:10",
+      "seq": 11,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:10:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-01.ts",
+      "paths": [
+        "src/orders/support-01.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:11",
+      "seq": 12,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:11:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-02.ts",
+      "paths": [
+        "src/orders/support-02.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:12",
+      "seq": 13,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:12:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-03.ts",
+      "paths": [
+        "src/orders/support-03.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:13",
+      "seq": 14,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:13:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-04.ts",
+      "paths": [
+        "src/orders/support-04.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:14",
+      "seq": 15,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:14:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-05.ts",
+      "paths": [
+        "src/orders/support-05.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:15",
+      "seq": 16,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:15:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-06.ts",
+      "paths": [
+        "src/orders/support-06.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:16",
+      "seq": 17,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:16:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-07.ts",
+      "paths": [
+        "src/orders/support-07.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:17",
+      "seq": 18,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:17:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-08.ts",
+      "paths": [
+        "src/orders/support-08.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:18",
+      "seq": 19,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:18:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-09.ts",
+      "paths": [
+        "src/orders/support-09.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:19",
+      "seq": 20,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:19:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-10.ts",
+      "paths": [
+        "src/orders/support-10.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:20",
+      "seq": 21,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:20:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-11.ts",
+      "paths": [
+        "src/orders/support-11.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:21",
+      "seq": 22,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:21:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-12.ts",
+      "paths": [
+        "src/orders/support-12.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:22",
+      "seq": 23,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:22:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-13.ts",
+      "paths": [
+        "src/orders/support-13.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:23",
+      "seq": 24,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:23:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-14.ts",
+      "paths": [
+        "src/orders/support-14.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:24",
+      "seq": 25,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:24:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-15.ts",
+      "paths": [
+        "src/orders/support-15.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:25",
+      "seq": 26,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:25:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-16.ts",
+      "paths": [
+        "src/orders/support-16.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:26",
+      "seq": 27,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:26:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-17.ts",
+      "paths": [
+        "src/orders/support-17.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:27",
+      "seq": 28,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:27:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-18.ts",
+      "paths": [
+        "src/orders/support-18.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:28",
+      "seq": 29,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:28:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-19.ts",
+      "paths": [
+        "src/orders/support-19.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:29",
+      "seq": 30,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:29:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-20.ts",
+      "paths": [
+        "src/orders/support-20.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:30",
+      "seq": 31,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:30:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-21.ts",
+      "paths": [
+        "src/orders/support-21.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:31",
+      "seq": 32,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:31:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-22.ts",
+      "paths": [
+        "src/orders/support-22.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:32",
+      "seq": 33,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:32:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-23.ts",
+      "paths": [
+        "src/orders/support-23.ts"
+      ]
+    },
+    {
+      "id": "message:assistant-1:part:33",
+      "seq": 34,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-1:part:33:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/support-24.ts",
+      "paths": [
+        "src/orders/support-24.ts"
+      ]
+    },
+    {
+      "id": "message:user-2:prompt",
+      "seq": 35,
+      "kind": "prompt",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:user-2:prompt:0"
+      ],
+      "command": "Check the remaining deferred evidence.",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-2:part:0",
+      "seq": 36,
+      "kind": "response",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-2:part:0:0"
+      ],
+      "command": "The remaining evidence is deferred and must load only on demand.",
+      "paths": []
+    },
+    {
+      "id": "message:assistant-2:part:1",
+      "seq": 37,
+      "kind": "read",
+      "status": "success",
+      "agentId": "main",
+      "sourceIds": [
+        "source:message:assistant-2:part:1:0"
+      ],
+      "title": "read_file",
+      "command": "src/orders/deferred.ts",
+      "paths": [
+        "src/orders/deferred.ts"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source:message:user-1:prompt:0",
+      "eventId": "message:user-1:prompt",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "user-1",
+        "partIndex": 0
+      },
+      "value": {
+        "text": "Fix the orders API and verify the result.",
+        "type": "text"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:0:0",
+      "eventId": "message:assistant-1:part:0",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 0
+      },
+      "value": {
+        "text": "I will inspect the route and delegate a focused review.",
+        "type": "text"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:1:0",
+      "eventId": "message:assistant-1:part:1",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 1
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders.ts"
+        },
+        "output": "export const orders = true",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 1100,
+            "startedAt": 1000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-orders",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:2:0",
+      "eventId": "message:assistant-1:part:2",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 2
+      },
+      "value": {
+        "input": {
+          "content": "export const orders = false",
+          "file_path": "src/orders.ts"
+        },
+        "output": {
+          "afterHash": "orders-after",
+          "beforeHash": "orders-before",
+          "path": "src/orders.ts"
+        },
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 1400,
+            "startedAt": 1200
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "edit-orders",
+        "toolName": "write_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:3:0",
+      "eventId": "message:assistant-1:part:3",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 3
+      },
+      "value": {
+        "callProviderMetadata": {
+          "cherry": {
+            "startedAt": 1500
+          }
+        },
+        "errorText": "exit 1",
+        "input": {
+          "command": "pnpm test orders"
+        },
+        "resultProviderMetadata": {
+          "cherry": {
+            "completedAt": 2000
+          }
+        },
+        "state": "output-error",
+        "toolCallId": "test-orders-failed",
+        "toolName": "bash",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:4:0",
+      "eventId": "message:assistant-1:part:4",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 4
+      },
+      "value": {
+        "input": {
+          "command": "pnpm test orders"
+        },
+        "output": "24 tests passed",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 2600,
+            "startedAt": 2100
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "test-orders-retry",
+        "toolName": "bash",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:5:0",
+      "eventId": "message:assistant-1:part:5",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 5
+      },
+      "value": {
+        "input": {
+          "description": "Review the orders change"
+        },
+        "output": {
+          "taskId": "review-1"
+        },
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 2800,
+            "startedAt": 2700
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "launch-reviewer",
+        "toolName": "agent",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:6:0",
+      "eventId": "message:assistant-1:part:6",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 6
+      },
+      "value": {
+        "data": {
+          "completedAt": 3500,
+          "event": "notification",
+          "startedAt": 2800,
+          "status": "completed",
+          "subagentType": "reviewer",
+          "summary": "The retry covers the original failure.",
+          "taskId": "review-1",
+          "title": "Focused orders review",
+          "toolUseId": "launch-reviewer",
+          "usage": {
+            "durationMs": 700,
+            "toolUses": 2,
+            "totalTokens": 600
+          }
+        },
+        "type": "data-agent-task-event"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:7:0",
+      "eventId": "message:assistant-1:part:7",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 7
+      },
+      "value": {
+        "data": {
+          "completedAt": "2026-10-28T10:00:03.800Z",
+          "phase": "agent-session",
+          "postTokens": 20000,
+          "preTokens": 100000,
+          "startedAt": "2026-10-28T10:00:03.600Z",
+          "status": "done"
+        },
+        "type": "data-compaction-anchor"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:8:0",
+      "eventId": "message:assistant-1:part:8",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 8
+      },
+      "value": {
+        "input": {
+          "summary": "Orders API fixed"
+        },
+        "output": [
+          {
+            "kind": "document",
+            "name": "orders-report.md",
+            "path": "artifacts/orders-report.md"
+          }
+        ],
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 3900,
+            "startedAt": 3800
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "report-orders",
+        "toolName": "report_artifacts",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:9:0",
+      "eventId": "message:assistant-1:part:9",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 9
+      },
+      "value": {
+        "input": {
+          "query": "orders",
+          "repo": "aster"
+        },
+        "output": {
+          "items": []
+        },
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4200,
+            "startedAt": 4000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "mcp-issues",
+        "toolName": "mcp__github__search_issues",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:10:0",
+      "eventId": "message:assistant-1:part:10",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 10
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-01.ts"
+        },
+        "output": "contents of src/orders/support-01.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4050,
+            "startedAt": 4000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-1",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:11:0",
+      "eventId": "message:assistant-1:part:11",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 11
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-02.ts"
+        },
+        "output": "contents of src/orders/support-02.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4150,
+            "startedAt": 4100
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-2",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:12:0",
+      "eventId": "message:assistant-1:part:12",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 12
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-03.ts"
+        },
+        "output": "contents of src/orders/support-03.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4250,
+            "startedAt": 4200
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-3",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:13:0",
+      "eventId": "message:assistant-1:part:13",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 13
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-04.ts"
+        },
+        "output": "contents of src/orders/support-04.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4350,
+            "startedAt": 4300
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-4",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:14:0",
+      "eventId": "message:assistant-1:part:14",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 14
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-05.ts"
+        },
+        "output": "contents of src/orders/support-05.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4450,
+            "startedAt": 4400
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-5",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:15:0",
+      "eventId": "message:assistant-1:part:15",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 15
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-06.ts"
+        },
+        "output": "contents of src/orders/support-06.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4550,
+            "startedAt": 4500
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-6",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:16:0",
+      "eventId": "message:assistant-1:part:16",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 16
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-07.ts"
+        },
+        "output": "contents of src/orders/support-07.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4650,
+            "startedAt": 4600
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-7",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:17:0",
+      "eventId": "message:assistant-1:part:17",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 17
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-08.ts"
+        },
+        "output": "contents of src/orders/support-08.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4750,
+            "startedAt": 4700
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-8",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:18:0",
+      "eventId": "message:assistant-1:part:18",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 18
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-09.ts"
+        },
+        "output": "contents of src/orders/support-09.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4850,
+            "startedAt": 4800
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-9",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:19:0",
+      "eventId": "message:assistant-1:part:19",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 19
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-10.ts"
+        },
+        "output": "contents of src/orders/support-10.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 4950,
+            "startedAt": 4900
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-10",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:20:0",
+      "eventId": "message:assistant-1:part:20",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 20
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-11.ts"
+        },
+        "output": "contents of src/orders/support-11.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5050,
+            "startedAt": 5000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-11",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:21:0",
+      "eventId": "message:assistant-1:part:21",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 21
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-12.ts"
+        },
+        "output": "contents of src/orders/support-12.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5150,
+            "startedAt": 5100
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-12",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:22:0",
+      "eventId": "message:assistant-1:part:22",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 22
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-13.ts"
+        },
+        "output": "contents of src/orders/support-13.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5250,
+            "startedAt": 5200
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-13",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:23:0",
+      "eventId": "message:assistant-1:part:23",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 23
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-14.ts"
+        },
+        "output": "contents of src/orders/support-14.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5350,
+            "startedAt": 5300
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-14",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:24:0",
+      "eventId": "message:assistant-1:part:24",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 24
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-15.ts"
+        },
+        "output": "contents of src/orders/support-15.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5450,
+            "startedAt": 5400
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-15",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:25:0",
+      "eventId": "message:assistant-1:part:25",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 25
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-16.ts"
+        },
+        "output": "contents of src/orders/support-16.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5550,
+            "startedAt": 5500
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-16",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:26:0",
+      "eventId": "message:assistant-1:part:26",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 26
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-17.ts"
+        },
+        "output": "contents of src/orders/support-17.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5650,
+            "startedAt": 5600
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-17",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:27:0",
+      "eventId": "message:assistant-1:part:27",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 27
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-18.ts"
+        },
+        "output": "contents of src/orders/support-18.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5750,
+            "startedAt": 5700
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-18",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:28:0",
+      "eventId": "message:assistant-1:part:28",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 28
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-19.ts"
+        },
+        "output": "contents of src/orders/support-19.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5850,
+            "startedAt": 5800
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-19",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:29:0",
+      "eventId": "message:assistant-1:part:29",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 29
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-20.ts"
+        },
+        "output": "contents of src/orders/support-20.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 5950,
+            "startedAt": 5900
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-20",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:30:0",
+      "eventId": "message:assistant-1:part:30",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 30
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-21.ts"
+        },
+        "output": "contents of src/orders/support-21.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 6050,
+            "startedAt": 6000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-21",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:31:0",
+      "eventId": "message:assistant-1:part:31",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 31
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-22.ts"
+        },
+        "output": "contents of src/orders/support-22.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 6150,
+            "startedAt": 6100
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-22",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:32:0",
+      "eventId": "message:assistant-1:part:32",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 32
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-23.ts"
+        },
+        "output": "contents of src/orders/support-23.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 6250,
+            "startedAt": 6200
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-23",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:assistant-1:part:33:0",
+      "eventId": "message:assistant-1:part:33",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-1",
+        "partIndex": 33
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/support-24.ts"
+        },
+        "output": "contents of src/orders/support-24.ts",
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 6350,
+            "startedAt": 6300
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-support-24",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    },
+    {
+      "id": "source:message:user-2:prompt:0",
+      "eventId": "message:user-2:prompt",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "user-2",
+        "partIndex": 0
+      },
+      "value": {
+        "text": "Check the remaining deferred evidence.",
+        "type": "text"
+      }
+    },
+    {
+      "id": "source:message:assistant-2:part:0:0",
+      "eventId": "message:assistant-2:part:0",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-2",
+        "partIndex": 0
+      },
+      "value": {
+        "text": "The remaining evidence is deferred and must load only on demand.",
+        "type": "text"
+      }
+    },
+    {
+      "id": "source:message:assistant-2:part:1:0",
+      "eventId": "message:assistant-2:part:1",
+      "ref": {
+        "kind": "message_part",
+        "sessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+        "messageId": "assistant-2",
+        "partIndex": 1
+      },
+      "value": {
+        "input": {
+          "file_path": "src/orders/deferred.ts"
+        },
+        "output": {
+          "$deferredToolResult": {
+            "messageId": "assistant-2",
+            "toolCallId": "read-deferred",
+            "topicId": "session-1"
+          },
+          "excerpt": {
+            "head": "first lines",
+            "tail": "last lines",
+            "totalChars": 12000,
+            "totalLines": 400
+          }
+        },
+        "providerMetadata": {
+          "cherry": {
+            "completedAt": 7100,
+            "startedAt": 7000
+          }
+        },
+        "state": "output-available",
+        "toolCallId": "read-deferred",
+        "toolName": "read_file",
+        "type": "dynamic-tool"
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 工作 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 资料 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 设置 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 新建任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 搜索任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 工作导航 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 连接器 of group 工作导航 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 技能 of group 工作导航 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 自动化 of group 工作导航 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 项目 of group 1 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 项目 of UI element 项目 of group 1 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 查看全部项目 of group 1 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 新建项目 of group 1 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button Aster of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 查看项目 Wiki：Aster of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 在项目中新建任务 of group 项目 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 任务 of group 1 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 任务 of UI element 任务 of group 1 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 查看全部最近任务 of group 1 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 今天 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 今天 of UI element 今天 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 新任务 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 刚刚 of group 1 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 查看任务 Wiki：新任务 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 重命名 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+checkbox 置顶 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 归档 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 1 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button Analysis journey of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 6小时前 of group 1 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 查看任务 Wiki：Analysis journey of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 重命名 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+checkbox 置顶 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 归档 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 2 of group 今天 of group 任务 of group 1 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+checkbox 收起侧边栏 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element Aster of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+text area 描述任务，输入 / 使用指令或技能，@ 选择工作区文件 of group 1 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of text area 描述任务，输入 / 使用指令或技能，@ 选择工作区文件 of group 1 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 描述任务，输入 / 使用指令或技能，@ 选择工作区文件 of group 1 of text area 描述任务，输入 / 使用指令或技能，@ 选择工作区文件 of group 1 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 更多选项 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 授权模式: 完全访问 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 直接截图 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 截图选项 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 优化提示词 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 选择模型 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 发送 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 2 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+toolbar 任务范围 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+pop up button 任务范围: 选择项目 · 当前目录 of toolbar 任务范围 of group 2 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 3 of group 2 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 3 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 4 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio

@@ -1,0 +1,26 @@
+{
+  "task": "Analysis journey",
+  "events": 20000,
+  "nativeSteps": 100,
+  "selectedStep": 101,
+  "requestAssertionOwner": "WorkspaceAnalysisPage.test.tsx and workspaceAnalysisPlayback.test.ts",
+  "widths": [
+    {
+      "requested": 1440,
+      "actual": "1440, 900"
+    },
+    {
+      "requested": 1024,
+      "actual": "1024, 900"
+    },
+    {
+      "requested": 768,
+      "actual": "960, 900"
+    },
+    {
+      "requested": 320,
+      "actual": "960, 900"
+    }
+  ],
+  "pointerInput": false
+}

@@ -1,0 +1,1 @@
+Discarded failed directory-navigation attempt. It is not acceptance evidence and makes no behavioral claim. The final export uses the host's actual target/ save behavior and is reopened in t040-export-check.log.

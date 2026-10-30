@@ -1,0 +1,13 @@
+{
+  "task": "T037 camera acceptance",
+  "acceptedAlternative": "headless Chromium camera journey",
+  "userConfirmedContinuation": true,
+  "browserTest": "tests/e2e/knowledge/workspace-analysis.spec.ts",
+  "browserLog": "work/agent-execution-understanding/t039-browser.log",
+  "browserCamera": true,
+  "filterPreservesCamera": true,
+  "mountedReducedMotion": true,
+  "nativeCamera": false,
+  "nativePointerInput": false,
+  "note": "The native pointer camera remains unexecuted and is not claimed as passed."
+}

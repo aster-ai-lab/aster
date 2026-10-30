@@ -1,0 +1,32 @@
+{
+  "model": "moonshot::kimi-k2.5",
+  "sourceSessionId": "01a186a4-eee0-71c8-806b-f09a78a3e2f1",
+  "sourceMessageCountBefore": 4,
+  "sourceMessageCountAfter": 4,
+  "internalSessionId": "01a1880d-2eb2-739f-aec2-0c5e2a7c5f40",
+  "internalMessageCount": 2,
+  "annotation": {
+    "id": "failed-bash-test-orders",
+    "targetType": "action",
+    "targetId": "action:message:assistant-1:part:3",
+    "provenance": "model_inferred",
+    "sourceRevision": "run-76882c5e",
+    "move": "open",
+    "takeaway": "The bash tool call 'pnpm test orders' failed with state 'output-error' and errorText 'exit 1'; no stdout, stderr, or failing test names were captured, so the cause of the test suite failure is undetermined and the run cannot be considered verified.",
+    "reason": "Rerun the command and capture the full output before treating the tests as failing or passing, e.g. run 'pnpm test orders 2>&1 | tail -100' or add '--reporter=verbose' to identify the specific failing test file and assertion; if the failure is expected/unrelated to the change under review, record that justification explicitly.",
+    "evidenceEventIds": [
+      "message:assistant-1:part:3"
+    ],
+    "quotes": [
+      {
+        "eventId": "message:assistant-1:part:3",
+        "text": "pnpm test orders"
+      }
+    ]
+  },
+  "evidenceSelection": {
+    "eventId": "message:assistant-1:part:3",
+    "expectedText": "bash",
+    "reached": true
+  }
+}

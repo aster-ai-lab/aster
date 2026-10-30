@@ -1,0 +1,5 @@
+text field 1 of splitter group 1 of window Open of application process Studio
+static text analysis-trajectory-01a186a4-eee0-71c8-806b-f09a78a3e2f1.json of splitter group 1 of window Open of application process Studio
+button New Folder of splitter group 1 of window Open of application process Studio
+button Cancel of splitter group 1 of window Open of application process Studio
+button Open of splitter group 1 of window Open of application process Studio

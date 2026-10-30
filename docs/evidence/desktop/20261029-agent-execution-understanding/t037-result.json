@@ -1,0 +1,25 @@
+{
+  "pid": 83332,
+  "task": "Analysis journey",
+  "resources": [
+    "files",
+    "shell",
+    "mcp",
+    "models",
+    "outputs",
+    "subagents",
+    "errors"
+  ],
+  "positionBeforeFilter": "735, 279\n",
+  "positionAfterFilter": "735, 279\n",
+  "camera": {
+    "native": false,
+    "input": "not-run",
+    "reason": "OS pointer input is forbidden by the owner; xyflow keyboard zoom is unavailable. Browser camera evidence is recorded separately.",
+    "pointerInput": false
+  },
+  "errorResource": "bash",
+  "retry": "bash #6",
+  "deferredOriginal": "read-deferred",
+  "deferredMiss": true
+}

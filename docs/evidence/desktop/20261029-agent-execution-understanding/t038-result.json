@@ -1,0 +1,12 @@
+{
+  "task": "Analysis journey",
+  "sharedEvent": "write_file #4",
+  "states": 2,
+  "timelineEvents": 38,
+  "sourceRecords": 38,
+  "evidenceStatus": "partial",
+  "exportedPath": "/Users/roylin/code/aster/docs/evidence/desktop/20261029-agent-execution-understanding/analysis-trajectory-01a186a4-eee0-71c8-806b-f09a78a3e2f1.json",
+  "rawSourceMatchesFixture": true,
+  "cancelReportedSuccess": false,
+  "savedFeedback": true
+}

@@ -1,0 +1,17 @@
+scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 分析 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 分析 of group 分析 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 状态图 of group 分析 of group 分析 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 状态图 of group 分析 of group 分析 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 1 of group 状态图 of group 分析 of group 分析 of group Analysis journey of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+UI element 确认原始证据范围 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 确认原始证据范围 of UI element 确认原始证据范围 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+group 1 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+static text 包含已加载的原始消息、工具输入输出和 Trace 记录。不可用证据会明确标记，不会替换为空输出。 of group 1 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 取消 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
+button 包含原始证据并导出 of group 确认原始证据范围 of group 1 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1 of window Aster of application process Studio
