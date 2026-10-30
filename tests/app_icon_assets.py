@@ -9,9 +9,11 @@ rasteriser or a node install: `--check` reads what is on disk.
 from __future__ import annotations
 
 import json
+import runpy
 import subprocess
 import sys
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +35,20 @@ def run(script: str, *arguments: str) -> subprocess.CompletedProcess[str]:
 
 
 class IconSources(unittest.TestCase):
+    def test_generator_uses_the_approved_graphite_palette(self) -> None:
+        generated = runpy.run_path(str(SCRIPTS / "app-icon.py"))["TARGETS"]
+        for name, source in generated.items():
+            colors = [
+                value
+                for element in ET.fromstring(source).iter()
+                for value in element.attrib.values()
+                if value.startswith("#") and len(value) == 7
+            ]
+            self.assertTrue(colors, name)
+            for color in colors:
+                self.assertEqual(color[1:3], color[3:5], (name, color))
+                self.assertEqual(color[3:5], color[5:7], (name, color))
+
     def test_svgs_match_the_generator(self) -> None:
         result = run("app-icon.py", "--check")
         self.assertEqual(result.returncode, 0, result.stderr)

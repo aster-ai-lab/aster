@@ -1,0 +1,16 @@
+{
+  "model": "codex/gpt-6.1-sol",
+  "reasoningEffort": "medium",
+  "turnTimeoutSeconds": 180,
+  "prompt": "请根据以下材料写出一篇可直接粘贴到 Word 的完整中文经营报告正文，并附项目进展表、资源安排表两张表。请只在聊天中输出，不调用工具，不读取或写入文件。以“经营概况”“项目进展”“资源情况”“后续安排”为小标题，完整使用材料，未提供的信息标为“未提供”，不编造原因或结果。正文最后一行写【WORD正文结束】。\n材料：星桥办公，报告期为2026年第三季度。甲项目已交付，负责人李明，计划预算12万元，实际支出未提供；乙项目进行中，负责人王芳，计划预算8万元，实际支出未提供。资源安排：甲项目3人，乙项目2人。后续安排：继续推进乙项目并核实实际支出。",
+  "requiredHeadings": [
+    "经营概况",
+    "项目进展",
+    "资源情况",
+    "后续安排"
+  ],
+  "requiredEndMarker": "【WORD正文结束】",
+  "requiredTables": 2,
+  "allowedModelToolCalls": 0,
+  "nativeBinary": "/Applications/Aster.app/Contents/Resources/agent/a3s-code-acp"
+}
