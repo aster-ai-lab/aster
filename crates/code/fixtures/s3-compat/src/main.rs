@@ -1,8 +1,7 @@
 //! Local S3-compatible endpoint for hermetic workspace qualification.
 //!
-//! Official MinIO container images are no longer published. This process is
-//! the S3 API stand-in the release gate needs: path-style, static credentials,
-//! and a pre-created bucket. It is not a product dependency.
+//! This process is the S3 API stand-in the release gate needs: path-style,
+//! static credentials, and a pre-created bucket. It is not a product dependency.
 
 use s3s::auth::SimpleAuth;
 use s3s::service::S3ServiceBuilder;

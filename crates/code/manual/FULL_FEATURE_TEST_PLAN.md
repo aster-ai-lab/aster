@@ -288,7 +288,7 @@ oracles only.
 **Not in default Layer C (explicit release checklist when shipping):**
 
 - `headless-search` / Moli packaging soak
-- `s3` / MinIO hermetic-integrations (prefer L3/L6 hermetic)
+- `s3` hermetic-integrations (prefer L3/L6 hermetic)
 - Harbor TB-QUAL1, DM-PROD1, CAR-01…05 (L7)
 
 ### 4.4 Soak (`S-*`)

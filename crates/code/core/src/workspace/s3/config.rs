@@ -34,9 +34,9 @@ pub const DEFAULT_SEARCH_CONCURRENCY: usize = 8;
 /// Configuration for an [`super::S3WorkspaceBackend`].
 ///
 /// `endpoint` is optional: omit it to use the AWS default. Set it to point at
-/// MinIO, RustFS, R2, or any other S3-compatible service. A custom endpoint
-/// also disables the SDK's default flexible checksums, which are an AWS
-/// extension and are not part of the S3 API those servers implement.
+/// RustFS, R2, or any other S3-compatible service. A custom endpoint also
+/// disables the SDK's default flexible checksums, which are an AWS extension
+/// and are not part of the S3 API those servers implement.
 ///
 /// `prefix` is the logical workspace root inside the bucket — every workspace
 /// path becomes `<prefix>/<path>` when sent to S3. An empty prefix means the
@@ -50,7 +50,7 @@ pub struct S3BackendConfig {
     pub session_token: Option<String>,
     pub bucket: String,
     pub prefix: String,
-    /// `true` for MinIO / RustFS / most non-AWS endpoints, `false` for AWS S3.
+    /// `true` for RustFS and most non-AWS endpoints, `false` for AWS S3.
     pub force_path_style: bool,
     /// Per-operation request timeout. Defaults to 30 seconds. Independent of
     /// the workspace-level `operation_timeout` set on

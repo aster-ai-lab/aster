@@ -1,7 +1,7 @@
 //! S3-compatible object-storage workspace backend.
 //!
 //! [`S3WorkspaceBackend`] implements [`WorkspaceFileSystem`] against any
-//! S3-compatible endpoint (AWS S3, MinIO, Cloudflare R2, Backblaze B2, ...)
+//! S3-compatible endpoint (AWS S3, RustFS, Cloudflare R2, Backblaze B2, ...)
 //! using the AWS Rust SDK. The backend deliberately does **not** implement
 //! [`WorkspaceCommandRunner`], [`WorkspaceSearch`], or any of the git
 //! provider traits — object storage cannot natively service those operations,

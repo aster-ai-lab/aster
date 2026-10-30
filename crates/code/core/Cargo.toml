@@ -263,7 +263,7 @@ telemetry = [
 ]
 # Enable the S3-compatible workspace backend (`S3WorkspaceBackend`).
 # Brings in the AWS Rust SDK and is safe to point at any S3-compatible
-# endpoint (AWS S3, MinIO, RustFS, Cloudflare R2, ...).
+# endpoint (AWS S3, RustFS, Cloudflare R2, ...).
 s3 = [
     "dep:aws-sdk-s3",
     "dep:aws-credential-types",

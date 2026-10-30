@@ -75,7 +75,7 @@ fn strip_file_name_rejects_nested_keys() {
 #[test]
 fn config_builder_sets_fields() {
     let cfg = S3BackendConfig::new("bucket", "prefix", "AK", "SK")
-        .endpoint("https://minio.local:9000")
+        .endpoint("https://s3.local:9000")
         .region("cn-east-1")
         .session_token("TOKEN")
         .force_path_style(true)
@@ -83,7 +83,7 @@ fn config_builder_sets_fields() {
         .max_read_bytes(4096);
     assert_eq!(cfg.bucket, "bucket");
     assert_eq!(cfg.prefix, "prefix");
-    assert_eq!(cfg.endpoint.as_deref(), Some("https://minio.local:9000"));
+    assert_eq!(cfg.endpoint.as_deref(), Some("https://s3.local:9000"));
     assert_eq!(cfg.region.as_deref(), Some("cn-east-1"));
     assert_eq!(cfg.session_token.as_deref(), Some("TOKEN"));
     assert!(cfg.force_path_style);
