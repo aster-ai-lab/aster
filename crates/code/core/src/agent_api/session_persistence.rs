@@ -116,7 +116,7 @@ pub(crate) struct SessionPersistenceContext {
     /// Session-static or resume-seed fallback. The current projected
     /// Knowledge value, when present, is sampled from `capability_catalog` at
     /// the save boundary instead of being captured before Run admission.
-    cognitive_package_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+    package_binding: Option<crate::package_context::PackageBindingV1>,
     immutable_content_adapter_binding: Option<crate::tools::ImmutableContentAdapterBindingV1>,
     tool_result_transform_policy: crate::tools::ToolResultTransformPolicyV1,
     fact_log: Arc<std::sync::Mutex<Option<Arc<a3s_effect::FileLog>>>>,
@@ -149,8 +149,8 @@ impl SessionPersistenceContext {
                 .and_then(|memory| memory.durable_memory())
                 .map(crate::durable_memory::DurableMemorySession::binding),
             capability_catalog: Some(Arc::clone(&session.capability_catalog)),
-            cognitive_package_binding: session
-                .cognitive_context
+            package_binding: session
+                .package_context
                 .as_ref()
                 .map(|context| context.binding().clone()),
             immutable_content_adapter_binding: session
@@ -213,8 +213,8 @@ impl SessionPersistenceContext {
     /// the configured Session store. This ordinary Session view samples the
     /// current catalog binding that the next Run would observe.
     pub(super) async fn capture_snapshot(&self) -> Result<SessionSnapshotV1> {
-        let cognitive_package_binding = self.current_cognitive_package_binding();
-        self.capture_snapshot_with_cognitive_binding(cognitive_package_binding)
+        let package_binding = self.current_package_binding();
+        self.capture_snapshot_with_package_binding(package_binding)
             .await
     }
 
@@ -222,7 +222,7 @@ impl SessionPersistenceContext {
     ///
     /// A Session catalog may cut over while an older Run is still active. The
     /// logical checkpoint belongs to that admitted Run, so its portable
-    /// Session snapshot must retain the source Run's frozen cognitive
+    /// Session snapshot must retain the source Run's frozen package
     /// authority rather than sampling the generation visible to the next
     /// Run. `None` is also authoritative here: an unbound source Run must not
     /// acquire a newly installed Knowledge provider during recovery.
@@ -254,13 +254,13 @@ impl SessionPersistenceContext {
                 checkpoint.run_id, source_run.session_id, self.session_id
             )));
         }
-        self.capture_snapshot_with_cognitive_binding(source_run.cognitive_package_binding)
+        self.capture_snapshot_with_package_binding(source_run.package_binding)
             .await
     }
 
-    async fn capture_snapshot_with_cognitive_binding(
+    async fn capture_snapshot_with_package_binding(
         &self,
-        cognitive_package_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+        package_binding: Option<crate::package_context::PackageBindingV1>,
     ) -> Result<SessionSnapshotV1> {
         let history = read_or_recover(&self.history).clone();
         let verification_reports = read_or_recover(&self.verification_reports).clone();
@@ -276,7 +276,7 @@ impl SessionPersistenceContext {
             agent_template_id: self.agent_template_id.as_deref(),
             correlation_id: self.correlation_id.as_deref(),
             durable_memory_binding: self.durable_memory_binding.as_ref(),
-            cognitive_package_binding: cognitive_package_binding.as_ref(),
+            package_binding: package_binding.as_ref(),
             immutable_content_adapter_binding: self.immutable_content_adapter_binding.as_ref(),
             tool_result_transform_policy: &self.tool_result_transform_policy,
             seed,
@@ -305,9 +305,7 @@ impl SessionPersistenceContext {
         Ok(snapshot)
     }
 
-    fn current_cognitive_package_binding(
-        &self,
-    ) -> Option<crate::cognitive_context::CognitivePackageBindingV1> {
+    fn current_package_binding(&self) -> Option<crate::package_context::PackageBindingV1> {
         self.capability_catalog
             .as_ref()
             .and_then(|catalog| {
@@ -323,7 +321,7 @@ impl SessionPersistenceContext {
                     });
                 binding
             })
-            .or_else(|| self.cognitive_package_binding.clone())
+            .or_else(|| self.package_binding.clone())
     }
 
     pub(super) async fn auto_save_if_enabled(&self) {
@@ -512,27 +510,24 @@ pub(super) fn apply_persisted_runtime_options(
         (None, None) => {}
     }
 
-    match (
-        data.cognitive_package_binding.as_ref(),
-        opts.cognitive_context.as_ref(),
-    ) {
+    match (data.package_binding.as_ref(), opts.package_context.as_ref()) {
         (Some(persisted), Some(injected)) if injected.binding() == persisted => {}
         (Some(_), Some(_)) => {
             return Err(CodeError::SessionConfiguration {
-                field: "cognitive_context",
-                message: "resume provider binding differs from the exact cognitive package retained by the session snapshot".to_string(),
+                field: "package_context",
+                message: "resume provider binding differs from the exact package retained by the session snapshot".to_string(),
             });
         }
         (Some(_), None) => {
             return Err(CodeError::SessionConfiguration {
-                field: "cognitive_context",
-                message: "resuming a cognitive-package session requires the host to re-inject a provider for the persisted exact generation".to_string(),
+                field: "package_context",
+                message: "resuming a package session requires the host to re-inject a provider for the persisted exact generation".to_string(),
             });
         }
         (None, Some(_)) => {
             return Err(CodeError::SessionConfiguration {
-                field: "cognitive_context",
-                message: "an existing unbound session cannot acquire a cognitive package during resume; create a new bound session".to_string(),
+                field: "package_context",
+                message: "an existing unbound session cannot acquire a package during resume; create a new bound session".to_string(),
             });
         }
         (None, None) => {}
@@ -606,7 +601,7 @@ struct SessionDataSnapshotInput<'a> {
     agent_template_id: Option<&'a str>,
     correlation_id: Option<&'a str>,
     durable_memory_binding: Option<&'a crate::durable_memory::DurableMemoryBindingV1>,
-    cognitive_package_binding: Option<&'a crate::cognitive_context::CognitivePackageBindingV1>,
+    package_binding: Option<&'a crate::package_context::PackageBindingV1>,
     immutable_content_adapter_binding: Option<&'a crate::tools::ImmutableContentAdapterBindingV1>,
     tool_result_transform_policy: &'a crate::tools::ToolResultTransformPolicyV1,
     seed: SessionPersistenceSeed,
@@ -643,7 +638,7 @@ async fn build_session_data_snapshot(input: SessionDataSnapshotInput<'_>) -> Ses
         agent_template_id: None,
         correlation_id: None,
         durable_memory_binding: None,
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     });
 
@@ -676,7 +671,7 @@ async fn build_session_data_snapshot(input: SessionDataSnapshotInput<'_>) -> Ses
     data.agent_template_id = input.agent_template_id.map(str::to_string);
     data.correlation_id = input.correlation_id.map(str::to_string);
     data.durable_memory_binding = input.durable_memory_binding.cloned();
-    data.cognitive_package_binding = input.cognitive_package_binding.cloned();
+    data.package_binding = input.package_binding.cloned();
     data.immutable_content_adapter_binding = input.immutable_content_adapter_binding.cloned();
     data
 }

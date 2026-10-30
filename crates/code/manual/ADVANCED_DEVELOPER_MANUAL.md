@@ -49,7 +49,7 @@ pub struct CircuitBreaker {
 
 ## 1.4 Scoped Capabilities
 
-Installable cognitive-package lifecycle belongs to A3S Use. Code projects one
+Installable package lifecycle belongs to A3S Use. Code projects one
 exact immutable Use capability generation into a Session-local catalog, then
 pins the catalog and its governance ceiling when a Run is admitted. Temporary
 Turn and Subtask capabilities are child scopes and cannot expand the parent
@@ -219,10 +219,10 @@ the Core Hook runtime cut. `HOST-MCP1` completes the Core exact-client MCP
 runtime cut. It does not claim that A3S Use already projects every MCP surface
 into this adapter or that official hosts have adopted it; that wiring remains
 separate integration work. `HOST-CONTEXT1` completes the general Run-frozen
-Context cut; providers with cognitive package bindings must still use the
+Context cut; providers with package bindings must still use the
 persisted Knowledge/session API. `HOST-FLOW1` completes the named host Flow cut
 while A3S Flow retains store, runtime, replay, and observation ownership.
-`HOST-KNOWLEDGE1` completes the exact cognitive provider/binding cut while the
+`HOST-KNOWLEDGE1` completes the exact package provider/binding cut while the
 Knowledge host retains OKF and query-lease ownership. `HOST-UI1` completes the
 Core UI value and host-handle cut: use `UiAsset`, `UiDocument`, and `UiBinding`
 for bounded, path-free reviewed bytes and `AgentSession::projected_ui` for an

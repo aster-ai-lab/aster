@@ -111,10 +111,10 @@ async fn snapshot_lease_pins_the_complete_published_generation_atomically() {
 #[tokio::test]
 async fn snapshot_lease_rejects_stale_and_digest_mismatched_cursors() {
     let temporary = tempfile::tempdir().unwrap();
-    let source = temporary.path().join("cognitive");
+    let source = temporary.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",

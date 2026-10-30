@@ -893,7 +893,7 @@ async fn constructor_store_scenario(
     )
     .await;
     let owned = capture(&session, false);
-    assert!(owned.cognitive_binding.is_none());
+    assert!(owned.package_binding.is_none());
     let run_id = "owned-checkpoint-run";
     assert!(matches!(
         session

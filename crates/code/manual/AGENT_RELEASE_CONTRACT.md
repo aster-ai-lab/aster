@@ -45,7 +45,7 @@ Rust host may inject `SessionCheckpointExportSink` through `SessionOptions`.
 At each completed Tool-round boundary, an internal acknowledgement channel
 joins the loop-owned logical state to the event-materialized Session view after
 capability effects and prior events settle. The exported Session binding is
-the source Run's frozen cognitive authority even if the Session catalog has
+the source Run's frozen package authority even if the Session catalog has
 already advanced. Code awaits the host sink before the loop continues, but a
 sink failure is logged and does not fail the Run. No public event variant,
 Cloud checkpoint identity, object authorization, retention rule, approval, or

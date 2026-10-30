@@ -36,7 +36,7 @@ Restructure Console around two distinct jobs: developers progress one Applicatio
 | Dimension | Current observed implementation | Product consequence |
 | --- | --- | --- |
 | Navigation | 18 declared menu IDs; orders/tickets retired, leaving 16 for directory administrators; up to three levels | Advanced administration dominates the default surface. |
-| Overview | Eight parallel reads (overview, workflows, routes, nodes, logs, usage, suppliers, sign-in) and six content regions (attention, three metric groups, usage, logs) | High cognitive load and broad failure surface; no single next action. |
+| Overview | Eight parallel reads (overview, workflows, routes, nodes, logs, usage, suppliers, sign-in) and six content regions (attention, three metric groups, usage, logs) | High package load and broad failure surface; no single next action. |
 | Access | Entire `PlatformPage` depends on official-org `canSeePlatformAdmin` | Ordinary Application developers can be excluded before a workspace exists. |
 | Domain model | Generic administration `PlatformItem.fields` drives many tables/details | Useful for legacy admin, inappropriate for typed Application lifecycle and capability semantics. |
 | Collections | Dense toolbars, expanded details and selection even when only count/clear is available | Controls imply batch capability that does not exist. |

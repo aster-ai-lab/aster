@@ -106,9 +106,9 @@ impl crate::agent::TurnEngine {
             sp.taint_input(&effective_prompt);
         }
 
-        if let Some(binding) = self.cognitive_package_binding() {
+        if let Some(binding) = self.package_binding() {
             if let Some(tx) = event_tx {
-                tx.send(AgentEvent::CognitiveContextBound {
+                tx.send(AgentEvent::PackageContextBound {
                     binding: binding.clone(),
                 })
                 .await
@@ -119,7 +119,7 @@ impl crate::agent::TurnEngine {
         let mut context_results = self
             .resolve_prompt_context(&effective_prompt, session_id, event_tx)
             .await?;
-        let (durable_recall, recalled_memories) = if self.cognitive_package_binding().is_none() {
+        let (durable_recall, recalled_memories) = if self.package_binding().is_none() {
             self.recall_memory_context(&effective_prompt, &mut context_results, event_tx)
                 .await
         } else {
@@ -233,9 +233,9 @@ impl crate::agent::TurnEngine {
             HookResult::Continue(_) => self.resolve_context(effective_prompt, session_id).await,
             HookResult::Block(_) => {
                 tracing::info!("Context perception blocked by hook");
-                if self.cognitive_package_binding().is_some() {
+                if self.package_binding().is_some() {
                     anyhow::bail!(
-                        "required exact-generation cognitive context was blocked; refusing an ungrounded fallback"
+                        "required exact-generation package context was blocked; refusing an ungrounded fallback"
                     );
                 }
                 Ok(Vec::new())
@@ -318,13 +318,11 @@ impl crate::agent::TurnEngine {
         Ok(results)
     }
 
-    fn cognitive_package_binding(
-        &self,
-    ) -> Option<&crate::cognitive_context::CognitivePackageBindingV1> {
+    fn package_binding(&self) -> Option<&crate::package_context::PackageBindingV1> {
         self.config
             .context_providers
             .iter()
-            .find_map(|provider| provider.cognitive_package_binding())
+            .find_map(|provider| provider.package_binding())
     }
 
     /// Detect if context perception is needed based on user prompt.

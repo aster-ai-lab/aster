@@ -68,7 +68,7 @@ See also: [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
 | `web_fetch` | baseline | web_fetch / safe_http unit | size/redirect bounds | harness_capabilities live PASS (rerun) | PASS |
 | `program` | baseline | QuickJS program integ | escape hatch, not second engine | harness_capabilities live PASS | PASS |
 | `code_intelligence` | advanced | LSP/tool unit + fail-closed | host language service required | advanced-integ fail-closed PASS; PERF owner | PASS |
-| `cognitive_packages` | advanced | cognitive_context unit | host-owned fail-closed | Code boundary CI; Use/CAR external | PASS |
+| `packages` | advanced | package_context unit | host-owned fail-closed | Code boundary CI; Use/CAR external | PASS |
 | `use_runtime_tasks` | advanced | use_runtime_tasks unit | host-owned fail-closed | Code adapter CI; Use host external | PASS |
 | `programmable_workflows` | advanced | dynamic_workflow + advanced-harness | feature-gated | extensibility + workflow_facade live PASS | PASS |
 | `state_graph` | advanced | state_graph integration | advanced feature | advanced-integ PASS | PASS |

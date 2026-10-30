@@ -254,16 +254,16 @@
     "activation": "宿主语言服务与工作区操作能力"
   },
   {
-    "id": "cognitive_packages",
+    "id": "packages",
     "operations": [
-      "session.cognitive_package_binding",
-      "session.current_cognitive_package_binding"
+      "session.package_binding",
+      "session.current_package_binding"
     ],
     "page": "./retrieval/",
-    "title": "认知包",
+    "title": "包",
     "tier": "advanced",
     "hostOwned": true,
-    "activation": "宿主认知包 provider"
+    "activation": "宿主包 provider"
   },
   {
     "id": "use_runtime_tasks",

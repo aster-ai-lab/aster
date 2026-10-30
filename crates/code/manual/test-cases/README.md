@@ -99,7 +99,7 @@ Advanced (explicit Cargo feature or host injection):
 | ID | Code | Feature / owner | Catalog |
 | --- | --- | --- | --- |
 | `code_intelligence` | CI | host language service | [advanced.md](advanced.md) |
-| `cognitive_packages` | CP | Use host | [advanced.md](advanced.md) |
+| `packages` | CP | Use host | [advanced.md](advanced.md) |
 | `use_runtime_tasks` | UR | Use host | [advanced.md](advanced.md) |
 | `programmable_workflows` | PW | `advanced-harness` | [advanced.md](advanced.md) |
 | `state_graph` | SG | `advanced-harness` | [advanced.md](advanced.md) |

@@ -36,7 +36,7 @@ pub(super) async fn prepare_owned_fact(
         fact,
         construction,
         checkpoint,
-        cognitive_binding,
+        package_binding,
         cancellation,
         session_id,
         boundary,
@@ -90,15 +90,15 @@ pub(super) async fn prepare_owned_fact(
             controls
                 .bind_capability_generation(&id, binding.clone())
                 .await?;
-            if let Some(value) = cognitive_binding.clone() {
-                controls.bind_cognitive_package(&id, value).await?;
+            if let Some(value) = package_binding.clone() {
+                controls.bind_package(&id, value).await?;
             }
             Ok(run)
         }
         .await
     } else {
         controls
-            .start_run_with_bindings(prompt, cognitive_binding.clone(), binding.clone())
+            .start_run_with_bindings(prompt, package_binding.clone(), binding.clone())
             .await
     };
     let run = match run_result {
@@ -117,10 +117,10 @@ pub(super) async fn prepare_owned_fact(
     };
     let run_id = run.id().to_owned();
     let cleanup = cleanup.with_run_id(run_id.clone());
-    if let Some(binding) = cognitive_binding {
+    if let Some(binding) = package_binding {
         finish
             .run_store
-            .record_event(&run_id, AgentEvent::CognitiveContextBound { binding })
+            .record_event(&run_id, AgentEvent::PackageContextBound { binding })
             .await;
     }
     let started = AgentEvent::Start {

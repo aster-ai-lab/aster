@@ -41,7 +41,7 @@ SDK's method spelling. Public methods and types remain defined by
 | `web_search` | baseline | `session.web_search`, `session.tool:web_search` |
 | `web_fetch` | baseline | `session.tool:web_fetch` |
 | `code_intelligence` | advanced | `session.tool:code_symbols`, `session.tool:code_navigation`, `session.tool:code_diagnostics` |
-| `cognitive_packages` | advanced | `session.cognitive_package_binding`, `session.current_cognitive_package_binding` |
+| `packages` | advanced | `session.package_binding`, `session.current_package_binding` |
 | `use_runtime_tasks` | advanced | `session.tool:use_runtime_task` |
 | `program` | baseline | `session.program`, `session.tool:program` |
 | `programmable_workflows` | advanced | `session.parallel`, `session.parallel_resumable`, `session.workflow_step` |
@@ -58,7 +58,7 @@ SDK's method spelling. Public methods and types remain defined by
 
 - Core defaults to `local-code`. Workflows/state graphs/evaluation use explicit
   advanced features; S3, telemetry and typed decisions retain their own gates.
-- Language services, cognitive packages and Use tasks require an authoritative
+- Language services, packages and Use tasks require an authoritative
   host provider. A registry entry or model prompt does not supply that provider.
 - Semantic retrieval requires an explicit embedding route. Workspace configuration
   cannot authorize source egress or widen inherited capabilities.

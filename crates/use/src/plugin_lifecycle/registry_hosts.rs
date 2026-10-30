@@ -683,7 +683,7 @@ mod tests {
         let package_root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("extension//fixtures/packages/plugin-v3-package/package");
         let candidate =
-            ExtensionLifecyclePackage::prepare_local("acme/cognitive", &package_root, true)
+            ExtensionLifecyclePackage::prepare_local("acme/package", &package_root, true)
                 .await
                 .unwrap();
         let first = ExtensionLifecycleIdentity::new(
@@ -701,11 +701,11 @@ mod tests {
 
         let intent = PluginLifecycleIntent::from_manifest(
             crate::plugin_lifecycle::PluginLifecycleIntentSpec {
-                operation_id: "upgrade:acme-cognitive:2".to_string(),
+                operation_id: "upgrade:acme-package:2".to_string(),
                 plan_digest: format!("sha256:{}", "1".repeat(64)),
                 scope: a3s_use_core::PlanScope {
                     kind: a3s_use_core::PlanScopeKind::Workspace,
-                    id: "cognitive".to_string(),
+                    id: "package".to_string(),
                 },
                 package_id: candidate.manifest().package_id.clone(),
                 package_digest: candidate.package_digest().to_string(),
@@ -722,7 +722,7 @@ mod tests {
             .await
             .unwrap();
 
-        let selected = registry.get("acme/cognitive").await.unwrap().unwrap();
+        let selected = registry.get("acme/package").await.unwrap().unwrap();
         assert_eq!(selected.receipt.lifecycle_generation, Some(2));
         assert!(!selected.receipt.enabled);
         assert_eq!(

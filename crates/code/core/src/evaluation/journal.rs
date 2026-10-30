@@ -53,7 +53,7 @@ impl ExecutionFactKindV1 {
         if event_type == "permission_denied" || event_type.starts_with("confirmation_") {
             return Self::Permission;
         }
-        if event_type.starts_with("context_") || event_type == "cognitive_context_bound" {
+        if event_type.starts_with("context_") || event_type == "package_context_bound" {
             return Self::Context;
         }
         if event_type.starts_with("subagent_") {

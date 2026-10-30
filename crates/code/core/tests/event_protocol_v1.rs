@@ -2,14 +2,13 @@ use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, TaskStatus};
 use a3s_code_core::queue::SessionLane;
 use a3s_code_core::verification::VerificationSummary;
 use a3s_code_core::{
-    run_event_envelope_v1, AgentEvent, AgentEventProjectionV1, CognitiveContextLimits,
-    CognitiveKnowledgeBindingV1, CognitivePackageBindingV1, EventEnvelopeV1, ModelInputKindV1,
-    ModelInputSnapshotV1, ModelPresentationApplicationV1, ModelPresentationSnapshotV1,
-    ModelUsageSnapshotV1, RunCapabilitySnapshotV1, RunPolicyCeilingSnapshotV1, TokenUsage,
-    ToolPresentationProfileV1, ToolRequestOriginV1, ToolRequestSnapshotV1,
-    ToolResultContextUsageV1, WorkspaceCapabilitySnapshotV1,
-    WorkspaceRetrievalCapabilitySnapshotV1, WorkspaceRetrievalPhase, AGENT_EVENT_TYPES_V1,
-    MODEL_INPUT_SNAPSHOT_V1_SCHEMA, MODEL_PRESENTATION_SNAPSHOT_V1_SCHEMA,
+    run_event_envelope_v1, AgentEvent, AgentEventProjectionV1, EventEnvelopeV1, KnowledgeBindingV1,
+    ModelInputKindV1, ModelInputSnapshotV1, ModelPresentationApplicationV1,
+    ModelPresentationSnapshotV1, ModelUsageSnapshotV1, PackageBindingV1, PackageContextLimits,
+    RunCapabilitySnapshotV1, RunPolicyCeilingSnapshotV1, TokenUsage, ToolPresentationProfileV1,
+    ToolRequestOriginV1, ToolRequestSnapshotV1, ToolResultContextUsageV1,
+    WorkspaceCapabilitySnapshotV1, WorkspaceRetrievalCapabilitySnapshotV1, WorkspaceRetrievalPhase,
+    AGENT_EVENT_TYPES_V1, MODEL_INPUT_SNAPSHOT_V1_SCHEMA, MODEL_PRESENTATION_SNAPSHOT_V1_SCHEMA,
     MODEL_USAGE_SNAPSHOT_V1_SCHEMA, RUN_CAPABILITY_SNAPSHOT_V1_SCHEMA,
     TOOL_REQUEST_SNAPSHOT_V1_SCHEMA,
 };
@@ -36,10 +35,10 @@ fn case(
     }
 }
 
-fn cognitive_binding() -> CognitivePackageBindingV1 {
+fn package_binding() -> PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = CognitiveKnowledgeBindingV1::new(
+    let knowledge = KnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -47,14 +46,14 @@ fn cognitive_binding() -> CognitivePackageBindingV1 {
         generation_digest,
     )
     .unwrap();
-    CognitivePackageBindingV1::new(
+    PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        CognitiveContextLimits::default(),
+        PackageContextLimits::default(),
     )
     .unwrap()
 }
@@ -465,12 +464,12 @@ fn representative_events() -> Vec<EventCase> {
             json!("completed"),
         ),
         case(
-            "cognitive_context_bound",
-            AgentEvent::CognitiveContextBound {
-                binding: cognitive_binding(),
+            "package_context_bound",
+            AgentEvent::PackageContextBound {
+                binding: package_binding(),
             },
             "binding",
-            serde_json::to_value(cognitive_binding()).unwrap(),
+            serde_json::to_value(package_binding()).unwrap(),
         ),
         case(
             "command_dead_lettered",

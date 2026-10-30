@@ -30,7 +30,7 @@ pub(super) struct PinnedRuntimeProjection {
     task_tools: Vec<Arc<dyn crate::tools::Tool>>,
     mcp_bindings: Vec<Arc<crate::mcp::McpBinding>>,
     projected_mcp_authoritative: bool,
-    knowledge: Option<Arc<crate::cognitive_context::CognitiveContextSession>>,
+    knowledge: Option<Arc<crate::package_context::PackageContextSession>>,
     projected_knowledge_authoritative: bool,
     context_providers: Vec<Arc<dyn crate::context::ContextProvider>>,
 }
@@ -181,15 +181,15 @@ fn assemble_pinned_agent_loop(
     if projected_knowledge_authoritative {
         config
             .context_providers
-            .retain(|provider| provider.cognitive_package_binding().is_none());
+            .retain(|provider| provider.package_binding().is_none());
     }
     if let Some(knowledge) = knowledge {
-        // A projected Knowledge value is the exact cognitive authority for
+        // A projected Knowledge value is the exact package authority for
         // this Run. The Session-static provider is a durable compatibility or
         // resume seed and must not remain visible beside the projected value.
         config
             .context_providers
-            .retain(|provider| provider.cognitive_package_binding().is_none());
+            .retain(|provider| provider.package_binding().is_none());
         config.context_providers.push(knowledge);
     }
     config.context_providers.extend(context_providers);
@@ -303,7 +303,7 @@ pub(super) struct OwnedPreparationCapture {
     pub(super) construction: OwnedLoopConstruction,
     pub(super) checkpoint: OwnedCheckpointInputs,
     pub(super) permission: crate::permissions::PermissionPolicy,
-    pub(super) cognitive_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+    pub(super) package_binding: Option<crate::package_context::PackageBindingV1>,
     pub(super) cancellation: tokio_util::sync::CancellationToken,
     pub(super) session_id: String,
     pub(super) workspace: std::path::PathBuf,
@@ -419,7 +419,7 @@ pub(super) fn capture_owned_preparation(
         None
     };
     let fact = capture_projection()?;
-    let cognitive_binding = cognitive_binding_for_projection(session, fact.projection.projection());
+    let package_binding = package_binding_for_projection(session, fact.projection.projection());
     let checkpoint = OwnedCheckpointInputs {
         store: session.session_store.clone(),
         export: session
@@ -445,7 +445,7 @@ pub(super) fn capture_owned_preparation(
         construction: OwnedLoopConstruction { inputs, parent },
         checkpoint,
         permission,
-        cognitive_binding,
+        package_binding,
         cancellation,
         session_id: session.session_id.clone(),
         workspace,
@@ -670,7 +670,7 @@ pub(super) fn validate_capability_projection_transition(
     current: &CapabilityProjection,
     target: &CapabilityProjection,
 ) -> Result<(), CapabilityRuntimeError> {
-    let Some(static_knowledge) = session.cognitive_context.as_ref() else {
+    let Some(static_knowledge) = session.package_context.as_ref() else {
         return Ok(());
     };
     let current_knowledge = projected_knowledge(current);
@@ -681,30 +681,30 @@ pub(super) fn validate_capability_projection_transition(
             Err(CapabilityRuntimeError::RuntimeValueInvalid {
                 kind: CapabilityKind::Knowledge,
                 public_name: target.provider_name().to_owned(),
-                message: "a Session-static or resumed cognitive binding must bootstrap the atomic Knowledge catalog with the same exact binding before a later generation can cut over"
+                message: "a Session-static or resumed package binding must bootstrap the atomic Knowledge catalog with the same exact binding before a later generation can cut over"
                     .to_owned(),
             })
         }
         (Some(current), None) => Err(CapabilityRuntimeError::RuntimeValueInvalid {
             kind: CapabilityKind::Knowledge,
             public_name: current.provider_name().to_owned(),
-            message: "removing projected Knowledge would reveal a stale Session-static cognitive provider"
+            message: "removing projected Knowledge would reveal a stale Session-static package provider"
                 .to_owned(),
         }),
         _ => Ok(()),
     }
 }
 
-/// Return the exact cognitive binding visible to a Run over `projection`.
-pub(super) fn cognitive_binding_for_projection(
+/// Return the exact package binding visible to a Run over `projection`.
+pub(super) fn package_binding_for_projection(
     session: &AgentSession,
     projection: &CapabilityProjection,
-) -> Option<crate::cognitive_context::CognitivePackageBindingV1> {
+) -> Option<crate::package_context::PackageBindingV1> {
     projected_knowledge(projection)
         .map(|knowledge| knowledge.binding().clone())
         .or_else(|| {
             session
-                .cognitive_context
+                .package_context
                 .as_ref()
                 .map(|knowledge| knowledge.binding().clone())
         })
@@ -809,11 +809,11 @@ pub(super) fn pin_runtime_projection_with_command_registry(
                 projected_mcp.push(Arc::clone(binding));
             }
             CapabilityValue::Context(provider) => {
-                if provider.cognitive_package_binding().is_some() {
+                if provider.package_binding().is_some() {
                     return Err(CapabilityRuntimeError::RuntimeValueInvalid {
                         kind: CapabilityKind::Context,
                         public_name: provider.name().to_owned(),
-                        message: "a projected Context cannot carry a cognitive package binding; install exact cognitive authority through the persisted Knowledge/session boundary"
+                        message: "a projected Context cannot carry a package binding; install exact package authority through the persisted Knowledge/session boundary"
                             .to_owned(),
                     });
                 }
@@ -845,14 +845,14 @@ pub(super) fn pin_runtime_projection_with_command_registry(
                     return Err(CapabilityRuntimeError::RuntimeValueInvalid {
                         kind: CapabilityKind::Knowledge,
                         public_name: knowledge.provider_name().to_owned(),
-                        message: "a Run must have exactly one cognitive Knowledge authority"
+                        message: "a Run must have exactly one package Knowledge authority"
                             .to_owned(),
                     });
                 }
                 projected_knowledge = Some(Arc::clone(knowledge));
             }
             // KnowledgeSurface is multi-instance readiness evidence. It is
-            // intentionally not installed as Run cognitive context.
+            // intentionally not installed as Run package context.
             CapabilityValue::KnowledgeSurface(_) => {}
             // Flow is consumed through AgentSession::projected_flow. The
             // admitted Agent Run still pins the same catalog generation, but
@@ -885,11 +885,11 @@ pub(super) fn pin_runtime_projection_with_command_registry(
             });
         }
     }
-    if session.cognitive_context.is_some() && !projected_context.is_empty() {
+    if session.package_context.is_some() && !projected_context.is_empty() {
         return Err(CapabilityRuntimeError::RuntimeValueInvalid {
             kind: CapabilityKind::Context,
             public_name: projected_context[0].name().to_owned(),
-            message: "general-purpose Context cannot accompany an exact Session cognitive binding"
+            message: "general-purpose Context cannot accompany an exact Session package binding"
                 .to_owned(),
         });
     }
@@ -1011,7 +1011,7 @@ pub(super) fn pin_runtime_projection_with_command_registry(
 
 fn projected_knowledge(
     projection: &CapabilityProjection,
-) -> Option<&Arc<crate::cognitive_context::CognitiveContextSession>> {
+) -> Option<&Arc<crate::package_context::PackageContextSession>> {
     projection.iter().find_map(|(_, value)| match value {
         CapabilityValue::Knowledge(knowledge) => Some(knowledge),
         _ => None,

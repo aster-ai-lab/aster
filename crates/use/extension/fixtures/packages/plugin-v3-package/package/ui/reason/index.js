@@ -1,1 +1,1 @@
-document.querySelector('#status').textContent = 'Cognitive package ready';
+document.querySelector('#status').textContent = ' package ready';

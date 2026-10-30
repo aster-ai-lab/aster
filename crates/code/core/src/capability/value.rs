@@ -1,11 +1,11 @@
 use std::fmt;
 use std::sync::Arc;
 
-use crate::cognitive_context::CognitiveContextSession;
 use crate::commands::SlashCommand;
 use crate::context::ContextProvider;
 use crate::hooks::HookBinding;
 use crate::mcp::McpBinding;
+use crate::package_context::PackageContextSession;
 use crate::skills::Skill;
 use crate::subagent::AgentDefinition;
 use crate::tools::Tool;
@@ -31,7 +31,7 @@ pub enum CapabilityValue {
     #[cfg(feature = "dynamic-workflow")]
     Flow(Arc<FlowBinding>),
     KnowledgeSurface(Arc<KnowledgeSurfaceBinding>),
-    Knowledge(Arc<CognitiveContextSession>),
+    Knowledge(Arc<PackageContextSession>),
     Ui(Arc<UiBinding>),
     Context(Arc<dyn ContextProvider>),
 }

@@ -5,7 +5,7 @@ description: How to discover, review, install, and remove packages from the offi
 
 # A3S Use Registry consumption
 
-This Registry serves signed cognitive packages through static TUF metadata.
+This Registry serves signed packages through static TUF metadata.
 Every package is verified end to end before anything is installed. Use the
 workflow below; never bypass the review boundary.
 

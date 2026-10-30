@@ -1,7 +1,7 @@
 ---
 type: Project-Specific Decision
 title: Exact-generation package activation
-description: Publish cognitive surfaces only after exact-generation evidence is ready.
+description: Publish package surfaces only after exact-generation evidence is ready.
 status: stable
 a3s_extension:
   projection: capability-snapshot

@@ -730,11 +730,11 @@ pub enum AgentEvent {
         tokens_after: u64,
     },
 
-    /// One run is using the exact cognitive-package generation retained by
+    /// One run is using the exact package generation retained by
     /// the surrounding session snapshot.
-    #[serde(rename = "cognitive_context_bound")]
-    CognitiveContextBound {
-        binding: crate::cognitive_context::CognitivePackageBindingV1,
+    #[serde(rename = "package_context_bound")]
+    PackageContextBound {
+        binding: crate::package_context::PackageBindingV1,
     },
 
     // ========================================================================

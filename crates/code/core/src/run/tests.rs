@@ -1,9 +1,9 @@
 use super::*;
 
-fn cognitive_binding() -> crate::cognitive_context::CognitivePackageBindingV1 {
+fn package_binding() -> crate::package_context::PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = crate::cognitive_context::CognitiveKnowledgeBindingV1::new(
+    let knowledge = crate::package_context::KnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -11,14 +11,14 @@ fn cognitive_binding() -> crate::cognitive_context::CognitivePackageBindingV1 {
         generation_digest,
     )
     .unwrap();
-    crate::cognitive_context::CognitivePackageBindingV1::new(
+    crate::package_context::PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        crate::cognitive_context::CognitiveContextLimits::default(),
+        crate::package_context::PackageContextLimits::default(),
     )
     .unwrap()
 }
@@ -60,18 +60,15 @@ async fn run_store_tracks_status_and_events() {
 }
 
 #[tokio::test]
-async fn cognitive_binding_is_exact_idempotent_and_pre_observation_only() {
+async fn package_binding_is_exact_idempotent_and_pre_observation_only() {
     let store = InMemoryRunStore::new();
     let run = store.create_run("session-1", "query knowledge").await;
-    let binding = cognitive_binding();
+    let binding = package_binding();
 
-    let bound = store
-        .bind_cognitive_package(&run.id, binding.clone())
-        .await
-        .unwrap();
-    assert_eq!(bound.cognitive_package_binding.as_ref(), Some(&binding));
+    let bound = store.bind_package(&run.id, binding.clone()).await.unwrap();
+    assert_eq!(bound.package_binding.as_ref(), Some(&binding));
     store
-        .bind_cognitive_package(&run.id, binding.clone())
+        .bind_package(&run.id, binding.clone())
         .await
         .expect("exact binding replay is idempotent");
 
@@ -79,8 +76,8 @@ async fn cognitive_binding_is_exact_idempotent_and_pre_observation_only() {
     conflict.limits.max_results -= 1;
     conflict.validate().unwrap();
     assert!(matches!(
-        store.bind_cognitive_package(&run.id, conflict).await,
-        Err(RunCognitiveBindingError::Conflict)
+        store.bind_package(&run.id, conflict).await,
+        Err(RunPackageBindingError::Conflict)
     ));
 
     let late = store.create_run("session-1", "late binding").await;
@@ -94,8 +91,8 @@ async fn cognitive_binding_is_exact_idempotent_and_pre_observation_only() {
         .await
         .unwrap();
     assert!(matches!(
-        store.bind_cognitive_package(&late.id, binding).await,
-        Err(RunCognitiveBindingError::AlreadyObserved)
+        store.bind_package(&late.id, binding).await,
+        Err(RunPackageBindingError::AlreadyObserved)
     ));
 }
 
@@ -355,6 +352,6 @@ async fn terminal_sink_preserves_event_completion_and_rejects_late_outcomes() {
 // Bare declarations resolve to run/tests/<name>.rs — the slot the soak
 // files already occupy (the old `#[path]` form resolved differently once
 // this module left run.rs's inline block; that is the 10-08 hijack lesson).
-mod run_cognitive_binding_soak;
+mod run_package_binding_soak;
 
 mod run_protocol_soak;

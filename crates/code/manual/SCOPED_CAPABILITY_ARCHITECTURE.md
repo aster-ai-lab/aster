@@ -1,6 +1,6 @@
 # Scoped Capability Architecture
 
-Status: accepted foundation; A3S Use bridge, immutable set, scoped lifecycle, atomic runtime projection, surface readiness DAG, official Tool/Skill host adoption, Run-frozen Tool presentation, Agent delegation, Command dispatch, Hook execution, Core MCP projection, general Context projection, named Flow projection, multi-instance Knowledge Surface readiness, exact cognitive Knowledge projection, and typed UI host projection delivered
+Status: accepted foundation; A3S Use bridge, immutable set, scoped lifecycle, atomic runtime projection, surface readiness DAG, official Tool/Skill host adoption, Run-frozen Tool presentation, Agent delegation, Command dispatch, Hook execution, Core MCP projection, general Context projection, named Flow projection, multi-instance Knowledge Surface readiness, exact package Knowledge projection, and typed UI host projection delivered
 
 ## Decision
 
@@ -9,7 +9,7 @@ first-principles review of existing Harness systems, but it is not a Cordis or
 DeepSeek Harness compatibility layer and does not become a general
 dependency-injection or package-management framework.
 
-A3S Use remains the only owner of cognitive-package discovery, verification,
+A3S Use remains the only owner of package discovery, verification,
 dependency resolution, Grants, immutable package generations, capability
 cutover, lifecycle journals, and crash recovery. A3S Code consumes an exact
 Use capability snapshot and projects it into product-owned Session, Run, Turn,
@@ -96,7 +96,7 @@ as authoritative Use projections and official hosts migrate.
 | Lifetime | Contents | Mutation rule |
 | --- | --- | --- |
 | Session-static | LLM client, workspace services, stores, sandbox, host environment | Fixed after Session construction; replacement creates a new Session |
-| Session-live catalog | Tool, Skill, Agent, Command, Hook, MCP, Flow, Knowledge Surface readiness, cognitive Knowledge, UI, and context projections | Replaced only by an atomic immutable catalog generation |
+| Session-live catalog | Tool, Skill, Agent, Command, Hook, MCP, Flow, Knowledge Surface readiness, package Knowledge, UI, and context projections | Replaced only by an atomic immutable catalog generation |
 | Run-frozen governance | Permission, confirmation, security, budget, execution ceiling, and presentation profile | Captured at admission; child scopes may only narrow it |
 | Turn/Subtask ephemeral | Explicit temporary wrappers, scratch resources, child-only presentation, and delegated execution | Created through a typed child scope or weak registration handle; ownership is released with that exact scope |
 
@@ -219,7 +219,7 @@ to that generation, `HOST-HOOK1` binds Hook definitions, handlers, and
 observational work, and `HOST-MCP1` binds one exact initialized MCP client and
 tool catalog without claiming end-to-end A3S Use or official-host adoption.
 `HOST-CONTEXT1` binds general Context providers to the same admitted Run while
-leaving persisted cognitive authority on the Knowledge/session boundary.
+leaving persisted package authority on the Knowledge/session boundary.
 `HOST-FLOW1` binds one named durable `WorkflowSpec` to the exact `FlowEngine`
 that can replay it and exposes that generation through a non-clone host handle.
 Thin coding builds omit this surface: enable the `dynamic-workflow` feature
@@ -227,14 +227,14 @@ Thin coding builds omit this surface: enable the `dynamic-workflow` feature
 `ProjectedFlowHandle`.
 `HOST-KNOWLEDGE1` binds multiple path-free, non-queryable `KnowledgeSurfaceBinding`
 readiness values to the catalog while binding at most one separately selected
-`CognitiveContextSession` to the admitted Run. It separates Run-frozen
-cognitive binding evidence from the Session's next-Run resume binding.
+`PackageContextSession` to the admitted Run. It separates Run-frozen
+package binding evidence from the Session's next-Run resume binding.
 `HOST-UI1` binds a bounded, path-free, content-addressed UI
 document and its explicit backend readiness edges to a non-clone host handle.
 
 | Rust boundary | Delivered invariant |
 | --- | --- |
-| `CapabilityValue` | A closed enum accepts Tool, Skill, Agent, Command, Hook, per-server MCP binding, named `FlowBinding`, multi-instance `KnowledgeSurfaceBinding`, singular cognitive Knowledge, context, and bounded `UiBinding` values without `Any` |
+| `CapabilityValue` | A closed enum accepts Tool, Skill, Agent, Command, Hook, per-server MCP binding, named `FlowBinding`, multi-instance `KnowledgeSurfaceBinding`, singular package Knowledge, context, and bounded `UiBinding` values without `Any` |
 | `CapabilityProjection` | Pairs one immutable `Arc<CapabilitySet>` with exactly one canonically ordered value per descriptor and rejects missing, extra, kind-mismatched, unsupported, public-name-mismatched, or UI/Knowledge-Surface digest-mismatched values |
 | `CapabilityTxn<Staged/Prepared/Validated>` | Surface-owned adapters prepare in dependency-first readiness order; only `Validated` exposes `commit`, and a compile-fail contract prevents early publication |
 | `CapabilityCatalog` | Readers pin one non-clone immutable generation; writers compare both base generation and digest under one short mutex before swapping the complete projected `Arc` |
@@ -337,7 +337,7 @@ pub enum CapabilityValue {
     Mcp(Arc<McpBinding>),
     Flow(Arc<FlowBinding>),
     KnowledgeSurface(Arc<KnowledgeSurfaceBinding>),
-    Knowledge(Arc<CognitiveContextSession>),
+    Knowledge(Arc<PackageContextSession>),
     Ui(Arc<UiBinding>),
     Context(Arc<dyn ContextProvider>),
 }
@@ -400,7 +400,7 @@ in one catalog CAS. This gate did not claim the other capability kinds;
 bindings, `HOST-MCP1` extends it to exact-client MCP bindings, and
 `HOST-CONTEXT1` extends it to general Context providers. `HOST-FLOW1` extends it
 to named A3S Flow bindings, and `HOST-KNOWLEDGE1` extends it to multi-instance
-Knowledge Surface readiness plus one exact cognitive authority per Run.
+Knowledge Surface readiness plus one exact package authority per Run.
 `HOST-UI1` extends it to bounded, path-free UI
 documents consumed only through an exact host handle.
 
@@ -579,7 +579,7 @@ settle. Hook now follows the same Run generation through `HOST-HOOK1`. MCP and
 its delegated wrappers now follow it through `HOST-MCP1`; general parent-Run
 Context follows it through `HOST-CONTEXT1`, while delegated prompt context is
 an intentional narrowing. Named host Flow lookup follows it through
-`HOST-FLOW1`; exact cognitive retrieval follows it through
+`HOST-FLOW1`; exact package retrieval follows it through
 `HOST-KNOWLEDGE1`; host UI lookup follows it through `HOST-UI1`.
 
 ### HOST-COMMAND1 Command runtime cut
@@ -807,10 +807,10 @@ acquired N A3S Use lease. Later Runs see N+1. Preparation, validation, name
 conflict, cancellation, or a lost CAS leaves the current Run-visible provider
 set unchanged and follows the existing reverse cleanup path.
 
-General Context is not the durable cognitive-package authority. A projected
-provider whose `cognitive_package_binding()` is non-empty fails before
+General Context is not the durable package authority. A projected
+provider whose `package_binding()` is non-empty fails before
 publication; exact package identity, Knowledge surface, resume validation, and
-host reinjection continue through `SessionOptions::with_cognitive_context` and
+host reinjection continue through `SessionOptions::with_package_context` and
 the persisted session snapshot. Delegated Agent runs intentionally do not
 inherit parent `context_providers`; that existing prompt-isolation rule is a
 monotonic child-scope narrowing and prevents ambient parent RAG from leaking
@@ -819,7 +819,7 @@ into a delegated task.
 The deterministic evidence in
 [`context_projection`](../core/src/agent_api/capability_runtime_tests/context_projection.rs)
 proves N/N+1 provider isolation, exact Use lease retention, Session-static name
-conflict rejection, cognitive-authority rejection, and unchanged catalog
+conflict rejection, package-authority rejection, and unchanged catalog
 stamps on failure. [`ChildRunContext` tests](../core/src/child_run/tests.rs)
 lock the delegated prompt-context isolation rule.
 
@@ -867,18 +867,18 @@ host projection digests. It exposes no query method, provider, index path,
 scope selector, or implicit package choice. A Flow may require that same-source
 surface identity through the ordinary readiness DAG.
 
-`CapabilityValue::Knowledge(Arc<CognitiveContextSession>)` remains the singular
-Run-visible cognitive authority. A valid target contains at most one Knowledge
+`CapabilityValue::Knowledge(Arc<PackageContextSession>)` remains the singular
+Run-visible package authority. A valid target contains at most one Knowledge
 value. Descriptor and provider names remain identical through ordinary
 projection validation, and the binding repeats the exact package, lifecycle
 generation, capability snapshot, Knowledge surface, limits, and digests already
 supplied by the Knowledge host. Multiple Knowledge Surface readiness values do
-not count as cognitive authorities and are not copied into Agent context. Code
+not count as package authorities and are not copied into Agent context. Code
 does not open OKF files, build indexes, choose a retrieval generation, or
 manufacture a query lease.
 
-Run admission copies that exact `Arc<CognitiveContextSession>` into the frozen
-Agent configuration and removes a Session-static cognitive recovery provider
+Run admission copies that exact `Arc<PackageContextSession>` into the frozen
+Agent configuration and removes a Session-static package recovery provider
 from that Run only. General-purpose projected Context and host-supplied ambient
 Context cannot accompany exact Knowledge. An N Run therefore queries N and
 retains N's Code projection plus its separate exact A3S Use lease after N+1 is
@@ -898,11 +898,11 @@ host-supplied atomic bootstrap from untouched generation zero to the exact
 historical generation. Code does not resolve packages or `latest`, and a
 missing or mismatched batch leaves the Session unpublished.
 
-Temporal persistence no longer equates every historical cognitive event with
+Temporal persistence no longer equates every historical package event with
 the Session's latest binding. Each `RunSnapshot` records the exact binding
 frozen at its admission before any event can be observed. The Session snapshot
 records the binding visible to the next Run. Its invariant validator compares
-each cognitive event to its owning Run binding, while internally consistent
+each package event to its owning Run binding, while internally consistent
 legacy snapshots without Run-level evidence remain loadable. Old N evidence
 therefore remains valid after the Session advances to N+1 or becomes unbound.
 
@@ -921,7 +921,7 @@ failure, exact recovery bootstrap, latest-Session versus old-Run persistence,
 and resume. The
 [`knowledge_surface_projection`](../core/src/agent_api/capability_runtime_tests/knowledge_surface_projection.rs)
 regression proves multiple readiness values share the exact Run lease without
-installing any cognitive authority. [`RunSnapshot` tests](../core/src/run.rs) prove that cognitive
+installing any package authority. [`RunSnapshot` tests](../core/src/run.rs) prove that package
 binding evidence is exact-idempotent and cannot be written after observation.
 
 ### HOST-UI1 UI runtime cut
@@ -967,7 +967,7 @@ and UI values through this batch. Tool, MCP, and OKF readiness edges are
 same-package exact-generation edges. Flow source verification, digest staging,
 Native TypeScript preflight, and cancellation-aware workspace locking complete
 before publication. Dynamic OKF query remains a separate compatibility-owned
-adapter and cannot become Run cognitive authority implicitly; an official
+adapter and cannot become Run package authority implicitly; an official
 renderer host remains integration work before `CAP-GA1`.
 
 The value-level evidence in
@@ -1003,7 +1003,7 @@ readiness, and owned effects.
 | `CAP-I01` | A3S Use is the sole authority for package plan/apply, verification, dependency resolution, Grants, lifecycle generation, capability cutover, and recovery. |
 | `CAP-I02` | One source generation is projected into a Session as one atomic contribution batch. |
 | `CAP-I03` | A failed transaction cannot change the visible catalog generation or leave a partially visible batch. |
-| `CAP-I04` | A Run's model definition and execution resolve through the same pinned capability value; delegated Agent definitions and lookup share one Run-frozen registry, slash-command selection and execution share another, Hook metadata and handlers remain one exact binding with supervised observations, MCP definitions and raw calls share one exact client binding, general Context queries use the Run-frozen provider list, a projected Flow handle uses one exact spec/engine pair and same-generation Knowledge Surface readiness, cognitive queries and Run evidence use one separately selected exact Knowledge provider/binding pair, a projected UI handle uses one exact content-addressed document and dependency set, a presentation Profile can only remove Tool definitions or rephrase the existing code gateway, and persisted recovery must reproduce the Run's complete catalog-plus-ceiling identity before target admission. |
+| `CAP-I04` | A Run's model definition and execution resolve through the same pinned capability value; delegated Agent definitions and lookup share one Run-frozen registry, slash-command selection and execution share another, Hook metadata and handlers remain one exact binding with supervised observations, MCP definitions and raw calls share one exact client binding, general Context queries use the Run-frozen provider list, a projected Flow handle uses one exact spec/engine pair and same-generation Knowledge Surface readiness, package queries and Run evidence use one separately selected exact Knowledge provider/binding pair, a projected UI handle uses one exact content-addressed document and dependency set, a presentation Profile can only remove Tool definitions or rephrase the existing code gateway, and persisted recovery must reproduce the Run's complete catalog-plus-ceiling identity before target admission. |
 | `CAP-I05` | External hot-plug affects the next admitted Run; an admitted Run retains its exact local and upstream generation leases, and an N checkpoint cannot resume through N+1. |
 | `CAP-I06` | A child scope cannot broaden its parent's permission, confirmation, security, budget, workspace, Tool-presentation, or execution ceiling. |
 | `CAP-I07` | Required dependencies, including non-queryable Knowledge Surface readiness, must be ready in the same upstream generation and source before a contribution becomes visible. |
@@ -1051,15 +1051,15 @@ concerns and produce typed contributions.
 | `CAP-COMP1` | Delivered | Real Agent execution composes orchestration/provider/Tool Turns, recursive Skill/Task Subtasks, Turn-supervised bridges/effects, and Run-supervised background work under one downward-only cancellation tree | Runtime tests prove orchestration and Tool Turns, stream/effect settlement, `Run -> Turn -> Subtask -> Turn` recursion, fail-closed stale promotion, and Run-owned Task/memory settlement before lease release |
 | `CAP-PROJ1` | Delivered | Closed typed runtime values, immutable projected catalogs, typestate contribution transactions, generation/digest CAS publication, and final-lease retirement | Failed prepare, validation, cancellation, dropped transaction, and commit-race paths leave the current generation unchanged and retain every prepared effect for reverse cleanup |
 | `CAP-DEP1` | Delivered | Bounded surface readiness DAG | Only published surface edges are ordered; Code does not resolve packages or become general DI |
-| `HOST-CAP1` | Delivered | Core exposes one atomic projection contract; the resident CLI publishes one exact Use managed MCP/Skill/reviewed Runtime Tool/Knowledge Surface/dependency-closed Flow/UI generation, while CLI/Work one-shot execution publishes its bounded managed-MCP/Skill/UI cut | Old Runs and host handles retain N and its exact Use lease, new admissions see N+1, every new Run/checkpoint records its catalog and ceiling identity, recovery rejects N/N+1 drift or bootstraps one exact historical batch on a fresh Session, failed preparation never advances the generation, immutable OKF readiness remains distinct from singular cognitive Knowledge, one-shot watchers stop before Run admission, scoped HTTP Runtime/Gateway composition is lazy and Session-owned, and Work requires exact Code/Use evidence |
+| `HOST-CAP1` | Delivered | Core exposes one atomic projection contract; the resident CLI publishes one exact Use managed MCP/Skill/reviewed Runtime Tool/Knowledge Surface/dependency-closed Flow/UI generation, while CLI/Work one-shot execution publishes its bounded managed-MCP/Skill/UI cut | Old Runs and host handles retain N and its exact Use lease, new admissions see N+1, every new Run/checkpoint records its catalog and ceiling identity, recovery rejects N/N+1 drift or bootstraps one exact historical batch on a fresh Session, failed preparation never advances the generation, immutable OKF readiness remains distinct from singular package Knowledge, one-shot watchers stop before Run admission, scoped HTTP Runtime/Gateway composition is lazy and Session-owned, and Work requires exact Code/Use evidence |
 | `CAP-PROFILE1` | Delivered | Run-frozen typed Tool presentation over the same pinned executor values | Permission filtering precedes Profile projection; name/schema identity and deterministic order are preserved, code mode rephrases only the existing `program` definition, child runs cannot broaden, and exact Session resume plus Rust/ACP host projection checks pass |
 | `HOST-AGENT1` | Delivered | Core projects Agent definitions into one Run-frozen registry shared by automatic and Tool-driven delegation | Canonical alias conflicts fail before publication, compatibility registration cannot shadow a published Agent, N Runs delegate through N after an N+1 cutover, and the exact N Use lease remains held through foreground child completion |
 | `HOST-COMMAND1` | Delivered | Core dispatches blocking and streaming slash Commands through one Run-frozen registry | Built-in and compatibility conflicts fail before publication, legacy registration cannot shadow a published Command, N execution remains on N after an N+1 cutover, and the exact N Use lease remains held through Command execution |
 | `HOST-HOOK1` | Delivered | Core composes projected Hook bindings through one Run-frozen executor | Definition/handler pairs remain generation-exact, invalid Run event scopes and compatibility conflicts fail before publication, external `Skip` cannot bypass projected policy, and supervised observations retain the exact Use lease through bounded settlement |
 | `HOST-MCP1` | Delivered | Core projects each MCP server as one immutable exact-client binding and freezes its wrappers per Run | Initialization and `tools/list` finish before publication; N definitions, raw calls, foreground delegated children, and the parent Run's N Use lease remain generation-exact across N+1; rollback and final-reader retirement close the Code-owned connection effect without mutable-manager fallback |
-| `HOST-CONTEXT1` | Delivered | Core projects general `ContextProvider` values into each Run-frozen Agent configuration through the same atomic batch | N Runs retain N providers and the exact N Use lease across N+1; descriptor/provider names and Session-static names cannot conflict; cognitive package bindings remain on the separately persisted Knowledge/session boundary; delegated children keep isolated prompt context |
+| `HOST-CONTEXT1` | Delivered | Core projects general `ContextProvider` values into each Run-frozen Agent configuration through the same atomic batch | N Runs retain N providers and the exact N Use lease across N+1; descriptor/provider names and Session-static names cannot conflict; package bindings remain on the separately persisted Knowledge/session boundary; delegated children keep isolated prompt context |
 | `HOST-FLOW1` | Delivered | With `dynamic-workflow`, Core projects each named `FlowBinding` as one exact `WorkflowSpec` plus `FlowEngine` and exposes it through a non-clone host handle | Spec/engine runtime-build incompatibility and descriptor/spec name drift fail before publication; an N handle retains N's definition, engine/store, and exact Use lease across N+1; missing lookup acquires no lease; Session close cancels active replay and explicit close releases the lease; thin/default builds do not link `a3s-flow` |
-| `HOST-KNOWLEDGE1` | Delivered | Core projects multiple digest-bound, non-queryable Knowledge Surface readiness values while admitting at most one separately selected cognitive Knowledge authority into each Run | Same-source Flow dependencies close only against exact surface evidence; surface values never become cognitive context; N Runs retain N provider, binding, readiness set, and exact Use lease across N+1; each Run snapshot records its own cognitive binding while the Session snapshot records the next-Run binding; resume requires an exact bootstrap; multiple or ambient general Context authorities fail before publication |
+| `HOST-KNOWLEDGE1` | Delivered | Core projects multiple digest-bound, non-queryable Knowledge Surface readiness values while admitting at most one separately selected package Knowledge authority into each Run | Same-source Flow dependencies close only against exact surface evidence; surface values never become package context; N Runs retain N provider, binding, readiness set, and exact Use lease across N+1; each Run snapshot records its own package binding while the Session snapshot records the next-Run binding; resume requires an exact bootstrap; multiple or ambient general Context authorities fail before publication |
 | `HOST-UI1` | Delivered | Core projects bounded, path-free `UiBinding` values and exposes them through a non-clone host handle | Reviewed entry, style, and script bytes plus their content digests are frozen before publication; descriptor/binding name or digest drift and dependencies outside Tool, Skill, MCP, and Flow fail closed; an N handle retains N's exact document and Use lease across N+1; missing lookup acquires no lease; Session close cancels active host use; renderer policy remains host-owned |
 | `CODE-APOFASI1` | Delivered | Opt-in Apofasi System One substrate (`TypedDecisionEngine`, `TypedDecisionService`, `decide_and_gate`, digest `TypedDecisionReceiptV1`, `GatePolicy`, Advanced `typed_decisions` inventory, `CodeError::TypedDecision`) behind Cargo features `apofasi` / `apofasi-infer` / `apofasi-metal`. When enabled, Code refuses to replace planning pre-analysis and goal achievement | Thin `local-code` builds do not link Apofasi; empty requests fail closed; lexical path needs no weights; neural path stays feature-gated; the system prompt is unchanged; a typed answer cannot skip a generation that returns more than one field; call sites refuse that skip; Code does not add a keyword classifier and does not lower `GatePolicy`; the escalate prompt includes the task state; extra call sites stay host-owned; no Use-projected `CapabilityKind` yet (`HOST-APOFASI` remains future work) |
 | `CAP-GA1` | Delivered | Legacy shadow ownership and piecemeal reconciliation removed; durable-memory bindings are Active-recall only (`HARNESS-CONV4`) | Official hosts and SDKs use the scoped architecture and Active recall; shadow mode constructors/mode are gone |
@@ -1075,11 +1075,11 @@ blocking and streaming slash-command dispatch to that admission boundary.
 supervised observations to that same Run. `HOST-MCP1` adds exact-client MCP
 bindings, reversible connection effects, and delegated inheritance without
 moving Use route or package lifecycle into Code. `HOST-CONTEXT1` adds general
-Run-frozen Context providers while rejecting cognitive-package authority on
+Run-frozen Context providers while rejecting package authority on
 that path. `HOST-FLOW1` adds a named exact spec/engine pair and non-clone host
 execution handle without taking Flow's native lifecycle. `HOST-KNOWLEDGE1`
 adds multi-instance non-queryable Knowledge Surface readiness plus at most one
-exact cognitive provider/binding pair per Run and Run-local/next-Run
+exact package provider/binding pair per Run and Run-local/next-Run
 persistence evidence without taking OKF or query-lease ownership.
 `HOST-UI1` adds bounded, content-addressed renderer-neutral documents and an
 exact host handle without taking renderer policy or state ownership. A3S Use
@@ -1087,7 +1087,7 @@ and the CLI now supply versioned managed MCP and UI dependency evidence plus
 eligible managed MCP, Skill, Runtime Tool, Knowledge Surface, dependency-closed Flow, and UI
 atomic projection. The one-shot host also supplies lazy trusted HTTP
 Runtime/Gateway composition and closes the Gateway only after the Session.
-Explicit package-bound cognitive-session adaptation, renderer adoption, and
+Explicit package-bound package-session adaptation, renderer adoption, and
 remaining official hosts are separate integration work; dynamic multi-scope
 OKF search stays outside the readiness value plane.
 Host integration must use the atomic Core

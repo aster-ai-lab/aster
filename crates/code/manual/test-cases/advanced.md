@@ -45,18 +45,18 @@ Host language service. Feature: host provides the service. Tools:
 - **Fail:** outside path returned to the model.
 - **Home:** `core/src/tools/builtin/code_intelligence/tests.rs` `registration_is_capability_gated_and_tools_are_structured_query_reads`. Registry execution of `../outside.rs` returns `Workspace boundary check failed` and does not call the provider.
 
-## cognitive_packages (CP)
+## packages (CP)
 
 Host supplies cited knowledge generations.
 
 ### U-CP-01
 
-- **Invariant:** with no host binding, `session.cognitive_package_binding` fail-closes and recall does not invent a package.
+- **Invariant:** with no host binding, `session.package_binding` fail-closes and recall does not invent a package.
 - **Pre:** default session, no host.
 - **Stimulus:** read current binding and ask context assembly for package text.
 - **Oracle:** binding absent; prompt contains no package body.
 - **Fail:** an empty package id is treated as bound.
-- **Home:** `core/src/agent_api/tests/cognitive.rs` `unbound_session_does_not_invent_a_cognitive_package`. Both binding accessors are `None`, so no package body is installed.
+- **Home:** `core/src/agent_api/tests/package.rs` `unbound_session_does_not_invent_a_package`. Both binding accessors are `None`, so no package body is installed.
 
 ### U-CP-02
 
@@ -65,7 +65,7 @@ Host supplies cited knowledge generations.
 - **Stimulus:** read binding and the injected context.
 - **Oracle:** generation id G; bytes match G's digest.
 - **Fail:** G+1 text in the prompt.
-- **Home:** `cognitive_provider_failure_and_generation_drift_fail_closed_without_fallback` in `core/src/agent_api/tests/cognitive.rs`. `DriftGeneration` increments the provider generation; the turn fails closed, the model is not called, and no recalled-memory event is recorded.
+- **Home:** `package_provider_failure_and_generation_drift_fail_closed_without_fallback` in `core/src/agent_api/tests/package.rs`. `DriftGeneration` increments the provider generation; the turn fails closed, the model is not called, and no recalled-memory event is recorded.
 
 ### I-CP-01
 
@@ -74,7 +74,7 @@ Host supplies cited knowledge generations.
 - **Stimulus:** assemble again.
 - **Oracle:** G digest absent; G+1 digest present.
 - **Fail:** both bodies present.
-- **Home:** Product bind keeps one generation. A different generation returns `RunCognitiveBindingError::Conflict` and does not replace G. Proven by `soak_alternating_cognitive_binds_keep_one_generation` in `core/src/run/tests/run_cognitive_binding_soak.rs` (`#[ignore]`). Host CAR stays external.
+- **Home:** Product bind keeps one generation. A different generation returns `RunPackageBindingError::Conflict` and does not replace G. Proven by `soak_alternating_binds_keep_one_generation` in `core/src/run/tests/run_package_binding_soak.rs` (`#[ignore]`). Host CAR stays external.
 
 Host CAR qualification (CAR-01…05) stays external. These cases do not replace it.
 

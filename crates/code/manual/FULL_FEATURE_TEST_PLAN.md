@@ -177,7 +177,7 @@ cargo test -p a3s-code-core --lib sdk_capabilities -- --nocapture
 | Capability ID | Feature / host | Unit / hermetic | Live / external |
 | --- | --- | --- | --- |
 | `code_intelligence` | host language service | fake LSP integ + tool unit | PERF CI profile |
-| `cognitive_packages` | Use host injection | capability_set / projection | host CAR / Use |
+| `packages` | Use host injection | capability_set / projection | host CAR / Use |
 | `use_runtime_tasks` | Use host injection | capability scope / Use lease | host |
 | `programmable_workflows` | `advanced-harness` (`dynamic-workflow`) | dynamic_workflow_* | extensibility live |
 | `state_graph` | `advanced-harness` | `test_state_graph_integration` | PERF replay |

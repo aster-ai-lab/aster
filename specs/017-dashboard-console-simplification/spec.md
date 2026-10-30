@@ -44,7 +44,7 @@ An official-platform operator opens a separate Administration area and accesses 
 
 A user sees one clear primary action per page, restrained content hierarchy, readable tables and forms, useful empty/error states, and no inert selection or decorative complexity. Keyboard, touch, narrow-window and Chinese/English experiences follow the same product contract.
 
-**Why this priority**: UI/UX refinement must reduce cognitive load rather than add another visual theme. Current screens mix multiple card groups, dense controls, nested navigation and selection bars without real batch work.
+**Why this priority**: UI/UX refinement must reduce package load rather than add another visual theme. Current screens mix multiple card groups, dense controls, nested navigation and selection bars without real batch work.
 
 **Independent Test**: Component and browser tests verify the collection contract, actual keyboard/focus flows, 320 CSS-pixel reflow where supported, reduced motion, long translations, real loading/empty/no-match/error states, and no native picker or edge-sliding dialog. Visual review covers the reference viewport matrix.
 

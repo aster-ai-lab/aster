@@ -6,7 +6,7 @@
 
 #[cfg(test)]
 use super::{
-    agent_loop_runtime::{build_pinned_agent_loop, cognitive_binding_for_projection},
+    agent_loop_runtime::{build_pinned_agent_loop, package_binding_for_projection},
     runtime_checkpoints::runtime_checkpoint_channel,
 };
 use super::{

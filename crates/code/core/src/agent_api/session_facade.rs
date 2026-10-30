@@ -7,10 +7,7 @@ impl std::fmt::Debug for AgentSession {
             .field("session_id", &self.session_id)
             .field("workspace", &self.workspace.display().to_string())
             .field("task_priority", &self.task_priority)
-            .field(
-                "cognitive_package_binding",
-                &self.current_cognitive_package_binding(),
-            )
+            .field("package_binding", &self.current_package_binding())
             .field("auto_save", &self.auto_save)
             .finish()
     }
@@ -197,29 +194,25 @@ impl AgentSession {
         self.correlation_id.as_deref()
     }
 
-    /// Return the Session-static cognitive-package binding, if configured.
+    /// Return the Session-static package binding, if configured.
     ///
     /// This compatibility accessor does not observe a later atomic Knowledge
     /// projection. New host code should use
-    /// [`current_cognitive_package_binding`](Self::current_cognitive_package_binding).
-    pub fn cognitive_package_binding(
-        &self,
-    ) -> Option<&crate::cognitive_context::CognitivePackageBindingV1> {
-        self.cognitive_context
+    /// [`current_package_binding`](Self::current_package_binding).
+    pub fn package_binding(&self) -> Option<&crate::package_context::PackageBindingV1> {
+        self.package_context
             .as_ref()
-            .map(crate::cognitive_context::CognitiveContextSession::binding)
+            .map(crate::package_context::PackageContextSession::binding)
     }
 
-    /// Return the exact cognitive-package binding visible to the next Run.
+    /// Return the exact package binding visible to the next Run.
     ///
     /// The returned value is owned because the current atomic catalog
     /// generation is pinned only for this read. An admitted Run records its
     /// own binding and remains on that generation across later cutover.
-    pub fn current_cognitive_package_binding(
-        &self,
-    ) -> Option<crate::cognitive_context::CognitivePackageBindingV1> {
+    pub fn current_package_binding(&self) -> Option<crate::package_context::PackageBindingV1> {
         let projection = self.capability_catalog.pin();
-        super::agent_loop_runtime::cognitive_binding_for_projection(self, projection.projection())
+        super::agent_loop_runtime::package_binding_for_projection(self, projection.projection())
     }
 
     /// Proactively close the session and release its in-flight work.

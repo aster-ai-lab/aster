@@ -193,7 +193,7 @@ fn package_okf_target(
             &format!("version        = \"{version}\""),
         )
         .replace(
-            "sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d",
+            "sha256:94337d238614cca3cd27fcd29d1eab7360c9b3a4205fbb67eaeffd8dfedea3bc",
             &inspection.content_digest,
         )
         .replace(
@@ -558,7 +558,7 @@ fn package_flow_target_version(
   okf "domain" {{
     format_version         = "0.2"
     root                   = "okf/domain"
-    content_digest         = "sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a"
+    content_digest         = "sha256:e31b30c51ea1b2b6dae65b0b7cc50351780e0939f40b1145c436b24608bc0e65"
     concept_count          = 1
     file_count             = 2
     expanded_bytes         = 427

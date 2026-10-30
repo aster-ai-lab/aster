@@ -186,10 +186,10 @@ extension "a3s/mock-compose" {
   okf "domain" {
     format_version         = "0.2"
     root                   = "okf/domain"
-    content_digest         = "sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a"
+    content_digest         = "sha256:e31b30c51ea1b2b6dae65b0b7cc50351780e0939f40b1145c436b24608bc0e65"
     concept_count          = 1
     file_count             = 2
-    expanded_bytes         = 427
+    expanded_bytes         = 408
     max_files              = 64
     max_concepts           = 32
     max_expanded_bytes     = 1048576
@@ -234,20 +234,20 @@ cat >"${OUT_ROOT}/packages/mock-compose/mcp/context" <<'EOF'
 exit 0
 EOF
 chmod 755 "${OUT_ROOT}/packages/mock-compose/mcp/context"
-# OKF bundle bytes must match the pinned content_digest above (cognitive fixture).
+# OKF bundle bytes must match the pinned content_digest above (package fixture).
 cat >"${OUT_ROOT}/packages/mock-compose/okf/domain/index.md" <<'EOF'
 ---
 okf_version: "0.2"
 ---
 
-# Cognitive package knowledge
+#  package knowledge
 
 - [Lifecycle](concepts/lifecycle.md) - One generation owns every plugin surface.
 EOF
 cat >"${OUT_ROOT}/packages/mock-compose/okf/domain/concepts/lifecycle.md" <<'EOF'
 ---
 type: Project-Specific Decision
-title: Atomic cognitive package lifecycle
+title: Atomic package lifecycle
 description: Tool, MCP, OKF, Flow, Skill, and UI contributions activate as one package generation.
 status: stable
 ---

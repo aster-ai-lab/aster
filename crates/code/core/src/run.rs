@@ -82,13 +82,13 @@ pub struct RunSnapshot {
     pub session_id: String,
     pub status: RunStatus,
     pub prompt: String,
-    /// Exact cognitive Knowledge binding frozen at Run admission.
+    /// Exact package Knowledge binding frozen at Run admission.
     ///
     /// The non-serializable provider and query lease stay in the Run-owned
     /// capability projection. This identity remains durable even when old
     /// events are FIFO-trimmed or the Session catalog advances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cognitive_package_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+    pub package_binding: Option<crate::package_context::PackageBindingV1>,
     /// Complete scoped capability identity frozen at Run admission.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capability_binding: Option<crate::capability::RunCapabilityBindingV1>,
@@ -165,14 +165,14 @@ pub struct RunEventPage {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-pub enum RunCognitiveBindingError {
+pub enum RunPackageBindingError {
     #[error("run was not found")]
     RunNotFound,
-    #[error("cognitive binding is invalid: {0}")]
+    #[error("package binding is invalid: {0}")]
     InvalidBinding(String),
-    #[error("run has already crossed its cognitive binding admission boundary")]
+    #[error("run has already crossed its package binding admission boundary")]
     AlreadyObserved,
-    #[error("run cognitive binding conflicts with immutable admission evidence")]
+    #[error("run package binding conflicts with immutable admission evidence")]
     Conflict,
 }
 
@@ -213,7 +213,7 @@ impl RunSnapshot {
             session_id,
             status: RunStatus::Created,
             prompt,
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: None,
             created_at_ms: now,
             updated_at_ms: now,
@@ -448,29 +448,29 @@ impl InMemoryRunStore {
         self.runs.read().await.get(run_id).cloned()
     }
 
-    /// Bind the exact cognitive generation before the Run can emit events.
+    /// Bind the exact package generation before the Run can emit events.
     /// Exact replay is idempotent; late or conflicting writes fail closed.
-    pub async fn bind_cognitive_package(
+    pub async fn bind_package(
         &self,
         run_id: &str,
-        binding: crate::cognitive_context::CognitivePackageBindingV1,
-    ) -> Result<RunSnapshot, RunCognitiveBindingError> {
+        binding: crate::package_context::PackageBindingV1,
+    ) -> Result<RunSnapshot, RunPackageBindingError> {
         binding
             .validate()
-            .map_err(|error| RunCognitiveBindingError::InvalidBinding(error.to_string()))?;
+            .map_err(|error| RunPackageBindingError::InvalidBinding(error.to_string()))?;
         let mut runs = self.runs.write().await;
         let run = runs
             .get_mut(run_id)
-            .ok_or(RunCognitiveBindingError::RunNotFound)?;
-        match &run.cognitive_package_binding {
+            .ok_or(RunPackageBindingError::RunNotFound)?;
+        match &run.package_binding {
             Some(existing) if existing == &binding => return Ok(run.clone()),
-            Some(_) => return Err(RunCognitiveBindingError::Conflict),
+            Some(_) => return Err(RunPackageBindingError::Conflict),
             None => {}
         }
         if run.event_count != 0 || run.status != RunStatus::Created {
-            return Err(RunCognitiveBindingError::AlreadyObserved);
+            return Err(RunPackageBindingError::AlreadyObserved);
         }
-        run.cognitive_package_binding = Some(binding);
+        run.package_binding = Some(binding);
         run.updated_at_ms = now_ms().max(run.updated_at_ms);
         Ok(run.clone())
     }

@@ -923,15 +923,15 @@ fn okf_only_catalog() -> PluginCatalogRecord {
     record.archive.target_name =
         "extensions/acme/knowledge/1.0.0/stable/linux-x86_64/acme-knowledge-1.0.0-linux-x86_64.tar.gz"
             .to_owned();
-    record.archive.length = 1_838;
+    record.archive.length = 1_827;
     record.archive.sha256 =
-        "sha256:b9bd4d35c77237ad6408ba09716fa1392ed71f34d6776f438bcb26c77e9fa0ac".to_owned();
-    record.package.expanded_bytes = 3_366;
+        "sha256:ff9428e9e20366a3191653bd79c5b113c46a50ee11586dff225a213eb6bad6d0".to_owned();
+    record.package.expanded_bytes = 3_354;
     record.package.file_count = 10;
     record.package.sha256 =
-        Some("sha256:e030e6e8c3afa6383536b4973395e12b05257d2b7b10bf042f3bfaf71b420fe2".to_owned());
+        Some("sha256:c2622e496d6fb116a5ff5703f9f4de0e72fedc2923ee7c2294b9423b72081c3e".to_owned());
     record.package.manifest_sha256 =
-        Some("sha256:16d065341edebaf45e0d633e46614155a60b853738290bbac8c5b62d9230bce2".to_owned());
+        Some("sha256:95177d0daca2cda715ce9f7b901dec882edd13dad8215691b98ff2f5b05a0960".to_owned());
     record.repository = "https://github.com/acme/knowledge".to_owned();
     record.validate().unwrap();
     record

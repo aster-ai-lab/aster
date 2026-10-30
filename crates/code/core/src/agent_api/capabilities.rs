@@ -598,8 +598,8 @@ fn build_context_providers(
     skill_registry: Arc<SkillRegistry>,
 ) -> Vec<Arc<dyn ContextProvider>> {
     let mut providers = opts.context_providers.clone();
-    if let Some(cognitive_context) = &opts.cognitive_context {
-        providers.push(Arc::new(cognitive_context.clone()));
+    if let Some(package_context) = &opts.package_context {
+        providers.push(Arc::new(package_context.clone()));
     }
     if let Some(sandbox) = &opts.sandbox_handle {
         providers.push(Arc::new(crate::context::SandboxContextProvider::new(

@@ -292,12 +292,12 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
         tier: CapabilityTier::Advanced,
     },
     CapabilitySpec {
-        id: "cognitive_packages",
+        id: "packages",
         category: "context",
-        description: "Bind exact cited cognitive knowledge generations supplied by an authoritative host.",
+        description: "Bind exact cited package knowledge generations supplied by an authoritative host.",
         operations: &[
-            "session.cognitive_package_binding",
-            "session.current_cognitive_package_binding",
+            "session.package_binding",
+            "session.current_package_binding",
         ],
         host_owned: true,
         tier: CapabilityTier::Advanced,

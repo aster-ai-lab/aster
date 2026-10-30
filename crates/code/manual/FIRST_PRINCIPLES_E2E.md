@@ -171,7 +171,7 @@ lowered gate, or a prompt rewrite after a red run.
 | CX-5 | Typed decision then one generation | `typed_decisions` | Default `GatePolicy` unchanged; escalate still calls the pinned model; the label is not the oracle | existing `typed_decision_layer_c` |
 | CX-6 | Question parked | `conversation`, fact log | No `question.answered` fact until the host answers. Not a live prompt that begs the model to ask | existing hermetic `fact_log_question_stays_parked_until_the_answer_fact` |
 
-`priority_scheduling`, `code_intelligence`, `cognitive_packages`,
+`priority_scheduling`, `code_intelligence`, `packages`,
 `use_runtime_tasks`, `s3_workspace`, `opentelemetry`, and `moli_runtime`
 stay on the hermetic or host gate in `FULL_FEATURE_TEST_PLAN.md`. A model
 suite is not added for them.

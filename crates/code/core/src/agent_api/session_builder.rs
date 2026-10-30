@@ -508,7 +508,7 @@ fn finish_agent_session(
             .tool_result_transform_policy
             .clone()
             .unwrap_or_default(),
-        cognitive_context: opts.cognitive_context.clone(),
+        package_context: opts.package_context.clone(),
         host_context_provider_names,
         workspace: canonical,
         session_id,

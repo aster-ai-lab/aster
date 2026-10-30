@@ -1,4 +1,4 @@
-//! Exact-generation cognitive-package context injected by an embedding host.
+//! Exact-generation package context injected by an embedding host.
 //!
 //! A3S Code deliberately does not install packages, resolve Registry state, or
 //! choose a "latest" generation. The host supplies a provider and one complete
@@ -16,17 +16,16 @@ use std::collections::HashSet;
 use std::sync::Arc;
 use thiserror::Error;
 
-pub const COGNITIVE_PACKAGE_BINDING_SCHEMA: &str = "a3s.code.cognitive-package-session-binding.v1";
-pub const COGNITIVE_KNOWLEDGE_BINDING_SCHEMA: &str =
-    "agentic.ontology.r0-knowledge-lease-binding.v1";
-pub const COGNITIVE_CONTEXT_REQUEST_SCHEMA: &str = "a3s.code.cognitive-context-request.v1";
-pub const COGNITIVE_CONTEXT_RESPONSE_SCHEMA: &str = "a3s.code.cognitive-context-response.v1";
-pub const COGNITIVE_CONTEXT_REQUEST_DIGEST_DOMAIN: &str = "a3s.code.cognitive-context-request.v1";
+pub const PACKAGE_BINDING_SCHEMA: &str = "a3s.code.package-session-binding.v1";
+pub const KNOWLEDGE_BINDING_SCHEMA: &str = "agentic.ontology.r0-knowledge-lease-binding.v1";
+pub const PACKAGE_CONTEXT_REQUEST_SCHEMA: &str = "a3s.code.package-context-request.v1";
+pub const PACKAGE_CONTEXT_RESPONSE_SCHEMA: &str = "a3s.code.package-context-response.v1";
+pub const PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN: &str = "a3s.code.package-context-request.v1";
 pub const OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA: &str = "a3s.use.okf-knowledge-search-request.v1";
 pub const OKF_KNOWLEDGE_READ_REQUEST_SCHEMA: &str = "a3s.use.okf-knowledge-read-request.v1";
 pub const OKF_KNOWLEDGE_CITATION_SCHEMA: &str = "a3s.use.okf-knowledge-citation.v1";
-pub const COGNITIVE_CITATION_METADATA: &str = "a3s.cognitive.citation";
-pub const COGNITIVE_PACKAGE_BINDING_METADATA: &str = "a3s.cognitive.package_binding";
+pub const CITATION_METADATA: &str = "a3s.citation";
+pub const PACKAGE_BINDING_METADATA: &str = "a3s.package_binding";
 
 const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.use.capability-snapshot.v1";
 const CANONICAL_DIGEST_PREFIX: &[u8] = b"agentic-ontology-canonical-v1\0";
@@ -42,27 +41,27 @@ const MAX_CONTEXT_RESULTS: usize = 4;
 const MAX_CONTEXT_DOCUMENT_BYTES: usize = 6 * 1024;
 const MAX_CONTEXT_TOTAL_BYTES: usize = 6 * 1024;
 
-/// Validation failures at the Code-owned cognitive context boundary.
+/// Validation failures at the Code-owned package context boundary.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
-pub enum CognitiveContextError {
-    #[error("invalid cognitive package binding: {0}")]
+pub enum PackageContextError {
+    #[error("invalid package binding: {0}")]
     InvalidBinding(String),
-    #[error("invalid cognitive context limits: {0}")]
+    #[error("invalid package context limits: {0}")]
     InvalidLimits(String),
-    #[error("invalid cognitive context request: {0}")]
+    #[error("invalid package context request: {0}")]
     InvalidRequest(String),
-    #[error("cognitive context provider failed: {0}")]
+    #[error("package context provider failed: {0}")]
     Provider(String),
-    #[error("cognitive context response drifted: {0}")]
+    #[error("package context response drifted: {0}")]
     ResponseDrift(String),
 }
 
-pub type CognitiveContextResult<T> = std::result::Result<T, CognitiveContextError>;
+pub type PackageContextResult<T> = std::result::Result<T, PackageContextError>;
 
 /// Exact A3S Use Knowledge surface visible to this Code session.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveKnowledgeBindingV1 {
+pub struct KnowledgeBindingV1 {
     pub schema: String,
     pub surface_id: String,
     pub format_version: String,
@@ -74,16 +73,16 @@ pub struct CognitiveKnowledgeBindingV1 {
     pub generation_digest: String,
 }
 
-impl CognitiveKnowledgeBindingV1 {
+impl KnowledgeBindingV1 {
     pub fn new(
         surface_id: impl Into<String>,
         format_version: impl Into<String>,
         content_digest: impl Into<String>,
         lifecycle_generation: u64,
         generation_digest: impl Into<String>,
-    ) -> CognitiveContextResult<Self> {
+    ) -> PackageContextResult<Self> {
         let binding = Self {
-            schema: COGNITIVE_KNOWLEDGE_BINDING_SCHEMA.to_string(),
+            schema: KNOWLEDGE_BINDING_SCHEMA.to_string(),
             surface_id: surface_id.into(),
             format_version: format_version.into(),
             content_digest: content_digest.into(),
@@ -97,8 +96,8 @@ impl CognitiveKnowledgeBindingV1 {
         Ok(binding)
     }
 
-    pub fn validate(&self) -> CognitiveContextResult<()> {
-        if self.schema != COGNITIVE_KNOWLEDGE_BINDING_SCHEMA
+    pub fn validate(&self) -> PackageContextResult<()> {
+        if self.schema != KNOWLEDGE_BINDING_SCHEMA
             || self.search_schema != OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA
             || self.read_schema != OKF_KNOWLEDGE_READ_REQUEST_SCHEMA
             || self.citation_schema != OKF_KNOWLEDGE_CITATION_SCHEMA
@@ -130,18 +129,18 @@ impl CognitiveKnowledgeBindingV1 {
 /// Prompt-injection bounds frozen into the durable session binding.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveContextLimits {
+pub struct PackageContextLimits {
     pub max_results: usize,
     pub max_document_bytes: usize,
     pub max_total_bytes: usize,
 }
 
-impl CognitiveContextLimits {
+impl PackageContextLimits {
     pub fn new(
         max_results: usize,
         max_document_bytes: usize,
         max_total_bytes: usize,
-    ) -> CognitiveContextResult<Self> {
+    ) -> PackageContextResult<Self> {
         let limits = Self {
             max_results,
             max_document_bytes,
@@ -151,19 +150,19 @@ impl CognitiveContextLimits {
         Ok(limits)
     }
 
-    pub fn validate(&self) -> CognitiveContextResult<()> {
+    pub fn validate(&self) -> PackageContextResult<()> {
         if self.max_results == 0 || self.max_results > MAX_CONTEXT_RESULTS {
-            return Err(CognitiveContextError::InvalidLimits(format!(
+            return Err(PackageContextError::InvalidLimits(format!(
                 "max_results must be between 1 and {MAX_CONTEXT_RESULTS}"
             )));
         }
         if self.max_document_bytes == 0 || self.max_document_bytes > MAX_CONTEXT_DOCUMENT_BYTES {
-            return Err(CognitiveContextError::InvalidLimits(format!(
+            return Err(PackageContextError::InvalidLimits(format!(
                 "max_document_bytes must be between 1 and {MAX_CONTEXT_DOCUMENT_BYTES}"
             )));
         }
         if self.max_total_bytes == 0 || self.max_total_bytes > MAX_CONTEXT_TOTAL_BYTES {
-            return Err(CognitiveContextError::InvalidLimits(format!(
+            return Err(PackageContextError::InvalidLimits(format!(
                 "max_total_bytes must be between 1 and {MAX_CONTEXT_TOTAL_BYTES}"
             )));
         }
@@ -171,7 +170,7 @@ impl CognitiveContextLimits {
     }
 }
 
-impl Default for CognitiveContextLimits {
+impl Default for PackageContextLimits {
     fn default() -> Self {
         Self {
             max_results: MAX_CONTEXT_RESULTS,
@@ -184,18 +183,18 @@ impl Default for CognitiveContextLimits {
 /// Durable exact-generation identity attached to one A3S Code session.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitivePackageBindingV1 {
+pub struct PackageBindingV1 {
     pub schema: String,
     pub package_id: String,
     pub package_version: String,
     pub lifecycle_generation: u64,
     pub generation_digest: String,
     pub capability_snapshot_digest: String,
-    pub knowledge: CognitiveKnowledgeBindingV1,
-    pub limits: CognitiveContextLimits,
+    pub knowledge: KnowledgeBindingV1,
+    pub limits: PackageContextLimits,
 }
 
-impl CognitivePackageBindingV1 {
+impl PackageBindingV1 {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         package_id: impl Into<String>,
@@ -203,11 +202,11 @@ impl CognitivePackageBindingV1 {
         lifecycle_generation: u64,
         generation_digest: impl Into<String>,
         capability_snapshot_digest: impl Into<String>,
-        knowledge: CognitiveKnowledgeBindingV1,
-        limits: CognitiveContextLimits,
-    ) -> CognitiveContextResult<Self> {
+        knowledge: KnowledgeBindingV1,
+        limits: PackageContextLimits,
+    ) -> PackageContextResult<Self> {
         let binding = Self {
-            schema: COGNITIVE_PACKAGE_BINDING_SCHEMA.to_string(),
+            schema: PACKAGE_BINDING_SCHEMA.to_string(),
             package_id: package_id.into(),
             package_version: package_version.into(),
             lifecycle_generation,
@@ -220,8 +219,8 @@ impl CognitivePackageBindingV1 {
         Ok(binding)
     }
 
-    pub fn validate(&self) -> CognitiveContextResult<()> {
-        if self.schema != COGNITIVE_PACKAGE_BINDING_SCHEMA {
+    pub fn validate(&self) -> PackageContextResult<()> {
+        if self.schema != PACKAGE_BINDING_SCHEMA {
             return Err(invalid_binding("session binding schema is unsupported"));
         }
         if !valid_package_id(&self.package_id) {
@@ -262,25 +261,25 @@ impl CognitivePackageBindingV1 {
     }
 }
 
-/// One exact request from Code to the host-injected cognitive provider.
+/// One exact request from Code to the host-injected package provider.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveContextRequestV1 {
+pub struct PackageContextRequestV1 {
     pub schema: String,
     pub session_id: String,
     pub query: String,
-    pub binding: CognitivePackageBindingV1,
+    pub binding: PackageBindingV1,
     pub request_digest: String,
 }
 
-impl CognitiveContextRequestV1 {
+impl PackageContextRequestV1 {
     pub fn new(
         session_id: impl Into<String>,
         query: impl Into<String>,
-        binding: CognitivePackageBindingV1,
-    ) -> CognitiveContextResult<Self> {
+        binding: PackageBindingV1,
+    ) -> PackageContextResult<Self> {
         let mut request = Self {
-            schema: COGNITIVE_CONTEXT_REQUEST_SCHEMA.to_string(),
+            schema: PACKAGE_CONTEXT_REQUEST_SCHEMA.to_string(),
             session_id: session_id.into(),
             query: query.into(),
             binding,
@@ -291,9 +290,9 @@ impl CognitiveContextRequestV1 {
         Ok(request)
     }
 
-    pub fn validate(&self) -> CognitiveContextResult<()> {
+    pub fn validate(&self) -> PackageContextResult<()> {
         self.binding.validate()?;
-        if self.schema != COGNITIVE_CONTEXT_REQUEST_SCHEMA
+        if self.schema != PACKAGE_CONTEXT_REQUEST_SCHEMA
             || !valid_machine_id(&self.session_id, 256)
             || self.query.trim() != self.query
             || self.query.is_empty()
@@ -303,21 +302,21 @@ impl CognitiveContextRequestV1 {
                 .chars()
                 .any(|character| character.is_control() && !matches!(character, '\n' | '\t'))
         {
-            return Err(CognitiveContextError::InvalidRequest(
+            return Err(PackageContextError::InvalidRequest(
                 "request schema, session, or query is invalid or unbounded".to_string(),
             ));
         }
         if self.request_digest != self.digest()? {
-            return Err(CognitiveContextError::InvalidRequest(
+            return Err(PackageContextError::InvalidRequest(
                 "request digest does not bind the exact query and session generation".to_string(),
             ));
         }
         Ok(())
     }
 
-    fn digest(&self) -> CognitiveContextResult<String> {
+    fn digest(&self) -> PackageContextResult<String> {
         canonical_digest(
-            COGNITIVE_CONTEXT_REQUEST_DIGEST_DOMAIN,
+            PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN,
             &(
                 self.schema.as_str(),
                 self.session_id.as_str(),
@@ -331,7 +330,7 @@ impl CognitiveContextRequestV1 {
 /// Use-owned citation projected into the cross-project R0 carrier.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveKnowledgeCitationV1 {
+pub struct KnowledgeCitationV1 {
     pub schema: String,
     pub package_id: String,
     pub package_version: String,
@@ -345,14 +344,14 @@ pub struct CognitiveKnowledgeCitationV1 {
     pub citation_digest: String,
 }
 
-impl CognitiveKnowledgeCitationV1 {
+impl KnowledgeCitationV1 {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        binding: &CognitivePackageBindingV1,
+        binding: &PackageBindingV1,
         document_path: impl Into<String>,
         heading: impl Into<String>,
         evidence_ids: Vec<String>,
-    ) -> CognitiveContextResult<Self> {
+    ) -> PackageContextResult<Self> {
         let mut citation = Self {
             schema: OKF_KNOWLEDGE_CITATION_SCHEMA.to_string(),
             package_id: binding.package_id.clone(),
@@ -371,7 +370,7 @@ impl CognitiveKnowledgeCitationV1 {
         Ok(citation)
     }
 
-    pub fn validate_for(&self, binding: &CognitivePackageBindingV1) -> CognitiveContextResult<()> {
+    pub fn validate_for(&self, binding: &PackageBindingV1) -> PackageContextResult<()> {
         binding.validate()?;
         if self.schema != OKF_KNOWLEDGE_CITATION_SCHEMA
             || self.package_id != binding.package_id
@@ -405,7 +404,7 @@ impl CognitiveKnowledgeCitationV1 {
         Ok(())
     }
 
-    fn digest(&self) -> CognitiveContextResult<String> {
+    fn digest(&self) -> PackageContextResult<String> {
         canonical_digest(
             OKF_KNOWLEDGE_CITATION_SCHEMA,
             &(
@@ -426,18 +425,18 @@ impl CognitiveKnowledgeCitationV1 {
 /// One complete bounded Markdown read and its unchanged citation.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveContextDocumentV1 {
-    pub citation: CognitiveKnowledgeCitationV1,
+pub struct PackageContextDocumentV1 {
+    pub citation: KnowledgeCitationV1,
     pub source_digest: String,
     pub content: String,
     pub byte_count: usize,
 }
 
-impl CognitiveContextDocumentV1 {
+impl PackageContextDocumentV1 {
     pub fn new(
-        citation: CognitiveKnowledgeCitationV1,
+        citation: KnowledgeCitationV1,
         content: impl Into<String>,
-    ) -> CognitiveContextResult<Self> {
+    ) -> PackageContextResult<Self> {
         let content = content.into();
         let document = Self {
             citation,
@@ -446,12 +445,12 @@ impl CognitiveContextDocumentV1 {
             content,
         };
         if document.content.is_empty() {
-            return Err(response_drift("cognitive document is empty"));
+            return Err(response_drift("package document is empty"));
         }
         Ok(document)
     }
 
-    fn validate_for(&self, request: &CognitiveContextRequestV1) -> CognitiveContextResult<()> {
+    fn validate_for(&self, request: &PackageContextRequestV1) -> PackageContextResult<()> {
         self.citation.validate_for(&request.binding)?;
         if self.content.is_empty()
             || self.byte_count != self.content.len()
@@ -470,22 +469,22 @@ impl CognitiveContextDocumentV1 {
 /// Exact response that Code validates before converting it to prompt context.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CognitiveContextResponseV1 {
+pub struct PackageContextResponseV1 {
     pub schema: String,
     pub request_digest: String,
-    pub binding: CognitivePackageBindingV1,
-    pub documents: Vec<CognitiveContextDocumentV1>,
+    pub binding: PackageBindingV1,
+    pub documents: Vec<PackageContextDocumentV1>,
     pub truncated: bool,
 }
 
-impl CognitiveContextResponseV1 {
+impl PackageContextResponseV1 {
     pub fn new(
-        request: &CognitiveContextRequestV1,
-        documents: Vec<CognitiveContextDocumentV1>,
+        request: &PackageContextRequestV1,
+        documents: Vec<PackageContextDocumentV1>,
         truncated: bool,
-    ) -> CognitiveContextResult<Self> {
+    ) -> PackageContextResult<Self> {
         let response = Self {
-            schema: COGNITIVE_CONTEXT_RESPONSE_SCHEMA.to_string(),
+            schema: PACKAGE_CONTEXT_RESPONSE_SCHEMA.to_string(),
             request_digest: request.request_digest.clone(),
             binding: request.binding.clone(),
             documents,
@@ -495,10 +494,10 @@ impl CognitiveContextResponseV1 {
         Ok(response)
     }
 
-    pub fn validate_for(&self, request: &CognitiveContextRequestV1) -> CognitiveContextResult<()> {
+    pub fn validate_for(&self, request: &PackageContextRequestV1) -> PackageContextResult<()> {
         request.validate()?;
         self.binding.validate()?;
-        if self.schema != COGNITIVE_CONTEXT_RESPONSE_SCHEMA
+        if self.schema != PACKAGE_CONTEXT_RESPONSE_SCHEMA
             || self.request_digest != request.request_digest
             || self.binding != request.binding
             || self.documents.is_empty()
@@ -524,7 +523,7 @@ impl CognitiveContextResponseV1 {
         }
         if total_bytes > request.binding.limits.max_total_bytes {
             return Err(response_drift(
-                "response exceeds the session's total cognitive context byte bound",
+                "response exceeds the session's total package context byte bound",
             ));
         }
         Ok(())
@@ -535,47 +534,47 @@ impl CognitiveContextResponseV1 {
 /// Knowledge lease; Code sees only bounded cited reads and never the Registry,
 /// package filesystem, ontology graph, or a personal-memory fallback.
 #[async_trait::async_trait]
-pub trait CognitiveContextProvider: Send + Sync {
+pub trait PackageContextProvider: Send + Sync {
     fn name(&self) -> &str;
 
     async fn query(
         &self,
-        request: &CognitiveContextRequestV1,
-    ) -> CognitiveContextResult<CognitiveContextResponseV1>;
+        request: &PackageContextRequestV1,
+    ) -> PackageContextResult<PackageContextResponseV1>;
 }
 
 /// Runtime pairing of one durable binding with one non-serializable host port.
 #[derive(Clone)]
-pub struct CognitiveContextSession {
-    binding: CognitivePackageBindingV1,
-    provider: Arc<dyn CognitiveContextProvider>,
+pub struct PackageContextSession {
+    binding: PackageBindingV1,
+    provider: Arc<dyn PackageContextProvider>,
 }
 
-impl std::fmt::Debug for CognitiveContextSession {
+impl std::fmt::Debug for PackageContextSession {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
-            .debug_struct("CognitiveContextSession")
+            .debug_struct("PackageContextSession")
             .field("binding", &self.binding)
             .field("provider", &self.provider.name())
             .finish()
     }
 }
 
-impl CognitiveContextSession {
+impl PackageContextSession {
     pub fn new(
-        binding: CognitivePackageBindingV1,
-        provider: Arc<dyn CognitiveContextProvider>,
-    ) -> CognitiveContextResult<Self> {
+        binding: PackageBindingV1,
+        provider: Arc<dyn PackageContextProvider>,
+    ) -> PackageContextResult<Self> {
         binding.validate()?;
         if !valid_plain_value(provider.name(), MAX_PROVIDER_NAME_BYTES) {
-            return Err(CognitiveContextError::Provider(
+            return Err(PackageContextError::Provider(
                 "provider name is empty, unbounded, or contains control characters".to_string(),
             ));
         }
         Ok(Self { binding, provider })
     }
 
-    pub fn binding(&self) -> &CognitivePackageBindingV1 {
+    pub fn binding(&self) -> &PackageBindingV1 {
         &self.binding
     }
 
@@ -585,7 +584,7 @@ impl CognitiveContextSession {
 }
 
 #[async_trait::async_trait]
-impl ContextProvider for CognitiveContextSession {
+impl ContextProvider for PackageContextSession {
     fn name(&self) -> &str {
         self.provider.name()
     }
@@ -594,21 +593,21 @@ impl ContextProvider for CognitiveContextSession {
         ContextProviderFailureMode::FailClosed
     }
 
-    fn cognitive_package_binding(&self) -> Option<&CognitivePackageBindingV1> {
+    fn package_binding(&self) -> Option<&PackageBindingV1> {
         Some(&self.binding)
     }
 
     async fn query(&self, query: &ContextQuery) -> anyhow::Result<ContextResult> {
         if !query.context_types.is_empty() && !query.context_types.contains(&ContextType::Resource)
         {
-            return Err(CognitiveContextError::InvalidRequest(
-                "cognitive packages expose cited resources only".to_string(),
+            return Err(PackageContextError::InvalidRequest(
+                "packages expose cited resources only".to_string(),
             )
             .into());
         }
         let session_id = query.session_id.as_deref().unwrap_or_default();
         let request =
-            CognitiveContextRequestV1::new(session_id, query.query.clone(), self.binding.clone())?;
+            PackageContextRequestV1::new(session_id, query.query.clone(), self.binding.clone())?;
         let response = self.provider.query(&request).await?;
         response.validate_for(&request)?;
 
@@ -619,7 +618,7 @@ impl ContextProvider for CognitiveContextSession {
             let binding_json = serde_json::to_value(&self.binding)?;
             let source_digest = document.source_digest.clone();
             let rendered = format!(
-                "[cognitive citation={} document={} heading={}]\n\n{}",
+                "[package citation={} document={} heading={}]\n\n{}",
                 document.citation.citation_digest,
                 document.citation.document_path,
                 document.citation.heading,
@@ -641,10 +640,10 @@ impl ContextProvider for CognitiveContextSession {
                         .strip_prefix("sha256:")
                         .unwrap_or(&document.citation.citation_digest)
                 ))
-                .with_metadata(COGNITIVE_CITATION_METADATA, citation_json)
-                .with_metadata(COGNITIVE_PACKAGE_BINDING_METADATA, binding_json)
-                .with_metadata("a3s.cognitive.source_digest", source_digest.into())
-                .with_provenance("a3s-use-cognitive-package")
+                .with_metadata(CITATION_METADATA, citation_json)
+                .with_metadata(PACKAGE_BINDING_METADATA, binding_json)
+                .with_metadata("a3s.package.source_digest", source_digest.into())
+                .with_provenance("a3s-use-package")
                 .with_priority(1.0)
                 .with_trust(1.0)
                 .with_freshness(1.0)
@@ -656,9 +655,7 @@ impl ContextProvider for CognitiveContextSession {
     }
 }
 
-fn capability_snapshot_digest(
-    binding: &CognitivePackageBindingV1,
-) -> CognitiveContextResult<String> {
+fn capability_snapshot_digest(binding: &PackageBindingV1) -> PackageContextResult<String> {
     canonical_digest(
         CAPABILITY_SNAPSHOT_DIGEST_DOMAIN,
         &(
@@ -679,8 +676,8 @@ pub(crate) fn package_binding_for_generation(
     lifecycle_generation: u64,
     generation_digest: &str,
     content_digest: &str,
-) -> CognitivePackageBindingV1 {
-    let knowledge = CognitiveKnowledgeBindingV1::new(
+) -> PackageBindingV1 {
+    let knowledge = KnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         content_digest,
@@ -688,8 +685,8 @@ pub(crate) fn package_binding_for_generation(
         generation_digest,
     )
     .expect("knowledge binding");
-    let mut binding = CognitivePackageBindingV1 {
-        schema: COGNITIVE_PACKAGE_BINDING_SCHEMA.to_string(),
+    let mut binding = PackageBindingV1 {
+        schema: PACKAGE_BINDING_SCHEMA.to_string(),
         package_id: "contra-sense/handbook".to_string(),
         package_version: package_version.to_string(),
         lifecycle_generation,
@@ -697,7 +694,7 @@ pub(crate) fn package_binding_for_generation(
         capability_snapshot_digest:
             "sha256:0000000000000000000000000000000000000000000000000000000000000000".to_string(),
         knowledge,
-        limits: CognitiveContextLimits::default(),
+        limits: PackageContextLimits::default(),
     };
     binding.capability_snapshot_digest =
         capability_snapshot_digest(&binding).expect("snapshot digest");
@@ -708,9 +705,9 @@ pub(crate) fn package_binding_for_generation(
 fn canonical_digest<T: Serialize + ?Sized>(
     domain: &str,
     value: &T,
-) -> CognitiveContextResult<String> {
+) -> PackageContextResult<String> {
     let encoded = serde_json::to_vec(value).map_err(|error| {
-        CognitiveContextError::InvalidBinding(format!(
+        PackageContextError::InvalidBinding(format!(
             "canonical identity could not be serialized: {error}"
         ))
     })?;
@@ -727,12 +724,12 @@ fn sha256(bytes: &[u8]) -> String {
     format!("sha256:{:x}", Sha256::digest(bytes))
 }
 
-fn invalid_binding(message: impl Into<String>) -> CognitiveContextError {
-    CognitiveContextError::InvalidBinding(message.into())
+fn invalid_binding(message: impl Into<String>) -> PackageContextError {
+    PackageContextError::InvalidBinding(message.into())
 }
 
-fn response_drift(message: impl Into<String>) -> CognitiveContextError {
-    CognitiveContextError::ResponseDrift(message.into())
+fn response_drift(message: impl Into<String>) -> PackageContextError {
+    PackageContextError::ResponseDrift(message.into())
 }
 
 fn valid_sha256(value: &str) -> bool {
@@ -798,39 +795,36 @@ mod tests {
         format!("sha256:{}", format!("{byte:02x}").repeat(32))
     }
 
-    fn binding() -> CognitivePackageBindingV1 {
+    fn binding() -> PackageBindingV1 {
         let knowledge =
-            CognitiveKnowledgeBindingV1::new("domain-knowledge", "0.2", digest(1), 7, digest(2))
-                .unwrap();
-        let mut binding = CognitivePackageBindingV1 {
-            schema: COGNITIVE_PACKAGE_BINDING_SCHEMA.to_string(),
+            KnowledgeBindingV1::new("domain-knowledge", "0.2", digest(1), 7, digest(2)).unwrap();
+        let mut binding = PackageBindingV1 {
+            schema: PACKAGE_BINDING_SCHEMA.to_string(),
             package_id: "contra-sense/handbook".to_string(),
             package_version: "0.1.0".to_string(),
             lifecycle_generation: 7,
             generation_digest: digest(2),
             capability_snapshot_digest: String::new(),
             knowledge,
-            limits: CognitiveContextLimits::default(),
+            limits: PackageContextLimits::default(),
         };
         binding.capability_snapshot_digest = capability_snapshot_digest(&binding).unwrap();
         binding.validate().unwrap();
         binding
     }
 
-    fn response(request: &CognitiveContextRequestV1) -> CognitiveContextResponseV1 {
-        let citation = CognitiveKnowledgeCitationV1::new(
+    fn response(request: &PackageContextRequestV1) -> PackageContextResponseV1 {
+        let citation = KnowledgeCitationV1::new(
             &request.binding,
             "concepts/retry-policy.md",
             "Retry policy",
             vec![digest(3)],
         )
         .unwrap();
-        let document = CognitiveContextDocumentV1::new(
-            citation,
-            "Retry only before an observable side effect.",
-        )
-        .unwrap();
-        CognitiveContextResponseV1::new(request, vec![document], false).unwrap()
+        let document =
+            PackageContextDocumentV1::new(citation, "Retry only before an observable side effect.")
+                .unwrap();
+        PackageContextResponseV1::new(request, vec![document], false).unwrap()
     }
 
     #[test]
@@ -840,34 +834,34 @@ mod tests {
         unpinned.knowledge.lifecycle_generation = 0;
         assert!(matches!(
             unpinned.validate(),
-            Err(CognitiveContextError::InvalidBinding(_))
+            Err(PackageContextError::InvalidBinding(_))
         ));
 
         let mut drifted = binding();
         drifted.knowledge.content_digest = digest(9);
         assert!(matches!(
             drifted.validate(),
-            Err(CognitiveContextError::InvalidBinding(_))
+            Err(PackageContextError::InvalidBinding(_))
         ));
     }
 
     #[test]
     fn response_rejects_generation_citation_and_source_drift() {
-        let request = CognitiveContextRequestV1::new("session-1", "retry", binding()).unwrap();
+        let request = PackageContextRequestV1::new("session-1", "retry", binding()).unwrap();
 
         let mut generation = response(&request);
         generation.binding.lifecycle_generation += 1;
         assert!(matches!(
             generation.validate_for(&request),
-            Err(CognitiveContextError::ResponseDrift(_))
-                | Err(CognitiveContextError::InvalidBinding(_))
+            Err(PackageContextError::ResponseDrift(_))
+                | Err(PackageContextError::InvalidBinding(_))
         ));
 
         let mut citation = response(&request);
         citation.documents[0].citation.heading = "Substituted".to_string();
         assert!(matches!(
             citation.validate_for(&request),
-            Err(CognitiveContextError::ResponseDrift(_))
+            Err(PackageContextError::ResponseDrift(_))
         ));
 
         let mut source = response(&request);
@@ -875,31 +869,31 @@ mod tests {
         source.documents[0].byte_count = source.documents[0].content.len();
         assert!(matches!(
             source.validate_for(&request),
-            Err(CognitiveContextError::ResponseDrift(_))
+            Err(PackageContextError::ResponseDrift(_))
         ));
     }
 
     #[test]
     fn response_rejects_empty_duplicate_and_unbounded_documents() {
-        let request = CognitiveContextRequestV1::new("session-1", "retry", binding()).unwrap();
-        assert!(CognitiveContextResponseV1::new(&request, Vec::new(), false).is_err());
+        let request = PackageContextRequestV1::new("session-1", "retry", binding()).unwrap();
+        assert!(PackageContextResponseV1::new(&request, Vec::new(), false).is_err());
 
         let valid = response(&request);
         let duplicate = vec![valid.documents[0].clone(), valid.documents[0].clone()];
-        assert!(CognitiveContextResponseV1::new(&request, duplicate, false).is_err());
+        assert!(PackageContextResponseV1::new(&request, duplicate, false).is_err());
 
-        let citation = CognitiveKnowledgeCitationV1::new(
+        let citation = KnowledgeCitationV1::new(
             &request.binding,
             "concepts/large.md",
             "Large",
             vec![digest(4)],
         )
         .unwrap();
-        let large = CognitiveContextDocumentV1::new(
+        let large = PackageContextDocumentV1::new(
             citation,
             "x".repeat(request.binding.limits.max_document_bytes + 1),
         )
         .unwrap();
-        assert!(CognitiveContextResponseV1::new(&request, vec![large], false).is_err());
+        assert!(PackageContextResponseV1::new(&request, vec![large], false).is_err());
     }
 }

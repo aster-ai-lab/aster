@@ -31,7 +31,7 @@ impl std::fmt::Debug for SessionOptions {
             .field("llm_client", &self.llm_client.is_some())
             .field("context_providers", &self.context_providers.len())
             .field("isolated_context", &self.isolated_context)
-            .field("cognitive_context", &self.cognitive_context)
+            .field("package_context", &self.package_context)
             .field("confirmation_manager", &self.confirmation_manager.is_some())
             .field("permission_checker", &self.permission_checker.is_some())
             .field("permission_policy", &self.permission_policy.is_some())
@@ -218,17 +218,17 @@ impl SessionOptions {
         self
     }
 
-    /// Bind this session to one exact A3S Use cognitive-package generation.
+    /// Bind this session to one exact A3S Use package generation.
     ///
     /// The supplied runtime value contains a serializable immutable binding
     /// and a host-owned provider. On restart the host must inject the same
     /// binding again; Code never resolves `latest`, opens a package path, or
     /// substitutes graph/personal-memory context.
-    pub fn with_cognitive_context(
+    pub fn with_package_context(
         mut self,
-        context: crate::cognitive_context::CognitiveContextSession,
+        context: crate::package_context::PackageContextSession,
     ) -> Self {
-        self.cognitive_context = Some(context);
+        self.package_context = Some(context);
         self
     }
 

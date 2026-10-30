@@ -1,3 +1,3 @@
 # Research Toolkit
 
-Fixture cognitive package containing Tool, MCP, Skill, and UI contributions.
+Fixture package containing Tool, MCP, Skill, and UI contributions.

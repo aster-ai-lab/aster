@@ -85,9 +85,9 @@ pub mod budget;
 pub mod capability;
 pub(crate) mod child_run;
 pub mod code_intelligence;
-pub mod cognitive_context;
 pub mod commands;
 pub(crate) mod compaction;
+pub mod package_context;
 #[doc(hidden)]
 pub use compaction::{compaction_system_prompt, render_message_for_summary};
 pub(crate) mod compaction_carry;
@@ -260,17 +260,6 @@ pub use code_intelligence::{
     NavigationKind, SymbolInformation, WorkspaceCodeIntelligence,
 };
 #[doc(hidden)]
-pub use cognitive_context::{
-    CognitiveContextDocumentV1, CognitiveContextError, CognitiveContextLimits,
-    CognitiveContextProvider, CognitiveContextRequestV1, CognitiveContextResponseV1,
-    CognitiveContextResult, CognitiveContextSession, CognitiveKnowledgeBindingV1,
-    CognitiveKnowledgeCitationV1, CognitivePackageBindingV1,
-    COGNITIVE_CONTEXT_REQUEST_DIGEST_DOMAIN, COGNITIVE_CONTEXT_REQUEST_SCHEMA,
-    COGNITIVE_CONTEXT_RESPONSE_SCHEMA, COGNITIVE_KNOWLEDGE_BINDING_SCHEMA,
-    COGNITIVE_PACKAGE_BINDING_SCHEMA, OKF_KNOWLEDGE_CITATION_SCHEMA,
-    OKF_KNOWLEDGE_READ_REQUEST_SCHEMA, OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA,
-};
-#[doc(hidden)]
 pub use completion_attestor::{merge_attested_report, CompletionAttestor, MutatedPathRecord};
 #[doc(hidden)]
 pub use config::OsConfig;
@@ -430,6 +419,16 @@ pub use orchestration::{
     WorkflowStepRecord, WORKFLOW_CHECKPOINT_SCHEMA_VERSION,
 };
 pub use orchestration::{execute_steps_parallel_resumable, AgentStepSpec};
+#[doc(hidden)]
+pub use package_context::{
+    KnowledgeBindingV1, KnowledgeCitationV1, PackageBindingV1, PackageContextDocumentV1,
+    PackageContextError, PackageContextLimits, PackageContextProvider, PackageContextRequestV1,
+    PackageContextResponseV1, PackageContextResult, PackageContextSession,
+    KNOWLEDGE_BINDING_SCHEMA, OKF_KNOWLEDGE_CITATION_SCHEMA, OKF_KNOWLEDGE_READ_REQUEST_SCHEMA,
+    OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA, PACKAGE_BINDING_SCHEMA,
+    PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN, PACKAGE_CONTEXT_REQUEST_SCHEMA,
+    PACKAGE_CONTEXT_RESPONSE_SCHEMA,
+};
 #[doc(hidden)]
 pub use prompts::{
     infer_user_reply_language, output_language_contract, resolve_product_output_language,

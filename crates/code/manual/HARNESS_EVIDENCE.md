@@ -297,7 +297,7 @@ bytes. Golden integration evidence pins all four identities.
 Export rejects an incompatible Session or loop schema, a zero-round resume,
 foreign Session ownership, an absent source Run, or a source Run that is
 already terminal. A logical resume also requires the portable Session's
-cognitive binding to equal the source Run's frozen binding; this rejects a
+package binding to equal the source Run's frozen binding; this rejects a
 mixed N/N+1 artifact even though an ordinary Session save may legitimately
 sample the binding visible to the next Run. `from_parts()` validates descriptor
 self-digests before bounded parsing, requires byte-for-byte canonical
@@ -312,7 +312,7 @@ A Rust host can inject `SessionCheckpointExportSink` through `SessionOptions`
 to receive the canonical artifact directly from a live blocking or streaming
 Run. Code keeps the boundary marker internal: after the Tool round it closes
 the capability Turn, drains preceding agent and runtime events, reads the
-source Run's frozen cognitive authority, captures one semantic generation, and
+source Run's frozen package authority, captures one semantic generation, and
 pairs it with the loop-owned logical value. If a `SessionStore` is also
 configured, its raw loop-checkpoint write and the host export observe the same
 logical value; no store is required for export. Code awaits both handoffs before
@@ -468,9 +468,9 @@ receipt is applied.
   authorize its payload as Session/Tool content, and return only after the
   host-required durability level is reached. Do not treat the callback as a
   distributed CAS or checkpoint-lineage authority.
-- Re-inject the source Run's exact cognitive provider when restoring a logical
+- Re-inject the source Run's exact package provider when restoring a logical
   checkpoint. A payload whose Session view and source Run name different
-  cognitive generations is invalid.
+  package generations is invalid.
 - Investigate a capability digest change during a run: expected causes include
   retrieval moving from building to ready or a new catalog/vector generation.
 - Compare source and presented token estimates to measure a Profile's context

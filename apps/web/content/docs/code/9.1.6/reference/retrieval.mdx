@@ -44,7 +44,7 @@ Rust 宿主使用 `EmbeddingProvider`、`WorkspaceRetrievalOptions`、`with_work
 
 `code_symbols`、`code_navigation`、`code_diagnostics`、`code_format` 需要宿主提供权威语言服务。没有服务时，模型不能用同名提示补出这个能力。查询和修改都应绑定文档版本；版本已变化时刷新再操作。
 
-`cognitive_package_binding()` 和 `current_cognitive_package_binding()` 返回宿主已绑定的认知包身份。它不是任意插件加载器。`use_runtime_task` 同样需要宿主的 Use 任务 provider、能力范围和生命周期，不能因为目录里有任务说明就宣布可执行。
+`package_binding()` 和 `current_package_binding()` 返回宿主已绑定的包身份。它不是任意插件加载器。`use_runtime_task` 同样需要宿主的 Use 任务 provider、能力范围和生命周期，不能因为目录里有任务说明就宣布可执行。
 
 ## 验收
 
@@ -55,5 +55,5 @@ Rust 宿主使用 `EmbeddingProvider`、`WorkspaceRetrievalOptions`、`with_work
 - [工作区检索](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/workspace)
 - [Embedding 合同](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/embedding)
 - [代码智能合同](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/code_intelligence)
-- [认知包与 Use 任务](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/cognitive_context.rs)
+- [包与 Use 任务](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/package_context.rs)
 - [网页工具](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/tools/builtin)

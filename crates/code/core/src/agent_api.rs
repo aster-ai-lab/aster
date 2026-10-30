@@ -277,12 +277,12 @@ pub struct SessionOptions {
     pub context_providers: Vec<Arc<dyn crate::context::ContextProvider>>,
     /// Exclude skills, discovered instructions and persistent memory from this session.
     pub isolated_context: bool,
-    /// One exact-generation cognitive package supplied by the embedding host.
+    /// One exact-generation package supplied by the embedding host.
     ///
     /// This is separate from general-purpose RAG providers: Code persists the
     /// immutable package binding and treats provider failure as fatal. The host
     /// retains A3S Use lease, Registry, installation, and lifecycle authority.
-    pub cognitive_context: Option<crate::cognitive_context::CognitiveContextSession>,
+    pub package_context: Option<crate::package_context::PackageContextSession>,
     /// Optional confirmation manager for HITL
     pub confirmation_manager: Option<Arc<dyn crate::hitl::ConfirmationProvider>>,
     /// Optional confirmation policy (will be used to create ConfirmationManager if confirmation_manager is not set)
@@ -641,7 +641,7 @@ pub struct AgentSession {
     config: AgentConfig,
     tool_result_transform_policy: crate::tools::ToolResultTransformPolicyV1,
     /// Host provider plus the durable exact-generation package binding.
-    cognitive_context: Option<crate::cognitive_context::CognitiveContextSession>,
+    package_context: Option<crate::package_context::PackageContextSession>,
     /// General-purpose providers supplied by the embedding host before Code
     /// adds its own workspace-instruction and Skill-catalog providers.
     /// Projected Knowledge must not silently compose with this ambient RAG
