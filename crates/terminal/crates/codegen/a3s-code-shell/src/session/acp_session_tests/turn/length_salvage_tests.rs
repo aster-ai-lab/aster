@@ -1,7 +1,6 @@
 //! Integration tests that run the real turn loop against a scripted Chat Completions backend whose responses end with `finish_reason: "length"`.
 //!
-//! There is deliberately no test of the default agent with the env gate ON: env mutation is process-global and racy in the parallel test binary.
-//! That case gains coverage when the RemoteSettings gate makes the budget injectable.
+//! Default and remote-kill cases use actor settings without mutating process-global environment.
 use super::support::*;
 use super::*;
 use a3s_code_test_support::sse::chat_completion_script_exact;
@@ -95,6 +94,17 @@ async fn salvage_test_actor_on_backend(
     context_window: u64,
     backend: a3s_code_sampling_types::ApiBackend,
 ) -> Arc<SessionActor> {
+    salvage_test_actor_on_backend_with_budget(server, total_tokens, context_window, backend, None)
+        .await
+}
+/// [`salvage_test_actor_on_backend`] with a spawn-resolved remote budget (the kill switch is `Some(0)`).
+async fn salvage_test_actor_on_backend_with_budget(
+    server: &MockInferenceServer,
+    total_tokens: u64,
+    context_window: u64,
+    backend: a3s_code_sampling_types::ApiBackend,
+    remote_budget: Option<u32>,
+) -> Arc<SessionActor> {
     let sampling_cfg = a3s_code_sampler::SamplerConfig {
         api_key: Some("test-key".to_string()),
         base_url: server.url(),
@@ -123,6 +133,7 @@ async fn salvage_test_actor_on_backend(
     let mut actor =
         create_test_actor(total_tokens, context_window, 85, gateway_tx, persistence_tx).await;
     actor.sampler_handle = sampler_handle;
+    actor.length_salvage_remote_budget = remote_budget;
     let mut cfg = actor
         .chat_state_handle
         .get_sampling_config()
@@ -198,7 +209,11 @@ fn remote_budget_wires_into_the_resolver() {
                 tokio::sync::mpsc::unbounded_channel::<PersistenceMsg>();
             drain_persistence(persistence_rx);
             let mut actor = create_test_actor(0, 256_000, 85, gateway_tx, persistence_tx).await;
-            assert_eq!(actor.length_salvage_budget(), None, "off by default");
+            assert_eq!(
+                actor.length_salvage_budget(),
+                Some(2),
+                "the built-in default budget applies when no tier sets one"
+            );
             actor.length_salvage_remote_budget = Some(9);
             assert_eq!(
                 actor.length_salvage_budget(),
@@ -231,10 +246,77 @@ fn remote_settings_length_salvage_budget_serde_cells() {
             .expect("kill value");
     assert_eq!(set.length_salvage_budget, Some(0));
 }
-/// Default agent with the gate off (no env var): a Length response is the legacy non-retryable hard failure.
-/// This is the safety property that nothing changes for production default agents until the rollout flag lands.
+
 #[test]
-fn default_agent_gate_off_hard_fails_on_length() {
+fn default_shell_continues_a_length_cut_without_rollout_settings() {
+    assert_eq!(a3s_code_config::env_bool("GROK_LENGTH_SALVAGE"), None);
+    block_on_session(|| {
+        current_thread_local(async {
+            let server = MockInferenceServer::start().await.expect("mock server");
+            server.enqueue_response("/v1/chat/completions", length_sse("one, two, three,"));
+            server.enqueue_response("/v1/chat/completions", stop_sse("four, five, six."));
+            let actor = salvage_test_actor(&server).await;
+            let outcome = run_prompt(&actor, "default-length-continue")
+                .await
+                .expect("the default shell must continue the cut answer");
+            assert_eq!(outcome.stop_reason, acp::StopReason::EndTurn);
+            assert_eq!(server.request_count_for("/v1/chat/completions"), 2);
+            let conversation = actor.chat_state_handle.get_conversation().await;
+            let text = conversation
+                .iter()
+                .map(|item| item.text_content())
+                .collect::<Vec<_>>()
+                .join("\n");
+            let partial = text.find("one, two, three,").expect("partial answer");
+            let complete = text.find("four, five, six.").expect("continued answer");
+            assert!(partial < complete);
+            assert_eq!(text.matches(REMINDER_MARKER).count(), 1);
+            let requests = server.request_bodies();
+            assert_eq!(
+                requests
+                    .last()
+                    .expect("continuation request")
+                    .to_string()
+                    .matches(REMINDER_MARKER)
+                    .count(),
+                1,
+            );
+        });
+    });
+}
+
+#[test]
+fn default_shell_stops_after_two_length_continuations() {
+    assert_eq!(a3s_code_config::env_bool("GROK_LENGTH_SALVAGE"), None);
+    block_on_session(|| {
+        current_thread_local(async {
+            let server = MockInferenceServer::start().await.expect("mock server");
+            for text in ["one,", "two,", "three,"] {
+                server.enqueue_response("/v1/chat/completions", length_sse(text));
+            }
+            server.enqueue_response("/v1/chat/completions", stop_sse("must not be requested"));
+            let actor = salvage_test_actor(&server).await;
+            let outcome = run_prompt(&actor, "default-length-budget")
+                .await
+                .expect("budget exhaustion must settle as truncated");
+            assert_eq!(outcome.stop_reason, acp::StopReason::MaxTokens);
+            assert_eq!(server.request_count_for("/v1/chat/completions"), 3);
+            let conversation = actor.chat_state_handle.get_conversation().await;
+            let text = conversation
+                .iter()
+                .map(|item| item.text_content())
+                .collect::<Vec<_>>()
+                .join("\n");
+            assert_eq!(text.matches(REMINDER_MARKER).count(), 1);
+            assert!(!text.contains("must not be requested"));
+        });
+    });
+}
+
+/// With the kill switch on (remote budget 0), a Length response is the legacy non-retryable hard failure.
+/// This is the safety property that an explicit off still hard-fails even though salvage is on by default.
+#[test]
+fn kill_switch_on_hard_fails_on_length() {
     if a3s_code_config::env_bool("GROK_LENGTH_SALVAGE") == Some(true) {
         panic!("ambient GROK_LENGTH_SALVAGE=1 would flip the gate under test");
     }
@@ -242,9 +324,16 @@ fn default_agent_gate_off_hard_fails_on_length() {
         current_thread_local(async {
             let server = MockInferenceServer::start().await.expect("mock server");
             server.enqueue_response("/v1/chat/completions", length_sse("one, two, three,"));
-            let actor = salvage_test_actor(&server).await;
+            let actor = salvage_test_actor_on_backend_with_budget(
+                &server,
+                0,
+                256_000,
+                a3s_code_sampling_types::ApiBackend::ChatCompletions,
+                Some(0),
+            )
+            .await;
             let outcome = run_prompt(&actor, "length-gate-off").await;
-            let err = outcome.expect_err("gate off: Length must hard-fail the turn");
+            let err = outcome.expect_err("kill switch on: Length must hard-fail the turn");
             let err_str = format!("{err:?}");
             assert!(
                 err_str.contains("max_tokens") || err_str.contains("max tokens"),
@@ -254,7 +343,7 @@ fn default_agent_gate_off_hard_fails_on_length() {
             let all_text: Vec<String> = conv.iter().map(|i| i.text_content()).collect();
             assert!(
                 !all_text.iter().any(|t| t.contains(REMINDER_MARKER)),
-                "no continue reminder without the gate: {all_text:#?}"
+                "no continue reminder under the kill switch: {all_text:#?}"
             );
         });
     });

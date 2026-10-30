@@ -456,7 +456,7 @@ pub struct RemoteSettings {
     /// Length-salvage continue budget for `max_tokens`-truncated turns.
     /// `Some(0)` is explicit off and kills every tier, including the
     /// always-on cursor one and the `GROK_LENGTH_SALVAGE` env opt-in.
-    /// Otherwise: cursor tier > env opt-in > this field > off. See
+    /// Otherwise: cursor tier > env opt-in > this field > the built-in default budget. See
     /// `session::acp_session_impl::length_salvage`.
     #[serde(default)]
     pub length_salvage_budget: Option<u32>,

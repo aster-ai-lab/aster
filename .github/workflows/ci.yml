@@ -125,6 +125,8 @@ jobs:
           done
       - name: Product and runtime tests
         run: cargo test --locked -p aster -p a3s-acl -p a3s-effect
+      - name: Shell bounded continuation contracts
+        run: env -u GROK_LENGTH_SALVAGE cargo test --locked -p a3s-code-shell --lib length_salvage -- --test-threads=1
       - name: Studio native contracts
         run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
       - name: ACP integration

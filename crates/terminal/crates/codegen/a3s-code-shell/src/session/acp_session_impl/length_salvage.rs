@@ -15,7 +15,7 @@ pub(super) const LENGTH_CONTINUE_REMINDER_BODY: &str = "Your previous response e
 
 /// Pure form of [`SessionActor::length_salvage_budget`].
 /// Kill switches are absolute and outrank every tier, including the always-on cursor one: an explicit `GROK_LENGTH_SALVAGE=0` locally, and the remote `length_salvage_budget = 0` fleet-wide.
-/// Otherwise the precedence is cursor, then env opt-in, then remote budget, then off.
+/// Otherwise the precedence is cursor, then env opt-in, then remote budget, then the built-in default budget.
 pub(super) fn resolve_length_salvage_budget(
     is_cursor: bool,
     env: Option<bool>,
@@ -30,12 +30,12 @@ pub(super) fn resolve_length_salvage_budget(
     if env == Some(true) {
         return Some(DEFAULT_LENGTH_CONTINUE_BUDGET);
     }
-    remote
+    Some(remote.unwrap_or(DEFAULT_LENGTH_CONTINUE_BUDGET))
 }
 
 impl SessionActor {
     /// `Some(budget)` salvages Length truncations (partial commit and bounded continues); `None` hard-fails.
-    /// Always on when [`SessionActor::is_cursor_agent`]; otherwise the `GROK_LENGTH_SALVAGE` env var (debug override), then the `length_salvage_budget` remote setting.
+    /// Always on when [`SessionActor::is_cursor_agent`]; otherwise the `GROK_LENGTH_SALVAGE` env var (debug override), then the `length_salvage_budget` remote setting, then the built-in default budget.
     pub(super) fn length_salvage_budget(&self) -> Option<u32> {
         resolve_length_salvage_budget(
             self.is_cursor_agent(),
@@ -233,8 +233,12 @@ mod tests {
     }
 
     #[test]
-    fn disabled_without_cursor_or_env() {
-        assert_eq!(resolve_length_salvage_budget(false, None, None), None);
+    fn default_budget_applies_without_cursor_or_env() {
+        assert_eq!(
+            resolve_length_salvage_budget(false, None, None),
+            Some(DEFAULT_LENGTH_CONTINUE_BUDGET),
+            "Shell sessions without rollout settings use the built-in continuation budget"
+        );
     }
 
     #[test]

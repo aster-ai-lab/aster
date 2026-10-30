@@ -1,0 +1,57 @@
+{
+  "archive": "checks.tar.gz",
+  "bytes": 13889,
+  "sha256": "beef1f3e31268dc85a93796854a12de4ce89d49067a2c97a1f194d2318d42097",
+  "entries": [
+    {
+      "path": "pr21-default-before.log",
+      "bytes": 16320,
+      "sha256": "f348ffbaf0236c18cd28732f52cf9d184784bbbcb6a1dae88f83aa719091afdc"
+    },
+    {
+      "path": "pr21-default-before.json",
+      "bytes": 484,
+      "sha256": "709d44a26aa0f977c6e19d816febb9a92cd96e31b3c51e6f6a7940eeb478be5a"
+    },
+    {
+      "path": "pr21-before-continue-alone.log",
+      "bytes": 1244,
+      "sha256": "cdda53bcc61bd775c8b1e61dd2d0a9067bbe20f98eb7ab9363db0757ba2405ac"
+    },
+    {
+      "path": "pr21-before-budget-alone.log",
+      "bytes": 1196,
+      "sha256": "be40220baf44539dc7062163fd41aceab25cc190afad10f3334ffe8a56a5e32b"
+    },
+    {
+      "path": "pr21-before-isolated.json",
+      "bytes": 976,
+      "sha256": "ea473d2d91ef38a7d2ce73fea3cc13a5141b9ac1b11a1d86044a3dd1a5a04ee3"
+    },
+    {
+      "path": "pr21-main56-length-after.log",
+      "bytes": 21624,
+      "sha256": "54c9d2c08816361e84164910023f161e2b6e7f4d24fddf358fb037df31858f9a"
+    },
+    {
+      "path": "pr21-final-length-after.log",
+      "bytes": 13573,
+      "sha256": "12b52f02fb73ce5f567a16a760659f6c082b1692ebda469a69c5db3f218aa3d4"
+    },
+    {
+      "path": "pr21-main56-clippy.log",
+      "bytes": 38210,
+      "sha256": "83c9a3e87889e7ea1d51d9ad66c89c8e34270490405a4f18493027509c7dd7d3"
+    },
+    {
+      "path": "pr21-final-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 1596,
+      "sha256": "b0caa5c334eb32becda380ceea73ded3983bbffe30f337f0f2b5f8a395199b14"
+    }
+  ]
+}

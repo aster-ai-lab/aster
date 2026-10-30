@@ -1,0 +1,24 @@
+{
+  "integratedMain": "19300db7df6fa799441fd455c5949b3f875176eb",
+  "studio": "999db5ac8627bdbc966ba86f117c3689167b994e",
+  "workflow": ".github/workflows/ci.yml",
+  "workflowSha256": "28530a831672fa3fef5d9cb780328872d8cc46058ff4878e9c8277eecb2ac414",
+  "ciCommand": "env -u GROK_LENGTH_SALVAGE cargo test --locked -p a3s-code-shell --lib length_salvage -- --test-threads=1",
+  "sourceHashesUnchangedFromPassing22CaseReceipt": {
+    "crates/terminal/crates/codegen/a3s-code-config-types/src/lib.rs": "f85befd34b008277146cfc231a6e20abd92bb83ea751594fe40d7f04d0a3f4bc",
+    "crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_session_impl/length_salvage.rs": "b7cc03634bd55d4cb9be7d99443ac0fbe27979f83f52989afae86bbbf45436b1",
+    "crates/terminal/crates/codegen/a3s-code-shell/src/session/acp_session_tests/turn/length_salvage_tests.rs": "635495dde056ec89bf96d577adc20a4d8d4b1f2334bc1ce45f34cac38f2390f5"
+  },
+  "yamlCheck": {
+    "command": [
+      "ruby",
+      "-e",
+      "require \"yaml\"; YAML.parse_file(ARGV.fetch(0)); puts \"CI YAML parsed\"",
+      ".github/workflows/ci.yml"
+    ],
+    "exitCode": 0,
+    "stdout": "CI YAML parsed\n",
+    "stderr": ""
+  },
+  "remoteQualification": "pending push; no pass claimed"
+}
