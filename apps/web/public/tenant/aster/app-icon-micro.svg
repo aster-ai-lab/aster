@@ -13,13 +13,13 @@
   </defs>
   <use href="#plate" fill="url(#plate)"/>
   <use href="#plate" fill="none" stroke="#DCEAFF" stroke-opacity=".22" stroke-width="6"/>
-  
+
   <g transform="rotate(-26 512 522)">
     <ellipse cx="512" cy="522" rx="366" ry="138" fill="none"
       stroke="#E4EEFB" stroke-opacity=".42" stroke-width="36"/>
   </g>
-  
-  
+
+
   <g transform="translate(512.0 513.0) scale(1.16) translate(-512.0 -513.0)">
     <path d="M512 177C557 379 589 430 756 507C589 552 554 616 512 850C470 616 435 552 268 507C435 430 467 379 512 177Z" fill="url(#star)"/>
     <g transform="translate(512 513.0) scale(1.22) translate(-512 -513.0)">

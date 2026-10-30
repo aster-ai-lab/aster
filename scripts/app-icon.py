@@ -174,7 +174,7 @@ def build_svg(detail: str) -> str:
 """
     )
 
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS}" height="{CANVAS}" viewBox="0 0 {CANVAS} {CANVAS}" role="img">
+    body = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS}" height="{CANVAS}" viewBox="0 0 {CANVAS} {CANVAS}" role="img">
   <title>Aster</title>
   <desc>A silver four-point star with a blue diamond core on a tilted orbit, on a blue squircle plate.</desc>
   <defs>
@@ -200,6 +200,7 @@ def build_svg(detail: str) -> str:
   </g>
 </svg>
 """
+    return "\n".join(line.rstrip() for line in body.splitlines()) + "\n"
 
 
 TARGETS = {

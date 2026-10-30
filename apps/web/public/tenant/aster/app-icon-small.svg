@@ -24,7 +24,7 @@
   <g transform="rotate(-26 512 522)">
     <ellipse cx="512" cy="522" rx="366" ry="138" fill="none" stroke="url(#orbit)" stroke-width="30"/>
   </g>
-  
+
   <ellipse cx="512" cy="548" rx="250" ry="250" fill="url(#lift)"/>
   <g transform="translate(512.0 513.0) scale(1.1) translate(-512.0 -513.0)">
     <path d="M512 177C557 379 589 430 756 507C589 552 554 616 512 850C470 616 435 552 268 507C435 430 467 379 512 177Z" fill="url(#star)"/>
