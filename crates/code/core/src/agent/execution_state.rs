@@ -543,7 +543,19 @@ mod tests {
         }
         for args in [
             vec!["add", "--all"],
-            vec!["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=", "commit", "-qm", "baseline"],
+            vec![
+                "-c",
+                "user.name=Fixture",
+                "-c",
+                "user.email=fixture@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+                "-c",
+                "core.hooksPath=",
+                "commit",
+                "-qm",
+                "baseline",
+            ],
         ] {
             assert!(std::process::Command::new("git")
                 .args(args)

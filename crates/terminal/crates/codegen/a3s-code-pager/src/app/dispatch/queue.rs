@@ -75,7 +75,7 @@ pub(super) fn push_server_queue_echo(
 /// That covers a prompt restored on cancel, removed, drained, or otherwise resolved without becoming the running turn.
 /// The only client-side queue state is the optimistic echo that bridges the round-trip before the confirming `a3s/queue/changed` broadcast.
 /// Once a prompt's RPC resolves (or we pull it back on cancel) it will never reappear in a future broadcast, so its echo must be dropped.
-pub(super) fn retire_optimistic_echo(
+pub(in crate::app) fn retire_optimistic_echo(
     optimistic: &mut std::collections::HashMap<
         String,
         Vec<crate::app::prompt_queue::QueueEntryWire>,

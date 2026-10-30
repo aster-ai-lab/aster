@@ -31,8 +31,11 @@ Image and image-only prompts now reach image-capable models. Explicit text-only 
 Model context limits follow configured or documented capacities and update when switching models. Unknown capacity remains unknown in the status bar.
 Raw reasoning is folded by default and remains available on demand. Progress follows the parent turn's language; internal subagent lifecycle events no longer appear as reasoning text.
 Subagent stop requests now reach their owning session and cancel the actual child. Failed stop requests remain retryable.
+Cancel-and-send uses the existing turn handoff, so the next answer stays visible. Resizing before a bracketed paste no longer consumes the following Enter.
 
-macOS archives include the verified sandbox runtime with Aster and ACP. Installation and self-update reject incomplete archives. The final installed macOS archive must execute a real sandbox command before release assets can be created or uploaded.
+TUI and Studio use Core's single permission policy. Default mode asks before changes; Auto runs workspace edits and sandbox commands without repeated prompts and asks for exact host escalation. YOLO uses the local host runner without per-call approval. Plan remains read-only, and explicit denies and custom SDK sandbox boundaries remain enforced.
+
+macOS archives include the verified sandbox runtime with Aster and ACP. Installation and self-update reject incomplete archives. The same final installed macOS archive must execute a real Linux sandbox command in Auto mode and a real Darwin command in YOLO before release assets can be created or uploaded.
 Each archive contains the locked release build of Aster 0.1.5 and ACP 9.1.6 from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
 The Linux archive uses x86_64 glibc 2.31. Linux and Windows runtime support is not qualified by the macOS sandbox probe.
 Update with `aster update`, or inspect with `aster update --check`, then restart the TUI to use the new pair.

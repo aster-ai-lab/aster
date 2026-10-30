@@ -778,6 +778,51 @@
         );
     }
 
+    #[test]
+    fn code_send_now_uses_the_same_handoff_with_either_completion_order() {
+        use crate::app::actions::{Action, Effect, TaskResult};
+        use crate::app::dispatch::dispatch;
+        for previous_finished in [false, true] {
+            let mut app = make_app_with_agent("sess-1");
+            app.is_a3s_code = true;
+            let id = AgentId(0);
+            let first = dispatch(Action::SendPrompt("first".into()), &mut app);
+            let first_pid = match first.first().unwrap() {
+                Effect::SendPrompt { prompt_id, .. } => prompt_id.clone(),
+                other => panic!("unexpected effect {other:?}"),
+            };
+            handle(make_agent_chunk_message_with_prompt("sess-1", "partial", &first_pid, false), &mut app);
+            let second = dispatch(Action::SendPromptNow {
+                text: "second".into(), images: Vec::new(), image_notice: None,
+            }, &mut app);
+            let second_pid = match second.first().unwrap() {
+                Effect::SendPromptNow { prompt_id, .. } => prompt_id.clone(),
+                other => panic!("unexpected effect {other:?}"),
+            };
+            let complete_previous = |app: &mut AppView| {
+                dispatch(Action::TaskComplete(TaskResult::PromptResponse {
+                    agent_id: id,
+                    result: Ok(acp::PromptResponse::new(acp::StopReason::Cancelled)
+                        .meta(serde_json::json!({"promptId":first_pid}).as_object().cloned())),
+                    http_status: None, prompt_id: Some(first_pid.clone()),
+                }), app)
+            };
+            if previous_finished { complete_previous(&mut app); }
+            handle(make_agent_chunk_message_with_prompt("sess-1", "second answer", &second_pid, false), &mut app);
+            if !previous_finished {
+                assert!(app.pending_running_adoptions.contains_key(&id));
+                assert_eq!(test_agent(&app, id).session.current_prompt_id.as_deref(), Some(first_pid.as_str()));
+                complete_previous(&mut app);
+            }
+            let agent = test_agent(&app, id);
+            assert_eq!(agent.session.current_prompt_id.as_deref(), Some(second_pid.as_str()));
+            assert!(agent.session.state.is_turn_running());
+            assert!(agent.pending_adoption_updates.is_empty());
+            assert!(app.pending_running_adoptions.is_empty());
+            assert!(app.shared_prompt_queue("sess-1").is_none_or(|entries| entries.iter().all(|entry| entry.id != second_pid)));
+        }
+    }
+
     /// Regression: in the FIFO handoff the leader's user-echo (no `promptId`) arrives before the deferred turn-start shim sets `expect_user_echo`.
     /// Without setting it at stash time, the 2nd queued prompt renders twice.
     #[test]

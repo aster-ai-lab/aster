@@ -59,23 +59,33 @@ fn updater_accepts_the_three_platform_manifest_and_refuses_a_retired_channel() {
         "assets": {}
     });
     for (os, extension) in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")] {
-        manifest.get_mut("assets").unwrap().as_object_mut().unwrap().insert(
-            os.into(),
-            serde_json::json!({
-                "name": format!("aster-cli-v0.1.3-{os}.{extension}"),
-                "sha256": "a".repeat(64)
-            }),
-        );
+        manifest
+            .get_mut("assets")
+            .unwrap()
+            .as_object_mut()
+            .unwrap()
+            .insert(
+                os.into(),
+                serde_json::json!({
+                    "name": format!("aster-cli-v0.1.3-{os}.{extension}"),
+                    "sha256": "a".repeat(64)
+                }),
+            );
     }
     let parsed = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "").unwrap();
     assert_eq!(parsed.assets.len(), 3);
-    manifest.get_mut("assets").unwrap().as_object_mut().unwrap().insert(
-        "kylin".into(),
-        serde_json::json!({
-            "name": "aster-cli-v0.1.3-kylin.tar.gz",
-            "sha256": "a".repeat(64)
-        }),
-    );
+    manifest
+        .get_mut("assets")
+        .unwrap()
+        .as_object_mut()
+        .unwrap()
+        .insert(
+            "kylin".into(),
+            serde_json::json!({
+                "name": "aster-cli-v0.1.3-kylin.tar.gz",
+                "sha256": "a".repeat(64)
+            }),
+        );
     let error = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "")
         .err()
         .unwrap();

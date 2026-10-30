@@ -166,6 +166,15 @@ fn native_end_fence_keeps_submit_out_of_the_paste() {
 }
 
 #[test]
+fn resize_and_bracketed_paste_do_not_consume_the_following_submit() {
+    let resize = TimedInputEvent::now(Event::Resize(60, 20));
+    let paste = TimedInputEvent::now(Event::Paste("narrow\ntext".into()));
+    let submit = key(KeyCode::Enter, KeyEventKind::Press, KeyModifiers::NONE);
+    let events = vec![resize, paste, submit];
+    assert_eq!(coalesce_live_keys(events.clone(), false, false), events);
+}
+
+#[test]
 fn paste_fragments_preserve_a_following_esc_press() {
     let paste = TimedInputEvent::now(Event::Paste("session-id".into()));
     let trailing_text = key(KeyCode::Char('a'), KeyEventKind::Press, KeyModifiers::NONE);

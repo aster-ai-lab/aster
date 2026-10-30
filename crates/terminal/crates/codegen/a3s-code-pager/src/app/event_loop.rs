@@ -3816,11 +3816,10 @@ fn merge_paste_fragments(events: Vec<TimedInputEvent>) -> Vec<TimedInputEvent> {
                 merged_arrived_at.get_or_insert(ev.arrived_at);
                 merged_text.push_str(text);
             }
-            Event::Key(ke) if is_pasteable_key_event(&ev.event) => {
+            Event::Key(ke) if is_pasteable_key_event(&ev.event) && ke.code != KeyCode::Enter => {
                 merged_arrived_at.get_or_insert(ev.arrived_at);
                 match ke.code {
                     KeyCode::Char(c) => merged_text.push(c),
-                    KeyCode::Enter => merged_text.push('\n'),
                     KeyCode::Tab => merged_text.push('\t'),
                     _ => {}
                 }
@@ -5500,7 +5499,12 @@ mod tests {
         ];
         let merged = merge_paste_fragments(fragments);
         assert_eq!(nth(&merged, 0).arrived_at, start);
-        assert_eq!(nth(&merged, 0).event, Event::Paste("a\nb".to_owned()));
+        assert_eq!(nth(&merged, 0).event, Event::Paste("a".to_owned()));
+        assert_eq!(
+            nth(&merged, 1).event,
+            Event::Key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+        );
+        assert_eq!(nth(&merged, 2).event, Event::Paste("b".to_owned()));
     }
     #[test]
     fn delayed_scroll_batch_preserves_arrival_spacing_and_reversal() {
@@ -5815,7 +5819,7 @@ mod tests {
                 && ke.modifiers == KeyModifiers::CONTROL));
     }
     #[test]
-    fn fragmented_paste_merged_with_keys() {
+    fn fragmented_paste_preserves_an_explicit_submit() {
         let events = vec![
             TimedInputEvent::now(Event::Paste("real paste".into())),
             press(KeyCode::Char('a')),
@@ -5823,11 +5827,13 @@ mod tests {
             press(KeyCode::Char('b')),
         ];
         let result = coalesce_rapid_keys(events);
-        assert_eq!(result.len(), 1);
+        assert_eq!(result.len(), 3);
         assert_eq!(
             nth(&result, 0).event,
-            Event::Paste("real pastea\nb".to_string())
+            Event::Paste("real pastea".to_string())
         );
+        assert_eq!(nth(&result, 1).event, press(KeyCode::Enter).event);
+        assert_eq!(nth(&result, 2).event, Event::Paste("b".to_string()));
     }
     #[test]
     fn coalesce_single_event_passthrough() {

@@ -159,6 +159,57 @@ fn handle_inner(msg: AcpClientMessage, app: &mut AppView) -> bool {
             let affected = match find_session_match(app, &notif.request.session_id) {
                 Some(SessionMatch::Root(id)) => {
                     let is_active = is_matched_agent_active(app, id);
+                    let dedup_drop = !meta.is_replay
+                        && meta.event_seq.is_some_and(|seq| {
+                            app.agents.get(&id).is_some_and(|agent| {
+                                agent.last_applied_event_seq.is_some_and(|last| seq <= last)
+                            })
+                        });
+                    // Code ACP acknowledges a promoted turn through its first stamped update.
+                    if app.is_a3s_code && !meta.is_replay && !dedup_drop {
+                        let promoted = meta
+                            .prompt_id
+                            .as_ref()
+                            .filter(|pid| {
+                                app.agents.get(&id).is_some_and(|agent| {
+                                    agent.follow_without_jump_prompt_id.as_ref() == Some(pid)
+                                        && agent.session.current_prompt_id.as_ref() != Some(pid)
+                                        && agent.is_self_originated_prompt(pid)
+                                })
+                            })
+                            .cloned();
+                        if let Some(pid) = promoted {
+                            let row = app
+                                .shared_prompt_queue(notif.request.session_id.0.as_ref())
+                                .and_then(|entries| entries.iter().find(|entry| entry.id == pid))
+                                .cloned();
+                            super::dispatch::retire_optimistic_echo(
+                                &mut app.optimistic_prompt_echoes,
+                                &mut app.shared_prompt_queues,
+                                notif.request.session_id.0.as_ref(),
+                                &pid,
+                            );
+                            if let Some(agent) = app.agents.get_mut(&id) {
+                                agent.shared_queue.retain(|entry| entry.id != pid);
+                                agent.optimistic_queue_ids.remove(&pid);
+                            }
+                            queue::adopt_running_prompt(
+                                app,
+                                id,
+                                PendingRunningAdoption {
+                                    prompt_id: pid,
+                                    text: row.as_ref().map(|row| row.text.clone()),
+                                    combined_texts: row
+                                        .as_ref()
+                                        .and_then(|row| row.combined_texts.clone()),
+                                    kind: row
+                                        .map(|row| row.kind)
+                                        .unwrap_or_else(|| "prompt".into()),
+                                    turn_ended: false,
+                                },
+                            );
+                        }
+                    }
                     let stashed_adoption_pid = app
                         .pending_running_adoptions
                         .get(&id)
@@ -167,10 +218,6 @@ fn handle_inner(msg: AcpClientMessage, app: &mut AppView) -> bool {
                         .agents
                         .get_mut(&id)
                         .expect("find_session_match returned an existing AgentId");
-                    let dedup_drop = !meta.is_replay
-                        && meta.event_seq.is_some_and(|seq| {
-                            agent.last_applied_event_seq.is_some_and(|last| seq <= last)
-                        });
                     if let Some(seq) = meta.event_seq
                         && !meta.is_replay
                         && !dedup_drop
