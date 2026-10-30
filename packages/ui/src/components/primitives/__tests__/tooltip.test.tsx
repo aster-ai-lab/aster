@@ -51,6 +51,70 @@ function renderOpenTooltipContent(content: ReactNode, props?: ComponentProps<typ
 }
 
 describe('Tooltip', () => {
+  describe('hover timing', () => {
+    it.each([
+      [
+        'Tooltip',
+        <Tooltip content="timed tip">
+          <button type="button">Timed trigger</button>
+        </Tooltip>
+      ],
+      [
+        'NormalTooltip',
+        <NormalTooltip content="timed tip">
+          <button type="button">Timed trigger</button>
+        </NormalTooltip>
+      ],
+      [
+        'TooltipRoot',
+        <TooltipRoot>
+          <TooltipTrigger asChild>
+            <button type="button">Timed trigger</button>
+          </TooltipTrigger>
+          <TooltipContent>timed tip</TooltipContent>
+        </TooltipRoot>
+      ],
+      [
+        'TooltipProvider',
+        <TooltipProvider>
+          <RadixTooltipRoot>
+            <TooltipTrigger asChild>
+              <button type="button">Timed trigger</button>
+            </TooltipTrigger>
+            <TooltipContent>timed tip</TooltipContent>
+          </RadixTooltipRoot>
+        </TooltipProvider>
+      ]
+    ])('%s waits 500ms and cancels a brief hover', (_name, fixture) => {
+      vi.useFakeTimers()
+      try {
+        render(fixture)
+        const trigger = screen.getByText('Timed trigger')
+        fireEvent.pointerMove(trigger, { pointerType: 'mouse' })
+        act(() => {
+          vi.advanceTimersByTime(499)
+        })
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+        fireEvent.pointerLeave(trigger, { pointerType: 'mouse' })
+        act(() => {
+          vi.advanceTimersByTime(501)
+        })
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+        fireEvent.pointerMove(trigger, { pointerType: 'mouse' })
+        act(() => {
+          vi.advanceTimersByTime(499)
+        })
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+        act(() => {
+          vi.advanceTimersByTime(1)
+        })
+        expect(screen.getByRole('tooltip')).toHaveTextContent('timed tip')
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+  })
+
   describe('fallback rendering (no tooltip wrapper)', () => {
     it('renders a plain div when content is undefined', () => {
       const { container } = render(
@@ -550,7 +614,7 @@ describe('Tooltip', () => {
         )
         fireEvent.pointerMove(screen.getByText('Root trigger'))
         act(() => {
-          vi.advanceTimersByTime(50)
+          vi.advanceTimersByTime(500)
         })
         expect(handleOpenChange).toHaveBeenCalledWith(true)
         expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()

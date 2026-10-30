@@ -3,10 +3,22 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
+import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
 
-function DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
+function DropdownMenu({
+  open,
+  defaultOpen,
+  onOpenChange,
+  modal = false,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  const state = usePopupState({ open, defaultOpen, onOpenChange })
+  return (
+    <PopupDismissContext value={state}>
+      <DropdownMenuPrimitive.Root data-slot="dropdown-menu" modal={modal} {...props} {...state} />
+    </PopupDismissContext>
+  )
 }
 
 function DropdownMenuPortal({ container, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
@@ -43,13 +55,31 @@ function DropdownMenuContent({
   sideOffset = 4,
   portalContainer,
   onPointerDownOutside,
+  ref,
+  onPointerDownCapture,
+  onClickCapture,
+  onCloseAutoFocus,
   ...props
 }: DropdownMenuContentProps) {
+  const dismissal = usePopupDismissal(ref)
   return (
     <DropdownMenuPortal container={portalContainer}>
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
+        ref={dismissal.ref}
+        onPointerDownCapture={(event) => {
+          dismissal.inside()
+          onPointerDownCapture?.(event)
+        }}
+        onClickCapture={(event) => {
+          dismissal.inside()
+          onClickCapture?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          dismissal.onCloseAutoFocus(event)
+        }}
         // Popups keep their content mounted for the length of the leave animation
         // in popup-motion.css (200ms), and that dying layer is still registered as
         // a dismissable layer. A press on the trigger during that window is

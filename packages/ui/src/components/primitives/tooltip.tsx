@@ -9,7 +9,6 @@ import {
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
-
 import { usePortalContainer } from './portal-container'
 
 type Side = 'top' | 'bottom' | 'left' | 'right'
@@ -185,7 +184,7 @@ function setupTooltipOrphanSweeper(): void {
           // 无候选（数组为空）时 every 恒真，必须保留 length 判断以免误删
           // 候选含节点自身：content 节点自己可即 role=tooltip 宿主（querySelectorAll 不含自身）
           const tooltipHosts = node.matches('[role="tooltip"][id]')
-            ? ([node as HTMLElement, ...Array.from(node.querySelectorAll<HTMLElement>('[role="tooltip"][id]'))])
+            ? [node as HTMLElement, ...Array.from(node.querySelectorAll<HTMLElement>('[role="tooltip"][id]'))]
             : Array.from(node.querySelectorAll<HTMLElement>('[role="tooltip"][id]'))
           const tooltipIds = tooltipHosts.map((el) => el.id).filter(Boolean)
           // 仍被定位即活实例；不能只看 aria 引用——trigger 自带 aria-describedby 会覆盖 Radix 的引用
@@ -270,11 +269,30 @@ export type TooltipContentProps = React.ComponentProps<typeof RadixContent> & {
   showArrow?: boolean
 }
 
-function TooltipProvider({ delayDuration = 0, ...props }: TooltipProviderProps) {
-  return <RadixProvider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
+const TOOLTIP_HOVER_DELAY_MS = 500
+
+function TooltipProvider({
+  delayDuration = TOOLTIP_HOVER_DELAY_MS,
+  skipDelayDuration = 0,
+  ...props
+}: TooltipProviderProps) {
+  return (
+    <RadixProvider
+      data-slot="tooltip-provider"
+      delayDuration={delayDuration}
+      skipDelayDuration={skipDelayDuration}
+      {...props}
+    />
+  )
 }
 
-function TooltipRoot({ delayDuration = 0, open: openProp, defaultOpen, onOpenChange, ...props }: TooltipRootProps) {
+function TooltipRoot({
+  delayDuration = TOOLTIP_HOVER_DELAY_MS,
+  open: openProp,
+  defaultOpen,
+  onOpenChange,
+  ...props
+}: TooltipRootProps) {
   const surfaceActive = React.use(TooltipSurfaceContext)
   const {
     contentVisible: controllerContentVisible,
@@ -402,7 +420,7 @@ export const Tooltip = ({
   content,
   title,
   placement,
-  delay = 0,
+  delay = TOOLTIP_HOVER_DELAY_MS,
   sideOffset = 0,
   showArrow = true,
   fullWidthTrigger = false,

@@ -6,7 +6,6 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
-
 import { usePortalContainer } from './portal-container'
 
 /* ─── Style variants ──────────────────────────────────────────────────────── */
@@ -14,10 +13,10 @@ import { usePortalContainer } from './portal-container'
 const menuContentStyles = cn(
   // no-drag punches the popup's area out of any titlebar drag region it overlaps,
   // so hover/click reach the items instead of the window-drag hit test (Electron).
-  'z-[240] max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]',
+  'z-[240] max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]'
 )
 const menuSubContentStyles = cn(
-  'z-[240] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]',
+  'z-[240] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]'
 )
 
 const menuItemVariants = cva(
@@ -60,7 +59,11 @@ type ContextMenuOpeningPointerUpGuard = {
 
 const ContextMenuOpeningPointerUpGuardContext = React.createContext<ContextMenuOpeningPointerUpGuard | null>(null)
 
-function ContextMenu({ onOpenChange, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
+function ContextMenu({
+  onOpenChange,
+  modal = false,
+  ...props
+}: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
   const shouldStopOpeningPointerUpRef = React.useRef(false)
   const clearOpeningPointerUpListenerRef = React.useRef<(() => void) | null>(null)
   const clearOpeningPointerUpTimerRef = React.useRef<number | null>(null)
@@ -108,7 +111,7 @@ function ContextMenu({ onOpenChange, ...props }: React.ComponentProps<typeof Con
 
   return (
     <ContextMenuOpeningPointerUpGuardContext value={pointerUpGuard}>
-      <ContextMenuPrimitive.Root data-slot="context-menu" onOpenChange={handleOpenChange} {...props} />
+      <ContextMenuPrimitive.Root data-slot="context-menu" modal={modal} onOpenChange={handleOpenChange} {...props} />
     </ContextMenuOpeningPointerUpGuardContext>
   )
 }
@@ -201,10 +204,7 @@ function ContextMenuSubContent({
   return (
     <ContextMenuPrimitive.SubContent
       data-slot="context-menu-sub-content"
-      className={cn(
-        menuSubContentStyles,
-        className
-      )}
+      className={cn(menuSubContentStyles, className)}
       onPointerUpCapture={(event) => {
         onPointerUpCapture?.(event)
         stopOpeningPointerUp(event, pointerUpGuard)
