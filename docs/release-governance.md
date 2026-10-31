@@ -12,11 +12,26 @@
 | 桌面滚动通道 | `desktop-stable` | `desktop-latest.json` 与桌面更新归档 |
 | CLI 滚动通道 | `aster-cli-stable` | 指向当前版本化 CLI Release 的 `latest.json` |
 
-历史标签 `a3s-code-v*` 与短暂使用的 `aster-v*`（Core／ACP）不再接收新发布；既有归档可按「已发布内容的修正」迁到 `aster-acp-v*`，且必须保持同一提交与同一 SHA-256。
+历史标签 `a3s-code-v*` 与短暂使用的 `aster-v*`（Core／ACP）不再接收新发布；既有归档可按「已发布内容的修正」迁到 `aster-acp-v*`，且必须保持同一提交与同一 SHA-256。迁移完成后删除旧 Release 与旧 tag，不得并存两套同版本地址。
+
+禁止创建名为 `latest` 的 Git tag 或 Release。GitHub 的「Latest」是 Release 标记，不是标签名；字面 tag `latest` 与 `/releases/latest` 语义冲突，属于历史错误入口，发现即删。
 
 只有 Aster 桌面版的版本化 Release 可以标记为仓库 Latest。Core／ACP、CLI 和滚动通道发布必须显式使用 `--latest=false`，不得改变 Latest。
 
 GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容入口。新版客户端不得读取该地址。每次发布新的 CLI stable 版本时，必须同时更新 `aster-cli-stable/latest.json` 和当前 Aster Latest Release 上的兼容 `latest.json`；清单始终指向版本化 `aster-cli-vX.Y.Z` Release，不指向滚动通道中的二进制。
+
+## 保留与清理
+
+每个产品线的**版本化** Release 默认只保留当前版与上一版（共 2 个），便于回滚；更早的版本化 Release 与对应 tag 应删除。滚动通道 tag（`desktop-stable`、`aster-cli-stable`）永久保留，但通道上的历史二进制同样只保留当前与上一版所引用的归档。
+
+| 保留 | 删除 |
+| --- | --- |
+| 当前与上一版 `vX.Y.Z`（桌面，含仓库 Latest） | 更早的桌面版本化 Release／tag |
+| 当前与上一版 `aster-cli-vX.Y.Z` | 更早的 CLI 版本化 Release／tag |
+| 当前与上一版 `aster-acp-vX.Y.Z` | 更早的 Core／ACP 版本化 Release／tag；全部 `a3s-code-v*`／`aster-v*`（Core／ACP） |
+| `desktop-stable`、`aster-cli-stable` 及各自当前清单 | 字面 tag／Release `latest`；通道内超出保留窗口的旧归档 |
+
+清理顺序：先确认通道清单与仓库 Latest 仍指向保留窗口内的版本与 SHA-256，再删 Release，最后删远程 tag。清理后必须复核公开下载地址、Latest 归属和两个更新通道。
 
 ## 构建边界
 

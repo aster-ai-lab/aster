@@ -166,6 +166,18 @@ class ReleaseContracts(unittest.TestCase):
         command = workflow.split("gh release create desktop-stable", 1)[1].split("\n          fi", 1)[0]
         self.assertIn("--latest=false", command)
 
+    def test_governance_documents_namespaces_retention_and_forbidden_latest_tag(self):
+        text = (ROOT / "docs/release-governance.md").read_text()
+        self.assertIn("| Core／ACP | `aster-acp-vX.Y.Z` |", text)
+        self.assertIn("| Aster CLI | `aster-cli-vX.Y.Z` |", text)
+        self.assertIn("| Aster 桌面版 | `vX.Y.Z` |", text)
+        self.assertIn("## 保留与清理", text)
+        self.assertIn("当前版与上一版", text)
+        self.assertIn("禁止创建名为 `latest` 的 Git tag 或 Release", text)
+        self.assertIn("`a3s-code-v*`", text)
+        self.assertIn("`aster-v*`", text)
+        self.assertIn("迁移完成后删除旧 Release 与旧 tag", text)
+
     def test_ci_and_cli_preflight_run_release_governance(self):
         for name in (".github/workflows/ci.yml", ".github/workflows/release-aster-cli.yml"):
             self.assertIn("python3 tests/release_governance.py", (ROOT / name).read_text())
