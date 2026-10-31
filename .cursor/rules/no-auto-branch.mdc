@@ -1,0 +1,11 @@
+---
+description: Never create git branches unless the user explicitly allows it
+alwaysApply: true
+---
+
+# No automatic git branches
+
+- Do **not** create a new git branch (`git checkout -b`, `git switch -c`, `gh pr` default branch creation, or equivalent) unless the user explicitly asks to create one in the current request.
+- Prefer working on the user’s current branch, an existing named branch they named, or `main` when they ask to land on main.
+- Updating an existing remote-tracking branch, checking out an already-existing branch, and committing on the current branch are allowed when the task requires them.
+- If the task seems to need a new branch, ask first; do not invent a branch name and proceed.
