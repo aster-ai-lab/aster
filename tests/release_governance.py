@@ -177,6 +177,10 @@ class ReleaseContracts(unittest.TestCase):
         self.assertIn("`a3s-code-v*`", text)
         self.assertIn("`aster-v*`", text)
         self.assertIn("迁移完成后删除旧 Release 与旧 tag", text)
+        self.assertIn("## 分支卫生", text)
+        self.assertIn("默认分支只有 `main`", text)
+        self.assertIn("已完成发布的 `release/*` 分支", text)
+        self.assertIn("PR 合并后自动删除头部分支", text)
 
     def test_ci_and_cli_preflight_run_release_governance(self):
         for name in (".github/workflows/ci.yml", ".github/workflows/release-aster-cli.yml"):
