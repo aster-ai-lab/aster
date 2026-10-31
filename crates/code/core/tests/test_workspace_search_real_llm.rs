@@ -95,9 +95,7 @@ struct SearchCall {
     exit_code: i32,
 }
 
-async fn run_search_turn(
-    session: &aster_core::AgentSession,
-) -> (String, SearchCall, usize, u128) {
+async fn run_search_turn(session: &aster_core::AgentSession) -> (String, SearchCall, usize, u128) {
     let prompt = r#"Investigate this workspace and answer the user's intent.
 
 User intent: find the function that prevents duplicate event delivery after a transport reconnect.

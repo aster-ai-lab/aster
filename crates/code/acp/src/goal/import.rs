@@ -1,12 +1,12 @@
 //! Explicit legacy source selection and original writer-bound import admission.
 
 use super::DurableGoal;
+use anyhow::{bail, Context, Result};
 use aster_core::execution_identity::ExecutionIdentityV1;
 use aster_core::goal_control::{
     DurableGoalDefinitionV1, GoalDefinitionCommandV1, GOAL_LEGACY_SOURCE_DOMAIN_V1,
 };
 use aster_core::workspace::{WorkspaceRef, WorkspaceServices};
-use anyhow::{bail, Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 

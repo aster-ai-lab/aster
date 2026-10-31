@@ -1,5 +1,5 @@
-use aster_mermaid::{rasterize, RenderParams, Rgba};
 use anyhow::{ensure, Context, Result};
+use aster_mermaid::{rasterize, RenderParams, Rgba};
 use quick_xml::{events::Event, Reader};
 
 const MAX_SVG_BYTES: usize = 64 * 1024;

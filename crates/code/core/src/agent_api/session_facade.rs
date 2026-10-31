@@ -563,7 +563,9 @@ impl AgentSession {
             let facts = aster_effect::LogStore::read(log.as_ref(), &thread)
                 .map_err(|error| CodeError::Session(error.to_string()))?;
             let source = persistence.source_from_facts(&facts)?;
-            let goal_bound = facts.iter().any(|fact| fact.kind.starts_with("aster.goal."));
+            let goal_bound = facts
+                .iter()
+                .any(|fact| fact.kind.starts_with("aster.goal."));
             if source.as_ref().is_some_and(|source| seq < source.sequence)
                 || (goal_bound && facts.last().is_some_and(|fact| seq < fact.seq))
             {

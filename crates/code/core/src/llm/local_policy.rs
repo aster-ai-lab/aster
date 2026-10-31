@@ -2,10 +2,10 @@
 
 use std::collections::{BTreeSet, HashMap};
 
+use anyhow::{bail, ensure, Context, Result};
 use aster_acl::{
     AttributeSchema, Block, BlockSchema, Cardinality, Document, Schema, Value, ValueSchema,
 };
-use anyhow::{bail, ensure, Context, Result};
 use serde::{Deserialize, Serialize};
 
 const MAX_POLICY_BYTES: usize = 1024 * 1024;

@@ -44,7 +44,9 @@ async fn recalled_memory_usage_counts_a_distinctive_token_once() {
     let content = "Prefer the Zephyrquotient metric when ranking providers";
     let item = aster_durable_memory::MemoryItem::new(content);
     let id = item.id.clone();
-    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item)
+        .await
+        .unwrap();
     let recalled = vec![(id.clone(), content.to_string(), 1.0)];
 
     record_memory_usage(
@@ -81,7 +83,8 @@ async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
     let store = aster_durable_memory::InMemoryStore::new();
 
     // A token absent from the final text records nothing.
-    let unmatched = aster_durable_memory::MemoryItem::new("Prefer the Zephyrquotient metric when ranking");
+    let unmatched =
+        aster_durable_memory::MemoryItem::new("Prefer the Zephyrquotient metric when ranking");
     let unmatched_id = unmatched.id.clone();
     aster_durable_memory::MemoryStore::store(&store, unmatched)
         .await
@@ -122,7 +125,12 @@ async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
         "The reply says zephyrquotient out loud.",
     )
     .await;
-    assert_eq!(aster_durable_memory::MemoryStore::count(&store).await.unwrap(), 1);
+    assert_eq!(
+        aster_durable_memory::MemoryStore::count(&store)
+            .await
+            .unwrap(),
+        1
+    );
 }
 
 /// A deterministic bucketing provider: any text naming the sentinel
@@ -181,7 +189,9 @@ async fn semantic_usage_judge_counts_a_paraphrase_the_lexical_arm_missed() {
     let content = "The quokka colony sleeps at noon";
     let item = aster_durable_memory::MemoryItem::new(content);
     let id = item.id.clone();
-    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item)
+        .await
+        .unwrap();
     let judge = crate::memory::SemanticUsageJudge::new(
         std::sync::Arc::new(BucketProvider),
         crate::memory::SEMANTIC_USAGE_DEFAULT_THRESHOLD,
@@ -212,7 +222,9 @@ async fn semantic_usage_judge_skips_different_bucket_and_errors() {
     let off_topic = "toolchain pins rust at the workspace root";
     let item = aster_durable_memory::MemoryItem::new(off_topic);
     let off_id = item.id.clone();
-    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item)
+        .await
+        .unwrap();
     let judge = crate::memory::SemanticUsageJudge::new(
         std::sync::Arc::new(BucketProvider),
         crate::memory::SEMANTIC_USAGE_DEFAULT_THRESHOLD,

@@ -446,10 +446,7 @@ async fn protocol_recovery_uses_code_checkpoint_semantics_and_a_fresh_exact_run(
     })
     .await
     .expect("recovered Code run must terminate");
-    assert_eq!(
-        page.state,
-        aster_core::AgentProtocolRunStateV1::Completed
-    );
+    assert_eq!(page.state, aster_core::AgentProtocolRunStateV1::Completed);
     assert_eq!(session.runs().await.len(), 1);
     assert_eq!(session.runs().await[0].id, recovered_identity.run_id);
 

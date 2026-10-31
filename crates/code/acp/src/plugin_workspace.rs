@@ -73,8 +73,7 @@ impl aster_core::capability::CapabilityEffect for WorkspaceBinding {
     async fn close(
         self: Box<Self>,
     ) -> std::result::Result<(), aster_core::capability::CapabilityEffectError> {
-        self.validate_current().map_err(|error| {
-            aster_core::capability::CapabilityEffectError::new(error.to_string())
-        })
+        self.validate_current()
+            .map_err(|error| aster_core::capability::CapabilityEffectError::new(error.to_string()))
     }
 }

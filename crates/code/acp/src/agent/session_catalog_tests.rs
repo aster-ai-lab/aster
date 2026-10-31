@@ -76,7 +76,10 @@ async fn empty_workspace_does_not_create_state() {
     let agent = agent_at(root.path());
     let body = list(&agent, json!({})).await;
     assert_eq!(body["sessions"], json!([]));
-    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], false);
+    assert_eq!(
+        body["_meta"]["asterCode/sessionCatalog"]["incomplete"],
+        false
+    );
     assert!(!root.path().join(".aster").exists());
     assert!(agent.core_agent.lock().await.is_none());
 }
@@ -224,7 +227,10 @@ async fn query_limit_and_projection_use_legacy_facts() {
         "aster.code.session-catalog.v1"
     );
     assert!(body["sessions"][0]["updatedAt"].as_str().is_some());
-    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["truncated"], false);
+    assert_eq!(
+        body["_meta"]["asterCode/sessionCatalog"]["truncated"],
+        false
+    );
     let page = list(&agent, json!({"limit":1})).await;
     assert_eq!(page["_meta"]["asterCode/sessionCatalog"]["truncated"], true);
     assert!(agent.core_agent.lock().await.is_none());
@@ -237,8 +243,14 @@ async fn corrupt_logs_are_visible_as_partial_inventory() {
     std::fs::write(root.path().join(".aster/effect-log/bad.jsonl"), b"corrupt").expect("bad log");
     let body = list(&agent_at(root.path()), json!({})).await;
     assert_eq!(body["sessions"].as_array().expect("rows").len(), 1);
-    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], true);
-    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["skippedEntries"], 1);
+    assert_eq!(
+        body["_meta"]["asterCode/sessionCatalog"]["incomplete"],
+        true
+    );
+    assert_eq!(
+        body["_meta"]["asterCode/sessionCatalog"]["skippedEntries"],
+        1
+    );
 }
 
 #[tokio::test]
@@ -249,7 +261,10 @@ async fn unknown_session_kind_is_never_invented_for_a_filtered_view() {
     for policy in ["exclude", "only"] {
         let body = list(&agent, json!({"headless":policy})).await;
         assert_eq!(body["sessions"], json!([]));
-        assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], true);
+        assert_eq!(
+            body["_meta"]["asterCode/sessionCatalog"]["incomplete"],
+            true
+        );
         assert_eq!(
             body["_meta"]["asterCode/sessionCatalog"]["unclassifiedPageEntries"],
             1
@@ -310,7 +325,10 @@ async fn chat_facet_does_not_read_or_mislabel_code_sessions() {
     )
     .await;
     assert_eq!(body["sessions"], json!([]));
-    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], false);
+    assert_eq!(
+        body["_meta"]["asterCode/sessionCatalog"]["incomplete"],
+        false
+    );
 }
 
 #[tokio::test]

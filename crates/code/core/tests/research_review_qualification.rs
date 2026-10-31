@@ -360,7 +360,9 @@ async fn evaluator_run_and_project_drift_fail_closed() {
     .unwrap();
     assert!(matches!(
         smuggled.validate_for_run(&other_run, &fixture.record),
-        Err(aster_core::research::ResearchContractError::InvalidField("researchRun.runId"))
+        Err(aster_core::research::ResearchContractError::InvalidField(
+            "researchRun.runId"
+        ))
     ));
 
     // An evaluator record for different evidence cannot publish for this run.

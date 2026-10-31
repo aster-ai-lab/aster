@@ -90,7 +90,9 @@ async fn test_session_uses_configured_default_memory_dir() {
         .unwrap();
     let memory = session.memory().expect("default memory store");
     memory
-        .remember(aster_durable_memory::MemoryItem::new("configured default memory dir"))
+        .remember(aster_durable_memory::MemoryItem::new(
+            "configured default memory dir",
+        ))
         .await
         .unwrap();
 

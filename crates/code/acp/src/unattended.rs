@@ -12,10 +12,10 @@ pub(crate) mod result;
 #[path = "unattended/tests.rs"]
 mod tests;
 
+use anyhow::{bail, Context, Result};
 use aster_core::goal_control::GoalContinuationPolicyV1;
 use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
 use aster_core::{AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots};
-use anyhow::{bail, Context, Result};
 use std::collections::HashSet;
 use std::num::NonZeroU64;
 use std::path::PathBuf;

@@ -116,8 +116,7 @@ fn options(fixture: &Fixture, guard: Arc<UsageProbe>) -> SessionOptions {
             .expect("contract"),
         )
         .with_work_policy(
-            aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY)
-                .expect("policy"),
+            aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY).expect("policy"),
         )
 }
 

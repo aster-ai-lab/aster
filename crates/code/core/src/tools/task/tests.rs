@@ -243,11 +243,12 @@ async fn delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_c
         max_queued: 0,
         max_queue_wait: std::time::Duration::ZERO,
     });
-    let retry_budget = aster_search::retry::RetryBudget::new(aster_search::retry::RetryBudgetConfig {
-        capacity: 1,
-        retry_cost: 1,
-        success_credit: 0,
-    });
+    let retry_budget =
+        aster_search::retry::RetryBudget::new(aster_search::retry::RetryBudgetConfig {
+            capacity: 1,
+            retry_cost: 1,
+            success_credit: 0,
+        });
     let search_config = crate::config::SearchConfig {
         timeout: 17,
         cascade_order: None,

@@ -711,11 +711,11 @@ impl OriginalModelCallPort {
 
     pub(crate) async fn wait_same_original_call(
         &self,
-    ) -> std::result::Result<crate::agent::FactAccountingDisposition, aster_effect::ActorError> {
-        let original = self
-            .original
-            .upgrade()
-            .ok_or_else(|| aster_effect::ActorError::Defect("original model owner missing".into()))?;
+    ) -> std::result::Result<crate::agent::FactAccountingDisposition, aster_effect::ActorError>
+    {
+        let original = self.original.upgrade().ok_or_else(|| {
+            aster_effect::ActorError::Defect("original model owner missing".into())
+        })?;
         let observed = original.model_call.wait().await;
         let state = original.model_call.state.lock().await;
         if let OriginalModelState::Ready(ready) = &*state {

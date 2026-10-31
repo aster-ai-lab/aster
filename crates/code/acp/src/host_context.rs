@@ -342,7 +342,8 @@ mod tests {
             .unwrap()
             .completion_attestation
             .is_none());
-        let parsed = meta(serde_json::json!({"asterHost":{"completionAttestation":"disk_content"}}));
+        let parsed =
+            meta(serde_json::json!({"asterHost":{"completionAttestation":"disk_content"}}));
         assert_eq!(
             studio_host_from_meta(Some(&parsed))
                 .unwrap()

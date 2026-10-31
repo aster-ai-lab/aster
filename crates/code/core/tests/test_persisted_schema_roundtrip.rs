@@ -38,9 +38,7 @@ use aster_core::orchestration::{
 };
 use aster_core::permissions::{PermissionPolicy, PermissionRule};
 use aster_core::planning::Task;
-use aster_core::run::{
-    RunEventRecord, RunRecord, RunSnapshot, RunStatus, RunWorkspaceChangeSet,
-};
+use aster_core::run::{RunEventRecord, RunRecord, RunSnapshot, RunStatus, RunWorkspaceChangeSet};
 use aster_core::store::{
     ContextUsage, MemorySessionStore, SessionConfig, SessionData, SessionState, SessionStore,
 };

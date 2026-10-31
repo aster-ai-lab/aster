@@ -92,7 +92,8 @@ fn state_root_without_override(
     #[cfg(target_os = "macos")]
     {
         let _ = (directory, xdg_state_home, local_app_data);
-        let home = home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
+        let home =
+            home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
         Ok(home.join("Library/Application Support/Aster/State"))
     }
     #[cfg(all(unix, not(target_os = "macos")))]
@@ -106,7 +107,8 @@ fn state_root_without_override(
             };
             return Ok(base.join("aster"));
         }
-        let home = home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
+        let home =
+            home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
         Ok(home.join(".local/state/aster"))
     }
     #[cfg(windows)]
@@ -273,7 +275,8 @@ impl CommandHookExecutor {
         }
         if hooks.is_empty() {
             lines.push(
-                "  Define hooks in ~/.aster/hooks.json or <git-root>/.aster/hooks.json.".to_string(),
+                "  Define hooks in ~/.aster/hooks.json or <git-root>/.aster/hooks.json."
+                    .to_string(),
             );
         } else {
             lines.push(

@@ -101,8 +101,9 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
     assert_eq!(result.hits[0].chunk.path.as_ref(), "src/lib.rs");
     drop(index);
 
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
-        .expect("reopen persistent index");
+    let reopened =
+        WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
+            .expect("reopen persistent index");
     let result = reopened.search(&request).expect("reopened query");
     assert_eq!(result.hits.len(), 1);
     assert_eq!(reopened.status().indexed_chunks, 1);
@@ -376,8 +377,9 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
     // Reopen: the sparse v3 primary keys must reconstruct the exact
     // mapping (this is the misalignment class the pk field exists for).
     drop(index);
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
-        .expect("reopen after delta generations");
+    let reopened =
+        WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
+            .expect("reopen after delta generations");
     assert_eq!(reopened.status().indexed_chunks, 3);
     let reopened_hits = reopened
         .search(&LexicalSearchRequest::new("maplefjord"))
@@ -694,8 +696,9 @@ fn corrupted_generation_manifest_is_rejected_before_query() {
     )
     .expect("tampered manifest");
 
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
-        .expect("reopen should remain recoverable");
+    let reopened =
+        WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
+            .expect("reopen should remain recoverable");
     assert!(!reopened.is_ready());
     assert_eq!(
         reopened.status().phase,

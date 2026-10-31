@@ -149,7 +149,11 @@ async fn test_session_options_worker_agents_register_for_task_delegation() {
 #[tokio::test(flavor = "multi_thread")]
 async fn test_session_loads_workspace_aster_agents() {
     let workspace = tempfile::tempdir().unwrap();
-    let agents_dir = workspace.path().join(".aster").join("agents").join("quality");
+    let agents_dir = workspace
+        .path()
+        .join(".aster")
+        .join("agents")
+        .join("quality");
     std::fs::create_dir_all(&agents_dir).unwrap();
     std::fs::write(
         agents_dir.join("code-reviewer.md"),

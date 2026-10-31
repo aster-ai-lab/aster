@@ -50,7 +50,8 @@ pub const EXECUTION_PLAN_IDENTITY_DOMAIN_V1: &str = "aster.code.execution-plan.i
 pub const WORKFLOW_STEP_IDENTITY_DOMAIN_V1: &str = "aster.code.workflow-step.identity.v1";
 pub const WORKFLOW_STEP_EVIDENCE_DOMAIN_V1: &str = "aster.code.workflow-step.evidence.v1";
 pub const WORKFLOW_STEP_RESULT_DOMAIN_V1: &str = "aster.code.workflow-step.result.v1";
-pub const EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1: &str = "aster.code.evaluation-dispatch.identity.v1";
+pub const EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1: &str =
+    "aster.code.evaluation-dispatch.identity.v1";
 pub const EVALUATION_DISPATCH_REQUEST_DOMAIN_V1: &str = "aster.code.evaluation-dispatch.request.v1";
 pub const EXECUTION_RESULT_RECEIPT_SCHEMA_V1: &str = "aster.code.execution-result-receipt.v1";
 pub const EXECUTION_RESULT_MAX_BYTES: u64 = 1024 * 1024;

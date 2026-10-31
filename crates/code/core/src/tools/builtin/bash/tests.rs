@@ -1048,10 +1048,7 @@ fn test_bash_schema_is_canonical() {
     assert_eq!(params["additionalProperties"], false);
     assert_eq!(params["required"], serde_json::json!(["command"]));
     let examples = params["examples"].as_array().unwrap();
-    assert_eq!(
-        examples[0]["command"],
-        "cargo test -p aster-core skill::"
-    );
+    assert_eq!(examples[0]["command"], "cargo test -p aster-core skill::");
     assert!(examples[0].get("cmd").is_none());
     assert!(!tool.requires_confirmation(&serde_json::json!({
         "command": "cargo test",

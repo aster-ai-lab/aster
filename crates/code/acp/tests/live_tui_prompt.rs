@@ -12,8 +12,8 @@
 use std::path::PathBuf;
 use std::time::Duration;
 
-use aster_acp::{load_launch_config, AsterCodeAgent, LaunchConfig};
 use agent_client_protocol as acp;
+use aster_acp::{load_launch_config, AsterCodeAgent, LaunchConfig};
 
 const TOKEN: &str = "tui-acp-marker-6c1d";
 const TIMEOUT: Duration = Duration::from_secs(420);

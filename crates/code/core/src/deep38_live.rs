@@ -685,7 +685,8 @@ async fn deep38_context_memory() {
     let model = complete().await;
     let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "scope").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "scope")
+            .unwrap();
     repository
         .apply(aster_durable_memory::repository::MemoryChangeSet::new(
             "seed-deep38",
@@ -1133,7 +1134,10 @@ async fn deep38_agent_release_contract() {
         error,
         crate::release::AgentReleaseError::IncompatibleProtocol
     ));
-    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
+    assert_eq!(
+        error.code(),
+        "aster.code.agent_release.incompatible_protocol"
+    );
     assert_eq!(
         manifest.artifact().digest(),
         declared,

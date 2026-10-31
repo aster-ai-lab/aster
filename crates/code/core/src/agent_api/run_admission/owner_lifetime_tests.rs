@@ -745,7 +745,10 @@ async fn actual_model_panic_is_retained_and_never_reusable_or_success() {
             started_child.await.unwrap();
             std::future::poll_fn(
                 |_| -> std::task::Poll<
-                    std::result::Result<crate::agent::FactModelCallOutcome, aster_effect::ActorError>,
+                    std::result::Result<
+                        crate::agent::FactModelCallOutcome,
+                        aster_effect::ActorError,
+                    >,
                 > {
                     panic!("actual model child panic");
                 },

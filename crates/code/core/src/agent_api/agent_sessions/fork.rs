@@ -136,7 +136,8 @@ async fn fork_session_async_inner(
         None => (snapshot, facts.clone(), None),
     };
     if boundary_cut.as_ref().is_some_and(|expected| {
-        crate::store::TranscriptSourceCut::from(aster_effect::cut_log(&admission_facts)) != *expected
+        crate::store::TranscriptSourceCut::from(aster_effect::cut_log(&admission_facts))
+            != *expected
     }) {
         return Err(fork_error("verified prefix boundary changed"));
     }

@@ -28,10 +28,7 @@ fn the_unattended_flag_carries_budget_and_result_file() {
     .expect("args");
     assert_eq!(
         args.unattended,
-        Some(
-            Unattended::new(1000, Some("/logs/agent/aster.result.json".into()))
-                .expect("profile")
-        )
+        Some(Unattended::new(1000, Some("/logs/agent/aster.result.json".into())).expect("profile"))
     );
 }
 

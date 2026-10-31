@@ -50,10 +50,7 @@ impl AsterCodeAgent {
                         return Err(acp::Error::invalid_params()
                             .data("image must contain 1 byte to 16 MiB of data"));
                     }
-                    attachments.push(aster_core::Attachment::new(
-                        data,
-                        content.mime_type.clone(),
-                    ));
+                    attachments.push(aster_core::Attachment::new(data, content.mime_type.clone()));
                 }
                 acp::ContentBlock::Audio(_) => return Err(unsupported("audio")),
                 acp::ContentBlock::Resource(_) => return Err(unsupported("resource")),
@@ -400,10 +397,7 @@ impl AsterCodeAgent {
                         None => Err("form client is unavailable".into()),
                     };
                     let answer = values.unwrap_or_else(|message| {
-                        serde_json::json!([
-                            aster_core::ask_user::USER_FORM_ERROR_SCHEMA,
-                            message
-                        ])
+                        serde_json::json!([aster_core::ask_user::USER_FORM_ERROR_SCHEMA, message])
                     });
                     let _ = aster_core::ask_user::answer(&question_id, &answer.to_string());
                     return;

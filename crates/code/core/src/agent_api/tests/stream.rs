@@ -666,7 +666,9 @@ async fn cancelled_fact_stream_settles_without_memory_extraction() {
             &SessionOptions::new()
                 .with_session_id("cancel-skips-memory-extraction")
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
-                .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new())),
+                .with_memory(std::sync::Arc::new(
+                    aster_durable_memory::InMemoryStore::new(),
+                )),
         )
         .unwrap();
 

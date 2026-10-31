@@ -638,7 +638,10 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         path
     };
     let mut env = vec![
-        ("ASTER_ACP_AGENT_BIN".to_string(), proxy.display().to_string()),
+        (
+            "ASTER_ACP_AGENT_BIN".to_string(),
+            proxy.display().to_string(),
+        ),
         (
             "ASTER_CONFIG".to_string(),
             launch_config.display().to_string(),
@@ -678,10 +681,7 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         ));
     }
     if let Some(trace) = &prompt_trace {
-        env.push((
-            "ASTER_TUI_TEST_ACP_REAL".into(),
-            acp.display().to_string(),
-        ));
+        env.push(("ASTER_TUI_TEST_ACP_REAL".into(), acp.display().to_string()));
         env.push((
             "ASTER_TUI_TEST_ACP_TRACE".into(),
             trace.display().to_string(),

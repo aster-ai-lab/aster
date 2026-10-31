@@ -1,11 +1,11 @@
 #![cfg(test)]
 
 use super::{AsterCodeAgent, SessionSetup};
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_core::{
     llm::{LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition},
     WorkPolicyV1,
 };
-use agent_client_protocol::{self as acp, Agent as _};
 use async_trait::async_trait;
 use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc;
@@ -168,9 +168,7 @@ async fn engineering_unknown_meta_refuses_new_and_load_before_activation() {
 
 #[tokio::test]
 async fn engineering_shared_host_options_preserve_policy_and_contracts_after_file_reopen() {
-    use aster_core::{
-        config::WorkspaceVerificationContract, verification::VerificationContractV1,
-    };
+    use aster_core::{config::WorkspaceVerificationContract, verification::VerificationContractV1};
     let root = tempfile::tempdir().unwrap();
     let store = root.path().join("store");
     let mut config = super::test_launch(Some(store.clone())).config;
@@ -528,8 +526,7 @@ async fn engineering_real_model_acp_new_model_replacement_and_new_host_reopen() 
     let policy = crate::engineering::policy_from_meta(Some(&selected_meta()))
         .unwrap()
         .unwrap();
-    let facts =
-        aster_core::fact_control::read_workspace_facts(root.path(), id.0.as_ref()).unwrap();
+    let facts = aster_core::fact_control::read_workspace_facts(root.path(), id.0.as_ref()).unwrap();
     let admitted: Vec<_> = facts
         .iter()
         .filter(|f| f.kind == "aster.work-policy.admitted")

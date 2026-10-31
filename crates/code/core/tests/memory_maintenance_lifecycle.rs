@@ -1,5 +1,6 @@
 #![cfg(test)]
 #![allow(deprecated)]
+use anyhow::Context as _;
 use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceContext, MemoryMaintenanceError,
     MemoryMaintenanceJob, MemoryMaintenanceOptions, MemoryMaintenanceOutcome,
@@ -16,7 +17,6 @@ use aster_durable_memory::repository::{
     MemoryRepository, MemoryStatus,
 };
 use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, PrunePolicy};
-use anyhow::Context as _;
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
 use sha2::{Digest, Sha256};

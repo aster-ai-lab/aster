@@ -15,9 +15,7 @@ mod support;
 use std::time::Duration;
 
 use aster_core::permissions::{PermissionDecision, PermissionPolicy};
-use aster_core::{
-    Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots,
-};
+use aster_core::{Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const MODEL_TIMEOUT: Duration = Duration::from_secs(420);
@@ -37,7 +35,9 @@ fn general_opts(session_id: &str) -> SessionOptions {
     policy.default_decision = PermissionDecision::Deny;
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(
+            aster_durable_memory::InMemoryStore::new(),
+        ))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -59,7 +59,9 @@ fn explore_opts(session_id: &str) -> SessionOptions {
     // Explore specialty hard-deny overlay.
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(
+            aster_durable_memory::InMemoryStore::new(),
+        ))
         .with_default_security()
         .with_planning(false)
         .with_planning_mode(PlanningMode::Disabled)
@@ -74,9 +76,7 @@ fn explore_opts(session_id: &str) -> SessionOptions {
         })
 }
 
-async fn run_events(
-    session: &aster_core::AgentSession,
-) -> Vec<aster_core::run::RunEventRecord> {
+async fn run_events(session: &aster_core::AgentSession) -> Vec<aster_core::run::RunEventRecord> {
     let runs = session.runs().await;
     if let Some(run) = runs.first() {
         session.run_events(&run.id).await

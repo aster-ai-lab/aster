@@ -801,8 +801,7 @@ console.log("TASK_B_OK");
     // contract). The oracles are the artifacts and the dialogue, so both
     // outcomes are accepted here and recorded.
     let settle =
-        |label: &'static str,
-         outcome: Result<aster_core::AgentResult, aster_core::CodeError>| {
+        |label: &'static str, outcome: Result<aster_core::AgentResult, aster_core::CodeError>| {
             match outcome {
                 Ok(_) => format!("{label}=endturn"),
                 Err(error) => {

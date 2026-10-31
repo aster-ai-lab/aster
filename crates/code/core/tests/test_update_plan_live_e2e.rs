@@ -38,7 +38,9 @@ fn checklist_options(session_id: &str) -> SessionOptions {
 
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(
+            aster_durable_memory::InMemoryStore::new(),
+        ))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)

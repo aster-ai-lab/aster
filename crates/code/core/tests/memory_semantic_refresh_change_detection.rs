@@ -15,7 +15,9 @@ use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
 };
-use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord};
+use aster_durable_memory::vector::{
+    InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord,
+};
 use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use refresh_support::*;

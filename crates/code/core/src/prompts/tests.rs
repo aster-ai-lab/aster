@@ -470,7 +470,8 @@ fn select_turn_reply_language_keeps_a_published_language() {
         Some("zh-CN")
     );
     assert_eq!(
-        select_turn_reply_language(Some("zh-CN"), "Execute the 'aster-test' skill", true).as_deref(),
+        select_turn_reply_language(Some("zh-CN"), "Execute the 'aster-test' skill", true)
+            .as_deref(),
         Some("zh-CN")
     );
     assert_eq!(

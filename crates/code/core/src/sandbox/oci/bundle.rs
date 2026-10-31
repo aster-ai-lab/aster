@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 
+use anyhow::{bail, Context, Result};
 use aster_oci_sdk::{
     runtime_bundle_handoff_directory, ContainerId, CreateAttachments, CreateRequest,
     IsolationRequest, OciBundle, ProcessIo, StorageAccessMode, StorageAttachmentId, StorageCleanup,
@@ -7,7 +8,6 @@ use aster_oci_sdk::{
     RUNTIME_BUNDLE_HANDOFF_EXTENSION, RUNTIME_BUNDLE_HANDOFF_MOVE_V2,
     STORAGE_PATH_RESTRICTIONS_EXTENSION,
 };
-use anyhow::{bail, Context, Result};
 use serde_json::json;
 use tokio::process::Command;
 use tokio_util::sync::CancellationToken;
@@ -172,8 +172,10 @@ pub(super) async fn prepare(
         namespaces.retain(|namespace| namespace["type"] != "time");
     }
 
-    let mut environment =
-        aster_cmd_sandbox::sandboxed_command_environment(Path::new("/tmp"), request.env.as_deref())?;
+    let mut environment = aster_cmd_sandbox::sandboxed_command_environment(
+        Path::new("/tmp"),
+        request.env.as_deref(),
+    )?;
     let requested_path = request
         .env
         .as_deref()

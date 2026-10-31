@@ -456,10 +456,7 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
             fs::read(bins.join("aster-acp")).expect("fixture acp")
         );
         assert_ne!(fs::read(install.join("aster")).expect("new"), old_aster);
-        assert_ne!(
-            fs::read(install.join("aster-acp")).expect("new"),
-            old_acp
-        );
+        assert_ne!(fs::read(install.join("aster-acp")).expect("new"), old_acp);
         assert_eq!(build_id(&install.join("aster")), NEW_ID);
         assert_eq!(build_id(&install.join("aster-acp")), NEW_ID);
         let names: Vec<_> = fs::read_dir(&install)

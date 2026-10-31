@@ -664,7 +664,10 @@ mod tests {
             errors[4].code(),
             "aster.code.agent_protocol.session_not_found"
         );
-        assert_eq!(errors[5].code(), "aster.code.agent_protocol.session_capacity");
+        assert_eq!(
+            errors[5].code(),
+            "aster.code.agent_protocol.session_capacity"
+        );
         assert_eq!(errors[6].code(), "aster.code.agent_protocol.harness_closed");
         assert_eq!(
             errors[7].code(),

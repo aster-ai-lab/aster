@@ -1,8 +1,8 @@
 //! Original legacy goal persistence, scoped by the existing session identity.
 
 use super::{AppliedGoal, DurableGoal, GoalOp};
-use aster_core::{AgentSession, CodeError};
 use anyhow::{Context, Result};
+use aster_core::{AgentSession, CodeError};
 use std::path::{Path, PathBuf};
 
 fn goal_file(workspace: &Path, session_id: &str) -> Result<PathBuf> {

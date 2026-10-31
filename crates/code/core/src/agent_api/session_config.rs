@@ -779,7 +779,9 @@ mod tests {
         .unwrap();
 
         resolved
-            .remember(aster_durable_memory::MemoryItem::new("default memory is mandatory"))
+            .remember(aster_durable_memory::MemoryItem::new(
+                "default memory is mandatory",
+            ))
             .await
             .unwrap();
 
@@ -886,7 +888,8 @@ mod tests {
         ));
 
         let mut conflicting_memory = SessionOptions::new().with_session_id("conflicting-memory");
-        conflicting_memory.memory_store = Some(Arc::new(aster_durable_memory::InMemoryStore::new()));
+        conflicting_memory.memory_store =
+            Some(Arc::new(aster_durable_memory::InMemoryStore::new()));
         conflicting_memory.file_memory_dir = Some(PathBuf::from("memory"));
         let error = validate_session_options(&conflicting_memory).unwrap_err();
         assert!(matches!(

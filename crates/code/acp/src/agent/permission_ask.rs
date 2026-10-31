@@ -1,11 +1,11 @@
 //! The ACP permission ask for one tool call, with the reason it needs approval.
 
 use super::*;
+use agent_client_protocol as acp;
 use aster_core::permissions::{
     InteractiveApprovalMode, InteractiveToolGuardrail, ToolRiskAssessment, ToolRiskLevel,
     ToolRiskReason,
 };
-use agent_client_protocol as acp;
 use std::path::Path;
 
 pub(super) fn tool_permission_ask(

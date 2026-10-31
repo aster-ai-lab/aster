@@ -12,8 +12,8 @@ use crate::unattended::{
     Unattended, BEFORE_ANY_GATE_CONTINUATION, FRESH_REVIEW_FOCUS, IDLE_AFTER_BIND_CONTINUATION,
     UNPROVEN_STOP_CONTINUATION,
 };
-use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{bail, Context};
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
 
 pub(super) enum Attempt {
     Ended {

@@ -933,12 +933,14 @@ async fn opcov_budget() {
 #[tokio::test]
 async fn opcov_memory() {
     let workspace = tempfile::tempdir().expect("workspace");
-    let options =
-        base_options(&session_id("memory")).with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let options = base_options(&session_id("memory"))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let (agent, session) = open_session(workspace.path(), options).await;
     let memory = Arc::clone(session.memory().expect("session.memory"));
     memory
-        .remember(aster_durable_memory::MemoryItem::new("opcov-active-canary-zeta"))
+        .remember(aster_durable_memory::MemoryItem::new(
+            "opcov-active-canary-zeta",
+        ))
         .await
         .expect("remember active");
     memory
@@ -1620,8 +1622,8 @@ fn opcov_typed_decision() {
     assert_eq!(decided.model, gated.model);
     assert_eq!(gated.model, receipt.model);
     assert_eq!(receipt.request_digest, again.request_digest);
-    let expected =
-        crate::digest_json("aster.code.typed_decision.request.v1", &request).expect("request digest");
+    let expected = crate::digest_json("aster.code.typed_decision.request.v1", &request)
+        .expect("request digest");
     assert_eq!(receipt.request_digest, expected);
     let mut rejected = request.clone();
     rejected.questions.clear();

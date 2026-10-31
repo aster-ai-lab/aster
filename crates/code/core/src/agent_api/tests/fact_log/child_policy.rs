@@ -155,7 +155,9 @@ async fn child_policy_actual_fact_run_restores_before_task_and_skill_delegation(
                     .count(),
                 1
             );
-            assert!(!facts.iter().any(|fact| fact.kind.starts_with("aster.goal.")));
+            assert!(!facts
+                .iter()
+                .any(|fact| fact.kind.starts_with("aster.goal.")));
             resumed.save().await.unwrap();
             resumed.close().await;
             let snapshot = store

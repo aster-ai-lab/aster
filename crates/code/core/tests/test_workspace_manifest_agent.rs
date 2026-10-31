@@ -2,12 +2,12 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
+use anyhow::Result;
 use aster_core::llm::{StreamEvent, ToolDefinition, ToolResultContent, ToolResultContentField};
 use aster_core::{
     Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, LocalWorkspaceManifest,
     ManifestWorkspaceBackend, Message, PlanningMode, SessionOptions, TokenUsage, WorkspaceServices,
 };
-use anyhow::Result;
 use async_trait::async_trait;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
@@ -210,9 +210,7 @@ async fn run_glob_agent_task(
                 SessionOptions::new()
                     .with_llm_client(client.clone())
                     .with_workspace_backend(services)
-                    .with_confirmation_manager(Arc::new(
-                        aster_core::hitl::AutoApproveConfirmation,
-                    ))
+                    .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_continuation(false)
                     .with_max_tool_rounds(4),

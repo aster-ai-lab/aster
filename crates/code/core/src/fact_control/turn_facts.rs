@@ -178,8 +178,10 @@ pub(super) fn checkpoint_mutation_cache_covered(
             if binding.validate().is_err() {
                 return false;
             }
-            match crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
-            {
+            match crate::content_digest::digest_json(
+                "aster.code.tool-admission-binding.v1",
+                binding,
+            ) {
                 Ok(digest) => Some(digest),
                 Err(_) => return false,
             }

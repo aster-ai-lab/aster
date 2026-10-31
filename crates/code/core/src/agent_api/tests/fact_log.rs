@@ -982,7 +982,8 @@ impl LlmClient for VerifiedThenTextClient {
 #[tokio::test]
 async fn fact_log_session_explicit_preference_fails_closed_when_extraction_json_fails() {
     let token = "REMEMBER-TOKEN-4411";
-    let store: Arc<dyn aster_durable_memory::MemoryStore> = Arc::new(aster_durable_memory::InMemoryStore::new());
+    let store: Arc<dyn aster_durable_memory::MemoryStore> =
+        Arc::new(aster_durable_memory::InMemoryStore::new());
     let workspace = tempfile::tempdir().unwrap();
     let agent = crate::Agent::from_config(test_config()).await.unwrap();
     let session = agent

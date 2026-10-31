@@ -3,8 +3,8 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use anyhow::{bail, Context, Result};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -20,8 +20,9 @@ pub(crate) fn admit_workspace_browser_url(raw: &str) -> Result<String, String> {
         return Err("url must be a non-empty http(s) or file address without credentials".into());
     }
     let candidate = normalize_address(trimmed)?;
-    let parsed = url::Url::parse(&candidate)
-        .map_err(|_| "url must be a non-empty http(s) or file address without credentials".to_string())?;
+    let parsed = url::Url::parse(&candidate).map_err(|_| {
+        "url must be a non-empty http(s) or file address without credentials".to_string()
+    })?;
     if !parsed.username().is_empty() || parsed.password().is_some() {
         return Err("url must not include credentials".into());
     }
@@ -62,7 +63,10 @@ fn looks_like_host_port(value: &str) -> bool {
 
 fn is_local_address(value: &str) -> bool {
     let host = value.split(['/', '?', '#']).next().unwrap_or(value);
-    let host = host.strip_prefix('[').and_then(|v| v.strip_suffix(']')).unwrap_or(host);
+    let host = host
+        .strip_prefix('[')
+        .and_then(|v| v.strip_suffix(']'))
+        .unwrap_or(host);
     let host = host.split(':').next().unwrap_or(host);
     matches!(host, "localhost" | "127.0.0.1" | "0.0.0.0" | "::1")
         || host
@@ -194,8 +198,9 @@ async fn open_on_host(
             })
             .await
             .context("workspace browser bridge closed")?;
-        let crate::document_read::HostResponse::Ext(value) =
-            result.await.context("workspace browser host unavailable")??
+        let crate::document_read::HostResponse::Ext(value) = result
+            .await
+            .context("workspace browser host unavailable")??
         else {
             bail!("workspace browser host returned the wrong response");
         };

@@ -64,11 +64,8 @@ async fn settlement_real_owner_closes_with_governed_usage_and_a_stopped_owner_re
         id,
     ))
     .unwrap();
-    log.truncate_after(
-        &aster_core::fact_control::thread_for_session(id),
-        accepted,
-    )
-    .unwrap();
+    log.truncate_after(&aster_core::fact_control::thread_for_session(id), accepted)
+        .unwrap();
     drop(log);
     let (agent, session, guard) = open_live(workspace.path(), id, &value, 4, 4).await;
     assert_eq!(

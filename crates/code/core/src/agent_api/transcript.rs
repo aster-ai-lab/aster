@@ -31,7 +31,8 @@ pub(crate) fn read_facts(session: &AgentSession) -> Result<Vec<Fact>> {
         match cached.as_ref() {
             Some(log) => Arc::clone(log),
             None => {
-                let log = Arc::new(aster_effect::FileLog::open(directory).map_err(transcript_error)?);
+                let log =
+                    Arc::new(aster_effect::FileLog::open(directory).map_err(transcript_error)?);
                 *cached = Some(Arc::clone(&log));
                 log
             }
@@ -70,8 +71,9 @@ fn entry(facts: &[Fact], payload: TranscriptEntryPayload) -> Result<TranscriptEn
         TranscriptEntryPayload::TurnComplete { .. } => TranscriptEntryKind::TurnComplete,
         TranscriptEntryPayload::LegacyHistory { .. } => TranscriptEntryKind::LegacyHistory,
     };
-    let digest = crate::content_digest::digest_json("aster.code.session-transcript-entry.v1", &facts)
-        .map_err(transcript_error)?;
+    let digest =
+        crate::content_digest::digest_json("aster.code.session-transcript-entry.v1", &facts)
+            .map_err(transcript_error)?;
     Ok(TranscriptEntry {
         entry_id: format!("fact:{}:{digest}", first.seq),
         kind,

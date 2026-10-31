@@ -15,9 +15,12 @@ impl Job {
         std::fs::create_dir_all(&root).unwrap();
         let root = root.canonicalize().unwrap();
         std::fs::write(root.join("source.md"), "Frozen source evidence.").unwrap();
-        let job =
-            aster_okf::begin_knowledge_maintenance(&root, &[], aster_okf::MaintenanceOperation::Ingest)
-                .unwrap();
+        let job = aster_okf::begin_knowledge_maintenance(
+            &root,
+            &[],
+            aster_okf::MaintenanceOperation::Ingest,
+        )
+        .unwrap();
         Self {
             directory,
             scope: CompileScope {
@@ -168,8 +171,11 @@ fn workspace_wiki_compiler_uses_the_same_candidate_only_guard() {
     forged = personal.scope.clone();
     forged.workspace_revision = job.scope.workspace_revision.clone();
     assert!(CompileGuard::new(&forged, &personal.workspace).is_err());
-    aster_okf::cancel_workspace_knowledge_maintenance(job.input.as_ref().unwrap(), &job.scope.job_id)
-        .unwrap();
+    aster_okf::cancel_workspace_knowledge_maintenance(
+        job.input.as_ref().unwrap(),
+        &job.scope.job_id,
+    )
+    .unwrap();
     assert_eq!(
         guard.check("write", &json!({"file_path":"concepts/a.md"})),
         PermissionDecision::Deny

@@ -87,7 +87,9 @@ fn policy(allows: &[&str]) -> PermissionPolicy {
 fn options(session_id: &str, allows: &[&str]) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(
+            aster_durable_memory::InMemoryStore::new(),
+        ))
         .with_permission_policy(policy(allows))
         .with_default_security()
         .with_planning(false)

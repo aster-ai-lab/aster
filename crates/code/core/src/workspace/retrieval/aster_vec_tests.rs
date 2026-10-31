@@ -118,8 +118,8 @@ fn map_insert_write_result_rejects_nonzero_error_count() {
     let temp = tempfile::tempdir().expect("temp");
     let collection_path = temp.path().join("dup-collection");
     std::fs::create_dir_all(&collection_path).expect("collection parent");
-    let mut body =
-        aster_vec::FieldSchema::new("body", aster_vec::DataType::String, false, 0).expect("body field");
+    let mut body = aster_vec::FieldSchema::new("body", aster_vec::DataType::String, false, 0)
+        .expect("body field");
     let fts = aster_vec::IndexParams::fts(Some("whitespace"), None, None).expect("fts");
     body.set_index_params(&fts).expect("index params");
     let schema = aster_vec::CollectionSchema::builder("workspace_lexical")
@@ -350,8 +350,9 @@ fn search_opens_transiently_when_the_open_collection_cache_is_forced_closed() {
 
 #[test]
 fn drop_recovers_from_a_poisoned_cached_collection_mutex() {
-    let index = AsterVecLexicalIndex::build(vec![("doc".to_owned(), "poison drop probe".to_owned())])
-        .expect("build collection");
+    let index =
+        AsterVecLexicalIndex::build(vec![("doc".to_owned(), "poison drop probe".to_owned())])
+            .expect("build collection");
     // Prime the cache so Drop has a live Collection to close after poison recovery.
     let _ = index
         .search(&["poison".to_owned()], 1)

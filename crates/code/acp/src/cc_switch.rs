@@ -12,8 +12,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
-use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use anyhow::{anyhow, Context, Result};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use rusqlite::OptionalExtension;
 use serde_json::Value;
 

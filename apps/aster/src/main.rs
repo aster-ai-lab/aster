@@ -18,6 +18,7 @@ mod jemalloc_malloc_conf {
     #[unsafe(export_name = "_rjem_malloc_conf")]
     static MALLOC_CONF: MallocConfPtr = MallocConfPtr(CONF.as_ptr());
 }
+use anyhow::Result;
 use aster_pager::agent_runtime::AgentRuntime;
 use aster_pager::app::{
     AgentCmd, Command, EARLY_PREFETCH_WAIT, HeadlessArgs, LeaderMgmtArgs, LeaderMgmtCommand,
@@ -37,7 +38,6 @@ use aster_shell::leader::{
 use aster_telemetry::process_info::{
     Entrypoint, Interactivity, ProcessIdentity, ReleaseChannel, set_identity, set_release_channel,
 };
-use anyhow::Result;
 use std::io::Write;
 use std::net::SocketAddr;
 use std::num::NonZeroUsize;
@@ -176,10 +176,7 @@ fn apply_headless_args_to_config(args: &HeadlessArgs, config: &mut AgentConfig) 
     }
 }
 /// Apply global endpoint CLI args to an existing config.
-fn apply_agent_endpoint_args(
-    agent_args: &aster_pager::app::AgentArgs,
-    config: &mut AgentConfig,
-) {
+fn apply_agent_endpoint_args(agent_args: &aster_pager::app::AgentArgs, config: &mut AgentConfig) {
     if let Some(v) = &agent_args.cli_chat_proxy_base_url {
         config.endpoints.cli_chat_proxy_base_url = Some(v.clone());
     }
@@ -257,15 +254,13 @@ fn init_tracing_simple(app_entrypoint: &'static str) {
             aster_shell::agent::init::build_default_otel_layer_config(),
         ));
     aster_telemetry::debug_log::install_firehose(registry, app_entrypoint);
-    aster_telemetry::external::init(
-        aster_shell::agent::config::resolve_external_otel_config(
-            aster_telemetry::external::config::ExternalClientInfo {
-                service_version: env!("VERSION_WITH_COMMIT").to_owned(),
-                client_version: aster_version::VERSION.to_owned(),
-                app_entrypoint: app_entrypoint.to_owned(),
-            },
-        ),
-    );
+    aster_telemetry::external::init(aster_shell::agent::config::resolve_external_otel_config(
+        aster_telemetry::external::config::ExternalClientInfo {
+            service_version: env!("VERSION_WITH_COMMIT").to_owned(),
+            client_version: aster_version::VERSION.to_owned(),
+            app_entrypoint: app_entrypoint.to_owned(),
+        },
+    ));
 }
 /// `aster setup`: rendering and exit codes only; fetch logic lives in `aster_shell::managed_config`.
 /// `json` prints the served configuration instead of installing it, including when no principal is present.
@@ -1304,11 +1299,7 @@ async fn run_agent_command(
             &tokio_util::sync::CancellationToken::new(),
         )
         .await;
-        aster_shell::agent::remote_config::settings_get::consume_wait(
-            wait,
-            None,
-            &grok_com_config,
-        )
+        aster_shell::agent::remote_config::settings_get::consume_wait(wait, None, &grok_com_config)
     } else {
         None
     };
@@ -1649,8 +1640,7 @@ async fn run_agent_command(
                             match auto_update::ensure_latest_on_disk(&uc).await {
                                 Ok(outcome) => {
                                     if let Some(v) = &outcome.installed {
-                                        if let Err(e) = aster_shell::managed_config::sync().await
-                                        {
+                                        if let Err(e) = aster_shell::managed_config::sync().await {
                                             tracing::warn!(
                                                 "Leader auto-update: managed config refresh failed: {e}"
                                             );
@@ -1999,10 +1989,7 @@ fn install_heap_profile_hooks() {
 fn version_text(channel_label: &str) -> String {
     format!(
         "aster {}\n",
-        aster_version::display_version_with_commit(
-            aster_version::full_version(),
-            channel_label,
-        )
+        aster_version::display_version_with_commit(aster_version::full_version(), channel_label,)
     )
 }
 fn write_version(writer: &mut impl std::io::Write, channel_label: &str) -> std::io::Result<()> {
@@ -2022,10 +2009,8 @@ fn dispatch_version_if_requested(args: &PagerArgs) -> bool {
     if !args.version {
         return false;
     }
-    if let Err(error) = write_version(
-        &mut std::io::stdout().lock(),
-        aster_update::channel_label(),
-    ) {
+    if let Err(error) = write_version(&mut std::io::stdout().lock(), aster_update::channel_label())
+    {
         eprintln!("Error: {error}");
         std::process::exit(1);
     }
@@ -2234,11 +2219,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             }
         }
     }
-    aster_shell::config::apply_sandbox(
-        None,
-        sandbox_profile_arg.as_deref(),
-        args.cwd.as_deref(),
-    );
+    aster_shell::config::apply_sandbox(None, sandbox_profile_arg.as_deref(), args.cwd.as_deref());
     if let Some(identity) = process_identity(args.command.as_ref(), is_interactive) {
         set_identity(identity);
     }
@@ -2254,10 +2235,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                     });
                     println!("{}", serde_json::to_string(&payload)?);
                 } else {
-                    write_version(
-                        &mut std::io::stdout().lock(),
-                        aster_update::channel_label(),
-                    )?;
+                    write_version(&mut std::io::stdout().lock(), aster_update::channel_label())?;
                 }
                 return Ok(());
             }
@@ -2509,8 +2487,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             .as_deref()
             .map(aster_pager::headless::parse_json_schema)
             .transpose()?;
-        if json_schema.is_some()
-            && args.output_format == aster_pager::headless::OutputFormat::Plain
+        if json_schema.is_some() && args.output_format == aster_pager::headless::OutputFormat::Plain
         {
             args.output_format = aster_pager::headless::OutputFormat::Json;
         }
@@ -2609,8 +2586,7 @@ async fn finish_update_on_exit(
 fn build_update_config() -> UpdateConfig {
     let environment = aster_shell::env::GrokBuildEnvironment::from_flags(false, false);
     let mut config = UpdateConfig::from_environment(&environment);
-    config.deployment_key =
-        aster_shell::agent::config::EndpointsConfig::default().deployment_key;
+    config.deployment_key = aster_shell::agent::config::EndpointsConfig::default().deployment_key;
     config.npm_registry = std::env::var("GROK_NPM_REGISTRY")
         .ok()
         .or_else(aster_shell::util::config::load_npm_registry_sync);
@@ -3010,9 +2986,7 @@ mod tests {
     #[serial_test::serial(jemalloc_heap_profile)]
     fn install_heap_profile_hooks_wires_shell_apis() {
         install_heap_profile_hooks();
-        assert_stats_sane(
-            aster_shell::heap_profile::stats().expect("shell stats after install"),
-        );
+        assert_stats_sane(aster_shell::heap_profile::stats().expect("shell stats after install"));
         if !require_opt_prof() {
             assert!(!aster_shell::heap_profile::prof_available());
             return;

@@ -9,7 +9,9 @@ use super::semantic_binding::{
 use crate::embedding::{
     EmbeddingError, EmbeddingExecutor, EmbeddingExecutorConfig, EmbeddingInput, EmbeddingProvider,
 };
-use aster_durable_memory::repository::{MemoryNamespace, MemoryNode, MemoryRepository, MemoryStatus};
+use aster_durable_memory::repository::{
+    MemoryNamespace, MemoryNode, MemoryRepository, MemoryStatus,
+};
 use aster_durable_memory::vector::{
     VectorIndex, VectorIndexObservation, VectorIndexStatus, VectorMutationConsistency,
     VectorSearchRequest,

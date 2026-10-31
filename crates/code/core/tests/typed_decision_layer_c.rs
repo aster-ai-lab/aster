@@ -530,10 +530,8 @@ fn live_goal_achievement_is_not_replaced_by_a_typed_decision() {
         assert!(system.contains("achieved"));
         let _ = result.progress;
         assert!(
-            serde_json::from_str::<aster_core::Answer>(
-                counted.text.lock().expect("text").trim()
-            )
-            .is_err(),
+            serde_json::from_str::<aster_core::Answer>(counted.text.lock().expect("text").trim())
+                .is_err(),
             "model text was parsed as a typed Answer"
         );
         eprintln!(
